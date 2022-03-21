@@ -38,6 +38,12 @@
             </div>
             <div class="row justify-content-center mt-3">
                 <div class="col-md-4">
+                    <label for="bed">หมายเลขเตียง <span class="text-danger">*</span></label>
+                    <input type="text" id="bed" name="bed" class="form-control" placeholder="หมายเลขเตียง">
+                </div>
+            </div>
+            <div class="row justify-content-center mt-3">
+                <div class="col-md-4">
                     <label for="from">แผนกต้นทาง <span class="text-danger">*</span></label>
                     <select id="from" name="from" class="form-select">
                         <option value="" selected disabled>เลือกแผนกปลายทาง</option>
@@ -166,12 +172,16 @@
         $('#myForm').submit(function () {
             event.preventDefault();
             let name = $('#name').val();
+            let bed = $('#bed').val();
             let room = $('#room').val();
             let note = $('#note').val();
             let to = $('#to').val();
             let from = $('#from').val();
             if (name == '') {
                 return showalert($('label[for="name"]').html(), 'warning');
+            }
+            if (name == '') {
+                return showalert($('label[for="bed"]').html(), 'warning');
             }
             if (to == '') {
                 return showalert($('label[for="to"]').html(), 'warning');
@@ -187,6 +197,7 @@
             $.getJSON(scripturl + '?opt=save', {
                 name: name,
                 room: room,
+                bed: bed,
                 note: note,
                 to: to,
                 from: from
@@ -194,6 +205,7 @@
             showalert('บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
             $('#name').val('');
             $('#room').val('');
+            $('#bed').val('');
             $('#note').val('');
             $('#to').val('');
             $('#from').val('');
