@@ -197,9 +197,6 @@
             if (from == '') {
                 return showalert($('label[for="from"]').html(), 'warning');
             }
-            if (room == '') {
-                return showalert($('label[for="room"]').html(), 'warning');
-            }
 
             let scripturl = 'https://script.google.com/macros/s/AKfycbysni_E3NiLuxgyDFaF-P0cEjXY4DpIE7eyii-I-P77_5GHrsE4oi2-io3iyraizE4/exec'
             $.getJSON(scripturl + '?opt=save', {
