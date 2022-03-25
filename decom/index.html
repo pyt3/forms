@@ -41,7 +41,6 @@
                 </div>
             </div>
             <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow border border-primary">
-
                 <div class="row justify-content-start">
                     <div class="col-md-4 mt-3">
                         <label for="e_name">ชื่อเครื่องมือ</label>
@@ -49,7 +48,59 @@
                     </div>
                     <div class="col-md-4 mt-3">
                         <label for="dept">แผนก</label>
-                        <input type="text" name="dept" id="dept" class="form-control">
+                        <select name="dept" id="dept" class="form-select">
+                            <option value="" disabled selected>Select value</option>
+                            <option>ANESTHESIA (วิสัญญี)</option>
+                            <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
+                            <option>BME-PYT3</option>
+                            <option>CATH-LAB</option>
+                            <option>CHECK-UP (ตรวจสุขภาพ)</option>
+                            <option>CORPORATE CUSTOMER SERVICE</option>
+                            <option>CSSD (จ่ายกลาง)</option>
+                            <option>DENTAL (ทันตกรรม)</option>
+                            <option>DIABETIC&amp;METABOLIC(เบาหวาน)</option>
+                            <option>EENT( หูตาคอจมูก)</option>
+                            <option>EMERGENCY( ฉุกเฉิน)</option>
+                            <option>GASTROINTESTINAL LABORATORY(GI)</option>
+                            <option>HEMODIALYSIS (ไตเทียม)</option>
+                            <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
+                            <option>INFECTION CONTROL ( IC)</option>
+                            <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
+                            <option>LABOR ROOM(ห้องคลอด)</option>
+                            <option>LABORATORY</option>
+                            <option>MAID</option>
+                            <option>MARKETING</option>
+                            <option>NURSERY(เด็กอ่อน)</option>
+                            <option>NURSING DEPARTMENT</option>
+                            <option>OBSERVE(สังเกตอาการ)</option>
+                            <option>OPD CARDIO(ศูนย์หัวใจ)</option>
+                            <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
+                            <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
+                            <option>OPD MEDICINE(อายุกรรม)</option>
+                            <option>OPD NEURO (ศูนย์สมอง)</option>
+                            <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
+                            <option>OPD PEDIATRIC( แผนกเด็ก)</option>
+                            <option>OPD SURGERY(ศัลยกรรม)</option>
+                            <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
+                            <option>OPERATING ROOM(ห้องผ่าตัด)</option>
+                            <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
+                            <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
+                            <option>PHYSICAL THERAPY( กายภาพ)</option>
+                            <option>PICU</option>
+                            <option>PWA LIFE CENTER</option>
+                            <option>PWA ชะลอวัย</option>
+                            <option>WARD 10</option>
+                            <option>WARD 11</option>
+                            <option>WARD 12</option>
+                            <option>WARD 14</option>
+                            <option>WARD 15</option>
+                            <option>WARD 17</option>
+                            <option>WARD 7</option>
+                            <option>WARD 8</option>
+                            <option>WARD 9</option>
+                            <option>X-RAY</option>
+                            <option>รับส่ง</option>
+                        </select>
                     </div>
                     <div class="col-md-4 mt-3">
                         <label for="e_manufacturer">ผู้ผลิต</label>
@@ -221,7 +272,6 @@
                     </div>
                 </div>
             </section>
-
             <div class="row justify-content-center">
                 <div class="col-md-4 mt-3 text-center">
                     <button type="submit" class="btn btn-primary" style="min-width: 200px;">สร้างไฟล์</button>
@@ -235,6 +285,13 @@
         </form>
         <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#dept option').not(':disabled').each(function () {
+                $(this).val($(this).text());
+            });
+        })
+    </script>
     <script>
         var pdfDoc
         var PDFDocument = PDFLib.PDFDocument;
@@ -318,7 +375,6 @@
             pdfDoc.insertPage(0, firstPDFPage)
             const pdfBytes = await pdfDoc.save()
             const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
-          
             Swal.fire({
                 icon: 'success',
                 title: 'สร้างไฟล์เสร็จสิ้น',
@@ -353,7 +409,6 @@
         })
     </script>
     <script>
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
