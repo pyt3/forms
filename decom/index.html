@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <title>Decommission Form</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <form id="myForm" class="mt-3 mb-5">
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <h4>Decommissioning Determination Form</h4>
+                    <h4>แบบบันทึกยกเลิกการใช้งาน</h4>
+                </div>
+            </div>
+            <div class="row justify-content-start mt-3">
+                <div class="col-md-4 mt-3">
+                    <label for="e_name">ชื่อเครื่องมือ</label>
+                    <input type="text" name="e_name" id="e_name" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="dept">แผนก</label>
+                    <input type="text" name="dept" id="dept" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_manufacturer">ผู้ผลิต</label>
+                    <input type="text" name="e_manufacturer" id="e_manufacturer" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_date">วันที่ซื้อ</label>
+                    <input type="text" name="e_date" id="e_date" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_hospital_code">หมายเลขทรัพย์สิน</label>
+                    <input type="text" name="e_hospital_code" id="e_hospital_code" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_brand/model">ยี่ห้อ/รุ่น</label>
+                    <input type="text" name="e_brand/model" id="e_brand/model" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_sn">เลขเครื่อง (SN)</label>
+                    <input type="text" name="e_sn" id="e_sn" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_me_code">หมายเลขเครื่อง (ME Code)</label>
+                    <input type="text" name="e_me_code" id="e_me_code" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_brand/distributor">ตัวแทนจำหน่าย</label>
+                    <input type="text" name="e_brand/distributor" id="e_brand/distributor" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_price">ราคาซื้อ</label>
+                    <input type="text" name="e_price" id="e_price" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_depreciation">ราคาค่าเสื่อมปัจจุบัน</label>
+                    <input type="text" name="e_depreciation" id="e_depreciation" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_decom_location">สถานที่จัดเก็บเครื่องมือที่ขอยกเลิกการใช้งาน</label>
+                    <input type="text" name="e_decom_location" id="e_decom_location" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_decom_by">ผู้ยกเลิก</label>
+                    <input type="text" name="e_decom_by" id="e_decom_by" class="form-control">
+                </div>
+                <div class="col-md-4 mt-3">
+                    <label for="e_sticker">รูป Code Sticker เครื่องมือยกเลิก</label>
+                    <input type="file" accept="image/*" name="e_sticker" id="e_sticker" class="form-control">
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-4 mt-3" style="display: none;">
+                    <img alt="sticker" class="img-fluid">
+                </div>
+            </div>
+            <div class="row justify-content-start mt-3">
+                <div class="col text-start ms-1">
+                    <p>ข้อควรพิจารณาสำหรับยกเลิกการใช้งานเครื่องมือแพทย์</p>
+                </div>
+                <div class="col-12 text-start ms-1 mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="✓" id="repair_cost_exceed_65" name="repair_cost_exceed_65">
+                        <label class="form-check-label" for="repair_cost_exceed_65">
+                            1. ราคาค่าซ่อมสะสมรวมสูงกว่า 65% ของราคาซื้อ (The estimated cumulative repair cost exceed 65% of acquisition Cost)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12 text-start ms-1 mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="✓" id="deprecate_value_exceed_65" name="deprecate_value_exceed_65">
+                        <label class="form-check-label" for="deprecate_value_exceed_65">
+                            2. ราคาค่าเสื่อมสูงกว่า 65% ของราคาซื้อ (Current deprecated value exceed 65% of acquisition cost)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12 text-start ms-1 mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="✓" id="any_uncorrecttable_hazard" name="any_uncorrecttable_hazard">
+                        <label class="form-check-label" for="any_uncorrecttable_hazard">
+                            3. มีการแจ้งเตือนอันตราย การแจ้งห้ามใช้เครื่องมือ/ยกเลิกใช้งานที่เกิดจาก Status Decom (Any uncorrectable hazard
+                            warning preclude equipment use / Disable operations caused by Status Decom)
+                        </label>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="lack_of_repair_part" name="lack_of_repair_part">
+                            <label class="form-check-label" for="lack_of_repair_part">
+                                4. ขาดแคลนอะไหล่ที่ใช้ในการซ่อมเครื่องมือ ทำให้เครื่องมือไม่สามารถซ่อมแซมได้ (The lack of repair parts render
+                                equipment irreparable)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="calibration_inacculate" name="calibration_inacculate">
+                            <label class="form-check-label" for="calibration_inacculate">
+                                5. ผลการสอบเทียบไม่ผ่าน และไม่สามารถปรับแต่งได้ (Calibration measurement range inacceurate and cannot adjusted)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="expected_life" name="expected_life">
+                            <label class="form-check-label" for="expected_life">
+                                6. อายุการใช้งานเครื่องมือตามมาตรฐาน ECRI เอกสารสนับสุน Expected Life Healthcare Device (SD-BME-BMC-00-
+                                MN-001)/ อายุของอะใหล่และการหยุดการผลิตแล้วของอะไหล่ตามที่บริษัทผู้แทนกำหนด (Expccted Life Healthcare
+                                Device ECRI /Age of spare parts and discontinuation of parts as specified by the representative company)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="high_priority_replcaement" name="high_priority_replcaement">
+                            <label class="form-check-label" for="high_priority_replcaement">
+                                7. สรุปผลการทำประเมินสภาพเครื่องมือทางการแพทข์ มีลำดับความสำคัญสูง (Summary of the evaluation of the medical
+                                device condition High Priority Replacement)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="outdated_technology" name="outdated_technology">
+                            <label class="form-check-label" for="outdated_technology">
+                                8. การประเมินเทคโนโลยีที่ล้าสมัยของเครื่องมือ ( Outdated technology assessment )
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="required_termination_of_use" name="required_termination_of_use">
+                            <label class="form-check-label" for="required_termination_of_use">
+                                9. กฎหมาย กฎระเบียบบังคับให้ยกเลิก (Regulations require the termination of use.)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="information_deleted" name="information_deleted">
+                            <label class="form-check-label" for="information_deleted">
+                                10. เครื่องมือแพทย์ที่ยกเลิกให้ทำการลบข้อมูลผู้ป่วยที่อยู่ในหน่วยความจำเครื่อง
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <label for="e_sticker"> 11. อื่นๆ</label>
+                        <input name="other" id="other" name="other" class="form-control">
+                    </div>
+                </div>
+                <div class="row justify-content-center align-items-start">
+                    <div class="col-md-4 mt-3 text-center">
+                        <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
+                        <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart" class="form-control file">
+                        <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
+                    </div>
+                    <div class="col-md-4 mt-3 text-center">
+                        <label for="2-file-img">ไฟล์รูปภาพเครื่อง</label>
+                        <input type="file" name="2-file-img" id="2-file-img" accept="application/pdf" class="form-control file">
+                        <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
+                    </div>
+                    <div class="col-md-4 mt-3 text-center">
+                        <label for="3-file-other">ไฟล์เอกสารเพิ่มเติม (เลือกได้หลายไฟล์)</label>
+                        <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf" multiple class="form-control file">
+                        <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mt-3 text-center">
+                        <button type="submit" class="btn btn-primary" style="min-width: 200px;">สร้างไฟล์</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mt-3 mb-4 text-center">
+                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
+                    </div>
+                </div>
+        </form>
+        <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+    </div>
+    <script>
+        var pdfDoc
+        var PDFDocument = PDFLib.PDFDocument;
+        $('#myForm').submit(async function () {
+            pdfDoc = await PDFDocument.create();
+            event.preventDefault()
+            let formData = $(this).serializeArray()
+            let obj = {}
+            formData.forEach(function (e) {
+                if (e.value == '') e.value = '-'
+                obj[e.name] = e.value
+            })
+            $('input[type=checkbox]').each(function () {
+                if ($(this).is(':checked')) {
+                    obj[$(this).attr('name')] = '✓'
+                } else {
+                    obj[$(this).attr('name')] = ''
+                }
+            })
+            if (sticker.data) obj.e_sticker = JSON.stringify(sticker)
+            obj['e_me_code'] = obj['e_me_code'].toUpperCase().indexOf('PYT') > -1 ? obj['e_me_code'].toUpperCase() : ('PYT3_' + ('00000' + obj['e_me_code']).slice(-5))
+            obj['e_decom_by'] = obj['e_decom_by'].toUpperCase()
+            obj['e_name'] = toTitleCase(obj['e_name'])
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังสร้างไฟล์...',
+                allowOutsideClick: false,
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            Object.keys(pdfFiles).forEach(async key => {
+                let pdf = await PDFDocument.load(pdfFiles[key])
+                let pages = pdf.getPages().length
+                for (var i = 0; i < pages; i++) {
+                    let [page] = await pdfDoc.copyPages(pdf, [i])
+                    pdfDoc.insertPage(0, page)
+                }
+            })
+            let scripturl = 'https://script.google.com/macros/s/AKfycbwdHWd3KFg6GMJsNKmVp69oyRAhpzWRjiWxUYFU8QBXoLHkNYM07qUEbR0s5roYpAnHag/exec?opt=save'
+            $.ajax({
+                url: scripturl,
+                type: 'POST',
+                data: obj,
+                success: function (data) {
+                    copyPages(data[0], data[1], data[2])
+                }
+            })
+        })
+        var sticker = {}
+        $('#e_sticker').change(function () {
+            sticker = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onload = function (e) {
+                sticker.data = e.target.result
+                sticker.name = file.name
+                $('.img-fluid').attr('src', e.target.result)
+                $('.img-fluid').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+    </script>
+    <script>
+        async function copyPages(url, res, name) {
+            var binary_string = window.atob(res);
+            var len = binary_string.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            const firstPDFBytes = bytes.buffer
+            const firstPDFDoc = await PDFDocument.load(firstPDFBytes)
+            const [firstPDFPage] = await pdfDoc.copyPages(firstPDFDoc, [0])
+            pdfDoc.insertPage(0, firstPDFPage)
+            const pdfBytes = await pdfDoc.save()
+            const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 2000,
+                showConfirmButton: false,
+            })
+            $('#a-download').attr('href', pdfDataUri)
+            $('#a-download').attr('download', name).show()
+            var iframe = document.getElementById('pdf')
+            iframe.src = pdfDataUri
+            $(iframe).slideDown(100)
+        }
+        let pdfFiles = []
+        $('.file').change(function () {
+            let files = this.files
+            for (var i = 0; i < files.length; i++) {
+                let obj = this
+                let id = $(this).attr('id')
+                let file = files[i]
+                let reader = new FileReader();
+                let reader2 = new FileReader();
+                reader.onloadend = function (e) {
+                    pdfFiles[id] = e.target.result
+                }
+                reader.readAsArrayBuffer(file);
+                reader2.onloadend = function (e) {
+                    $(obj).closest('.col-md-4').find('iframe').attr('src', e.target.result + '#toolbar=0&navpanes=0&scrollbar=0').slideDown(100)
+                }
+                reader2.readAsDataURL(file);
+            }
+        })
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>
