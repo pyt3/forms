@@ -10,10 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.css" integrity="sha512-5ZQRy5L3cl4XTtZvjaJRucHRPKaKebtkvCWR/gbYdKH67km1e18C1huhdAc0wSnyMwZLiO7nEa534naJrH6R/Q==" crossorigin="anonymous"
-        referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -219,8 +215,8 @@
                         <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                     </div>
                     <div class="col-md-4 mt-3 text-center">
-                        <label for="3-file-other">ไฟล์เอกสารเพิ่มเติม (เลือกได้หลายไฟล์)</label>
-                        <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf" multiple class="form-control file">
+                        <label for="3-file-other">ไฟล์เอกสารเพิ่มเติม</label>
+                        <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf" class="form-control file">
                         <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                     </div>
                 </div>
@@ -296,11 +292,6 @@
                 sticker.name = file.name
                 $('.img-fluid').attr('src', e.target.result)
                 $('.img-fluid').closest('.col-md-4').show()
-                const image = document.getElementById('sticker');
-                const cropper = new Cropper(image);
-                const canvas = cropper.getCroppedCanvas()
-                let img = document.getElementById('crop-preview');
-                img.src = canvas.toDataURL('image/jpeg');
             }
             reader.readAsDataURL(file)
         })
@@ -327,6 +318,7 @@
             pdfDoc.insertPage(0, firstPDFPage)
             const pdfBytes = await pdfDoc.save()
             const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+          
             Swal.fire({
                 icon: 'success',
                 title: 'สร้างไฟล์เสร็จสิ้น',
@@ -350,6 +342,7 @@
                 let reader2 = new FileReader();
                 reader.onloadend = function (e) {
                     pdfFiles[id] = e.target.result
+                    console.log("🚀 ~ pdfFiles", pdfFiles)
                 }
                 reader.readAsArrayBuffer(file);
                 reader2.onloadend = function (e) {
