@@ -10,6 +10,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.css" integrity="sha512-5ZQRy5L3cl4XTtZvjaJRucHRPKaKebtkvCWR/gbYdKH67km1e18C1huhdAc0wSnyMwZLiO7nEa534naJrH6R/Q==" crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: #D3D3D3;
+        }
+
+        #sticker {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
     <title>Decommission Form</title>
 </head>
 
@@ -22,96 +44,101 @@
                     <h4>แบบบันทึกยกเลิกการใช้งาน</h4>
                 </div>
             </div>
-            <div class="row justify-content-start mt-3">
-                <div class="col-md-4 mt-3">
-                    <label for="e_name">ชื่อเครื่องมือ</label>
-                    <input type="text" name="e_name" id="e_name" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="dept">แผนก</label>
-                    <input type="text" name="dept" id="dept" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_manufacturer">ผู้ผลิต</label>
-                    <input type="text" name="e_manufacturer" id="e_manufacturer" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_date">วันที่ซื้อ</label>
-                    <input type="text" name="e_date" id="e_date" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_hospital_code">หมายเลขทรัพย์สิน</label>
-                    <input type="text" name="e_hospital_code" id="e_hospital_code" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_brand/model">ยี่ห้อ/รุ่น</label>
-                    <input type="text" name="e_brand/model" id="e_brand/model" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_sn">เลขเครื่อง (SN)</label>
-                    <input type="text" name="e_sn" id="e_sn" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_me_code">หมายเลขเครื่อง (ME Code)</label>
-                    <input type="text" name="e_me_code" id="e_me_code" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_brand/distributor">ตัวแทนจำหน่าย</label>
-                    <input type="text" name="e_brand/distributor" id="e_brand/distributor" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_price">ราคาซื้อ</label>
-                    <input type="text" name="e_price" id="e_price" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_depreciation">ราคาค่าเสื่อมปัจจุบัน</label>
-                    <input type="text" name="e_depreciation" id="e_depreciation" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_decom_location">สถานที่จัดเก็บเครื่องมือที่ขอยกเลิกการใช้งาน</label>
-                    <input type="text" name="e_decom_location" id="e_decom_location" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_decom_by">ผู้ยกเลิก</label>
-                    <input type="text" name="e_decom_by" id="e_decom_by" class="form-control">
-                </div>
-                <div class="col-md-4 mt-3">
-                    <label for="e_sticker">รูป Code Sticker เครื่องมือยกเลิก</label>
-                    <input type="file" accept="image/*" name="e_sticker" id="e_sticker" class="form-control">
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-4 mt-3" style="display: none;">
-                    <img alt="sticker" class="img-fluid">
-                </div>
-            </div>
-            <div class="row justify-content-start mt-3">
-                <div class="col text-start ms-1">
-                    <p>ข้อควรพิจารณาสำหรับยกเลิกการใช้งานเครื่องมือแพทย์</p>
-                </div>
-                <div class="col-12 text-start ms-1 mt-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="✓" id="repair_cost_exceed_65" name="repair_cost_exceed_65">
-                        <label class="form-check-label" for="repair_cost_exceed_65">
-                            1. ราคาค่าซ่อมสะสมรวมสูงกว่า 65% ของราคาซื้อ (The estimated cumulative repair cost exceed 65% of acquisition Cost)
-                        </label>
+            <section class="m-2 mt-4 rounded-2 bg-light p-3 shadow">
+
+                <div class="row justify-content-start">
+                    <div class="col-md-4 mt-3">
+                        <label for="e_name">ชื่อเครื่องมือ</label>
+                        <input type="text" name="e_name" id="e_name" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="dept">แผนก</label>
+                        <input type="text" name="dept" id="dept" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_manufacturer">ผู้ผลิต</label>
+                        <input type="text" name="e_manufacturer" id="e_manufacturer" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_date">วันที่ซื้อ</label>
+                        <input type="text" name="e_date" id="e_date" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_hospital_code">หมายเลขทรัพย์สิน</label>
+                        <input type="text" name="e_hospital_code" id="e_hospital_code" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_brand/model">ยี่ห้อ/รุ่น</label>
+                        <input type="text" name="e_brand/model" id="e_brand/model" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_sn">เลขเครื่อง (SN)</label>
+                        <input type="text" name="e_sn" id="e_sn" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_me_code">หมายเลขเครื่อง (ME Code)</label>
+                        <input type="text" name="e_me_code" id="e_me_code" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_brand/distributor">ตัวแทนจำหน่าย</label>
+                        <input type="text" name="e_brand/distributor" id="e_brand/distributor" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_price">ราคาซื้อ</label>
+                        <input type="text" name="e_price" id="e_price" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_depreciation">ราคาค่าเสื่อมปัจจุบัน</label>
+                        <input type="text" name="e_depreciation" id="e_depreciation" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_decom_location">สถานที่จัดเก็บเครื่องมือที่ขอยกเลิกการใช้งาน</label>
+                        <input type="text" name="e_decom_location" id="e_decom_location" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_decom_by">ผู้ยกเลิก</label>
+                        <input type="text" name="e_decom_by" id="e_decom_by" class="form-control">
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <label for="e_sticker">รูป Code Sticker เครื่องมือยกเลิก</label>
+                        <input type="file" accept="image/*" name="e_sticker" id="e_sticker" class="form-control">
                     </div>
                 </div>
-                <div class="col-12 text-start ms-1 mt-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="✓" id="deprecate_value_exceed_65" name="deprecate_value_exceed_65">
-                        <label class="form-check-label" for="deprecate_value_exceed_65">
-                            2. ราคาค่าเสื่อมสูงกว่า 65% ของราคาซื้อ (Current deprecated value exceed 65% of acquisition cost)
-                        </label>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mt-3" style="display: none;">
+                        <img alt="sticker" id="sticker" class="img-fluid">
                     </div>
                 </div>
-                <div class="col-12 text-start ms-1 mt-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="✓" id="any_uncorrecttable_hazard" name="any_uncorrecttable_hazard">
-                        <label class="form-check-label" for="any_uncorrecttable_hazard">
-                            3. มีการแจ้งเตือนอันตราย การแจ้งห้ามใช้เครื่องมือ/ยกเลิกใช้งานที่เกิดจาก Status Decom (Any uncorrectable hazard
-                            warning preclude equipment use / Disable operations caused by Status Decom)
-                        </label>
+            </section>
+            <section class="m-2 mt-4 rounded-2 bg-light p-3 shadow">
+                <div class="row justify-content-start">
+                    <div class="col text-start ms-1">
+                        <p>ข้อควรพิจารณาสำหรับยกเลิกการใช้งานเครื่องมือแพทย์</p>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="repair_cost_exceed_65" name="repair_cost_exceed_65">
+                            <label class="form-check-label" for="repair_cost_exceed_65">
+                                1. ราคาค่าซ่อมสะสมรวมสูงกว่า 65% ของราคาซื้อ (The estimated cumulative repair cost exceed 65% of acquisition Cost)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="deprecate_value_exceed_65" name="deprecate_value_exceed_65">
+                            <label class="form-check-label" for="deprecate_value_exceed_65">
+                                2. ราคาค่าเสื่อมสูงกว่า 65% ของราคาซื้อ (Current deprecated value exceed 65% of acquisition cost)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-start ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="✓" id="any_uncorrecttable_hazard" name="any_uncorrecttable_hazard">
+                            <label class="form-check-label" for="any_uncorrecttable_hazard">
+                                3. มีการแจ้งเตือนอันตราย การแจ้งห้ามใช้เครื่องมือ/ยกเลิกใช้งานที่เกิดจาก Status Decom (Any uncorrectable hazard
+                                warning preclude equipment use / Disable operations caused by Status Decom)
+                            </label>
+                        </div>
                     </div>
                     <div class="col-12 text-start ms-1 mt-2">
                         <div class="form-check">
@@ -178,8 +205,10 @@
                         <input name="other" id="other" name="other" class="form-control">
                     </div>
                 </div>
+            </section>
+            <section class="m-2 mt-4 rounded-2 bg-light p-3 shadow">
                 <div class="row justify-content-center align-items-start">
-                    <div class="col-md-4 mt-3 text-center">
+                    <div class="col-md-4 text-center">
                         <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
                         <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart" class="form-control file">
                         <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
@@ -195,16 +224,18 @@
                         <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                     </div>
                 </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-4 mt-3 text-center">
-                        <button type="submit" class="btn btn-primary" style="min-width: 200px;">สร้างไฟล์</button>
-                    </div>
+            </section>
+
+            <div class="row justify-content-center">
+                <div class="col-md-4 mt-3 text-center">
+                    <button type="submit" class="btn btn-primary" style="min-width: 200px;">สร้างไฟล์</button>
                 </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-4 mt-3 mb-4 text-center">
-                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
-                    </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-4 mt-3 mb-4 text-center">
+                    <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
                 </div>
+            </div>
         </form>
         <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
     </div>
@@ -265,6 +296,11 @@
                 sticker.name = file.name
                 $('.img-fluid').attr('src', e.target.result)
                 $('.img-fluid').closest('.col-md-4').show()
+                const image = document.getElementById('sticker');
+                const cropper = new Cropper(image);
+                const canvas = cropper.getCroppedCanvas()
+                let img = document.getElementById('crop-preview');
+                img.src = canvas.toDataURL('image/jpeg');
             }
             reader.readAsDataURL(file)
         })
@@ -322,6 +358,9 @@
                 reader2.readAsDataURL(file);
             }
         })
+    </script>
+    <script>
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
