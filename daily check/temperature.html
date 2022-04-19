@@ -83,16 +83,16 @@
         <div class="row justify-content-center align-items-center">
             <div class="col text-center text-end">
                 <img src="https://img.in.th/images/e5f742132b3648b83a134257cc05d903.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
-    
+
                 <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
             </div>
-    
+
         </div>
         <div class="row justify-content-center align-items-center">
             <div class="col text-center text-end" style="font-size: 0.7rem;">
-               Developed by <span class="text-primary">Daranphop Yimyam</span>
+                Developed by <span class="text-primary">Daranphop Yimyam</span>
             </div>
-    
+
         </div>
     </footer>
     <script>
@@ -294,7 +294,7 @@
             let from = Date.parse($('#from').val())
             let to = Date.parse($('#to').val()) + (1000 * 60 * 60 * 24)
             let col_date = new Date().toLocaleDateString().replace(/\//g, '_')
-            return firestore.collection(client).where('time', '>=', from).where('time', '<=', to).where('dept', '==', dept).where('id', '==', id).get().then(snapshot => {
+            return firestore.collection(client).where('form','==','temperature').where('time', '>=', from).where('time', '<=', to).where('dept', '==', dept).where('id', '==', id).get().then(snapshot => {
                 let data = []
                 let label = []
                 snapshot.forEach(doc => {
@@ -333,6 +333,7 @@
             // })
             let time = date.getTime()
             return await firestore.collection(client).add({
+                form: 'temperature',
                 dept: dept,
                 id: id,
                 temp: temp,
@@ -353,7 +354,7 @@
         }
         async function getValue() {
             let date = new Date().getTime()
-            return firestore.collection(client).where("time", "<=", date).get().then(function (querySnapshot) {
+            return firestore.collection(client).where("time", "<=", date).where('form', '==', 'temperature').get().then(function (querySnapshot) {
                 let data = []
                 let label = []
                 querySnapshot.forEach(function (doc) {
