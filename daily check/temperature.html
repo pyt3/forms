@@ -29,6 +29,13 @@
 </head>
 
 <body>
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-12 text-center px-5 mt-3">
+                <img src="https://img.in.th/images/92cc41f62e7a8b08398ed7cddcc22725.jpg" alt="banner" class="img-fluid" style="max-width: 150px;">
+            </div>
+        </div>
+    </div>
     <div class="container-fluid mb-5 pb-5">
         <div class="row justify-content-center m-1 mt-3">
             <div class="col-12 text-center">
@@ -72,6 +79,22 @@
         </div>
         <canvas id="myChart" style="height: 600px; width: 100%"></canvas>
     </div>
+    <footer>
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-end">
+                <img src="https://img.in.th/images/e5f742132b3648b83a134257cc05d903.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+    
+                <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+    
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-end" style="font-size: 0.7rem;">
+               Developed by <span class="text-primary">Daranphop Yimyam</span>
+            </div>
+    
+        </div>
+    </footer>
     <script>
         var firestore
         var client, dept, id
@@ -271,7 +294,7 @@
             let from = Date.parse($('#from').val())
             let to = Date.parse($('#to').val()) + (1000 * 60 * 60 * 24)
             let col_date = new Date().toLocaleDateString().replace(/\//g, '_')
-            return firestore.collection(client).where('time', '>=', from).where('time', '<=', to).where('dept','==', dept).where('id','==',id).get().then(snapshot => {
+            return firestore.collection(client).where('time', '>=', from).where('time', '<=', to).where('dept', '==', dept).where('id', '==', id).get().then(snapshot => {
                 let data = []
                 let label = []
                 snapshot.forEach(doc => {
