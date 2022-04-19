@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Akshar', sans-serif;
+            font-family: 'Prompt', sans-serif;
+            /* background-color: #fafafa; */
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #0080FF;
+            color: #FFF;
+        }
+
+        .nav-tabs .nav-link {
+            color: #0080FF;
+        }
+
+        /* section{
+            background-color: #fff;
+        } */
+    </style>
+    <title>Decommission Form</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-12 text-center px-5 mt-3">
+                <img src="https://img.in.th/images/92cc41f62e7a8b08398ed7cddcc22725.jpg" alt="banner" class="img-fluid" style="max-width: 150px;">
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col text-center">
+                <h4>Defibrillator Unit Maintenance Log</h4>
+            </div>
+        </div>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-daily-tab" data-bs-toggle="tab" data-bs-target="#nav-daily" type="button" role="tab" aria-controls="nav-daily" aria-selected="true">Daliy Maintenance</button>
+                <button class="nav-link" id="nav-afteruse-tab" data-bs-toggle="tab" data-bs-target="#nav-afteruse" type="button" role="tab" aria-controls="nav-afteruse" aria-selected="false">After Use</button>
+
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-daily" role="tabpanel" aria-labelledby="nav-home-tab">
+                <form id="daily-form" class="mt-3 mb-5">
+
+                    <section class="m-2 mt-2 rounded-2  p-4 shadow border border-primary">
+                        <div class="row justify-content-start align-items-center">
+                            <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
+                                <p class="h5 mt-2 fw-bold timenow"></p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-start">
+                            <div class="col-md-3 mt-3">
+                                <label for="rec_name">Recorder Name</label>
+                                <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_code">Equipment Code</label>
+                                <input type="text" name="e_code" id="e_code" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_brand">Equipment Brand</label>
+                                <input type="text" name="e_brand" id="e_brand" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_dept">Department</label>
+                                <input type="text" name="e_dept" id="e_dept" class="form-control" autocomplete="on" required>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="daily-check">
+                        <div class="row justify-content-start">
+                            <div class="col text-start ms-1">
+                                <p>Daily Maintenance<br><small class="text-secondary">ดำเนินการตรวจเช็คทุกวัน (เวรเช้า)</small></p>
+                            </div>
+                            <div class="col-12 text-start">
+                                <ol>
+                                    <li>
+                                        สวิทช์เปิด-ปิดเครื่อง&nbsp;<small class="text-info">เครื่องทำงานปกติหรือไม่</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-switch" id="switch-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
+                                            <label class="form-check-label text-success" for="switch-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-switch" id="switch-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="switch-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-switch" id="switch-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="switch-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-switch" id="switch-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="switch-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        ปลั๊กไฟ AC/สายไฟ AC&nbsp;<small class="text-info">พร้อมใช้งานไม่มีรอยชำรุด</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-cord" id="cord-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="cord-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-cord" id="cord-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="cord-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-cord" id="cord-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="cord-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-cord" id="cord-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="cord-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        System Check/ทำตามคู่มือ&nbsp;<small class="text-info">ผ่าน หรือ ไม่</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-system" id="system-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="system-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-system" id="system-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="system-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-system" id="system-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="system-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-system" id="system-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="system-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        Paddle Cable&nbsp;<small class="text-info">พร้อมใช้งานไม่มีรอยชำรุด</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="paddle-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="paddle-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="paddle-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="paddle-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        EKG Cable&nbsp;<small class="text-info">พร้อมใช้งานไม่มีรอยชำรุด</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="ekg-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="ekg-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="ekg-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="ekg-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        Adhesive Pad&nbsp;<small class="text-info">ไม่มีรอยชำรุด/วันหมดอายุ</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="adhesive-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="adhesive-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="adhesive-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="adhesive-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        Red Dot (Electrode)&nbsp;<small class="text-info">5 ชิ้น/วันหมดอายุ</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="reddot-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="reddot-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="reddot-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="reddot-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        Transmission Gel&nbsp;<small class="text-info">2 หลอด/วันหมดอายุ</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="transmissiongel-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="transmissiongel-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="transmissiongel-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="transmissiongel-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        EKG Paper&nbsp;<small class="text-info">สำรอง 1 ม้วน</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="ekgpaper-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="ekgpaper-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="ekgpaper-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="ekgpaper-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        ตรวจเช็คเวลาที่ตัวเครื่อง&nbsp;<small class="text-info">เช็คเทียบเวลา</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-time" id="time-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="time-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-time" id="time-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="time-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-time" id="time-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="time-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-time" id="time-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="time-fixing">N/A</label>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="weekly-check">
+                        <div class="row justify-content-start">
+                            <div class="col text-start ms-1">
+                                <p>Weekly Maintenance<br><small class="text-secondary">ดำเนินการตรวจเช็คทุกวันจันทร์ของสัปดาห์</small></p>
+                            </div>
+                            <div class="col-12 text-start">
+                                <ol>
+                                    <li>
+                                        ทดสอบค่าพลังงานสูงสุด&nbsp;<small class="text-info">เครื่องทำงานปกติหรือไม่</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="power-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="power-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="power-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-fixing" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="power-fixing">N/A</label>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </div>
+
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-4 mt-3 text-center">
+                                <label for="report">ภาพถ่ายใบแสดงผลการทดสอบเครื่อง</label>
+                                <input type="file" name="report" accept="image/*" id="report" class="form-control file" required>
+                                <img class="img-fluid mt-3 rounded" id="preview">
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary" style="min-width: 200px;">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="nav-afteruse" role="tabpanel" aria-labelledby="nav-afteruse-tab">
+                <form id="afteruse-form" class="mt-3 mb-5">
+
+                    <section class="m-2 mt-2 rounded-2  p-4 shadow border border-primary">
+                        <div class="row justify-content-start align-items-center">
+                            <div class="col-auto mt-1 bg-info text-light rounded shadow shadow-sm mx-2">
+                                <p class="h5 mt-2 fw-bold timenow"></p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-start">
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_rec_name">Recorder Name</label>
+                                <input type="text" name="afteruse_rec_name" id="afteruse_rec_name" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_code">Equipment Code</label>
+                                <input type="text" name="afteruse_e_code" id="afteruse_e_code" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_brand">Equipment Brand</label>
+                                <input type="text" name="afteruse_e_brand" id="afteruse_e_brand" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_dept">Department</label>
+                                <input type="text" name="afteruse_e_dept" id="afteruse_e_dept" class="form-control" autocomplete="on" required>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="daily-check">
+                        <div class="row justify-content-start">
+                            <div class="col text-start ms-1">
+                                <p>After used Maintenance<br><small class="text-secondary">ดำเนินการตรวจเช็คหลังใช้งาน</small></p>
+                            </div>
+                            <div class="col-12 text-start">
+                                <ol>
+                                    <li>
+                                        Charge Battery หลังใช้ตลอดเวลา&nbsp;<small class="text-info">ต้องเสียบไฟตลอดหลังการใช้งาน</small><br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
+                                            <label class="form-check-label text-success" for="afteruse-battery-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="afteruse-battery-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="afteruse-battery-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="battery-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        ทำความสะอาดเครื่อง และ Paddle&nbsp;<br>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-cord-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="afteruse-clean-cord-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="afteruse-clean-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="afteruse-clean-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="afteruse-clean-na">N/A</label>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-secondary" style="min-width: 200px;">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-end">
+                <img src="https://img.in.th/images/e5f742132b3648b83a134257cc05d903.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+
+                <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+
+        </div>
+    </footer>
+    <script>
+        var firestore
+        $(document).ready(function () {
+            const firebaseConfig = {
+                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
+                authDomain: "daily-check-form.firebaseapp.com",
+                projectId: "daily-check-form",
+                storageBucket: "daily-check-form.appspot.com",
+                messagingSenderId: "544837049860",
+                appId: "1:544837049860:web:462e6b854290b1dec39f51"
+            };
+            const defaultProject = firebase.initializeApp(firebaseConfig);
+            console.log(defaultProject.name);  // "[DEFAULT]"
+            firestore = defaultProject.firestore();
+            $('#dept option').not(':disabled').each(function () {
+                $(this).val($(this).text());
+            });
+            setInterval(function () {
+                let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
+                $('.timenow').html(timenow);
+            }, 1000);
+            $('[data-toggle="tooltip"]').tooltip()
+            showWeekly()
+        });
+
+        function showWeekly() {
+            let day = moment().format('dddd')
+            if (day == 'Tuesday') {
+                $('#weekly-check').slideDown(200)
+            } else {
+                $('#weekly-check').remove()
+            }
+        }
+
+    </script>
+    <script>
+        var pdfDoc
+        var PDFDocument = PDFLib.PDFDocument;
+        var report = {}
+        var client, dept, id
+        var url_string = window.location.href
+        var url = new URL(url_string);
+        client = url.searchParams.get("client") || "PYT3";
+        dept = url.searchParams.get("dept") || "ICU3";
+        id = url.searchParams.get("id") || "PYT3_01234";
+        console.log(client, dept, id);
+        $('#report').change(function () {
+            report = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onloadend = function (e) {
+                report.data = e.target.result
+                report.name = file.name
+                $('#preview').attr('src', e.target.result)
+                $('#preview').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+    </script>
+    <script>
+        let script_url = 'https://script.google.com/macros/s/AKfycbyFETHzQ4-IEQQWGCirlBMFY31FlEwzIWh1VOM6QK5GA5FePH1TsA5CKeGT30CcoY4V/exec'
+        $('#daily-form').submit(function () {
+            event.preventDefault()
+            Swal.fire({
+                icon: 'info',
+                title: 'กรุณารอสักครู่',
+                text: 'กำลังอัพโหลดรูปภาพ',
+                allowOutsideClick: false
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            let formdata = $(this).serializeArray()
+            console.log(formdata);
+            let obj = {
+                form: 'daily',
+                report: JSON.stringify(report),
+            }
+
+            $.post(script_url, obj, function (res) {
+                console.log("🚀 ~ res", res)
+                if (res.status == 'success') {
+                    let img_url = res.url
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'กรุณารอสักครู่',
+                        text: 'กำลังบันทึกข้อมูล',
+                        allowOutsideClick: false
+                    })
+                    Swal.showLoading(Swal.getConfirmButton())
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                        icon: 'success',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            })
+        })
+
+        $('#afteruse-form').submit(function () {
+            console.log('test')
+            event.preventDefault()
+            Swal.fire({
+                icon: 'info',
+                title: 'กรุณารอสักครู่',
+                text: 'กำลังบันทึกข้อมูล',
+                allowOutsideClick: false
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            let formdata = $(this).serializeArray()
+            console.log(formdata);
+            let obj = {}
+            formdata.forEach(function (item) {
+                obj[item.name] = item.value
+            })
+            obj.form = 'afteruse'
+            console.log("🚀 ~ obj", obj)
+            $.post(script_url, obj, function (res) {
+                console.log("🚀 ~ res", res)
+                if (res.status == 'success') {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                        icon: 'success',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            })
+        })
+    </script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+
+</html>
