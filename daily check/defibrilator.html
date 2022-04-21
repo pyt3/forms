@@ -627,6 +627,8 @@
                     console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
                     if (querySnapshot.docs.length > 0) {
                         querySnapshot.docs[0].ref.update(obj).then(() => {
+                            // obj.img = report.data
+                            // sendNotify(obj)
                             Swal.fire({
                                 icon: 'success',
                                 title: 'บันทึกข้อมูลเรียบร้อย',
@@ -645,6 +647,8 @@
                             year: "numeric"
                         })
                         return firestore.collection(client).add(obj).then(() => {
+                            // obj.img = report.data
+                            // sendNotify(obj)
                             Swal.fire({
                                 icon: 'success',
                                 title: 'บันทึกข้อมูลเรียบร้อย',
@@ -805,7 +809,14 @@
 อาการ: 
 
 ${msg}`
-            $.post(script_url, { opt: 'notify', msg: msg, img: obj.img})
+            let option = {
+                opt: 'notify',
+                msg: msg
+            }
+
+            if (report.data) option.img = report.data
+            console.log("🚀 ~ option", option)
+            $.post(script_url, option)
         }
     </script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
