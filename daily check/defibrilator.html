@@ -495,6 +495,7 @@
             const defaultProject = firebase.initializeApp(firebaseConfig);
             console.log(defaultProject.name);  // "[DEFAULT]"
             firestore = defaultProject.firestore();
+            getDataForID()
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
@@ -504,7 +505,7 @@
             }, 1000);
             $('[data-toggle="tooltip"]').tooltip()
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-               resizeCanvas();// previous active tab
+                resizeCanvas();// previous active tab
             })
             showWeekly()
         });
@@ -513,6 +514,23 @@
             if (day == 'Wednesday') {
                 $('#weekly-check input').attr('required', true)
             }
+        }
+
+        function getDataForID() {
+            firestore.collection(client)
+                .where("e_code", "==", id)
+                .orderBy("time", 'desc')
+                .limit(1)
+                .get()
+                .then(function (querySnapshot) {
+                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                    if (querySnapshot.docs.length > 0) {
+                        let data = querySnapshot.docs[0].data()
+                        $('#e_brand, #afteruse_e_brand').val(data.e_brand)
+                        $('#e_dept, #afteruse_e_dept').val(data.e_dept)
+                    }
+                 });
+
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
@@ -601,7 +619,7 @@
                     }
                 })
             })()
-            resizeCanvas = function() {
+            resizeCanvas = function () {
                 var ratio = Math.max(window.devicePixelRatio || 1, 1);
                 canvas.width = canvas.offsetWidth * ratio;
                 if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
@@ -627,9 +645,10 @@
         var url_string = window.location.href
         var url = new URL(url_string);
         client = url.searchParams.get("client") || "PYT3";
-        dept = url.searchParams.get("dept") || "ICU3";
+        // dept = url.searchParams.get("dept") || "ICU3";
         id = url.searchParams.get("id") || "PYT3_01234";
-        console.log(client, dept, id);
+        console.log(id);
+        $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
         $('#report').change(function () {
             report = {}
             var file = this.files[0]
@@ -763,7 +782,13 @@
                         if (querySnapshot.docs.length > 0) {
                             querySnapshot.docs[0].ref.update(obj).then(() => {
                                 // obj.img = report.data
-                                // sendNotify(obj)
+                                obj.date = new Date().toLocaleString('th-TH', {
+                                    hour12: false,
+                                    month: "numeric",
+                                    day: "numeric",
+                                    year: "numeric"
+                                })
+                                sendNotify(obj, 'afteruse')
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'บันทึกข้อมูลเรียบร้อย',
@@ -783,7 +808,7 @@
                             })
                             return firestore.collection(client).add(obj).then(() => {
                                 // obj.img = report.data
-                                // sendNotify(obj)
+                                sendNotify(obj)
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'บันทึกข้อมูลเรียบร้อย',
@@ -1006,7 +1031,7 @@
             }
         }
         // sendNotify()
-        function sendNotify(obj) {
+        function sendNotify(obj, form) {
             const notify_url = 'https://notify-api.line.me/api/notify?message=test'
             let msg = ''
             Object.keys(obj).forEach(key => {
@@ -1015,18 +1040,31 @@
                     msg += `${ele}: ${obj[key]}\n`
                 }
             })
-            msg = `แจ้งอาการผิดปกติเครื่อง Defibrilator
+            if (msg != '') {
+                if (form = 'afteruse') {
+                    msg = `แจ้งอาการผิดปกติเครื่อง Defibrilator หลังใช้งาน
+วันที่: ${obj.date}
+รหัส: ${obj.afteruse_e_code}
+แผนก: ${obj.afteruse_e_dept}
+อาการ: 
+${msg}`
+                } else {
+                    msg = `แจ้งอาการผิดปกติเครื่อง Defibrilator
 วันที่: ${obj.date}
 รหัส: ${obj.e_code}
 แผนก: ${obj.e_dept}
 อาการ: 
 ${msg}`
-            let option = {
-                opt: 'notify',
-                msg: msg
+                }
+
+                let option = {
+                    opt: 'notify',
+                    msg: msg
+                }
+                if (report.data) option.img = report.data
+                $.post(script_url, option)
             }
-            if (report.data) option.img = report.data
-            $.post(script_url, option)
+
         }
     </script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
