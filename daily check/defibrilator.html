@@ -346,6 +346,19 @@
                             </div>
                         </div>
                     </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-5">
+                                <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
+                                <div class="rounded border border-3">
+                                    <canvas id="signature" name="signature" style="width: 100%; min-height: 200px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                </div>
+                                <div class="col text-end">
+                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                     <div class="row justify-content-center">
                         <div class="col-md-4 mt-3 text-center">
                             <button type="submit" class="btn btn-primary" style="min-width: 200px;">Submit</button>
@@ -433,6 +446,19 @@
                             </div>
                         </div>
                     </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-5">
+                                <label for="signature_afteruse" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
+                                <div class="rounded border border-3">
+                                    <canvas id="signature_afteruse" name="signature_afteruse" style="width: 100%; min-height: 200px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                </div>
+                                <div class="col text-end">
+                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                     <div class="row justify-content-center">
                         <div class="col-md-4 mt-3 text-center">
                             <button type="submit" class="btn btn-secondary" style="min-width: 200px;">Submit</button>
@@ -458,7 +484,6 @@
     <script>
         var firestore
         $(document).ready(function () {
-
             const firebaseConfig = {
                 apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
                 authDomain: "daily-check-form.firebaseapp.com",
@@ -478,6 +503,9 @@
                 $('.timenow').html(timenow);
             }, 1000);
             $('[data-toggle="tooltip"]').tooltip()
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+               resizeCanvas();// previous active tab
+            })
             showWeekly()
         });
         function showWeekly() {
@@ -486,6 +514,110 @@
                 $('#weekly-check input').attr('required', true)
             }
         }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+
+    <script>
+        var signaturePad, signaturePadAfterUse, resizeCanvas
+        $(document).ready(() => {
+            SignaturePad.prototype.removeBlanks = function () {
+                var imgWidth = this._ctx.canvas.width;
+                var imgHeight = this._ctx.canvas.height;
+                var imageData = this._ctx.getImageData(0, 0, imgWidth, imgHeight),
+                    data = imageData.data,
+                    getAlpha = function (x, y) {
+                        return data[(imgWidth * y + x) * 4 + 3]
+                    },
+                    scanY = function (fromTop) {
+                        var offset = fromTop ? 1 : -1;
+
+                        // loop through each row
+                        for (var y = fromTop ? 0 : imgHeight - 1; fromTop ? (y < imgHeight) : (y > -1); y += offset) {
+
+                            // loop through each column
+                            for (var x = 0; x < imgWidth; x++) {
+                                if (getAlpha(x, y)) {
+                                    return y;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    },
+                    scanX = function (fromLeft) {
+                        var offset = fromLeft ? 1 : -1;
+
+                        // loop through each column
+                        for (var x = fromLeft ? 0 : imgWidth - 1; fromLeft ? (x < imgWidth) : (x > -1); x += offset) {
+
+                            // loop through each row
+                            for (var y = 0; y < imgHeight; y++) {
+                                if (getAlpha(x, y)) {
+                                    return x;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    };
+
+                var cropTop = scanY(true),
+                    cropBottom = scanY(false),
+                    cropLeft = scanX(true),
+                    cropRight = scanX(false);
+
+                var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
+                console.log(this)
+                this.canvas.width = cropRight - cropLeft;
+                this.canvas.height = cropBottom - cropTop;
+                this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
+                this._ctx.putImageData(relevantData, 0, 0);
+            };
+            var canvas = document.getElementById("signature");
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: "rgb(255,255,255,0)",
+                penColor: "rgb(0,0,255)",
+            });
+            var canvas2 = document.getElementById("signature_afteruse");
+            signaturePadAfterUse = new SignaturePad(canvas2, {
+                backgroundColor: "rgb(255,255,255,0)",
+                penColor: "rgb(0,0,255)",
+            });
+            (() => {
+                $('#save').on('click', () => {
+                    event.preventDefault()
+                    let signature = signaturePad.toDataURL();
+                    let a = document.createElement('a')
+                    a.href = signature
+                    a.setAttribute('download', 'signature')
+                    a.click();
+                })
+                $('.clear-signature').on('click', () => {
+                    event.preventDefault()
+                    let id = $(this).closest('canvas').attr('id')
+                    if (id == 'signature') {
+                        signaturePad.clear()
+                    } else {
+                        signaturePadAfterUse.clear()
+                    }
+                })
+            })()
+            resizeCanvas = function() {
+                var ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
+                else canvas.height = canvas.offsetHeight * ratio;
+                canvas.getContext("2d").scale(ratio, ratio);
+                signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+                canvas2.width = canvas2.offsetWidth * ratio;
+                if (ratio > 2) canvas2.height = canvas2.offsetHeight * ratio * 1.5;
+                else canvas2.height = canvas2.offsetHeight * ratio;
+                canvas2.getContext("2d").scale(ratio, ratio);
+                signaturePadAfterUse.clear(); // otherwise isEmpty() might return incorrect value
+            }
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
+        })
+
     </script>
     <script>
         var pdfDoc
@@ -525,13 +657,21 @@
             event.preventDefault()
             uploadFile()
         })
-        async function saveFormDaily(img_url, date = new Date()) {
+
+        async function saveFormDaily(img_url, signature_url, date = new Date()) {
+
+
             let formdata = $('#daily-form').serializeArray()
             let obj = {}
             formdata.forEach(function (item) {
                 obj[item.name] = item.value
             })
-            if (img_url) obj.img_url = img_url
+            if (img_url) {
+                obj.img_url = img_url
+                obj.signature_staff = signature_url
+            } else {
+                obj.signature_staff_afteruse = signature_url
+            }
             obj.form = 'defibrillator'
             obj.time = date.getTime()
             obj.date = date.toLocaleString('th-TH', {
@@ -540,6 +680,7 @@
                 day: "numeric",
                 year: "numeric"
             })
+
             Swal.update({
                 title: 'กำลังบันทึกข้อมูล',
                 html: 'กรุณารอสักครู่...',
@@ -567,7 +708,6 @@
                                 title: 'บันทึกข้อมูลเรียบร้อย',
                                 text: 'กรุณารอสักครู่',
                             }).then(() => {
-
                                 window.location.reload()
                             })
                         })
@@ -587,7 +727,6 @@
                                 icon: 'success',
                                 title: 'บันทึกข้อมูลเรียบร้อย',
                             }).then(() => {
-
                                 window.location.reload()
                             })
                         }).catch(function (error) {
@@ -598,6 +737,73 @@
         }
         $('#afteruse-form').submit(async function () {
             event.preventDefault()
+            let form = $(this)
+            const updateData = function (url) {
+                let formdata = $(form).serializeArray()
+                console.log(formdata);
+                let obj = {}
+                formdata.forEach(function (item) {
+                    obj[item.name] = item.value
+                })
+                obj.form = 'defibrillator'
+                obj.afteruse_time = new Date().getTime()
+                obj.signature_staff_afteruse = url
+                firestore.collection(client)
+                    .where("date", "==", new Date().toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    }))
+                    .orderBy("afteruse_time", 'desc')
+                    .limit(1)
+                    .get()
+                    .then(function (querySnapshot) {
+                        console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                        if (querySnapshot.docs.length > 0) {
+                            querySnapshot.docs[0].ref.update(obj).then(() => {
+                                // obj.img = report.data
+                                // sendNotify(obj)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'บันทึกข้อมูลเรียบร้อย',
+                                    text: 'กรุณารอสักครู่',
+                                }).then(() => {
+                                    window.location.reload()
+                                })
+                            })
+                        } else {
+                            obj.afteruse_time = new Date().getTime()
+                            obj.time = obj.afteruse_time
+                            obj.date = new Date().toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                            return firestore.collection(client).add(obj).then(() => {
+                                // obj.img = report.data
+                                // sendNotify(obj)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'บันทึกข้อมูลเรียบร้อย',
+                                }).then(() => {
+                                    window.location.reload()
+                                })
+                            }).catch(function (error) {
+                                console.error(error)
+                            });
+                        }
+                    });
+            }
+            if (signaturePadAfterUse.isEmpty()) {
+                return Swal.fire({
+                    icon: 'info',
+                    title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
+                })
+            }
+            signaturePadAfterUse.removeBlanks()
+            let signatureblob = signaturePadAfterUse.toDataURL()
             Swal.fire({
                 icon: 'info',
                 title: 'กรุณารอสักครู่',
@@ -605,67 +811,40 @@
                 allowOutsideClick: false
             })
             Swal.showLoading(Swal.getConfirmButton())
-            let formdata = $(this).serializeArray()
-            console.log(formdata);
-            let obj = {}
-            formdata.forEach(function (item) {
-                obj[item.name] = item.value
+            Swal.showLoading(Swal.getConfirmButton())
+            let now = new Date()
+            var chunkSize = Math.round(0.25 * 1024 * 1024)
+            return $.getJSON(script_url, function (result) {
+                var metadata = {
+                    name: 'defib daily check afteruse staff ' + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                let signature_url = 'https://drive.google.com/uc?id='
+                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        return updateData(signature_url += res.id)
+                    })
             })
-            obj.form = 'defibrillator'
-            obj.afteruse_time = new Date().getTime()
-            firestore.collection(client)
-                .where("date", "==", new Date().toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                }))
-                .orderBy("afteruse_time", 'desc')
-                .limit(1)
-                .get()
-                .then(function (querySnapshot) {
-                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
-                    if (querySnapshot.docs.length > 0) {
-                        querySnapshot.docs[0].ref.update(obj).then(() => {
-                            // obj.img = report.data
-                            // sendNotify(obj)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลเรียบร้อย',
-                                text: 'กรุณารอสักครู่',
-                            }).then(() => {
-                                window.location.reload()
-                            })
-                        })
-                    } else {
-                        obj.afteruse_time = new Date().getTime()
-                        obj.time = obj.afteruse_time
-                        obj.date = new Date().toLocaleString('th-TH', {
-                            hour12: false,
-                            month: "numeric",
-                            day: "numeric",
-                            year: "numeric"
-                        })
-                        return firestore.collection(client).add(obj).then(() => {
-                            // obj.img = report.data
-                            // sendNotify(obj)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลเรียบร้อย',
-                            }).then(() => {
-                                window.location.reload()
-                            })
-                        }).catch(function (error) {
-                            console.error(error)
-                        });
-                    }
-                });
+
         })
     </script>
     <script>
         function uploadFile() {
             const file = document.getElementById("report").files[0];
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
+            if (signaturePad.isEmpty()) {
+                return Swal.fire({
+                    icon: 'info',
+                    title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
+                })
+            }
+            signaturePad.removeBlanks()
+            let signatureblob = signaturePad.toDataURL()
             Swal.fire({
                 icon: 'info',
                 title: 'กำลังอัพโหลดรูปภาพ',
@@ -673,34 +852,64 @@
                 allowOutsideClick: false
             })
             Swal.showLoading(Swal.getConfirmButton())
-            const metadata = {
-                name: 'Daily Check Report ' + new Date().toLocaleString('th-TH', {
+            let now = new Date()
+            var metadata = {
+                name: 'defib daily report' + now.toLocaleString('th-TH', {
                     hour12: false,
                     month: "numeric",
                     day: "numeric",
                     year: "numeric"
                 })
             };
-            const chunkSize = Math.round(0.25 * 1024 * 1024)
+            var chunkSize = Math.round(0.25 * 1024 * 1024)
             return $.getJSON(script_url, function (result) {
-                console.log("🚀 ~ result", result)
+                var metadata = {
+                    name: 'defib daily check report' + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                let report_url = 'https://drive.google.com/uc?id='
+                let signature_url = 'https://drive.google.com/uc?id='
                 gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
                     .then(res => {
                         if (!res.id) return console.error("Upload error: " + res.message);
-                        return saveFormDaily('https://drive.google.com/uc?id=' + res.id)
+                        return report_url += res.id
+                    })
+                metadata = {
+                    name: 'defib daily check staff' + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        signature_url += res.id
+                        return saveFormDaily(report_url, signature_url)
                     })
             })
         }
+        let firstfile = true
         function handleProgress(value) {
             if (value === 0) console.log("Uploading...");
-            else if (value === 1) console.log("Done");
+            else if (value === 1 && firstfile) {
+                firstfile = false
+            } else if (value === 1) {
+                console.log("Upload complete!");
+            }
             else {
                 console.log("Uploading... " + value * 100 + "%");
             }
+            let percent = firstfile ? Math.round(value * 50) : (Math.round(value * 50) + 50)
             Swal.update({
                 // text: "Uploading... " +Math.round( value * 100) + "%",
                 html: `<div class="progress">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${Math.round(value * 100)}%;" aria-valuenow="${Math.round(value * 100)}" aria-valuemin="0" aria-valuemax="100">${Math.round(value * 100)}%</div>
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
 </div>`,
                 allowOutsideClick: false,
                 showConfirmButton: false
@@ -708,7 +917,6 @@
             // Swal.showLoading(Swal.getConfirmButton())
         }
         function showUploadEnd(e) {
-            console.log("🚀 ~ e", e)
             Swal.fire({
                 icon: 'success',
                 title: 'อัพโหลดรูปภาพเรียบร้อย',
@@ -716,9 +924,17 @@
             })
             return e.id
         }
+        function dataURItoBlob(dataURI) {
+            var byteString = atob(dataURI.split(',')[1]);
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: 'image/png' });
+        }
     </script>
     <script>
-
         async function gdriveUpload(opt) {
             if (!(opt.file && opt.token)) throw new TypeError("bad param");
             if (!opt.file.size) return new Error("empty file");
@@ -751,7 +967,6 @@
                     if (!response.ok) return new Error(`create: ${response.status} ${response.statusText}`);
                     const location = response.headers.get("location");
                     if (!location) return new Error("no location");
-                    console.log("🚀 ~ location", location)
                     return location;
                 } catch (error) {
                     if (error instanceof Error) return error;
@@ -791,9 +1006,7 @@
             }
         }
         // sendNotify()
-
         function sendNotify(obj) {
-            console.log("🚀 ~ obj", obj)
             const notify_url = 'https://notify-api.line.me/api/notify?message=test'
             let msg = ''
             Object.keys(obj).forEach(key => {
@@ -807,15 +1020,12 @@
 รหัส: ${obj.e_code}
 แผนก: ${obj.e_dept}
 อาการ: 
-
 ${msg}`
             let option = {
                 opt: 'notify',
                 msg: msg
             }
-
             if (report.data) option.img = report.data
-            console.log("🚀 ~ option", option)
             $.post(script_url, option)
         }
     </script>
