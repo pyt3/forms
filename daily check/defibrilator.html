@@ -529,7 +529,7 @@
                         $('#e_brand, #afteruse_e_brand').val(data.e_brand)
                         $('#e_dept, #afteruse_e_dept').val(data.e_dept)
                     }
-                 });
+                });
 
         }
     </script>
@@ -611,6 +611,7 @@
                 })
                 $('.clear-signature').on('click', () => {
                     event.preventDefault()
+                    resizeCanvas()
                     let id = $(this).closest('canvas').attr('id')
                     if (id == 'signature') {
                         signaturePad.clear()
@@ -828,6 +829,18 @@
                 })
             }
             signaturePadAfterUse.removeBlanks()
+            let ctx = $('#signature_afteruse')[0].getContext('2d')
+            ctx.font = '11px Arial'
+            ctx.fillStyle = '#525252'
+            ctx.fillText(new Date().toLocaleString('th-TH', {
+                hour12: false,
+                minute: "numeric",
+                hour: "numeric",
+                second: "numeric",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            }), $('#signature_afteruse')[0].width -120, $('#signature_afteruse')[0].height -8)
             let signatureblob = signaturePadAfterUse.toDataURL()
             Swal.fire({
                 icon: 'info',
@@ -835,7 +848,6 @@
                 text: 'กำลังบันทึกข้อมูล',
                 allowOutsideClick: false
             })
-            Swal.showLoading(Swal.getConfirmButton())
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.25 * 1024 * 1024)
@@ -869,6 +881,18 @@
                 })
             }
             signaturePad.removeBlanks()
+             let ctx = $('#signature')[0].getContext('2d')
+            ctx.font = '11px Arial'
+            ctx.fillStyle = '#525252'
+            ctx.fillText(new Date().toLocaleString('th-TH', {
+                hour12: false,
+                minute: "numeric",
+                hour: "numeric",
+                second: "numeric",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            }), $('#signature')[0].width - 120, $('#signature')[0].height - 8)
             let signatureblob = signaturePad.toDataURL()
             Swal.fire({
                 icon: 'info',
