@@ -6,15 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Daily Approve</title>
-    <!-- CSS only -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <style>
         body {
-            display: flex;
             min-height: 100vh;
-            justify-content: center;
-            align-items: center;
         }
     </style>
 </head>
@@ -31,7 +29,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ms-auto">
-                    <a class="nav-link active" aria-current="page" href="">Home</a>
+                    <a class="nav-link active" aria-current="page" href="defibrilator.html">Home</a>
                 </div>
             </div>
         </div>
@@ -44,24 +42,24 @@
                 <div class="text-center mt-3">
                     <h3 class="text-primary">Sign In</h3>
                 </div>
-                <form>
+                <form id="login-form">
                     <div>
                         <div class="input-group mb-3">
                             <span class="input-group-text bg-primary"><i class="bi bi-person-plus-fill text-white"></i></span>
-                            <input type="text" class="form-control" placeholder="Username">
+                            <input type="text" class="form-control" placeholder="Username" id="username">
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text bg-primary"><i class="bi bi-key-fill text-white"></i></span>
-                            <input type="password" class="form-control" placeholder="password">
+                            <input type="password" class="form-control" placeholder="password" id="password">
                         </div>
                     </div>
                     <div class="text-center">
                         <button class="btn btn-primary text-center mt-2" type="submit">
                             Login
                         </button><br>
-                        <button class="btn btn-link text-center mt-2" type="button" data-bs-toggle="modal" data-bs-target="#register-modal" id="showRegistermodal">
+                        <!-- <button class="btn btn-link text-center mt-2" type="button" data-bs-toggle="modal" data-bs-target="#register-modal" id="showRegistermodal">
                             Register
-                        </button>
+                        </button> -->
                         <p class="text-center text-primary mt-4" style="font-size: 0.8rem;">หากติดปัญหาการ sign in <br>ติดต่อแผนกเครื่องมือแพทย์</p>
                     </div>
                 </form>
@@ -98,8 +96,66 @@
             </div>
         </div>
     </div>
-    <!-- JavaScript Bundle with Popper -->
+    <script>
+        var firestore
+        var client, dept, id
+        var url_string = window.location.href
+        var url = new URL(url_string);
+        client = url.searchParams.get("client") || "PYT3";
+        $(document).ready(function () {
+            const firebaseConfig = {
+                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
+                authDomain: "daily-check-form.firebaseapp.com",
+                projectId: "daily-check-form",
+                storageBucket: "daily-check-form.appspot.com",
+                messagingSenderId: "544837049860",
+                appId: "1:544837049860:web:462e6b854290b1dec39f51"
+            };
+            const defaultProject = firebase.initializeApp(firebaseConfig);
+            console.log(defaultProject.name);  // "[DEFAULT]"
+            firestore = defaultProject.firestore();
+
+        });
+        $('#login-form').submit(checklogin)
+        function checklogin() {
+            event.preventDefault()
+            let u = $('#username').val()
+            console.log("🚀 ~ u", u)
+            let pw = $('#password').val()
+            console.log("🚀 ~ pw", pw)
+            firestore.collection(client)
+                .where('user', "==", u)
+                .where('pwd', "==", pw)
+                .limit(1)
+                .get()
+                .then(function (querySnapshot) {
+                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                    if(querySnapshot.docs.length >0){
+                        let data = querySnapshot.docs[0].data()
+                        let name = data.name
+                        if(data.isFirstTime){
+                            Swal.fire({
+                                inputAttributes: {
+                                    autocapitalize: 'off'
+                                },
+                                allowOutsideClick: false,
+                                confirmButtonText: 'Confirm',
+                                showCancelButton: 'true',
+                                title: 'ยินดีต้อนรับ ' + name,
+                                html: 'นี่คือการเข้าใช้ครั้งแรกของ <span class="text-primary">'+name+' </span><br>เพื่อความปลอดภัย กรุณาเปลี่ยนรหัสผ่านของท่าน<br><br><input type="password" class="form-control form-control-lg" id="new-pass" placeholder="Enter new password"></input><br><input type="password" class="form-control form-control-lg" id="new-pass-2" placeholder="Confirm Enter new password"></input>',
+                            })
+                        }
+                        
+                    }
+                });
+
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
