@@ -479,11 +479,7 @@
             $('#detail-modal').on('shown.bs.modal', function (e) {
                 resizeCanvas()
             })
-            $('#detail-modal').on('hidden.bs.modal', function (e) {
-                signaturePad = false
-                signaturePadAfterUse = false
 
-            })
 
         }
         function renderStatus(value) {
@@ -602,6 +598,11 @@
                     }
                 })
             })()
+            $('#detail-modal').on('hidden.bs.modal', function (e) {
+                signaturePad = false
+                signaturePadAfterUse = false
+
+            })
         }
         function resizeCanvas() {
             var ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -622,11 +623,12 @@
         // window.addEventListener("resize", resizeCanvas);
     </script>
     <script>
-        $('modal-submit-btn').click(function () {
-
+        $('#modal-submit-btn').click(function () {
+            uploadFile()
         })
     </script>
     <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbxlVshSHWBOLK3TlWk_KIykaUUSPLe2-OGM8qK0aYWWJWdtJ-0JBkfCDqCSiTsOzwMg/exec'
         var signatures = {}
         function addWatermask(id) {
             let ctx = $('#' + id)[0].getContext('2d')
@@ -668,47 +670,42 @@
             }
 
             let now = new Date()
-            Object.keys(signatures)
-            var metadata = {
-                name: 'staff sign defib daily report ' + now.toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
+            Object.keys(signatures).forEach(key => {
+
+                var chunkSize = Math.round(0.25 * 1024 * 1024)
+                return $.getJSON(script_url, function (result) {
+                    var metadata = {
+                        name: 'defib daily check manager' + now.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
+                        })
+                    };
+                    let report_url = 'https://drive.google.com/uc?id='
+                    let signature_url = 'https://drive.google.com/uc?id='
+                    gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
+                        .then(res => {
+                            if (!res.id) return console.error("Upload error: " + res.message);
+                            return report_url += res.id
+                        })
+                    metadata = {
+                        name: 'defib daily check afteruse manager' + now.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
+                        })
+                    };
+                    gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                        .then(res => {
+                            if (!res.id) return console.error("Upload error: " + res.message);
+                            signature_url += res.id
+                            return //saveFormDaily(report_url, signature_url)
+                        })
                 })
-            };
-            var chunkSize = Math.round(0.25 * 1024 * 1024)
-            return $.getJSON(script_url, function (result) {
-                var metadata = {
-                    name: 'defib daily check report' + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let report_url = 'https://drive.google.com/uc?id='
-                let signature_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        return report_url += res.id
-                    })
-                metadata = {
-                    name: 'defib daily check staff' + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        signature_url += res.id
-                        return saveFormDaily(report_url, signature_url)
-                    })
             })
+
         }
         let firstfile = true
         function handleProgress(value) {
@@ -820,6 +817,85 @@
                     throw error;
                 }
             }
+        }
+    </script>
+    <script>
+        async function saveFormDaily(img_url, signature_url, date = new Date()) {
+
+
+            let formdata = $('#daily-form').serializeArray()
+            let obj = {}
+            formdata.forEach(function (item) {
+                obj[item.name] = item.value
+            })
+            if (img_url) {
+                obj.img_url = img_url
+                obj.signature_staff = signature_url
+            } else {
+                obj.signature_staff_afteruse = signature_url
+            }
+            obj.form = 'defibrillator'
+            obj.time = date.getTime()
+            obj.date = date.toLocaleString('th-TH', {
+                hour12: false,
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            })
+
+            Swal.update({
+                title: 'กำลังบันทึกข้อมูล',
+                html: 'กรุณารอสักครู่...',
+                showConfirmButton: true
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            firestore.collection(client)
+                .where("date", "==", new Date().toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                }))
+                .orderBy("time", 'desc')
+                .limit(1)
+                .get()
+                .then(function (querySnapshot) {
+                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                    if (querySnapshot.docs.length > 0) {
+                        querySnapshot.docs[0].ref.update(obj).then(() => {
+                            obj.img = report.data
+                            sendNotify(obj)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลเรียบร้อย',
+                                text: 'กรุณารอสักครู่',
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        })
+                    } else {
+                        obj.time = date.getTime()
+                        obj.afteruse_time = obj.time
+                        obj.date = date.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
+                        })
+                        return firestore.collection(client).add(obj).then(() => {
+                            obj.img = report.data
+                            sendNotify(obj)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลเรียบร้อย',
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        }).catch(function (error) {
+                            console.error(error)
+                        });
+                    }
+                });
         }
     </script>
 
