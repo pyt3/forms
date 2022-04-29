@@ -627,18 +627,9 @@
         })
     </script>
     <script>
-        function uploadFile() {
-            if (signaturePad.isEmpty() || signaturePadAfterUse.isEmpty()) {
-                return Swal.fire({
-                    icon: 'info',
-                    title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
-                })
-            }
-            signaturePad.removeBlanks()
-            if(signaturePadAfterUse){
-                signaturePadAfterUse.removeBlanks()
-            }
-            let ctx = $('#signature')[0].getContext('2d')
+        var signatures = {}
+        function addWatermask(id) {
+            let ctx = $('#' + id)[0].getContext('2d')
             ctx.font = '11px Arial'
             ctx.fillStyle = '#525252'
             ctx.fillText(new Date().toLocaleString('th-TH', {
@@ -649,18 +640,37 @@
                 month: "numeric",
                 day: "numeric",
                 year: "numeric"
-            }), $('#signature')[0].width - 120, $('#signature')[0].height - 8)
-            let signatureblob = signaturePad.toDataURL()
+            }), $('#' + id)[0].width - 120, $('#' + id)[0].height - 8)
+            let blob = id == 'signature' ? signaturePad.toDataURL() : signaturePadAfterUse.toDataURL()
             Swal.fire({
                 icon: 'info',
                 title: 'กำลังอัพโหลดรูปภาพ',
                 text: 'uploading...',
                 allowOutsideClick: false
             })
+            signatures[id] = blob
+        }
+        function uploadFile() {
+            if (signaturePad.isEmpty() || signaturePadAfterUse.isEmpty()) {
+                return Swal.fire({
+                    icon: 'info',
+                    title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
+                })
+            }
             Swal.showLoading(Swal.getConfirmButton())
+            if (signaturePad) {
+                signaturePad.removeBlanks()
+                addWatermask('signature')
+            }
+            if (signaturePadAfterUse) {
+                signaturePadAfterUse.removeBlanks()
+                addWatermask('signature_afteruse')
+            }
+
             let now = new Date()
+            Object.keys(signatures)
             var metadata = {
-                name: 'defib daily report' + now.toLocaleString('th-TH', {
+                name: 'staff sign defib daily report ' + now.toLocaleString('th-TH', {
                     hour12: false,
                     month: "numeric",
                     day: "numeric",
