@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Daily Approve</title>
+    <title>Daily Approve</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="icon" href="http://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" type="image/png">
     <style>
         body {
             min-height: 100vh;
@@ -28,7 +29,8 @@
         .status-pill {
             font-size: 1rem;
             font-weight: bold;
-            min-width: 100%;
+            width: 100%;
+            max-width: 150px;
         }
 
         .status-pill-modal {
@@ -46,9 +48,9 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="" height="30" class="d-inline-block align-text-top">
-                Daily Check
+            <a class="navbar-brand d-flex align-items-center href=" #">
+                <img src="http://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="15">&nbsp;&nbsp;
+                <span>Daily Check</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -56,10 +58,13 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ms-auto">
                     <a class="nav-link active" aria-current="page" href="defibrilator.html">Home</a>
+                    <a class="nav-link active" aria-current="page" href="#" id="signout-btn" style="display: none;">Sign out</a>
                 </div>
             </div>
         </div>
     </nav>
+
+
     <div class="container">
         <div class="rounded-3 row m-2 justify-content-center bg-white hide" id="sign-in-div">
             <div class="col-md-4 shadow-lg px-3 pt-5 pb-1 bg-white rounded-3 text-center">
@@ -102,7 +107,35 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid table-responsive">
+    <div class="container-fluid" id="data-div" style="display: none;">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="defibrilator-tab" data-bs-toggle="tab" data-bs-target="#defibrilator" type="button" role="tab" aria-controls="defibrilator" aria-selected="true">Defibrilator</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="refrigerator-tab" data-bs-toggle="tab" data-bs-target="#refrigerator" type="button" role="tab" aria-controls="refrigerator" aria-selected="false">Refrigerator</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Messages</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="defibrilator" role="tabpanel" aria-labelledby="defibrilator-tab">
+                <div class="container-fluid table-responsive pt-3">
+                </div>
+            </div>
+            <div class="tab-pane fade" id="refrigerator" role="tabpanel" aria-labelledby="refrigerator-tab">
+                <div class="container-fluid table-responsive pt-3">
+                </div>
+            </div>
+            <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
+            <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+        </div>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="detail-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="detail-modalLabel" aria-hidden="true">
@@ -132,6 +165,7 @@
         var client, dept, id, user
         var url_string = window.location.href
         var url = new URL(url_string);
+        var active_tab = 'defibrilator'
         client = url.searchParams.get("client") || "PYT3";
         $(document).ready(function () {
             const firebaseConfig = {
@@ -145,16 +179,27 @@
             const defaultProject = firebase.initializeApp(firebaseConfig);
             console.log(defaultProject.name);  // "[DEFAULT]"
             firestore = defaultProject.firestore();
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                let id = $(this).attr('id').replace('-tab', '')
+                console.log("🚀 ~ id", id)
+                active_tab = id
+                console.log("🚀 ~ active_tab", active_tab)
+                getTableData(JSON.parse(session), id)
+                // resizeCanvas();// previous active tab
+            })
             let session = localStorage.getItem("session")
             if (session) {
                 if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
                     localStorage.removeItem("session")
                     return $('#sign-in-div').removeClass('hide')
                 }
+                $('#signout-btn').show()
+                $('#data-div').show()
                 return getTableData(JSON.parse(session))
             } else {
                 return $('#sign-in-div').removeClass('hide')
             }
+
         });
         function generatePassword(session) {
             var length = 32,
@@ -231,6 +276,7 @@
                                 sessionid: sissionid,
                             })
                             $('#sign-in-div').slideUp()
+                            $('#data-div').show(200)
                             getTableData()
                         }
                     }
@@ -238,269 +284,15 @@
         }
     </script>
     <script>
-        function getTableData(session) {
-            console.log("🚀 ~ session", session)
-            if (session) {
-                return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
-                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
-                    if (querySnapshot.docs.length > 0) {
-                        user = querySnapshot.docs[0].data()
-                        getTableData()
-                    }
-                });
-            } else {
-                if (user.level == 'director') {
-                } else if (user.level == 'manager') {
-                    console.log("🚀 ~ user.level", user.level)
-                    firestore.collection(client)
-                        .where('e_dept', '==', user.name)
-                        .get()
-                        .then(function (querySnapshot) {
-                            let data = querySnapshot.docs.map(function (doc) {
-                                let obj = doc.data()
-                                let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] == 'ผ่าน')
-                                obj.isPass = isPass
-                                return obj
-
-                            })
-                            console.log("🚀 ~ data", data)
-                            console.log(data)
-                            $('.table-responsive').append(`<table id="table-data" class="table table-hover table-bordered" style="width: 100%">
-            <thead class="bg-primary text-center text-white text-nowrap"></thead>
-            <tbody class="bg-white"></tbody>
-        </table>`)
-                            let table = $('#table-data').DataTable({
-                                data: data,
-                                scrollX: true,
-                                columns: [
-                                    {
-                                        data: 'date',
-                                        title: 'วันที่'
-                                    },
-                                    {
-                                        data: 'time',
-                                        title: 'รายละเอียด',
-                                        className: 'text-center',
-                                        render: function (data, type, row) {
-                                            return '<button class="btn btn-link" onclick="getDetail(`' + JSON.stringify(row).replace(/\"/g, "'") + '`)">Click!</button>'
-                                        }
-
-                                    },
-                                    {
-                                        data: 'form',
-                                        title: 'ชื่อเครื่อง'
-                                    },
-                                    {
-                                        data: 'e_code',
-                                        title: 'รหัสเครื่อง'
-                                    },
-                                    {
-                                        data: 'rec_name',
-                                        title: 'ผู้บันทึก'
-                                    },
-                                    {
-                                        data: 'signature_staff',
-                                        title: 'ลายเซ็นผู้บันทึก',
-                                        className: 'text-center',
-                                        render: function (data, type) {
-                                            if (typeof data == 'string' && data.indexOf('https') > -1)
-                                                return `<img src="${data}" height="25px">`
-                                            return data;
-                                        }
-                                    },
-                                    {
-                                        data: 'isPass',
-                                        title: 'ผลการตรวจเช็ค',
-                                        className: 'text-center',
-                                        render: function (data, type) {
-                                            if (data)
-                                                return `<span class="badge rounded-pill bg-success status-pill"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
-                                            return `<span class="badge rounded-pill bg-danger status-pill"><i class="bi bi-x-circle-fill"></i>&nbsp;ไม่ผ่าน</span>`;
-                                        }
-                                    },
-                                    {
-                                        data: 'approved_name',
-                                        title: 'ผู้อนุมัติ',
-                                        render: function (data, type) {
-                                            if (!data) return ''
-                                            return data
-                                        }
-                                    },
-                                    {
-                                        data: 'signature_manager',
-                                        title: 'ลายเซ็นผู้อนุมัติ',
-                                        className: 'text-center',
-                                        render: function (data, type) {
-                                            if (typeof data == 'string' && data.indexOf('https') > -1)
-                                                return `<span class="badge rounded-pill bg-warning status-pill"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
-                                            return 'Not yet Approved';
-                                        }
-                                    },
-                                ]
-                            });
-                        })
-                }
-                $('#admin-div').show()
+        let tabledata
+        async function getTableData(session, form) {
+            console.log("🚀 ~ form", form)
+            switch (form) {
+                case 'defibrillator': return getDefibTableData(session)
+                case 'refrigerator': return getRefrigeratorTableData(session)
+                default: return getDefibTableData(session)
             }
         }
-
-        function getDetail(row) {
-            let obj = JSON.parse(row.replace(/'/g, '"'))
-            let detailHtml = `
-             <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <p>Date: <span class="text-primary">${obj.date}</span></p>
-            </div>
-            <div class="col-md-6">
-                <p>Equipment: <span class="text-primary">${obj.form.toUpperCase()}</span></p>
-            </div>
-            <div class="col-md-6">
-                <p>Brand: <span class="text-primary">${obj.e_brand}</span></p>
-            </div>
-            <div class="col-md-6">
-                <p>Code: <span class="text-primary">${obj.e_code}</span></p>
-            </div>
-            <div class="col-md-12">
-                <p>Department: <span class="text-primary">${obj.e_dept}</span></p>
-            </div>
-            <div class="col-md-12">
-                <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
-                <ol>
-                    <li>
-                        สวิทช์เปิด - ปิดเครื่อง: <span>${renderStatus(obj['daily-check-switch'])}</span>
-                    </li>
-                    <li>
-                        ปลั๊กไฟ AC สายไฟ AC: <span>${renderStatus(obj['daily-check-cord'])}</span>
-                    </li>
-                    <li>
-                        SYSTEM CHECK / ทำตามคู่มือ: <span>${renderStatus(obj['daily-check-system'])}</span>
-                    </li>
-                    <li>
-                        PADDLE CABLE: <span>${renderStatus(obj['daily-check-paddle'])}</span>
-                    </li>
-                    <li>
-                        EKG CABLE: <span>${renderStatus(obj['daily-check-ekg'])}</span>
-                    </li>
-                    <li>
-                        ADHESIVE PAD: <span>${renderStatus(obj['daily-check-adhesive'])}</span>
-                    </li>
-                    <li>
-                        RED DOT (ELCETRODE): <span>${renderStatus(obj['daily-check-reddot'])}</span>
-                    </li>
-                    <li>
-                        TRANSMISSION GEL: <span>${renderStatus(obj['daily-check-transmission'])}</span>
-                    </li>
-                    <li>
-                        EKG PAPER: <span>${renderStatus(obj['daily-check-ekgpaper'])}</span>
-                    </li>
-                    <li>
-                        ตรวจเช็คเวลาที่ตัวเครื่อง: <span>${renderStatus(obj['daily-check-time'])}</span>
-                    </li>
-                </ol>
-            </div>
-            <div class="col-md-6">
-                <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
-            </div>
-            <div class="col-md-6">
-                <p>ลายเซ็นผู้ตรวจเช็ค: <span><img src="${obj.signature_staff}" height="30px"></span></p>
-            </div>`
-
-            if (obj.approve_name) {
-                `<div class="col-md-6">
-                <p>ผู้อนุมัติ: <span>${obj.approve_name}</span></p>
-            </div>
-            <div class="col-md-6">
-                <p>ลายเซ็นผู้อนุมัติ: <span><img src="${obj.signature_approve}" height="30px"></span></p>
-            </div>`
-            } else {
-                detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
-                
-                <div class="col-md-12">
-                    <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
-                                <div class="rounded border border-3">
-                                    <canvas id="signature" name="signature" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
-                                </div>
-                                <div class="col text-end">
-                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
-                                </div>
-                                </div>`
-            }
-
-            if (obj.afteruse_rec_name) {
-                detailHtml += `<div class="col-md-12 mt-4">
-                <p>รายการตรวจเช็ค หลังใช้: <span id="e_dept"></span></p>
-                <ol>
-                    <li>
-                        CHARGE BATTERY หลังใช้ตลอดเวลา: <span>${renderStatus(obj['afteruse-check-battery'])}</span>
-                    </li>
-                    <li>
-                        ทำความสะอาดเครื่อง และPADDLE: <span>${renderStatus(obj['afteruse-check-clean'])}</span>
-                    </li>
-                   
-                </ol>
-            </div >
-            <div class="col-md-6">
-                <p>ผู้ตรวจเช็ค หลังใช้: <span class="text-primary">${obj.afteruse_rec_name}</span></p>
-            </div>
-            <div class="col-md-6">
-                <p>ลายเซ็นผู้ตรวจเช็ค หลังใช้: <span><img src="${obj.signature_staff_afteruse || ''}" height="30px"></span></p>
-            </div>`
-
-                if (obj.afteruse_approve_name) {
-                    detailHtml += `<div class="col-md-6">
-                <p>ผู้อนุมัติ หลังใช้: <span>${obj.afteruse_approve_name || ''}</span></p>
-            </div>
-            <div class="col-md-6">
-                <p>ลายเซ็นผู้อนุมัติ หลังใช้: <span><img src="${obj.signature_approve_afteruse || ''}" height="30px"></span></p>
-            </div>`
-                } else {
-                    detailHtml += `  <div class="col-md-12"><input id="afteruse_approve_name" placeholder="ชื่อผู้อนุมัติ หลังใช้" class="form-control"></div>
-                
-                <div class="col-md-12">
-                    <label for="signature_afteruse" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
-                                <div class="rounded border border-3">
-                                    <canvas id="signature_afteruse" name="signature_afteruse" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
-                                </div>
-                                <div class="col text-end">
-                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
-                                </div>
-                                </div>`
-                }
-            }
-
-
-            detailHtml += ` </div>
-    </div>`
-
-            $('#detail-modal .modal-body').html(detailHtml)
-            initialSignaturePad(obj.afteruse_rec_name)
-            $('#detail-modal').modal('show')
-            $('#detail-modal').on('shown.bs.modal', function (e) {
-                resizeCanvas()
-            })
-
-
-        }
-        function renderStatus(value) {
-            let pass = `<br><span class="badge rounded-pill bg-success status-pill-modal"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
-            let fail = `<br><span class="badge rounded-pill bg-danger status-pill-modal"><i class="bi bi-x-circle-fill"></i>&nbsp;ไม่ผ่าน</span>`
-            let fixing = `<br><span class="badge rounded-pill bg-warning status-pill-modal text-dark"><i class="bi bi-exclamation-triangle"></i>&nbsp;อยู่ระหว่างการซ่อม</span>`
-            let na = `<br><span class="badge rounded-pill bg-secondary status-pill-modal"><i class="bi bi-question-circle"></i>&nbsp;N/A</span>`
-            switch (value) {
-                case 'ผ่าน':
-                    return pass
-                case 'ไม่ผ่าน':
-                    return fail
-                case 'อยู่ระหว่างการซ่อม':
-                    return fixing
-                case 'N/A':
-                    return na
-                default:
-                    return '-'
-            }
-        }
-
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
@@ -564,17 +356,23 @@
         })
         var canvas, canvas2
         function initialSignaturePad(hasAfteruse) {
-            canvas = document.getElementById("signature");
-            signaturePad = new SignaturePad(canvas, {
-                backgroundColor: "rgb(255,255,255,0)",
-                penColor: "rgb(0,0,255)",
-            });
-            if (hasAfteruse) {
-                canvas2 = document.getElementById("signature_afteruse");
-                signaturePadAfterUse = new SignaturePad(canvas2, {
+            console.log("🚀 ~ hasAfteruse", hasAfteruse)
+            if ($('#signature').length) {
+                canvas = document.getElementById("signature");
+                signaturePad = new SignaturePad(canvas, {
                     backgroundColor: "rgb(255,255,255,0)",
                     penColor: "rgb(0,0,255)",
                 });
+            }
+
+            if (hasAfteruse) {
+                if ($('#signature_afteruse').length) {
+                    canvas2 = document.getElementById("signature_afteruse");
+                    signaturePadAfterUse = new SignaturePad(canvas2, {
+                        backgroundColor: "rgb(255,255,255,0)",
+                        penColor: "rgb(0,0,255)",
+                    });
+                }
             }
 
             (() => {
@@ -606,11 +404,14 @@
         }
         function resizeCanvas() {
             var ratio = Math.max(window.devicePixelRatio || 1, 1);
-            canvas.width = canvas.offsetWidth * ratio;
-            if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
-            else canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
-            signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+            if (canvas) {
+                canvas.width = canvas.offsetWidth * ratio;
+                if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
+                else canvas.height = canvas.offsetHeight * ratio;
+                canvas.getContext("2d").scale(ratio, ratio);
+                signaturePad.clear();
+            }
+            // otherwise isEmpty() might return incorrect value
             if (canvas2) {
                 canvas2.width = canvas2.offsetWidth * ratio;
                 if (ratio > 2) canvas2.height = canvas2.offsetHeight * ratio * 1.5;
@@ -624,7 +425,14 @@
     </script>
     <script>
         $('#modal-submit-btn').click(function () {
-            uploadFile()
+            if ($('#approve_name').val() == '') {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกชื่อผู้อนุมัติ',
+                    text: 'กรุณากรอกชื่อผู้อนุมัติ',
+                })
+            }
+            uploadFile(parseInt($('#ref_time').html().trim()))
         })
     </script>
     <script>
@@ -646,17 +454,28 @@
             let blob = id == 'signature' ? signaturePad.toDataURL() : signaturePadAfterUse.toDataURL()
             Swal.fire({
                 icon: 'info',
-                title: 'กำลังอัพโหลดรูปภาพ',
+                title: 'กำลังบันทึกข้อมูล',
                 text: 'uploading...',
-                allowOutsideClick: false
+                allowOutsideClick: false,
+                showConfirmButton: false
             })
             signatures[id] = blob
         }
-        function uploadFile() {
-            if (signaturePad.isEmpty() || signaturePadAfterUse.isEmpty()) {
+
+        var onefile = true
+        function uploadFile(time) {
+            console.log("🚀 ~ time", time)
+            if (signaturePad && (signaturePad.isEmpty() || signaturePadAfterUse?.isEmpty())) {
                 return Swal.fire({
                     icon: 'info',
                     title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
+                })
+            }
+            if ($('#afteruse_approve_name').val() == '') {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกชื่อผู้อนุมัติหลังใช้',
+                    text: 'กรุณากรอกชื่อผู้อนุมัติหลังใช้',
                 })
             }
             Swal.showLoading(Swal.getConfirmButton())
@@ -671,37 +490,34 @@
 
             let now = new Date()
             Object.keys(signatures).forEach(key => {
-
+                let file = signatures[key]
                 var chunkSize = Math.round(0.25 * 1024 * 1024)
+                let filename, fileurl = 'https://drive.google.com/uc?id='
                 return $.getJSON(script_url, function (result) {
+                    if (key == 'signature') {
+                        filename = active_tab + ' daily check manager ' + now.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
+                        })
+                    } else if (key == 'signature_afteruse') {
+                        filename = active_tab + ' daily check afteruse manager ' + now.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
+                        })
+                    }
                     var metadata = {
-                        name: 'defib daily check manager' + now.toLocaleString('th-TH', {
-                            hour12: false,
-                            month: "numeric",
-                            day: "numeric",
-                            year: "numeric"
-                        })
+                        name: filename
                     };
-                    let report_url = 'https://drive.google.com/uc?id='
-                    let signature_url = 'https://drive.google.com/uc?id='
-                    gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
+                    return gdriveUpload({ ...result, file: dataURItoBlob(file), metadata, chunkSize, onProgress: handleProgress })
                         .then(res => {
                             if (!res.id) return console.error("Upload error: " + res.message);
-                            return report_url += res.id
-                        })
-                    metadata = {
-                        name: 'defib daily check afteruse manager' + now.toLocaleString('th-TH', {
-                            hour12: false,
-                            month: "numeric",
-                            day: "numeric",
-                            year: "numeric"
-                        })
-                    };
-                    gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                        .then(res => {
-                            if (!res.id) return console.error("Upload error: " + res.message);
-                            signature_url += res.id
-                            return //saveFormDaily(report_url, signature_url)
+                            signatures[key] = fileurl += res.id
+                            if (active_tab == 'defibrillator') return updateDefibData(key, signatures[key], time)
+                            if (active_tab == 'refrigerator') return updateRefrigeratorData(key, signatures[key], time)
                         })
                 })
             })
@@ -709,24 +525,44 @@
         }
         let firstfile = true
         function handleProgress(value) {
-            if (value === 0) console.log("Uploading...");
-            else if (value === 1 && firstfile) {
-                firstfile = false
-            } else if (value === 1) {
-                console.log("Upload complete!");
-            }
-            else {
-                console.log("Uploading... " + value * 100 + "%");
-            }
-            let percent = firstfile ? Math.round(value * 50) : (Math.round(value * 50) + 50)
-            Swal.update({
-                // text: "Uploading... " +Math.round( value * 100) + "%",
-                html: `<div class="progress">
+            if (Object.keys(signatures).length > 1) {
+                if (value === 0) console.log("Uploading...");
+                else if (value === 1 && firstfile) {
+                    firstfile = false
+                } else if (value === 1) {
+                    console.log("Upload complete!");
+                }
+                else {
+                    console.log("Uploading... " + value * 100 + "%");
+                }
+                let percent = firstfile ? Math.round(value * 50) : (Math.round(value * 50) + 50)
+                Swal.update({
+                    // text: "Uploading... " +Math.round( value * 100) + "%",
+                    html: `<div class="progress">
       <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
     </div>`,
-                allowOutsideClick: false,
-                showConfirmButton: false
-            })
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                })
+            } else {
+                if (value === 0) console.log("Uploading...");
+                else if (value === 1) {
+                    console.log("Upload complete!");
+                }
+                else {
+                    console.log("Uploading... " + value * 100 + "%");
+                }
+                let percent = Math.round(value * 100)
+                Swal.update({
+                    // text: "Uploading... " +Math.round( value * 100) + "%",
+                    html: `<div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
+        </div>`,
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                })
+            }
+            return true
             // Swal.showLoading(Swal.getConfirmButton())
         }
         function showUploadEnd(e) {
@@ -820,83 +656,10 @@
         }
     </script>
     <script>
-        async function saveFormDaily(img_url, signature_url, date = new Date()) {
-
-
-            let formdata = $('#daily-form').serializeArray()
-            let obj = {}
-            formdata.forEach(function (item) {
-                obj[item.name] = item.value
-            })
-            if (img_url) {
-                obj.img_url = img_url
-                obj.signature_staff = signature_url
-            } else {
-                obj.signature_staff_afteruse = signature_url
-            }
-            obj.form = 'defibrillator'
-            obj.time = date.getTime()
-            obj.date = date.toLocaleString('th-TH', {
-                hour12: false,
-                month: "numeric",
-                day: "numeric",
-                year: "numeric"
-            })
-
-            Swal.update({
-                title: 'กำลังบันทึกข้อมูล',
-                html: 'กรุณารอสักครู่...',
-                showConfirmButton: true
-            })
-            Swal.showLoading(Swal.getConfirmButton())
-            firestore.collection(client)
-                .where("date", "==", new Date().toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                }))
-                .orderBy("time", 'desc')
-                .limit(1)
-                .get()
-                .then(function (querySnapshot) {
-                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
-                    if (querySnapshot.docs.length > 0) {
-                        querySnapshot.docs[0].ref.update(obj).then(() => {
-                            obj.img = report.data
-                            sendNotify(obj)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลเรียบร้อย',
-                                text: 'กรุณารอสักครู่',
-                            }).then(() => {
-                                window.location.reload()
-                            })
-                        })
-                    } else {
-                        obj.time = date.getTime()
-                        obj.afteruse_time = obj.time
-                        obj.date = date.toLocaleString('th-TH', {
-                            hour12: false,
-                            month: "numeric",
-                            day: "numeric",
-                            year: "numeric"
-                        })
-                        return firestore.collection(client).add(obj).then(() => {
-                            obj.img = report.data
-                            sendNotify(obj)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลเรียบร้อย',
-                            }).then(() => {
-                                window.location.reload()
-                            })
-                        }).catch(function (error) {
-                            console.error(error)
-                        });
-                    }
-                });
-        }
+        $('#signout-btn').click(function () {
+            localStorage.removeItem('session')
+            location.reload()
+        })
     </script>
 
 
@@ -906,6 +669,8 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="./getDefibTableData.js"></script>
+    <script src="./getRefrigeratorData.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
