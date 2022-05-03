@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <style>
         body {
             background-color: #fafafa;
@@ -42,8 +42,17 @@
             <div class="col-12 text-center">
                 <p class="h2 fw-bold text-primary">Temperature Logger</p>
             </div>
-            <div class="col-12 text-center">
-                <p class="h5" id="subtitle"></p>
+            <div class="col-md-3 text-center mt-3">
+                <p class="h5" id="text-id"></p>
+            </div>
+            <div class="col-md-3 text-center mt-3">
+                <p class="h5" id="text-dept"></p>
+            </div>
+            <div class="col-md-3 text-center mt-3">
+                <p class="h5" id="text-brand"></p>
+            </div>
+            <div class="col-md-3 text-center mt-3">
+                <p class="h5" id="text-model"></p>
             </div>
         </div>
         <div class="row justify-content-center m-1">
@@ -98,7 +107,7 @@
     </footer>
     <script>
         var firestore
-        var client, dept, id
+        var client, dept, id, brand, model
         $(document).ready(() => {
             const firebaseConfig = {
                 apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
@@ -115,22 +124,32 @@
             var url = new URL(url_string);
             client = url.searchParams.get("client") || "PYT3";
             dept = url.searchParams.get("dept") || "PHY2";
+            brand = url.searchParams.get("brand") || "Philips";
+            model = url.searchParams.get("model") || "SKY";
             id = url.searchParams.get("id") || "PYT3_01234";
             console.log(client, dept, id);
-            $("#subtitle").text('ID: ' + id);
+            $("#text-id").text('ID: ' + id);
+            $("#text-dept").text('Department: ' + dept);
+            $("#text-brand").text('Brand: ' + brand);
+            $("#text-model").text('Model: ' + model);
             let today = new Date();
-            $('#from').val(today.getFullYear() + '-' + ('00' + (today.getMonth() + 1)).slice(-2) + '-' + ('00' + (today.getDate() - 7)).slice(-2));
+            let fromdate = new Date(new Date().setDate(new Date().getDate() - 30))
+            $('#from').val(fromdate.getFullYear() + '-' + ('00' + (fromdate.getMonth() + 1)).slice(-2) + '-' + ('00' + (fromdate.getDate())).slice(-2));
             $('#to').val(today.getFullYear() + '-' + ('00' + (today.getMonth() + 1)).slice(-2) + '-' + ('00' + today.getDate()).slice(-2));
             $('#filter').click()
         })
     </script>
     <script>
-        var ctx = document.getElementById('myChart').getContext('2d');
+
         var myChart
         function createCharts(label, data) {
+
             if (myChart) {
                 myChart.destroy()
             }
+            $('#myChart').parent().append('<canvas id="myChart" style="height: 600px; width: 100%"></canvas>')
+            $('#myChart').remove()
+            var ctx = document.getElementById('myChart').getContext('2d');
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -253,6 +272,7 @@
                     // }
                 }
             });
+            myChart.update();
         }
     </script>
     <script>
@@ -295,8 +315,9 @@
             let from = Date.parse($('#from').val())
             let to = Date.parse($('#to').val()) + (1000 * 60 * 60 * 24)
             let col_date = new Date().toLocaleDateString().replace(/\//g, '_')
-            return firestore.collection(client).where('form','==','temperature').where('time', '>=', from).where('time', '<=', to).where('dept', '==', dept).where('id', '==', id).get().then(snapshot => {
+            return firestore.collection(client).where('form', '==', 'temperature').where('time', '>=', from).where('time', '<=', to).where('e_dept', '==', dept).where('e_code', '==', id).get().then(snapshot => {
                 let data = []
+
                 let label = []
                 snapshot.forEach(doc => {
                     label.push(new Date(parseInt(doc.data().time)).toLocaleString('th-TH', {
@@ -309,6 +330,7 @@
                     }))
                     data.push(doc.data().temp)
                 })
+                console.log("🚀 ~ data", data)
                 createCharts(label, data)
             })
         })
@@ -335,12 +357,25 @@
             let time = date.getTime()
             return await firestore.collection(client).add({
                 form: 'temperature',
-                dept: dept,
-                id: id,
+                e_dept: dept,
+                e_brand: brand,
+                e_code: id,
+                date: date.toLocaleString('th-TH', {
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                }),
                 temp: temp,
                 time: date.getTime()
             }).then(() => {
                 console.log("🚀 ~ setValue", temp)
+                Swal.fire({
+                    position: 'top',
+                    type: 'success',
+                    title: 'บันทึกข้อมูลเรียบร้อย',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
                 addData(date.toLocaleString('th-TH', {
                     hour12: false,
                     hour: "numeric",
@@ -390,6 +425,7 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
