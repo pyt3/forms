@@ -107,7 +107,7 @@
     </footer>
     <script>
         var firestore
-        var client, dept, id, brand, model
+        var client, dept, id, brand, model, name
         $(document).ready(() => {
             const firebaseConfig = {
                 apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
@@ -126,6 +126,7 @@
             dept = url.searchParams.get("dept") || "PHY2";
             brand = url.searchParams.get("brand") || "Philips";
             model = url.searchParams.get("model") || "SKY";
+            name = url.searchParams.get("name") || "TEST";
             id = url.searchParams.get("id") || "PYT3_01234";
             console.log(client, dept, id);
             $("#text-id").text('ID: ' + id);
@@ -303,6 +304,13 @@
             //     // setValue(rand[i], 'PYT3', 'PHA1')
             //     // i++
             // }, 1000)
+            if (temp == '') return Swal.fire({
+                icon: 'error',
+                title: 'กรุณากรอกอุณหภูมิ',
+                showConfirmButton: false,
+                timer: 1500,
+                position: 'top',
+            })
             $('#temp').val('')
             setValue(temp)
             // getValue()
@@ -360,6 +368,7 @@
                 e_dept: dept,
                 e_brand: brand,
                 e_code: id,
+                e_name: name,
                 date: date.toLocaleString('th-TH', {
                     month: "numeric",
                     day: "numeric",
@@ -373,8 +382,7 @@
                     position: 'top',
                     type: 'success',
                     title: 'บันทึกข้อมูลเรียบร้อย',
-                    showConfirmButton: false,
-                    timer: 1500
+
                 })
                 addData(date.toLocaleString('th-TH', {
                     hour12: false,
