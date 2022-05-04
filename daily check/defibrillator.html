@@ -946,7 +946,7 @@
             })
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
-            var chunkSize = Math.round(0.25 * 1024 * 1024)
+            var chunkSize = Math.round(0.75 * 1024 * 1024)
             return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
                 var metadata = {
                     name: `defib daily check report ${$('#rec_name')} ` + now.toLocaleString('th-TH', {
