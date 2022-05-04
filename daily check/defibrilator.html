@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <style>
         body {
             width: 100%;
@@ -43,8 +43,8 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="https://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="30" class="d-inline-block align-text-top">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="20" class="d-inline-block">
                 Daily Check
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ms-auto">
                     <a class="nav-link active" aria-current="page" href="">Home</a>
-                    <a class="nav-link" href="login.html">Login</a>
+                    <a class="nav-link" href="login.html">For Approved</a>
                 </div>
             </div>
         </div>
@@ -641,13 +641,15 @@
             resizeCanvas = function () {
                 var ratio = Math.max(window.devicePixelRatio || 1, 1);
                 canvas.width = canvas.offsetWidth * ratio;
-                if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
-                else canvas.height = canvas.offsetHeight * ratio;
+                // if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
+                // else 
+                canvas.height = canvas.offsetHeight * ratio;
                 canvas.getContext("2d").scale(ratio, ratio);
                 signaturePad.clear(); // otherwise isEmpty() might return incorrect value
                 canvas2.width = canvas2.offsetWidth * ratio;
-                if (ratio > 2) canvas2.height = canvas2.offsetHeight * ratio * 1.5;
-                else canvas2.height = canvas2.offsetHeight * ratio;
+                // if (ratio > 2) canvas2.height = canvas2.offsetHeight * ratio * 1.5;
+                // else 
+                canvas2.height = canvas2.offsetHeight * ratio;
                 canvas2.getContext("2d").scale(ratio, ratio);
                 signaturePadAfterUse.clear(); // otherwise isEmpty() might return incorrect value
             }
