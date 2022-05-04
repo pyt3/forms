@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Akshar', sans-serif;
+            font-family: 'Prompt', sans-serif;
+            /* background-color: #fafafa; */
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #0080FF;
+            color: #FFF;
+        }
+
+        .nav-tabs .nav-link {
+            color: #0080FF;
+        }
+
+        /* section{
+            background-color: #fff;
+        } */
+    </style>
+    <title>Defibrillator Daily Maintenance</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="20" class="d-inline-block">
+                Daily Check
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" aria-current="page" href="">Home</a>
+                    <a class="nav-link" href="login.html">For Approved</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-12 text-center px-5 mt-3">
+                <img src="https://img.in.th/images/92cc41f62e7a8b08398ed7cddcc22725.jpg" alt="banner" class="img-fluid" style="max-width: 150px;">
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col text-center">
+                <h4>Defibrillator Unit Maintenance Log</h4>
+            </div>
+        </div>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-daily-tab" data-bs-toggle="tab" data-bs-target="#nav-daily" type="button" role="tab" aria-controls="nav-daily" aria-selected="true">Daliy Maintenance</button>
+                <button class="nav-link" id="nav-afteruse-tab" data-bs-toggle="tab" data-bs-target="#nav-afteruse" type="button" role="tab" aria-controls="nav-afteruse" aria-selected="false">After Use</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-daily" role="tabpanel" aria-labelledby="nav-home-tab">
+                <form id="daily-form" class="mt-3 mb-5">
+                    <section class="m-2 mt-2 rounded-2  p-4 shadow border border-primary">
+                        <div class="row justify-content-start align-items-center">
+                            <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
+                                <p class="h5 mt-2 fw-bold timenow"></p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-start">
+                            <div class="col-md-3 mt-3">
+                                <label for="e_name">Equipment Name</label>
+                                <input type="text" name="e_name" id="e_name" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_code">Code</label>
+                                <input type="text" name="e_code" id="e_code" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_brand">Brand</label>
+                                <input type="text" name="e_brand" id="e_brand" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_model">Model</label>
+                                <input type="text" name="e_model" id="e_model" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_dept">Department</label>
+                                <input type="text" name="e_dept" id="e_dept" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="rec_name">Recorder Name</label>
+                                <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="daily-check">
+                        <div class="row justify-content-start">
+                            <div class="col text-start ms-1">
+                                <p>Daily Maintenance<br><small class="text-secondary">ดำเนินการตรวจเช็คทุกวัน (เวรเช้า)</small></p>
+                            </div>
+                            <div class="col-12 text-start">
+                                <ol>
+                                    <li>
+                                        <p>สวิทช์เปิด-ปิดเครื่อง&nbsp;<small class="text-info">เครื่องทำงานปกติหรือไม่</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-switch" id="switch-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
+                                            <label class="form-check-label text-success" for="switch-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-switch" id="switch-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="switch-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-switch" id="switch-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="switch-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-switch" id="switch-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="switch-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>ปลั๊กไฟ AC/สายไฟ AC&nbsp;<small class="text-info">พร้อมใช้งานไม่มีรอยชำรุด</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-cord" id="cord-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="cord-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-cord" id="cord-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="cord-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-cord" id="cord-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="cord-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-cord" id="cord-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="cord-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>System Check/ทำตามคู่มือ&nbsp;<small class="text-info">ผ่าน หรือ ไม่</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-system" id="system-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="system-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-system" id="system-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="system-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-system" id="system-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="system-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-system" id="system-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="system-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>Paddle Cable&nbsp;<small class="text-info">พร้อมใช้งานไม่มีรอยชำรุด</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="paddle-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="paddle-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="paddle-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-paddle" id="paddle-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="paddle-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>EKG Cable&nbsp;<small class="text-info">พร้อมใช้งานไม่มีรอยชำรุด</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="ekg-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="ekg-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="ekg-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekg" id="ekg-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="ekg-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>Adhesive Pad&nbsp;<small class="text-info">ไม่มีรอยชำรุด/วันหมดอายุ</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="adhesive-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="adhesive-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="adhesive-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-adhesive" id="adhesive-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="adhesive-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>Red Dot (Electrode)&nbsp;<small class="text-info">5 ชิ้น/วันหมดอายุ</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="reddot-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="reddot-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="reddot-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-reddot" id="reddot-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="reddot-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>Transmission Gel&nbsp;<small class="text-info">2 หลอด/วันหมดอายุ</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="transmissiongel-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="transmissiongel-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="transmissiongel-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-transmissiongel" id="transmissiongel-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="transmissiongel-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>EKG Paper&nbsp;<small class="text-info">สำรอง 1 ม้วน</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="ekgpaper-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="ekgpaper-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="ekgpaper-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-ekgpaper" id="ekgpaper-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="ekgpaper-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>ตรวจเช็คเวลาที่ตัวเครื่อง&nbsp;<small class="text-info">เช็คเทียบเวลา</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="daily-check-time" id="time-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="time-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-time" id="time-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="time-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-time" id="time-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="time-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-time" id="time-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="time-na">N/A</label>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="weekly-check">
+                        <div class="row justify-content-start">
+                            <div class="col text-start ms-1">
+                                <p>Weekly Maintenance<br><small class="text-secondary">ดำเนินการตรวจเช็คทุกวันจันทร์ของสัปดาห์</small></p>
+                            </div>
+                            <div class="col-12 text-start">
+                                <ol>
+                                    <li>
+                                        <p>ทดสอบค่าพลังงานสูงสุด&nbsp;<small class="text-info">เครื่องทำงานปกติหรือไม่</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="power-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="power-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="power-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="daily-check-power" id="power-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="power-na">N/A</label>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-4 mt-3 text-center">
+                                <label for="report">ภาพถ่ายใบแสดงผลการทดสอบเครื่อง</label>
+                                <input type="file" name="report" accept="image/*" id="report" class="form-control file" required>
+                                <img class="img-fluid mt-3 rounded" id="preview">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-5">
+                                <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
+                                <div class="rounded border border-3">
+                                    <canvas id="signature" name="signature" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                </div>
+                                <div class="col text-end">
+                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary" style="min-width: 200px;">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="nav-afteruse" role="tabpanel" aria-labelledby="nav-afteruse-tab">
+                <form id="afteruse-form" class="mt-3 mb-5">
+                    <section class="m-2 mt-2 rounded-2  p-4 shadow border border-primary">
+                        <div class="row justify-content-start align-items-center">
+                            <div class="col-auto mt-1 bg-info text-light rounded shadow shadow-sm mx-2">
+                                <p class="h5 mt-2 fw-bold timenow"></p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-start">
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_name">Equipment Name</label>
+                                <input type="text" name="afteruse_e_name" id="afteruse_e_name" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_code">Code</label>
+                                <input type="text" name="afteruse_e_code" id="afteruse_e_code" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_brand">Brand</label>
+                                <input type="text" name="afteruse_e_brand" id="afteruse_e_brand" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_model">Model</label>
+                                <input type="text" name="afteruse_e_model" id="afteruse_e_model" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_dept">Department</label>
+                                <input type="text" name="afteruse_e_dept" id="afteruse_e_dept" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_rec_name">Recorder Name</label>
+                                <input type="text" name="rec_name" id="afteruse_rec_name" class="form-control" autocomplete="on" required>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="afteruse-daily-check">
+                        <div class="row justify-content-start">
+                            <div class="col text-start ms-1">
+                                <p>After used Maintenance<br><small class="text-secondary">ดำเนินการตรวจเช็คหลังใช้งาน</small></p>
+                            </div>
+                            <div class="col-12 text-start">
+                                <ol>
+                                    <li>
+                                        <p>Charge Battery หลังใช้ตลอดเวลา&nbsp;<small class="text-info">ต้องเสียบไฟตลอดหลังการใช้งาน</small></p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
+                                            <label class="form-check-label text-success" for="afteruse-battery-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="afteruse-battery-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="afteruse-battery-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="battery-na">N/A</label>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3">
+                                        <p>ทำความสะอาดเครื่อง และ Paddle&nbsp;</p>
+                                        <div class="form-check form-check-inline">
+                                            <input required class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-cord-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">
+                                            <label class="form-check-label text-success" for="afteruse-clean-cord-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-fail" value="ไม่ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">
+                                            <label class="form-check-label text-danger fw-bold" for="afteruse-clean-fail" data-bs-toggle="tooltip" data-bs-placement="top" title="ผิดปกติ ไม่พร้อมใช้งาน (ดำเนินการแจ้งแผนกวิศวกรรมการแพทย์)">X</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-fixing" value="อยู่ระหว่างการซ่อม" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="อยู่ระหว่างการดำเนินการซ่อมแซมแก้ไข" for="afteruse-clean-fixing">&#128295;</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="afteruse-check-clean" id="afteruse-clean-na" value="N/A" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A">
+                                            <label class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="top" title="N/A" for="afteruse-clean-na">N/A</label>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-5">
+                                <label for="signature_afteruse" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
+                                <div class="rounded border border-3">
+                                    <canvas id="signature_afteruse" name="signature_afteruse" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                </div>
+                                <div class="col text-end">
+                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-secondary" style="min-width: 200px;">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-end">
+                <img src="https://img.in.th/images/e5f742132b3648b83a134257cc05d903.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+                <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-end" style="font-size: 0.7rem;">
+                Developed by <span class="text-primary">Daranphop Yimyam</span>
+            </div>
+        </div>
+    </footer>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        var vConsole = new window.VConsole();
+    </script>
+    <script>
+        var firestore
+        $(document).ready(function () {
+            const firebaseConfig = {
+                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
+                authDomain: "daily-check-form.firebaseapp.com",
+                projectId: "daily-check-form",
+                storageBucket: "daily-check-form.appspot.com",
+                messagingSenderId: "544837049860",
+                appId: "1:544837049860:web:462e6b854290b1dec39f51"
+            };
+            const defaultProject = firebase.initializeApp(firebaseConfig);
+            console.log(defaultProject.name);  // "[DEFAULT]"
+            firestore = defaultProject.firestore();
+            // getDataForID()
+            $('#dept option').not(':disabled').each(function () {
+                $(this).val($(this).text());
+            });
+            setInterval(function () {
+                let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
+                $('.timenow').html(timenow);
+            }, 1000);
+            $('[data-toggle="tooltip"]').tooltip()
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                resizeCanvas();// previous active tab
+            })
+            showWeekly()
+        });
+        function showWeekly() {
+            let day = moment().format('dddd')
+            if (day == 'Wednesday') {
+                $('#weekly-check input').attr('required', true)
+            }
+        }
+
+        function getDataForID() {
+            firestore.collection(client)
+                .where("e_code", "==", id)
+                .orderBy("time", 'desc')
+                .limit(1)
+                .get()
+                .then(function (querySnapshot) {
+                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                    if (querySnapshot.docs.length > 0) {
+                        let data = querySnapshot.docs[0].data()
+                        $('#e_brand, #afteruse_e_brand').val(data.e_brand)
+                        $('#e_dept, #afteruse_e_dept').val(data.e_dept)
+                    }
+                });
+
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+
+    <script>
+        var signaturePad, signaturePadAfterUse, resizeCanvas
+        $(document).ready(() => {
+            SignaturePad.prototype.removeBlanks = function () {
+                var imgWidth = this._ctx.canvas.width;
+                var imgHeight = this._ctx.canvas.height;
+                var imageData = this._ctx.getImageData(0, 0, imgWidth, imgHeight),
+                    data = imageData.data,
+                    getAlpha = function (x, y) {
+                        return data[(imgWidth * y + x) * 4 + 3]
+                    },
+                    scanY = function (fromTop) {
+                        var offset = fromTop ? 1 : -1;
+
+                        // loop through each row
+                        for (var y = fromTop ? 0 : imgHeight - 1; fromTop ? (y < imgHeight) : (y > -1); y += offset) {
+
+                            // loop through each column
+                            for (var x = 0; x < imgWidth; x++) {
+                                if (getAlpha(x, y)) {
+                                    return y;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    },
+                    scanX = function (fromLeft) {
+                        var offset = fromLeft ? 1 : -1;
+
+                        // loop through each column
+                        for (var x = fromLeft ? 0 : imgWidth - 1; fromLeft ? (x < imgWidth) : (x > -1); x += offset) {
+
+                            // loop through each row
+                            for (var y = 0; y < imgHeight; y++) {
+                                if (getAlpha(x, y)) {
+                                    return x;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    };
+
+                var cropTop = scanY(true),
+                    cropBottom = scanY(false),
+                    cropLeft = scanX(true),
+                    cropRight = scanX(false);
+
+                var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
+                console.log(this)
+                this.canvas.width = cropRight - cropLeft;
+                this.canvas.height = cropBottom - cropTop;
+                this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
+                this._ctx.putImageData(relevantData, 0, 0);
+            };
+            var canvas = document.getElementById("signature");
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: "rgb(255,255,255,0)",
+                penColor: "rgb(0,0,255)",
+            });
+            var canvas2 = document.getElementById("signature_afteruse");
+            signaturePadAfterUse = new SignaturePad(canvas2, {
+                backgroundColor: "rgb(255,255,255,0)",
+                penColor: "rgb(0,0,255)",
+            });
+            (() => {
+                $('#save').on('click', () => {
+                    event.preventDefault()
+                    let signature = signaturePad.toDataURL();
+                    let a = document.createElement('a')
+                    a.href = signature
+                    a.setAttribute('download', 'signature')
+                    a.click();
+                })
+                $('.clear-signature').on('click', () => {
+                    event.preventDefault()
+                    resizeCanvas()
+                    let id = $(this).closest('canvas').attr('id')
+                    if (id == 'signature') {
+                        signaturePad.clear()
+                    } else {
+                        signaturePadAfterUse.clear()
+                    }
+                })
+            })()
+            resizeCanvas = function () {
+                var ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                // if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
+                // else 
+                canvas.height = canvas.offsetHeight * ratio;
+                canvas.getContext("2d").scale(ratio, ratio);
+                signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+                canvas2.width = canvas2.offsetWidth * ratio;
+                // if (ratio > 2) canvas2.height = canvas2.offsetHeight * ratio * 1.5;
+                // else 
+                canvas2.height = canvas2.offsetHeight * ratio;
+                canvas2.getContext("2d").scale(ratio, ratio);
+                signaturePadAfterUse.clear(); // otherwise isEmpty() might return incorrect value
+            }
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
+        })
+
+    </script>
+    <script>
+        var pdfDoc
+        var PDFDocument = PDFLib.PDFDocument;
+        var report = {}
+        var client, dept, id, brand, model, name
+        var url_string = window.location.href
+        var url = new URL(url_string);
+        client = url.searchParams.get("client") || "PYT3";
+        dept = url.searchParams.get("dept") || "PHA2";
+        brand = url.searchParams.get("brand") || "Philips";
+        model = url.searchParams.get("model") || "SKY";
+        name = url.searchParams.get("name") || "TESTTESTTESTTE";
+        id = url.searchParams.get("id") || "PYT3_01234";
+        $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
+        $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
+        $('#e_dept, #afteruse_e_dept').val(dept).attr('readonly', true)
+        $('#e_model, #afteruse_e_model').val(model).attr('readonly', true)
+        $('#e_name, #afteruse_e_name').val(name).attr('readonly', true)
+        $('#report').change(function () {
+            report = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onloadend = function (e) {
+                report.data = e.target.result
+                report.name = file.name
+                $('#preview').attr('src', e.target.result)
+                $('#preview').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+    </script>
+    <script>
+        let script_url = 'https://script.google.com/macros/s/AKfycbxlVshSHWBOLK3TlWk_KIykaUUSPLe2-OGM8qK0aYWWJWdtJ-0JBkfCDqCSiTsOzwMg/exec'
+        $('#daily-form').submit(async function () {
+            event.preventDefault()
+            uploadFile()
+        })
+
+        async function saveFormDaily(img_url, signature_url, date = new Date()) {
+
+
+            let formdata = $('#daily-form').serializeArray()
+            let obj = {}
+            formdata.forEach(function (item) {
+                obj[item.name] = item.value
+            })
+            if (img_url) {
+                obj.img_url = img_url
+                obj.signature_staff = signature_url
+            } else {
+                obj.signature_staff_afteruse = signature_url
+            }
+            obj.form = 'defibrillator'
+            obj.time = date.getTime()
+            obj.date = date.toLocaleString('th-TH', {
+                hour12: false,
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            })
+
+            firestore.collection(client)
+                .where("date", "==", new Date().toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                }))
+                .orderBy("time", 'desc')
+                .limit(1)
+                .get()
+                .then(function (querySnapshot) {
+                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                    if (querySnapshot.docs.length > 0) {
+                        querySnapshot.docs[0].ref.update(obj).then(() => {
+                            sendNotify(obj)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลเรียบร้อย',
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        })
+                    } else {
+                        obj.time = date.getTime()
+                        obj.afteruse_time = obj.time
+                        obj.date = date.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
+                        })
+                        return firestore.collection(client).add(obj).then(() => {
+                            sendNotify(obj)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลเรียบร้อย',
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        }).catch(function (error) {
+                            console.error(error)
+                        });
+                    }
+                });
+        }
+        $('#afteruse-form').submit(async function () {
+            event.preventDefault()
+            let form = $(this)
+            const updateData = function (url) {
+                let formdata = $(form).serializeArray()
+                console.log(formdata);
+                let obj = {}
+                formdata.forEach(function (item) {
+                    obj[item.name] = item.value
+                })
+                obj.form = 'defibrillator'
+                obj.afteruse_time = new Date().getTime()
+                obj.signature_staff_afteruse = url
+                firestore.collection(client)
+                    .where("date", "==", new Date().toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    }))
+                    .orderBy("afteruse_time", 'desc')
+                    .limit(1)
+                    .get()
+                    .then(function (querySnapshot) {
+                        console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                        if (querySnapshot.docs.length > 0) {
+                            querySnapshot.docs[0].ref.update(obj).then(() => {
+                                // obj.img = report.data
+                                obj.date = new Date().toLocaleString('th-TH', {
+                                    hour12: false,
+                                    month: "numeric",
+                                    day: "numeric",
+                                    year: "numeric"
+                                })
+                                sendNotify(obj, 'afteruse')
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'บันทึกข้อมูลเรียบร้อย',
+                                    text: 'กรุณารอสักครู่',
+                                }).then(() => {
+                                    window.location.reload()
+                                })
+                            })
+                        } else {
+                            obj.afteruse_time = new Date().getTime()
+                            obj.time = obj.afteruse_time
+                            obj.date = new Date().toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                            return firestore.collection(client).add(obj).then(() => {
+                                // obj.img = report.data
+                                sendNotify(obj, 'afteruse')
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'บันทึกข้อมูลเรียบร้อย',
+                                }).then(() => {
+                                    window.location.reload()
+                                })
+                            }).catch(function (error) {
+                                console.error(error)
+                            });
+                        }
+                    });
+            }
+            if (signaturePadAfterUse.isEmpty()) {
+                return Swal.fire({
+                    icon: 'info',
+                    title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
+                })
+            }
+            signaturePadAfterUse.removeBlanks()
+            let ctx = $('#signature_afteruse')[0].getContext('2d')
+            ctx.font = '11px Arial'
+            ctx.fillStyle = '#525252'
+            ctx.fillText(new Date().toLocaleString('th-TH', {
+                hour12: false,
+                minute: "numeric",
+                hour: "numeric",
+                second: "numeric",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            }), $('#signature_afteruse')[0].width - 120, $('#signature_afteruse')[0].height - 8)
+            let signatureblob = signaturePadAfterUse.toDataURL()
+            Swal.fire({
+                icon: 'info',
+                title: 'กรุณารอสักครู่',
+                text: 'กำลังบันทึกข้อมูล',
+                allowOutsideClick: false
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            let now = new Date()
+            var chunkSize = Math.round(0.75 * 1024 * 1024)
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
+                var metadata = {
+                    name: `defib daily check afteruse ${$('#afteruse_rec_name')} ` + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                let signature_url = 'https://drive.google.com/uc?id='
+                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        return updateData(signature_url += res.id)
+                    })
+            })
+
+        })
+    </script>
+    <script>
+        function uploadFile() {
+            const file = document.getElementById("report").files[0];
+            if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
+            if (signaturePad.isEmpty()) {
+                return Swal.fire({
+                    icon: 'info',
+                    title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
+                })
+            }
+            signaturePad.removeBlanks()
+            let ctx = $('#signature')[0].getContext('2d')
+            ctx.font = '11px Arial'
+            ctx.fillStyle = '#525252'
+            ctx.fillText(new Date().toLocaleString('th-TH', {
+                hour12: false,
+                minute: "numeric",
+                hour: "numeric",
+                second: "numeric",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            }), $('#signature')[0].width - 120, $('#signature')[0].height - 8)
+            let signatureblob = signaturePad.toDataURL()
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังอัพโหลดรูปภาพ',
+                text: 'uploading...',
+                allowOutsideClick: false
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            let now = new Date()
+            var chunkSize = Math.round(0.75 * 1024 * 1024)
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
+                var metadata = {
+                    name: `defib daily check report ${$('#rec_name')} ` + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                let report_url = 'https://drive.google.com/uc?id='
+                let signature_url = 'https://drive.google.com/uc?id='
+                gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        report_url += res.id
+                        Swal.update({
+                            icon: 'info',
+                            title: 'กำลังบันทึกข้อมูล..',
+                            html: `<div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: 1%;" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100">1%</div>
+</div>`,
+                            allowOutsideClick: false,
+                            showConfirmButton: false
+                        })
+                        metadata = {
+                            name: 'defib daily check staff ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                signature_url += res.id
+                                return saveFormDaily(report_url, signature_url)
+                            })
+                    })
+
+            })
+        }
+        let firstfile = true
+        function handleProgress(value) {
+            if (value === 0) console.log("Uploading...");
+            else if (value === 1) {
+                firstfile = !firstfile
+                console.log("Upload complete!");
+            }
+            else {
+                console.log("Uploading... " + value * 100 + "%");
+            }
+            let percent = Math.round(value * 100)
+            Swal.update({
+                // text: "Uploading... " +Math.round( value * 100) + "%",
+                html: `<div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
+</div>`,
+                allowOutsideClick: false,
+                showConfirmButton: false
+            })
+            // Swal.showLoading(Swal.getConfirmButton())
+        }
+        function showUploadEnd(e) {
+            Swal.fire({
+                icon: 'success',
+                title: 'อัพโหลดรูปภาพเรียบร้อย',
+                text: 'กรุณารอสักครู่',
+            })
+            return e.id
+        }
+        function dataURItoBlob(dataURI) {
+            var byteString = atob(dataURI.split(',')[1]);
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: 'image/png' });
+        }
+    </script>
+    <script>
+        async function gdriveUpload(opt) {
+            if (!(opt.file && opt.token)) throw new TypeError("bad param");
+            if (!opt.file.size) return new Error("empty file");
+            let res
+            try {
+                const location = await getUploadLocation();
+                if (location instanceof Error) return location;
+                res = await uploadChunks(location);
+                if (res instanceof Error) return res;
+                return res;
+            } catch (error) {
+                if (error instanceof Error) return error;
+                throw error;
+            }
+            async function getUploadLocation() {
+                let metadata = { mimeType: opt.file.type, name: opt.file.name };
+                if (opt.folder) metadata.parents = [opt.folder];
+                if (opt.metadata) metadata = { ...metadata, ...opt.metadata };
+                try {
+                    const response = await fetch(
+                        "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
+                        {
+                            method: "POST", cache: "no-cache",
+                            headers: {
+                                Authorization: "Bearer " + opt.token,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(metadata)
+                        });
+                    if (!response.ok) return new Error(`create: ${response.status} ${response.statusText}`);
+                    const location = response.headers.get("location");
+                    if (!location) return new Error("no location");
+                    return location;
+                } catch (error) {
+                    if (error instanceof Error) return error;
+                    throw error;
+                }
+            }
+            async function uploadChunks(location) {
+                const onProgress = opt.onProgress || ((_v) => { });
+                const chunkSize = opt.chunkSize || _DEFAULT.chunkSize;
+                if (chunkSize <= 0 || chunkSize % (256 * 1024))
+                    throw TypeError("bad chunkSize: " + chunkSize);
+                const size = opt.file.size;
+                try {
+                    for (let end = NaN, start = 0; ; start = end + 1) {
+                        onProgress(start / size); // signal progress
+                        end = Math.min(start + chunkSize, size);
+                        const blob = await opt.file.slice(start, end).arrayBuffer(); // read from file
+                        const response = await fetch(location, // upload the chunk to location
+                            {
+                                method: "PUT", cache: "no-cache", body: blob,
+                                headers: { "Content-Range": `bytes ${start}-${end - 1}/${size}` }
+                            });
+                        if (response.ok) { // all done
+                            onProgress(1); // signal 100% progress
+                            return response.json(); // success
+                        }
+                        if (response.status != 308) return new Error(`upload: ${response.status} ${response.statusText}`);
+                        const r = response.headers.get("Range");
+                        if (!r) return new Error("no Range");
+                        end = parseInt(r.substr(r.indexOf("-") + 1)); // get where the real upload end
+                        if (!Number.isInteger(end) || end <= start) return new Error("bad range: " + r);
+                    }
+                } catch (error) {
+                    if (error instanceof Error) return error;
+                    throw error;
+                }
+            }
+        }
+        // sendNotify()
+        function sendNotify(obj, form) {
+            console.log("🚀 ~ obj", obj)
+            const notify_url = 'https://notify-api.line.me/api/notify'
+            let msg = ''
+            Object.keys(obj).forEach(key => {
+                if (obj[key] == 'ไม่ผ่าน') {
+                    let ele = $('input[name="' + key + '"]').closest('li').find('p:first').clone().find('small').remove().end().text().trim()
+                    msg += `${ele}: ${obj[key]}\n`
+                }
+            })
+            if (msg != '') {
+                if (form == 'afteruse') {
+                    msg = `แจ้งอาการผิดปกติเครื่อง Defibrilator หลังใช้งาน
+วันที่: ${obj.date}
+รหัส: ${obj.afteruse_e_code}
+แผนก: ${obj.afteruse_e_dept}
+ผู้บันทึก: ${obj.afteruse_rec_name}
+อาการ: 
+${msg}`
+                } else {
+                    msg = `แจ้งอาการผิดปกติเครื่อง Defibrilator
+วันที่: ${obj.date}
+รหัส: ${obj.e_code}
+แผนก: ${obj.e_dept}
+ผู้บันทึก: ${obj.rec_name}
+อาการ: 
+${msg.trim()}`
+                }
+
+                let option = {
+                    opt: 'notify',
+                    msg: msg
+                }
+                if (obj.img_url) {
+                    console.log("🚀 ~ obj.img_url", obj.img_url)
+                    option.img = obj.img_url
+                }
+                console.log("🚀 ~ option", option)
+                $.post(script_url, option)
+
+            }
+
+        }
+    </script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/untsamphan/gdrive-upload@1.1/dist/gdriveUpload.min.js"></script> -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>
