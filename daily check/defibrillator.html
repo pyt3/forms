@@ -370,7 +370,7 @@
                             <div class="col-md-4 mt-3 text-center">
                                 <label for="report">ภาพถ่ายใบแสดงผลการทดสอบเครื่อง</label>
                                 <input type="file" name="report" accept="image/*" id="report" class="form-control file" required>
-                                <img class="img-fluid mt-3 rounded" id="preview" alt="preview">
+                                <img class="img-fluid mt-3 rounded" id="preview">
                             </div>
                         </div>
                     </section>
@@ -961,22 +961,30 @@
                 gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
                     .then(res => {
                         if (!res.id) return console.error("Upload error: " + res.message);
-                        return report_url += res.id
+                        report_url += res.id
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'กำลังบันทึกข้อมูล..',
+                            text: 'saving...',
+                            allowOutsideClick: false
+                        })
+                        Swal.showLoading(Swal.getConfirmButton())
+                        metadata = {
+                            name: 'defib daily check staff ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                signature_url += res.id
+                                return saveFormDaily(report_url, signature_url)
+                            })
                     })
-                metadata = {
-                    name: 'defib daily check staff ' + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        signature_url += res.id
-                        return saveFormDaily(report_url, signature_url)
-                    })
+
             })
         }
         let firstfile = true
