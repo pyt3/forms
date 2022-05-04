@@ -81,7 +81,11 @@
                                 Model<p class="text-primary" id="text-model"></p>
                             </div>
                             <div class="col-md-3 mt-2">
-                                <h5 class="card-title">Temperature</h5>
+                                <label for="rec-name">Recorder Name (ชื่อผู้บันทึก)</label>
+                                <input type="text" class="form-control text-center" id="rec-name">
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="temp">Temperature (อุณหภูมิ)</label>
                                 <input type="number" class="form-control text-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp">
                             </div>
 
@@ -331,6 +335,7 @@
         $('#set').click(() => {
             event.preventDefault()
             let temp = $('#temp').val()
+            let rec_name = $('#rec-name').val()
             let rand = Array.from({ length: 100 }, () => randomIntFromInterval(2, 8));
             // let i = 0
             // let date = new Date(2022, 2, 1, 0, 0, 0, 0)
@@ -353,6 +358,13 @@
             //     // setValue(rand[i], 'PYT3', 'PHA1')
             //     // i++
             // }, 1000)
+            if (rec_name == '') return Swal.fire({
+                icon: 'error',
+                title: 'กรุณากรอกชื่อผู้บันทึก',
+                showConfirmButton: false,
+                timer: 1500,
+                position: 'top',
+            })
             if (temp == '') return Swal.fire({
                 icon: 'error',
                 title: 'กรุณากรอกอุณหภูมิ',
@@ -414,6 +426,7 @@
             // })
             let time = date.getTime()
             let temp = parseFloat($('#temp').val())
+            let rec_name = $('#rec-name').val()
             let obj = {
                 form: 'temperature',
                 e_dept: dept,
@@ -421,6 +434,7 @@
                 e_code: id,
                 e_model: model,
                 e_name: name,
+                staff_name: rec_name,
                 date: date.toLocaleString('th-TH', {
                     month: "numeric",
                     day: "numeric",
