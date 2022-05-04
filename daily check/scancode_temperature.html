@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily check scan Temperature</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="icon" href="/icon.png" type="image/png">
+</head>
+
+<body>
+    <script>
+        var firestore
+        window.onload = () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
+                authDomain: "daily-check-form.firebaseapp.com",
+                projectId: "daily-check-form",
+                storageBucket: "daily-check-form.appspot.com",
+                messagingSenderId: "544837049860",
+                appId: "1:544837049860:web:462e6b854290b1dec39f51"
+            };
+            const defaultProject = firebase.initializeApp(firebaseConfig);
+            console.log(defaultProject.name);  // "[DEFAULT]"
+            firestore = defaultProject.firestore();
+        }
+    </script>
+    <script>
+        liff.init({ liffId: '1657104960-5boWwokQ' })
+        liff.ready.then(() => {
+            if (!liff.isLoggedIn()) {
+                return liff.login()
+            }
+            scancode()
+
+        })
+
+        function scancode() {
+            liff.scanCodeV2()
+                .then((result) => {
+                    let id = result.value.split('=')[1]
+                    firestore.collection('PYT3_e').doc(id).get().then(docs => {
+                        let d = docs.data()
+                        if (docs.exists && d.form == 'temperature') {
+                            let url = 'https://pyt3.github.io/forms/daily%20check/temperature'
+                            url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
+                            liff.openWindow({
+                                url: url,
+                                // external: true
+                            })
+                            liff.closeWindow()
+                        } else {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'ไม่พบข้อมูล หรือท่านอาจเลือกชนิดเครื่องมือไม่ถูกต้อง',
+                                confirmButtonText: 'แสกนอีกครั้ง',
+                                cancelButtonText: 'ปิดหน้าต่าง',
+                                showCancelButton: true,
+                            }).then(result => {
+                                if (result.isConfirmed) {
+                                    scancode()
+                                } else {
+                                    liff.closeWindow()
+                                }
+                            })
+                        }
+                    })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                })
+        }
+    </script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>
