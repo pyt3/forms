@@ -19,6 +19,7 @@
         body {
             width: 100%;
             height: 100%;
+            overflow-x: hidden;
             font-family: 'Akshar', sans-serif;
             font-family: 'Prompt', sans-serif;
             /* background-color: #fafafa; */
@@ -88,20 +89,28 @@
                         </div>
                         <div class="row justify-content-start">
                             <div class="col-md-3 mt-3">
-                                <label for="rec_name">Recorder Name</label>
-                                <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
+                                <label for="e_name">Equipment Name</label>
+                                <input type="text" name="e_name" id="e_name" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
-                                <label for="e_code">Equipment Code</label>
+                                <label for="e_code">Code</label>
                                 <input type="text" name="e_code" id="e_code" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
-                                <label for="e_brand">Equipment Brand</label>
+                                <label for="e_brand">Brand</label>
                                 <input type="text" name="e_brand" id="e_brand" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="e_model">Model</label>
+                                <input type="text" name="e_model" id="e_model" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="e_dept">Department</label>
                                 <input type="text" name="e_dept" id="e_dept" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="rec_name">Recorder Name</label>
+                                <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
                             </div>
                         </div>
                     </section>
@@ -394,20 +403,28 @@
                         </div>
                         <div class="row justify-content-start">
                             <div class="col-md-3 mt-3">
-                                <label for="afteruse_rec_name">Recorder Name</label>
-                                <input type="text" name="afteruse_rec_name" id="afteruse_rec_name" class="form-control" autocomplete="on" required>
+                                <label for="afteruse_e_name">Equipment Name</label>
+                                <input type="text" name="afteruse_e_name" id="afteruse_e_name" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
-                                <label for="afteruse_e_code">Equipment Code</label>
+                                <label for="afteruse_e_code">Code</label>
                                 <input type="text" name="afteruse_e_code" id="afteruse_e_code" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
-                                <label for="afteruse_e_brand">Equipment Brand</label>
+                                <label for="afteruse_e_brand">Brand</label>
                                 <input type="text" name="afteruse_e_brand" id="afteruse_e_brand" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_e_model">Model</label>
+                                <input type="text" name="afteruse_e_model" id="afteruse_e_model" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="afteruse_e_dept">Department</label>
                                 <input type="text" name="afteruse_e_dept" id="afteruse_e_dept" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="afteruse_rec_name">Recorder Name</label>
+                                <input type="text" name="rec_name" id="afteruse_rec_name" class="form-control" autocomplete="on" required>
                             </div>
                         </div>
                     </section>
@@ -513,7 +530,7 @@
             const defaultProject = firebase.initializeApp(firebaseConfig);
             console.log(defaultProject.name);  // "[DEFAULT]"
             firestore = defaultProject.firestore();
-            getDataForID()
+            // getDataForID()
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
@@ -662,14 +679,20 @@
         var pdfDoc
         var PDFDocument = PDFLib.PDFDocument;
         var report = {}
-        var client, dept, id
+        var client, dept, id, brand, model, name
         var url_string = window.location.href
         var url = new URL(url_string);
         client = url.searchParams.get("client") || "PYT3";
-        // dept = url.searchParams.get("dept") || "ICU3";
+        dept = url.searchParams.get("dept") || "PHA2";
+        brand = url.searchParams.get("brand") || "Philips";
+        model = url.searchParams.get("model") || "SKY";
+        name = url.searchParams.get("name") || "TESTTESTTESTTE";
         id = url.searchParams.get("id") || "PYT3_01234";
-        console.log(id);
         $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
+        $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
+        $('#e_dept, #afteruse_e_dept').val(dept).attr('readonly', true)
+        $('#e_model, #afteruse_e_model').val(model).attr('readonly', true)
+        $('#e_name, #afteruse_e_name').val(name).attr('readonly', true)
         $('#report').change(function () {
             report = {}
             var file = this.files[0]
@@ -829,7 +852,7 @@
                             })
                             return firestore.collection(client).add(obj).then(() => {
                                 // obj.img = report.data
-                                sendNotify(obj)
+                                sendNotify(obj, 'afteruse')
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'บันทึกข้อมูลเรียบร้อย',
@@ -871,9 +894,9 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.25 * 1024 * 1024)
-            return $.getJSON(script_url, function (result) {
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
                 var metadata = {
-                    name: 'defib daily check afteruse staff ' + now.toLocaleString('th-TH', {
+                    name: `defib daily check afteruse ${$('#afteruse_rec_name')} ` + now.toLocaleString('th-TH', {
                         hour12: false,
                         month: "numeric",
                         day: "numeric",
@@ -922,18 +945,10 @@
             })
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
-            var metadata = {
-                name: 'defib daily report' + now.toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                })
-            };
             var chunkSize = Math.round(0.25 * 1024 * 1024)
-            return $.getJSON(script_url, function (result) {
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
                 var metadata = {
-                    name: 'defib daily check report' + now.toLocaleString('th-TH', {
+                    name: `defib daily check report ${$('#rec_name')} ` + now.toLocaleString('th-TH', {
                         hour12: false,
                         month: "numeric",
                         day: "numeric",
@@ -948,7 +963,7 @@
                         return report_url += res.id
                     })
                 metadata = {
-                    name: 'defib daily check staff' + now.toLocaleString('th-TH', {
+                    name: 'defib daily check staff ' + now.toLocaleString('th-TH', {
                         hour12: false,
                         month: "numeric",
                         day: "numeric",
@@ -1085,11 +1100,12 @@
                 }
             })
             if (msg != '') {
-                if (form = 'afteruse') {
+                if (form == 'afteruse') {
                     msg = `แจ้งอาการผิดปกติเครื่อง Defibrilator หลังใช้งาน
 วันที่: ${obj.date}
 รหัส: ${obj.afteruse_e_code}
 แผนก: ${obj.afteruse_e_dept}
+ผู้บันทึก: ${obj.afteruse_rec_name}
 อาการ: 
 ${msg}`
                 } else {
@@ -1097,8 +1113,9 @@ ${msg}`
 วันที่: ${obj.date}
 รหัส: ${obj.e_code}
 แผนก: ${obj.e_dept}
+ผู้บันทึก: ${obj.rec_name}
 อาการ: 
-${msg}`
+${msg.trim()}`
                 }
 
                 let option = {
