@@ -48,20 +48,20 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row justify-content-center">
-                            <div class="col-md-12 text-center mt-2">
-                                Name<p class="h5 text-primary" id="text-name"></p>
+                            <div class="col-md-12 text-center ">
+                                Name<p class="text-primary" id="text-name"></p>
                             </div>
-                            <div class="col-md-3 text-center mt-2">
-                                Code <p class="h5 text-primary" id="text-id"></p>
+                            <div class="col-md-3 text-center ">
+                                Code <p class="text-primary" id="text-id"></p>
                             </div>
-                            <div class="col-md-3 text-center mt-2">
-                                Department<p class="h5 text-primary" id="text-dept"></p>
+                            <div class="col-md-3 text-center ">
+                                Department<p class="text-primary" id="text-dept"></p>
                             </div>
-                            <div class="col-md-3 text-center mt-2">
-                                Brand<p class="h5 text-primary" id="text-brand"></p>
+                            <div class="col-md-3 text-center ">
+                                Brand<p class="text-primary" id="text-brand"></p>
                             </div>
-                            <div class="col-md-3 text-center mt-2">
-                                Model<p class="h5 text-primary" id="text-model"></p>
+                            <div class="col-md-3 text-center ">
+                                Model<p class="text-primary" id="text-model"></p>
                             </div>
                             <div class="col-md-3 mt-2">
                                 <h5 class="card-title">Temperature</h5>
@@ -582,8 +582,9 @@
             resizeCanvas = function () {
                 var ratio = Math.max(window.devicePixelRatio || 1, 1);
                 canvas.width = canvas.offsetWidth * ratio;
-                if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
-                else canvas.height = canvas.offsetHeight * ratio;
+                // if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
+                // else 
+                canvas.height = canvas.offsetHeight * ratio;
                 canvas.getContext("2d").scale(ratio, ratio);
                 signaturePad.clear(); // otherwise isEmpty() might return incorrect value
 
