@@ -745,12 +745,6 @@
                 year: "numeric"
             })
 
-            Swal.update({
-                title: 'กำลังบันทึกข้อมูล',
-                html: 'กรุณารอสักครู่...',
-                showConfirmButton: true
-            })
-            Swal.showLoading(Swal.getConfirmButton())
             firestore.collection(client)
                 .where("date", "==", new Date().toLocaleString('th-TH', {
                     hour12: false,
@@ -894,7 +888,7 @@
             })
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
-            var chunkSize = Math.round(0.25 * 1024 * 1024)
+            var chunkSize = Math.round(0.75 * 1024 * 1024)
             return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
                 var metadata = {
                     name: `defib daily check afteruse ${$('#afteruse_rec_name')} ` + now.toLocaleString('th-TH', {
@@ -990,15 +984,14 @@
         let firstfile = true
         function handleProgress(value) {
             if (value === 0) console.log("Uploading...");
-            else if (value === 1 && firstfile) {
-                firstfile = false
-            } else if (value === 1) {
+            else if (value === 1) {
+                firstfile = !firstfile
                 console.log("Upload complete!");
             }
             else {
                 console.log("Uploading... " + value * 100 + "%");
             }
-            let percent = firstfile ? Math.round(value * 50) : (Math.round(value * 50) + 50)
+            let percent = Math.round(value * 100)
             Swal.update({
                 // text: "Uploading... " +Math.round( value * 100) + "%",
                 html: `<div class="progress">
