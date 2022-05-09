@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.4.0/chartjs-plugin-annotation.min.js" integrity="sha512-HrwQrg8S/xLPE6Qwe7XOghA/FOxX+tuVF4TxbvS73/zKJSs/b1gVl/P4MsdfTFWYFYg/ISVNYIINcg35Xvr6QQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@1.5.3/dist/jspdf.min.js"></script>
+    <script>Chart.register('chartjs-plugin-annotation');</script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <style>
+        body {
+            background-color: #fafafa;
+            /* width: 100vw; */
+            height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            font-family: 'Akshar', sans-serif;
+            font-family: 'Prompt', sans-serif;
+        }
+    </style>
+    <title>Temperature Daily Logger</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="20" class="d-inline-block">
+                Daily Check
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" aria-current="page" href="">Home</a>
+                    <a class="nav-link" href="login.html">For Approved</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-12 text-center px-5 mt-3">
+                <img src="https://img.in.th/images/92cc41f62e7a8b08398ed7cddcc22725.jpg" alt="banner" class="img-fluid" style="max-width: 150px;">
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mb-5 pb-2">
+        <div class="row justify-content-center m-1 mt-3">
+            <div class="col-12 text-center">
+                <p class="h2 fw-bold text-primary">Temperature Logger</p>
+            </div>
+        </div>
+        <div class="row justify-content-center m-1">
+            <div class="col-12 text-center">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 text-center ">
+                                Name<p class="text-primary" id="text-name"></p>
+                            </div>
+                            <div class="col-md-3 text-center ">
+                                Code <p class="text-primary" id="text-id"></p>
+                            </div>
+                            <div class="col-md-3 text-center ">
+                                Department<p class="text-primary" id="text-dept"></p>
+                            </div>
+                            <div class="col-md-3 text-center ">
+                                Brand<p class="text-primary" id="text-brand"></p>
+                            </div>
+                            <div class="col-md-3 text-center ">
+                                Model<p class="text-primary" id="text-model"></p>
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="rec-name">Recorder Name (ชื่อผู้บันทึก)</label>
+                                <input type="text" class="form-control text-center" id="rec-name">
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="temp">Temperature (อุณหภูมิ)</label>
+                                <input type="number" class="form-control text-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp">
+                            </div>
+
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-5 mt-3">
+                                <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
+                                <div class="rounded border border-3">
+                                    <canvas id="signature" name="signature" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                </div>
+                                <div class="col text-end">
+                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col">
+                                <button class="btn btn-warning mt-2" type="button" id="set" style="min-width: 150px">SAVE</button>
+                                <button id="get" hidden>read</button><br>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <!-- <label for="temp" class="form-label">Temperature
+                    <input type="number" id="temp" class="form-control">
+                    <button id="set" class="btn btn-warning">save</button>
+                </label> -->
+
+        </div>
+
+    </div>
+
+    <div class="row justify-content-center align-items-end m-1">
+        <div class="col-md-4 text-center">
+            <label for="from">From</label>
+            <input type="date" name="from" id="from" class="form-control">
+        </div>
+        <div class="col-md-4 text-center mt-2 mt-md-0 ">
+            <label for="to">To</label>
+            <input type="date" name="from" id="to" class="form-control">
+        </div>
+        <div class="col-6 col-md-2 mt-2 mt-md-0  text-center">
+            <button id="filter" class="btn btn-success w-100">Filter</button>
+        </div>
+        <div class="col-6 col-md-2 mt-2 mt-md-0 text-center">
+            <button id="print" class="btn btn-info w-100">Print</button>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <canvas id="myChart" style="height: 600px; width: 100%"></canvas>
+    </div>
+    <footer>
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-end">
+                <img src="https://img.in.th/images/e5f742132b3648b83a134257cc05d903.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+
+                <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-end" style="font-size: 0.7rem;">
+                Developed by <span class="text-primary">Daranphop Yimyam</span>
+            </div>
+
+        </div>
+    </footer>
+    <script>
+        var firestore
+        var client, dept, id, brand, model, name
+        $(document).ready(() => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
+                authDomain: "daily-check-form.firebaseapp.com",
+                projectId: "daily-check-form",
+                storageBucket: "daily-check-form.appspot.com",
+                messagingSenderId: "544837049860",
+                appId: "1:544837049860:web:462e6b854290b1dec39f51"
+            };
+            const defaultProject = firebase.initializeApp(firebaseConfig);
+            console.log(defaultProject.name);  // "[DEFAULT]"
+            firestore = defaultProject.firestore();
+            var url_string = window.location.href
+            var url = new URL(url_string);
+            client = url.searchParams.get("client") || "PYT3";
+            dept = url.searchParams.get("dept") || "INTENSIVE CARE UNIT(ผู้ป่วยหนัก)";
+            brand = url.searchParams.get("brand") || "Philips";
+            model = url.searchParams.get("model") || "SKY";
+            name = url.searchParams.get("name") || "TESTTESTTESTTE";
+            id = url.searchParams.get("id") || "PYT3_01234";
+            console.log(client, dept, id);
+            $("#text-id").text(id);
+            $("#text-dept").text(dept);
+            $("#text-brand").text(brand);
+            $("#text-model").text(model);
+            $("#text-name").text(name);
+            let today = new Date();
+            let fromdate = new Date(new Date().setDate(new Date().getDate() - 30))
+            $('#from').val(fromdate.getFullYear() + '-' + ('00' + (fromdate.getMonth() + 1)).slice(-2) + '-' + ('00' + (fromdate.getDate())).slice(-2));
+            $('#to').val(today.getFullYear() + '-' + ('00' + (today.getMonth() + 1)).slice(-2) + '-' + ('00' + today.getDate()).slice(-2));
+            $('#filter').click()
+        })
+    </script>
+    <script>
+
+        var myChart
+        function createCharts(label, data) {
+
+            if (myChart) {
+                myChart.destroy()
+            }
+            $('#myChart').parent().append('<canvas id="myChart" style="height: 600px; width: 100%"></canvas>')
+            $('#myChart').remove()
+            var ctx = document.getElementById('myChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: label,
+                    datasets: [{
+                        label: 'Temperature',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            // 'rgba(54, 162, 235, 1)',
+                            // 'rgba(255, 206, 86, 1)',
+                            // 'rgba(75, 192, 192, 1)',
+                            // 'rgba(153, 102, 255, 1)',
+                            // 'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 2,
+                        radius: 4,
+                        // cubicInterpolationMode: 'monotone',
+                        // tension: 0.1
+                    }]
+                },
+                options: {
+                    // responsive: false,
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Temperature`
+                        },
+                        subtitle: {
+                            display: true,
+                            text: `ชื่อ: ${name} รหัส: ${id} แผนก: ${dept} ${client}`
+                        },
+                        autocolors: false,
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 2,
+                                    yMax: 2,
+                                    borderColor: '#00bcd4',
+                                    borderWidth: 1,
+                                    borderDash: [5],
+                                },
+                                box1: {
+                                    type: 'box',
+                                    xMin: 0,
+                                    xMax: data.length,
+                                    yMin: 2,
+                                    yMax: 8,
+                                    borderWidth: 0,
+                                    borderDash: [5],
+                                    backgroundColor: 'rgba(0, 188, 212, 0.1)',
+                                },
+                                // box2: {
+                                //     type: 'box',
+                                //     xMin: 0,
+                                //     xMax: data.length,
+                                //     yMin: 8,
+                                //     yMax: 25,
+                                //   borderWidth: 0,
+                                //     backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                // },
+                                // box3: {
+                                //     type: 'box',
+                                //     xMin: 0,
+                                //     xMax: data.length,
+                                //     yMin: -2,
+                                //     yMax: 2,
+                                //   borderWidth: 0,
+                                //     backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                // },
+                                line2: {
+                                    type: 'line',
+                                    yMin: 8,
+                                    yMax: 8,
+                                    borderColor: '#ff0000',
+                                    borderWidth: 1,
+                                    borderDash: [5],
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            // beginAtZero: true,
+                            suggestedMin: -5,
+                            suggestedMax: 15,
+                            ticks: {
+                                stepSize: 1,
+                                autoSkip: false,
+                            }
+                        },
+                        x: {
+                            // type: 'linear',
+                            // beginAtZero: true,
+                            suggestedMin: 0,
+                            ticks: {
+                                stepSize: 1,
+                                // autoSkip: false,
+                                maxRotation: 90,
+                                minRotation: 90
+                            }
+                        }
+                    },
+                    // animation: animation,
+                    // interaction: {
+                    //     intersect: false
+                    // },
+                    // scales: {
+                    // }
+                }
+            });
+            myChart.update();
+        }
+    </script>
+    <script>
+        function randomIntFromInterval(min, max) { // min and max included 
+            return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+        $('#set').click(() => {
+            event.preventDefault()
+            let temp = $('#temp').val()
+            let rec_name = $('#rec-name').val()
+            let rand = Array.from({ length: 100 }, () => randomIntFromInterval(2, 8));
+            // let i = 0
+            // let date = new Date(2022, 2, 1, 0, 0, 0, 0)
+            // let interval = setInterval(() => {
+            //     $('body').append('<br>' + rand[i])
+            //     i++
+            //     if (i % 2 == 0) {
+            //         date.setHours(8)
+            //         if (rand[i]) setValue(rand[i],date)
+            //         return
+            //     } else {
+            //         date.setHours(17)
+            //         if (rand[i]) setValue(rand[i], date)
+            //         if (date.getHours() >= 17) {
+            //             date.setHours(0)
+            //             date.setDate(date.getDate() + 1)
+            //         }
+            //         return
+            //     }
+            //     // setValue(rand[i], 'PYT3', 'PHA1')
+            //     // i++
+            // }, 1000)
+            if (rec_name == '') return Swal.fire({
+                icon: 'error',
+                title: 'กรุณากรอกชื่อผู้บันทึก',
+                showConfirmButton: false,
+                timer: 1500,
+                position: 'top',
+            })
+            if (temp == '') return Swal.fire({
+                icon: 'error',
+                title: 'กรุณากรอกอุณหภูมิ',
+                showConfirmButton: false,
+                timer: 1500,
+                position: 'top',
+            })
+
+            uploadFile()
+            // setValue(temp)
+            // getValue()
+        })
+        $('#get').click(() => {
+            getValue()
+        })
+        $('#filter').click(() => {
+            let temp = $('#temp').val()
+            let from = Date.parse($('#from').val())
+            let to = Date.parse($('#to').val()) + (1000 * 60 * 60 * 24)
+            let col_date = new Date().toLocaleDateString().replace(/\//g, '_')
+            return firestore.collection(client).where('form', '==', 'temperature').where('time', '>=', from).where('time', '<=', to).where('e_dept', '==', dept).where('e_code', '==', id).get().then(snapshot => {
+                let data = []
+
+                let label = []
+                snapshot.forEach(doc => {
+                    label.push(new Date(parseInt(doc.data().time)).toLocaleString('th-TH', {
+                        hour12: false,
+                        hour: "numeric",
+                        minute: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    }))
+                    data.push(doc.data().temp)
+                })
+                console.log("🚀 ~ data", data)
+                createCharts(label, data)
+            })
+        })
+        $('#print').click(() => {
+            var canvas = document.querySelector("#myChart");
+            var canvas_img = canvas.toDataURL("image/png", 1.0); //JPEG will not match background color
+            var pdf = new jsPDF('landscape', 'in', 'a4'); //orientation, units, page size
+            pdf.addImage(canvas_img, 'png', .5, .5, 10, 5); //image, type, padding left, padding top, width, height
+            pdf.autoPrint(); //print window automatically opened with pdf
+            var blob = pdf.output("bloburl");
+            window.open(blob);
+        });
+        async function setValue(signature_url, date = new Date()) {
+            let col_date = date.toLocaleDateString().replace(/\//g, '_')
+            let doc = date.getTime().toString()
+            // await firestore.collection(client).doc(dept).collection(col_date).doc(doc).get().then(function (querySnapshot) {
+            //     if (!querySnapshot.exists) {
+            //         firestore.collection(client).doc(dept).collection(col_date).add({
+            //             temp: temp,
+            //             date: date
+            //         })
+            //     }
+            // })
+            let time = date.getTime()
+            let temp = parseFloat($('#temp').val())
+            let rec_name = $('#rec-name').val()
+            let obj = {
+                form: 'temperature',
+                e_dept: dept,
+                e_brand: brand,
+                e_code: id,
+                e_model: model,
+                e_name: name,
+                rec_name: rec_name,
+                date: date.toLocaleString('th-TH', {
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                }),
+                signature_staff: signature_url,
+                temp: temp,
+                time: date.getTime()
+            }
+            return await firestore.collection(client).add(obj).then(() => {
+                console.log("🚀 ~ setValue", temp)
+                if (temp < 2 || temp > 8) {
+                    sendNotify(obj)
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกข้อมูลเรียบร้อย',
+
+                }).then(() => {
+                    location.reload()
+                })
+                addData(date.toLocaleString('th-TH', {
+                    hour12: false,
+                    hour: "numeric",
+                    minute: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                }), temp)
+            }).catch(function (error) {
+                console.error(error)
+            });
+        }
+        async function getValue() {
+            let date = new Date().getTime()
+            return firestore.collection(client).where("time", "<=", date).where('form', '==', 'temperature').get().then(function (querySnapshot) {
+                let data = []
+                let label = []
+                querySnapshot.forEach(function (doc) {
+                    label.push(new Date(parseInt(doc.data().time)).toLocaleString('th-TH', {
+                        hour12: false,
+                        hour: "numeric",
+                        minute: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    }))
+                    data.push(doc.data().temp)
+                });
+                console.log(data)
+                console.log(label)
+                createCharts(label, data)
+            })
+        }
+        function addData(label, data) {
+            myChart.data.labels.push(label);
+            myChart.data.datasets.forEach((dataset) => {
+                dataset.data.push(data)
+                // dataset.data = dataset.data.slice(0,20)
+            });
+            myChart.options.plugins.annotation.annotations.box1.xMax = myChart.data.labels.length
+            myChart.update();
+        }
+
+        const script_url = 'https://script.google.com/macros/s/AKfycbxlVshSHWBOLK3TlWk_KIykaUUSPLe2-OGM8qK0aYWWJWdtJ-0JBkfCDqCSiTsOzwMg/exec'
+        function sendNotify(obj) {
+            let msg = ''
+            if (obj.temp < 2) {
+                msg = 'อุณหภูมิน้อยกว่า 2 องศาเซลเซียส'
+            }
+            else if (obj.temp > 8) {
+                msg = 'อุณหภูมิมากกว่า 8 องศาเซลเซียส'
+            }
+            msg = `แจ้งเตือนการบันทึก${msg}
+วันที่ ${new Date(obj.time).toLocaleString({
+                hour12: false,
+                hour: "numeric",
+                minute: "numeric",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            })}
+อุณหภูมิ ${obj.temp} องศาเซลเซียส
+ชื่อ: ${obj.e_name}
+รหัส: ${obj.e_code}
+ยี่ห้อ: ${obj.e_brand}
+รุ่น: ${obj.e_model}
+หน่วยงาน: ${obj.e_dept}
+ผู้บันทึก: ${obj.rec_name}`
+
+
+
+            let option = {
+                opt: 'notify',
+                msg: msg
+            }
+            $.post(script_url, option)
+        }
+
+
+    </script>
+    <script>
+        var signaturePad, signaturePadAfterUse, resizeCanvas
+        $(document).ready(() => {
+            SignaturePad.prototype.removeBlanks = function () {
+                var imgWidth = this._ctx.canvas.width;
+                var imgHeight = this._ctx.canvas.height;
+                var imageData = this._ctx.getImageData(0, 0, imgWidth, imgHeight),
+                    data = imageData.data,
+                    getAlpha = function (x, y) {
+                        return data[(imgWidth * y + x) * 4 + 3]
+                    },
+                    scanY = function (fromTop) {
+                        var offset = fromTop ? 1 : -1;
+
+                        // loop through each row
+                        for (var y = fromTop ? 0 : imgHeight - 1; fromTop ? (y < imgHeight) : (y > -1); y += offset) {
+
+                            // loop through each column
+                            for (var x = 0; x < imgWidth; x++) {
+                                if (getAlpha(x, y)) {
+                                    return y;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    },
+                    scanX = function (fromLeft) {
+                        var offset = fromLeft ? 1 : -1;
+
+                        // loop through each column
+                        for (var x = fromLeft ? 0 : imgWidth - 1; fromLeft ? (x < imgWidth) : (x > -1); x += offset) {
+
+                            // loop through each row
+                            for (var y = 0; y < imgHeight; y++) {
+                                if (getAlpha(x, y)) {
+                                    return x;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    };
+
+                var cropTop = scanY(true),
+                    cropBottom = scanY(false),
+                    cropLeft = scanX(true),
+                    cropRight = scanX(false);
+
+                var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
+                console.log(this)
+                this.canvas.width = cropRight - cropLeft;
+                this.canvas.height = cropBottom - cropTop;
+                this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
+                this._ctx.putImageData(relevantData, 0, 0);
+            };
+            var canvas = document.getElementById("signature");
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: "rgb(255,255,255,0)",
+                penColor: "rgb(0,0,255)",
+            });
+
+            (() => {
+                $('#save').on('click', () => {
+                    event.preventDefault()
+                    let signature = signaturePad.toDataURL();
+                    let a = document.createElement('a')
+                    a.href = signature
+                    a.setAttribute('download', 'signature')
+                    a.click();
+                })
+                $('.clear-signature').on('click', () => {
+                    event.preventDefault()
+                    resizeCanvas()
+                    signaturePad.clear()
+                })
+            })()
+            resizeCanvas = function () {
+                var ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                // if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
+                // else 
+                canvas.height = canvas.offsetHeight * ratio;
+                canvas.getContext("2d").scale(ratio, ratio);
+                signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+
+            }
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
+        })
+
+    </script>
+    <script>
+        function uploadFile() {
+            if (signaturePad.isEmpty()) {
+                return Swal.fire({
+                    icon: 'info',
+                    title: 'กรุณาลงลายมือชื่อรับรองข้อมูล'
+                })
+            }
+            signaturePad.removeBlanks()
+            let ctx = $('#signature')[0].getContext('2d')
+            ctx.font = '11px Arial'
+            ctx.fillStyle = '#525252'
+            ctx.fillText(new Date().toLocaleString('th-TH', {
+                hour12: false,
+                minute: "numeric",
+                hour: "numeric",
+                second: "numeric",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            }), $('#signature')[0].width - 120, $('#signature')[0].height - 8)
+            let signatureblob = signaturePad.toDataURL()
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                text: 'saving...',
+                allowOutsideClick: false
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            let now = new Date()
+            var chunkSize = Math.round(0.25 * 1024 * 1024)
+            return $.getJSON(script_url + `?id=${id}&form=temperature`, function (result) {
+                let signature_url = 'https://drive.google.com/uc?id='
+                const metadata = {
+                    name: 'temperature daily check staff' + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        signature_url += res.id
+                        return setValue(signature_url)
+                    })
+            })
+        }
+        let firstfile = true
+        function handleProgress(value) {
+            if (value === 0) console.log("Uploading...");
+            else if (value === 1 && firstfile) {
+                firstfile = false
+            } else if (value === 1) {
+                console.log("Upload complete!");
+            }
+            else {
+                console.log("Uploading... " + value * 100 + "%");
+            }
+            let percent = firstfile ? Math.round(value * 50) : (Math.round(value * 50) + 50)
+            Swal.update({
+                // text: "Uploading... " +Math.round( value * 100) + "%",
+                html: `<div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
+    </div>`,
+                allowOutsideClick: false,
+                showConfirmButton: false
+            })
+            // Swal.showLoading(Swal.getConfirmButton())
+        }
+        function showUploadEnd(e) {
+            Swal.fire({
+                icon: 'success',
+                title: 'อัพโหลดรูปภาพเรียบร้อย',
+                text: 'กรุณารอสักครู่',
+            })
+            return e.id
+        }
+        function dataURItoBlob(dataURI) {
+            var byteString = atob(dataURI.split(',')[1]);
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: 'image/png' });
+        }
+    </script>
+    <script>
+        async function gdriveUpload(opt) {
+            if (!(opt.file && opt.token)) throw new TypeError("bad param");
+            if (!opt.file.size) return new Error("empty file");
+            let res
+            try {
+                const location = await getUploadLocation();
+                if (location instanceof Error) return location;
+                res = await uploadChunks(location);
+                if (res instanceof Error) return res;
+                return res;
+            } catch (error) {
+                if (error instanceof Error) return error;
+                throw error;
+            }
+            async function getUploadLocation() {
+                let metadata = { mimeType: opt.file.type, name: opt.file.name };
+                if (opt.folder) metadata.parents = [opt.folder];
+                if (opt.metadata) metadata = { ...metadata, ...opt.metadata };
+                try {
+                    const response = await fetch(
+                        "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
+                        {
+                            method: "POST", cache: "no-cache",
+                            headers: {
+                                Authorization: "Bearer " + opt.token,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(metadata)
+                        });
+                    if (!response.ok) return new Error(`create: ${response.status} ${response.statusText}`);
+                    const location = response.headers.get("location");
+                    if (!location) return new Error("no location");
+                    return location;
+                } catch (error) {
+                    if (error instanceof Error) return error;
+                    throw error;
+                }
+            }
+            async function uploadChunks(location) {
+                const onProgress = opt.onProgress || ((_v) => { });
+                const chunkSize = opt.chunkSize || _DEFAULT.chunkSize;
+                if (chunkSize <= 0 || chunkSize % (256 * 1024))
+                    throw TypeError("bad chunkSize: " + chunkSize);
+                const size = opt.file.size;
+                try {
+                    for (let end = NaN, start = 0; ; start = end + 1) {
+                        onProgress(start / size); // signal progress
+                        end = Math.min(start + chunkSize, size);
+                        const blob = await opt.file.slice(start, end).arrayBuffer(); // read from file
+                        const response = await fetch(location, // upload the chunk to location
+                            {
+                                method: "PUT", cache: "no-cache", body: blob,
+                                headers: { "Content-Range": `bytes ${start}-${end - 1}/${size}` }
+                            });
+                        if (response.ok) { // all done
+                            onProgress(1); // signal 100% progress
+                            return response.json(); // success
+                        }
+                        if (response.status != 308) return new Error(`upload: ${response.status} ${response.statusText}`);
+                        const r = response.headers.get("Range");
+                        if (!r) return new Error("no Range");
+                        end = parseInt(r.substr(r.indexOf("-") + 1)); // get where the real upload end
+                        if (!Number.isInteger(end) || end <= start) return new Error("bad range: " + r);
+                    }
+                } catch (error) {
+                    if (error instanceof Error) return error;
+                    throw error;
+                }
+            }
+        }
+    </script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+</body>
+
+</html>
