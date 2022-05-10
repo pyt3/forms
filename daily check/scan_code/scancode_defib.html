@@ -42,7 +42,8 @@
                     firestore.collection('PYT3_e').doc(id).get().then(docs => {
                         let d = docs.data()
                         if (docs.exists && d.form == 'defibrillator') {
-                            let url = new URL('https://liff.line.me/1657104960-wXQRkQ87')
+                           // let url = new URL('https://liff.line.me/1657104960-wXQRkQ87')
+                            let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
                            url.searchParams.set("id",id)
                             url.searchParams.set("name",d.name)
                             url.searchParams.set("dept",d.dept)
