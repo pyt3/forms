@@ -689,7 +689,8 @@
         var url_string = window.location.href
         console.log(url_string)
         var url = new URL(url_string);
-        url = new URL(url.searchParams("liff.state"))
+        console.log(decodeURI(url.searchParams("liff.state")))
+        url = new URL(decodeURI(url.searchParams("liff.state")))
         client = url.searchParams.get("client") || "PYT3";
         dept = url.searchParams.get("dept") || "PHA2";
         brand = url.searchParams.get("brand") || "Philips";
