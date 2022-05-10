@@ -686,10 +686,10 @@
         var PDFDocument = PDFLib.PDFDocument;
         var report = {}
         var client, dept, id, brand, model, name
-        var url_string = window.location.href.split("state=")[1]
+        var url_string = window.location.href
     
         var url = new URL(url_string);
-        console.log(decodeURI(url_string))
+        //console.log(decodeURI(url_string))
         //rl = new URL(decodeURI(url.searchParams("liff.state")))
         client = url.searchParams.get("client") || "PYT3";
         dept = url.searchParams.get("dept") || "PHA2";
