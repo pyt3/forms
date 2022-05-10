@@ -42,8 +42,13 @@
                     firestore.collection('PYT3_e').doc(id).get().then(docs => {
                         let d = docs.data()
                         if (docs.exists && d.form == 'defibrillator') {
-                            let url = 'https://liff.line.me/1657104960-wXQRkQ87'
-                            url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
+                            let url = new URL('https://liff.line.me/1657104960-wXQRkQ87')
+                           url.searchParams.set("id",id)
+                            url.searchParams.set("name",d.name)
+                            url.searchParams.set("dept",d.dept)
+                            url.searchParams.set("brand",d.brand)
+                            url.searchParams.set("model",d.model)
+                            //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                             liff.openWindow({
                                 url: url,
                                 // external: true
