@@ -287,7 +287,7 @@
                                     sessionid: sissionid,
                                 })
                                 $('#sign-in-div').slideUp()
-                                getTableData()
+                                window.location.reload()
                             }
                         } else {
                             localStorage.setItem("session", JSON.stringify({
@@ -300,7 +300,9 @@
                             })
                             $('#sign-in-div').slideUp()
                             $('#data-div').show(200)
+                            $.LoadingOverlay("show");
                             getTableData()
+                            $.LoadingOverlay("hide");
                         }
                     } else {
                         Swal.fire({
