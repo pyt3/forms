@@ -302,6 +302,14 @@
                             $('#data-div').show(200)
                             getTableData()
                         }
+                    } else {
+                        Swal.fire({
+                            title: 'เข้าสู่ระบบไม่สำเร็จ',
+                            text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง'
+                        })
+                        return false
                     }
                 });
         }
