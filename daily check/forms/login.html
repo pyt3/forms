@@ -217,7 +217,10 @@
                 }
                 $('#signout-btn').show()
                 $('#data-div').show()
-                return getTableData(JSON.parse(session))
+                $.LoadingOverlay("show");
+                getTableData(JSON.parse(session))
+                $.LoadingOverlay("hide");
+                return false
             } else {
                 return $('#sign-in-div').removeClass('hide')
             }
@@ -285,9 +288,10 @@
                                     isFirstTime: false,
                                     pwd: formValues,
                                     sessionid: sissionid,
+                                }).then(() =>{
+                                    window.location.reload()
                                 })
                                 $('#sign-in-div').slideUp()
-                                window.location.reload()
                             }
                         } else {
                             localStorage.setItem("session", JSON.stringify({
