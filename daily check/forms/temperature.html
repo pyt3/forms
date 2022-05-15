@@ -162,7 +162,7 @@
     </footer>
     <script>
         var firestore
-        var client, dept, id, brand, model, name
+        var client, dept, id, brand, model, name, mintemp, maxtemp
         $(document).ready(() => {
             const firebaseConfig = {
                 apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
@@ -178,12 +178,14 @@
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
-            client = url.searchParams.get("client") || "PYT3";
-            dept = url.searchParams.get("dept") || "INTENSIVE CARE UNIT(ผู้ป่วยหนัก)";
-            brand = url.searchParams.get("brand") || "Philips";
-            model = url.searchParams.get("model") || "SKY";
-            name = url.searchParams.get("name") || "TESTTESTTESTTE";
-            id = url.searchParams.get("id") || "PYT3_01234";
+            client = url.searchParams.get("client")
+            dept = url.searchParams.get("dept")
+            brand = url.searchParams.get("brand")
+            model = url.searchParams.get("model")
+            name = url.searchParams.get("name")
+            id = url.searchParams.get("id")
+            mintemp = url.searchParams.get("mintemp")
+            maxtemp = url.searchParams.get("maxtemp")
             if (!client || !dept || !brand || !model || !name || !id) {
                 $('body').html('')
                 $.LoadingOverlay("hide");
@@ -195,7 +197,6 @@
                 })
                 return false
             }
-            console.log(client, dept, id);
             $("#text-id").text(id);
             $("#text-dept").text(dept);
             $("#text-brand").text(brand);
@@ -266,8 +267,8 @@
                             annotations: {
                                 line1: {
                                     type: 'line',
-                                    yMin: 2,
-                                    yMax: 2,
+                                    yMin: mintemp,
+                                    yMax: mintemp,
                                     borderColor: '#00bcd4',
                                     borderWidth: 1,
                                     borderDash: [5],
@@ -276,8 +277,8 @@
                                     type: 'box',
                                     xMin: 0,
                                     xMax: data.length,
-                                    yMin: 2,
-                                    yMax: 8,
+                                    yMin: mintemp,
+                                    yMax: maxtemp,
                                     borderWidth: 0,
                                     borderDash: [5],
                                     backgroundColor: 'rgba(0, 188, 212, 0.1)',
@@ -302,8 +303,8 @@
                                 // },
                                 line2: {
                                     type: 'line',
-                                    yMin: 8,
-                                    yMax: 8,
+                                    yMin: maxtemp,
+                                    yMax: maxtemp,
                                     borderColor: '#ff0000',
                                     borderWidth: 1,
                                     borderDash: [5],
@@ -462,7 +463,7 @@
             }
             return await firestore.collection(client).add(obj).then(() => {
                 console.log("🚀 ~ setValue", temp)
-                if (temp < 2 || temp > 8) {
+                if (temp < mintemp || temp > maxtemp) {
                     sendNotify(obj)
                 }
                 Swal.fire({
@@ -518,11 +519,11 @@
         const script_url = 'https://script.google.com/macros/s/AKfycbxlVshSHWBOLK3TlWk_KIykaUUSPLe2-OGM8qK0aYWWJWdtJ-0JBkfCDqCSiTsOzwMg/exec'
         function sendNotify(obj) {
             let msg = ''
-            if (obj.temp < 2) {
-                msg = 'อุณหภูมิน้อยกว่า 2 องศาเซลเซียส'
+            if (mintemp && obj.temp < mintemp) {
+                msg = `อุณหภูมิน้อยกว่า ${mintemp} องศาเซลเซียส`
             }
-            else if (obj.temp > 8) {
-                msg = 'อุณหภูมิมากกว่า 8 องศาเซลเซียส'
+            else if (maxtemp && obj.temp > 8) {
+                msg = `อุณหภูมิมากกว่า ${maxtemp} องศาเซลเซียส'`
             }
             msg = `แจ้งเตือนการบันทึก${msg}
 วันที่ ${new Date(obj.time).toLocaleString({
