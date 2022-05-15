@@ -57,6 +57,10 @@
                             url.searchParams.set("dept", d.dept)
                             url.searchParams.set("brand", d.brand)
                             url.searchParams.set("model", d.model)
+                            if (d.form == 'temperature') {
+                                url.searchParams.set("mintemp", d.mintemp)
+                                url.searchParams.set("maxtemp", d.maxtemp)
+                            }
                             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                             liff.openWindow({
                                 url: url.toString(),
