@@ -595,17 +595,17 @@
             model = url.searchParams.get("model")
             name = url.searchParams.get("name")
             id = url.searchParams.get("id")
-            // if (!client || !dept || !brand || !model || !name || !id) {
-            //     $('body').html('')
-            //     $.LoadingOverlay("hide");
-            //     Swal.fire({
-            //         title: 'Error',
-            //         text: 'Error occured, Please try again or contact BME',
-            //         allowOutsideClick: false,
-            //         showConfirmButton: false,
-            //     })
-            //     return false
-            // }
+            if (!client || !dept || !brand || !model || !name || !id) {
+                $('body').html('')
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error occured, Please try again or contact BME',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                })
+                return false
+            }
             $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
             $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
             $('#e_dept, #afteruse_e_dept').val(dept).attr('readonly', true)
