@@ -411,17 +411,13 @@
     <script>
         var firestore
         $(document).ready(function () {
-            const firebaseConfig = {
-                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
-                authDomain: "daily-check-form.firebaseapp.com",
-                projectId: "daily-check-form",
-                storageBucket: "daily-check-form.appspot.com",
-                messagingSenderId: "544837049860",
-                appId: "1:544837049860:web:462e6b854290b1dec39f51"
-            };
+           $.post(script_url,{opt: 'getconst'},function(c){
+            const firebaseConfig = c
             const defaultProject = firebase.initializeApp(firebaseConfig);
             console.log(defaultProject.name);  // "[DEFAULT]"
-            firestore = defaultProject.firestore();
+            firestore = defaultProject.firestore();       
+           })
+            
             // getDataForID()
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());

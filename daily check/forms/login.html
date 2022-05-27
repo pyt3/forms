@@ -110,7 +110,8 @@
                             Register
                         </button> -->
                         <p class="text-center text-primary mt-4" style="font-size: 0.8rem;">หากติดปัญหาการ sign in
-                            <br>ติดต่อแผนกเครื่องมือแพทย์</p>
+                            <br>ติดต่อแผนกเครื่องมือแพทย์
+                        </p>
                     </div>
                 </form>
                 <div class="row justify-content-center align-items-center">
@@ -139,13 +140,17 @@
                     aria-selected="true">Defibrillator</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="temperature-tab" data-bs-toggle="tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="temperature" aria-selected="false">Temperature</button>
+                <button class="nav-link" id="temperature-tab" data-bs-toggle="tab" data-bs-target="#temperature"
+                    type="button" role="tab" aria-controls="temperature" aria-selected="false">Temperature</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="incubator-tab" data-bs-toggle="tab" data-bs-target="#incubator" type="button" role="tab" aria-controls="incubator" aria-selected="false">Incubator</button>
+                <button class="nav-link" id="incubator-tab" data-bs-toggle="tab" data-bs-target="#incubator"
+                    type="button" role="tab" aria-controls="incubator" aria-selected="false">Incubator</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="monitorbedside-tab" data-bs-toggle="tab" data-bs-target="#monitorbedside" type="button" role="tab" aria-controls="monitorbedside" aria-selected="false">Monitor Bedside</button>
+                <button class="nav-link" id="monitorbedside-tab" data-bs-toggle="tab" data-bs-target="#monitorbedside"
+                    type="button" role="tab" aria-controls="monitorbedside" aria-selected="false">Monitor
+                    Bedside</button>
             </li>
         </ul>
 
@@ -172,13 +177,13 @@
     </div>
     <div class="copyright" align="center">
         <script>
-          document.write('&copy;' );
-          document.write(' 2022 ');
-          document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
-          
+            document.write('&copy;');
+            document.write(' 2022 ');
+            document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
+
         </script>
-      </div>
-      
+    </div>
+
     <!-- Modal -->
     <div class="modal fade" id="detail-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="detail-modalLabel" aria-hidden="true">
@@ -211,17 +216,12 @@
         var active_tab = 'defibrillator'
         client = url.searchParams.get("client") || "PYT3";
         $(document).ready(function () {
-            const firebaseConfig = {
-                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
-                authDomain: "daily-check-form.firebaseapp.com",
-                projectId: "daily-check-form",
-                storageBucket: "daily-check-form.appspot.com",
-                messagingSenderId: "544837049860",
-                appId: "1:544837049860:web:462e6b854290b1dec39f51"
-            };
-            const defaultProject = firebase.initializeApp(firebaseConfig);
-            console.log(defaultProject.name);  // "[DEFAULT]"
-            firestore = defaultProject.firestore();
+            $.post(script_url, { opt: 'getconst' }, function (c) {
+                const firebaseConfig = c
+                const defaultProject = firebase.initializeApp(firebaseConfig);
+                console.log(defaultProject.name);  // "[DEFAULT]"
+                firestore = defaultProject.firestore();
+            })
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                 let area = $(this).attr('data-bs-target')
                 $(area).LoadingOverlay('show');
