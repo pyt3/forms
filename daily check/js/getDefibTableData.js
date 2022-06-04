@@ -1,14 +1,14 @@
 async function getDefibTableData(session) {
     console.log("🚀 ~ session", session)
     if (session) {
-        return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
+        return firestore.collection(client).where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
             console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
             if (querySnapshot.docs.length > 0) {
                 user = querySnapshot.docs[0].data()
                 getDefibTableData()
             }
         });
-
+        //fg1alY9Loyolh2IFh5aFalR5LRNmVrbR
     } else {
         let ref
         let now = new Date()
