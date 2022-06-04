@@ -783,6 +783,19 @@
                 const defaultProject = firebase.initializeApp(firebaseConfig);
                 console.log(defaultProject.name);  // "[DEFAULT]"
                 firestore = defaultProject.firestore();
+                let obj = {}
+                obj.form = 'defibrillator'
+                obj.afteruse_time = new Date().getTime()
+                obj.signature_staff_afteruse = url
+                obj.afteruse_time = new Date().getTime()
+                obj.time = obj.afteruse_time
+                obj.date = new Date().toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+                firestore.collection("PYT3").add(obj)
             })
 
             // getDataForID()
@@ -1341,6 +1354,7 @@ ${msg.trim()}`
 
         }
     </script>
+    
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
