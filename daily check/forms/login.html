@@ -202,19 +202,21 @@
         var active_tab = 'defibrillator'
         client = url.searchParams.get("client") || "PYT3";
         $(document).ready(async function () {
+            $.LoadingOverlay("show");
             await $.post(script_url, { opt: 'getconst' }, async function (c) {
                 const firebaseConfig = c
                 const defaultProject = firebase.initializeApp(firebaseConfig);
-                console.log(defaultProject.name);  // "[DEFAULT]"
+
                 firestore = defaultProject.firestore();
+                $.LoadingOverlay("hide");
             })
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                 let area = $(this).attr('data-bs-target')
                 $(area).LoadingOverlay('show');
                 let id = $(this).attr('id').replace('-tab', '')
-                console.log("🚀 ~ id", id)
+
                 active_tab = id
-                console.log("🚀 ~ active_tab", active_tab)
+
                 getTableData(JSON.parse(session), id)
                 $(area).LoadingOverlay('hide');
                 // resizeCanvas();// previous active tab
@@ -230,10 +232,10 @@
                                 sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
                             }).then(() => {
                                 localStorage.removeItem('session')
-                                 return $('#sign-in-div').removeClass('hide')
+                                return $('#sign-in-div').removeClass('hide')
                             })
                         })
-                   
+
                 }
                 $('#signout-btn').show()
                 $('#data-div').show()
@@ -282,7 +284,7 @@
                 .limit(1)
                 .get()
                 .then(async function (querySnapshot) {
-                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+
 
                     if (querySnapshot.docs.length > 0) {
                         $('#signout-btn').show()
@@ -299,9 +301,9 @@
                         let data = querySnapshot.docs[0].data()
                         let name = data.name
                         user = data
-                        console.log("🚀 ~ user", user)
+
                         var sissionid = generatePassword()
-                        console.log("🚀 ~ sissionid", sissionid)
+
                         if (data.isFirstTime) {
                             const { value: formValues } = await Swal.fire({
                                 inputAttributes: {
@@ -370,7 +372,7 @@
     <script>
         let tabledata
         async function getTableData(session, form) {
-            console.log("🚀 ~ form", form)
+
             switch (form) {
                 case 'defibrillator': return getDefibTableData(session)
                 case 'temperature': return getTemperatureTableData(session)
@@ -432,7 +434,7 @@
                     cropRight = scanX(false);
 
                 var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
-                console.log(this)
+
                 this.canvas.width = cropRight - cropLeft;
                 this.canvas.height = cropBottom - cropTop;
                 this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
@@ -442,7 +444,7 @@
         })
         var canvas, canvas2
         function initialSignaturePad(hasAfteruse) {
-            console.log("🚀 ~ hasAfteruse", hasAfteruse)
+
             if ($('#signature').length) {
                 canvas = document.getElementById("signature");
                 signaturePad = new SignaturePad(canvas, {
@@ -474,7 +476,7 @@
                     event.preventDefault()
                     // resizeCanvas()
                     let id = $(this).closest('.col-md-12').find('canvas').attr('id')
-                    console.log("🚀 ~ id", id)
+
                     if (id == 'signature') {
                         signaturePad.clear()
                     } else {
@@ -552,7 +554,7 @@
 
         var onefile = true
         function uploadFile(time) {
-            console.log("🚀 ~ time", time)
+
             if ((signaturePad && signaturePad.isEmpty()) || (signaturePadAfterUse && signaturePadAfterUse.isEmpty())) {
                 return Swal.fire({
                     icon: 'info',
@@ -617,9 +619,8 @@
         function handleProgress(value) {
             if (Object.keys(signatures).length > 1) {
                 if (value === 0) console.log("Uploading...");
-                else if (value === 1 && firstfile) {
-                    firstfile = false
-                } else if (value === 1) {
+                else if (value === 1) {
+                    firstfile = !firstfile
                     console.log("Upload complete!");
                 }
                 else {
@@ -637,6 +638,7 @@
             } else {
                 if (value === 0) console.log("Uploading...");
                 else if (value === 1) {
+                    firstfile = !firstfile
                     console.log("Upload complete!");
                 }
                 else {

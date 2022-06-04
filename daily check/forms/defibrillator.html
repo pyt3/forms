@@ -781,7 +781,7 @@
             $.post(script_url, { opt: 'getconst' }, function (c) {
                 const firebaseConfig = c
                 const defaultProject = firebase.initializeApp(firebaseConfig);
-                console.log(defaultProject.name);  // "[DEFAULT]"
+                
                 firestore = defaultProject.firestore();
               
             })
@@ -814,7 +814,7 @@
                 .limit(1)
                 .get()
                 .then(function (querySnapshot) {
-                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                    
                     if (querySnapshot.docs.length > 0) {
                         let data = querySnapshot.docs[0].data()
                         $('#e_brand, #afteruse_e_brand').val(data.e_brand)
@@ -834,7 +834,7 @@
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
 
-            //console.log(decodeURI(url_string))
+            //
             //rl = new URL(decodeURI(url.searchParams("liff.state")))
             client = url.searchParams.get("client")
             dept = url.searchParams.get("dept")
@@ -904,7 +904,7 @@
                     cropRight = scanX(false);
 
                 var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
-                console.log(this)
+                
                 this.canvas.width = cropRight - cropLeft;
                 this.canvas.height = cropBottom - cropTop;
                 this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
@@ -1035,7 +1035,7 @@
             let form = $(this)
             const updateData = function (url) {
                 let formdata = $(form).serializeArray()
-                console.log(formdata);
+                
                 let obj = {}
                 formdata.forEach(function (item) {
                     obj[item.name] = item.value
@@ -1298,7 +1298,7 @@
         }
         // sendNotify()
         function sendNotify(obj, form) {
-            console.log("🚀 ~ obj", obj)
+            
             const notify_url = 'https://notify-api.line.me/api/notify'
             let msg = ''
             Object.keys(obj).forEach(key => {
@@ -1331,10 +1331,10 @@ ${msg.trim()}`
                     msg: msg
                 }
                 if (obj.img_url) {
-                    console.log("🚀 ~ obj.img_url", obj.img_url)
+                    
                     option.img = obj.img_url
                 }
-                console.log("🚀 ~ option", option)
+                
                 $.post(script_url, option)
 
             }
