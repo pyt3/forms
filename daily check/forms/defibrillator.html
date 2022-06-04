@@ -783,19 +783,7 @@
                 const defaultProject = firebase.initializeApp(firebaseConfig);
                 console.log(defaultProject.name);  // "[DEFAULT]"
                 firestore = defaultProject.firestore();
-                let obj = {}
-                obj.form = 'defibrillator'
-                obj.afteruse_time = new Date().getTime()
-                obj.signature_staff_afteruse = url
-                obj.afteruse_time = new Date().getTime()
-                obj.time = obj.afteruse_time
-                obj.date = new Date().toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                })
-                firestore.collection("PYT3").add(obj)
+              
             })
 
             // getDataForID()
@@ -1021,7 +1009,7 @@
             } else {
                 obj.signature_staff_afteruse = signature_url
             }
-
+            obj.form = 'defibrillator'
             obj.time = date.getTime()
             obj.afteruse_time = obj.time
             obj.date = date.toLocaleString('th-TH', {
@@ -1107,7 +1095,7 @@
             var chunkSize = Math.round(0.75 * 1024 * 1024)
             return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
                 var metadata = {
-                    name: `defib daily check afteruse ${$('#afteruse_rec_name')} ` + now.toLocaleString('th-TH', {
+                    name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
                         hour12: false,
                         month: "numeric",
                         day: "numeric",
@@ -1159,7 +1147,7 @@
             var chunkSize = Math.round(0.75 * 1024 * 1024)
             return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
                 var metadata = {
-                    name: `defib daily check report ${$('#rec_name')} ` + now.toLocaleString('th-TH', {
+                    name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
                         hour12: false,
                         month: "numeric",
                         day: "numeric",
