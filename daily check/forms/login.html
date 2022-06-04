@@ -222,8 +222,18 @@
             let session = localStorage.getItem("session")
             if (session) {
                 if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
-                    localStorage.removeItem("session")
-                    return $('#sign-in-div').removeClass('hide')
+                    firestore.collection(client)
+                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                        .get()
+                        .then(async function (querySnapshot) {
+                            querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                            }).then(() => {
+                                localStorage.removeItem('session')
+                                 return $('#sign-in-div').removeClass('hide')
+                            })
+                        })
+                   
                 }
                 $('#signout-btn').show()
                 $('#data-div').show()
@@ -237,7 +247,7 @@
                         .get()
                         .then(async function (querySnapshot) {
                             querySnapshot.docs[0].ref.update({
-                                sessionid: firebase.firestore.FieldValue.arrayUnion(JSON.parse(session).sessionid),
+                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
                             }).then(() => {
                                 localStorage.removeItem('session')
                                 location.reload()
