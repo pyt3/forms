@@ -778,13 +778,13 @@
     <script>
         var firestore
         $(document).ready(function () {
-           $.post(script_url,{opt: 'getconst'},function(c){
-            const firebaseConfig = c
-            const defaultProject = firebase.initializeApp(firebaseConfig);
-            console.log(defaultProject.name);  // "[DEFAULT]"
-            firestore = defaultProject.firestore();       
-           })
-            
+            $.post(script_url, { opt: 'getconst' }, function (c) {
+                const firebaseConfig = c
+                const defaultProject = firebase.initializeApp(firebaseConfig);
+                console.log(defaultProject.name);  // "[DEFAULT]"
+                firestore = defaultProject.firestore();
+            })
+
             // getDataForID()
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
@@ -820,7 +820,6 @@
                         $('#e_dept, #afteruse_e_dept').val(data.e_dept)
                     }
                 });
-
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
@@ -1009,60 +1008,26 @@
             } else {
                 obj.signature_staff_afteruse = signature_url
             }
-            obj.form = 'defibrillator'
+
             obj.time = date.getTime()
+            obj.afteruse_time = obj.time
             obj.date = date.toLocaleString('th-TH', {
                 hour12: false,
                 month: "numeric",
                 day: "numeric",
                 year: "numeric"
             })
-
-            firestore.collection(client)
-                .where("date", "==", new Date().toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                }))
-                .where('form', '==', 'defibrillator')
-                .orderBy("time", 'desc')
-                .limit(1)
-                .get()
-                .then(function (querySnapshot) {
-                    console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
-                    if (querySnapshot.docs.length > 0) {
-                        querySnapshot.docs[0].ref.update(obj).then(() => {
-                            sendNotify(obj)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลเรียบร้อย',
-                            }).then(() => {
-                                window.location.reload()
-                            })
-                        })
-                    } else {
-                        obj.time = date.getTime()
-                        obj.afteruse_time = obj.time
-                        obj.date = date.toLocaleString('th-TH', {
-                            hour12: false,
-                            month: "numeric",
-                            day: "numeric",
-                            year: "numeric"
-                        })
-                        return firestore.collection(client).add(obj).then(() => {
-                            sendNotify(obj)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลเรียบร้อย',
-                            }).then(() => {
-                                window.location.reload()
-                            })
-                        }).catch(function (error) {
-                            console.error(error)
-                        });
-                    }
-                });
+            return firestore.collection(client).add(obj).then(() => {
+                sendNotify(obj)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกข้อมูลเรียบร้อย',
+                }).then(() => {
+                    window.location.reload()
+                })
+            }).catch(function (error) {
+                console.error(error)
+            });
         }
         $('#afteruse-form').submit(async function () {
             event.preventDefault()
@@ -1077,60 +1042,26 @@
                 obj.form = 'defibrillator'
                 obj.afteruse_time = new Date().getTime()
                 obj.signature_staff_afteruse = url
-                firestore.collection(client)
-                    .where("date", "==", new Date().toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    }))
-                    .where('form', '==', 'defibrillator')
-                    .orderBy("afteruse_time", 'desc')
-                    .limit(1)
-                    .get()
-                    .then(function (querySnapshot) {
-                        console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
-                        if (querySnapshot.docs.length > 0) {
-                            querySnapshot.docs[0].ref.update(obj).then(() => {
-                                // obj.img = report.data
-                                obj.date = new Date().toLocaleString('th-TH', {
-                                    hour12: false,
-                                    month: "numeric",
-                                    day: "numeric",
-                                    year: "numeric"
-                                })
-                                sendNotify(obj, 'afteruse')
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'บันทึกข้อมูลเรียบร้อย',
-                                    text: 'กรุณารอสักครู่',
-                                }).then(() => {
-                                    window.location.reload()
-                                })
-                            })
-                        } else {
-                            obj.afteruse_time = new Date().getTime()
-                            obj.time = obj.afteruse_time
-                            obj.date = new Date().toLocaleString('th-TH', {
-                                hour12: false,
-                                month: "numeric",
-                                day: "numeric",
-                                year: "numeric"
-                            })
-                            return firestore.collection(client).add(obj).then(() => {
-                                // obj.img = report.data
-                                sendNotify(obj, 'afteruse')
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'บันทึกข้อมูลเรียบร้อย',
-                                }).then(() => {
-                                    window.location.reload()
-                                })
-                            }).catch(function (error) {
-                                console.error(error)
-                            });
-                        }
-                    });
+                obj.afteruse_time = new Date().getTime()
+                obj.time = obj.afteruse_time
+                obj.date = new Date().toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+                return firestore.collection(client).add(obj).then(() => {
+                    // obj.img = report.data
+                    sendNotify(obj, 'afteruse')
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลเรียบร้อย',
+                    }).then(() => {
+                        window.location.reload()
+                    })
+                }).catch(function (error) {
+                    console.error(error)
+                });
             }
             if (signaturePadAfterUse.isEmpty()) {
                 return Swal.fire({
