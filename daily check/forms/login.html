@@ -230,6 +230,22 @@
                 $.LoadingOverlay("show");
                 getTableData(JSON.parse(session))
                 $.LoadingOverlay('hide')
+                $('#signout-btn').click(function () {
+                    let session = localStorage.getItem("session")
+                    firestore.collection(client)
+                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                        .get()
+                        .then(async function (querySnapshot) {
+                            querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayUnion(JSON.parse(session).sessionid),
+                            }).then(() => {
+                                localStorage.removeItem('session')
+                                location.reload()
+                            })
+                        })
+
+                })
+
                 return false
             } else {
                 return $('#sign-in-div').removeClass('hide')
@@ -257,8 +273,19 @@
                 .get()
                 .then(async function (querySnapshot) {
                     console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+
                     if (querySnapshot.docs.length > 0) {
                         $('#signout-btn').show()
+                        $('#signout-btn').click(function () {
+                            let session = localStorage.getItem("session")
+                            querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayRemove(sissionid),
+                            }).then(() => {
+                                localStorage.removeItem('session')
+                                location.reload()
+                            })
+
+                        })
                         let data = querySnapshot.docs[0].data()
                         let name = data.name
                         user = data
@@ -709,10 +736,7 @@
         }
     </script>
     <script>
-        $('#signout-btn').click(function () {
-            localStorage.removeItem('session')
-            location.reload()
-        })
+
     </script>
 
 
