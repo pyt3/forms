@@ -6,6 +6,9 @@ async function getDefibTableData(session) {
             if (querySnapshot.docs.length > 0) {
                 user = querySnapshot.docs[0].data()
                 getDefibTableData()
+            } else {
+                localStorage.removeItem('session')
+                location.reload()
             }
         });
     } else {
@@ -24,7 +27,7 @@ async function getDefibTableData(session) {
                 .where('e_dept', '==', user.name)
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
-
+            // 
         }
         await ref.get()
             .then(function (querySnapshot) {
