@@ -8,7 +8,6 @@ async function getDefibTableData(session) {
                 getDefibTableData()
             }
         });
-        //fg1alY9Loyolh2IFh5aFalR5LRNmVrbR
     } else {
         let ref
         let now = new Date()
