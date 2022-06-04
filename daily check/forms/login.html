@@ -206,7 +206,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var firestore
@@ -243,7 +243,6 @@
                 $('#data-div').show()
                 $.LoadingOverlay("show");
                 getTableData(JSON.parse(session))
-                $.LoadingOverlay("hide");
                 return false
             } else {
                 return $('#sign-in-div').removeClass('hide')
@@ -355,6 +354,7 @@
                 case 'monitorbedside': return getMonitorBedsideTableData(session)
                 default: return getDefibTableData(session)
             }
+            $.LoadingOverlay('hide')
         }
 
     </script>
