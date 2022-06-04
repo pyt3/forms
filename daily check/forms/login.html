@@ -192,7 +192,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var firestore
@@ -297,7 +297,7 @@
                                 querySnapshot.docs[0].ref.update({
                                     isFirstTime: false,
                                     pwd: formValues,
-                                    sessionid: sissionid,
+                                    sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
                                 }).then(() => {
                                     window.location.reload()
                                 })
@@ -310,7 +310,7 @@
                                 sessionid: sissionid,
                             }))
                             querySnapshot.docs[0].ref.update({
-                                sessionid: sissionid,
+                                sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
                             })
                             $('#sign-in-div').slideUp()
                             $('#data-div').show(200)
