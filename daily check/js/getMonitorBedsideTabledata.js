@@ -1,15 +1,15 @@
 async function getMonitorBedsideTableData(session) {
-    console.log("🚀 ~ session", session)
+    
     // if (session) {
     //     return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
-    //         console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+    //         
     //         if (querySnapshot.docs.length > 0) {
     //             user = querySnapshot.docs[0].data()
     //             getDefibTableData()
     //         }
     //     });
     // } else {
-    let ref
+    let ref, ref2
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     if (user.level == 'director') {
@@ -23,22 +23,52 @@ async function getMonitorBedsideTableData(session) {
             .where('e_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
+        ref2 = firestore.collection(client)
+            .where('form', '==', 'monitorbedside')
+            .where('rec_dept', '==', user.name)
+            .where('time', '>=', before30days)
+            .orderBy('time', 'desc')
 
     }
     await ref.get()
         .then(function (querySnapshot) {
             let data = querySnapshot.docs.map(function (doc) {
                 let obj = doc.data()
-                let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] == 'ผ่าน')
+                let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
                 if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-                let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] == 'ผ่าน')
+                let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
                 if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
                 return obj
 
             })
-            console.log("🚀 ~ data", data)
-            tabledata = data
-            createMonitorBedsideTable(data)
+            if (ref2) {
+                await ref2.get().then(function (querySnapshot2) {
+                    let data2 = querySnapshot2.docs.map(function (doc2) {
+                        let obj2 = doc2.data()
+                        
+                        let isPass = Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
+                        if (Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).length > 0) obj2.isPass = isPass
+
+                        let isPass_afteruse = Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
+                        if (Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj2.isPass_afteruse = isPass_afteruse
+                        return obj2
+                    })
+                    data = [...data, ...data2]
+                    data = data.filter((value, index) => {
+                        const _value = JSON.stringify(value);
+                        return index === data.findIndex(data => {
+                            return JSON.stringify(data) === _value;
+                        });
+                    });
+                    
+                    tabledata = data
+                    createMonitorBedsideTable(data)
+                })
+            } else {
+                
+                tabledata = data
+                createMonitorBedsideTable(data)
+            }
         })
 
     $('#admin-div').show()
@@ -323,9 +353,9 @@ function getMonitorBedsideDetail(row, index) {
 }
 
 async function updateMonitorBedsideData(key, url, time, date = new Date()) {
-    console.log("🚀 ~ key", key)
+    
 
-    console.log(signatures);
+    
     let obj = {}
     if (key == "signature") {
         // obj = tabledata[0]
@@ -346,13 +376,13 @@ async function updateMonitorBedsideData(key, url, time, date = new Date()) {
         tabledata[rowIndex].afteruse_approve_time = date.getTime()
         // tabledata[1] = obj
     }
-    console.log(tabledata);
+    
     firestore.collection(client)
         .where('form', '==', 'monitorbedside')
         .where("time", "==", time)
         .get()
         .then(function (querySnapshot) {
-            console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+            
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
