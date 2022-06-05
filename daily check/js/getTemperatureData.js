@@ -1,15 +1,15 @@
 async function getTemperatureTableData(session) {
-    console.log("🚀 ~ 2session", session)
+    
     // if (session) {
     //     return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
-    //         console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+    //         
     //         if (querySnapshot.docs.length > 0) {
     //             user = querySnapshot.docs[0].data()
     //             getTemperatureTableData()
     //         }
     //     });
     // } else {
-    let temperatureRef
+    let temperatureRef, temperatureRef2
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     if (user.level == 'director') {
@@ -23,22 +23,52 @@ async function getTemperatureTableData(session) {
             .where('e_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
+        temperatureRef2 = firestore.collection(client)
+            .where('form', '==', 'temperature')
+            .where('rec_dept', '==', user.name)
+            .where('time', '>=', before30days)
+            .orderBy('time', 'desc')
 
     }
     await temperatureRef.get()
-        .then(function (querySnapshot) {
+        .then(async function (querySnapshot) {
             let data = querySnapshot.docs.map(function (doc) {
                 let obj = doc.data()
-                console.log("🚀 ~ obj", obj)
+                
                 let isPass = obj.temp >= 2 && obj.temp <= 8
                 obj.isPass = isPass
 
                 return obj
 
             })
-            console.log("🚀 ~ data", data)
-            tabledata = data
-            createTemperatureTable(data)
+            if (temperatureRef2) {
+                await temperatureRef2.get().then(function (querySnapshot2) {
+                    let data2 = querySnapshot2.docs.map(function (doc2) {
+                        let obj2 = doc2.data()
+                        
+                        let isPass = obj2.temp >= 2 && obj2.temp <= 8
+                        obj2.isPass = isPass
+
+                        return obj2
+
+                    })
+                })
+                data = [...data, ...data2]
+                data = data.filter((value, index) => {
+                    const _value = JSON.stringify(value);
+                    return index === data.findIndex(data => {
+                        return JSON.stringify(data) === _value;
+                    });
+                });
+                
+                tabledata = data
+                createTemperatureTable(data)
+            } else {
+                
+                tabledata = data
+                createTemperatureTable(data)
+            }
+
         })
 
     $('#admin-div').show()
@@ -271,9 +301,9 @@ function renderTemperatureStatus(value) {
 }
 
 async function updateTemperatureData(key, url, time, date = new Date()) {
-    console.log("🚀 ~ key", key)
+    
 
-    console.log(signatures);
+    
     let obj = {}
     if (key == "signature") {
         // obj = tabledata[0]
@@ -285,13 +315,13 @@ async function updateTemperatureData(key, url, time, date = new Date()) {
         tabledata[rowIndex].approve_time = date.getTime()
         // tabledata[0] = obj
     }
-    console.log(tabledata);
+    
     firestore.collection(client)
         .where('form', '==', 'temperature')
         .where("time", "==", time)
         .get()
         .then(function (querySnapshot) {
-            console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+            
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
