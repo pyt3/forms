@@ -1,8 +1,6 @@
 async function getDefibTableData(session) {
-    
     if (session) {
         return firestore.collection(client).where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
-            
             if (querySnapshot.docs.length > 0) {
                 user = querySnapshot.docs[0].data()
                 getDefibTableData()
@@ -15,7 +13,6 @@ async function getDefibTableData(session) {
         let ref, ref2
         let now = new Date()
         let before30days = now.setDate(now.getDate() - 30)
-        
         if (user.level == 'director') {
             ref = firestore.collection(client)
                 .where('form', '==', 'defibrillator')
@@ -40,7 +37,6 @@ async function getDefibTableData(session) {
                     let obj = doc.data()
                     let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
                     if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-
                     let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
                     if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
                     return obj
@@ -49,32 +45,22 @@ async function getDefibTableData(session) {
                     await ref2.get().then(function (querySnapshot2) {
                         let data2 = querySnapshot2.docs.map(function (doc2) {
                             let obj2 = doc2.data()
-                            
                             let isPass = Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
                             if (Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).length > 0) obj2.isPass = isPass
-
                             let isPass_afteruse = Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
                             if (Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj2.isPass_afteruse = isPass_afteruse
                             return obj2
                         })
                         data = [...data, ...data2]
-                        data = data.filter((value, index) => {
-                            const _value = JSON.stringify(value);
-                            return index === data.findIndex(data => {
-                                return JSON.stringify(data) === _value;
-                            });
-                        });
-                        
+                        data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
                         tabledata = data
                         createDefibTable(data)
                     })
                 } else {
-                    
                     tabledata = data
                     createDefibTable(data)
                 }
             })
-
         $('#admin-div').show()
     }
 }
@@ -87,7 +73,7 @@ function createDefibTable(data) {
     defibtable = $('#defib-table-data').DataTable({
         data: data,
         scrollX: true,
-        order: [[ 0, 'desc' ]],
+        order: [[0, 'desc']],
         columnDefs: [
             {
                 targets: '_all',
@@ -98,7 +84,6 @@ function createDefibTable(data) {
             {
                 data: 'date',
                 title: 'วันที่',
-
             },
             {
                 data: 'time',
@@ -106,7 +91,6 @@ function createDefibTable(data) {
                 render: function (data, type, row, meta) {
                     return '<button class="btn btn-link" onclick="getDefiDetail(`' + JSON.stringify(row).replace(/\"/g, "'") + '`,' + meta.row + ')">Click!</button>'
                 }
-
             },
             {
                 data: 'form',
@@ -207,9 +191,6 @@ function createDefibTable(data) {
     });
     defibtable.draw(false)
 }
-
-
-
 var rowIndex
 function getDefiDetail(row, index) {
     rowIndex = index
@@ -279,7 +260,6 @@ function getDefiDetail(row, index) {
             <div class="col-md-6">
                 <p>ลายเซ็นผู้ตรวจเช็ค: <span><img src="${obj.signature_staff}" height="30px"></span></p>
             </div>`
-
     if (obj.approve_name) {
         detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ: <span class="text-primary">${obj.approve_name}</span></p>
@@ -289,7 +269,6 @@ function getDefiDetail(row, index) {
             </div>`
     } else {
         detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
-                
                 <div class="col-md-12 mt-3">
                     <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
@@ -300,7 +279,6 @@ function getDefiDetail(row, index) {
                                 </div>
                                 </div>`
     }
-
     if (obj.afteruse_rec_name) {
         detailHtml += `<div class="col-md-12 mt-4">
                 <p>รายการตรวจเช็ค หลังใช้: <span id="e_dept"></span></p>
@@ -311,7 +289,6 @@ function getDefiDetail(row, index) {
                     <li>
                         ทำความสะอาดเครื่อง และPADDLE: <span>${renderStatus(obj['afteruse-check-clean'])}</span>
                     </li>
-                   
                 </ol>
             </div >
             <div class="col-md-6">
@@ -320,7 +297,6 @@ function getDefiDetail(row, index) {
             <div class="col-md-6">
                 <p>ลายเซ็นผู้ตรวจเช็ค หลังใช้: <span><img src="${obj.signature_staff_afteruse || ''}" height="30px"></span></p>
             </div>`
-
         if (obj.afteruse_approve_name) {
             detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ หลังใช้: <span class="text-primary">${obj.afteruse_approve_name || ''}</span></p>
@@ -330,7 +306,6 @@ function getDefiDetail(row, index) {
             </div>`
         } else {
             detailHtml += `  <div class="col-md-12"><input id="afteruse_approve_name" placeholder="ชื่อผู้อนุมัติ หลังใช้" class="form-control"></div>
-                
                 <div class="col-md-12 mt-3">
                     <label for="signature_afteruse" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
@@ -342,19 +317,14 @@ function getDefiDetail(row, index) {
                                 </div>`
         }
     }
-
-
     detailHtml += ` </div>
     </div>`
-
     $('#detail-modal .modal-body').html(detailHtml)
     initialSignaturePad(obj.afteruse_rec_name)
     $('#detail-modal').modal('show')
     $('#detail-modal').on('shown.bs.modal', function (e) {
         resizeCanvas()
     })
-
-
 }
 function renderStatus(value) {
     let pass = `<br><span class="badge rounded-pill bg-success status-pill-modal"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
@@ -374,11 +344,7 @@ function renderStatus(value) {
             return '-'
     }
 }
-
 async function updateDefibData(key, url, time, date = new Date()) {
-    
-
-    
     let obj = {}
     if (key == "signature") {
         // obj = tabledata[0]
@@ -399,13 +365,11 @@ async function updateDefibData(key, url, time, date = new Date()) {
         tabledata[rowIndex].afteruse_approve_time = date.getTime()
         // tabledata[1] = obj
     }
-    
     firestore.collection(client)
         .where('form', '==', 'defibrillator')
         .where("time", "==", time)
         .get()
         .then(function (querySnapshot) {
-            
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
@@ -415,7 +379,6 @@ async function updateDefibData(key, url, time, date = new Date()) {
                         let isPass_afteruse = Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).every(key => object[key] == 'ผ่าน')
                         if (Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).length > 0) object.isPass_afteruse = isPass_afteruse
                         return object
-
                     })
                     createDefibTable(data)
                     Swal.fire({
