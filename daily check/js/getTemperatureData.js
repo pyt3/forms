@@ -1,5 +1,5 @@
 async function getTemperatureTableData(session) {
-    
+
     // if (session) {
     //     return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
     //         
@@ -34,7 +34,7 @@ async function getTemperatureTableData(session) {
         .then(async function (querySnapshot) {
             let data = querySnapshot.docs.map(function (doc) {
                 let obj = doc.data()
-                
+
                 let isPass = obj.temp >= 2 && obj.temp <= 8
                 obj.isPass = isPass
 
@@ -45,26 +45,22 @@ async function getTemperatureTableData(session) {
                 await temperatureRef2.get().then(function (querySnapshot2) {
                     let data2 = querySnapshot2.docs.map(function (doc2) {
                         let obj2 = doc2.data()
-                        
+
                         let isPass = obj2.temp >= 2 && obj2.temp <= 8
                         obj2.isPass = isPass
 
                         return obj2
 
                     })
+                    data = [...data, ...data2]
+                    data = data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+
+                    tabledata = data
+                    createTemperatureTable(data)
                 })
-                data = [...data, ...data2]
-                data = data.filter((value, index) => {
-                    const _value = JSON.stringify(value);
-                    return index === data.findIndex(data => {
-                        return JSON.stringify(data) === _value;
-                    });
-                });
-                
-                tabledata = data
-                createTemperatureTable(data)
+
             } else {
-                
+
                 tabledata = data
                 createTemperatureTable(data)
             }
@@ -301,9 +297,9 @@ function renderTemperatureStatus(value) {
 }
 
 async function updateTemperatureData(key, url, time, date = new Date()) {
-    
 
-    
+
+
     let obj = {}
     if (key == "signature") {
         // obj = tabledata[0]
@@ -315,13 +311,13 @@ async function updateTemperatureData(key, url, time, date = new Date()) {
         tabledata[rowIndex].approve_time = date.getTime()
         // tabledata[0] = obj
     }
-    
+
     firestore.collection(client)
         .where('form', '==', 'temperature')
         .where("time", "==", time)
         .get()
         .then(function (querySnapshot) {
-            
+
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
