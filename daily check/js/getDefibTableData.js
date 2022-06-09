@@ -24,11 +24,13 @@ async function getDefibTableData(session) {
                 .where('e_dept', '==', user.name)
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
+                .limit(20)
             ref2 = firestore.collection(client)
                 .where('form', '==', 'defibrillator')
                 .where('rec_dept', '==', user.name)
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
+                .limit(20)
             // 
         }
         await ref.get()
@@ -102,7 +104,11 @@ function createDefibTable(data) {
             },
             {
                 data: 'rec_remark',
-                title: 'หมายเหตุ'
+                title: 'หมายเหตุ',
+                render: function (data, type) {
+                    if (!data) return ''
+                    return data
+                }
             },
             {
                 data: 'rec_name',
@@ -147,7 +153,11 @@ function createDefibTable(data) {
             },
             {
                 data: 'afteruse_rec_remark',
-                title: 'หมายเหตุ(หลังใช้)'
+                title: 'หมายเหตุ(หลังใช้)',
+                render: function (data, type) {
+                    if (!data) return ''
+                    return data
+                }
             },
             {
                 data: 'afteruse_rec_name',
