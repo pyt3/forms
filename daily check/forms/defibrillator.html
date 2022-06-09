@@ -676,6 +676,11 @@
                 })
                 .then(() => {
                     // Start to use liff's api
+                    if (!liff.isLoggedIn()) {
+                        liff.login({
+                            redirectUri: location.href
+                        })
+                    }
                     console.log('liff init success');
                 })
                 .catch((err) => {
