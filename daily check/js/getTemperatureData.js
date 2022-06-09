@@ -23,11 +23,13 @@ async function getTemperatureTableData(session) {
             .where('e_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
+            .limit(20)
         temperatureRef2 = firestore.collection(client)
             .where('form', '==', 'temperature')
             .where('rec_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
+            .limit(20)
 
     }
     await temperatureRef.get()
