@@ -676,7 +676,7 @@
                 })
                 .then(() => {
                     // Start to use liff's api
-                    console.log('liff nint success');
+                    console.log('liff init success');
                 })
                 .catch((err) => {
                     // Error happens during initialization
@@ -929,7 +929,12 @@
                             second: "numeric"
                         })
                     },
-                ])
+                ]).then(() => {
+                    console.log("message sent");
+                })
+                    .catch((err) => {
+                        console.log("error", err);
+                    });
                 Swal.fire({
                     icon: 'success',
                     title: 'บันทึกข้อมูลเรียบร้อย',
@@ -1072,7 +1077,7 @@
                         Swal.update({
                             icon: 'info',
                             title: 'กำลังบันทึกข้อมูล..',
-                            html: `<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
+                            html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 </div>`,
                             allowOutsideClick: false,
@@ -1109,7 +1114,7 @@
             let percent = Math.round(value * 100)
             Swal.update({
                 // text: "Uploading... " +Math.round( value * 100) + "%",
-                html: `<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
+                html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
 </div>`,
                 allowOutsideClick: false,
