@@ -726,8 +726,11 @@
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
                         return liff.login({ redirectUri: url })
+                    } else {
+                        console.log('liff init success');
+                        console.log(liff.getContext())
                     }
-                    console.log('liff init success');
+
                 })
                 .catch((err) => {
                     // Error happens during initialization
