@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <link rel="icon" href="/icon.png" type="image/png">
     <style>
         body {
@@ -534,7 +535,23 @@
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
+            liff
+                .init({
+                    liffId: "1657104960-w9greg5D", // Use own liffId
+                })
+                .then(() => {
+                    // Start to use liff's api
+                    if (!liff.isLoggedIn()) {
+                        return liff.login({ redirectUri: url })
+                    } else {
+                        console.log('liff init success');
+                    }
 
+                })
+                .catch((err) => {
+                    // Error happens during initialization
+                    console.log(err.code, err.message);
+                });
             //
             //rl = new URL(decodeURI(url.searchParams("liff.state")))
             client = url.searchParams.get("client")
@@ -716,6 +733,68 @@
             })
             return firestore.collection(client).add(obj).then(() => {
                 sendNotify(obj)
+                liff.sendMessages([
+                    {
+                        "type": "text",
+                        "text": "$ Submit Incubator Daily Check Successfully \n\n" + new Date().toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                            second: "numeric"
+                        }),
+                        "emojis": [
+                            {
+                                "index": 0,
+                                "productId": "5ac1bfd5040ab15980c9b435",
+                                "emojiId": "098"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "text": "$$$$$$",
+                        "emojis": [
+                            {
+                                "index": 0,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "020"
+                            },
+                            {
+                                "index": 1,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "008"
+                            },
+                            {
+                                "index": 2,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "001"
+                            },
+                            {
+                                "index": 3,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "014"
+                            },
+                            {
+                                "index": 4,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "011"
+                            },
+                            {
+                                "index": 5,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "019"
+                            }
+                        ]
+                    }
+                ]).then(() => {
+                    console.log("message sent");
+                })
+                    .catch((err) => {
+                        console.log("error", err);
+                    });
                 Swal.fire({
                     icon: 'success',
                     title: 'บันทึกข้อมูลเรียบร้อย',
@@ -749,6 +828,68 @@
                 return firestore.collection(client).add(obj).then(() => {
                     // obj.img = report.data
                     sendNotify(obj, 'afteruse')
+                    liff.sendMessages([
+                        {
+                            "type": "text",
+                            "text": "\$ Submit Incubator Afteruse Daily Check Successfully \n\n" + new Date().toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                second: "numeric"
+                            }),
+                            "emojis": [
+                                {
+                                    "index": 0,
+                                    "productId": "5ac1bfd5040ab15980c9b435",
+                                    "emojiId": "098"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "text": "$$$$$$",
+                            "emojis": [
+                                {
+                                    "index": 0,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "020"
+                                },
+                                {
+                                    "index": 1,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "008"
+                                },
+                                {
+                                    "index": 2,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "001"
+                                },
+                                {
+                                    "index": 3,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "014"
+                                },
+                                {
+                                    "index": 4,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "011"
+                                },
+                                {
+                                    "index": 5,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "019"
+                                }
+                            ]
+                        }
+                    ]).then(() => {
+                        console.log("message sent");
+                    })
+                        .catch((err) => {
+                            console.log("error", err);
+                        });
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกข้อมูลเรียบร้อย',

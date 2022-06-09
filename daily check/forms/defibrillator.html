@@ -728,7 +728,6 @@
                         return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
-                        console.log(liff.getContext())
                     }
 
                 })
@@ -924,8 +923,8 @@
                 sendNotify(obj)
                 liff.sendMessages([
                     {
-                        type: "text",
-                        text: "Submit Daily Check Successfully " + new Date().toLocaleString('th-TH', {
+                        "type": "text",
+                        "text": "$ Submit Defibrillator Daily Check Successfully \n\n" + new Date().toLocaleString('th-TH', {
                             hour12: false,
                             month: "numeric",
                             day: "numeric",
@@ -933,8 +932,51 @@
                             hour: "numeric",
                             minute: "numeric",
                             second: "numeric"
-                        })
+                        }),
+                        "emojis": [
+                            {
+                                "index": 0,
+                                "productId": "5ac1bfd5040ab15980c9b435",
+                                "emojiId": "098"
+                            }
+                        ]
                     },
+                    {
+                        "type": "text",
+                        "text": "$$$$$$",
+                        "emojis": [
+                            {
+                                "index": 0,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "020"
+                            },
+                            {
+                                "index": 1,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "008"
+                            },
+                            {
+                                "index": 2,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "001"
+                            },
+                            {
+                                "index": 3,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "014"
+                            },
+                            {
+                                "index": 4,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "011"
+                            },
+                            {
+                                "index": 5,
+                                "productId": "5ac21a13031a6752fb806d57",
+                                "emojiId": "019"
+                            }
+                        ]
+                    }
                 ]).then(() => {
                     console.log("message sent");
                 })
@@ -974,6 +1016,68 @@
                 return firestore.collection(client).add(obj).then(() => {
                     // obj.img = report.data
                     sendNotify(obj, 'afteruse')
+                    liff.sendMessages([
+                        {
+                            "type": "text",
+                            "text": "$ Submit Defibrillator Afteruse Daily Check Successfully \n\n" + new Date().toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                second: "numeric"
+                            }),
+                            "emojis": [
+                                {
+                                    "index": 0,
+                                    "productId": "5ac1bfd5040ab15980c9b435",
+                                    "emojiId": "098"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "text": "$$$$$$",
+                            "emojis": [
+                                {
+                                    "index": 0,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "020"
+                                },
+                                {
+                                    "index": 1,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "008"
+                                },
+                                {
+                                    "index": 2,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "001"
+                                },
+                                {
+                                    "index": 3,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "014"
+                                },
+                                {
+                                    "index": 4,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "011"
+                                },
+                                {
+                                    "index": 5,
+                                    "productId": "5ac21a13031a6752fb806d57",
+                                    "emojiId": "019"
+                                }
+                            ]
+                        }
+                    ]).then(() => {
+                        console.log("message sent");
+                    })
+                        .catch((err) => {
+                            console.log("error", err);
+                        });
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกข้อมูลเรียบร้อย',
