@@ -31,7 +31,7 @@
         liff.init({ liffId: '1657104960-953rK3wq' })
         liff.ready.then(() => {
             if (!liff.isLoggedIn()) {
-                return liff.login({ redirectUri: window.location.href })
+                return liff.login({ redirectUri: location.href })
             }
             scancode()
         })
