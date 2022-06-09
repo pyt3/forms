@@ -84,10 +84,7 @@
                             <div class="col-md-3 text-center ">
                                 Model<p class="text-primary" id="text-model"></p>
                             </div>
-                            <div class="col-md-3 mt-2">
-                                <label for="rec-name">Recorder Name (ชื่อผู้บันทึก)</label>
-                                <input type="text" class="form-control text-center" id="rec-name">
-                            </div>
+
                             <div class="col-md-3 mt-2">
                                 <label for="temp">Temperature (อุณหภูมิ)</label>
                                 <input type="number" class="form-control text-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp">
@@ -447,6 +444,7 @@
             let time = date.getTime()
             let temp = parseFloat($('#temp').val())
             let rec_name = $('#rec-name').val()
+            let rec_พำทฟพา = $('#rec_remark').val()
             let obj = {
                 form: 'temperature',
                 e_dept: dept,
@@ -455,6 +453,7 @@
                 e_model: model,
                 e_name: name,
                 rec_name: rec_name,
+                rec_remark: rec_remark,
                 date: date.toLocaleString('th-TH', {
                     month: "numeric",
                     day: "numeric",

@@ -78,6 +78,7 @@ function createMonitorBedsideTable(data) {
     let table = $('#monitorbedside-table-data').DataTable({
         data: data,
         scrollX: true,
+        order: [[0, 'desc']],
         columnDefs: [
             {
                 targets: '_all',
@@ -105,6 +106,10 @@ function createMonitorBedsideTable(data) {
             {
                 data: 'e_code',
                 title: 'รหัสเครื่อง'
+            },
+            {
+                data: 'rec_name',
+                title: 'ผู้บันทึก'
             },
             {
                 data: 'rec_name',
@@ -146,6 +151,10 @@ function createMonitorBedsideTable(data) {
                         return `<img src="${data}" height="25px">`
                     return data;
                 }
+            },
+            {
+                data: 'afteruse_rec_remark',
+                title: 'หมายเหตุ(หลังใช้)'
             },
             {
                 data: 'afteruse_rec_name',
@@ -268,6 +277,9 @@ function getMonitorBedsideDetail(row, index) {
                 </ol>
             </div>
             <div class="col-md-6">
+                <p>หมายเหตุ: <span class="text-primary">${obj.rec_remark}</span></p>
+            </div>
+            <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
             </div>
             <div class="col-md-6">
@@ -305,6 +317,9 @@ function getMonitorBedsideDetail(row, index) {
                    
                 </ol>
             </div >
+             <div class="col-md-6">
+                <p>ผู้ตรวจเช็ค หลังใช้: <span class="text-primary">${obj.afteruse_rec_name}</span></p>
+            </div>
             <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค หลังใช้: <span class="text-primary">${obj.afteruse_rec_name}</span></p>
             </div>

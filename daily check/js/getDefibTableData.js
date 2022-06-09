@@ -101,6 +101,10 @@ function createDefibTable(data) {
                 title: 'รหัสเครื่อง'
             },
             {
+                data: 'rec_remark',
+                title: 'หมายเหตุ'
+            },
+            {
                 data: 'rec_name',
                 title: 'ผู้บันทึก'
             },
@@ -140,6 +144,10 @@ function createDefibTable(data) {
                         return `<img src="${data}" height="25px">`
                     return data;
                 }
+            },
+            {
+                data: 'afteruse_rec_remark',
+                title: 'หมายเหตุ(หลังใช้)'
             },
             {
                 data: 'afteruse_rec_name',
@@ -255,6 +263,9 @@ function getDefiDetail(row, index) {
                 </ol>
             </div>
             <div class="col-md-6">
+                <p>หมายเหตุ: <span class="text-primary">${obj.rec_remark}</span></p>
+            </div>
+            <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
             </div>
             <div class="col-md-6">
@@ -291,6 +302,9 @@ function getDefiDetail(row, index) {
                     </li>
                 </ol>
             </div >
+            <div class="col-md-6">
+                <p>หมายเหตุ: <span class="text-primary">${obj.afteruse_rec_remark}</span></p>
+            </div>
             <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค หลังใช้: <span class="text-primary">${obj.afteruse_rec_name}</span></p>
             </div>

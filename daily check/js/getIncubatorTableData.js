@@ -77,6 +77,7 @@ function createIncubatorTable(data) {
     let table = $('#incubator-table-data').DataTable({
         data: data,
         scrollX: true,
+        order: [[0, 'desc']],
         columnDefs: [
             {
                 targets: '_all',
@@ -108,6 +109,10 @@ function createIncubatorTable(data) {
             {
                 data: 'rec_name',
                 title: 'ผู้บันทึก'
+            },
+            {
+                data: 'rec_remark',
+                title: 'หมายเหตุ'
             },
             {
                 data: 'signature_staff',
@@ -145,6 +150,10 @@ function createIncubatorTable(data) {
                         return `<img src="${data}" height="25px">`
                     return data;
                 }
+            },
+            {
+                data: 'afteruse_rec_remark',
+                title: 'หมายเหตุ(หลังใช้)'
             },
             {
                 data: 'afteruse_rec_name',
@@ -250,6 +259,12 @@ function getIncubatorDetail(row, index) {
                         PATIENT / SKIN PROBE: <span>${renderStatus(obj['daily-check-probe'])}</span>
                     </li>
                 </ol>
+            </div>
+              <div class="col-md-6">
+                <p>หมายเหตุ: <span class="text-primary">${obj.afteruse_rec_remark}</span></p>
+            </div>
+             <div class="col-md-6">
+                <p>หมายเหตุ: <span class="text-primary">${obj.rec_remark}</span></p>
             </div>
             <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
