@@ -63,11 +63,10 @@
                                 url.searchParams.set("maxtemp", d.maxtemp)
                             }
                             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
-                            liff.openWindow({
-                                url: url.toString(),
-                                // external: true
-                            })
-                            liff.closeWindow()
+                            // 
+
+                            // liff.closeWindow()
+                            location.replace(url)
                         } else {
                             Swal.fire({
                                 icon: 'warning',
