@@ -49,7 +49,7 @@
                     firestore.collection('PYT3_e').doc(id).get().then(docs => {
                         let d = docs.data()
                         if (docs.exists && liffId[d.form]) {
-                            let url = new URL('https://liff.line.me/' + liffId[d.form])
+                            let url = new URL('line://app/' + liffId[d.form])
                             // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
                             url.searchParams.set("client", 'PYT3')
                             url.searchParams.set("id", d.code)
