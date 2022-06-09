@@ -272,8 +272,8 @@ function getDefiDetail(row, index) {
                     </li>
                 </ol>
             </div>
-            <div class="col-md-6">
-                <p>หมายเหตุ: <span class="text-primary">${obj.rec_remark}</span></p>
+            <div class="col-md-12">
+                <p>หมายเหตุ: <span class="text-primary">${obj.rec_remark || ''}</span></p>
             </div>
             <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
@@ -312,8 +312,8 @@ function getDefiDetail(row, index) {
                     </li>
                 </ol>
             </div >
-            <div class="col-md-6">
-                <p>หมายเหตุ: <span class="text-primary">${obj.afteruse_rec_remark}</span></p>
+            <div class="col-md-12">
+                <p>หมายเหตุ: <span class="text-primary">${obj.afteruse_rec_remark || ''}</span></p>
             </div>
             <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค หลังใช้: <span class="text-primary">${obj.afteruse_rec_name}</span></p>
