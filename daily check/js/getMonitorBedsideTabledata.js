@@ -23,11 +23,13 @@ async function getMonitorBedsideTableData(session) {
             .where('e_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
+            .limit(20)
         ref2 = firestore.collection(client)
             .where('form', '==', 'monitorbedside')
             .where('rec_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
+            .limit(20)
 
     }
     await ref.get()
@@ -112,8 +114,12 @@ function createMonitorBedsideTable(data) {
                 title: 'ผู้บันทึก'
             },
             {
-                data: 'rec_name',
-                title: 'ผู้บันทึก'
+                data: 'rec_remark',
+                title: 'หมายเหตุ',
+                render: function (data, type) {
+                    if (!data) return ''
+                    return data
+                }
             },
             {
                 data: 'signature_staff',
@@ -154,7 +160,11 @@ function createMonitorBedsideTable(data) {
             },
             {
                 data: 'afteruse_rec_remark',
-                title: 'หมายเหตุ(หลังใช้)'
+                title: 'หมายเหตุ(หลังใช้)',
+                render: function (data, type) {
+                    if (!data) return ''
+                    return data
+                }
             },
             {
                 data: 'afteruse_rec_name',
