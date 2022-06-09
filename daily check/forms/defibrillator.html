@@ -970,7 +970,7 @@
             Swal.fire({
                 icon: 'info',
                 title: 'กรุณารอสักครู่',
-                text: 'กำลังบันทึกข้อมูล',
+                html: 'กำลังบันทึกข้อมูล<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>',
                 allowOutsideClick: false
             })
             Swal.showLoading(Swal.getConfirmButton())
@@ -1022,7 +1022,7 @@
             Swal.fire({
                 icon: 'info',
                 title: 'กำลังอัพโหลดรูปภาพ',
-                text: 'uploading...',
+                html: 'uploading...<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>',
                 allowOutsideClick: false
             })
             Swal.showLoading(Swal.getConfirmButton())
@@ -1048,7 +1048,7 @@
                             title: 'กำลังบันทึกข้อมูล..',
                             html: `<div class="progress">
   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-</div>`,
+</div><br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>`,
                             allowOutsideClick: false,
                             showConfirmButton: false
                         })
@@ -1095,7 +1095,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'อัพโหลดรูปภาพเรียบร้อย',
-                text: 'กรุณารอสักครู่',
+                html: 'กรุณารอสักครู่<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>',
             })
             return e.id
         }
@@ -1199,7 +1199,8 @@
 แผนก: ${obj.afteruse_e_dept}
 ผู้บันทึก: ${obj.afteruse_rec_name}
 อาการ: 
-${msg}`
+${msg.trim()}
+`
                 } else {
                     msg = `แจ้งอาการผิดปกติเครื่อง Defibrillator
 วันที่: ${obj.date}
