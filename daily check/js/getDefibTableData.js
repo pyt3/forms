@@ -76,6 +76,9 @@ function createDefibTable(data) {
         data: data,
         scrollX: true,
         order: [[0, 'desc']],
+        createRow: function (row, data, dataIndex) {
+            console.log(data)
+        },
         columnDefs: [
             {
                 targets: '_all',
