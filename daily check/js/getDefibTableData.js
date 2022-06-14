@@ -68,6 +68,31 @@ async function getDefibTableData(session) {
 }
 var defibtable
 function createDefibTable(data) {
+    $('#defibrillator-display-approved').change(function () {
+        if ($(this).is(':checked')) {
+            defibtable
+                .column(8) // or columns???
+                .search('^$', true, false)
+                .draw();
+        } else {
+            defibtable
+                .column(8) // or columns???
+                .search('')
+                .draw();
+        }
+    })
+    let notapproved = data.filter(v => v.signature_staff != '' && !v.signature_manager)
+    Swal.fire({
+        title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
+        confirmButtonText: 'แสดงรายการที่ไม่อนุมัติ',
+        showCancelButton: true,
+        cancelButtonText: 'แสดงรายการทั้งหมด',
+    }).then(result => {
+        if (result.isConfirmed) {
+            $('#defibrillator-display-approved').attr('checked', true).change()
+        }
+    })
+    console.log("🚀 ~ notapproved", notapproved)
     $('#defibrillator .table-responsive').html('').append(`<table id="defib-table-data" class="table table-hover table-bordered" style="width: 100%">
             <thead class="bg-primary text-center text-white text-nowrap"></thead>
             <tbody class="bg-white"></tbody>
@@ -214,7 +239,9 @@ function createDefibTable(data) {
             },
         ]
     });
+
     defibtable.draw(false)
+
 }
 var rowIndex
 function getDefiDetail(row, index) {
