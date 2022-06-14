@@ -81,6 +81,13 @@ function createTemperatureTable(data) {
     let table = $('#temperature-table-data').DataTable({
         data: data,
         scrollX: true,
+        createdRow: function (row, data, dataIndex) {
+
+            if (data.signature_staff != '' && !data.signature_manager) {
+                console.log("🚀 ~ data", data)
+                $(row).addClass('bg-warning')
+            }
+        },
         columnDefs: [{
             targets: '_all',
             className: 'text-center align-middle'
