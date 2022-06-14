@@ -81,6 +81,13 @@ function createIncubatorTable(data) {
         data: data,
         scrollX: true,
         order: [[0, 'desc']],
+        createdRow: function (row, data, dataIndex) {
+
+            if (data.signature_staff != '' && !data.signature_manager) {
+                console.log("🚀 ~ data", data)
+                $(row).addClass('bg-warning')
+            }
+        },
         columnDefs: [
             {
                 targets: '_all',
