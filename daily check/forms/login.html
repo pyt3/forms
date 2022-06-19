@@ -163,14 +163,32 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="temperature" role="tabpanel" aria-labelledby="temperature-tab">
+                <div class="form-check m-4">
+                    <input class="form-check-input" type="checkbox" value="" id="temperature-display-approved">
+                    <label class="form-check-label" for="temperature-display-approved">
+                        แสดงเฉพาะรายการที่ยังไม่อนุมัติ
+                    </label>
+                </div>
                 <div class="container-fluid table-responsive pt-3" style="min-height:200px">
                 </div>
             </div>
             <div class="tab-pane fade" id="incubator" role="tabpanel" aria-labelledby="incubator-tab">
+                <div class="form-check m-4">
+                    <input class="form-check-input" type="checkbox" value="" id="incubator-display-approved">
+                    <label class="form-check-label" for="incubator-display-approved">
+                        แสดงเฉพาะรายการที่ยังไม่อนุมัติ
+                    </label>
+                </div>
                 <div class="container-fluid table-responsive pt-3" style="min-height:200px">
                 </div>
             </div>
             <div class="tab-pane fade" id="monitorbedside" role="tabpanel" aria-labelledby="monitorbedside-tab">
+                <div class="form-check m-4">
+                    <input class="form-check-input" type="checkbox" value="" id="monitorbedside-display-approved">
+                    <label class="form-check-label" for="monitorbedside-display-approved">
+                        แสดงเฉพาะรายการที่ยังไม่อนุมัติ
+                    </label>
+                </div>
                 <div class="container-fluid table-responsive pt-3" style="min-height:200px">
                 </div>
             </div>
@@ -238,7 +256,7 @@
             let session = localStorage.getItem("session")
             if (session) {
                 if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
-                    firestore.collection(client)
+                    return firestore.collection(client)
                         .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                         .get()
                         .then(async function (querySnapshot) {
