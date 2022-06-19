@@ -264,6 +264,8 @@
                                 sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
                             }).then(() => {
                                 localStorage.removeItem('session')
+                                $('#signout-btn').hide()
+                                $('#data-div').hide()
                                 return $('#sign-in-div').removeClass('hide')
                             })
                         })
@@ -292,6 +294,8 @@
 
                 return false
             } else {
+                $('#signout-btn').hide()
+                $('#data-div').hide()
                 return $('#sign-in-div').removeClass('hide')
             }
 
