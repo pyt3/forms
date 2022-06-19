@@ -72,12 +72,39 @@ async function getIncubatorTableData(session) {
     $('#admin-div').show()
     // }
 }
+var table
 function createIncubatorTable(data) {
+    $('#incubator-display-approved').change(function () {
+        if ($(this).is(':checked')) {
+            table
+                .column(8) // or columns???
+                .search('^$', true, false)
+                .draw();
+        } else {
+            table
+                .column(8) // or columns???
+                .search('')
+                .draw();
+        }
+    })
+    let notapproved = data.filter(v => v.signature_staff != '' && !v.signature_manager)
+    if (notapproved.length > 0) {
+        Swal.fire({
+            title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
+            confirmButtonText: 'แสดงรายการที่ไม่อนุมัติ',
+            showCancelButton: true,
+            cancelButtonText: 'แสดงรายการทั้งหมด',
+        }).then(result => {
+            if (result.isConfirmed) {
+                $('#incubator-display-approved').attr('checked', true).change()
+            }
+        })
+    }
     $('#incubator .table-responsive').html('').append(`<table id="incubator-table-data" class="table table-hover table-bordered" style="width: 100%">
             <thead class="bg-primary text-center text-white text-nowrap"></thead>
             <tbody class="bg-white"></tbody>
         </table>`)
-    let table = $('#incubator-table-data').DataTable({
+    table = $('#incubator-table-data').DataTable({
         data: data,
         scrollX: true,
         order: [[0, 'desc']],

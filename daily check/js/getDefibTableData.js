@@ -5,6 +5,7 @@ async function getDefibTableData(session) {
                 user = querySnapshot.docs[0].data()
                 getDefibTableData()
             } else {
+                $('#signout-btn').click()
                 localStorage.removeItem('session')
                 location.reload()
             }
@@ -82,16 +83,18 @@ function createDefibTable(data) {
         }
     })
     let notapproved = data.filter(v => v.signature_staff != '' && !v.signature_manager)
-    Swal.fire({
-        title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
-        confirmButtonText: 'แสดงรายการที่ไม่อนุมัติ',
-        showCancelButton: true,
-        cancelButtonText: 'แสดงรายการทั้งหมด',
-    }).then(result => {
-        if (result.isConfirmed) {
-            $('#defibrillator-display-approved').attr('checked', true).change()
-        }
-    })
+    if (notapproved.length > 0) {
+        Swal.fire({
+            title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
+            confirmButtonText: 'แสดงรายการที่ไม่อนุมัติ',
+            showCancelButton: true,
+            cancelButtonText: 'แสดงรายการทั้งหมด',
+        }).then(result => {
+            if (result.isConfirmed) {
+                $('#defibrillator-display-approved').attr('checked', true).change()
+            }
+        })
+    }
     console.log("🚀 ~ notapproved", notapproved)
     $('#defibrillator .table-responsive').html('').append(`<table id="defib-table-data" class="table table-hover table-bordered" style="width: 100%">
             <thead class="bg-primary text-center text-white text-nowrap"></thead>

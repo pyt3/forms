@@ -72,13 +72,39 @@ async function getTemperatureTableData(session) {
     $('#admin-div').show()
     // }
 }
-
+var table
 function createTemperatureTable(data) {
+    $('#temperature-display-approved').change(function () {
+        if ($(this).is(':checked')) {
+            table
+                .column(8) // or columns???
+                .search('^$', true, false)
+                .draw();
+        } else {
+            table
+                .column(8) // or columns???
+                .search('')
+                .draw();
+        }
+    })
+    let notapproved = data.filter(v => v.signature_staff != '' && !v.signature_manager)
+    if (notapproved.length > 0) {
+        Swal.fire({
+            title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
+            confirmButtonText: 'แสดงรายการที่ไม่อนุมัติ',
+            showCancelButton: true,
+            cancelButtonText: 'แสดงรายการทั้งหมด',
+        }).then(result => {
+            if (result.isConfirmed) {
+                $('#temperature-display-approved').attr('checked', true).change()
+            }
+        })
+    }
     $('#temperature .table-responsive').html('').append(`<table id="temperature-table-data" class="table table-hover table-bordered" style="width: 100%">
             <thead class="bg-primary text-center text-white text-nowrap"></thead>
             <tbody class="bg-white"></tbody>
         </table>`)
-    let table = $('#temperature-table-data').DataTable({
+    table = $('#temperature-table-data').DataTable({
         data: data,
         scrollX: true,
         createdRow: function (row, data, dataIndex) {
