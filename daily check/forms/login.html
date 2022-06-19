@@ -314,7 +314,7 @@
             event.preventDefault()
             let u = $('#username').val()
             let pw = $('#password').val()
-            firestore.collection(client)
+            firestore.collection(client + '_user')
                 .where('user', "==", u)
                 .where('pwd', "==", pw)
                 .limit(1)
