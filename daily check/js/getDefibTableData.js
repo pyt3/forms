@@ -1,6 +1,6 @@
 async function getDefibTableData(session) {
     if (session) {
-        return firestore.collection(client).where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
+        return firestore.collection(client + '_user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
             if (querySnapshot.docs.length > 0) {
                 user = querySnapshot.docs[0].data()
                 getDefibTableData()

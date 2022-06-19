@@ -256,7 +256,7 @@
             let session = localStorage.getItem("session")
             if (session) {
                 if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
-                    return firestore.collection(client)
+                    return firestore.collection(client + '_user')
                         .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                         .get()
                         .then(async function (querySnapshot) {
@@ -278,7 +278,7 @@
                 $.LoadingOverlay('hide')
                 $('#signout-btn').click(function () {
                     let session = localStorage.getItem("session")
-                    firestore.collection(client)
+                    firestore.collection(client + '_user')
                         .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                         .get()
                         .then(async function (querySnapshot) {
