@@ -114,14 +114,24 @@ function createTemperatureTable(data) {
                 $(row).addClass('bg-warning')
             }
         },
-        columnDefs: [{
-            targets: '_all',
-            className: 'text-center align-middle'
-        }],
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'align-middle text-center'
+            },
+            {
+                targets: [0],
+                visible: false,
+            }
+        ],
         columns: [
             {
+                data: 'time',
+                title: 'time',
+            },
+            {
                 data: 'date',
-                title: 'วันที่'
+                title: 'วันที่',
             },
             {
                 data: 'time',
