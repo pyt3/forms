@@ -260,14 +260,22 @@
                         .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                         .get()
                         .then(async function (querySnapshot) {
-                            querySnapshot.docs[0].ref.update({
-                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                            }).then(() => {
+                            if (querySnapshot.docs[0]) {
+                                querySnapshot.docs[0].ref.update({
+                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                                }).then(() => {
+                                    localStorage.removeItem('session')
+                                    $('#signout-btn').hide()
+                                    $('#data-div').hide()
+                                    return $('#sign-in-div').removeClass('hide')
+                                })
+                            } else {
                                 localStorage.removeItem('session')
                                 $('#signout-btn').hide()
                                 $('#data-div').hide()
                                 return $('#sign-in-div').removeClass('hide')
-                            })
+                            }
+
                         })
 
                 }
