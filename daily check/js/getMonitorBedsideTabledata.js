@@ -119,13 +119,20 @@ function createMonitorBedsideTable(data) {
             {
                 targets: '_all',
                 className: 'align-middle text-center'
+            },
+            {
+                targets: [0],
+                visible: false,
             }
         ],
         columns: [
             {
+                data: 'time',
+                title: 'time',
+            },
+            {
                 data: 'date',
                 title: 'วันที่',
-
             },
             {
                 data: 'time',
