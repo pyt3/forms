@@ -56,6 +56,7 @@ async function getDefibTableData(session) {
                         })
                         data = [...data, ...data2]
                         data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+                        data = data.sort((a, b) => b.time - a.time)
                         tabledata = data
                         createDefibTable(data)
                     })
@@ -69,6 +70,7 @@ async function getDefibTableData(session) {
 }
 var defibtable
 function createDefibTable(data) {
+    console.log("🚀 ~ data", data)
     $('#defibrillator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             defibtable
@@ -115,9 +117,17 @@ function createDefibTable(data) {
             {
                 targets: '_all',
                 className: 'align-middle text-center'
+            },
+            {
+                targets: [0],
+                visible: false,
             }
         ],
         columns: [
+            {
+                data: 'time',
+                title: 'time',
+            },
             {
                 data: 'date',
                 title: 'วันที่',
