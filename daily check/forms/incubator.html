@@ -475,7 +475,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
+        // var vConsole = new window.VConsole();
     </script>
     <script>
         var firestore
@@ -531,7 +531,7 @@
     <script>
         var signaturePad, signaturePadAfterUse, resizeCanvas
         $(document).ready(() => {
-            // $.LoadingOverlay("show");
+            $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
@@ -562,6 +562,7 @@
             id = url.searchParams.get("id")
             if (!client || !dept || !brand || !model || !name || !id) {
                 $('body').html('')
+
                 $.LoadingOverlay("hide");
                 Swal.fire({
                     title: 'Error',
@@ -674,6 +675,7 @@
             }
             window.addEventListener("resize", resizeCanvas);
             resizeCanvas();
+            $.LoadingOverlay("hide");
         })
 
     </script>
