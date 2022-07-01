@@ -224,7 +224,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var firestore
@@ -256,11 +256,12 @@
             let session = localStorage.getItem("session")
             if (session) {
                 if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
-                    return firestore.collection(client + '_user')
+                    return firestore.collection('user')
                         .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                         .get()
                         .then(async function (querySnapshot) {
-                            if (querySnapshot.docs[0]) {
+                            if (querySnapshot.docs.length > 0) {
+                                client = querySnapshot.docs[0].data().site.toUpperCase()
                                 querySnapshot.docs[0].ref.update({
                                     sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
                                 }).then(() => {
@@ -286,7 +287,7 @@
                 $.LoadingOverlay('hide')
                 $('#signout-btn').click(function () {
                     let session = localStorage.getItem("session")
-                    firestore.collection(client + '_user')
+                    firestore.collection('user')
                         .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                         .get()
                         .then(async function (querySnapshot) {
@@ -322,14 +323,12 @@
             event.preventDefault()
             let u = $('#username').val()
             let pw = $('#password').val()
-            firestore.collection(client + '_user')
+            firestore.collection('user')
                 .where('user', "==", u)
                 .where('pwd', "==", pw)
                 .limit(1)
                 .get()
                 .then(async function (querySnapshot) {
-
-
                     if (querySnapshot.docs.length > 0) {
                         $('#signout-btn').show()
                         $('#signout-btn').click(function () {

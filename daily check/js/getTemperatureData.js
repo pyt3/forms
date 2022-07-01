@@ -9,14 +9,31 @@ async function getTemperatureTableData(session) {
     //         }
     //     });
     // } else {
-    let temperatureRef, temperatureRef2
+    let temperatureRef, temperatureRef2, temperatureRef3
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     if (user.level == 'director') {
-        temperatureRef = firestore.collection(client)
-            .where('form', '==', 'temperature')
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
+        if (user.site == 'all') {
+            console.log("🚀 ~ user.site", user.site)
+            temperatureRef = firestore.collection('PYT3')
+                .where('form', '==', 'temperature')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            temperatureRef2 = firestore.collection("PYT2")
+                .where('form', '==', 'temperature')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            temperatureRef3 = firestore.collection("PYT1")
+                .where('form', '==', 'temperature')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+        } else {
+            temperatureRef = firestore.collection(client)
+                .where('form', '==', 'temperature')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+        }
+
     } else if (user.level == 'manager') {
         temperatureRef = firestore.collection(client)
             .where('form', '==', 'temperature')
@@ -30,7 +47,7 @@ async function getTemperatureTableData(session) {
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
             .limit(20)
-
+        // 
     }
     await temperatureRef.get()
         .then(async function (querySnapshot) {
@@ -44,7 +61,7 @@ async function getTemperatureTableData(session) {
 
             })
             if (temperatureRef2) {
-                await temperatureRef2.get().then(function (querySnapshot2) {
+                await temperatureRef2.get().then(async function (querySnapshot2) {
                     let data2 = querySnapshot2.docs.map(function (doc2) {
                         let obj2 = doc2.data()
 
@@ -54,11 +71,33 @@ async function getTemperatureTableData(session) {
                         return obj2
 
                     })
-                    data = [...data, ...data2]
-                    data = data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+                    if (temperatureRef3) {
+                        await temperatureRef3.get().then(function (querySnapshot3) {
+                            let data3 = querySnapshot3.docs.map(function (doc3) {
+                                let obj3 = doc3.data()
 
-                    tabledata = data
-                    createTemperatureTable(data)
+                                let isPass = obj3.temp >= 2 && obj3.temp <= 8
+                                obj3.isPass = isPass
+
+                                return obj3
+
+                            })
+                            let data = data.concat(data2).concat(data3)
+                            data.sort(function (a, b) {
+                                return new Date(b.time) - new Date(a.time)
+                            })
+                            data = [...data, ...data2, ...data3]
+                            tabledata = data
+                            renderTemperatureTable(data)
+                        })
+                    } else {
+                        data = [...data, ...data2]
+                        data = data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+
+                        tabledata = data
+                        createTemperatureTable(data)
+                    }
+
                 })
 
             } else {
@@ -77,12 +116,12 @@ function createTemperatureTable(data) {
     $('#temperature-display-approved').change(function () {
         if ($(this).is(':checked')) {
             table
-                .column(8) // or columns???
+                .column(9) // or columns???
                 .search('^$', true, false)
                 .draw();
         } else {
             table
-                .column(8) // or columns???
+                .column(9) // or columns???
                 .search('')
                 .draw();
         }
