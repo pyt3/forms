@@ -179,7 +179,7 @@
     <script>
         function scancodev2() {
             const html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 15, qrbox: { width: 500, height: 500 } };
+            const config = { fps: 30, aspectRatio: 1.777778 };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 $.LoadingOverlay("show");
                 html5QrCode.stop().then((ignore) => {
