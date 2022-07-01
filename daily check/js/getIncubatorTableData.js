@@ -9,15 +9,31 @@ async function getIncubatorTableData(session) {
     //         }
     //     });
     // } else {
-    let ref, ref2
+    let ref, ref2, ref3
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     if (user.level == 'director') {
-        ref = firestore.collection(client)
-            .where('form', '==', 'incubator')
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(20)
+        if (user.site == 'all') {
+            console.log("🚀 ~ user.site", user.site)
+            ref = firestore.collection('PYT3')
+                .where('form', '==', 'incubator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref2 = firestore.collection("PYT2")
+                .where('form', '==', 'incubator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref3 = firestore.collection("PYT1")
+                .where('form', '==', 'incubator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+        } else {
+            ref = firestore.collection(client)
+                .where('form', '==', 'incubator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+        }
+
     } else if (user.level == 'manager') {
         ref = firestore.collection(client)
             .where('form', '==', 'incubator')
@@ -31,7 +47,7 @@ async function getIncubatorTableData(session) {
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
             .limit(20)
-
+        // 
     }
     await ref.get()
         .then(async function (querySnapshot) {
@@ -42,28 +58,42 @@ async function getIncubatorTableData(session) {
                 let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
                 if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
                 return obj
-
             })
             if (ref2) {
-                await ref2.get().then(function (querySnapshot2) {
+                await ref2.get().then(async function (querySnapshot2) {
                     let data2 = querySnapshot2.docs.map(function (doc2) {
                         let obj2 = doc2.data()
-
                         let isPass = Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
                         if (Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).length > 0) obj2.isPass = isPass
-
                         let isPass_afteruse = Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
                         if (Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj2.isPass_afteruse = isPass_afteruse
                         return obj2
                     })
-                    data = [...data, ...data2]
-                    data = data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+                    if (ref3) {
+                        await ref3.get().then(function (querySnapshot3) {
+                            let data3 = querySnapshot3.docs.map(function (doc3) {
+                                let obj3 = doc3.data()
+                                let isPass = Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).every(key => obj3[key] != 'ไม่ผ่าน')
+                                if (Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).length > 0) obj3.isPass = isPass
+                                let isPass_afteruse = Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj3[key] != 'ไม่ผ่าน')
+                                if (Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj3.isPass_afteruse = isPass_afteruse
+                                return obj3
+                            })
+                            data = [...data, ...data2, ...data3]
+                            data = data.sort((a, b) => b.time - a.time)
+                            tabledata = data
+                            createIncubatorTable(data)
+                        })
+                    } else {
+                        data = [...data, ...data2]
+                        data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+                        data = data.sort((a, b) => b.time - a.time)
+                        tabledata = data
+                        createIncubatorTable(data)
+                    }
 
-                    tabledata = data
-                    createIncubatorTable(data)
                 })
             } else {
-
                 tabledata = data
                 createIncubatorTable(data)
             }
@@ -77,12 +107,12 @@ function createIncubatorTable(data) {
     $('#incubator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             table
-                .column(8) // or columns???
+                .column(9) // or columns???
                 .search('^$', true, false)
                 .draw();
         } else {
             table
-                .column(8) // or columns???
+                .column(9) // or columns???
                 .search('')
                 .draw();
         }

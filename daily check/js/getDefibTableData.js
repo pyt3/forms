@@ -1,8 +1,11 @@
 async function getDefibTableData(session) {
     if (session) {
-        return firestore.collection(client + '_user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
+        console.log("🚀 ~ session", session)
+        return firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
             if (querySnapshot.docs.length > 0) {
+                client = querySnapshot.docs[0].data().site.toUpperCase()
                 user = querySnapshot.docs[0].data()
+                console.log("🚀 ~ user", user)
                 getDefibTableData()
             } else {
                 $('#signout-btn').click()
@@ -11,11 +14,12 @@ async function getDefibTableData(session) {
             }
         });
     } else {
-        let ref, ref2
+        let ref, ref2, ref3
         let now = new Date()
         let before30days = now.setDate(now.getDate() - 30)
         if (user.level == 'director') {
             if (user.site == 'all') {
+                console.log("🚀 ~ user.site", user.site)
                 ref = firestore.collection('PYT3')
                     .where('form', '==', 'defibrillator')
                     .where('time', '>=', before30days)
@@ -48,7 +52,6 @@ async function getDefibTableData(session) {
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
                 .limit(20)
-            // 
         }
         await ref.get()
             .then(async function (querySnapshot) {
@@ -108,12 +111,12 @@ function createDefibTable(data) {
     $('#defibrillator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             defibtable
-                .column(8) // or columns???
+                .column(9) // or columns???
                 .search('^$', true, false)
                 .draw();
         } else {
             defibtable
-                .column(8) // or columns???
+                .column(9) // or columns???
                 .search('')
                 .draw();
         }
