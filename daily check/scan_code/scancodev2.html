@@ -119,6 +119,7 @@
             const html5QrCode = new Html5Qrcode("reader");
             const config = { fps: 15, aspectRatio: 1.777778 };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                $.LoadingOverlay("show");
                 html5QrCode.stop().then((ignore) => {
                     result = decodedText
                     console.log("🚀 ~ result", result)
@@ -177,6 +178,7 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 </body>
 
 </html>
