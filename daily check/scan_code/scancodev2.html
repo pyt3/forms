@@ -9,10 +9,17 @@
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link rel="icon" href="/icon.png" type="image/png">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="reader" width="600px"></div>
+    <div id="reader" width="600px" class="rounded"></div>
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
@@ -106,7 +113,7 @@
             const html5QrCode = new Html5Qrcode("reader");
             const config = { fps: 15, qrbox: { width: 500, height: 500 } };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-                /* handle success */
+                console.log(decodedText);
             };
             html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
         }
