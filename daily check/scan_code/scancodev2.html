@@ -12,9 +12,7 @@
 </head>
 
 <body>
-    <div class="container-fluid p-2 bg-dark" style="min-height: 100vh; min-width: 100vw;">
-        <div id="reader" width="600px"></div>
-    </div>
+    <div id="reader" width="600px"></div>
 
     <script>
         var firestore
@@ -31,6 +29,7 @@
             console.log(defaultProject.name);  // "[DEFAULT]"
             firestore = defaultProject.firestore();
         }
+        scancodev2()
     </script>
     <script>
         // liff.init({ liffId: '1657104960-953rK3wq' })
