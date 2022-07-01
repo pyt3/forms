@@ -16,17 +16,17 @@ async function getDefibTableData(session) {
         let before30days = now.setDate(now.getDate() - 30)
         if (user.level == 'director') {
             if (user.site == 'all') {
-                ref = firestore.collection("PYT3")
+                ref = firestore.collection('PYT3')
                     .where('form', '==', 'defibrillator')
-                    .where('e_dept', '==', user.name)
+                    .where('time', '>=', before30days)
                     .orderBy('time', 'desc')
                 ref2 = firestore.collection("PYT2")
                     .where('form', '==', 'defibrillator')
-                    .where('rec_dept', '==', user.name)
+                    .where('time', '>=', before30days)
                     .orderBy('time', 'desc')
                 ref3 = firestore.collection("PYT1")
                     .where('form', '==', 'defibrillator')
-                    .where('rec_dept', '==', user.name)
+                    .where('time', '>=', before30days)
                     .orderBy('time', 'desc')
             } else {
                 ref = firestore.collection(client)
