@@ -21,6 +21,7 @@
     <script>
         var firestore
         window.onload = () => {
+            scancodev2()
             const firebaseConfig = {
                 apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
                 authDomain: "daily-check-form.firebaseapp.com",
@@ -33,7 +34,7 @@
             console.log(defaultProject.name);  // "[DEFAULT]"
             firestore = defaultProject.firestore();
         }
-        scancodev2()
+
     </script>
     <script>
         // liff.init({ liffId: '1657104960-953rK3wq' })
@@ -103,6 +104,7 @@
     <script>
         function scancodev2() {
             const html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 /* handle success */
             };
