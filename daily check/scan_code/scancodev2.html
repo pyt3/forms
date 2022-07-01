@@ -11,16 +11,21 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <style>
         body {
+            /* width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; */
             background-color: #152238;
         }
     </style>
 </head>
 
 <body>
-    <div id="reader" width="600px"></div>
+    <div class="container-fluid">
+        <div id="reader"></div>
+    </div>
+
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
@@ -54,12 +59,12 @@
         //     scancodev2()
         // })
 
-        // var liffId = {
-        //     defibrillator: '1657104960-wXQRkQ87',
-        //     incubator: '1657104960-w9greg5D',
-        //     temperature: '1657104960-92R4ZRQz',
-        //     monitorbedside: '1657104960-p9V0QVJx'
-        // }
+        var liffId = {
+            defibrillator: '1657104960-wXQRkQ87',
+            incubator: '1657104960-w9greg5D',
+            temperature: '1657104960-92R4ZRQz',
+            monitorbedside: '1657104960-p9V0QVJx'
+        }
         function scancode() {
             liff.scanCodeV2()
                 .then((result) => {
@@ -112,9 +117,59 @@
     <script>
         function scancodev2() {
             const html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 15 };
+            const config = { fps: 15, aspectRatio: 1.777778 };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-                console.log(decodedText);
+                html5QrCode.stop().then((ignore) => {
+                    result = decodedText
+                    console.log("🚀 ~ result", result)
+                    let id = result.split('=')[1]
+                    console.log("🚀 ~ id", id)
+                    firestore.collection('PYT3_e').doc(id).get().then(docs => {
+                        let d = docs.data()
+                        if (docs.exists && liffId[d.form]) {
+                            // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                            let url = new URL('line://app/' + liffId[d.form])
+                            // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
+                            // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
+                            url.searchParams.set("client", 'PYT3')
+                            url.searchParams.set("id", d.code)
+                            url.searchParams.set("name", d.name)
+                            url.searchParams.set("dept", d.dept)
+                            url.searchParams.set("brand", d.brand)
+                            url.searchParams.set("model", d.model)
+                            if (d.form == 'temperature') {
+                                url.searchParams.set("mintemp", d.mintemp)
+                                url.searchParams.set("maxtemp", d.maxtemp)
+                            }
+                            //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
+                            // 
+
+                            // liff.closeWindow()
+                            window.open(url, '_self')
+                        } else {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'ไม่พบข้อมูล หรือท่านอาจเลือกชนิดเครื่องมือไม่ถูกต้อง',
+                                confirmButtonText: 'แสกนอีกครั้ง',
+                                cancelButtonText: 'ปิดหน้าต่าง',
+                                showCancelButton: true,
+                            }).then(result => {
+                                if (result.isConfirmed) {
+                                    html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+                                } else {
+                                    liff.closeWindow()
+                                }
+                            })
+                        }
+                    })
+                        .catch((err) => {
+                            console.log(err);
+                            liff.closeWindow()
+                        });
+                }).catch((err) => {
+                    // Stop failed, handle it.
+                });
+
             };
             html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
         }
