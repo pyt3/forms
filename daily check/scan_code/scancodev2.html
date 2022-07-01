@@ -182,113 +182,114 @@
             const config = { fps: 30, aspectRatio: 1.777778 };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 $.LoadingOverlay("show");
-                html5QrCode.stop().then((ignore) => {
-                    result = decodedText
-                    console.log("🚀 ~ result", result)
-                    let id = result.split('=')[1]
-                    console.log("🚀 ~ id", id)
-                    firestore.collection('PYT3_e').doc(id).get().then(docs => {
-                        let d = docs.data()
-                        if (docs.exists && liffId[d.form]) {
-                            // let url = new URL('https://liff.line.me/' + liffId[d.form])
-                            let url = new URL('line://app/' + liffId[d.form])
-                            // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
-                            // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
-                            url.searchParams.set("client", 'PYT3')
-                            url.searchParams.set("id", d.code)
-                            url.searchParams.set("name", d.name)
-                            url.searchParams.set("dept", d.dept)
-                            url.searchParams.set("brand", d.brand)
-                            url.searchParams.set("model", d.model)
-                            if (d.form == 'temperature') {
-                                url.searchParams.set("mintemp", d.mintemp)
-                                url.searchParams.set("maxtemp", d.maxtemp)
-                            }
-                            //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
-                            // 
-
-                            // liff.closeWindow()
-                            window.open(url, '_self')
-                        } else {
-                            firestore.collection('PYT2_e').doc(id).get().then(docs => {
-                                let d = docs.data()
-                                if (docs.exists && liffId[d.form]) {
-                                    // let url = new URL('https://liff.line.me/' + liffId[d.form])
-                                    let url = new URL('line://app/' + liffId[d.form])
-                                    // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
-                                    // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
-                                    url.searchParams.set("client", 'PYT2')
-                                    url.searchParams.set("id", d.code)
-                                    url.searchParams.set("name", d.name)
-                                    url.searchParams.set("dept", d.dept)
-                                    url.searchParams.set("brand", d.brand)
-                                    url.searchParams.set("model", d.model)
-                                    if (d.form == 'temperature') {
-                                        url.searchParams.set("mintemp", d.mintemp)
-                                        url.searchParams.set("maxtemp", d.maxtemp)
-                                    }
-                                    //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
-                                    // 
-
-                                    // liff.closeWindow()
-                                    window.open(url, '_self')
-                                } else {
-                                    firestore.collection('PYT1_e').doc(id).get().then(docs => {
-                                        let d = docs.data()
-                                        if (docs.exists && liffId[d.form]) {
-                                            // let url = new URL('https://liff.line.me/' + liffId[d.form])
-                                            let url = new URL('line://app/' + liffId[d.form])
-                                            // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
-                                            // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
-                                            url.searchParams.set("client", 'PYT1')
-                                            url.searchParams.set("id", d.code)
-                                            url.searchParams.set("name", d.name)
-                                            url.searchParams.set("dept", d.dept)
-                                            url.searchParams.set("brand", d.brand)
-                                            url.searchParams.set("model", d.model)
-                                            if (d.form == 'temperature') {
-                                                url.searchParams.set("mintemp", d.mintemp)
-                                                url.searchParams.set("maxtemp", d.maxtemp)
-                                            }
-                                            //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
-                                            // 
-
-                                            // liff.closeWindow()
-                                            window.open(url, '_self')
-                                        } else {
-
-                                            Swal.fire({
-                                                icon: 'warning',
-                                                title: 'ไม่พบข้อมูล หรือท่านอาจเลือกชนิดเครื่องมือไม่ถูกต้อง',
-                                                confirmButtonText: 'แสกนอีกครั้ง',
-                                                cancelButtonText: 'ปิดหน้าต่าง',
-                                                showCancelButton: true,
-                                            }).then(result => {
-                                                if (result.isConfirmed) {
-                                                    scancode()
-                                                } else {
-                                                    liff.closeWindow()
-                                                }
-                                            })
-                                        }
-                                    })
-                                        .catch((err) => {
-                                            console.log(err);
-                                            liff.closeWindow()
-                                        });
-                                }
-                            })
-                                .catch((err) => {
-                                    console.log(err);
-                                    liff.closeWindow()
-                                });
-
+                result = decodedText
+                console.log("🚀 ~ result", result)
+                let id = result.split('=')[1]
+                console.log("🚀 ~ id", id)
+                firestore.collection('PYT3_e').doc(id).get().then(docs => {
+                    let d = docs.data()
+                    if (docs.exists && liffId[d.form]) {
+                        // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                        let url = new URL('line://app/' + liffId[d.form])
+                        // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
+                        // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
+                        url.searchParams.set("client", 'PYT3')
+                        url.searchParams.set("id", d.code)
+                        url.searchParams.set("name", d.name)
+                        url.searchParams.set("dept", d.dept)
+                        url.searchParams.set("brand", d.brand)
+                        url.searchParams.set("model", d.model)
+                        if (d.form == 'temperature') {
+                            url.searchParams.set("mintemp", d.mintemp)
+                            url.searchParams.set("maxtemp", d.maxtemp)
                         }
-                    })
-                        .catch((err) => {
-                            console.log(err);
-                            liff.closeWindow()
-                        });
+                        //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
+                        // 
+
+                        // liff.closeWindow()
+                        window.open(url, '_self')
+                    } else {
+                        firestore.collection('PYT2_e').doc(id).get().then(docs => {
+                            let d = docs.data()
+                            if (docs.exists && liffId[d.form]) {
+                                // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                                let url = new URL('line://app/' + liffId[d.form])
+                                // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
+                                // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
+                                url.searchParams.set("client", 'PYT2')
+                                url.searchParams.set("id", d.code)
+                                url.searchParams.set("name", d.name)
+                                url.searchParams.set("dept", d.dept)
+                                url.searchParams.set("brand", d.brand)
+                                url.searchParams.set("model", d.model)
+                                if (d.form == 'temperature') {
+                                    url.searchParams.set("mintemp", d.mintemp)
+                                    url.searchParams.set("maxtemp", d.maxtemp)
+                                }
+                                //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
+                                // 
+
+                                // liff.closeWindow()
+                                window.open(url, '_self')
+                            } else {
+                                firestore.collection('PYT1_e').doc(id).get().then(docs => {
+                                    let d = docs.data()
+                                    if (docs.exists && liffId[d.form]) {
+                                        // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                                        let url = new URL('line://app/' + liffId[d.form])
+                                        // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
+                                        // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
+                                        url.searchParams.set("client", 'PYT1')
+                                        url.searchParams.set("id", d.code)
+                                        url.searchParams.set("name", d.name)
+                                        url.searchParams.set("dept", d.dept)
+                                        url.searchParams.set("brand", d.brand)
+                                        url.searchParams.set("model", d.model)
+                                        if (d.form == 'temperature') {
+                                            url.searchParams.set("mintemp", d.mintemp)
+                                            url.searchParams.set("maxtemp", d.maxtemp)
+                                        }
+                                        //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
+                                        // 
+
+                                        // liff.closeWindow()
+                                        window.open(url, '_self')
+                                    } else {
+
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'ไม่พบข้อมูล หรือท่านอาจเลือกชนิดเครื่องมือไม่ถูกต้อง',
+                                            confirmButtonText: 'แสกนอีกครั้ง',
+                                            cancelButtonText: 'ปิดหน้าต่าง',
+                                            showCancelButton: true,
+                                        }).then(result => {
+                                            if (result.isConfirmed) {
+                                                scancode()
+                                            } else {
+                                                liff.closeWindow()
+                                            }
+                                        })
+                                    }
+                                })
+                                    .catch((err) => {
+                                        console.log(err);
+                                        liff.closeWindow()
+                                    });
+                            }
+                        })
+                            .catch((err) => {
+                                console.log(err);
+                                liff.closeWindow()
+                            });
+
+                    }
+                })
+                    .catch((err) => {
+                        console.log(err);
+                        liff.closeWindow()
+                    });
+                html5QrCode.stop().then((ignore) => {
+
                 }).catch((err) => {
                     // Stop failed, handle it.
                 });
