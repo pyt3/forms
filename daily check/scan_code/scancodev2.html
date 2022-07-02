@@ -72,12 +72,9 @@
         window.onload = () => {
             scancodev2()
             var OSName = "Unknown OS";
-            if (navigator.userAgent.indexOf("Win") != -1) OSName = "Windows";
-            if (navigator.userAgent.indexOf("Mac") != -1) OSName = "Macintosh";
-            if (navigator.userAgent.indexOf("Linux") != -1) OSName = "Linux";
-            if (navigator.userAgent.indexOf("Android") != -1) OSName = "Android";
-            if (navigator.userAgent.indexOf("like Mac") != -1) OSName = "iOS";
-            console.log('Your OS: ' + OSName);
+
+            if (navigator.userAgent.indexOf("Android") != -1) zoom = 2.0
+            if (navigator.userAgent.indexOf("like Mac") != -1) zoom = 1.0
             const firebaseConfig = {
                 apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
                 authDomain: "daily-check-form.firebaseapp.com",
@@ -226,8 +223,8 @@
                 qrbox: 350,
                 aspectRatio: 1.777778,
                 disableFlip: false,
-                // focusMode: "continuous",
-                // advanced: [{ zoom: 1.5 }],
+                focusMode: "continuous",
+                advanced: [{ zoom: 2.0 }],
                 experimentalFeatures: {
                     useBarCodeDetectorIfSupported: true
                 },
