@@ -71,8 +71,7 @@
         var firestore, zoom
         window.onload = () => {
             scancodev2()
-            var OSName = "Unknown OS";
-
+            console.log(navigator.mediaDevices.getSupportedConstraints());
             if (navigator.userAgent.indexOf("Android") != -1) zoom = 2.0
             if (navigator.userAgent.indexOf("like Mac") != -1) zoom = 1.0
             const firebaseConfig = {
@@ -232,7 +231,7 @@
             };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 console.log("🚀 ~ decodedResult", decodedResult)
-                $.LoadingOverlay("show");
+                // $.LoadingOverlay("show");
                 beepsound.play();
                 beepsound.onended = function () {
                     beepsound.muted = true;
@@ -244,8 +243,8 @@
                 firestore.collection('PYT3_e').doc(id).get().then(docs => {
                     let d = docs.data()
                     if (docs.exists && liffId[d.form]) {
-                        let url = new URL('https://liff.line.me/' + liffId[d.form])
-                        // let url = new URL('line://app/' + liffId[d.form])
+                        // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                        let url = new URL('line://app/' + liffId[d.form])
                         // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
                         // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
                         url.searchParams.set("client", 'PYT3')
