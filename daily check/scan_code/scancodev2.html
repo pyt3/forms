@@ -68,12 +68,16 @@
         var vConsole = new window.VConsole();
     </script>
     <script>
-        var firestore, zoom = false
+        var firestore, zoom
         window.onload = () => {
             scancodev2()
             var OSName = "Unknown OS";
-            if (navigator.userAgent.indexOf("Android") != -1) zoom = 2
-            if (navigator.userAgent.indexOf("like Mac") != -1) zoom = 1.5
+            if (navigator.userAgent.indexOf("Win") != -1) OSName = "Windows";
+            if (navigator.userAgent.indexOf("Mac") != -1) OSName = "Macintosh";
+            if (navigator.userAgent.indexOf("Linux") != -1) OSName = "Linux";
+            if (navigator.userAgent.indexOf("Android") != -1) OSName = "Android";
+            if (navigator.userAgent.indexOf("like Mac") != -1) OSName = "iOS";
+            console.log('Your OS: ' + OSName);
             const firebaseConfig = {
                 apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
                 authDomain: "daily-check-form.firebaseapp.com",
@@ -354,7 +358,7 @@
             setTimeout(function () {
                 html5QrCode.applyVideoConstraints({
                     focusMode: "continuous",
-                    advanced: [{ zoom: zoom }],
+                    advanced: [{ zoom: 2.0 }],
                 });
             }, 2000);
         }
