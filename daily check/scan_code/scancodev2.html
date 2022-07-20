@@ -223,11 +223,11 @@
                 qrbox: 350,
                 aspectRatio: 1.777778,
                 disableFlip: false,
-                // focusMode: "continuous",
-                // advanced: [{ zoom: 2.0 }],
-                // experimentalFeatures: {
-                //     useBarCodeDetectorIfSupported: true
-                // },
+                focusMode: "continuous",
+                advanced: [{ zoom: 2.0 }],
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true
+                },
             };
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 console.log("🚀 ~ decodedResult", decodedResult)
@@ -352,7 +352,7 @@
 
             };
             html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
-            setTimeout(function () {
+            setInterval(function () {
                 html5QrCode.applyVideoConstraints({
                     focusMode: "continuous",
                     advanced: [{ zoom: 2.0 }],
