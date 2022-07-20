@@ -27,11 +27,6 @@
             firestore = defaultProject.firestore();
         }
     </script>
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-    <script>
-        // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
-    </script>
     <script>
         liff.init({ liffId: '1657104960-953rK3wq' })
         liff.ready.then(() => {
@@ -158,9 +153,6 @@
                                                         }
                                                     })
                                                 }
-
-
-
                                             })
                                                 .catch((err) => {
                                                     console.log(err);
@@ -172,15 +164,21 @@
                                             console.log(err);
                                             liff.closeWindow()
                                         });
-
                                 }
                             })
                                 .catch((err) => {
                                     console.log(err);
                                     liff.closeWindow()
                                 });
-                        })
-                }
+
+                        }
+                    })
+                        .catch((err) => {
+                            console.log(err);
+                            liff.closeWindow()
+                        });
+                })
+        }
     </script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
