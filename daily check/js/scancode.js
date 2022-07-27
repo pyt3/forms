@@ -18,7 +18,7 @@ window.onload = () => {
         if (!liff.isLoggedIn()) {
             return liff.login()
         }
-        await getAuth(await liff.getDecodedIDToken())
+        await getAuth(await liff.getDecodedIDToken().sub)
         scancode()
     })
 
@@ -32,9 +32,7 @@ var liffId = {
 }
 
 async function getAuth(uid) {
-    console.log("🚀 ~ uid", uid)
     let email = uid + '@dailycheck.com'
-    console.log("🚀 ~ email", email)
     let password = 'dailycheck'
     await auth.signInWithEmailAndPassword(email, password).then(function (user) {
 
