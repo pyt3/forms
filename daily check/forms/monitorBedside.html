@@ -562,12 +562,7 @@
     <script>
         var firestore
         $(document).ready(function () {
-            $.post(script_url, { opt: 'getconst' }, function (c) {
-                const firebaseConfig = c
-                const defaultProject = firebase.initializeApp(firebaseConfig);
 
-                firestore = defaultProject.firestore();
-            })
 
             // getDataForID()
             $('#dept option').not(':disabled').each(function () {
@@ -627,6 +622,14 @@
                         return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
+                        $.post(script_url, { opt: 'getconst' }, async function (c) {
+                            const firebaseConfig = c
+                            const defaultProject = firebase.initializeApp(firebaseConfig);
+
+                            firestore = defaultProject.firestore();
+                            auth = defaultProject.auth();
+                            await getAuth(await liff.getDecodedIDToken().sub)
+                        })
                     }
 
                 })
@@ -758,6 +761,44 @@
             resizeCanvas();
             $.LoadingOverlay("show");
         })
+        async function getAuth(uid) {
+            let email = uid + '@dailycheck.com'
+            let password = 'dailycheck'
+            await auth.signInWithEmailAndPassword(email, password).then(function (user) {
+
+                console.log('sign in successful')
+            }).catch(async function (error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                // var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                // ...
+                console.log(errorCode)
+                console.log(errorMessage)
+                console.log(credential)
+                await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
+                    console.log('sign up successful')
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    console.log(email)
+                    console.log(credential)
+                });
+            });
+        }
+
+
 
     </script>
     <script>
