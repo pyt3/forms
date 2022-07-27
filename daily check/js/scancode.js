@@ -37,8 +37,7 @@ async function getAuth(uid) {
     await auth.signInWithEmailAndPassword(email, password).then(function (user) {
 
         console.log('sign in successful')
-        let user = user.user
-        console.log("🚀 ~ user", user)
+        console.log("🚀 ~ user", user.user)
     }).catch(async function (error) {
         // Handle Errors here.
         var errorCode = error.code;
