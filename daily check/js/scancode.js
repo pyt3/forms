@@ -1,3 +1,4 @@
+document.write('<script defer src="../js/getFirebaseAuth.js?cache=' + new Date().getTime() + '"><\/script>')
 var firestore
 window.onload = () => {
     const firebaseConfig = {
