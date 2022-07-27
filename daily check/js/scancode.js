@@ -33,6 +33,7 @@ var liffId = {
 
 async function getAuth(uid) {
     let email = uid + '@dailycheck.com'
+    console.log("🚀 ~ email", email)
     let password = 'dailycheck'
     await auth.signInWithEmailAndPassword(email, password).then(function (user) {
 
@@ -49,9 +50,8 @@ async function getAuth(uid) {
         // ...
         console.log(errorCode)
         console.log(errorMessage)
-        console.log(email)
+        console.log('email: ' + email)
         console.log(credential)
-        console.log(email);
         await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
             console.log('sign up successful')
             console.log("🚀 ~ user", user.user)
