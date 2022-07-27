@@ -53,8 +53,7 @@ async function getAuth(uid) {
         console.log(credential)
         await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
             console.log('sign up successful')
-            let user = user.user
-            console.log("🚀 ~ user", user)
+            console.log("🚀 ~ user", user.user)
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
