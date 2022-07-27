@@ -12,12 +12,14 @@ window.onload = () => {
     console.log(defaultProject.name);  // "[DEFAULT]"
     firestore = defaultProject.firestore();
     auth = defaultProject.auth();
+
 }
 liff.init({ liffId: '1657104960-953rK3wq' })
-liff.ready.then(() => {
+liff.ready.then(async () => {
     if (!liff.isLoggedIn()) {
         return liff.login()
     }
+    await getAuth(await liff.getProfile().userId)
     scancode()
 })
 var liffId = {
@@ -27,8 +29,6 @@ var liffId = {
     monitorbedside: '1657104960-p9V0QVJx'
 }
 function scancode() {
-    let token = liff.getDecodedIDToken()
-    console.log("🚀 ~ token", token)
     let os = liff.getOS()
     if (os == 'ios' || os == 'web') {
         liff.scanCodeV2()
