@@ -9,7 +9,7 @@ async function getAuth(uid) {
         console.log('sign in successful')
         let user = user.user
         console.log("🚀 ~ user", user)
-    }).catch(function (error) {
+    }).catch(async function (error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
