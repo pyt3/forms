@@ -51,6 +51,7 @@ async function getAuth(uid) {
         console.log(errorMessage)
         console.log(email)
         console.log(credential)
+        console.log(email);
         await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
             console.log('sign up successful')
             console.log("🚀 ~ user", user.user)
