@@ -20,7 +20,7 @@ liff.ready.then(async () => {
     if (!liff.isLoggedIn()) {
         return liff.login()
     }
-    await getAuth(await liff.getProfile().userId)
+    await getAuth(await liff.getDecodedIDToken())
     scancode()
 })
 var liffId = {
@@ -31,6 +31,7 @@ var liffId = {
 }
 
 async function getAuth(uid) {
+    console.log("🚀 ~ uid", uid)
     let email = uid + '@dailycheck.com'
     console.log("🚀 ~ email", email)
     let password = 'dailycheck'
