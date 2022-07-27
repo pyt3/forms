@@ -1,6 +1,7 @@
-document.write('<script defer src="../js/getFirebaseAuth.js?cache=' + new Date().getTime() + '"><\/script>')
+
 var firestore
 window.onload = () => {
+    fetchInject(['"../js/getFirebaseAuth.js?cache=' + new Date().getTime() + '"'])
     const firebaseConfig = {
         apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
         authDomain: "daily-check-form.firebaseapp.com",
