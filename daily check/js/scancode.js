@@ -31,8 +31,8 @@ var liffId = {
 }
 
 async function getAuth(uid) {
-    let auth = firebase.auth()
     let email = uid + '@dailycheck.com'
+    console.log("🚀 ~ email", email)
     let password = 'dailycheck'
     await auth.signInWithEmailAndPassword(email, password).then(function (user) {
 
