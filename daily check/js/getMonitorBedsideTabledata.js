@@ -82,20 +82,20 @@ async function getMonitorBedsideTableData(session) {
                             data = [...data, ...data2, ...data3]
                             data = data.sort((a, b) => b.time - a.time)
                             tabledata = data
-                            createDefibTable(data)
+                            createMonitorBedsideTable(data)
                         })
                     } else {
                         data = [...data, ...data2]
                         data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
                         data = data.sort((a, b) => b.time - a.time)
                         tabledata = data
-                        createDefibTable(data)
+                        createMonitorBedsideTable(data)
                     }
 
                 })
             } else {
                 tabledata = data
-                createDefibTable(data)
+                createMonitorBedsideTable(data)
             }
         })
     $('#admin-div').show()
