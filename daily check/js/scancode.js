@@ -36,7 +36,7 @@ function scancode() {
                 getdata(result)
             })
     } else if (os == 'android') {
-        liff.scanCode()
+        liff.scanCodeV2()
             .then((result) => {
                 getdata(result)
             })
