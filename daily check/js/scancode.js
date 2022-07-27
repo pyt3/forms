@@ -11,6 +11,7 @@ window.onload = () => {
     const defaultProject = firebase.initializeApp(firebaseConfig);
     console.log(defaultProject.name);  // "[DEFAULT]"
     firestore = defaultProject.firestore();
+    auth = defaultProject.auth();
 }
 liff.init({ liffId: '1657104960-953rK3wq' })
 liff.ready.then(() => {
@@ -26,6 +27,8 @@ var liffId = {
     monitorbedside: '1657104960-p9V0QVJx'
 }
 function scancode() {
+    let token = liff.getAccessToken()
+    console.log("🚀 ~ token", token)
     let os = liff.getOS()
     if (os == 'ios' || os == 'web') {
         liff.scanCodeV2()
