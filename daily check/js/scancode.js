@@ -1,5 +1,5 @@
 
-var firestore
+var firestore, auth
 window.onload = () => {
     const firebaseConfig = {
         apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
@@ -33,12 +33,10 @@ var liffId = {
 
 async function getAuth(uid) {
     let email = uid + '@dailycheck.com'
-    console.log("🚀 ~ email", email)
     let password = 'dailycheck'
     await auth.signInWithEmailAndPassword(email, password).then(function (user) {
 
         console.log('sign in successful')
-        console.log("🚀 ~ user", user.user)
     }).catch(async function (error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -50,11 +48,9 @@ async function getAuth(uid) {
         // ...
         console.log(errorCode)
         console.log(errorMessage)
-        console.log('email: ' + email)
         console.log(credential)
         await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
             console.log('sign up successful')
-            console.log("🚀 ~ user", user.user)
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
@@ -79,7 +75,7 @@ function scancode() {
                 getdata(result)
             })
     } else if (os == 'android') {
-        liff.scanCodeV2()
+        liff.scanCode()
             .then((result) => {
                 getdata(result)
             })
