@@ -270,72 +270,73 @@
                 // await getAuth(await liff.getDecodedIDToken().sub)
                 await getAuth()
                 $.LoadingOverlay("hide");
-            })
-            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-                let area = $(this).attr('data-bs-target')
-                $(area).LoadingOverlay('show');
-                let id = $(this).attr('id').replace('-tab', '')
 
-                active_tab = id
+                $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                    let area = $(this).attr('data-bs-target')
+                    $(area).LoadingOverlay('show');
+                    let id = $(this).attr('id').replace('-tab', '')
 
-                getTableData(JSON.parse(session), id)
-                $(area).LoadingOverlay('hide');
-                // resizeCanvas();// previous active tab
-            })
-            let session = localStorage.getItem("session")
-            if (session) {
-                if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
-                    return firestore.collection('user')
-                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                        .get()
-                        .then(async function (querySnapshot) {
-                            if (querySnapshot.docs.length > 0) {
-                                client = querySnapshot.docs[0].data().site.toUpperCase()
-                                querySnapshot.docs[0].ref.update({
-                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                                }).then(() => {
+                    active_tab = id
+
+                    getTableData(JSON.parse(session), id)
+                    $(area).LoadingOverlay('hide');
+                    // resizeCanvas();// previous active tab
+                })
+                let session = localStorage.getItem("session")
+                if (session) {
+                    if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
+                        return firestore.collection('user')
+                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                            .get()
+                            .then(async function (querySnapshot) {
+                                if (querySnapshot.docs.length > 0) {
+                                    client = querySnapshot.docs[0].data().site.toUpperCase()
+                                    querySnapshot.docs[0].ref.update({
+                                        sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                                    }).then(() => {
+                                        localStorage.removeItem('session')
+                                        $('#signout-btn').hide()
+                                        $('#data-div').hide()
+                                        return $('#sign-in-div').removeClass('hide')
+                                    })
+                                } else {
                                     localStorage.removeItem('session')
                                     $('#signout-btn').hide()
                                     $('#data-div').hide()
                                     return $('#sign-in-div').removeClass('hide')
-                                })
-                            } else {
-                                localStorage.removeItem('session')
-                                $('#signout-btn').hide()
-                                $('#data-div').hide()
-                                return $('#sign-in-div').removeClass('hide')
-                            }
+                                }
 
-                        })
-
-                }
-                $('#signout-btn').show()
-                $('#data-div').show()
-                $.LoadingOverlay("show");
-                getTableData(JSON.parse(session))
-                $.LoadingOverlay('hide')
-                $('#signout-btn').click(function () {
-                    let session = localStorage.getItem("session")
-                    firestore.collection('user')
-                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                        .get()
-                        .then(async function (querySnapshot) {
-                            querySnapshot.docs[0].ref.update({
-                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                            }).then(() => {
-                                localStorage.removeItem('session')
-                                location.reload()
                             })
-                        })
 
-                })
+                    }
+                    $('#signout-btn').show()
+                    $('#data-div').show()
+                    $.LoadingOverlay("show");
+                    getTableData(JSON.parse(session))
+                    $.LoadingOverlay('hide')
+                    $('#signout-btn').click(function () {
+                        let session = localStorage.getItem("session")
+                        firestore.collection('user')
+                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                            .get()
+                            .then(async function (querySnapshot) {
+                                querySnapshot.docs[0].ref.update({
+                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                                }).then(() => {
+                                    localStorage.removeItem('session')
+                                    location.reload()
+                                })
+                            })
 
-                return false
-            } else {
-                $('#signout-btn').hide()
-                $('#data-div').hide()
-                return $('#sign-in-div').removeClass('hide')
-            }
+                    })
+
+                    return false
+                } else {
+                    $('#signout-btn').hide()
+                    $('#data-div').hide()
+                    return $('#sign-in-div').removeClass('hide')
+                }
+            });
 
         });
 
