@@ -27,7 +27,7 @@ var liffId = {
     monitorbedside: '1657104960-p9V0QVJx'
 }
 function scancode() {
-    let token = liff.getDecodeIDToken()
+    let token = liff.getDecodedIDToken()
     console.log("🚀 ~ token", token)
     let os = liff.getOS()
     if (os == 'ios' || os == 'web') {
