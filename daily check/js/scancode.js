@@ -44,7 +44,7 @@ async function getAuth(uid) {
         var errorCode = error.code;
         var errorMessage = error.message;
         // The email of the user's account used.
-        var email = error.email;
+        // var email = error.email;
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
         // ...
