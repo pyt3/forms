@@ -13,16 +13,17 @@ window.onload = () => {
     console.log(defaultProject.name);  // "[DEFAULT]"
     firestore = defaultProject.firestore();
     auth = defaultProject.auth();
+    liff.init({ liffId: '1657104960-953rK3wq' })
+    liff.ready.then(async () => {
+        if (!liff.isLoggedIn()) {
+            return liff.login()
+        }
+        await getAuth(await liff.getDecodedIDToken())
+        scancode()
+    })
 
 }
-liff.init({ liffId: '1657104960-953rK3wq' })
-liff.ready.then(async () => {
-    if (!liff.isLoggedIn()) {
-        return liff.login()
-    }
-    await getAuth(await liff.getDecodedIDToken())
-    scancode()
-})
+
 var liffId = {
     defibrillator: '1657104960-wXQRkQ87',
     incubator: '1657104960-w9greg5D',
