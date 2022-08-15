@@ -192,11 +192,11 @@
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
                             const firebaseConfig = c
                             const defaultProject = firebase.initializeApp(firebaseConfig);
-
+                            console.log(defaultProject)
                             firestore = defaultProject.firestore();
                             auth = defaultProject.auth();
                             await getAuth(await liff.getDecodedIDToken().sub)
-                            $('#filter').click()
+                            // $('#filter').click()
                         })
                     }
 
@@ -512,7 +512,7 @@
             let time = date.getTime()
             let temp = parseFloat($('#temp').val())
             let rec_name = $('#rec-name').val()
-            let rec_พำทฟพา = $('#rec_remark').val()
+            let rec_remark = $('#rec_remark').val()
             let obj = {
                 form: 'temperature',
                 e_dept: dept,
