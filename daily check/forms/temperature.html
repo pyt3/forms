@@ -196,6 +196,7 @@
                             firestore = defaultProject.firestore();
                             auth = defaultProject.auth();
                             await getAuth(await liff.getDecodedIDToken().sub)
+                            $('#filter').click()
                         })
                     }
 
@@ -232,7 +233,7 @@
             let fromdate = new Date(new Date().setDate(new Date().getDate() - 30))
             $('#from').val(fromdate.getFullYear() + '-' + ('00' + (fromdate.getMonth() + 1)).slice(-2) + '-' + ('00' + (fromdate.getDate())).slice(-2));
             $('#to').val(today.getFullYear() + '-' + ('00' + (today.getMonth() + 1)).slice(-2) + '-' + ('00' + today.getDate()).slice(-2));
-            $('#filter').click()
+
             $.LoadingOverlay("show");
         })
 
