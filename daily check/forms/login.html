@@ -401,6 +401,7 @@
                 .get()
                 .then(async function (querySnapshot) {
                     if (querySnapshot.docs.length > 0) {
+                        console.log(querySnapshot.docs[0].data())
                         $('#signout-btn').show()
                         $('#signout-btn').click(function () {
                             let session = localStorage.getItem("session")
@@ -415,6 +416,7 @@
                         let data = querySnapshot.docs[0].data()
                         let name = data.name
                         user = data
+
 
                         var sissionid = generatePassword()
 
