@@ -233,7 +233,7 @@
         var url_string = window.location.href
         var url = new URL(url_string);
         var active_tab = 'defibrillator'
-        client = url.searchParams.get("client") || "PYT3";
+        client = url.searchParams.get("client");
         $(document).ready(async function () {
             // liff
             //     .init({
@@ -291,6 +291,7 @@
                             .then(async function (querySnapshot) {
                                 if (querySnapshot.docs.length > 0) {
                                     client = querySnapshot.docs[0].data().site.toUpperCase()
+                                    console.log("🚀 ~ client001", client)
                                     querySnapshot.docs[0].ref.update({
                                         sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
                                     }).then(() => {
