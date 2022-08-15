@@ -90,7 +90,70 @@
                                 <label for="temp">Temperature (อุณหภูมิ)</label>
                                 <input type="number" class="form-control text-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp">
                             </div>
-
+                            <div class="col-md-3 mt-3">
+                                <label for="rec_name">Recorder Name</label>
+                                <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="rec_dept">Recorder Department</label>
+                                <select name="rec_dept" id="rec_dept" class="form-select" required>
+                                    <option value="" disabled selected>Select value</option>
+                                    <option>ANESTHESIA (วิสัญญี)</option>
+                                    <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
+                                    <option>BME-PYT3</option>
+                                    <option>CATH-LAB</option>
+                                    <option>CHECK-UP (ตรวจสุขภาพ)</option>
+                                    <option>CORPORATE CUSTOMER SERVICE</option>
+                                    <option>CSSD (จ่ายกลาง)</option>
+                                    <option>DENTAL (ทันตกรรม)</option>
+                                    <option>DIABETIC METABOLIC(เบาหวาน)</option>
+                                    <option>EENT( หูตาคอจมูก)</option>
+                                    <option>EMERGENCY( ฉุกเฉิน)</option>
+                                    <option>GASTROINTESTINAL LABORATORY(GI)</option>
+                                    <option>HEMODIALYSIS (ไตเทียม)</option>
+                                    <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
+                                    <option>INFECTION CONTROL ( IC)</option>
+                                    <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
+                                    <option>LABOR ROOM(ห้องคลอด)</option>
+                                    <option>LABORATORY</option>
+                                    <option>MAID</option>
+                                    <option>MARKETING</option>
+                                    <option>NURSERY(เด็กอ่อน)</option>
+                                    <option>NURSING DEPARTMENT</option>
+                                    <option>OBSERVE(สังเกตอาการ)</option>
+                                    <option>OPD CARDIO(ศูนย์หัวใจ)</option>
+                                    <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
+                                    <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
+                                    <option>OPD MEDICINE(อายุกรรม)</option>
+                                    <option>OPD NEURO (ศูนย์สมอง)</option>
+                                    <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
+                                    <option>OPD PEDIATRIC( แผนกเด็ก)</option>
+                                    <option>OPD SURGERY(ศัลยกรรม)</option>
+                                    <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
+                                    <option>OPERATING ROOM(ห้องผ่าตัด)</option>
+                                    <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
+                                    <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
+                                    <option>PHYSICAL THERAPY( กายภาพ)</option>
+                                    <option>PICU</option>
+                                    <option>PWA LIFE CENTER</option>
+                                    <option>PWA ชะลอวัย</option>
+                                    <option>WARD 10</option>
+                                    <option>WARD 11</option>
+                                    <option>WARD 12</option>
+                                    <option>WARD 14</option>
+                                    <option>WARD 15</option>
+                                    <option>WARD 17</option>
+                                    <option>WARD 7</option>
+                                    <option>WARD 8</option>
+                                    <option>WARD 9</option>
+                                    <option>X-RAY</option>
+                                    <option>รับส่ง</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="rec_remark">หมายเหตุ</label>
+                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on" required>
+                            </div>
                         </div>
                         <div class="row justify-content-center">
                             <div class="col-md-5 mt-3">
@@ -186,7 +249,8 @@
                 .then(() => {
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
-                        return liff.login({ redirectUri: url })
+                        return liff.login()
+                        // return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
@@ -512,6 +576,7 @@
             let time = date.getTime()
             let temp = parseFloat($('#temp').val())
             let rec_name = $('#rec-name').val()
+            let rec_dept = $('#rec-dept').val()
             let rec_remark = $('#rec_remark').val()
             let obj = {
                 form: 'temperature',
@@ -521,6 +586,7 @@
                 e_model: model,
                 e_name: name,
                 rec_name: rec_name,
+                rec_dept: rec_dept,
                 rec_remark: rec_remark,
                 date: date.toLocaleString('th-TH', {
                     month: "numeric",
