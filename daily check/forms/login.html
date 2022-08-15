@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         document.write('<script defer src="../js/getDefibTableData.js?cache=' + new Date().getTime() + '"><\/script>')
         document.write('<script defer src="../js/getTemperatureData.js?cache=' + new Date().getTime() + '"><\/script>')
@@ -227,88 +228,157 @@
         var vConsole = new window.VConsole();
     </script>
     <script>
-        var firestore
+        var firestore, auth
         var client, dept, id, user
         var url_string = window.location.href
         var url = new URL(url_string);
         var active_tab = 'defibrillator'
         client = url.searchParams.get("client") || "PYT3";
         $(document).ready(async function () {
+            // liff
+            //     .init({
+            //         liffId: "1657104960-wXQRkQ87", // Use own liffId
+            //     })
+            //     .then(() => {
+            //         // Start to use liff's api
+            //         if (!liff.isLoggedIn()) {
+            //             return liff.login({ redirectUri: url })
+            //         } else {
+            //             console.log('liff init success');
+            //             $.post(script_url, { opt: 'getconst' }, async function (c) {
+            //                 const firebaseConfig = c
+            //                 const defaultProject = firebase.initializeApp(firebaseConfig);
+
+            //                 firestore = defaultProject.firestore();
+            //                 auth = defaultProject.auth();
+            //                 await getAuth(await liff.getDecodedIDToken().sub)
+            //             })
+            //         }
+
+            //     })
+            //     .catch((err) => {
+            //         // Error happens during initialization
+            //         console.log(err.code, err.message);
+            //     });
             $.LoadingOverlay("show");
             await $.post(script_url, { opt: 'getconst' }, async function (c) {
                 const firebaseConfig = c
                 const defaultProject = firebase.initializeApp(firebaseConfig);
 
                 firestore = defaultProject.firestore();
+                auth = defaultProject.auth();
+                // await getAuth(await liff.getDecodedIDToken().sub)
+                await getAuth()
                 $.LoadingOverlay("hide");
-            })
-            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-                let area = $(this).attr('data-bs-target')
-                $(area).LoadingOverlay('show');
-                let id = $(this).attr('id').replace('-tab', '')
 
-                active_tab = id
+                $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                    let area = $(this).attr('data-bs-target')
+                    $(area).LoadingOverlay('show');
+                    let id = $(this).attr('id').replace('-tab', '')
 
-                getTableData(JSON.parse(session), id)
-                $(area).LoadingOverlay('hide');
-                // resizeCanvas();// previous active tab
-            })
-            let session = localStorage.getItem("session")
-            if (session) {
-                if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
-                    return firestore.collection('user')
-                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                        .get()
-                        .then(async function (querySnapshot) {
-                            if (querySnapshot.docs.length > 0) {
-                                client = querySnapshot.docs[0].data().site.toUpperCase()
-                                querySnapshot.docs[0].ref.update({
-                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                                }).then(() => {
+                    active_tab = id
+
+                    getTableData(JSON.parse(session), id)
+                    $(area).LoadingOverlay('hide');
+                    // resizeCanvas();// previous active tab
+                })
+                let session = localStorage.getItem("session")
+                if (session) {
+                    if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
+                        return firestore.collection('user')
+                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                            .get()
+                            .then(async function (querySnapshot) {
+                                if (querySnapshot.docs.length > 0) {
+                                    client = querySnapshot.docs[0].data().site.toUpperCase()
+                                    querySnapshot.docs[0].ref.update({
+                                        sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                                    }).then(() => {
+                                        localStorage.removeItem('session')
+                                        $('#signout-btn').hide()
+                                        $('#data-div').hide()
+                                        return $('#sign-in-div').removeClass('hide')
+                                    })
+                                } else {
                                     localStorage.removeItem('session')
                                     $('#signout-btn').hide()
                                     $('#data-div').hide()
                                     return $('#sign-in-div').removeClass('hide')
-                                })
-                            } else {
-                                localStorage.removeItem('session')
-                                $('#signout-btn').hide()
-                                $('#data-div').hide()
-                                return $('#sign-in-div').removeClass('hide')
-                            }
+                                }
 
-                        })
-
-                }
-                $('#signout-btn').show()
-                $('#data-div').show()
-                $.LoadingOverlay("show");
-                getTableData(JSON.parse(session))
-                $.LoadingOverlay('hide')
-                $('#signout-btn').click(function () {
-                    let session = localStorage.getItem("session")
-                    firestore.collection('user')
-                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                        .get()
-                        .then(async function (querySnapshot) {
-                            querySnapshot.docs[0].ref.update({
-                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                            }).then(() => {
-                                localStorage.removeItem('session')
-                                location.reload()
                             })
-                        })
 
-                })
+                    }
+                    $('#signout-btn').show()
+                    $('#data-div').show()
+                    $.LoadingOverlay("show");
+                    getTableData(JSON.parse(session))
+                    $.LoadingOverlay('hide')
+                    $('#signout-btn').click(function () {
+                        let session = localStorage.getItem("session")
+                        firestore.collection('user')
+                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                            .get()
+                            .then(async function (querySnapshot) {
+                                querySnapshot.docs[0].ref.update({
+                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                                }).then(() => {
+                                    localStorage.removeItem('session')
+                                    location.reload()
+                                })
+                            })
 
-                return false
-            } else {
-                $('#signout-btn').hide()
-                $('#data-div').hide()
-                return $('#sign-in-div').removeClass('hide')
-            }
+                    })
+
+                    return false
+                } else {
+                    $('#signout-btn').hide()
+                    $('#data-div').hide()
+                    return $('#sign-in-div').removeClass('hide')
+                }
+            });
 
         });
+
+        async function getAuth(uid = "manager") {
+            let email = uid + '@dailycheck.com'
+            let password = 'dailycheck'
+            await auth.signInWithEmailAndPassword(email, password).then(function (user) {
+
+                console.log('sign in successful')
+            }).catch(async function (error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                // var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                // ...
+                console.log(errorCode)
+                console.log(errorMessage)
+                console.log(credential)
+                await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
+                    console.log('sign up successful')
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    console.log(email)
+                    console.log(credential)
+                });
+            });
+        }
+
+
+
         function generatePassword(session) {
             var length = 32,
                 charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
