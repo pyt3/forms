@@ -614,24 +614,26 @@
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
+                    withLoginOnExternalBrowser: true
                 })
                 .then(() => {
                     // Start to use liff's api
-                    if (!liff.isLoggedIn()) {
-                        return liff.login({ redirectUri: url })
-                    } else {
-                        console.log('liff init success');
-                        $.post(script_url, { opt: 'getconst' }, async function (c) {
-                            const firebaseConfig = c
-                            const defaultProject = firebase.initializeApp(firebaseConfig);
+                    // if (!liff.isLoggedIn()) {
+                    //     return liff.login()
+                    // } else {
 
-                            firestore = defaultProject.firestore();
-                            auth = defaultProject.auth();
-                            await getAuth(await liff.getDecodedIDToken().sub)
-                            await getDeptList(client)
-                            $.LoadingOverlay("hide");
-                        })
-                    }
+                    // }
+                    console.log('liff init success');
+                    $.post(script_url, { opt: 'getconst' }, async function (c) {
+                        const firebaseConfig = c
+                        const defaultProject = firebase.initializeApp(firebaseConfig);
+
+                        firestore = defaultProject.firestore();
+                        auth = defaultProject.auth();
+                        await getAuth(await liff.getDecodedIDToken().sub)
+                        await getDeptList(client)
+                        $.LoadingOverlay("hide");
+                    })
 
                 })
                 .catch((err) => {
