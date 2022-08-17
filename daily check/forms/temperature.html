@@ -195,6 +195,14 @@
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
+            client = url.searchParams.get("client") || 'PYT3'
+            dept = url.searchParams.get("dept") || 'test'
+            brand = url.searchParams.get("brand") || 'test'
+            model = url.searchParams.get("model") || 'test'
+            name = url.searchParams.get("name") || 'test'
+            id = url.searchParams.get("id") || 'test'
+            mintemp = url.searchParams.get("mintemp")
+            maxtemp = url.searchParams.get("maxtemp") || '-18'
             liff
                 .init({
                     liffId: "1657104960-92R4ZRQz", // Use own liffId
@@ -223,14 +231,6 @@
                     // Error happens during initialization
                     console.log(err.code, err.message);
                 });
-            client = url.searchParams.get("client") || 'PYT3'
-            dept = url.searchParams.get("dept") || 'test'
-            brand = url.searchParams.get("brand") || 'test'
-            model = url.searchParams.get("model") || 'test'
-            name = url.searchParams.get("name") || 'test'
-            id = url.searchParams.get("id") || 'test'
-            mintemp = url.searchParams.get("mintemp")
-            maxtemp = url.searchParams.get("maxtemp") || '-18'
             if (!client || !dept || !brand || !model || !name || !id) {
                 $('body').html('')
                 $.LoadingOverlay("hide");
@@ -254,6 +254,24 @@
 
             // $.LoadingOverlay("show");
         })
+
+        async function getDeptList(client) {
+            return firestore.collection(client.toUpperCase() + '_summary').doc('dept').get().then(doc => {
+                let deptList = []
+                let docdata = doc.data()
+                Object.keys(docdata).forEach(arr => {
+                    deptList.push(docdata[arr])
+                })
+                deptList = deptList.flat().sort()
+                $('#rec_dept').append(`<option value="" selected disabled>Select Department</option>`)
+                deptList.forEach(l => {
+                    $('#rec_dept').append(`<option value="${l}">${l}</option>`)
+                })
+            }).catch(function (error) {
+                console.error(error)
+            });
+
+        }
 
         async function getAuth(uid) {
             let email = uid + '@dailycheck.com'
