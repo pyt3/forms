@@ -106,8 +106,8 @@ function getdata(result) {
             }
             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
             // 
-            // liff.closeWindow()
-            window.open(url, '_self')
+            liff.closeWindow()
+            // window.open(url, '_self')
         } else {
             firestore.collection('PYT2_e').doc(id).get().then(docs => {
                 let d = docs.data()
@@ -128,8 +128,8 @@ function getdata(result) {
                     }
                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                     // 
-                    // liff.closeWindow()
-                    window.open(url, '_self')
+                    liff.closeWindow()
+                    // window.open(url, '_self')
                 } else {
                     firestore.collection('PYT1_e').doc(id).get().then(docs => {
                         let d = docs.data()
@@ -150,8 +150,8 @@ function getdata(result) {
                             }
                             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                             // 
-                            // liff.closeWindow()
-                            window.open(url, '_self')
+                            liff.closeWindow()
+                            // window.open(url, '_self')
                         } else {
                             firestore.collection('PLP_e').doc(id).get().then(docs => {
                                 let d = docs.data()
@@ -172,8 +172,8 @@ function getdata(result) {
                                     }
                                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                                     // 
-                                    // liff.closeWindow()
-                                    window.open(url, '_self')
+                                    liff.closeWindow()
+                                    // window.open(url, '_self')
                                 } else {
                                     Swal.fire({
                                         icon: 'warning',
