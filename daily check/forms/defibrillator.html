@@ -989,7 +989,7 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
                 var metadata = {
                     name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
                         hour12: false,
@@ -1041,7 +1041,7 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
                 console.log("🚀 ~ result", result)
                 var metadata = {
                     name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
@@ -1067,7 +1067,7 @@
                             showConfirmButton: false
                         })
                         metadata = {
-                            name: 'defib daily check staff ' + now.toLocaleString('th-TH', {
+                            name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
                                 hour12: false,
                                 month: "numeric",
                                 day: "numeric",

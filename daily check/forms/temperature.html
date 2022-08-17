@@ -802,10 +802,10 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.25 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=temperature`, function (result) {
+            return $.getJSON(script_url + `?id=${id}&form=temperature&client=${client}`, function (result) {
                 let signature_url = 'https://drive.google.com/uc?id='
-                const metadata = {
-                    name: 'temperature daily check staff' + now.toLocaleString('th-TH', {
+                var metadata = {
+                    name: 'temperature check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
                         hour12: false,
                         month: "numeric",
                         day: "numeric",
