@@ -1,5 +1,5 @@
 
-var firestore, auth
+var firestore, auth, isAuth = false
 window.onload = () => {
     const firebaseConfig = {
         apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
@@ -18,7 +18,7 @@ window.onload = () => {
         if (!liff.isLoggedIn()) {
             return liff.login()
         }
-        await getAuth(await liff.getDecodedIDToken().sub)
+        getAuth(await liff.getDecodedIDToken().sub)
         scancode()
     })
 
@@ -35,7 +35,7 @@ async function getAuth(uid) {
     let email = uid + '@dailycheck.com'
     let password = 'dailycheck'
     return await auth.signInWithEmailAndPassword(email, password).then(function (user) {
-
+        isAuth = true
         console.log('sign in successful')
     }).catch(async function (error) {
         // Handle Errors here.
@@ -84,11 +84,14 @@ function scancode() {
 
 function getdata(result) {
     let id = result.value.split('=')[1]
+    while (!isAuth) {
+        console.log('wait')
+    }
     firestore.collection('PYT3_e').doc(id).get().then(docs => {
         let d = docs.data()
         if (docs.exists && liffId[d.form]) {
-            // let url = new URL('https://liff.line.me/' + liffId[d.form])
-            let url = new URL('line://app/' + liffId[d.form])
+            let url = new URL('https://liff.line.me/' + liffId[d.form])
+            // let url = new URL('line://app/' + liffId[d.form])
             // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
             // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
             url.searchParams.set("client", 'PYT3')
