@@ -106,7 +106,7 @@ function getdata(result) {
             }
             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
             // 
-            liff.openWindow({ url: url })
+            liff.openWindow({ url: url.toString() })
             // window.open(url, '_self')
         } else {
             firestore.collection('PYT2_e').doc(id).get().then(docs => {
@@ -128,7 +128,7 @@ function getdata(result) {
                     }
                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                     // 
-                    liff.openWindow({ url: url })
+                    liff.openWindow({ url: url.toString() })
                     // window.open(url, '_self')
                 } else {
                     firestore.collection('PYT1_e').doc(id).get().then(docs => {
@@ -150,7 +150,7 @@ function getdata(result) {
                             }
                             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                             // 
-                            liff.openWindow({ url: url })
+                            liff.openWindow({ url: url.toString() })
                             // window.open(url, '_self')
                         } else {
                             firestore.collection('PLP_e').doc(id).get().then(docs => {
@@ -172,7 +172,7 @@ function getdata(result) {
                                     }
                                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                                     // 
-                                    liff.openWindow({ url: url })
+                                    liff.openWindow({ url: url.toString() })
                                     // window.open(url, '_self')
                                 } else {
                                     Swal.fire({
