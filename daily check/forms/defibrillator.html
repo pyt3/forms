@@ -766,9 +766,11 @@
             return firestore.collection(client.toUpperCase() + '_summary').doc('dept').get().then(doc => {
                 let deptList = []
                 Object.keys(doc.data()).forEach(arr => {
-                    arr.forEach(l => {
-                        $('#rec_depts').append(`<option value="${l}">${l}</option>`)
-                    })
+                    deptList.push(arr)
+                })
+                deptList = deptList.flat().sort()
+                deptList.forEach(l => {
+                    $('#rec_depts').append(`<option value="${l}">${l}</option>`)
                 })
             }).catch(function (error) {
                 console.error(error)
