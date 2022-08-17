@@ -120,7 +120,7 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="rec_remark">หมายเหตุ</label>
-                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on">
+                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on" required>
                             </div>
 
                         </div>
@@ -450,7 +450,7 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="afteruse_rec_remark">หมายเหตุ</label>
-                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on">
+                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on" required>
                             </div>
                         </div>
                     </section>
@@ -555,7 +555,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var firestore
@@ -614,26 +614,24 @@
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
-                    withLoginOnExternalBrowser: true
                 })
                 .then(() => {
                     // Start to use liff's api
-                    // if (!liff.isLoggedIn()) {
-                    //     return liff.login()
-                    // } else {
+                    if (!liff.isLoggedIn()) {
+                        return liff.login({ redirectUri: url })
+                    } else {
+                        console.log('liff init success');
+                        $.post(script_url, { opt: 'getconst' }, async function (c) {
+                            const firebaseConfig = c
+                            const defaultProject = firebase.initializeApp(firebaseConfig);
 
-                    // }
-                    console.log('liff init success');
-                    $.post(script_url, { opt: 'getconst' }, async function (c) {
-                        const firebaseConfig = c
-                        const defaultProject = firebase.initializeApp(firebaseConfig);
-
-                        firestore = defaultProject.firestore();
-                        auth = defaultProject.auth();
-                        await getAuth(await liff.getDecodedIDToken().sub)
-                        await getDeptList(client)
-                        $.LoadingOverlay("hide");
-                    })
+                            firestore = defaultProject.firestore();
+                            auth = defaultProject.auth();
+                            await getAuth(await liff.getDecodedIDToken().sub)
+                            await getDeptList(client)
+                            $.LoadingOverlay("hide");
+                        })
+                    }
 
                 })
                 .catch((err) => {
