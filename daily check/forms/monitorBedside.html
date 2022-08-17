@@ -120,57 +120,6 @@
                             <div class="col-md-3 mt-3">
                                 <label for="rec_dept">Recorder Department</label>
                                 <select name="rec_dept" id="rec_dept" class="form-select" required>
-                                    <option value="" disabled selected>Select value</option>
-                                    <option>ANESTHESIA (วิสัญญี)</option>
-                                    <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
-                                    <option>BME-PYT3</option>
-                                    <option>CATH-LAB</option>
-                                    <option>CHECK-UP (ตรวจสุขภาพ)</option>
-                                    <option>CORPORATE CUSTOMER SERVICE</option>
-                                    <option>CSSD (จ่ายกลาง)</option>
-                                    <option>DENTAL (ทันตกรรม)</option>
-                                    <option>DIABETIC METABOLIC(เบาหวาน)</option>
-                                    <option>EENT( หูตาคอจมูก)</option>
-                                    <option>EMERGENCY( ฉุกเฉิน)</option>
-                                    <option>GASTROINTESTINAL LABORATORY(GI)</option>
-                                    <option>HEMODIALYSIS (ไตเทียม)</option>
-                                    <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
-                                    <option>INFECTION CONTROL ( IC)</option>
-                                    <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
-                                    <option>LABOR ROOM(ห้องคลอด)</option>
-                                    <option>LABORATORY</option>
-                                    <option>MAID</option>
-                                    <option>MARKETING</option>
-                                    <option>NURSERY(เด็กอ่อน)</option>
-                                    <option>NURSING DEPARTMENT</option>
-                                    <option>OBSERVE(สังเกตอาการ)</option>
-                                    <option>OPD CARDIO(ศูนย์หัวใจ)</option>
-                                    <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
-                                    <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
-                                    <option>OPD MEDICINE(อายุกรรม)</option>
-                                    <option>OPD NEURO (ศูนย์สมอง)</option>
-                                    <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
-                                    <option>OPD PEDIATRIC( แผนกเด็ก)</option>
-                                    <option>OPD SURGERY(ศัลยกรรม)</option>
-                                    <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
-                                    <option>OPERATING ROOM(ห้องผ่าตัด)</option>
-                                    <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
-                                    <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
-                                    <option>PHYSICAL THERAPY( กายภาพ)</option>
-                                    <option>PICU</option>
-                                    <option>PWA LIFE CENTER</option>
-                                    <option>PWA ชะลอวัย</option>
-                                    <option>WARD 10</option>
-                                    <option>WARD 11</option>
-                                    <option>WARD 12</option>
-                                    <option>WARD 14</option>
-                                    <option>WARD 15</option>
-                                    <option>WARD 17</option>
-                                    <option>WARD 7</option>
-                                    <option>WARD 8</option>
-                                    <option>WARD 9</option>
-                                    <option>X-RAY</option>
-                                    <option>รับส่ง</option>
                                 </select>
                             </div>
                         </div>
@@ -472,8 +421,13 @@
                                 <input type="text" name="afteruse_rec_name" id="afteruse_rec_name" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
+                                <label for="rec_dept">Recorder Department</label>
+                                <select name="rec_dept" id="rec_dept" class="form-select" required>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mt-3">
                                 <label for="afteruse_rec_remark">หมายเหตุ</label>
-                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on" required>
+                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on">
                             </div>
                         </div>
                     </section>
@@ -629,6 +583,7 @@
                             firestore = defaultProject.firestore();
                             auth = defaultProject.auth();
                             await getAuth(await liff.getDecodedIDToken().sub)
+                            await getDeptList(client)
                         })
                     }
 
