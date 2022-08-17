@@ -658,7 +658,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var firestore
@@ -1126,6 +1126,7 @@
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
             return $.getJSON(script_url + `?id=${id}&form=defibrillator`, function (result) {
+                console.log("🚀 ~ result", result)
                 var metadata = {
                     name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
                         hour12: false,
