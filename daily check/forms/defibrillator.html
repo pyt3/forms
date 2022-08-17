@@ -765,8 +765,9 @@
         async function getDeptList(client) {
             return firestore.collection(client.toUpperCase() + '_summary').doc('dept').get().then(doc => {
                 let deptList = []
-                Object.keys(doc.data()).forEach(arr => {
-                    deptList.push(arr)
+                let docdata = doc.data()
+                Object.keys(docdata).forEach(arr => {
+                    deptList.push(dacdata[arr])
                 })
                 deptList = deptList.flat().sort()
                 deptList.forEach(l => {
