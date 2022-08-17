@@ -607,14 +607,14 @@
     <script>
         var signaturePad, signaturePadAfterUse, resizeCanvas
         $(document).ready(() => {
-            $.LoadingOverlay("show", { background: "rgba(255,255,255,1)", text: "Loading..." });
+            $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
-                    // withLoginOnExternalBrowser: true
+                    withLoginOnExternalBrowser: true
                 })
                 .then(() => {
                     // Start to use liff's api
