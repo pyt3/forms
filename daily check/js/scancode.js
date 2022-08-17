@@ -34,7 +34,7 @@ var liffId = {
 async function getAuth(uid) {
     let email = uid + '@dailycheck.com'
     let password = 'dailycheck'
-    await auth.signInWithEmailAndPassword(email, password).then(function (user) {
+    return await auth.signInWithEmailAndPassword(email, password).then(function (user) {
 
         console.log('sign in successful')
     }).catch(async function (error) {
@@ -104,6 +104,7 @@ function getdata(result) {
             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
             // 
             // liff.closeWindow()
+            prompt('กรุณากดปุ่ม "ตกลง" เพื่อดำเนินการต่อ', url)
             window.open(url, '_self')
         } else {
             firestore.collection('PYT2_e').doc(id).get().then(docs => {
