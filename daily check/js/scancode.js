@@ -90,8 +90,8 @@ function getdata(result) {
     firestore.collection('PYT3_e').doc(id).get().then(docs => {
         let d = docs.data()
         if (docs.exists && liffId[d.form]) {
-            let url = new URL('https://liff.line.me/' + liffId[d.form])
-            // let url = new URL('line://app/' + liffId[d.form])
+            // let url = new URL('https://liff.line.me/' + liffId[d.form])
+            let url = new URL('line://app/' + liffId[d.form])
             // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
             // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
             url.searchParams.set("client", 'PYT3')
@@ -106,14 +106,14 @@ function getdata(result) {
             }
             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
             // 
-            liff.openWindow({ url: url.toString() })
-            // window.open(url, '_self')
+            // liff.closeWindow()
+            window.open(url, '_self')
         } else {
             firestore.collection('PYT2_e').doc(id).get().then(docs => {
                 let d = docs.data()
                 if (docs.exists && liffId[d.form]) {
-                    let url = new URL('https://liff.line.me/' + liffId[d.form])
-                    // let url = new URL('line://app/' + liffId[d.form])
+                    // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                    let url = new URL('line://app/' + liffId[d.form])
                     // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
                     // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
                     url.searchParams.set("client", 'PYT2')
@@ -128,14 +128,14 @@ function getdata(result) {
                     }
                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                     // 
-                    liff.openWindow({ url: url.toString() })
-                    // window.open(url, '_self')
+                    // liff.closeWindow()
+                    window.open(url, '_self')
                 } else {
                     firestore.collection('PYT1_e').doc(id).get().then(docs => {
                         let d = docs.data()
                         if (docs.exists && liffId[d.form]) {
-                            let url = new URL('https://liff.line.me/' + liffId[d.form])
-                            // let url = new URL('line://app/' + liffId[d.form])
+                            // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                            let url = new URL('line://app/' + liffId[d.form])
                             // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
                             // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
                             url.searchParams.set("client", 'PYT1')
@@ -150,14 +150,14 @@ function getdata(result) {
                             }
                             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                             // 
-                            liff.openWindow({ url: url.toString() })
-                            // window.open(url, '_self')
+                            // liff.closeWindow()
+                            window.open(url, '_self')
                         } else {
                             firestore.collection('PLP_e').doc(id).get().then(docs => {
                                 let d = docs.data()
                                 if (docs.exists && liffId[d.form]) {
-                                    let url = new URL('https://liff.line.me/' + liffId[d.form])
-                                    // let url = new URL('line://app/' + liffId[d.form])
+                                    // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                                    let url = new URL('line://app/' + liffId[d.form])
                                     // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
                                     // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
                                     url.searchParams.set("client", 'PLP')
@@ -172,8 +172,8 @@ function getdata(result) {
                                     }
                                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                                     // 
-                                    liff.openWindow({ url: url.toString() })
-                                    // window.open(url, '_self')
+                                    // liff.closeWindow()
+                                    window.open(url, '_self')
                                 } else {
                                     Swal.fire({
                                         icon: 'warning',
