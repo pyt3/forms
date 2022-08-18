@@ -82,7 +82,6 @@ async function getIncubatorTableData(session) {
         promises = promises.sort((a, b) => b.time - a.time)
         tabledata = promises
         createIncubatorTable(promises)
-
     } else {
         promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
         promises = promises.sort((a, b) => b.time - a.time)
@@ -400,7 +399,6 @@ function getIncubatorDetail(row, index) {
     }
     detailHtml += ` </div>
     </div>`
-
     $('#detail-modal .modal-body').html(detailHtml)
     initialSignaturePad(obj.afteruse_rec_name)
     $('#detail-modal').modal('show')
@@ -424,7 +422,7 @@ async function updateIncubatorData(key, url, time, date = new Date()) {
         obj.afteruse_approve_name = $('#afteruse_approve_name').val();
         obj.signature_manager_afteruse = url
         obj.afteruse_approve_time = date.getTime()
-        tabledata[rowIndex].afteruse_approve_name = $('#approve_name').val();
+        tabledata[rowIndex].afteruse_approve_name = $('#afteruse_approve_name').val();
         tabledata[rowIndex].signature_manager_afteruse = url
         tabledata[rowIndex].afteruse_approve_time = date.getTime()
         // tabledata[1] = obj
@@ -437,12 +435,8 @@ async function updateIncubatorData(key, url, time, date = new Date()) {
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
-                        let object = doc
-                        let isPass = Object.keys(object).filter(key => key.indexOf('daily-check') > -1).every(key => object[key] == 'ผ่าน')
-                        if (Object.keys(object).filter(key => key.indexOf('daily-check') > -1).length > 0) object.isPass = isPass
-                        let isPass_afteruse = Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).every(key => object[key] == 'ผ่าน')
-                        if (Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).length > 0) object.isPass_afteruse = isPass_afteruse
-                        return object
+                        let obj = setIspass(doc)
+                        return obj
                     })
                     createIncubatorTable(data)
                     Swal.fire({

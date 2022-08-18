@@ -261,7 +261,7 @@
             //         console.log(err.code, err.message);
             //     });
             $.LoadingOverlay("show");
-            await $.post(script_url, { opt: 'getconst' }, async function (c) {
+            $.post(script_url, { opt: 'getconst' }, async function (c) {
                 const firebaseConfig = c
                 const defaultProject = firebase.initializeApp(firebaseConfig);
 

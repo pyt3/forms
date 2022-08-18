@@ -389,13 +389,8 @@ async function updateTemperatureData(key, url, time, date = new Date()) {
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
-                        let object = doc
-                        let isPass = Object.keys(object).filter(key => key.indexOf('daily-check') > -1).every(key => object[key] == 'ผ่าน')
-                        if (Object.keys(object).filter(key => key.indexOf('daily-check') > -1).length > 0) object.isPass = isPass
-                        let isPass_afteruse = Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).every(key => object[key] == 'ผ่าน')
-                        if (Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).length > 0) object.isPass_afteruse = isPass_afteruse
+                        let object = setIspass(doc)
                         return object
-
                     })
                     createTemperatureTable(data)
                     Swal.fire({
