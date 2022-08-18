@@ -307,8 +307,9 @@ function getIncubatorDetail(row, index) {
             </div>
             <div class="col-md-12" style="display: none" id="row_index">
                 ${rowIndex}
-            </div>
-            <div class="col-md-12">
+            </div>`
+    if (!obj.afteruse_rec_name) {
+        detailHtml += `<div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
                 <ol>
                     <li>
@@ -334,24 +335,21 @@ function getIncubatorDetail(row, index) {
               <div class="col-md-12">
                 <p>หมายเหตุ: <span class="text-primary">${obj.rec_remark || ''}</span></p>
             </div>
-             <div class="col-md-6">
-                <p>หมายเหตุ: <span class="text-primary">${obj.rec_remark}</span></p>
-            </div>
             <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
             </div>
             <div class="col-md-6">
                 <p>ลายเซ็นผู้ตรวจเช็ค: <span><img src="${obj.signature_staff}" height="30px"></span></p>
             </div>`
-    if (obj.approve_name) {
-        detailHtml += `<div class="col-md-6">
+        if (obj.approve_name) {
+            detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ: <span class="text-primary">${obj.approve_name}</span></p>
             </div>
             <div class="col-md-6">
                 <p>ลายเซ็นผู้อนุมัติ: <span><img src="${obj.signature_manager}" height="30px"></span></p>
             </div>`
-    } else {
-        detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
+        } else {
+            detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
                 <div class="col-md-12 mt-3">
                     <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
@@ -361,8 +359,8 @@ function getIncubatorDetail(row, index) {
                                     <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
                                 </div>
                                 </div>`
-    }
-    if (obj.afteruse_rec_name) {
+        }
+    } else {
         detailHtml += `<div class="col-md-12 mt-4">
                 <p>รายการตรวจเช็ค หลังใช้: <span id="e_dept"></span></p>
                 <ol>
@@ -402,6 +400,7 @@ function getIncubatorDetail(row, index) {
     }
     detailHtml += ` </div>
     </div>`
+
     $('#detail-modal .modal-body').html(detailHtml)
     initialSignaturePad(obj.afteruse_rec_name)
     $('#detail-modal').modal('show')
