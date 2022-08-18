@@ -53,67 +53,43 @@ async function getTemperatureTableData(session) {
             .limit(20)
         // 
     }
-    await temperatureRef.get()
-        .then(async function (querySnapshot) {
-            let data = querySnapshot.docs.map(function (doc) {
-                let obj = doc.data()
+    const setIspass = function (obj) {
+        let isPass = obj.temp >= 2 && obj.temp <= 8
+        obj.isPass = isPass
 
-                let isPass = obj.temp >= 2 && obj.temp <= 8
-                obj.isPass = isPass
-
-                return obj
-
-            })
-            if (temperatureRef2) {
-                await temperatureRef2.get().then(async function (querySnapshot2) {
-                    let data2 = querySnapshot2.docs.map(function (doc2) {
-                        let obj2 = doc2.data()
-
-                        let isPass = obj2.temp >= 2 && obj2.temp <= 8
-                        obj2.isPass = isPass
-
-                        return obj2
-
-                    })
-                    if (temperatureRef3) {
-                        await temperatureRef3.get().then(function (querySnapshot3) {
-                            let data3 = querySnapshot3.docs.map(function (doc3) {
-                                let obj3 = doc3.data()
-
-                                let isPass = obj3.temp >= 2 && obj3.temp <= 8
-                                obj3.isPass = isPass
-
-                                return obj3
-
-                            })
-                            let data = data.concat(data2).concat(data3)
-                            data.sort(function (a, b) {
-                                return new Date(b.time) - new Date(a.time)
-                            })
-                            data = [...data, ...data2, ...data3]
-                            tabledata = data
-                            renderTemperatureTable(data)
-                        })
-                    } else {
-                        data = [...data, ...data2]
-                        data = data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-
-                        tabledata = data
-                        createTemperatureTable(data)
-                    }
-
-                })
-
-            } else {
-
-                tabledata = data
-                createTemperatureTable(data)
-            }
-
+        return obj
+    }
+    let promises = await Promise.all([temperatureRef.get(), temperatureRef2.get()])
+    promises = promises.map(querySnapshot => {
+        let data = querySnapshot.docs.map(function (doc) {
+            let obj = setIspass(doc.data())
+            return obj
         })
+        return data
+    })
+    promises = promises.flat()
+    if (temperatureRef3 && temperatureRef4) {
+        let promises2 = await Promise.all([temperatureRef3.get(), temperatureRef4.get()])
+        promises2 = promises2.map(querySnapshot => {
+            let data = querySnapshot.docs.map(function (doc) {
+                let obj = setIspass(doc.data())
+                return obj
+            })
+            return data
+        })
+        promises2 = promises2.flat()
+        promises = promises.concat(promises2)
+        promises = promises.sort((a, b) => b.time - a.time)
+        tabledata = promises
+        createIncubatorTable(promises)
 
+    } else {
+        promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+        promises = promises.sort((a, b) => b.time - a.time)
+        tablepromises = promises
+        createIncubatorTable(promises)
+    }
     $('#admin-div').show()
-    // }
 }
 var table
 function createTemperatureTable(data) {
