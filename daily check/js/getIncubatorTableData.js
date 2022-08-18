@@ -182,7 +182,11 @@ function createIncubatorTable(data) {
             },
             {
                 data: 'rec_name',
-                title: 'ผู้บันทึก'
+                title: 'ผู้บันทึก',
+                render: function (data, type) {
+                    if (!data) return ''
+                    return data
+                }
             },
             {
                 data: 'rec_remark',
