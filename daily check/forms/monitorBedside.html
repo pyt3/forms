@@ -725,9 +725,9 @@
                     deptList.push(docdata[arr])
                 })
                 deptList = deptList.flat().sort()
-                $('select[nsme="rec_dept"]').append(`<option value="" selected disabled>Select Department</option>`)
+                $('select[name="rec_dept"]').append(`<option value="" selected disabled>Select Department</option>`)
                 deptList.forEach(l => {
-                    $('select[nsme="rec_dept"]').append(`<option value="${l}">${l}</option>`)
+                    $('select[name="rec_dept"]').append(`<option value="${l}">${l}</option>`)
                 })
             }).catch(function (error) {
                 console.error(error)
