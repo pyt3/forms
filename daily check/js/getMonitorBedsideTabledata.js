@@ -1,5 +1,4 @@
 async function getMonitorBedsideTableData(session) {
-
     // if (session) {
     //     return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
     //         
@@ -37,7 +36,6 @@ async function getMonitorBedsideTableData(session) {
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
         }
-
     } else if (user.level == 'manager') {
         ref = firestore.collection(client)
             .where('form', '==', 'monitorbedside')
@@ -84,7 +82,6 @@ async function getMonitorBedsideTableData(session) {
         promises = promises.sort((a, b) => b.time - a.time)
         tabledata = promises
         createMonitorBedsideTable(promises)
-
     } else {
         promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
         promises = promises.sort((a, b) => b.time - a.time)
@@ -131,7 +128,6 @@ function createMonitorBedsideTable(data) {
         scrollX: true,
         order: [[0, 'desc']],
         createdRow: function (row, data, dataIndex) {
-
             if (data.signature_staff != '' && !data.signature_manager) {
                 console.log("🚀 ~ data", data)
                 $(row).addClass('bg-warning')
@@ -162,7 +158,6 @@ function createMonitorBedsideTable(data) {
                 render: function (data, type, row, meta) {
                     return '<button class="btn btn-link" onclick="getMonitorBedsideDetail(`' + JSON.stringify(row).replace(/\"/g, "'") + '`,' + meta.row + ')">Click!</button>'
                 }
-
             },
             {
                 data: 'form',
@@ -282,11 +277,7 @@ function createMonitorBedsideTable(data) {
         ]
     });
     table.draw(false)
-
 }
-
-
-
 var rowIndex
 function getMonitorBedsideDetail(row, index) {
     rowIndex = index
@@ -314,8 +305,9 @@ function getMonitorBedsideDetail(row, index) {
             </div>
             <div class="col-md-12" style="display: none" id="row_index">
                 ${rowIndex}
-            </div>
-            <div class="col-md-12">
+            </div>`
+    if (!obj.afteruse_rec_name) {
+        `<div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
                 <ol>
                     <li>
@@ -362,17 +354,15 @@ function getMonitorBedsideDetail(row, index) {
             <div class="col-md-6">
                 <p>ลายเซ็นผู้ตรวจเช็ค: <span><img src="${obj.signature_staff}" height="30px"></span></p>
             </div>`
-
-    if (obj.approve_name) {
-        detailHtml += `<div class="col-md-6">
+        if (obj.approve_name) {
+            detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ: <span class="text-primary">${obj.approve_name}</span></p>
             </div>
             <div class="col-md-6">
                 <p>ลายเซ็นผู้อนุมัติ: <span><img src="${obj.signature_manager}" height="30px"></span></p>
             </div>`
-    } else {
-        detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
-                
+        } else {
+            detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
                 <div class="col-md-12 mt-3">
                     <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
@@ -382,16 +372,14 @@ function getMonitorBedsideDetail(row, index) {
                                     <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
                                 </div>
                                 </div>`
-    }
-
-    if (obj.afteruse_rec_name) {
+        }
+    } else {
         detailHtml += `<div class="col-md-12 mt-4">
                 <p>รายการตรวจเช็ค หลังใช้: <span id="e_dept"></span></p>
                 <ol>
                     <li>
                         ทำความสะอาดเครื่อง: <span>${renderStatus(obj['afteruse-check-clean'])}</span>
                     </li>
-                   
                 </ol>
             </div >
              <div class="col-md-12">
@@ -403,7 +391,6 @@ function getMonitorBedsideDetail(row, index) {
             <div class="col-md-6">
                 <p>ลายเซ็นผู้ตรวจเช็ค หลังใช้: <span><img src="${obj.signature_staff_afteruse || ''}" height="30px"></span></p>
             </div>`
-
         if (obj.afteruse_approve_name) {
             detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ หลังใช้: <span class="text-primary">${obj.afteruse_approve_name || ''}</span></p>
@@ -413,7 +400,6 @@ function getMonitorBedsideDetail(row, index) {
             </div>`
         } else {
             detailHtml += `  <div class="col-md-12"><input id="afteruse_approve_name" placeholder="ชื่อผู้อนุมัติ หลังใช้" class="form-control"></div>
-                
                 <div class="col-md-12 mt-3">
                     <label for="signature_afteruse" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
@@ -425,25 +411,16 @@ function getMonitorBedsideDetail(row, index) {
                                 </div>`
         }
     }
-
-
     detailHtml += ` </div>
     </div>`
-
     $('#detail-modal .modal-body').html(detailHtml)
     initialSignaturePad(obj.afteruse_rec_name)
     $('#detail-modal').modal('show')
     $('#detail-modal').on('shown.bs.modal', function (e) {
         resizeCanvas()
     })
-
-
 }
-
 async function updateMonitorBedsideData(key, url, time, date = new Date()) {
-
-
-
     let obj = {}
     if (key == "signature") {
         // obj = tabledata[0]
@@ -459,28 +436,21 @@ async function updateMonitorBedsideData(key, url, time, date = new Date()) {
         obj.afteruse_approve_name = $('#afteruse_approve_name').val();
         obj.signature_manager_afteruse = url
         obj.afteruse_approve_time = date.getTime()
-        tabledata[rowIndex].afteruse_approve_name = $('#approve_name').val();
+        tabledata[rowIndex].afteruse_approve_name = $('#afteruse_approve_name').val();
         tabledata[rowIndex].signature_manager_afteruse = url
         tabledata[rowIndex].afteruse_approve_time = date.getTime()
         // tabledata[1] = obj
     }
-
     firestore.collection(client)
         .where('form', '==', 'monitorbedside')
         .where("time", "==", time)
         .get()
         .then(function (querySnapshot) {
-
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
-                        let object = doc
-                        let isPass = Object.keys(object).filter(key => key.indexOf('daily-check') > -1).every(key => object[key] == 'ผ่าน')
-                        if (Object.keys(object).filter(key => key.indexOf('daily-check') > -1).length > 0) object.isPass = isPass
-                        let isPass_afteruse = Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).every(key => object[key] == 'ผ่าน')
-                        if (Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).length > 0) object.isPass_afteruse = isPass_afteruse
+                        let object = setIspass(doc)
                         return object
-
                     })
                     createMonitorBedsideTable(data)
                     Swal.fire({
