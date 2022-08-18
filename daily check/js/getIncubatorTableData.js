@@ -294,13 +294,13 @@ function getIncubatorDetail(row, index) {
                 <p>Equipment: <span class="text-primary">${obj.form.toUpperCase()}</span></p>
             </div>
             <div class="col-md-6">
-                <p>Brand: <span class="text-primary">${obj.e_brand}</span></p>
+                <p>Brand: <span class="text-primary">${obj.e_brand || obj.afteruse_e_brand}</span></p>
             </div>
             <div class="col-md-6">
-                <p>Code: <span class="text-primary">${obj.e_code}</span></p>
+                <p>Code: <span class="text-primary">${obj.e_code || obj.afteruse_e_code}</span></p>
             </div>
             <div class="col-md-12">
-                <p>Department: <span class="text-primary">${obj.e_dept}</span></p>
+                <p>Department: <span class="text-primary">${obj.e_dept || obj.afteruse_e_dept}</span></p>
             </div>
             <div class="col-md-12" style="display: none" id="ref_time">
                 ${obj.time}
