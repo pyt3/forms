@@ -92,7 +92,7 @@ async function getDefibTableData(session) {
         } else {
             promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
             promises = promises.sort((a, b) => b.time - a.time)
-            tablepromises = promises
+            tabledata = promises
             createDefibTable(promises)
         }
         $('#admin-div').show()
