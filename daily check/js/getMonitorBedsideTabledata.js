@@ -53,71 +53,44 @@ async function getMonitorBedsideTableData(session) {
             .limit(20)
         // 
     }
-    await ref.get()
-        .then(async function (querySnapshot) {
+    const setIspass = function (obj) {
+        let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+        if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
+        else obj.isPass = ''
+        let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+        if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
+        return obj
+    }
+    let promises = await Promise.all([ref.get(), ref2.get()])
+    promises = promises.map(querySnapshot => {
+        let data = querySnapshot.docs.map(function (doc) {
+            let obj = setIspass(doc.data())
+            return obj
+        })
+        return data
+    })
+    promises = promises.flat()
+    if (ref3 && ref4) {
+        let promises2 = await Promise.all([ref3.get(), ref4.get()])
+        promises2 = promises2.map(querySnapshot => {
             let data = querySnapshot.docs.map(function (doc) {
-                let obj = doc.data()
-                let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => (obj[key] != 'ไม่ผ่าน' || obj[key] == ''))
-                if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-                let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj[key] != 'ไม่ผ่าน' || obj[key] == ''))
-                if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
+                let obj = setIspass(doc.data())
                 return obj
             })
-            if (ref2) {
-                await ref2.get().then(async function (querySnapshot2) {
-                    let data2 = querySnapshot2.docs.map(function (doc2) {
-                        let obj2 = doc2.data()
-                        let isPass = Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).every(key => (obj2[key] != 'ไม่ผ่าน' || obj2[key] == ''))
-                        if (Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).length > 0) obj2.isPass = isPass
-                        let isPass_afteruse = Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj2[key] != 'ไม่ผ่าน' || obj2[key] == ''))
-                        if (Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj2.isPass_afteruse = isPass_afteruse
-                        return obj2
-                    })
-                    if (ref3) {
-                        await ref3.get().then(async function (querySnapshot3) {
-                            let data3 = querySnapshot3.docs.map(function (doc3) {
-                                let obj3 = doc3.data()
-                                let isPass = Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
-                                if (Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).length > 0) obj3.isPass = isPass
-                                let isPass_afteruse = Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
-                                if (Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj3.isPass_afteruse = isPass_afteruse
-                                return obj3
-                            })
-                            if (ref4) {
-                                await ref4.get().then(function (querySnapshot4) {
-                                    let data4 = querySnapshot4.docs.map(function (doc4) {
-                                        let obj4 = doc4.data()
-                                        let isPass = Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
-                                        if (Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).length > 0) obj4.isPass = isPass
-                                        let isPass_afteruse = Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
-                                        if (Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj4.isPass_afteruse = isPass_afteruse
-                                        return obj4
-                                    })
-                                    data = [...data, ...data2, ...data3, ...data4]
-                                    data = data.sort((a, b) => b.time - a.time)
-                                    tabledata = data
-                                    createMonitorBedsideTable(data)
-                                })
-                            } else {
-                                data = [...data, ...data2, ...data3]
-                                data = data.sort((a, b) => b.time - a.time)
-                                tabledata = data
-                                createMonitorBedsideTable(data)
-                            }
-                        })
-                    } else {
-                        data = [...data, ...data2]
-                        data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-                        data = data.sort((a, b) => b.time - a.time)
-                        tabledata = data
-                        createMonitorBedsideTable(data)
-                    }
-                })
-            } else {
-                tabledata = data
-                createMonitorBedsideTable(data)
-            }
+            return data
         })
+        promises2 = promises2.flat()
+        promises = promises.concat(promises2)
+        promises = promises.sort((a, b) => b.time - a.time)
+        tabledata = promises
+        createIncubatorTable(promises)
+
+    } else {
+        promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+        promises = promises.sort((a, b) => b.time - a.time)
+        tablepromises = promises
+        createIncubatorTable(promises)
+    }
     $('#admin-div').show()
     // }
 }
