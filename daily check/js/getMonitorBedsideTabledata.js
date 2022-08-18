@@ -88,7 +88,7 @@ async function getMonitorBedsideTableData(session) {
     } else {
         promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
         promises = promises.sort((a, b) => b.time - a.time)
-        tablepromises = promises
+        tabledata = promises
         createMonitorBedsideTable(promises)
     }
     $('#admin-div').show()
