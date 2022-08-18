@@ -188,7 +188,7 @@
     </script>
     <script>
         var firestore
-        var client, dept, id, brand, model, name, mintemp, maxtemp
+        var client, dept, id, brand, model, name, mintemp, maxtemp.foldertoken
 
         $(document).ready(() => {
 
@@ -214,16 +214,34 @@
                         // return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
-                        $.post(script_url, { opt: 'getconst' }, async function (c) {
-                            const firebaseConfig = c
-                            const defaultProject = firebase.initializeApp(firebaseConfig);
-                            console.log(defaultProject)
-                            firestore = defaultProject.firestore();
-                            auth = defaultProject.auth();
-                            await getAuth(await liff.getDecodedIDToken().sub)
-                            await getDeptList(client)
-                            $('#filter').click()
-                        })
+                        let promises = await Promise.all([
+                            $.ajax({
+                                url: script_url,
+                                type: 'POST',
+                                data: {
+                                    opt: 'getconst'
+                                },
+                                success: function (data) {
+                                    const firebaseConfig = c
+                                    const defaultProject = firebase.initializeApp(firebaseConfig);
+
+                                    firestore = defaultProject.firestore();
+                                    auth = defaultProject.auth();
+                                    await getAuth(await liff.getDecodedIDToken().sub)
+                                    await getDeptList(client)
+                                    $('#filter').click()
+                                    $.LoadingOverlay("hide");
+                                }
+                            }),
+
+                            $.ajax({
+                                url: script_url + `?id=${id}&form=temperature&client=${client}`,
+                                type: 'GET',
+                                success: function (data) {
+                                    foldertoken = data
+                                }
+                            }),
+                        ])
                     }
 
                 })
@@ -802,23 +820,21 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.25 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=temperature&client=${client}`, function (result) {
-                let signature_url = 'https://drive.google.com/uc?id='
-                var metadata = {
-                    name: 'temperature check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        signature_url += res.id
-                        return setValue(signature_url)
-                    })
-            })
+            let signature_url = 'https://drive.google.com/uc?id='
+            var metadata = {
+                name: 'temperature check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    signature_url += res.id
+                    return setValue(signature_url)
+                })
         }
         let firstfile = true
         function handleProgress(value) {
