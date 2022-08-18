@@ -584,6 +584,7 @@
                             auth = defaultProject.auth();
                             await getAuth(await liff.getDecodedIDToken().sub)
                             await getDeptList(client)
+                            $.LoadingOverlay("hide");
                         })
                     }
 
@@ -714,7 +715,6 @@
             }
             window.addEventListener("resize", resizeCanvas);
             resizeCanvas();
-            $.LoadingOverlay("show");
         })
 
         async function getDeptList(client) {
@@ -725,9 +725,9 @@
                     deptList.push(docdata[arr])
                 })
                 deptList = deptList.flat().sort()
-                $('#rec_dept').append(`<option value="" selected disabled>Select Department</option>`)
+                $('select[nsme="rec_dept"]').append(`<option value="" selected disabled>Select Department</option>`)
                 deptList.forEach(l => {
-                    $('#rec_dept').append(`<option value="${l}">${l}</option>`)
+                    $('select[nsme="rec_dept"]').append(`<option value="${l}">${l}</option>`)
                 })
             }).catch(function (error) {
                 console.error(error)

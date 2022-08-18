@@ -699,7 +699,7 @@
                 let file = signatures[key]
                 var chunkSize = Math.round(0.25 * 1024 * 1024)
                 let filename, fileurl = 'https://drive.google.com/uc?id='
-                return $.getJSON(script_url + `?id=${tabledata[rowIndex].e_code}&form=${active_tab}`, function (result) {
+                return $.getJSON(script_url + `?id=${tabledata[rowIndex].e_code}&form=${active_tab}&client=${client}`, function (result) {
                     if (key == 'signature') {
                         filename = active_tab + ' daily check manager ' + now.toLocaleString('th-TH', {
                             hour12: false,
