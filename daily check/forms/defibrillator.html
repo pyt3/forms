@@ -617,17 +617,17 @@
             model = url.searchParams.get("model")
             name = url.searchParams.get("name")
             id = url.searchParams.get("id")
-            if (!client || !dept || !brand || !model || !name || !id) {
-                $('body').html('')
-                $.LoadingOverlay("hide");
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Error occured, Please try again or contact BME',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                })
-                return false
-            }
+            // if (!client || !dept || !brand || !model || !name || !id) {
+            //     $('body').html('')
+            //     $.LoadingOverlay("hide");
+            //     Swal.fire({
+            //         title: 'Error',
+            //         text: 'Error occured, Please try again or contact BME',
+            //         allowOutsideClick: false,
+            //         showConfirmButton: false,
+            //     })
+            //     return false
+            // }
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
