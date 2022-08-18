@@ -87,13 +87,13 @@ async function getDefibTableData(session) {
             promises = promises.concat(promises2)
             promises = promises.sort((a, b) => b.time - a.time)
             tabledata = promises
-            createIncubatorTable(promises)
+            createDefibTable(promises)
 
         } else {
             promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
             promises = promises.sort((a, b) => b.time - a.time)
             tablepromises = promises
-            createIncubatorTable(promises)
+            createDefibTable(promises)
         }
         $('#admin-div').show()
     }
