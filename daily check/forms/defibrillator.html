@@ -635,7 +635,7 @@
                 .then(async () => {
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
-                        return liff.login({ redirectUri: url })
+                        return liff.login()
                     } else {
                         console.log('liff init success');
                         let promises = await Promise.all([
