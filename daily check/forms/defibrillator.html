@@ -638,7 +638,7 @@
                         return liff.login()
                     } else {
                         console.log('liff init success');
-                        const getauth = function () {
+                        const getauth = async function () {
                             await getAuth(await liff.getDecodedIDToken().sub)
                             await getDeptList(client)
                             $.LoadingOverlay("hide");
