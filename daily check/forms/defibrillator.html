@@ -605,12 +605,41 @@
 
 
     <script>
-        var signaturePad, signaturePadAfterUse, resizeCanvas, foldertoken
+        var signaturePad, signaturePadAfterUse, resizeCanvas
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
+            liff
+                .init({
+                    liffId: "1657104960-wXQRkQ87", // Use own liffId
+                })
+                .then(() => {
+                    // Start to use liff's api
+                    if (!liff.isLoggedIn()) {
+                        return liff.login({ redirectUri: url })
+                    } else {
+                        console.log('liff init success');
+                        $.post(script_url, { opt: 'getconst' }, async function (c) {
+                            const firebaseConfig = c
+                            const defaultProject = firebase.initializeApp(firebaseConfig);
+
+                            firestore = defaultProject.firestore();
+                            auth = defaultProject.auth();
+                            await getAuth(await liff.getDecodedIDToken().sub)
+                            await getDeptList(client)
+                            $.LoadingOverlay("hide");
+                        })
+                    }
+
+                })
+                .catch((err) => {
+                    // Error happens during initialization
+                    console.log(err.code, err.message);
+                });
+            //
+            //rl = new URL(decodeURI(url.searchParams("liff.state")))
             client = url.searchParams.get("client")
             dept = url.searchParams.get("dept")
             brand = url.searchParams.get("brand")
@@ -628,55 +657,6 @@
                 })
                 return false
             }
-            liff
-                .init({
-                    liffId: "1657104960-wXQRkQ87", // Use own liffId
-                })
-                .then(async () => {
-                    // Start to use liff's api
-                    if (!liff.isLoggedIn()) {
-                        return liff.login()
-                    } else {
-                        console.log('liff init success');
-                        const getauth = async function () {
-                            await getAuth(await liff.getDecodedIDToken().sub)
-                            await getDeptList(client)
-                            $.LoadingOverlay("hide");
-                        }
-                        let promises = await Promise.all([
-                            $.ajax({
-                                url: script_url,
-                                type: 'POST',
-                                data: {
-                                    opt: 'getconst'
-                                },
-                                success: async function (data) {
-                                    const firebaseConfig = data
-                                    const defaultProject = firebase.initializeApp(firebaseConfig);
-
-                                    firestore = defaultProject.firestore();
-                                    auth = defaultProject.auth();
-                                    getauth()
-                                }
-                            }),
-
-                            $.ajax({
-                                url: script_url + `?id=${id}&form=defibrillator&client=${client}`,
-                                type: 'GET',
-                                success: function (data) {
-                                    foldertoken = data
-                                }
-                            }),
-                        ])
-                    }
-
-                })
-                .catch((err) => {
-                    // Error happens during initialization
-                    console.log(err.code, err.message);
-                });
-            //
-            //rl = new URL(decodeURI(url.searchParams("liff.state")))
             $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
             $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
             $('#e_dept, #afteruse_e_dept').val(dept).attr('readonly', true)
@@ -1009,22 +989,24 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            var metadata = {
-                name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                })
-            };
-            let signature_url = 'https://drive.google.com/uc?id='
-            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                .then(res => {
-                    if (!res.id) return console.error("Upload error: " + res.message);
-                    return updateData(signature_url += res.id)
-                })
-        })
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
+                var metadata = {
+                    name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                let signature_url = 'https://drive.google.com/uc?id='
+                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        return updateData(signature_url += res.id)
+                    })
+            })
 
+        })
     </script>
     <script>
         function uploadFile() {
@@ -1059,46 +1041,48 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            console.log("🚀 ~ result", result)
-            var metadata = {
-                name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                })
-            };
-            let report_url = 'https://drive.google.com/uc?id='
-            let signature_url = 'https://drive.google.com/uc?id='
-            gdriveUpload({ ...foldertoken, file, metadata, chunkSize, onProgress: handleProgress })
-                .then(res => {
-                    if (!res.id) return console.error("Upload error: " + res.message);
-                    report_url += res.id
-                    Swal.update({
-                        icon: 'info',
-                        title: 'กำลังบันทึกข้อมูล..',
-                        html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
+            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
+                console.log("🚀 ~ result", result)
+                var metadata = {
+                    name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                let report_url = 'https://drive.google.com/uc?id='
+                let signature_url = 'https://drive.google.com/uc?id='
+                gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        report_url += res.id
+                        Swal.update({
+                            icon: 'info',
+                            title: 'กำลังบันทึกข้อมูล..',
+                            html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 </div>`,
-                        allowOutsideClick: false,
-                        showConfirmButton: false
+                            allowOutsideClick: false,
+                            showConfirmButton: false
+                        })
+                        metadata = {
+                            name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                signature_url += res.id
+                                return saveFormDaily(report_url, signature_url)
+                            })
                     })
-                    metadata = {
-                        name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                            hour12: false,
-                            month: "numeric",
-                            day: "numeric",
-                            year: "numeric"
-                        })
-                    };
-                    gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                        .then(res => {
-                            if (!res.id) return console.error("Upload error: " + res.message);
-                            signature_url += res.id
-                            return saveFormDaily(report_url, signature_url)
-                        })
-                })
 
+            })
         }
         let firstfile = true
         function handleProgress(value) {

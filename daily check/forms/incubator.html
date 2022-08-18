@@ -477,7 +477,7 @@
 
 
     <script>
-        var signaturePad, signaturePadAfterUse, resizeCanvas, foldertoken
+        var signaturePad, signaturePadAfterUse, resizeCanvas
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
@@ -493,33 +493,16 @@
                         return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
-                        let promises = await Promise.all([
-                            $.ajax({
-                                url: script_url,
-                                type: 'POST',
-                                data: {
-                                    opt: 'getconst'
-                                },
-                                success: async function (data) {
-                                    const firebaseConfig = c
-                                    const defaultProject = firebase.initializeApp(firebaseConfig);
+                        $.post(script_url, { opt: 'getconst' }, async function (c) {
+                            const firebaseConfig = c
+                            const defaultProject = firebase.initializeApp(firebaseConfig);
 
-                                    firestore = defaultProject.firestore();
-                                    auth = defaultProject.auth();
-                                    await getAuth(await liff.getDecodedIDToken().sub)
-                                    await getDeptList(client)
-                                    $.LoadingOverlay("hide");
-                                }
-                            }),
-
-                            $.ajax({
-                                url: script_url + `?id=${id}&form=incubator&client=${client}`,
-                                type: 'GET',
-                                success: function (data) {
-                                    foldertoken = data
-                                }
-                            }),
-                        ])
+                            firestore = defaultProject.firestore();
+                            auth = defaultProject.auth();
+                            await getAuth(await liff.getDecodedIDToken().sub)
+                            await getDeptList(client)
+                            $.LoadingOverlay("hide");
+                        })
 
                     }
 
@@ -877,20 +860,22 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            var metadata = {
-                name: `incubator daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                })
-            };
-            let signature_url = 'https://drive.google.com/uc?id='
-            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                .then(res => {
-                    if (!res.id) return console.error("Upload error: " + res.message);
-                    return updateData(signature_url += res.id)
-                })
+            return $.getJSON(script_url + `?id=${id}&form=incubator&client=${client}`, function (result) {
+                var metadata = {
+                    name: `incubator daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                let signature_url = 'https://drive.google.com/uc?id='
+                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        return updateData(signature_url += res.id)
+                    })
+            })
 
         })
     </script>
@@ -926,22 +911,24 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            let signature_url = 'https://drive.google.com/uc?id='
-            var metadata = {
-                name: 'incubator daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                    hour12: false,
-                    month: "numeric",
-                    day: "numeric",
-                    year: "numeric"
-                })
-            };
-            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                .then(res => {
-                    if (!res.id) return console.error("Upload error: " + res.message);
-                    signature_url += res.id
-                    return saveFormDaily(signature_url)
-                })
+            return $.getJSON(script_url + `?id=${id}&form=incubator&client=${client}`, function (result) {
+                let signature_url = 'https://drive.google.com/uc?id='
+                var metadata = {
+                    name: 'incubator daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                        hour12: false,
+                        month: "numeric",
+                        day: "numeric",
+                        year: "numeric"
+                    })
+                };
+                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        signature_url += res.id
+                        return saveFormDaily(signature_url)
+                    })
 
+            })
         }
         let firstfile = true
         function handleProgress(value) {
