@@ -1,5 +1,4 @@
 async function getIncubatorTableData(session) {
-
     // if (session) {
     //     return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
     //         
@@ -27,13 +26,16 @@ async function getIncubatorTableData(session) {
                 .where('form', '==', 'incubator')
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
+            ref4 = firestore.collection("PLP")
+                .where('form', '==', 'incubator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
         } else {
             ref = firestore.collection(client)
                 .where('form', '==', 'incubator')
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
         }
-
     } else if (user.level == 'manager') {
         ref = firestore.collection(client)
             .where('form', '==', 'incubator')
@@ -70,7 +72,7 @@ async function getIncubatorTableData(session) {
                         return obj2
                     })
                     if (ref3) {
-                        await ref3.get().then(function (querySnapshot3) {
+                        await ref3.get().then(async function (querySnapshot3) {
                             let data3 = querySnapshot3.docs.map(function (doc3) {
                                 let obj3 = doc3.data()
                                 let isPass = Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
@@ -79,26 +81,41 @@ async function getIncubatorTableData(session) {
                                 if (Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj3.isPass_afteruse = isPass_afteruse
                                 return obj3
                             })
-                            data = [...data, ...data2, ...data3]
-                            data = data.sort((a, b) => b.time - a.time)
-                            tabledata = data
-                            createDefibTable(data)
+                            if (ref4) {
+                                await ref4.get().then(function (querySnapshot4) {
+                                    let data4 = querySnapshot4.docs.map(function (doc4) {
+                                        let obj4 = doc4.data()
+                                        let isPass = Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
+                                        if (Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).length > 0) obj4.isPass = isPass
+                                        let isPass_afteruse = Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
+                                        if (Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj4.isPass_afteruse = isPass_afteruse
+                                        return obj4
+                                    })
+                                    data = [...data, ...data2, ...data3, ...data4]
+                                    data = data.sort((a, b) => b.time - a.time)
+                                    tabledata = data
+                                    createIncubatorTable(data)
+                                })
+                            } else {
+                                data = [...data, ...data2, ...data3]
+                                data = data.sort((a, b) => b.time - a.time)
+                                tabledata = data
+                                createIncubatorTable(data)
+                            }
                         })
                     } else {
                         data = [...data, ...data2]
                         data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
                         data = data.sort((a, b) => b.time - a.time)
                         tabledata = data
-                        createDefibTable(data)
+                        createIncubatorTable(data)
                     }
-
                 })
             } else {
                 tabledata = data
-                createDefibTable(data)
+                createIncubatorTable(data)
             }
         })
-
     $('#admin-div').show()
     // }
 }
@@ -139,7 +156,6 @@ function createIncubatorTable(data) {
         scrollX: true,
         order: [[0, 'desc']],
         createdRow: function (row, data, dataIndex) {
-
             if (data.signature_staff != '' && !data.signature_manager) {
                 console.log("🚀 ~ data", data)
                 $(row).addClass('bg-warning')
@@ -170,7 +186,6 @@ function createIncubatorTable(data) {
                 render: function (data, type, row, meta) {
                     return '<button class="btn btn-link" onclick="getIncubatorDetail(`' + JSON.stringify(row).replace(/\"/g, "'") + '`,' + meta.row + ')">Click!</button>'
                 }
-
             },
             {
                 data: 'form',
@@ -290,11 +305,7 @@ function createIncubatorTable(data) {
         ]
     });
     table.draw(false)
-
 }
-
-
-
 var rowIndex
 function getIncubatorDetail(row, index) {
     rowIndex = index
@@ -358,7 +369,6 @@ function getIncubatorDetail(row, index) {
             <div class="col-md-6">
                 <p>ลายเซ็นผู้ตรวจเช็ค: <span><img src="${obj.signature_staff}" height="30px"></span></p>
             </div>`
-
     if (obj.approve_name) {
         detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ: <span class="text-primary">${obj.approve_name}</span></p>
@@ -368,7 +378,6 @@ function getIncubatorDetail(row, index) {
             </div>`
     } else {
         detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
-                
                 <div class="col-md-12 mt-3">
                     <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
@@ -379,7 +388,6 @@ function getIncubatorDetail(row, index) {
                                 </div>
                                 </div>`
     }
-
     if (obj.afteruse_rec_name) {
         detailHtml += `<div class="col-md-12 mt-4">
                 <p>รายการตรวจเช็ค หลังใช้: <span id="e_dept"></span></p>
@@ -390,7 +398,6 @@ function getIncubatorDetail(row, index) {
                     <li>
                         ทำความสะอาดเครื่อง: <span>${renderStatus(obj['afteruse-check-clean'])}</span>
                     </li>
-                   
                 </ol>
             </div >
             <div class="col-md-12">
@@ -399,7 +406,6 @@ function getIncubatorDetail(row, index) {
             <div class="col-md-6">
                 <p>ลายเซ็นผู้ตรวจเช็ค หลังใช้: <span><img src="${obj.signature_staff_afteruse || ''}" height="30px"></span></p>
             </div>`
-
         if (obj.afteruse_approve_name) {
             detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ หลังใช้: <span class="text-primary">${obj.afteruse_approve_name || ''}</span></p>
@@ -409,7 +415,6 @@ function getIncubatorDetail(row, index) {
             </div>`
         } else {
             detailHtml += `  <div class="col-md-12"><input id="afteruse_approve_name" placeholder="ชื่อผู้อนุมัติ หลังใช้" class="form-control"></div>
-                
                 <div class="col-md-12 mt-3">
                     <label for="signature_afteruse" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
@@ -421,25 +426,16 @@ function getIncubatorDetail(row, index) {
                                 </div>`
         }
     }
-
-
     detailHtml += ` </div>
     </div>`
-
     $('#detail-modal .modal-body').html(detailHtml)
     initialSignaturePad(obj.afteruse_rec_name)
     $('#detail-modal').modal('show')
     $('#detail-modal').on('shown.bs.modal', function (e) {
         resizeCanvas()
     })
-
-
 }
-
 async function updateIncubatorData(key, url, time, date = new Date()) {
-
-
-
     let obj = {}
     if (key == "signature") {
         // obj = tabledata[0]
@@ -460,13 +456,11 @@ async function updateIncubatorData(key, url, time, date = new Date()) {
         tabledata[rowIndex].afteruse_approve_time = date.getTime()
         // tabledata[1] = obj
     }
-
     firestore.collection(client)
         .where('form', '==', 'incubator')
         .where("time", "==", time)
         .get()
         .then(function (querySnapshot) {
-
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
@@ -476,7 +470,6 @@ async function updateIncubatorData(key, url, time, date = new Date()) {
                         let isPass_afteruse = Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).every(key => object[key] == 'ผ่าน')
                         if (Object.keys(object).filter(key => key.indexOf('afteruse-check') > -1).length > 0) object.isPass_afteruse = isPass_afteruse
                         return object
-
                     })
                     createIncubatorTable(data)
                     Swal.fire({

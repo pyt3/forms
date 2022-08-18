@@ -32,6 +32,10 @@ async function getDefibTableData(session) {
                     .where('form', '==', 'defibrillator')
                     .where('time', '>=', before30days)
                     .orderBy('time', 'desc')
+                ref4 = firestore.collection("PLP")
+                    .where('form', '==', 'incubator')
+                    .where('time', '>=', before30days)
+                    .orderBy('time', 'desc')
             } else {
                 ref = firestore.collection(client)
                     .where('form', '==', 'defibrillator')
@@ -74,7 +78,7 @@ async function getDefibTableData(session) {
                             return obj2
                         })
                         if (ref3) {
-                            await ref3.get().then(function (querySnapshot3) {
+                            await ref3.get().then(async function (querySnapshot3) {
                                 let data3 = querySnapshot3.docs.map(function (doc3) {
                                     let obj3 = doc3.data()
                                     let isPass = Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
@@ -83,10 +87,27 @@ async function getDefibTableData(session) {
                                     if (Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj3.isPass_afteruse = isPass_afteruse
                                     return obj3
                                 })
-                                data = [...data, ...data2, ...data3]
-                                data = data.sort((a, b) => b.time - a.time)
-                                tabledata = data
-                                createDefibTable(data)
+                                if (ref4) {
+                                    await ref4.get().then(function (querySnapshot4) {
+                                        let data4 = querySnapshot4.docs.map(function (doc4) {
+                                            let obj4 = doc4.data()
+                                            let isPass = Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
+                                            if (Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).length > 0) obj4.isPass = isPass
+                                            let isPass_afteruse = Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
+                                            if (Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj4.isPass_afteruse = isPass_afteruse
+                                            return obj4
+                                        })
+                                        data = [...data, ...data2, ...data3, ...data4]
+                                        data = data.sort((a, b) => b.time - a.time)
+                                        tabledata = data
+                                        createDefibTable(data)
+                                    })
+                                } else {
+                                    data = [...data, ...data2, ...data3]
+                                    data = data.sort((a, b) => b.time - a.time)
+                                    tabledata = data
+                                    createDefibTable(data)
+                                }
                             })
                         } else {
                             data = [...data, ...data2]
@@ -95,7 +116,6 @@ async function getDefibTableData(session) {
                             tabledata = data
                             createDefibTable(data)
                         }
-
                     })
                 } else {
                     tabledata = data

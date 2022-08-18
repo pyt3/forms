@@ -27,6 +27,10 @@ async function getTemperatureTableData(session) {
                 .where('form', '==', 'temperature')
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
+            temperatureRef4 = firestore.collection("PLP")
+                .where('form', '==', 'temperature')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
         } else {
             temperatureRef = firestore.collection(client)
                 .where('form', '==', 'temperature')
