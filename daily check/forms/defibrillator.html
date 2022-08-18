@@ -645,24 +645,26 @@
                                 data: {
                                     opt: 'getconst'
                                 },
+                                success: function (data) {
+                                    const firebaseConfig = c
+                                    const defaultProject = firebase.initializeApp(firebaseConfig);
+
+                                    firestore = defaultProject.firestore();
+                                    auth = defaultProject.auth();
+                                    await getAuth(await liff.getDecodedIDToken().sub)
+                                    await getDeptList(client)
+                                    $.LoadingOverlay("hide");
+                                }
                             }),
 
                             $.ajax({
                                 url: script_url + `?id=${id}&form=defibrillator&client=${client}`,
                                 type: 'GET',
+                                success: function (data) {
+                                    foldertoken = data
+                                }
                             }),
                         ])
-                        console.log(promises);
-                        $.post(script_url, { opt: 'getconst' }, async function (c) {
-                            const firebaseConfig = c
-                            const defaultProject = firebase.initializeApp(firebaseConfig);
-
-                            firestore = defaultProject.firestore();
-                            auth = defaultProject.auth();
-                            await getAuth(await liff.getDecodedIDToken().sub)
-                            await getDeptList(client)
-                            $.LoadingOverlay("hide");
-                        })
                     }
 
                 })
@@ -1004,24 +1006,22 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
-                var metadata = {
-                    name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let signature_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        return updateData(signature_url += res.id)
-                    })
-            })
-
+            var metadata = {
+                name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let signature_url = 'https://drive.google.com/uc?id='
+            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    return updateData(signature_url += res.id)
+                })
         })
+
     </script>
     <script>
         function uploadFile() {
@@ -1056,48 +1056,46 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
-                console.log("🚀 ~ result", result)
-                var metadata = {
-                    name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let report_url = 'https://drive.google.com/uc?id='
-                let signature_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        report_url += res.id
-                        Swal.update({
-                            icon: 'info',
-                            title: 'กำลังบันทึกข้อมูล..',
-                            html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
+            console.log("🚀 ~ result", result)
+            var metadata = {
+                name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let report_url = 'https://drive.google.com/uc?id='
+            let signature_url = 'https://drive.google.com/uc?id='
+            gdriveUpload({ ...foldertoken, file, metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    report_url += res.id
+                    Swal.update({
+                        icon: 'info',
+                        title: 'กำลังบันทึกข้อมูล..',
+                        html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 </div>`,
-                            allowOutsideClick: false,
-                            showConfirmButton: false
-                        })
-                        metadata = {
-                            name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                                hour12: false,
-                                month: "numeric",
-                                day: "numeric",
-                                year: "numeric"
-                            })
-                        };
-                        gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                            .then(res => {
-                                if (!res.id) return console.error("Upload error: " + res.message);
-                                signature_url += res.id
-                                return saveFormDaily(report_url, signature_url)
-                            })
+                        allowOutsideClick: false,
+                        showConfirmButton: false
                     })
+                    metadata = {
+                        name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
+                        })
+                    };
+                    gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                        .then(res => {
+                            if (!res.id) return console.error("Upload error: " + res.message);
+                            signature_url += res.id
+                            return saveFormDaily(report_url, signature_url)
+                        })
+                })
 
-            })
         }
         let firstfile = true
         function handleProgress(value) {
