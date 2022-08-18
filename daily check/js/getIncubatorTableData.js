@@ -51,21 +51,26 @@ async function getIncubatorTableData(session) {
             .limit(20)
         // 
     }
+    const setIspass = function (obj) {
+        let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+        if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
+        else obj.isPass = ''
+        let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+        if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
+        return obj
+    }
+    let promises = await Promise.all([ref.get(), ref2.get()])
+    promises = promises.map(querySnapshot => {
+        let data = querySnapshot.docs.map(function (doc) {
+            let obj = setIspass(doc.data())
+            return obj
+        })
+        return data
+    })
+    console.log("🚀 ~ promises", promises);
     await ref.get()
         .then(async function (querySnapshot) {
-            const setIspass = function (obj) {
-                let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-                if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-                else obj.isPass = ''
-                let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-                if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
-                return obj
-            }
 
-            let data = querySnapshot.docs.map(function (doc) {
-                let obj = setIspass(doc.data())
-                return obj
-            })
             if (ref2) {
                 await ref2.get().then(async function (querySnapshot2) {
                     let data2 = querySnapshot2.docs.map(function (doc2) {
