@@ -59,25 +59,30 @@ async function getIncubatorTableData(session) {
                 let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
                 if (!obj['rec_name']) isPass_afteruse = ''
                 if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
-                return [obj, isPass, isPass_afteruse]
+                return [obj]
             }
+
             let data = querySnapshot.docs.map(function (doc) {
                 let obj = setIspass(doc.data())
+                return obj
             })
             if (ref2) {
                 await ref2.get().then(async function (querySnapshot2) {
                     let data2 = querySnapshot2.docs.map(function (doc2) {
                         let obj2 = setIspass(doc2.data())
+                        return obj2
                     })
                     if (ref3) {
                         await ref3.get().then(async function (querySnapshot3) {
                             let data3 = querySnapshot3.docs.map(function (doc3) {
                                 let obj3 = setIspass(doc3.data())
+                                return obj3
                             })
                             if (ref4) {
                                 await ref4.get().then(function (querySnapshot4) {
                                     let data4 = querySnapshot4.docs.map(function (doc4) {
                                         let obj4 = setIspass(doc4.data())
+                                        return obj4
                                     })
                                     data = [...data, ...data2, ...data3, ...data4]
                                     data = data.sort((a, b) => b.time - a.time)
@@ -213,7 +218,6 @@ function createIncubatorTable(data) {
                 data: 'isPass',
                 title: 'ผลการตรวจเช็ค',
                 render: function (data, type) {
-                    if (data == '') return ''
                     if (data)
                         return `<span class="badge rounded-pill bg-success status-pill"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
                     return `<span class="badge rounded-pill bg-danger status-pill"><i class="bi bi-x-circle-fill"></i>&nbsp;ไม่ผ่าน</span>`;
