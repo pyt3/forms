@@ -53,43 +53,31 @@ async function getIncubatorTableData(session) {
     }
     await ref.get()
         .then(async function (querySnapshot) {
-            let data = querySnapshot.docs.map(function (doc) {
-                let obj = doc.data()
-                let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => (obj[key] != 'ไม่ผ่าน' || obj[key] == ''))
+            const setIspass = function (obj) {
+                let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
                 if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-                let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj[key] != 'ไม่ผ่าน' || obj[key] == ''))
+                let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+                if (!obj['rec_name']) isPass_afteruse = ''
                 if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
-                return obj
+                return [obj, isPass, isPass_afteruse]
+            }
+            let data = querySnapshot.docs.map(function (doc) {
+                let obj = setIspass(doc.data())
             })
             if (ref2) {
                 await ref2.get().then(async function (querySnapshot2) {
                     let data2 = querySnapshot2.docs.map(function (doc2) {
-                        let obj2 = doc2.data()
-                        let isPass = Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).every(key => (obj2[key] != 'ไม่ผ่าน' || obj2[key] == ''))
-                        if (Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).length > 0) obj2.isPass = isPass
-                        let isPass_afteruse = Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj2[key] != 'ไม่ผ่าน' || obj2[key] == ''))
-                        if (Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj2.isPass_afteruse = isPass_afteruse
-                        return obj2
+                        let obj2 = setIspass(doc2.data())
                     })
                     if (ref3) {
                         await ref3.get().then(async function (querySnapshot3) {
                             let data3 = querySnapshot3.docs.map(function (doc3) {
-                                let obj3 = doc3.data()
-                                let isPass = Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
-                                if (Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).length > 0) obj3.isPass = isPass
-                                let isPass_afteruse = Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
-                                if (Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj3.isPass_afteruse = isPass_afteruse
-                                return obj3
+                                let obj3 = setIspass(doc3.data())
                             })
                             if (ref4) {
                                 await ref4.get().then(function (querySnapshot4) {
                                     let data4 = querySnapshot4.docs.map(function (doc4) {
-                                        let obj4 = doc4.data()
-                                        let isPass = Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
-                                        if (Object.keys(obj4).filter(key => key.indexOf('daily-check') > -1).length > 0) obj4.isPass = isPass
-                                        let isPass_afteruse = Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj4[key] != 'ไม่ผ่าน' || obj4[key] == ''))
-                                        if (Object.keys(obj4).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj4.isPass_afteruse = isPass_afteruse
-                                        return obj4
+                                        let obj4 = setIspass(doc4.data())
                                     })
                                     data = [...data, ...data2, ...data3, ...data4]
                                     data = data.sort((a, b) => b.time - a.time)
@@ -225,6 +213,7 @@ function createIncubatorTable(data) {
                 data: 'isPass',
                 title: 'ผลการตรวจเช็ค',
                 render: function (data, type) {
+                    if (data == '') return ''
                     if (data)
                         return `<span class="badge rounded-pill bg-success status-pill"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
                     return `<span class="badge rounded-pill bg-danger status-pill"><i class="bi bi-x-circle-fill"></i>&nbsp;ไม่ผ่าน</span>`;
