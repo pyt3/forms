@@ -218,6 +218,7 @@ function createIncubatorTable(data) {
                 data: 'isPass',
                 title: 'ผลการตรวจเช็ค',
                 render: function (data, type) {
+                    if (isPass == "") return ""
                     if (data)
                         return `<span class="badge rounded-pill bg-success status-pill"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
                     return `<span class="badge rounded-pill bg-danger status-pill"><i class="bi bi-x-circle-fill"></i>&nbsp;ไม่ผ่าน</span>`;
