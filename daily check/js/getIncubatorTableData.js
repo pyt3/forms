@@ -67,53 +67,28 @@ async function getIncubatorTableData(session) {
         })
         return data
     })
-    console.log("🚀 ~ promises", promises);
-    await ref.get()
-        .then(async function (querySnapshot) {
-
-            if (ref2) {
-                await ref2.get().then(async function (querySnapshot2) {
-                    let data2 = querySnapshot2.docs.map(function (doc2) {
-                        let obj2 = setIspass(doc2.data())
-                        return obj2
-                    })
-                    if (ref3) {
-                        await ref3.get().then(async function (querySnapshot3) {
-                            let data3 = querySnapshot3.docs.map(function (doc3) {
-                                let obj3 = setIspass(doc3.data())
-                                return obj3
-                            })
-                            if (ref4) {
-                                await ref4.get().then(function (querySnapshot4) {
-                                    let data4 = querySnapshot4.docs.map(function (doc4) {
-                                        let obj4 = setIspass(doc4.data())
-                                        return obj4
-                                    })
-                                    data = [...data, ...data2, ...data3, ...data4]
-                                    data = data.sort((a, b) => b.time - a.time)
-                                    tabledata = data
-                                    createIncubatorTable(data)
-                                })
-                            } else {
-                                data = [...data, ...data2, ...data3]
-                                data = data.sort((a, b) => b.time - a.time)
-                                tabledata = data
-                                createIncubatorTable(data)
-                            }
-                        })
-                    } else {
-                        data = [...data, ...data2]
-                        data = data.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-                        data = data.sort((a, b) => b.time - a.time)
-                        tabledata = data
-                        createIncubatorTable(data)
-                    }
-                })
-            } else {
-                tabledata = data
-                createIncubatorTable(data)
-            }
+    promises = promises.flat()
+    if (ref3 && ref4) {
+        let promises2 = await Promise.all([ref3.get(), ref4.get()])
+        promises2 = promises2.map(querySnapshot => {
+            let data = querySnapshot.docs.map(function (doc) {
+                let obj = setIspass(doc.data())
+                return obj
+            })
+            return data
         })
+        promises2 = promises2.flat()
+        promises = promises.concat(promises2)
+        promises = promises.sort((a, b) => b.time - a.time)
+        tabledata = promises
+        createIncubatorTable(promises)
+
+    } else {
+        promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+        promises = promises.sort((a, b) => b.time - a.time)
+        tablepromises = promises
+        createIncubatorTable(promises)
+    }
     $('#admin-div').show()
     // }
 }
