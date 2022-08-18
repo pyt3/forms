@@ -617,17 +617,17 @@
             model = url.searchParams.get("model")
             name = url.searchParams.get("name")
             id = url.searchParams.get("id")
-            // if (!client || !dept || !brand || !model || !name || !id) {
-            //     $('body').html('')
-            //     $.LoadingOverlay("hide");
-            //     Swal.fire({
-            //         title: 'Error',
-            //         text: 'Error occured, Please try again or contact BME',
-            //         allowOutsideClick: false,
-            //         showConfirmButton: false,
-            //     })
-            //     return false
-            // }
+            if (!client || !dept || !brand || !model || !name || !id) {
+                $('body').html('')
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error occured, Please try again or contact BME',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                })
+                return false
+            }
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
@@ -638,6 +638,11 @@
                         return liff.login()
                     } else {
                         console.log('liff init success');
+                        const getauth = function () {
+                            await getAuth(await liff.getDecodedIDToken().sub)
+                            await getDeptList(client)
+                            $.LoadingOverlay("hide");
+                        }
                         let promises = await Promise.all([
                             $.ajax({
                                 url: script_url,
@@ -646,14 +651,12 @@
                                     opt: 'getconst'
                                 },
                                 success: async function (data) {
-                                    const firebaseConfig = c
+                                    const firebaseConfig = data
                                     const defaultProject = firebase.initializeApp(firebaseConfig);
 
                                     firestore = defaultProject.firestore();
                                     auth = defaultProject.auth();
-                                    await getAuth(await liff.getDecodedIDToken().sub)
-                                    await getDeptList(client)
-                                    $.LoadingOverlay("hide");
+                                    getauth()
                                 }
                             }),
 
