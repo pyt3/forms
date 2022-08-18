@@ -605,12 +605,29 @@
 
 
     <script>
-        var signaturePad, signaturePadAfterUse, resizeCanvas
+        var signaturePad, signaturePadAfterUse, resizeCanvas, foldertoken
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
+            client = url.searchParams.get("client")
+            dept = url.searchParams.get("dept")
+            brand = url.searchParams.get("brand")
+            model = url.searchParams.get("model")
+            name = url.searchParams.get("name")
+            id = url.searchParams.get("id")
+            if (!client || !dept || !brand || !model || !name || !id) {
+                $('body').html('')
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error occured, Please try again or contact BME',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                })
+                return false
+            }
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
@@ -621,6 +638,21 @@
                         return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
+                        let promises = await Promise.all([
+                            $.ajax({
+                                url: script_url,
+                                type: 'POST',
+                                data: {
+                                    opt: 'getconst'
+                                },
+                            }),
+
+                            $.ajax({
+                                url: script_url + `?id=${id}&form=defibrillator&client=${client}`,
+                                type: 'GET',
+                            }),
+                        ])
+                        console.log(promises);
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
                             const firebaseConfig = c
                             const defaultProject = firebase.initializeApp(firebaseConfig);
@@ -640,23 +672,6 @@
                 });
             //
             //rl = new URL(decodeURI(url.searchParams("liff.state")))
-            client = url.searchParams.get("client")
-            dept = url.searchParams.get("dept")
-            brand = url.searchParams.get("brand")
-            model = url.searchParams.get("model")
-            name = url.searchParams.get("name")
-            id = url.searchParams.get("id")
-            if (!client || !dept || !brand || !model || !name || !id) {
-                $('body').html('')
-                $.LoadingOverlay("hide");
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Error occured, Please try again or contact BME',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                })
-                return false
-            }
             $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
             $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
             $('#e_dept, #afteruse_e_dept').val(dept).attr('readonly', true)
