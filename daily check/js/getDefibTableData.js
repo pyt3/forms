@@ -57,9 +57,9 @@ async function getDefibTableData(session) {
             .then(async function (querySnapshot) {
                 let data = querySnapshot.docs.map(function (doc) {
                     let obj = doc.data()
-                    let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+                    let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => (obj[key] != 'ไม่ผ่าน' || obj[key] == ''))
                     if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-                    let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+                    let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj[key] != 'ไม่ผ่าน' || obj[key] == ''))
                     if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
                     return obj
                 })
@@ -67,9 +67,9 @@ async function getDefibTableData(session) {
                     await ref2.get().then(async function (querySnapshot2) {
                         let data2 = querySnapshot2.docs.map(function (doc2) {
                             let obj2 = doc2.data()
-                            let isPass = Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
+                            let isPass = Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).every(key => (obj2[key] != 'ไม่ผ่าน' || obj2[key] == ''))
                             if (Object.keys(obj2).filter(key => key.indexOf('daily-check') > -1).length > 0) obj2.isPass = isPass
-                            let isPass_afteruse = Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj2[key] != 'ไม่ผ่าน')
+                            let isPass_afteruse = Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj2[key] != 'ไม่ผ่าน' || obj2[key] == ''))
                             if (Object.keys(obj2).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj2.isPass_afteruse = isPass_afteruse
                             return obj2
                         })
@@ -77,9 +77,9 @@ async function getDefibTableData(session) {
                             await ref3.get().then(function (querySnapshot3) {
                                 let data3 = querySnapshot3.docs.map(function (doc3) {
                                     let obj3 = doc3.data()
-                                    let isPass = Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).every(key => obj3[key] != 'ไม่ผ่าน')
+                                    let isPass = Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
                                     if (Object.keys(obj3).filter(key => key.indexOf('daily-check') > -1).length > 0) obj3.isPass = isPass
-                                    let isPass_afteruse = Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj3[key] != 'ไม่ผ่าน')
+                                    let isPass_afteruse = Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).every(key => (obj3[key] != 'ไม่ผ่าน' || obj3[key] == ''))
                                     if (Object.keys(obj3).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj3.isPass_afteruse = isPass_afteruse
                                     return obj3
                                 })
