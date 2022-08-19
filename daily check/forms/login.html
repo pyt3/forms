@@ -23,7 +23,6 @@
         document.write('<script defer src="../js/getMonitorBedsideTabledata.js?cache=' + new Date().getTime() + '"><\/script>')
     </script>
     <link rel="icon" href="/icon.png" type="image/png">
-
     <style>
         body {
             min-height: 100vh;
@@ -78,8 +77,6 @@
             </div>
         </div>
     </nav>
-
-
     <div class="container">
         <div class="rounded-3 row m-2 justify-content-center bg-white hide" id="sign-in-div">
             <div class="col-md-4 shadow-lg px-3 pt-5 pb-1 bg-white rounded-3 text-center">
@@ -150,7 +147,6 @@
                 </label>
             </div>
         </div> -->
-
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane fade show active" id="defibrillator" role="tabpanel" aria-labelledby="defibrillator-tab">
@@ -200,10 +196,8 @@
             document.write('&copy;');
             document.write(' 2022 ');
             document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
-
         </script>
     </div>
-
     <!-- Modal -->
     <div class="modal fade" id="detail-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="detail-modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -248,13 +242,11 @@
             //             $.post(script_url, { opt: 'getconst' }, async function (c) {
             //                 const firebaseConfig = c
             //                 const defaultProject = firebase.initializeApp(firebaseConfig);
-
             //                 firestore = defaultProject.firestore();
             //                 auth = defaultProject.auth();
             //                 await getAuth(await liff.getDecodedIDToken().sub)
             //             })
             //         }
-
             //     })
             //     .catch((err) => {
             //         // Error happens during initialization
@@ -264,20 +256,16 @@
             $.post(script_url, { opt: 'getconst' }, async function (c) {
                 const firebaseConfig = c
                 const defaultProject = firebase.initializeApp(firebaseConfig);
-
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
                 // await getAuth(await liff.getDecodedIDToken().sub)
                 await getAuth()
                 $.LoadingOverlay("hide");
-
                 $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                     let area = $(this).attr('data-bs-target')
                     $(area).LoadingOverlay('show');
                     let id = $(this).attr('id').replace('-tab', '')
-
                     active_tab = id
-
                     getTableData(JSON.parse(session), id)
                     $(area).LoadingOverlay('hide');
                     // resizeCanvas();// previous active tab
@@ -306,9 +294,7 @@
                                     $('#data-div').hide()
                                     return $('#sign-in-div').removeClass('hide')
                                 }
-
                             })
-
                     }
                     $('#signout-btn').show()
                     $('#data-div').show()
@@ -328,9 +314,7 @@
                                     location.reload()
                                 })
                             })
-
                     })
-
                     return false
                 } else {
                     $('#signout-btn').hide()
@@ -338,14 +322,11 @@
                     return $('#sign-in-div').removeClass('hide')
                 }
             });
-
         });
-
         async function getAuth(uid = "manager") {
             let email = uid + '@dailycheck.com'
             let password = 'dailycheck'
             await auth.signInWithEmailAndPassword(email, password).then(function (user) {
-
                 console.log('sign in successful')
             }).catch(async function (error) {
                 // Handle Errors here.
@@ -377,9 +358,6 @@
                 });
             });
         }
-
-
-
         function generatePassword(session) {
             var length = 32,
                 charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
@@ -410,16 +388,12 @@
                                 localStorage.removeItem('session')
                                 location.reload()
                             })
-
                         })
                         let data = querySnapshot.docs[0].data()
                         client = data.site.toUpperCase()
                         let name = data.name
                         user = data
-
-
                         var sissionid = generatePassword()
-
                         if (data.isFirstTime) {
                             const { value: formValues } = await Swal.fire({
                                 inputAttributes: {
@@ -488,7 +462,6 @@
     <script>
         let tabledata
         async function getTableData(session, form) {
-
             switch (form) {
                 case 'defibrillator': return getDefibTableData(session)
                 case 'temperature': return getTemperatureTableData(session)
@@ -497,11 +470,8 @@
                 default: return getDefibTableData(session)
             }
         }
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-
-
     <script>
         var signaturePad, signaturePadAfterUse
         $(document).ready(() => {
@@ -515,10 +485,8 @@
                     },
                     scanY = function (fromTop) {
                         var offset = fromTop ? 1 : -1;
-
                         // loop through each row
                         for (var y = fromTop ? 0 : imgHeight - 1; fromTop ? (y < imgHeight) : (y > -1); y += offset) {
-
                             // loop through each column
                             for (var x = 0; x < imgWidth; x++) {
                                 if (getAlpha(x, y)) {
@@ -530,10 +498,8 @@
                     },
                     scanX = function (fromLeft) {
                         var offset = fromLeft ? 1 : -1;
-
                         // loop through each column
                         for (var x = fromLeft ? 0 : imgWidth - 1; fromLeft ? (x < imgWidth) : (x > -1); x += offset) {
-
                             // loop through each row
                             for (var y = 0; y < imgHeight; y++) {
                                 if (getAlpha(x, y)) {
@@ -543,24 +509,19 @@
                         }
                         return null; // all image is white
                     };
-
                 var cropTop = scanY(true),
                     cropBottom = scanY(false),
                     cropLeft = scanX(true),
                     cropRight = scanX(false);
-
                 var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
-
                 this.canvas.width = cropRight - cropLeft;
                 this.canvas.height = cropBottom - cropTop;
                 this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
                 this._ctx.putImageData(relevantData, 0, 0);
             };
-
         })
         var canvas, canvas2
         function initialSignaturePad(hasAfteruse) {
-
             if ($('#signature').length) {
                 canvas = document.getElementById("signature");
                 signaturePad = new SignaturePad(canvas, {
@@ -568,7 +529,6 @@
                     penColor: "rgb(0,0,255)",
                 });
             }
-
             if (hasAfteruse) {
                 if ($('#signature_afteruse').length) {
                     canvas2 = document.getElementById("signature_afteruse");
@@ -578,7 +538,6 @@
                     });
                 }
             }
-
             (() => {
                 $('#save').on('click', () => {
                     event.preventDefault()
@@ -592,7 +551,6 @@
                     event.preventDefault()
                     // resizeCanvas()
                     let id = $(this).closest('.col-md-12').find('canvas').attr('id')
-
                     if (id == 'signature') {
                         signaturePad.clear()
                     } else {
@@ -603,7 +561,6 @@
             $('#detail-modal').on('hidden.bs.modal', function (e) {
                 signaturePad = false
                 signaturePadAfterUse = false
-
             })
         }
         function resizeCanvas() {
@@ -625,7 +582,6 @@
                 canvas2.getContext("2d").scale(ratio, ratio);
                 signaturePadAfterUse.clear(); // otherwise isEmpty() might return incorrect value
             }
-
         }
         // window.addEventListener("resize", resizeCanvas);
     </script>
@@ -667,10 +623,8 @@
             })
             signatures[id] = blob
         }
-
         var onefile = true
         function uploadFile(time) {
-
             if ((signaturePad && signaturePad.isEmpty()) || (signaturePadAfterUse && signaturePadAfterUse.isEmpty())) {
                 return Swal.fire({
                     icon: 'info',
@@ -693,7 +647,6 @@
                 signaturePadAfterUse.removeBlanks()
                 addWatermask('signature_afteruse')
             }
-
             let now = new Date()
             Object.keys(signatures).forEach(key => {
                 console.log('key: ' + key)
@@ -730,7 +683,6 @@
                         })
                 })
             })
-
         }
         let firstfile = true
         function handleProgress(value) {
@@ -865,17 +817,13 @@
         }
     </script>
     <script>
-
     </script>
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
