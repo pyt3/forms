@@ -8,7 +8,7 @@ async function getIncubatorTableData(session) {
     //         }
     //     });
     // } else {
-    let ref, ref2, ref3
+    let ref, ref2, ref3, ref4
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     if (user.level == 'director') {
