@@ -9,7 +9,7 @@ async function getTemperatureTableData(session) {
     //         }
     //     });
     // } else {
-    let temperatureRef, temperatureRef2, temperatureRef3
+    let temperatureRef, temperatureRef2, temperatureRef3, temperatureRef4
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     if (user.level == 'director') {
