@@ -18,6 +18,25 @@ async function getDefibTableData(session) {
         let ref, ref2, ref3, ref4
         let now = new Date()
         let before30days = now.setDate(now.getDate() - 30)
+        let promises, resultData
+        const setIspass = function (obj) {
+            let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+            if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
+            else obj.isPass = ''
+            let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+            if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
+            return obj
+        }
+
+        const getResult = function (promises) {
+            return promises.map(querySnapshot => {
+                let data = querySnapshot.docs.map(function (doc) {
+                    let obj = setIspass(doc.data())
+                    return obj
+                })
+                return data
+            })
+        }
         if (user.level == 'director') {
             if (user.site == 'all') {
                 console.log("🚀 ~ user.site", user.site)
@@ -37,12 +56,19 @@ async function getDefibTableData(session) {
                     .where('form', '==', 'incubator')
                     .where('time', '>=', before30days)
                     .orderBy('time', 'desc')
+                promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
             } else {
                 ref = firestore.collection(client)
                     .where('form', '==', 'defibrillator')
                     .where('time', '>=', before30days)
                     .orderBy('time', 'desc')
+                promises = await Promise.all([ref.get()])
             }
+            resultData = getResult(promises)
+            resultData = resultData.flat()
+            resultData = resultData.sort((a, b) => b.time - a.time)
+            tabledata = resultData
+            createDefibTable(resultData)
         } else if (user.level == 'manager') {
             ref = firestore.collection(client)
                 .where('form', '==', 'defibrillator')
@@ -56,43 +82,13 @@ async function getDefibTableData(session) {
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
                 .limit(20)
-        }
-        const setIspass = function (obj) {
-            let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-            if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-            else obj.isPass = ''
-            let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-            if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
-            return obj
-        }
-        let promises = await Promise.all([ref.get(), ref2.get()])
-        promises = promises.map(querySnapshot => {
-            let data = querySnapshot.docs.map(function (doc) {
-                let obj = setIspass(doc.data())
-                return obj
-            })
-            return data
-        })
-        promises = promises.flat()
-        if (ref3 && ref4) {
-            let promises2 = await Promise.all([ref3.get(), ref4.get()])
-            promises2 = promises2.map(querySnapshot => {
-                let data = querySnapshot.docs.map(function (doc) {
-                    let obj = setIspass(doc.data())
-                    return obj
-                })
-                return data
-            })
-            promises2 = promises2.flat()
-            promises = promises.concat(promises2)
-            promises = promises.sort((a, b) => b.time - a.time)
-            tabledata = promises
-            createDefibTable(promises)
-        } else {
-            promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-            promises = promises.sort((a, b) => b.time - a.time)
-            tabledata = promises
-            createDefibTable(promises)
+            promises = await Promise.all([ref.get(), ref2.get()])
+            promises = promises.flat()
+            resultData = getResult(promises)
+            resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+            resultData = resultData.sort((a, b) => b.time - a.time)
+            tabledata = resultData
+            createDefibTable(resultData)
         }
         $('#admin-div').show()
     }
