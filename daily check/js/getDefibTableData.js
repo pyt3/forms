@@ -1,4 +1,5 @@
 async function getDefibTableData(session) {
+    console.log(client);
     if (session) {
         console.log("🚀 ~ session", session)
         return firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
