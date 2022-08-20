@@ -101,7 +101,7 @@ function createIncubatorTable(data) {
         }
     })
     let notapproved = data.filter(v => {
-        if (v.afteruse_e_name != '') return (v.signature_staff_afteruse != '' && !v.signature_manager_afteruse)
+        if (v.signature_staff_afteruse) return (v.signature_staff_afteruse != '' && !v.signature_manager_afteruse)
         else return (v.signature_staff != '' && !v.signature_manager)
     })
     console.log("🚀 ~ notapproved", notapproved)
