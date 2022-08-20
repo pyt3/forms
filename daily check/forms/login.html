@@ -149,7 +149,7 @@
         </div> -->
         <!-- Tab panes -->
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="defibrillator" role="tabpanel" aria-labelledby="defibrillator-tab">
+            <div class="tab-pane fade show active m-0" id="defibrillator" role="tabpanel" aria-labelledby="defibrillator-tab">
                 <div class="form-check m-4">
                     <input class="form-check-input" type="checkbox" value="" id="defibrillator-display-approved">
                     <label class="form-check-label" for="defibrillator-display-approved">
@@ -169,7 +169,7 @@
                 <div class="container-fluid table-responsive pt-3" style="min-height:200px">
                 </div>
             </div>
-            <div class="tab-pane fade" id="incubator" role="tabpanel" aria-labelledby="incubator-tab">
+            <div class="tab-pane fade m-0" id="incubator" role="tabpanel" aria-labelledby="incubator-tab">
                 <div class="form-check m-4">
                     <input class="form-check-input" type="checkbox" value="" id="incubator-display-approved">
                     <label class="form-check-label" for="incubator-display-approved">
@@ -255,14 +255,12 @@
             $.LoadingOverlay("show");
             let now = new Date().getTime()
             $.post(script_url, { opt: 'getconst' }, async function (c) {
-                console.log((now - new Date().getTime()) / 1000);
                 const firebaseConfig = c
                 const defaultProject = firebase.initializeApp(firebaseConfig);
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
                 // await getAuth(await liff.getDecodedIDToken().sub)
                 await getAuth()
-                console.log((now - new Date().getTime()) / 1000);
                 $.LoadingOverlay("hide");
                 $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                     let area = $(this).attr('data-bs-target')
