@@ -107,7 +107,10 @@ function createDefibTable(data) {
                 .draw();
         }
     })
-    let notapproved = data.filter(v => v.signature_staff != '' && !v.signature_manager)
+    let notapproved = data.filter(v => {
+        if (v.signature_staff_afteruse) return (v.signature_staff_afteruse != '' && !v.signature_manager_afteruse)
+        else return (v.signature_staff != '' && !v.signature_manager)
+    })
     if (notapproved.length > 0) {
         Swal.fire({
             title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
