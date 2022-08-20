@@ -30,6 +30,7 @@ async function getIncubatorTableData(session) {
             return data
         })
     }
+    console.log("🚀 ~ user", user)
     if (user.level == 'director') {
         if (user.site == 'all') {
 
