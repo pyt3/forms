@@ -1,95 +1,95 @@
 async function getDefibTableData(session) {
 
-    if (session) {
+    // if (session) {
 
-        return firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
-            if (querySnapshot.docs.length > 0) {
-                client = querySnapshot.docs[0].data().site.toUpperCase()
-                user = querySnapshot.docs[0].data()
+    //     firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
+    //         if (querySnapshot.docs.length > 0) {
+    //             client = querySnapshot.docs[0].data().site.toUpperCase()
+    //             user = querySnapshot.docs[0].data()
 
-                getDefibTableData()
-            } else {
-                $('#signout-btn').click()
-                localStorage.removeItem('session')
-                location.reload()
-            }
-        });
-    } else {
-        let ref, ref2, ref3, ref4
-        let now = new Date()
-        let before30days = now.setDate(now.getDate() - 30)
-        let promises, resultData
-        const setIspass = function (obj) {
-            let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-            if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-            else obj.isPass = ''
-            let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-            if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
-            return obj
-        }
+    //             getDefibTableData()
+    //         } else {
+    //             $('#signout-btn').click()
+    //             localStorage.removeItem('session')
+    //             location.reload()
+    //         }
+    //     });
+    // } else {
+    let ref, ref2, ref3, ref4
+    let now = new Date()
+    let before30days = now.setDate(now.getDate() - 30)
+    let promises, resultData
+    const setIspass = function (obj) {
+        let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+        if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
+        else obj.isPass = ''
+        let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+        if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
+        return obj
+    }
 
-        const getResult = function (promises) {
-            return promises.map(querySnapshot => {
-                let data = querySnapshot.docs.map(function (doc) {
-                    let obj = setIspass(doc.data())
-                    return obj
-                })
-                return data
+    const getResult = function (promises) {
+        return promises.map(querySnapshot => {
+            let data = querySnapshot.docs.map(function (doc) {
+                let obj = setIspass(doc.data())
+                return obj
             })
-        }
-        if (user.level == 'director') {
-            if (user.site == 'all') {
+            return data
+        })
+    }
+    if (user.level == 'director') {
+        if (user.site == 'all') {
 
-                ref = firestore.collection('PYT3')
-                    .where('form', '==', 'defibrillator')
-                    .where('time', '>=', before30days)
-                    .orderBy('time', 'desc')
-                ref2 = firestore.collection("PYT2")
-                    .where('form', '==', 'defibrillator')
-                    .where('time', '>=', before30days)
-                    .orderBy('time', 'desc')
-                ref3 = firestore.collection("PYT1")
-                    .where('form', '==', 'defibrillator')
-                    .where('time', '>=', before30days)
-                    .orderBy('time', 'desc')
-                ref4 = firestore.collection("PLP")
-                    .where('form', '==', 'incubator')
-                    .where('time', '>=', before30days)
-                    .orderBy('time', 'desc')
-                promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
-            } else {
-                ref = firestore.collection(client)
-                    .where('form', '==', 'defibrillator')
-                    .where('time', '>=', before30days)
-                    .orderBy('time', 'desc')
-                promises = await Promise.all([ref.get()])
-            }
-            resultData = getResult(promises).flat()
-            resultData = resultData.sort((a, b) => b.time - a.time)
-            tabledata = resultData
-            createDefibTable(resultData)
-        } else if (user.level == 'manager') {
+            ref = firestore.collection('PYT3')
+                .where('form', '==', 'defibrillator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref2 = firestore.collection("PYT2")
+                .where('form', '==', 'defibrillator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref3 = firestore.collection("PYT1")
+                .where('form', '==', 'defibrillator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref4 = firestore.collection("PLP")
+                .where('form', '==', 'incubator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
+        } else {
             ref = firestore.collection(client)
                 .where('form', '==', 'defibrillator')
-                .where('e_dept', '==', user.name)
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
-                .limit(20)
-            ref2 = firestore.collection(client)
-                .where('form', '==', 'defibrillator')
-                .where('rec_dept', '==', user.name)
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-                .limit(20)
-            promises = await Promise.all([ref.get(), ref2.get()])
-            resultData = getResult(promises).flat()
-            resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-            resultData = resultData.sort((a, b) => b.time - a.time)
-            tabledata = resultData
-            createDefibTable(resultData)
+            promises = await Promise.all([ref.get()])
         }
-        $('#admin-div').show()
+        resultData = getResult(promises).flat()
+        resultData = resultData.sort((a, b) => b.time - a.time)
+        tabledata = resultData
+        createDefibTable(resultData)
+    } else if (user.level == 'manager') {
+        ref = firestore.collection(client)
+            .where('form', '==', 'defibrillator')
+            .where('e_dept', '==', user.name)
+            .where('time', '>=', before30days)
+            .orderBy('time', 'desc')
+            .limit(20)
+        ref2 = firestore.collection(client)
+            .where('form', '==', 'defibrillator')
+            .where('rec_dept', '==', user.name)
+            .where('time', '>=', before30days)
+            .orderBy('time', 'desc')
+            .limit(20)
+        promises = await Promise.all([ref.get(), ref2.get()])
+        resultData = getResult(promises).flat()
+        resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+        resultData = resultData.sort((a, b) => b.time - a.time)
+        tabledata = resultData
+        createDefibTable(resultData)
     }
+    $('#admin-div').show()
+    // }
 }
 var defibtable
 function createDefibTable(data) {
