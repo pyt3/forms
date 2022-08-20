@@ -83,9 +83,9 @@ async function getDefibTableData(session) {
                 .orderBy('time', 'desc')
                 .limit(100)
             promises = await Promise.all([ref.get(), ref2.get()])
-            console.log("🚀 ~ promises", promises)
             promises = promises.flat()
             resultData = getResult(promises)
+            console.log("🚀 ~ resultData", resultData)
             resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
             resultData = resultData.sort((a, b) => b.time - a.time)
             tabledata = resultData[0]
