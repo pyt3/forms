@@ -59,7 +59,7 @@ async function getTemperatureTableData(session) {
         resultData = getResult(promises).flat()
         resultData = resultData.sort((a, b) => b.time - a.time)
         tabledata = resultData
-        createDefibTable(resultData)
+        createTemperatureTable(resultData)
     } else if (user.level == 'manager') {
         ref = firestore.collection(client)
             .where('form', '==', 'defibrillator')
