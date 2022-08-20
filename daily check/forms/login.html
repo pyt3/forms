@@ -305,7 +305,7 @@
                     $('#signout-btn').show()
                     $('#data-div').show()
                     $.LoadingOverlay("show");
-                    getTableData(JSON.parse(session))
+                    getTableData(JSON.parse(session), active_tab)
                     $.LoadingOverlay('hide')
                     $('#signout-btn').click(function () {
                         let session = localStorage.getItem("session")
