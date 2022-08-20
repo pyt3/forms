@@ -1,12 +1,12 @@
 async function getDefibTableData(session) {
-    console.log(client);
+
     if (session) {
-        console.log("🚀 ~ session", session)
+
         return firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
             if (querySnapshot.docs.length > 0) {
                 client = querySnapshot.docs[0].data().site.toUpperCase()
                 user = querySnapshot.docs[0].data()
-                console.log("🚀 ~ user", user)
+
                 getDefibTableData()
             } else {
                 $('#signout-btn').click()
@@ -39,7 +39,7 @@ async function getDefibTableData(session) {
         }
         if (user.level == 'director') {
             if (user.site == 'all') {
-                console.log("🚀 ~ user.site", user.site)
+
                 ref = firestore.collection('PYT3')
                     .where('form', '==', 'defibrillator')
                     .where('time', '>=', before30days)
@@ -93,7 +93,7 @@ async function getDefibTableData(session) {
 }
 var defibtable
 function createDefibTable(data) {
-    console.log("🚀 ~ data1", data)
+
     $('#defibrillator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             defibtable
@@ -120,7 +120,7 @@ function createDefibTable(data) {
             }
         })
     }
-    console.log("🚀 ~ notapproved", notapproved)
+
     $('#defibrillator .table-responsive').html('').append(`<table id="defib-table-data" class="table table-hover table-bordered" style="width: 100%">
             <thead class="bg-primary text-center text-white text-nowrap"></thead>
             <tbody class="bg-white"></tbody>
@@ -131,7 +131,7 @@ function createDefibTable(data) {
         order: [[0, 'desc']],
         createdRow: function (row, data, dataIndex) {
             if (data.signature_staff != '' && !data.signature_manager) {
-                console.log("🚀 ~ data", data)
+
                 $(row).addClass('bg-warning')
             }
         },
