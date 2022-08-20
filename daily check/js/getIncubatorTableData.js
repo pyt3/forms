@@ -20,7 +20,6 @@ async function getIncubatorTableData(session) {
         if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
         return obj
     }
-
     const getResult = function (promises) {
         return promises.map(querySnapshot => {
             let data = querySnapshot.docs.map(function (doc) {
@@ -33,7 +32,6 @@ async function getIncubatorTableData(session) {
     console.log("🚀 ~ user", user)
     if (user.level == 'director') {
         if (user.site == 'all') {
-
             ref = firestore.collection('PYT3')
                 .where('form', '==', 'incubator')
                 .where('time', '>=', before30days)
@@ -102,7 +100,10 @@ function createIncubatorTable(data) {
                 .draw();
         }
     })
-    let notapproved = data.filter(v => ((v.signature_staff != '' && !v.signature_manager) || (v.signature_staff_afteruse != '' && !v.signature_manager_afteruse)))
+    let notapproved = data.filter(v => {
+        if (v.afteruse_e_name != '') return (v.signature_staff_afteruse != '' && !v.signature_manager_afteruse)
+        else return (v.signature_staff != '' && !v.signature_manager)
+    })
     console.log("🚀 ~ notapproved", notapproved)
     if (notapproved.length > 0) {
         Swal.fire({
@@ -126,7 +127,6 @@ function createIncubatorTable(data) {
         order: [[0, 'desc']],
         createdRow: function (row, data, dataIndex) {
             if ((data.signature_staff != '' && !data.signature_manager) || (data.signature_staff_afteruse != '' && !data.signature_manager_afteruse)) {
-
                 $(row).addClass('bg-warning')
             }
         },
