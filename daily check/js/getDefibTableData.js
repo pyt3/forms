@@ -358,7 +358,7 @@ function getDefiDetail(row, index) {
                 <p>ผู้อนุมัติ: <span class="text-primary">${obj.approve_name}</span></p>
             </div>
             <div class="col-md-6">
-                <p>ลายเซ็นผู้อนุมัติ: <span><img src="${obj.signature_manager}" height="30px" class="border rounded shadow"></span></p>
+                <p>ลายเซ็นผู้อนุมัติ: <span><img src="${obj.signature_manager}" height="30px"></span></p>
             </div>`
         } else {
             detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
@@ -399,7 +399,7 @@ function getDefiDetail(row, index) {
                 <p>ผู้อนุมัติ หลังใช้: <span class="text-primary">${obj.afteruse_approve_name || ''}</span></p>
             </div>
             <div class="col-md-6">
-                <p>ลายเซ็นผู้อนุมัติ หลังใช้: <span ><img src="${obj.signature_manager_afteruse || ''}" height="50px" class="border rounded shadow"></span></p>
+                <p>ลายเซ็นผู้อนุมัติ หลังใช้: <span ><img src="${obj.signature_manager_afteruse || ''}" height="30px"></span></p>
             </div>`
         } else {
             detailHtml += `  <div class="col-md-12"><input id="afteruse_approve_name" placeholder="ชื่อผู้อนุมัติ หลังใช้" class="form-control"></div>
