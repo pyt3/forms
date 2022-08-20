@@ -264,7 +264,9 @@
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
                 // await getAuth(await liff.getDecodedIDToken().sub)
-                await getAuth()
+                if (!auth.currentUser) {
+                    await getAuth()
+                }
                 $.LoadingOverlay("hide");
                 $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                     let area = $(this).attr('data-bs-target')
