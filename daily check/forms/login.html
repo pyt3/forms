@@ -149,7 +149,7 @@
         </div> -->
         <!-- Tab panes -->
         <div class="tab-content">
-            <div class="tab-pane fade show active m-0" id="defibrillator" role="tabpanel" aria-labelledby="defibrillator-tab">
+            <div class="tab-pane fade m-0" id="defibrillator" role="tabpanel" aria-labelledby="defibrillator-tab">
                 <div class="form-check m-4">
                     <input class="form-check-input" type="checkbox" value="" id="defibrillator-display-approved">
                     <label class="form-check-label" for="defibrillator-display-approved">
@@ -252,6 +252,8 @@
             //         // Error happens during initialization
             //         console.log(err.code, err.message);
             //     });
+            active_tab = localStorage.getItem('active_tab') || 'defibrillator'
+            $('.tab-pane #' + active_tab).addClass('show active')
             $.LoadingOverlay("show");
             let now = new Date().getTime()
             $.post(script_url, { opt: 'getconst' }, async function (c) {
@@ -267,6 +269,7 @@
                     $(area).LoadingOverlay('show');
                     let id = $(this).attr('id').replace('-tab', '')
                     active_tab = id
+                    localStorage.setItem('active_tab', active_tab)
                     getTableData(JSON.parse(session), id)
                     $(area).LoadingOverlay('hide');
                     // resizeCanvas();// previous active tab

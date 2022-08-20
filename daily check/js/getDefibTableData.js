@@ -133,8 +133,10 @@ function createDefibTable(data) {
         scrollX: true,
         order: [[0, 'desc']],
         createdRow: function (row, data, dataIndex) {
-            if (data.signature_staff != '' && !data.signature_manager) {
-
+            if (data.signature_staff_afteruse && data.signature_staff_afteruse != '' && !data.signature_manager_afteruse) {
+                $(row).addClass('bg-warning')
+            }
+            else if (data.signature_staff && data.signature_staff != '' && !data.signature_manager) {
                 $(row).addClass('bg-warning')
             }
         },
