@@ -84,7 +84,7 @@ async function getDefibTableData(session) {
                 .limit(100)
             promises = await Promise.all([ref.get(), ref2.get()])
             promises = promises.flat()
-            resultData = getResult(promises)..flat()
+            resultData = getResult(promises).flat()
             resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
             resultData = resultData.sort((a, b) => b.time - a.time)
             tabledata = resultData[0]
