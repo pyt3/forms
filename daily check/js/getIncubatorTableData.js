@@ -11,46 +11,7 @@ async function getIncubatorTableData(session) {
     let ref, ref2, ref3, ref4
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
-    if (user.level == 'director') {
-        if (user.site == 'all') {
-            console.log("🚀 ~ user.site", user.site)
-            ref = firestore.collection('PYT3')
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref2 = firestore.collection("PYT2")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref3 = firestore.collection("PYT1")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref4 = firestore.collection("PLP")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-        } else {
-            ref = firestore.collection(client)
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-        }
-    } else if (user.level == 'manager') {
-        ref = firestore.collection(client)
-            .where('form', '==', 'incubator')
-            .where('e_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(20)
-        ref2 = firestore.collection(client)
-            .where('form', '==', 'incubator')
-            .where('rec_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(20)
-        // 
-    }
+    let promises, resultData
     const setIspass = function (obj) {
         let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
         if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
@@ -59,34 +20,66 @@ async function getIncubatorTableData(session) {
         if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
         return obj
     }
-    let promises = await Promise.all([ref.get(), ref2.get()])
-    promises = promises.map(querySnapshot => {
-        let data = querySnapshot.docs.map(function (doc) {
-            let obj = setIspass(doc.data())
-            return obj
-        })
-        return data
-    })
-    promises = promises.flat()
-    if (ref3 && ref4) {
-        let promises2 = await Promise.all([ref3.get(), ref4.get()])
-        promises2 = promises2.map(querySnapshot => {
+
+    const getResult = function (promises) {
+        return promises.map(querySnapshot => {
             let data = querySnapshot.docs.map(function (doc) {
                 let obj = setIspass(doc.data())
                 return obj
             })
             return data
         })
-        promises2 = promises2.flat()
-        promises = promises.concat(promises2)
-        promises = promises.sort((a, b) => b.time - a.time)
-        tabledata = promises
-        createIncubatorTable(promises)
-    } else {
-        promises = promises.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-        promises = promises.sort((a, b) => b.time - a.time)
-        tabledata = promises
-        createIncubatorTable(promises)
+    }
+    if (user.level == 'director') {
+        if (user.site == 'all') {
+            console.log("🚀 ~ user.site", user.site)
+            ref = firestore.collection('PYT3')
+                .where('form', '==', 'defibrillator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref2 = firestore.collection("PYT2")
+                .where('form', '==', 'defibrillator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref3 = firestore.collection("PYT1")
+                .where('form', '==', 'defibrillator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            ref4 = firestore.collection("PLP")
+                .where('form', '==', 'incubator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
+        } else {
+            ref = firestore.collection(client)
+                .where('form', '==', 'defibrillator')
+                .where('time', '>=', before30days)
+                .orderBy('time', 'desc')
+            promises = await Promise.all([ref.get()])
+        }
+        resultData = getResult(promises).flat()
+        resultData = resultData.sort((a, b) => b.time - a.time)
+        tabledata = resultData
+        createIncubatorTable(resultData)
+    } else if (user.level == 'manager') {
+        ref = firestore.collection(client)
+            .where('form', '==', 'defibrillator')
+            .where('e_dept', '==', user.name)
+            .where('time', '>=', before30days)
+            .orderBy('time', 'desc')
+            .limit(20)
+        ref2 = firestore.collection(client)
+            .where('form', '==', 'defibrillator')
+            .where('rec_dept', '==', user.name)
+            .where('time', '>=', before30days)
+            .orderBy('time', 'desc')
+            .limit(20)
+        promises = await Promise.all([ref.get(), ref2.get()])
+        resultData = getResult(promises).flat()
+        resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+        resultData = resultData.sort((a, b) => b.time - a.time)
+        tabledata = resultData
+        createIncubatorTable(resultData)
     }
     $('#admin-div').show()
     // }
