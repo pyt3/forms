@@ -29,13 +29,13 @@ async function getDefibTableData(session) {
         }
 
         const getResult = function (promises) {
-            return promises.map(querySnapshot => {
+            return await Promise.all(promises.map(querySnapshot => {
                 let data = querySnapshot.docs.map(function (doc) {
                     let obj = setIspass(doc.data())
                     return obj
                 })
                 return data
-            })
+            }))
         }
         if (user.level == 'director') {
             if (user.site == 'all') {
@@ -83,7 +83,6 @@ async function getDefibTableData(session) {
                 .orderBy('time', 'desc')
                 .limit(100)
             promises = await Promise.all([ref.get(), ref2.get()])
-            promises = promises.flat()
             resultData = getResult(promises).flat()
             resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
             resultData = resultData.sort((a, b) => b.time - a.time)
