@@ -90,12 +90,12 @@ function createIncubatorTable(data) {
     $('#incubator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             table
-                .column(9) // or columns???
+                .columns([9, 15]) // or columns???
                 .search('^$', true, false)
                 .draw();
         } else {
             table
-                .column(9) // or columns???
+                .columns([9, 15]) // or columns???
                 .search('')
                 .draw();
         }
@@ -104,7 +104,6 @@ function createIncubatorTable(data) {
         if (v.signature_staff_afteruse) return (v.signature_staff_afteruse != '' && !v.signature_manager_afteruse)
         else return (v.signature_staff != '' && !v.signature_manager)
     })
-    console.log("🚀 ~ notapproved", notapproved)
     if (notapproved.length > 0) {
         Swal.fire({
             title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
