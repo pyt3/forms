@@ -68,7 +68,7 @@ async function getDefibTableData(session) {
             resultData = resultData.flat()
             resultData = resultData.sort((a, b) => b.time - a.time)
             tabledata = resultData[0]
-            createDefibTable(resultData)
+            createDefibTable(resultData[0])
         } else if (user.level == 'manager') {
             ref = firestore.collection(client)
                 .where('form', '==', 'defibrillator')
@@ -88,7 +88,7 @@ async function getDefibTableData(session) {
             resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
             resultData = resultData.sort((a, b) => b.time - a.time)
             tabledata = resultData[0]
-            createDefibTable(resultData)
+            createDefibTable(resultData[0])
         }
         $('#admin-div').show()
     }
