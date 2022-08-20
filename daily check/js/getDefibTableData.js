@@ -28,7 +28,7 @@ async function getDefibTableData(session) {
             return obj
         }
 
-        const getResult = function (promises) {
+        const getResult = async function (promises) {
             return await Promise.all(promises.map(querySnapshot => {
                 let data = querySnapshot.docs.map(function (doc) {
                     let obj = setIspass(doc.data())
