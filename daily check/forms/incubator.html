@@ -319,7 +319,7 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="rec_dept">Recorder Department</label>
-                                <select name="rec_dept" id="rec_dept" class="form-select" required>
+                                <select name="afteruse_rec_dept" id="afteruse_rec_dept" class="form-select" required>
                                 </select>
                             </div>
                             <div class="col-md-3 mt-3">
@@ -645,9 +645,9 @@
                     deptList.push(docdata[arr])
                 })
                 deptList = deptList.flat().sort()
-                $('select[name="rec_dept"]').append(`<option value="" selected disabled>Select Department</option>`)
+                $('select[name="rec_dept"],select[name="afteruse_rec_dept"]').append(`<option value="" selected disabled>Select Department</option>`)
                 deptList.forEach(l => {
-                    $('select[name="rec_dept"]').append(`<option value="${l}">${l}</option>`)
+                    $('select[name="rec_dept"],select[name="afteruse_rec_dept"]').append(`<option value="${l}">${l}</option>`)
                 })
             }).catch(function (error) {
                 console.error(error)
