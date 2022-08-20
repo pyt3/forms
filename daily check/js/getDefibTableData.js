@@ -74,13 +74,13 @@ async function getDefibTableData(session) {
             .where('e_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
-            .limit(20)
+            .limit(40)
         ref2 = firestore.collection(client)
             .where('form', '==', 'defibrillator')
             .where('rec_dept', '==', user.name)
             .where('time', '>=', before30days)
             .orderBy('time', 'desc')
-            .limit(20)
+            .limit(40)
         promises = await Promise.all([ref.get(), ref2.get()])
         resultData = getResult(promises).flat()
         resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
@@ -97,12 +97,12 @@ function createDefibTable(data) {
     $('#defibrillator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             defibtable
-                .column(9) // or columns???
+                .columns([, 9, 15]) // or columns???
                 .search('^$', true, false)
                 .draw();
         } else {
             defibtable
-                .column(9) // or columns???
+                .columns([, 9, 15]) // or columns???
                 .search('')
                 .draw();
         }
