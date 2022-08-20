@@ -87,8 +87,8 @@ async function getDefibTableData(session) {
             resultData = getResult(promises).flat()
             resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
             resultData = resultData.sort((a, b) => b.time - a.time)
-            tabledata = resultData[0]
-            createDefibTable(resultData[0])
+            tabledata = resultData
+            createDefibTable(resultData)
         }
         $('#admin-div').show()
     }
