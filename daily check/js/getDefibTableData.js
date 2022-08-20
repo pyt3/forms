@@ -28,14 +28,14 @@ async function getDefibTableData(session) {
             return obj
         }
 
-        const getResult = async function (promises) {
-            return await Promise.all(promises.map(querySnapshot => {
+        const getResult = function (promises) {
+            return promises.map(querySnapshot => {
                 let data = querySnapshot.docs.map(function (doc) {
                     let obj = setIspass(doc.data())
                     return obj
                 })
                 return data
-            }))
+            })
         }
         if (user.level == 'director') {
             if (user.site == 'all') {
@@ -64,24 +64,23 @@ async function getDefibTableData(session) {
                     .orderBy('time', 'desc')
                 promises = await Promise.all([ref.get()])
             }
-            resultData = getResult(promises)
-            resultData = resultData.flat()
+            resultData = getResult(promises).flat()
             resultData = resultData.sort((a, b) => b.time - a.time)
-            tabledata = resultData[0]
-            createDefibTable(resultData[0])
+            tabledata = resultData
+            createDefibTable(resultData)
         } else if (user.level == 'manager') {
             ref = firestore.collection(client)
                 .where('form', '==', 'defibrillator')
                 .where('e_dept', '==', user.name)
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
-                .limit(100)
+                .limit(20)
             ref2 = firestore.collection(client)
                 .where('form', '==', 'defibrillator')
                 .where('rec_dept', '==', user.name)
                 .where('time', '>=', before30days)
                 .orderBy('time', 'desc')
-                .limit(100)
+                .limit(20)
             promises = await Promise.all([ref.get(), ref2.get()])
             resultData = getResult(promises).flat()
             resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)

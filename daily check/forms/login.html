@@ -253,13 +253,16 @@
             //         console.log(err.code, err.message);
             //     });
             $.LoadingOverlay("show");
+            let now = new Date().getTime()
             $.post(script_url, { opt: 'getconst' }, async function (c) {
+                console.log((now - new Date().getTime()) / 1000);
                 const firebaseConfig = c
                 const defaultProject = firebase.initializeApp(firebaseConfig);
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
                 // await getAuth(await liff.getDecodedIDToken().sub)
                 await getAuth()
+                console.log((now - new Date().getTime()) / 1000);
                 $.LoadingOverlay("hide");
                 $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                     let area = $(this).attr('data-bs-target')
