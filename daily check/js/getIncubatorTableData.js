@@ -32,7 +32,7 @@ async function getIncubatorTableData(session) {
     }
     if (user.level == 'director') {
         if (user.site == 'all') {
-            console.log("🚀 ~ user.site", user.site)
+
             ref = firestore.collection('PYT3')
                 .where('form', '==', 'incubator')
                 .where('time', '>=', before30days)
@@ -86,6 +86,7 @@ async function getIncubatorTableData(session) {
 }
 var table
 function createIncubatorTable(data) {
+    console.log("🚀 ~ data", data)
     $('#incubator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             table
@@ -100,6 +101,7 @@ function createIncubatorTable(data) {
         }
     })
     let notapproved = data.filter(v => ((v.signature_staff != '' && !v.signature_manager) || (v.signature_staff_afteruse != '' && !v.signature_manager_afteruse)))
+    console.log("🚀 ~ notapproved", notapproved)
     if (notapproved.length > 0) {
         Swal.fire({
             title: 'คุณมี Daily Check ที่ยังไม่อนุมัติ จำนวน ' + notapproved.length + ' รายการ',
@@ -121,8 +123,8 @@ function createIncubatorTable(data) {
         scrollX: true,
         order: [[0, 'desc']],
         createdRow: function (row, data, dataIndex) {
-            if (data.signature_staff != '' && !data.signature_manager) {
-                console.log("🚀 ~ data", data)
+            if ((data.signature_staff != '' && !data.signature_manager) || (data.signature_staff_afteruse != '' && !data.signature_manager_afteruse)) {
+
                 $(row).addClass('bg-warning')
             }
         },
