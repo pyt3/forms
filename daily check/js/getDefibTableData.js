@@ -95,7 +95,7 @@ async function getDefibTableData(session) {
 }
 var defibtable
 function createDefibTable(data) {
-    console.log("🚀 ~ data", data)
+    console.log("🚀 ~ data1", data)
     $('#defibrillator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             defibtable
