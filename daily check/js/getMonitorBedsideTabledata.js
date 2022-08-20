@@ -300,7 +300,7 @@ function getMonitorBedsideDetail(row, index) {
                 ${rowIndex}
             </div>`
     if (!obj.afteruse_rec_name) {
-        `<div class="col-md-12">
+        detailHtml += `<div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
                 <ol>
                     <li>
