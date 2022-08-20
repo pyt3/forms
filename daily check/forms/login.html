@@ -253,7 +253,8 @@
             //         console.log(err.code, err.message);
             //     });
             active_tab = localStorage.getItem('active_tab') || 'defibrillator'
-            $('.tab-pane #' + active_tab).addClass('show active')
+            console.log("🚀 ~ active_tab", active_tab)
+            $('#' + active_tab).addClass('show active')
             $.LoadingOverlay("show");
             let now = new Date().getTime()
             $.post(script_url, { opt: 'getconst' }, async function (c) {
