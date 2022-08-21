@@ -1,3 +1,21 @@
+const setIspass = function (obj) {
+    let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+    if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
+    else obj.isPass = ''
+    let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
+    if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
+    return obj
+}
+
+const getResult = function (promises) {
+    return promises.map(querySnapshot => {
+        let data = querySnapshot.docs.map(function (doc) {
+            let obj = setIspass(doc.data())
+            return obj
+        })
+        return data
+    })
+}
 async function getDefibTableData(session) {
 
     // if (session) {
@@ -19,24 +37,7 @@ async function getDefibTableData(session) {
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     let promises, resultData
-    const setIspass = function (obj) {
-        let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-        if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-        else obj.isPass = ''
-        let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
-        if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
-        return obj
-    }
 
-    const getResult = function (promises) {
-        return promises.map(querySnapshot => {
-            let data = querySnapshot.docs.map(function (doc) {
-                let obj = setIspass(doc.data())
-                return obj
-            })
-            return data
-        })
-    }
     if (user.level == 'director') {
         if (user.site == 'all') {
 
