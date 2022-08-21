@@ -471,6 +471,7 @@
     <script>
         let tabledata
         async function getTableData(session, form) {
+            console.log("🚀 ~ session", session)
             if (!form) form = active_tab
             firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
                 if (querySnapshot.docs.length > 0) {
