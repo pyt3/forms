@@ -1,3 +1,19 @@
+const setIspass = function (obj) {
+    let isPass = obj.temp >= 2 && obj.temp <= 8
+    obj.isPass = isPass
+
+    return obj
+}
+
+const getResult = function (promises) {
+    return promises.map(querySnapshot => {
+        let data = querySnapshot.docs.map(function (doc) {
+            let obj = setIspass(doc.data())
+            return obj
+        })
+        return data
+    })
+}
 async function getTemperatureTableData(session) {
 
     // if (session) {
@@ -13,22 +29,7 @@ async function getTemperatureTableData(session) {
     let now = new Date()
     let before30days = now.setDate(now.getDate() - 30)
     let promises, resultData
-    const setIspass = function (obj) {
-        let isPass = obj.temp >= 2 && obj.temp <= 8
-        obj.isPass = isPass
 
-        return obj
-    }
-
-    const getResult = function (promises) {
-        return promises.map(querySnapshot => {
-            let data = querySnapshot.docs.map(function (doc) {
-                let obj = setIspass(doc.data())
-                return obj
-            })
-            return data
-        })
-    }
     if (user.level == 'director') {
         if (user.site == 'all') {
             console.log("🚀 ~ user.site", user.site)
