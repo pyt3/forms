@@ -1,14 +1,14 @@
-const setIspass = function (obj) {
+const setIspass_temp = function (obj) {
     let isPass = obj.temp >= 2 && obj.temp <= 8
     obj.isPass = isPass
 
     return obj
 }
 
-const getResult = function (promises) {
+const getResult_temp = function (promises) {
     return promises.map(querySnapshot => {
         let data = querySnapshot.docs.map(function (doc) {
-            let obj = setIspass(doc.data())
+            let obj = setIspass_temp(doc.data())
             return obj
         })
         return data
@@ -57,7 +57,7 @@ async function getTemperatureTableData(session) {
                 .orderBy('time', 'desc')
             promises = await Promise.all([ref.get()])
         }
-        resultData = getResult(promises).flat()
+        resultData = getResult_temp(promises).flat()
         resultData = resultData.sort((a, b) => b.time - a.time)
         tabledata = resultData
         createTemperatureTable(resultData)
@@ -75,7 +75,7 @@ async function getTemperatureTableData(session) {
             .orderBy('time', 'desc')
             .limit(40)
         promises = await Promise.all([ref.get(), ref2.get()])
-        resultData = getResult(promises).flat()
+        resultData = getResult_temp(promises).flat()
         resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
         resultData = resultData.sort((a, b) => b.time - a.time)
         tabledata = resultData
@@ -388,7 +388,7 @@ async function updateTemperatureData(key, url, time, date = new Date()) {
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.docs[0].ref.update(obj).then(() => {
                     let data = tabledata.map(function (doc) {
-                        let object = setIspass(doc)
+                        let object = setIspass_temp(doc)
                         return object
                     })
                     createTemperatureTable(data)
