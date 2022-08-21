@@ -295,17 +295,7 @@
                                 }
                             })
                     }
-                    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-                        let area = $(this).attr('data-bs-target')
-                        $(area).LoadingOverlay('show');
-                        let id = $(this).attr('id').replace('-tab', '')
-                        active_tab = id
-                        localStorage.setItem('active_tab', active_tab)
-                        console.log("🚀 ~ session", session)
-                        getTableData(JSON.parse(session), id)
-                        $(area).LoadingOverlay('hide');
-                        // resizeCanvas();// previous active tab
-                    })
+
                     $('#signout-btn').show()
                     $('#data-div').show()
                     $.LoadingOverlay("show");
@@ -331,6 +321,16 @@
                     $('#data-div').hide()
                     return $('#sign-in-div').removeClass('hide')
                 }
+                $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                    let area = $(this).attr('data-bs-target')
+                    $(area).LoadingOverlay('show');
+                    let id = $(this).attr('id').replace('-tab', '')
+                    active_tab = id
+                    localStorage.setItem('active_tab', active_tab)
+                    getTableData(JSON.parse(session), id)
+                    $(area).LoadingOverlay('hide');
+                    // resizeCanvas();// previous active tab
+                })
             });
         });
         async function getAuth(uid = "manager") {
