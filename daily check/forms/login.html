@@ -261,6 +261,14 @@
             let now = new Date().getTime()
             session = localStorage.getItem("session")
             if (session) {
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Welcome back!!',
+                    text: 'กำลังดึงข้อมูล...',
+                    allowOutsideClick: false,
+                })
+                Swal.showLoading(Swal.getConfirmButton())
                 $.post(script_url, { opt: 'getconst' }, async function (c) {
                     const firebaseConfig = c
                     const defaultProject = firebase.initializeApp(firebaseConfig);
@@ -270,7 +278,7 @@
                     if (!auth.currentUser) {
                         await getAuth()
                     }
-                    $.LoadingOverlay("hide");
+                    Swal.close()
                     if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
                         return firestore.collection('user')
                             .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
