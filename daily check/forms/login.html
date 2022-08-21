@@ -474,6 +474,7 @@
             console.log("🚀 ~ session", session)
             if (!form) form = active_tab
             firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
+                console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
                 if (querySnapshot.docs.length > 0) {
                     client = querySnapshot.docs[0].data().site.toUpperCase()
                     user = querySnapshot.docs[0].data()
