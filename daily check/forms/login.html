@@ -259,19 +259,19 @@
             $('#' + active_tab + '-tab').addClass('active')
             $.LoadingOverlay("show");
             let now = new Date().getTime()
-            $.post(script_url, { opt: 'getconst' }, async function (c) {
-                const firebaseConfig = c
-                const defaultProject = firebase.initializeApp(firebaseConfig);
-                firestore = defaultProject.firestore();
-                auth = defaultProject.auth();
-                // await getAuth(await liff.getDecodedIDToken().sub)
-                if (!auth.currentUser) {
-                    await getAuth()
-                }
-                $.LoadingOverlay("hide");
-                session = localStorage.getItem("session")
-                if (session) {
-                    if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
+            session = localStorage.getItem("session")
+            if (session) {
+                if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
+                    $.post(script_url, { opt: 'getconst' }, async function (c) {
+                        const firebaseConfig = c
+                        const defaultProject = firebase.initializeApp(firebaseConfig);
+                        firestore = defaultProject.firestore();
+                        auth = defaultProject.auth();
+                        // await getAuth(await liff.getDecodedIDToken().sub)
+                        if (!auth.currentUser) {
+                            await getAuth()
+                        }
+                        $.LoadingOverlay("hide");
                         return firestore.collection('user')
                             .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                             .get()
@@ -294,32 +294,7 @@
                                     return $('#sign-in-div').removeClass('hide')
                                 }
                             })
-                    }
-
-                    $('#signout-btn').show()
-                    $('#data-div').show()
-                    $.LoadingOverlay("show");
-                    getTableData(JSON.parse(session), active_tab)
-                    $.LoadingOverlay('hide')
-                    $('#signout-btn').click(function () {
-                        let session = localStorage.getItem("session")
-                        firestore.collection('user')
-                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                            .get()
-                            .then(async function (querySnapshot) {
-                                querySnapshot.docs[0].ref.update({
-                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                                }).then(() => {
-                                    localStorage.removeItem('session')
-                                    location.reload()
-                                })
-                            })
-                    })
-                    return false
-                } else {
-                    $('#signout-btn').hide()
-                    $('#data-div').hide()
-                    return $('#sign-in-div').removeClass('hide')
+                    });
                 }
                 $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                     let area = $(this).attr('data-bs-target')
@@ -331,7 +306,31 @@
                     $(area).LoadingOverlay('hide');
                     // resizeCanvas();// previous active tab
                 })
-            });
+                $('#signout-btn').show()
+                $('#data-div').show()
+                $.LoadingOverlay("show");
+                getTableData(JSON.parse(session), active_tab)
+                $.LoadingOverlay('hide')
+                $('#signout-btn').click(function () {
+                    let session = localStorage.getItem("session")
+                    firestore.collection('user')
+                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                        .get()
+                        .then(async function (querySnapshot) {
+                            querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                            }).then(() => {
+                                localStorage.removeItem('session')
+                                location.reload()
+                            })
+                        })
+                })
+                return false
+            } else {
+                $('#signout-btn').hide()
+                $('#data-div').hide()
+                return $('#sign-in-div').removeClass('hide')
+            }
         });
         async function getAuth(uid = "manager") {
             let email = uid + '@dailycheck.com'
@@ -458,6 +457,16 @@
                             getTableData(ss, active_tab, true)
                             $.LoadingOverlay("hide");
                         }
+                        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                            let area = $(this).attr('data-bs-target')
+                            $(area).LoadingOverlay('show');
+                            let id = $(this).attr('id').replace('-tab', '')
+                            active_tab = id
+                            localStorage.setItem('active_tab', active_tab)
+                            getTableData(JSON.parse(session), id)
+                            $(area).LoadingOverlay('hide');
+                            // resizeCanvas();// previous active tab
+                        })
                     } else {
                         Swal.fire({
                             title: 'เข้าสู่ระบบไม่สำเร็จ',
