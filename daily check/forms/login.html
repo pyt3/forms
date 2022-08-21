@@ -502,6 +502,7 @@
     <script>
         let tabledata
         async function getTableData(session, form, ischeck) {
+            $.LoadingOverlay("hide");
             const getTable = function () {
                 switch (form) {
                     case 'defibrillator': return getDefibTableData(session)
