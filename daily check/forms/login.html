@@ -230,16 +230,6 @@
         var session
         // client = url.searchParams.get("client");
         $(document).ready(async function () {
-            $.post(script_url, { opt: 'getconst' }, async function (c) {
-                const firebaseConfig = c
-                const defaultProject = firebase.initializeApp(firebaseConfig);
-                firestore = defaultProject.firestore();
-                auth = defaultProject.auth();
-                // await getAuth(await liff.getDecodedIDToken().sub)
-                if (!auth.currentUser) {
-                    await getAuth()
-                }
-            })
             // liff
             //     .init({
             //         liffId: "1657104960-wXQRkQ87", // Use own liffId
@@ -340,7 +330,17 @@
                 $.LoadingOverlay("hide");
                 $('#signout-btn').hide()
                 $('#data-div').hide()
-                $('#sign-in-div').removeClass('hide')
+                $.post(script_url, { opt: 'getconst' }, async function (c) {
+                    const firebaseConfig = c
+                    const defaultProject = firebase.initializeApp(firebaseConfig);
+                    firestore = defaultProject.firestore();
+                    auth = defaultProject.auth();
+                    // await getAuth(await liff.getDecodedIDToken().sub)
+                    if (!auth.currentUser) {
+                        await getAuth()
+                    }
+                })
+                return $('#sign-in-div').removeClass('hide')
 
             }
         });
