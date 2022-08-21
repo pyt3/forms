@@ -317,35 +317,35 @@ function getDefiDetail(row, index) {
     if (!obj.afteruse_rec_name) {
         detailHtml += `<div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
-                <ol>
-                    <li>
+                <ol class="row">
+                    <li class="col-md-6">
                         สวิทช์เปิด - ปิดเครื่อง: <span>${renderStatus(obj['daily-check-switch'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         ปลั๊กไฟ AC สายไฟ AC: <span>${renderStatus(obj['daily-check-cord'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         SYSTEM CHECK / ทำตามคู่มือ: <span>${renderStatus(obj['daily-check-system'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         PADDLE CABLE: <span>${renderStatus(obj['daily-check-paddle'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         EKG CABLE: <span>${renderStatus(obj['daily-check-ekg'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         ADHESIVE PAD: <span>${renderStatus(obj['daily-check-adhesive'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         RED DOT (ELCETRODE): <span>${renderStatus(obj['daily-check-reddot'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         TRANSMISSION GEL: <span>${renderStatus(obj['daily-check-transmissiongel'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         EKG PAPER: <span>${renderStatus(obj['daily-check-ekgpaper'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         ตรวจเช็คเวลาที่ตัวเครื่อง: <span>${renderStatus(obj['daily-check-time'])}</span>
                     </li>
                 </ol>
