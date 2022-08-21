@@ -308,38 +308,38 @@ function getMonitorBedsideDetail(row, index) {
     if (!obj.afteruse_rec_name) {
         detailHtml += `<div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
-                <ol>
-                    <li>
+                <ol class="row">
+                    <li class="col-md-6">
                         สวิทช์เปิด - ปิดเครื่อง: <span>${renderStatus(obj['daily-check-switch'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         ปลั๊กไฟ AC หรือ Battery: <span>${renderStatus(obj['daily-check-power'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         SELECT MAIN MENU: <span>${renderStatus(obj['daily-check-mainmenu'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         NEW CASE SETUP: <span>${renderStatus(obj['daily-check-newcase'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         เสียงและ ALARM CONTROL: <span>${renderStatus(obj['daily-check-alarm'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         VIEW OTHER PATIENTS: <span>${renderStatus(obj['daily-check-otherpatients'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         PATIENT DATA: <span>${renderStatus(obj['daily-check-patient'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         MONITOR SETUP: <span>${renderStatus(obj['daily-check-setup'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         CABLE, LEAD EKG: <span>${renderStatus(obj['daily-check-ekg'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         SPO2 SENSER: <span>${renderStatus(obj['daily-check-spo2'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         SARM CUFF: <span>${renderStatus(obj['daily-check-spo2'])}</span>
                     </li>
                 </ol>
@@ -375,8 +375,8 @@ function getMonitorBedsideDetail(row, index) {
     } else {
         detailHtml += `<div class="col-md-12 mt-4">
                 <p>รายการตรวจเช็ค หลังใช้: <span id="e_dept"></span></p>
-                <ol>
-                    <li>
+                <ol class="row">
+                    <li class="col-md-6">
                         ทำความสะอาดเครื่อง: <span>${renderStatus(obj['afteruse-check-clean'])}</span>
                     </li>
                 </ol>
