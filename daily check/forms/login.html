@@ -453,7 +453,7 @@
                             $('#sign-in-div').slideUp()
                             $('#data-div').show(200)
                             $.LoadingOverlay("show");
-                            getTableData(ss)
+                            getTableData(ss, active_tab, true)
                             $.LoadingOverlay("hide");
                         }
                     } else {
@@ -470,21 +470,27 @@
     </script>
     <script>
         let tabledata
-        async function getTableData(session, form) {
+        async function getTableData(session, form, ischeck) {
+            const getTable = function () {
+                switch (form) {
+                    case 'defibrillator': return getDefibTableData(session)
+                    case 'temperature': return getTemperatureTableData(session)
+                    case 'incubator': return getIncubatorTableData(session)
+                    case 'monitorbedside': return getMonitorBedsideTableData(session)
+                    default: return getDefibTableData(session)
+                }
+            }
             console.log("🚀 ~ session", session)
             if (!form) form = active_tab
+            if (ischeck) {
+                return getTable()
+            }
             firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
                 console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
                 if (querySnapshot.docs.length > 0) {
                     client = querySnapshot.docs[0].data().site.toUpperCase()
                     user = querySnapshot.docs[0].data()
-                    switch (form) {
-                        case 'defibrillator': return getDefibTableData(session)
-                        case 'temperature': return getTemperatureTableData(session)
-                        case 'incubator': return getIncubatorTableData(session)
-                        case 'monitorbedside': return getMonitorBedsideTableData(session)
-                        default: return getDefibTableData(session)
-                    }
+                    getTable()
                 } else {
                     // $('#signout-btn').click()
                     // localStorage.removeItem('session')
