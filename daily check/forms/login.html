@@ -301,6 +301,7 @@
                         let id = $(this).attr('id').replace('-tab', '')
                         active_tab = id
                         localStorage.setItem('active_tab', active_tab)
+                        console.log("🚀 ~ session", session)
                         getTableData(JSON.parse(session), id)
                         $(area).LoadingOverlay('hide');
                         // resizeCanvas();// previous active tab
