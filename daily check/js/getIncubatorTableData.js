@@ -309,23 +309,23 @@ function getIncubatorDetail(row, index) {
     if (!obj.afteruse_rec_name) {
         detailHtml += `<div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
-                <ol>
-                    <li>
+                <ol class="row">
+                    <li class="col-md-6">
                         สวิทช์เปิด - ปิดเครื่อง: <span>${renderStatus(obj['daily-check-switch'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         ปลั๊กไฟ AC/สายไฟ AC: <span>${renderStatus(obj['daily-check-cord'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         หน้าปัด และจอแสดงผล: <span>${renderStatus(obj['daily-check-display'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         เสียง ALARM: <span>${renderStatus(obj['daily-check-alarm'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         การทำงานของปุ่มปรับต่างๆ: <span>${renderStatus(obj['daily-check-button'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         PATIENT / SKIN PROBE: <span>${renderStatus(obj['daily-check-probe'])}</span>
                     </li>
                 </ol>
@@ -361,11 +361,11 @@ function getIncubatorDetail(row, index) {
     } else {
         detailHtml += `<div class="col-md-12 mt-4">
                 <p>รายการตรวจเช็ค หลังใช้: <span id="e_dept"></span></p>
-                <ol>
-                    <li>
+                <ol class="row">
+                    <li class="col-md-6">
                         CHARGE BATTERY หลังใช้ตลอดเวลา: <span>${renderStatus(obj['afteruse-check-battery'])}</span>
                     </li>
-                    <li>
+                    <li class="col-md-6">
                         ทำความสะอาดเครื่อง: <span>${renderStatus(obj['afteruse-check-clean'])}</span>
                     </li>
                 </ol>

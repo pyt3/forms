@@ -302,8 +302,8 @@ function getTemperatureDetail(row, index) {
             </div>
             <div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
-                <ol>
-                    <li>
+                <ol class="row">
+                    <li class="col-md-6">
                         อุณหภูมิ:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp'])}</span>
                     </li>
                    
