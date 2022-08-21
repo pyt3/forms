@@ -98,12 +98,12 @@ function createDefibTable(data) {
     $('#defibrillator-display-approved').change(function () {
         if ($(this).is(':checked')) {
             defibtable
-                .columns([, 9, 15]) // or columns???
+                .columns([9, 15]) // or columns???
                 .search('^$', true, false)
                 .draw();
         } else {
             defibtable
-                .columns([, 9, 15]) // or columns???
+                .columns([9, 15]) // or columns???
                 .search('')
                 .draw();
         }
