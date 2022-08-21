@@ -441,18 +441,19 @@
                                 $('#sign-in-div').slideUp()
                             }
                         } else {
-                            localStorage.setItem("session", JSON.stringify({
+                            let ss = {
                                 expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
                                 user: u,
                                 sessionid: sissionid,
-                            }))
+                            }
+                            localStorage.setItem("session", JSON.stringify(ss))
                             querySnapshot.docs[0].ref.update({
                                 sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
                             })
                             $('#sign-in-div').slideUp()
                             $('#data-div').show(200)
                             $.LoadingOverlay("show");
-                            getTableData()
+                            getTableData(ss)
                             $.LoadingOverlay("hide");
                         }
                     } else {
