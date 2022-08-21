@@ -390,6 +390,7 @@
         }
         $('#login-form').submit(checklogin)
         async function checklogin() {
+            let session
             event.preventDefault()
             let u = $('#username').val()
             let pw = $('#password').val()
@@ -446,11 +447,12 @@
                                 }
                             })
                             if (formValues) {
-                                localStorage.setItem("session", JSON.stringify({
+                                session = {
                                     expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
                                     user: u,
                                     sessionid: sissionid,
-                                }))
+                                }
+                                localStorage.setItem("session", JSON.stringify(session))
                                 querySnapshot.docs[0].ref.update({
                                     isFirstTime: false,
                                     pwd: formValues,
@@ -461,12 +463,12 @@
                                 $('#sign-in-div').slideUp()
                             }
                         } else {
-                            let ss = {
+                            session = {
                                 expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
                                 user: u,
                                 sessionid: sissionid,
                             }
-                            localStorage.setItem("session", JSON.stringify(ss))
+                            localStorage.setItem("session", JSON.stringify(session))
                             await querySnapshot.docs[0].ref.update({
                                 sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
                             })
