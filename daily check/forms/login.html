@@ -227,6 +227,7 @@
         var url_string = window.location.href
         var url = new URL(url_string);
         var active_tab = 'defibrillator'
+        var session
         // client = url.searchParams.get("client");
         $(document).ready(async function () {
             // liff
@@ -268,17 +269,7 @@
                     await getAuth()
                 }
                 $.LoadingOverlay("hide");
-                $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-                    let area = $(this).attr('data-bs-target')
-                    $(area).LoadingOverlay('show');
-                    let id = $(this).attr('id').replace('-tab', '')
-                    active_tab = id
-                    localStorage.setItem('active_tab', active_tab)
-                    getTableData(JSON.parse(session), id)
-                    $(area).LoadingOverlay('hide');
-                    // resizeCanvas();// previous active tab
-                })
-                let session = localStorage.getItem("session")
+                session = localStorage.getItem("session")
                 if (session) {
                     if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
                         return firestore.collection('user')
@@ -304,6 +295,16 @@
                                 }
                             })
                     }
+                    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                        let area = $(this).attr('data-bs-target')
+                        $(area).LoadingOverlay('show');
+                        let id = $(this).attr('id').replace('-tab', '')
+                        active_tab = id
+                        localStorage.setItem('active_tab', active_tab)
+                        getTableData(JSON.parse(session), id)
+                        $(area).LoadingOverlay('hide');
+                        // resizeCanvas();// previous active tab
+                    })
                     $('#signout-btn').show()
                     $('#data-div').show()
                     $.LoadingOverlay("show");
