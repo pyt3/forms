@@ -330,7 +330,17 @@
                 $.LoadingOverlay("hide");
                 $('#signout-btn').hide()
                 $('#data-div').hide()
-                return $('#sign-in-div').removeClass('hide')
+                $('#sign-in-div').removeClass('hide')
+                $.post(script_url, { opt: 'getconst' }, async function (c) {
+                    const firebaseConfig = c
+                    const defaultProject = firebase.initializeApp(firebaseConfig);
+                    firestore = defaultProject.firestore();
+                    auth = defaultProject.auth();
+                    // await getAuth(await liff.getDecodedIDToken().sub)
+                    if (!auth.currentUser) {
+                        await getAuth()
+                    }
+                })
             }
         });
         async function getAuth(uid = "manager") {
@@ -383,113 +393,108 @@
             let u = $('#username').val()
             let pw = $('#password').val()
             $.LoadingOverlay("show");
-            $.post(script_url, { opt: 'getconst' }, async function (c) {
-                const firebaseConfig = c
-                const defaultProject = firebase.initializeApp(firebaseConfig);
-                firestore = defaultProject.firestore();
-                auth = defaultProject.auth();
-                // await getAuth(await liff.getDecodedIDToken().sub)
-                if (!auth.currentUser) {
-                    await getAuth()
-                }
-                $.LoadingOverlay("hide");
-                firestore.collection('user')
-                    .where('user', "==", u)
-                    .where('pwd', "==", pw)
-                    .limit(1)
-                    .get()
-                    .then(async function (querySnapshot) {
-                        if (querySnapshot.docs.length > 0) {
-                            $('#signout-btn').show()
-                            $('#signout-btn').click(function () {
-                                let session = localStorage.getItem("session")
-                                querySnapshot.docs[0].ref.update({
-                                    sessionid: firebase.firestore.FieldValue.arrayRemove(sissionid),
-                                }).then(() => {
-                                    localStorage.removeItem('session')
-                                    location.reload()
-                                })
+            while (!auth) {
+                console.log("waiting for auth")
+            }
+            if (!auth.currentUser) {
+                await getAuth()
+            }
+            firestore.collection('user')
+                .where('user', "==", u)
+                .where('pwd', "==", pw)
+                .limit(1)
+                .get()
+                .then(async function (querySnapshot) {
+                    if (querySnapshot.docs.length > 0) {
+                        $('#signout-btn').show()
+                        $('#signout-btn').click(function () {
+                            let session = localStorage.getItem("session")
+                            querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayRemove(sissionid),
+                            }).then(() => {
+                                localStorage.removeItem('session')
+                                location.reload()
                             })
-                            let data = querySnapshot.docs[0].data()
-                            client = data.site.toUpperCase()
-                            let name = data.name
-                            user = data
-                            var sissionid = generatePassword()
-                            if (data.isFirstTime) {
-                                const { value: formValues } = await Swal.fire({
-                                    inputAttributes: {
-                                        autocapitalize: 'off'
-                                    },
-                                    allowOutsideClick: false,
-                                    confirmButtonText: 'Confirm',
-                                    showCancelButton: 'true',
-                                    title: 'ยินดีต้อนรับ ' + name,
-                                    html: 'นี่คือการเข้าใช้ครั้งแรกของ <span class="text-primary">' + name + ' </span><br>เพื่อความปลอดภัย กรุณาเปลี่ยนรหัสผ่านของท่าน<br><br><input type="password" class="form-control form-control-lg" id="new-pass" placeholder="Enter new password"></input><br><input type="password" class="form-control form-control-lg" id="new-pass-2" placeholder="Confirm new password"></input>',
-                                    preConfirm: () => {
-                                        let newpw = $('#new-pass').val()
-                                        let newpw2 = $('#new-pass-2').val()
-                                        if (newpw != newpw2) {
-                                            Swal.showValidationMessage('รหัสผ่านไม่ตรงกัน')
-                                            setInterval(() => {
-                                                Swal.resetValidationMessage()
-                                            }, 2000);
-                                        } else {
-                                            return newpw
-                                        }
+                        })
+                        let data = querySnapshot.docs[0].data()
+                        client = data.site.toUpperCase()
+                        let name = data.name
+                        user = data
+                        var sissionid = generatePassword()
+                        if (data.isFirstTime) {
+                            const { value: formValues } = await Swal.fire({
+                                inputAttributes: {
+                                    autocapitalize: 'off'
+                                },
+                                allowOutsideClick: false,
+                                confirmButtonText: 'Confirm',
+                                showCancelButton: 'true',
+                                title: 'ยินดีต้อนรับ ' + name,
+                                html: 'นี่คือการเข้าใช้ครั้งแรกของ <span class="text-primary">' + name + ' </span><br>เพื่อความปลอดภัย กรุณาเปลี่ยนรหัสผ่านของท่าน<br><br><input type="password" class="form-control form-control-lg" id="new-pass" placeholder="Enter new password"></input><br><input type="password" class="form-control form-control-lg" id="new-pass-2" placeholder="Confirm new password"></input>',
+                                preConfirm: () => {
+                                    let newpw = $('#new-pass').val()
+                                    let newpw2 = $('#new-pass-2').val()
+                                    if (newpw != newpw2) {
+                                        Swal.showValidationMessage('รหัสผ่านไม่ตรงกัน')
+                                        setInterval(() => {
+                                            Swal.resetValidationMessage()
+                                        }, 2000);
+                                    } else {
+                                        return newpw
                                     }
-                                })
-                                if (formValues) {
-                                    localStorage.setItem("session", JSON.stringify({
-                                        expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
-                                        user: u,
-                                        sessionid: sissionid,
-                                    }))
-                                    querySnapshot.docs[0].ref.update({
-                                        isFirstTime: false,
-                                        pwd: formValues,
-                                        sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
-                                    }).then(() => {
-                                        window.location.reload()
-                                    })
-                                    $('#sign-in-div').slideUp()
                                 }
-                            } else {
-                                let ss = {
+                            })
+                            if (formValues) {
+                                localStorage.setItem("session", JSON.stringify({
                                     expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
                                     user: u,
                                     sessionid: sissionid,
-                                }
-                                localStorage.setItem("session", JSON.stringify(ss))
-                                await querySnapshot.docs[0].ref.update({
+                                }))
+                                querySnapshot.docs[0].ref.update({
+                                    isFirstTime: false,
+                                    pwd: formValues,
                                     sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
+                                }).then(() => {
+                                    window.location.reload()
                                 })
                                 $('#sign-in-div').slideUp()
-                                $('#data-div').show(200)
-                                $.LoadingOverlay("show");
-                                getTableData(ss, active_tab, true)
-                                $.LoadingOverlay("hide");
                             }
-                            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-                                let area = $(this).attr('data-bs-target')
-                                $(area).LoadingOverlay('show');
-                                let id = $(this).attr('id').replace('-tab', '')
-                                active_tab = id
-                                localStorage.setItem('active_tab', active_tab)
-                                getTableData(JSON.parse(session), id)
-                                $(area).LoadingOverlay('hide');
-                                // resizeCanvas();// previous active tab
-                            })
                         } else {
-                            Swal.fire({
-                                title: 'เข้าสู่ระบบไม่สำเร็จ',
-                                text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
-                                icon: 'error',
-                                confirmButtonText: 'ตกลง'
+                            let ss = {
+                                expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
+                                user: u,
+                                sessionid: sissionid,
+                            }
+                            localStorage.setItem("session", JSON.stringify(ss))
+                            await querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
                             })
-                            return false
+                            $('#sign-in-div').slideUp()
+                            $('#data-div').show(200)
+                            $.LoadingOverlay("show");
+                            getTableData(ss, active_tab, true)
+                            $.LoadingOverlay("hide");
                         }
-                    });
-            });
+                        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                            let area = $(this).attr('data-bs-target')
+                            $(area).LoadingOverlay('show');
+                            let id = $(this).attr('id').replace('-tab', '')
+                            active_tab = id
+                            localStorage.setItem('active_tab', active_tab)
+                            getTableData(JSON.parse(session), id)
+                            $(area).LoadingOverlay('hide');
+                            // resizeCanvas();// previous active tab
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'เข้าสู่ระบบไม่สำเร็จ',
+                            text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง'
+                        })
+                        return false
+                    }
+                });
 
         }
     </script>
