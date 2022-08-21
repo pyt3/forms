@@ -447,7 +447,7 @@
                                 sessionid: sissionid,
                             }
                             localStorage.setItem("session", JSON.stringify(ss))
-                            querySnapshot.docs[0].ref.update({
+                            await querySnapshot.docs[0].ref.update({
                                 sessionid: firebase.firestore.FieldValue.arrayUnion(sissionid),
                             })
                             $('#sign-in-div').slideUp()
