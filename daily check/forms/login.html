@@ -433,6 +433,7 @@
                         console.log("🚀 ~ data", data)
                         var sissionid = generatePassword()
                         if (data.isFirstTime) {
+                            $.LoadingOverlay("hide");
                             const { value: formValues } = await Swal.fire({
                                 inputAttributes: {
                                     autocapitalize: 'off'
