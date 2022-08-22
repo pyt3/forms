@@ -219,7 +219,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var firestore, auth
@@ -430,6 +430,7 @@
                         client = data.site.toUpperCase()
                         let name = data.name
                         user = data
+                        console.log("🚀 ~ data", data)
                         var sissionid = generatePassword()
                         if (data.isFirstTime) {
                             const { value: formValues } = await Swal.fire({
