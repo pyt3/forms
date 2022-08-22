@@ -94,6 +94,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-12 mt-2">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-3 mt-2">
+                                        <label for="temp">Temperature (อุณหภูมิ) กรณีมีชั้นที่ 2</label>
+                                        <input type="number" class="form-control text-center" aria-label="temperature2" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp2">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-3 mt-3">
                                 <label for="rec_name">Recorder Name</label>
                                 <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
@@ -330,30 +338,56 @@
                 type: 'line',
                 data: {
                     labels: label,
-                    datasets: [{
-                        label: 'Temperature',
-                        data: data,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            // 'rgba(54, 162, 235, 1)',
-                            // 'rgba(255, 206, 86, 1)',
-                            // 'rgba(75, 192, 192, 1)',
-                            // 'rgba(153, 102, 255, 1)',
-                            // 'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 2,
-                        radius: 4,
-                        // cubicInterpolationMode: 'monotone',
-                        // tension: 0.1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Temperature',
+                            data: data,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                // 'rgba(54, 162, 235, 1)',
+                                // 'rgba(255, 206, 86, 1)',
+                                // 'rgba(75, 192, 192, 1)',
+                                // 'rgba(153, 102, 255, 1)',
+                                // 'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 2,
+                            radius: 4,
+                            // cubicInterpolationMode: 'monotone',
+                            // tension: 0.1
+                        },
+                        {
+                            label: 'Temperature ชั้น 2',
+                            data: data,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                // 'rgba(255, 99, 132, 1)',
+                                // 'rgba(54, 162, 235, 1)',
+                                // 'rgba(255, 206, 86, 1)',
+                                // 'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                // 'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 2,
+                            radius: 4,
+                            // cubicInterpolationMode: 'monotone',
+                            // tension: 0.1
+                        }
+                    ]
                 },
                 options: {
                     // responsive: false,
