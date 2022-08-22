@@ -118,7 +118,7 @@
     <div class="modal fade" id="detail-modal" tabindex="-1" aria-labelledby="detail-modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
-                <div class="modal-header text-bg-primary">
+                <div class="modal-header text-bg-warning">
                     <h5 class="modal-title" id="detail-modalLabel">Approve record</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -301,7 +301,11 @@
                 title: name.toUpperCase(),
                 html: `<div class="border border-2 border-success rounded mb-3" style="min-height: 150px">ทำแล้ว<br>${data.done.map(a => '<span class="badge rounded-pill text-bg-success p-2 m-2" style="font-size: 1.2rem">' + a + '</span>').join('')}  </div>  
                 <div class="border border-2 border-secondary rounded" style="min-height: 150px">ยังไม่ได้ทำ<br>${data.notyet.map(a => '<span class="badge rounded-pill text-bg-warning p-2 m-2" style="font-size: 1.1rem">' + a + '</span>').join('')}     </div>`,
-                showConfirmButton: false
+                showConfirmButton: false,
+                showCalcelButton: true,
+                cancelButtonText: 'ปิด',
+                cancelButonColor: '#808080',
+
             })
         }
 
