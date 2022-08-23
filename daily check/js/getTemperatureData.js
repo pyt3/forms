@@ -1,5 +1,8 @@
 const setIspass_temp = function (obj) {
-    let isPass = obj.temp >= 2 && obj.temp <= 8
+    let isPass = (obj.temp >= obj.min && obj.temp <= obj.max)
+    if (obj.temp2) {
+        isPass = isPass && (obj.temp2 >= obj.min2 && obj.temp2 <= obj.max2)
+    }
     obj.isPass = isPass
 
     return obj
@@ -302,12 +305,22 @@ function getTemperatureDetail(row, index) {
             </div>
             <div class="col-md-12">
                 <p>รายการตรวจเช็ค: <span class="text-primary"></span></p>
-                <ol class="row">
-                    <li class="col-md-6">
-                        อุณหภูมิ:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp'])}</span>
+                <ol class="row">`
+    if (obj.temp2) {
+        detailHtml += `<li class="col-md-6">
+                        อุณหภูมิชั้นบน:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp'])}</span>
                     </li>
-                   
-                </ol>
+                    <li class="col-md-6">
+                        อุณหภูมิชั้นล่าง:&nbsp;&nbsp;&nbsp;${obj['temp2']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp2'])}</span>
+                    </li>`
+    } else {
+        detailHtml += `<li class="col-md-6">
+                        อุณหภูมิ:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp'])}</span>
+                    </li>`
+    }
+
+
+    detailHtml += `</ol>
             </div>
             <div class="col-md-6">
                 <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
