@@ -23,9 +23,9 @@
     <style>
         body {
             background-color: #eee;
-            /* width: 100vw; */
+            width: 100%;
             height: 100vh;
-            max-width: 100vw;
+            max-width: 100%;
             /* overflow-x: hidden; */
             font-family: 'Akshar', sans-serif;
             font-family: 'Prompt', sans-serif;
@@ -34,7 +34,7 @@
     <title>Temperature Daily Logger</title>
 </head>
 
-<body>
+<body class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
@@ -59,7 +59,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid mb-5 pb-2">
+    <div class="container-fluid mb-5 p-0 pb-2">
         <div class="row justify-content-center m-1 mt-3">
             <div class="col-12 text-center">
                 <p class="h2 fw-bold text-primary">Temperature Logger</p>
@@ -90,7 +90,9 @@
                             <div class="col-md-6 mt-2">
                                 <div class="row g-2">
                                     <div class="col-12">
-                                        <label for="temp">อุณหภูมิ</label>
+                                        <label for="temp">
+                                            <h2>อุณหภูมิ <span class="badge bg-primary fw-bold" style="display: none;" id="upshelf-label">ชั้นบน</span></h2>
+                                        </label>
                                         <input type="number" class="form-control text-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp">
                                     </div>
                                     <div class="col-12">
@@ -109,7 +111,9 @@
                             <div class="col-md-6 mt-2">
                                 <div class="row g-2">
                                     <div class="col-12">
-                                        <label for="temp/">อุณหภูมิ(กรณีมีชั้นที่2)</label>
+                                        <label for="temp2">
+                                            <h2>อุณหภูมิ <span class="badge bg-info fw-bold">ชั้นล่าง</span></h2>
+                                        </label>
                                         <input type="number" class="form-control text-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp2">
                                     </div>
                                     <div class="col-12">
@@ -169,9 +173,6 @@
                 </label> -->
 
     </div>
-
-    </div>
-
     <div class="row justify-content-center align-items-end m-1">
         <div class="col-md-4 text-center">
             <label for="from">From</label>
@@ -184,9 +185,9 @@
         <div class="col-6 col-md-2 mt-2 mt-md-0  text-center">
             <button id="filter" class="btn btn-success w-100">Filter</button>
         </div>
-        <div class="col-6 col-md-2 mt-2 mt-md-0 text-center">
+        <!-- <div class="col-6 col-md-2 mt-2 mt-md-0 text-center">
             <button id="print" class="btn btn-info w-100">Print</button>
-        </div>
+        </div> -->
     </div>
     <div class="container-fluid">
         <canvas id="myChart" style="height: 600px; width: 100%"></canvas>
@@ -237,47 +238,15 @@
             name = url.searchParams.get("name") || 'test'
             id = url.searchParams.get("id") || 'test'
             nid = url.searchParams.get("nid") || 'test'
+            console.log("🚀 ~ nid", nid)
             min = getTemp(url.searchParams.get("min"))
             max = getTemp(url.searchParams.get("max"))
             min2 = getTemp(url.searchParams.get("min2"))
             max2 = getTemp(url.searchParams.get("max2"))
             checkShelf = url.searchParams.get("checkShelf")
-            if (checkShelf == 'undefined') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'ระบุจำนวนชั้นของตู้เย็น',
-                    input: 'radio',
-                    confirmButtonText: 'ตกลง',
-                    buttonStyling: false,
-                    customClass: {
-                        input: 'fs-3'
-                    },
-                    inputOptions: { 1: '1 ชั้น', 2: '2 ชั้น' },
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'กรุณาเลือกจำนวนชั้น!'
-                        }
-                    }
-                }).then(result => {
-                    if (result.isConfirmed) {
-                        while (!auth.currentUser) {
-                            console.log('wait')
-                        }
-                        let shelf = result.value
-                        firestore.collection(client.toUpperCase() + '_e').doc(nid).update({ checkShelf: shelf })
-                        if (shelf == '1') {
-                            $('#shelf2, #myChart2-canvas').remove()
-                        }
-                    }
-                })
-            } else {
-                if (checkShelf == 1) {
-                    $('#shelf2, #myChart2-canvas').remove()
-                }
-            }
+
             if ((min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
             if ((min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
-
             liff
                 .init({
                     liffId: "1657104960-92R4ZRQz", // Use own liffId
@@ -285,23 +254,73 @@
                 .then(() => {
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
-                        // return liff.login()
-                        return liff.login({ redirectUri: url })
+                        return liff.login()
+                        console.log("🚀 ~ url", url)
+                        // return liff.login({ redirectUri: url })
                     } else {
+
                         console.log('liff init success');
+                        $.LoadingOverlay('show')
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
                             const firebaseConfig = c
                             const defaultProject = firebase.initializeApp(firebaseConfig);
                             console.log(defaultProject)
                             firestore = defaultProject.firestore();
                             auth = defaultProject.auth();
-                            if (!auth.currentUser) {
-
-                                await getAuth(await liff.getDecodedIDToken().sub)
-                            }
+                            await getAuth(await liff.getDecodedIDToken().sub)
                             await getDeptList(client)
+                            $.LoadingOverlay('hide')
+                            if (checkShelf == 'undefined') {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'ระบุจำนวนชั้นของตู้เย็น',
+                                    input: 'radio',
+                                    confirmButtonText: 'ตกลง',
+                                    buttonStyling: false,
+                                    allowOutsideClick: false,
+                                    customClass: {
+                                        input: 'fs-3'
+                                    },
+                                    inputOptions: { 1: '1 ชั้น', 2: '2 ชั้น' },
+                                    inputValidator: (value) => {
+                                        if (!value) {
+                                            return 'กรุณาเลือกจำนวนชั้น!'
+                                        }
+                                    }
+                                }).then(result => {
+                                    if (result.isConfirmed) {
+                                        $('#temp').focus()
+                                        while (!auth || !auth.currentUser) {
+                                            console.log('wait')
+                                        }
+                                        let shelf = result.value
+                                        firestore.collection(client.toUpperCase() + '_e').doc(nid).update({ checkShelf: shelf })
+                                        if (shelf == '1') {
+                                            $('#shelf2, #myChart2-canvas').remove()
+                                        } else {
+                                            $('#upshelf-label').show()
+                                            Swal.fire({
+                                                icon: 'info',
+                                                title: "โปรดอ่าน",
+                                                html: '<strong class="text-danger">กรณีตู้เย็นมี 2 ชั้น</strong><br>บันทึกอุณหภูมิชั้นบน ในช่องอุณหภูมิที่ 1<br>และ<br>บันทึกอุณหภูมิชั้นล่าง ในช่องอุณหภูมิที่ 2',
+                                                confirmButtonText: "ตกลง"
+
+                                            })
+                                        }
+                                    }
+                                })
+                            } else {
+                                if (checkShelf == 1) {
+                                    $('#shelf2, #myChart2-canvas').remove()
+                                }
+                            }
                             $('#filter').click()
+
                         })
+
+
+
+
                     }
 
                 })
@@ -485,7 +504,7 @@
                                     yMax: max,
                                     borderWidth: 0,
                                     borderDash: [5],
-                                    backgroundColor: 'rgba(0, 188, 212, 0.5)',
+                                    backgroundColor: 'rgba(0, 188, 212, 0.2)',
                                 },
                                 // box2: {
                                 //     type: 'box',
@@ -560,7 +579,7 @@
             $('#myChart2').parent().append('<canvas id="myChart2" style="height: 600px; width: 100%"></canvas>')
             $('#myChart2').remove()
             var ctx = document.getElementById('myChart2').getContext('2d');
-            myChart = new Chart(ctx, {
+            myChart2 = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: label,
@@ -623,7 +642,7 @@
                                     yMax: max2,
                                     borderWidth: 0,
                                     borderDash: [5],
-                                    backgroundColor: 'rgba(0, 188, 212, 0.5)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
                                 },
                                 // box2: {
                                 //     type: 'box',
@@ -765,7 +784,17 @@
                     timer: 1500,
                 })
             }
-
+            let updateobj = {}
+            if (!isDefaultTemp) {
+                updateobj.min = parseFloat($('#min').val())
+                updateobj.max = parseFloat($('#max').val())
+            }
+            if (!isDefaultTemp2 && $('#min2').val() && $('#max2').val()) {
+                updateobj.min2 = parseFloat($('#min2').val())
+                updateobj.max2 = parseFloat($('#max2').val())
+            }
+            console.log("🚀 ~ updateobj", updateobj)
+            firestore.collection(client.toUpperCase() + '_e').doc(nid).update(updateobj)
             uploadFile()
             // setValue(temp)
             // getValue()
@@ -802,13 +831,33 @@
             })
         })
         $('#print').click(() => {
-            var canvas = document.querySelector("#myChart");
-            var canvas_img = canvas.toDataURL("image/png", 1.0); //JPEG will not match background color
-            var pdf = new jsPDF('landscape', 'in', 'a4'); //orientation, units, page size
-            pdf.addImage(canvas_img, 'png', .5, .5, 10, 5); //image, type, padding left, padding top, width, height
-            pdf.autoPrint(); //print window automatically opened with pdf
-            var blob = pdf.output("bloburl");
-            window.open(blob);
+            Swal.fire({
+                icon: 'question',
+                title: 'กรุณาชั้นที่ต้องการปริ้นข้อมูล',
+                input: 'radio',
+                confirmButtonText: 'ตกลง',
+                buttonStyling: false,
+                allowOutsideClick: false,
+                customClass: {
+                    // input: 'fs-3'
+                },
+                inputOptions: { 'myChart': 'ชั้นบน', 'myChart2': 'ชั้นล่าง', 'allChart': 'ทั้งสองชั้น' },
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'กรุณาชั้นที่ต้องการ'
+                    }
+                }
+
+            }).then(result => {
+                var canvas = document.querySelector("#myChart");
+                var canvas_img = canvas.toDataURL("image/png", 1.0); //JPEG will not match background color
+                var pdf = new jsPDF('landscape', 'in', 'a4'); //orientation, units, page size
+                pdf.addImage(canvas_img, 'png', .5, .5, 10, 5); //image, type, padding left, padding top, width, height
+                pdf.autoPrint(); //print window automatically opened with pdf
+                var blob = pdf.output("bloburl");
+                window.open(blob);
+            })
+
         });
         async function setValue(signature_url, date = new Date()) {
             let col_date = date.toLocaleDateString().replace(/\//g, '_')
@@ -865,9 +914,9 @@
 
                 if (temp < min || temp > max) {
                     sendNotify(obj)
-
-                } else if (temp2 < min || temp2 > max) {
-
+                }
+                if (temp2 < min || temp2 > max) {
+                    sendNotify2(obj)
                 }
                 liff.sendMessages([
                     {
@@ -945,10 +994,11 @@
             if (min && obj.temp < min) {
                 msg = `อุณหภูมิน้อยกว่า ${min} องศาเซลเซียส`
             }
-            else if (max && obj.temp > 8) {
-                msg = `อุณหภูมิมากกว่า ${max} องศาเซลเซียส'`
+            else if (max && obj.temp > max) {
+                msg = `อุณหภูมิมากกว่า ${max} องศาเซลเซียส`
             }
             msg = `แจ้งเตือนการบันทึก${msg}
+
 วันที่ ${new Date(obj.time).toLocaleString({
                 hour12: false,
                 hour: "numeric",
@@ -957,7 +1007,7 @@
                 day: "numeric",
                 year: "numeric"
             })}
-อุณหภูมิ ${obj.temp} องศาเซลเซียส
+อุณหภูมิ: ${obj.temp} องศา
 ชื่อ: ${obj.e_name}
 รหัส: ${obj.e_code}
 ยี่ห้อ: ${obj.e_brand}
@@ -971,6 +1021,42 @@
                 opt: 'notify',
                 msg: msg
             }
+            option.client = client
+            $.post(script_url, option)
+        }
+        function sendNotify2(obj) {
+            let msg = ''
+            if (min2 && obj.temp2 < min2) {
+                msg = `อุณหภูมิน้อยกว่า ${min2} องศาเซลเซียส`
+            }
+            else if (max2 && obj.temp2 > max2) {
+                msg = `อุณหภูมิมากกว่า ${max2} องศาเซลเซียส'`
+            }
+            msg = `แจ้งเตือนการบันทึก${msg}
+
+วันที่ ${new Date(obj.time).toLocaleString({
+                hour12: false,
+                hour: "numeric",
+                minute: "numeric",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric"
+            })}
+อุณหภูมิ: ${obj.temp2} องศา
+ชื่อ: ${obj.e_name} ชั้นล่าง
+รหัส: ${obj.e_code}
+ยี่ห้อ: ${obj.e_brand}
+รุ่น: ${obj.e_model}
+หน่วยงาน: ${obj.e_dept}
+ผู้บันทึก: ${obj.rec_name}`
+
+
+
+            let option = {
+                opt: 'notify',
+                msg: msg
+            }
+            option.client = client
             $.post(script_url, option)
         }
 
