@@ -22,7 +22,7 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <style>
         body {
-            background-color: #fafafa;
+            background-color: #eee;
             /* width: 100vw; */
             height: 100vh;
             width: 100%;
@@ -86,7 +86,7 @@
                                 Model<p class="text-primary" id="text-model"></p>
                             </div>
                         </div>
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-center p-2 m-2 border border-2 border-primary rounded shadow">
                             <div class="col-md-6 mt-2">
                                 <div class="row g-2">
                                     <div class="col-12">
@@ -105,7 +105,7 @@
                             </div>
 
                         </div>
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-center  p-2 m-2 border border-2 border-info rounded shadow">
                             <div class="col-md-6 mt-2">
                                 <div class="row g-2">
                                     <div class="col-12">
@@ -117,7 +117,7 @@
                                             <span class="input-group-text">ช่วงอุณหภูมิปกติ</span>
                                             <input type="number" class="form-control text-center" aria-label="0" id="min2" name="min2">
                                             <span class="input-group-text">ถึง</span>
-                                            <input type="number" class="form-control text-center" aria-label="0" id="max" name="max">
+                                            <input type="number" class="form-control text-center" aria-label="0" id="max2" name="max2">
                                         </div>
                                     </div>
                                 </div>
@@ -221,28 +221,25 @@
     </script>
     <script>
         var firestore
-        var client, dept, id, brand, model, name, min, max
+        var client, dept, id, brand, model, name, min, max, min2, max2, isDefaultTemp = false, isDefaultTemp2 = false
 
         $(document).ready(() => {
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
-            // url_string = decodeURIComponent(url_string).split('?')[1]
-            console.log("🚀 ~ url_string", url_string)
-            var url = new URL(url_string)
+            var url = new URL(url_string.join(''))
             client = url.searchParams.get("client") || 'PYT3'
             dept = url.searchParams.get("dept") || 'test'
             brand = url.searchParams.get("brand") || 'test'
             model = url.searchParams.get("model") || 'test'
             name = url.searchParams.get("name") || 'test'
             id = url.searchParams.get("id") || 'test'
-            min = url.searchParams.get("min")
-            console.log("🚀 ~ min", min)
-            max = url.searchParams.get("max") || '-18'
-            console.log("🚀 ~ max", max)
-            min2 = url.searchParams.get("min2")
-            console.log("🚀 ~ min2", min2)
-            max2 = url.searchParams.get("max2") || '-18'
-            console.log("🚀 ~ max2", max2)
+            min = getTemp(url.searchParams.get("min"))
+            max = getTemp(url.searchParams.get("max"))
+            min2 = getTemp(url.searchParams.get("min2"))
+            max2 = getTemp(url.searchParams.get("max2"))
+            if ((min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
+            if ((min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
+
             liff
                 .init({
                     liffId: "1657104960-92R4ZRQz", // Use own liffId
@@ -250,8 +247,8 @@
                 .then(() => {
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
-                        return liff.login()
-                        // return liff.login({ redirectUri: url })
+                        // return liff.login()
+                        return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
@@ -289,10 +286,14 @@
             $("#text-brand").text(brand);
             $("#text-model").text(model);
             $("#text-name").text(name);
-            $("#min").text(min);
-            $("#max").text(max);
-            $("#min2").text(min2);
-            $("#max2").text(max2);
+            setTemp(min, 'min')
+            setTemp(max, 'max')
+            setTemp(min2, 'min2')
+            setTemp(max2, 'max2')
+            $("#min").val(min);
+            $("#max").val(max);
+            $("#min2").val(min2);
+            $("#max2").val(max2);
             let today = new Date();
             let fromdate = new Date(new Date().setDate(new Date().getDate() - 30))
             $('#from').val(fromdate.getFullYear() + '-' + ('00' + (fromdate.getMonth() + 1)).slice(-2) + '-' + ('00' + (fromdate.getDate())).slice(-2));
@@ -300,6 +301,17 @@
 
             // $.LoadingOverlay("show");
         })
+
+        function getTemp(text) {
+            console.log("🚀 ~ text", text)
+            if (!text || isNaN(text)) return ''
+            return parseFloat(text)
+        }
+
+        function setTemp(value, key) {
+            if (value == '') return false
+            return $('#' + key).val(value).prop('readonly', true)
+        }
 
         async function getDeptList(client) {
             return firestore.collection(client.toUpperCase() + '_summary').doc('dept').get().then(doc => {
