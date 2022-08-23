@@ -25,7 +25,7 @@
             background-color: #eee;
             /* width: 100vw; */
             height: 100vh;
-            width: 100%;
+            max-width: 100vw;
             overflow-x: hidden;
             font-family: 'Akshar', sans-serif;
             font-family: 'Prompt', sans-serif;
@@ -86,7 +86,7 @@
                                 Model<p class="text-primary" id="text-model"></p>
                             </div>
                         </div>
-                        <div class="row justify-content-center p-2 m-2 border border-2 border-primary rounded shadow">
+                        <div class="row justify-content-center p-2 m-2 border border-2 border-primary rounded shadow" id="shelf1">
                             <div class="col-md-6 mt-2">
                                 <div class="row g-2">
                                     <div class="col-12">
@@ -105,7 +105,7 @@
                             </div>
 
                         </div>
-                        <div class="row justify-content-center  p-2 m-2 border border-2 border-info rounded shadow">
+                        <div class="row justify-content-center  p-2 m-2 border border-2 border-info rounded shadow" id="shelf2">
                             <div class="col-md-6 mt-2">
                                 <div class="row g-2">
                                     <div class="col-12">
@@ -191,6 +191,9 @@
     <div class="container-fluid">
         <canvas id="myChart" style="height: 600px; width: 100%"></canvas>
     </div>
+    <div class="container-fluid" id="myChart2-canvas">
+        <canvas id="myChart2" style="height: 600px; width: 100%"></canvas>
+    </div>
     <footer>
         <div class="row justify-content-center align-items-center">
             <div class="col-12 text-center">
@@ -221,7 +224,7 @@
     </script>
     <script>
         var firestore
-        var client, dept, id, brand, model, name, min, max, min2, max2, isDefaultTemp = false, isDefaultTemp2 = false
+        var client, dept, id, nid, brand, model, name, min, max, min2, max2, isDefaultTemp = false, isDefaultTemp2 = false, checkShelf
 
         $(document).ready(() => {
             var url_string = window.location.href.split('liff.state=')
@@ -233,10 +236,45 @@
             model = url.searchParams.get("model") || 'test'
             name = url.searchParams.get("name") || 'test'
             id = url.searchParams.get("id") || 'test'
+            nid = url.searchParams.get("nid") || 'test'
             min = getTemp(url.searchParams.get("min"))
             max = getTemp(url.searchParams.get("max"))
             min2 = getTemp(url.searchParams.get("min2"))
             max2 = getTemp(url.searchParams.get("max2"))
+            checkShelf = url.searchParams.get("checkShelf")
+            if (checkShelf == 'undefined') {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'ระบุจำนวนชั้นของตู้เย็น',
+                    input: 'radio',
+                    confirmButtonText: 'ตกลง',
+                    buttonStyling: false,
+                    customClass: {
+                        input: 'fs-3'
+                    },
+                    inputOptions: { 1: '1 ชั้น', 2: '2 ชั้น' },
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'กรุณาเลือกจำนวนชั้น!'
+                        }
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        while (!auth.currentUser) {
+                            console.log('wait')
+                        }
+                        firestore.collection(client.toUpperCase() + '_e').doc('dept').get()
+                        let shelf = result.value
+                        if (shelf == '1') {
+                            $('#shelf2, #myChart2-canvas').remove()
+                        }
+                    }
+                })
+            } else {
+                if (checkShelf == 1) {
+                    $('#shelf2, #myChart2-canvas').remove()
+                }
+            }
             if ((min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
             if ((min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
 
@@ -258,6 +296,7 @@
                             firestore = defaultProject.firestore();
                             auth = defaultProject.auth();
                             if (!auth.currentUser) {
+
                                 await getAuth(await liff.getDecodedIDToken().sub)
                             }
                             await getDeptList(client)
@@ -372,9 +411,10 @@
 
     </script>
     <script>
-
         var myChart
         function createCharts(label, data, data2) {
+            console.log("🚀 ~ data2", data2)
+            console.log("🚀 ~ data", data)
 
             if (myChart) {
                 myChart.destroy()
@@ -411,30 +451,6 @@
                             // cubicInterpolationMode: 'monotone',
                             // tension: 0.1
                         },
-                        {
-                            label: 'Temperature ชั้น 2',
-                            data: data2,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                // 'rgba(255, 99, 132, 1)',
-                                // 'rgba(54, 162, 235, 1)',
-                                // 'rgba(255, 206, 86, 1)',
-                                // 'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                // 'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 2,
-                            radius: 4,
-                            // cubicInterpolationMode: 'monotone',
-                            // tension: 0.1
-                        }
                     ]
                 },
                 options: {
@@ -465,11 +481,11 @@
                                     type: 'box',
                                     xMin: 0,
                                     xMax: data.length,
-                                    yMin: min ? min : (max - 5),
+                                    yMin: min,
                                     yMax: max,
                                     borderWidth: 0,
                                     borderDash: [5],
-                                    backgroundColor: 'rgba(0, 188, 212, 0.1)',
+                                    backgroundColor: 'rgba(0, 188, 212, 0.5)',
                                 },
                                 // box2: {
                                 //     type: 'box',
@@ -503,8 +519,8 @@
                     scales: {
                         y: {
                             // beginAtZero: true,
-                            suggestedMin: min ? min : (max - 10),
-                            suggestedMax: max ? (parseFloat(max) + 5) : (min + 5),
+                            suggestedMin: min - 2,
+                            suggestedMax: max + 2,
                             ticks: {
                                 stepSize: 1,
                                 autoSkip: false,
@@ -531,6 +547,144 @@
                 }
             });
             myChart.update();
+        }
+    </script>
+    <script>
+        var myChart2
+        function createCharts2(label, data2) {
+            console.log("🚀 ~ data2", data2)
+            console.log(max2)
+            if (myChart2) {
+                myChart2.destroy()
+            }
+            $('#myChart2').parent().append('<canvas id="myChart2" style="height: 600px; width: 100%"></canvas>')
+            $('#myChart2').remove()
+            var ctx = document.getElementById('myChart2').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: label,
+                    datasets: [
+                        {
+                            label: 'Temperature',
+                            data: data2,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                // 'rgba(255, 99, 132, 1)',
+                                // 'rgba(54, 162, 235, 1)',
+                                // 'rgba(255, 206, 86, 1)',
+                                // 'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                // 'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 2,
+                            radius: 4,
+                            // cubicInterpolationMode: 'monotone',
+                            // tension: 0.1
+                        },
+                    ]
+                },
+                options: {
+                    // responsive: false,
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Temperature`
+                        },
+                        subtitle: {
+                            display: true,
+                            text: `ชื่อ: ${name} รหัส: ${id} แผนก: ${dept} ${client}`
+                        },
+                        autocolors: false,
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: min2,
+                                    yMax: min2,
+                                    borderColor: '#00bcd4',
+                                    borderWidth: 1,
+                                    borderDash: [5],
+                                },
+                                box1: {
+                                    type: 'box',
+                                    xMin: 0,
+                                    xMax: data2.length,
+                                    yMin: min2,
+                                    yMax: max2,
+                                    borderWidth: 0,
+                                    borderDash: [5],
+                                    backgroundColor: 'rgba(0, 188, 212, 0.5)',
+                                },
+                                // box2: {
+                                //     type: 'box',
+                                //     xMin: 0,
+                                //     xMax: data.length,
+                                //     yMin: 8,
+                                //     yMax: 25,
+                                //   borderWidth: 0,
+                                //     backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                // },
+                                // box3: {
+                                //     type: 'box',
+                                //     xMin: 0,
+                                //     xMax: data.length,
+                                //     yMin: -2,
+                                //     yMax: 2,
+                                //   borderWidth: 0,
+                                //     backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                // },
+                                line2: {
+                                    type: 'line',
+                                    yMin: max2,
+                                    yMax: max2,
+                                    borderColor: '#ff0000',
+                                    borderWidth: 1,
+                                    borderDash: [5],
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            // beginAtZero: true,
+                            suggestedMin: min2 - 2,
+                            suggestedMax: max2 + 2,
+                            ticks: {
+                                stepSize: 1,
+                                autoSkip: false,
+                            }
+                        },
+                        x: {
+                            // type: 'linear',
+                            // beginAtZero: true,
+                            suggestedMin: 0,
+                            ticks: {
+                                stepSize: 1,
+                                // autoSkip: false,
+                                maxRotation: 90,
+                                minRotation: 90
+                            }
+                        }
+                    },
+                    // animation: animation,
+                    // interaction: {
+                    //     intersect: false
+                    // },
+                    // scales: {
+                    // }
+                }
+            });
+            myChart2.update();
         }
     </script>
     <script>
@@ -621,11 +775,13 @@
         })
         $('#filter').click(() => {
             let temp = $('#temp').val()
+            let temp2 = $('#temp2').val()
             let from = Date.parse($('#from').val())
             let to = Date.parse($('#to').val()) + (1000 * 60 * 60 * 24)
             let col_date = new Date().toLocaleDateString().replace(/\//g, '_')
             return firestore.collection(client).where('form', '==', 'temperature').where('time', '>=', from).where('time', '<=', to).where('e_dept', '==', dept).where('e_code', '==', id).get().then(snapshot => {
                 let data = []
+                let data2 = []
 
                 let label = []
                 snapshot.forEach(doc => {
@@ -641,7 +797,8 @@
                     data2.push(doc.data().temp2)
                 })
 
-                createCharts(label, data, data2)
+                createCharts(label, data)
+                createCharts2(label, data2)
             })
         })
         $('#print').click(() => {
@@ -694,7 +851,7 @@
                 time: date.getTime()
             }
             let temp2, min2, max2
-            if ($('#temp2').val() != '') {
+            if ($('#temp2') && $('#temp2').val() != '') {
                 temp2 = parseFloat($('#temp2').val())
                 min2 = parseFloat($('#min2').val())
                 max2 = parseFloat($('#max2').val())
