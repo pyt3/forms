@@ -26,7 +26,7 @@
             /* width: 100vw; */
             height: 100vh;
             max-width: 100vw;
-            overflow-x: hidden;
+            /* overflow-x: hidden; */
             font-family: 'Akshar', sans-serif;
             font-family: 'Prompt', sans-serif;
         }
@@ -263,8 +263,8 @@
                         while (!auth.currentUser) {
                             console.log('wait')
                         }
-                        firestore.collection(client.toUpperCase() + '_e').doc('dept').get()
                         let shelf = result.value
+                        firestore.collection(client.toUpperCase() + '_e').doc(nid).update({ checkShelf: shelf })
                         if (shelf == '1') {
                             $('#shelf2, #myChart2-canvas').remove()
                         }
