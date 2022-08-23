@@ -65,7 +65,7 @@
                 <p class="h2 fw-bold text-primary">Temperature Logger</p>
             </div>
         </div>
-        <div class="row justify-content-center m-1">
+        <div class="row justify-content-center">
             <div class="col-12 text-center">
                 <div class="card">
                     <div class="card-body">
@@ -110,7 +110,7 @@
                                 <div class="row g-2">
                                     <div class="col-12">
                                         <label for="temp/">อุณหภูมิ(กรณีมีชั้นที่2)</label>
-                                        <input type="number" class="form-control ntext-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp2">
+                                        <input type="number" class="form-control text-center" aria-label="temperature" aria-describedby="set" placeholder="ใส่ค่าอุณภูมิตรงนี้" id="temp2">
                                     </div>
                                     <div class="col-12">
                                         <div class="input-group mb-3">
@@ -124,37 +124,38 @@
                             </div>
 
                         </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 mt-3">
-                            <label for="rec_name">Recorder Name</label>
-                            <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
-                        </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rec_dept">Recorder Department</label>
-                            <select name="rec_dept" id="rec_dept" class="form-select" required>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rec_remark">หมายเหตุ</label>
-                            <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on">
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col-md-5 mt-3">
-                            <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
-                            <div class="rounded border border-3">
-                                <canvas id="signature" name="signature" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
+
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 mt-3">
+                                <label for="rec_name">Recorder Name</label>
+                                <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
                             </div>
-                            <div class="col text-end">
-                                <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
+                            <div class="col-md-4 mt-3">
+                                <label for="rec_dept">Recorder Department</label>
+                                <select name="rec_dept" id="rec_dept" class="form-select" required>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <label for="rec_remark">หมายเหตุ</label>
+                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on">
                             </div>
                         </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col">
-                            <button class="btn btn-warning mt-2" type="button" id="set" style="min-width: 150px">SAVE</button>
-                            <button id="get" hidden>read</button><br>
+                        <div class="row justify-content-center">
+                            <div class="col-md-5 mt-3">
+                                <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
+                                <div class="rounded border border-3">
+                                    <canvas id="signature" name="signature" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                </div>
+                                <div class="col text-end">
+                                    <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col">
+                                <button class="btn btn-warning mt-2" type="button" id="set" style="min-width: 150px">SAVE</button>
+                                <button id="get" hidden>read</button><br>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -220,7 +221,7 @@
     </script>
     <script>
         var firestore
-        var client, dept, id, brand, model, name, mintemp, maxtemp
+        var client, dept, id, brand, model, name, min, max
 
         $(document).ready(() => {
 
@@ -233,8 +234,10 @@
             model = url.searchParams.get("model") || 'test'
             name = url.searchParams.get("name") || 'test'
             id = url.searchParams.get("id") || 'test'
-            mintemp = url.searchParams.get("mintemp")
-            maxtemp = url.searchParams.get("maxtemp") || '-18'
+            min = url.searchParams.get("min")
+            max = url.searchParams.get("max") || '-18'
+            min2 = url.searchParams.get("min2")
+            max2 = url.searchParams.get("max2") || '-18'
             // liff
             //     .init({
             //         liffId: "1657104960-92R4ZRQz", // Use own liffId
@@ -281,6 +284,10 @@
             $("#text-brand").text(brand);
             $("#text-model").text(model);
             $("#text-name").text(name);
+            $("#min").text(min || '');
+            $("#max").text(max || '');
+            $("#min2").text(min2 || '');
+            $("#max2").text(max2 || '');
             let today = new Date();
             let fromdate = new Date(new Date().setDate(new Date().getDate() - 30))
             $('#from').val(fromdate.getFullYear() + '-' + ('00' + (fromdate.getMonth() + 1)).slice(-2) + '-' + ('00' + (fromdate.getDate())).slice(-2));
@@ -431,8 +438,8 @@
                             annotations: {
                                 line1: {
                                     type: 'line',
-                                    yMin: mintemp,
-                                    yMax: mintemp,
+                                    yMin: min,
+                                    yMax: min,
                                     borderColor: '#00bcd4',
                                     borderWidth: 1,
                                     borderDash: [5],
@@ -441,8 +448,8 @@
                                     type: 'box',
                                     xMin: 0,
                                     xMax: data.length,
-                                    yMin: mintemp ? mintemp : (maxtemp - 5),
-                                    yMax: maxtemp,
+                                    yMin: min ? min : (max - 5),
+                                    yMax: max,
                                     borderWidth: 0,
                                     borderDash: [5],
                                     backgroundColor: 'rgba(0, 188, 212, 0.1)',
@@ -467,8 +474,8 @@
                                 // },
                                 line2: {
                                     type: 'line',
-                                    yMin: maxtemp,
-                                    yMax: maxtemp,
+                                    yMin: max,
+                                    yMax: max,
                                     borderColor: '#ff0000',
                                     borderWidth: 1,
                                     borderDash: [5],
@@ -479,8 +486,8 @@
                     scales: {
                         y: {
                             // beginAtZero: true,
-                            suggestedMin: mintemp ? mintemp : (maxtemp - 10),
-                            suggestedMax: maxtemp ? (parseFloat(maxtemp) + 5) : (mintemp + 5),
+                            suggestedMin: min ? min : (max - 10),
+                            suggestedMax: max ? (parseFloat(max) + 5) : (min + 5),
                             ticks: {
                                 stepSize: 1,
                                 autoSkip: false,
@@ -542,6 +549,7 @@
             // }, 1000)
 
             if (temp == '') {
+                $('#temp').focus()
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณากรอกอุณหภูมิ',
@@ -550,6 +558,7 @@
                 })
             }
             if (temp != '' && ($('#min').val() == '' || $('#max').val() == '')) {
+                $('#min').focus()
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณากรอกช่วงอุณหภูมิปกติ',
@@ -557,15 +566,9 @@
                     timer: 1500,
                 })
             }
-            if (temp2 == '') {
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณากรอกอุณหภูมิของชั้นที่ 2',
-                    showConfirmButton: false,
-                    timer: 1500,
-                })
-            }
+
             if (temp2 != '' && ($('#min2').val() == '' || $('#max2').val() == '')) {
+                $('#min2').focus()
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณากรอกช่วงอุณหภูมิปกติของชั้นที่ 2',
@@ -574,23 +577,21 @@
                 })
             }
             if (rec_name == '') {
+                $('#rec_name').focus()
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณากรอก Recorder Name',
                     showConfirmButton: false,
                     timer: 1500,
-                }).then(() => {
-                    $('#rec_name').focus()
                 })
             }
             if (rec_dept == '') {
+                $('#rec_dept').focus()
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณาเลือก Recorder Department',
                     showConfirmButton: false,
                     timer: 1500,
-                }).then(() => {
-                    $('#rec_name').focus()
                 })
             }
 
@@ -648,6 +649,8 @@
             // })
             let time = date.getTime()
             let temp = parseFloat($('#temp').val())
+            min = parseFloat($('#min').val())
+            max = parseFloat($('#max').val())
 
             let rec_name = $('#rec_name').val()
             let rec_dept = $('#rec_dept').val()
@@ -669,20 +672,27 @@
                 }),
                 signature_staff: signature_url,
                 temp: temp,
+                min: min,
+                max: max,
                 time: date.getTime()
             }
-            let temp2
+            let temp2, min2, max2
             if ($('#temp2').val() != '') {
-                obj['temp2'] = parseFloat($('#temp2').val())
+                temp2 = parseFloat($('#temp2').val())
+                min2 = parseFloat($('#min2').val())
+                max2 = parseFloat($('#max2').val())
+                obj['temp2'] = temp2
+                obj['min2'] = min2
+                obj['max2'] = max2
             }
 
             console.log(obj)
             return await firestore.collection(client).add(obj).then(() => {
 
-                if (temp < mintemp || temp > maxtemp) {
+                if (temp < min || temp > max) {
                     sendNotify(obj)
 
-                } else if (temp2 < mintemp || temp2 > maxtemp) {
+                } else if (temp2 < min || temp2 > max) {
 
                 }
                 liff.sendMessages([
@@ -758,11 +768,11 @@
         const script_url = 'https://script.google.com/macros/s/AKfycbxlVshSHWBOLK3TlWk_KIykaUUSPLe2-OGM8qK0aYWWJWdtJ-0JBkfCDqCSiTsOzwMg/exec'
         function sendNotify(obj) {
             let msg = ''
-            if (mintemp && obj.temp < mintemp) {
-                msg = `อุณหภูมิน้อยกว่า ${mintemp} องศาเซลเซียส`
+            if (min && obj.temp < min) {
+                msg = `อุณหภูมิน้อยกว่า ${min} องศาเซลเซียส`
             }
-            else if (maxtemp && obj.temp > 8) {
-                msg = `อุณหภูมิมากกว่า ${maxtemp} องศาเซลเซียส'`
+            else if (max && obj.temp > 8) {
+                msg = `อุณหภูมิมากกว่า ${max} องศาเซลเซียส'`
             }
             msg = `แจ้งเตือนการบันทึก${msg}
 วันที่ ${new Date(obj.time).toLocaleString({
