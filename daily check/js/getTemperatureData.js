@@ -308,14 +308,14 @@ function getTemperatureDetail(row, index) {
                 <ol class="row">`
     if (obj.temp2) {
         detailHtml += `<li class="col-md-6">
-                        อุณหภูมิชั้นบน:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp'])}</span>
+                        อุณหภูมิชั้นบน:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส<small class="text-muted">ช่วงอุณหภูมิปกติ ${obj.min}-${obj.max}</small> <span>${renderTemperatureStatus(obj['temp'])}</span>
                     </li>
                     <li class="col-md-6">
-                        อุณหภูมิชั้นล่าง:&nbsp;&nbsp;&nbsp;${obj['temp2']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp2'])}</span>
+                        อุณหภูมิชั้นล่าง:&nbsp;&nbsp;&nbsp;${obj['temp2']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส<small class="text-muted">ช่วงอุณหภูมิปกติ ${obj.min}-${obj.max}</small> <span>${renderTemperatureStatus(obj['temp2'])}</span>
                     </li>`
     } else {
         detailHtml += `<li class="col-md-6">
-                        อุณหภูมิ:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส <span>${renderTemperatureStatus(obj['temp'])}</span>
+                        อุณหภูมิ:&nbsp;&nbsp;&nbsp;${obj['temp']}&nbsp;&nbsp;&nbsp;องศาเซลเซียส<small class="text-muted">ช่วงอุณหภูมิปกติ ${obj.min}-${obj.max}</small> <span>${renderTemperatureStatus(obj['temp'])}</span>
                     </li>`
     }
 

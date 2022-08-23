@@ -312,6 +312,8 @@
                             } else {
                                 if (checkShelf == 1) {
                                     $('#shelf2, #myChart2-canvas').remove()
+                                } else {
+                                    $('#upshelf-label').show()
                                 }
                             }
                             $('#filter').click()
@@ -348,10 +350,10 @@
             setTemp(max, 'max')
             setTemp(min2, 'min2')
             setTemp(max2, 'max2')
-            $("#min").val(min);
-            $("#max").val(max);
-            $("#min2").val(min2);
-            $("#max2").val(max2);
+            // $("#min").val(min);
+            // $("#max").val(max);
+            // $("#min2").val(min2);
+            // $("#max2").val(max2);
             let today = new Date();
             let fromdate = new Date(new Date().setDate(new Date().getDate() - 30))
             $('#from').val(fromdate.getFullYear() + '-' + ('00' + (fromdate.getMonth() + 1)).slice(-2) + '-' + ('00' + (fromdate.getDate())).slice(-2));
@@ -367,8 +369,8 @@
         }
 
         function setTemp(value, key) {
-            if (value == '') return false
-            return $('#' + key).val(value).prop('readonly', true)
+            if (value === '') return false
+            return $('#' + key).val(value.toString()).prop('readonly', true)
         }
 
         async function getDeptList(client) {
