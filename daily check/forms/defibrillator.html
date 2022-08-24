@@ -388,6 +388,11 @@
                                 <input type="file" name="report" accept="image/*" id="report" class="form-control file" required>
                                 <img class="img-fluid mt-3 rounded" id="preview">
                             </div>
+                            <!-- <div class="col-md-4 mt-3 text-center" id="failure-div" style="display: none;">
+                                <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
+                                <input type="file" name="failure-img" accept="image/*" id="failure-img" class="form-control file">
+                                <img class="img-fluid mt-3 rounded" id="preview-failure">
+                            </div> -->
                         </div>
                     </section>
                     <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
@@ -560,7 +565,19 @@
     <script>
         var firestore
         $(document).ready(function () {
-
+            // $('section[id="daily-check"] li input:radio').change(function () {
+            //     let radioArr = []
+            //     $('section[id="daily-check"] li input:radio:checked').each(function () {
+            //         radioArr.push($(this).val())
+            //     })
+            //     if (radioArr.includes('ไม่ผ่าน')) {
+            //         $('#failure-div').show(500)
+            //         $('#failure-img').prop('required', true)
+            //     } else {
+            //         $('#failure-div').hide(500)
+            //         $('#failure-img').prop('required', false)
+            //     }
+            // })
 
 
             // getDataForID()
@@ -607,40 +624,40 @@
     <script>
         var signaturePad, signaturePadAfterUse, resizeCanvas
         $(document).ready(() => {
-            $.LoadingOverlay("show");
+            // $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
-            liff
-                .init({
-                    liffId: "1657104960-wXQRkQ87", // Use own liffId
-                })
-                .then(() => {
-                    // Start to use liff's api
-                    if (!liff.isLoggedIn()) {
-                        return liff.login({ redirectUri: url })
-                    } else {
-                        console.log('liff init success');
-                        $.post(script_url, { opt: 'getconst' }, async function (c) {
-                            const firebaseConfig = c
-                            const defaultProject = firebase.initializeApp(firebaseConfig);
+            // liff
+            //     .init({
+            //         liffId: "1657104960-wXQRkQ87", // Use own liffId
+            //     })
+            //     .then(() => {
+            //         // Start to use liff's api
+            //         if (!liff.isLoggedIn()) {
+            //             return liff.login({ redirectUri: url })
+            //         } else {
+            //             console.log('liff init success');
+            //             $.post(script_url, { opt: 'getconst' }, async function (c) {
+            //                 const firebaseConfig = c
+            //                 const defaultProject = firebase.initializeApp(firebaseConfig);
 
-                            firestore = defaultProject.firestore();
-                            auth = defaultProject.auth();
-                            if (!auth.currentUser) {
-                                await getAuth(await liff.getDecodedIDToken().sub)
-                            }
+            //                 firestore = defaultProject.firestore();
+            //                 auth = defaultProject.auth();
+            //                 if (!auth.currentUser) {
+            //                     await getAuth(await liff.getDecodedIDToken().sub)
+            //                 }
 
-                            await getDeptList(client)
-                            $.LoadingOverlay("hide");
-                        })
-                    }
+            //                 await getDeptList(client)
+            //                 $.LoadingOverlay("hide");
+            //             })
+            //         }
 
-                })
-                .catch((err) => {
-                    // Error happens during initialization
-                    console.log(err.code, err.message);
-                });
+            //     })
+            //     .catch((err) => {
+            //         // Error happens during initialization
+            //         console.log(err.code, err.message);
+            //     });
             //
             //rl = new URL(decodeURI(url.searchParams("liff.state")))
             client = url.searchParams.get("client")
