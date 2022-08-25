@@ -467,7 +467,6 @@
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                 resizeCanvas();// previous active tab
             })
-            showWeekly()
         });
         // function showWeekly() {
         //     let day = moment().format('dddd')
@@ -988,7 +987,6 @@
     <script>
         var upload_num = 1
         function uploadFile() {
-            const file = document.getElementById("report").files[0];
             if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 2
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
             if (signaturePad.isEmpty()) {
