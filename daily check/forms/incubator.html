@@ -1227,7 +1227,8 @@ ${msg.trim()}`
                         option = {
                             opt: 'notify',
                             msg: 'ภาพความผิดปกติเครื่อง',
-                            img: obj.failure_url
+                            img: obj.failure_url,
+                            client: client
                         }
                         console.log("🚀 ~ option", option)
                         $.post(script_url, option)
@@ -1235,7 +1236,8 @@ ${msg.trim()}`
                         option = {
                             opt: 'notify',
                             msg: 'ภาพความผิดปกติเครื่อง',
-                            img: obj.failure_url_afteruse
+                            img: obj.failure_url_afteruse,
+                            client: client
                         }
                         console.log("🚀 ~ option", option)
                         $.post(script_url, option)
