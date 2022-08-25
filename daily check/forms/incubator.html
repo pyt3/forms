@@ -1046,7 +1046,7 @@
                         gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
                             .then(res => {
                                 if (!res.id) return console.error("Upload error: " + res.message);
-                                failure_file += res.id
+                                failure_url += res.id
                                 return saveFormDaily(signature_url, failure_url)
                             })
                     } else {
