@@ -114,13 +114,12 @@
                                 <input type="text" name="rec_name" id="rec_name" class="form-control" autocomplete="on" required>
                             </div>
                             <div class="col-md-3 mt-3">
-                                <label for="rec_remark">หมายเหตุ</label>
-                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on" required>
+                                <label for="rec_dept">Recorder Department</label>
+                                <select name="rec_dept" id="rec_dept" class="form-select" required></select>
                             </div>
                             <div class="col-md-3 mt-3">
-                                <label for="rec_dept">Recorder Department</label>
-                                <select name="rec_dept" id="rec_dept" class="form-select" required>
-                                </select>
+                                <label for="rec_remark">หมายเหตุ</label>
+                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on">
                             </div>
                         </div>
                     </section>
@@ -266,10 +265,19 @@
                     </section>
                     <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
                         <div class="row justify-content-center align-items-start">
+                            <div class="col-md-4 mt-3 text-center failure-div" style="display: none;">
+                                <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
+                                <input type="file" name="failure-img" accept="image/*" id="failure-img" class="form-control file failure-img">
+                                <img class="img-fluid mt-3 rounded" id="preview-failure">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                        <div class="row justify-content-center align-items-start">
                             <div class="col-md-5">
                                 <label for="signature" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
-                                    <canvas id="signature" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                    <canvas id="signature" name="signature" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
                                 </div>
                                 <div class="col text-end">
                                     <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
@@ -381,12 +389,21 @@
                             </div>
                         </div>
                     </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success failure-div" style="display: none;">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-4 mt-3 text-center">
+                                <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
+                                <input type="file" name="failure-img-aftercheck" accept="image/*" id="failure-img-aftercheck" class="form-control file failure-img">
+                                <img class="img-fluid mt-3 rounded" id="preview-failure-afteruse">
+                            </div>
+                        </div>
+                    </section>
                     <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
                         <div class="row justify-content-center align-items-start">
                             <div class="col-md-5">
                                 <label for="signature_afteruse" class="form-label">เซ็นชื่อรับรองข้อมูล</label>
                                 <div class="rounded border border-3">
-                                    <canvas id="signature_afteruse" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
+                                    <canvas id="signature_afteruse" name="signature_afteruse" style="width: 100%; min-height: 200px; max-height: 210px; margin: 0; padding: 0" class="bg-white"></canvas>
                                 </div>
                                 <div class="col text-end">
                                     <button type="button" class="btn btn-secondary btn-sm clear-signature">clear</button>
@@ -434,7 +451,10 @@
     <script>
         var firestore, auth
         $(document).ready(function () {
-
+            $('#daily-form li input:radio, #afteruse-daily-check li input:radio').change(function () {
+                let form = $(this).closest('form').attr('id')
+                checkFailureInput(form)
+            })
             // getDataForID()
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
@@ -449,13 +469,26 @@
             })
             showWeekly()
         });
-        function showWeekly() {
-            let day = moment().format('dddd')
-            if (day == 'Monday') {
-                $('#weekly-check input').attr('required', true)
+        // function showWeekly() {
+        //     let day = moment().format('dddd')
+        //     if (day == 'Monday') {
+        //         $('#weekly-check input').attr('required', true)
+        //     }
+        // }
+        function checkFailureInput(form) {
+            let radioArr = []
+            $('[id="' + form + '"]' + ' li input:radio:checked').each(function () {
+                radioArr.push($(this).val())
+            })
+            form = $('[id="' + form + '"]')
+            if (radioArr.includes('ไม่ผ่าน')) {
+                form.find('.failure-div').show(500)
+                form.find('.failure-img').prop('required', true)
+            } else {
+                form.find('.failure-div').hide(500)
+                form.find('.failure-img').prop('required', false)
             }
         }
-
         function getDataForID() {
             firestore.collection(client)
                 .where("e_code", "==", id)
@@ -478,6 +511,7 @@
 
     <script>
         var signaturePad, signaturePadAfterUse, resizeCanvas
+        var foldertoken
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
@@ -503,6 +537,7 @@
                                 await getAuth(await liff.getDecodedIDToken().sub)
                             }
                             await getDeptList(client)
+                            getFolderToken()
                             $.LoadingOverlay("hide");
                         })
 
@@ -693,7 +728,11 @@
                 });
             });
         }
-
+        function getFolderToken() {
+            $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (res) {
+                foldertoken = res
+            })
+        }
 
 
     </script>
@@ -715,6 +754,30 @@
             }
             reader.readAsDataURL(file)
         })
+        $('#failure-img').change(function () {
+            report = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onloadend = function (e) {
+                report.data = e.target.result
+                report.name = file.name
+                $('#preview-failure').attr('src', e.target.result)
+                $('#preview-failure').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
+        $('#failure-img-aftercheck').change(function () {
+            report = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onloadend = function (e) {
+                report.data = e.target.result
+                report.name = file.name
+                $('#preview-failure-afteruse').attr('src', e.target.result)
+                $('#preview-failure-afteruse').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
         function toTitleCase(str) {
             return str.replace(
                 /\w\S*/g,
@@ -731,7 +794,13 @@
             uploadFile()
         })
 
-        async function saveFormDaily(signature_url, date = new Date()) {
+        async function saveFormDaily(signature_url, failure_url, date = new Date()) {
+            Swal.update({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล..',
+                allowOutsideClick: false,
+                showConfirmButton: false
+            })
             let formdata = $('#daily-form').serializeArray()
             let obj = {}
             formdata.forEach(function (item) {
@@ -739,6 +808,9 @@
             })
             if (!obj['afteruse-check-battery']) {
                 obj.signature_staff = signature_url
+                if (failure_img) {
+                    obj.failure_img = failure_img
+                }
             } else {
                 obj.signature_staff_afteruse = signature_url
             }
@@ -783,8 +855,16 @@
         }
         $('#afteruse-form').submit(async function () {
             event.preventDefault()
+            if ($('#afteruse-form').find('.failure-div').is(':visible')) upload_num = 2
+            else upload_num = 1
             let form = $(this)
-            const updateData = function (url) {
+            const updateData = function (url, failure_url) {
+                Swal.update({
+                    icon: 'info',
+                    title: 'กำลังบันทึกข้อมูล..',
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                })
                 let formdata = $(form).serializeArray()
 
                 let obj = {}
@@ -803,6 +883,9 @@
                     day: "numeric",
                     year: "numeric"
                 })
+                if (failure_url) {
+                    obj.failure_url_afteruse = failure_url
+                }
                 return firestore.collection(client).add(obj).then(() => {
                     // obj.img = report.data
                     sendNotify(obj, 'afteruse')
@@ -818,9 +901,10 @@
                                 minute: "numeric",
                                 second: "numeric"
                             })
-                        }]).then(() => {
-                            console.log("message sent");
-                        })
+                        }
+                    ]).then(() => {
+                        console.log("message sent");
+                    })
                         .catch((err) => {
                             console.log("error", err);
                         });
@@ -863,28 +947,50 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=incubator&client=${client}`, function (result) {
-                var metadata = {
-                    name: `incubator daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let signature_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        return updateData(signature_url += res.id)
-                    })
-            })
-
+            // return $.getJSON(script_url + `?id=${id}&form=incubator&client=${client}`, function (result) {
+            var metadata = {
+                name: `incubator daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let signature_url = 'https://drive.google.com/uc?id='
+            let failure_url = 'https://drive.google.com/uc?id='
+            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    signature_url += res.id
+                    if ($('#afteruse-form').find('.failure-div').is(':visible')) {
+                        metadata = {
+                            name: 'incubator daily check failure afteruse ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        let failure_file = $('#afteruse-form .failure-img')[0].files[0]
+                        gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                failure_url += res.id
+                                return updateData(signature_url, failure_url)
+                            })
+                    } else {
+                        return updateData(signature_url)
+                    }
+                })
         })
+
     </script>
     <script>
+        var upload_num = 1
         function uploadFile() {
-
+            const file = document.getElementById("report").files[0];
+            if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 2
+            if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
             if (signaturePad.isEmpty()) {
                 return Swal.fire({
                     icon: 'info',
@@ -907,51 +1013,87 @@
             let signatureblob = signaturePad.toDataURL()
             Swal.fire({
                 icon: 'info',
-                title: 'กำลังบันทึกข้อมูล',
-                text: 'uploading...<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>',
-                allowOutsideClick: false
+                title: 'กำลังอัพโหลดรูปภาพ',
+                html: 'uploading...<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>',
+                allowOutsideClick: false,
+                showConfirmButton: false
             })
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=incubator&client=${client}`, function (result) {
-                let signature_url = 'https://drive.google.com/uc?id='
-                var metadata = {
-                    name: 'incubator daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        signature_url += res.id
-                        return saveFormDaily(signature_url)
-                    })
+            // return $.getJSON(script_url + `?id=${id}&form=incubator&client=${client}`, function (result) {
+            var metadata = {
+                name: 'incubator daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let signature_url = 'https://drive.google.com/uc?id='
+            let failure_url = 'https://drive.google.com/uc?id='
+            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    signature_url += res.id
+                    if ($('#daily-form').find('.failure-div').is(':visible')) {
+                        metadata = {
+                            name: 'incubator daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        let failure_file = $('#daily-form .failure-img')[0].files[0]
+                        gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                failure_file += res.id
+                                return saveFormDaily(report_url, signature_url, failure_url)
+                            })
+                    } else {
+                        return saveFormDaily(report_url, signature_url)
+                    }
+                })
 
-            })
+            // })
         }
         let firstfile = true
+        let secondfile = true
         function handleProgress(value) {
-            if (value === 0) console.log("Uploading...");
-            else if (value === 1) {
-                firstfile = !firstfile
-                console.log("Upload complete!");
+            let percent
+            if (upload_num == 1) percent = Math.round(value * 100)
+            else if (upload_num == 2) {
+                if (firstfile) percent = Math.round((value * 100) / 2)
+                else percent = Math.round((value * 100) / 2) + 50
             }
-            else {
-                console.log("Uploading... " + value * 100 + "%");
+            else if (upload_num == 3) {
+                if (firstfile) percent = Math.round((value * 100) / 3)
+                else if (!firstfile && secondfile) percent = Math.round(((value * 100) / 3) + (100 / 3))
+                else percent = Math.round(((value * 100) / 3) + (200 / 3))
             }
-            let percent = Math.round(value * 100)
             Swal.update({
                 // text: "Uploading... " +Math.round( value * 100) + "%",
-                html: `<div class="progress">
+                html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
 </div>`,
                 allowOutsideClick: false,
                 showConfirmButton: false
             })
+            if (value === 0) console.log("Uploading...");
+            else if (value === 1) {
+                if (!firstfile && secondfile) {
+                    secondfile = false
+                }
+                if (firstfile) {
+                    firstfile = false
+                }
+                console.log("Upload complete!");
+            }
+            else {
+                console.log("Uploading... " + value * 100 + "%");
+            }
             // Swal.showLoading(Swal.getConfirmButton())
         }
         function showUploadEnd(e) {

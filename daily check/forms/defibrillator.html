@@ -7,8 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -120,9 +119,8 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="rec_remark">หมายเหตุ</label>
-                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on" required>
+                                <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on">
                             </div>
-
                         </div>
                     </section>
                     <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="daily-check">
@@ -136,7 +134,7 @@
                                     <li>
                                         <p>สวิทช์เปิด-ปิดเครื่อง&nbsp;<small class="text-info">เครื่องทำงานปกติหรือไม่</small></p>
                                         <div class="form-check form-check-inline">
-                                            <input required class="form-check-input" type="radio" name="daily-check-switch" id="switch-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
+                                            <input class="form-check-input" type="radio" name="daily-check-switch" id="switch-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
                                             <label class="form-check-label text-success" for="switch-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
                                         </div>
                                         <div class="form-check form-check-inline">
@@ -349,7 +347,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="weekly-check">
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-info" id="weekly-check" style="display: none">
                         <div class="row justify-content-start">
                             <div class="col text-start ms-1">
                                 <p>Weekly Maintenance<br><small class="text-secondary">ดำเนินการตรวจเช็คทุกวันจันทร์ของสัปดาห์</small></p>
@@ -388,11 +386,11 @@
                                 <input type="file" name="report" accept="image/*" id="report" class="form-control file" required>
                                 <img class="img-fluid mt-3 rounded" id="preview">
                             </div>
-                            <!-- <div class="col-md-4 mt-3 text-center" id="failure-div" style="display: none;">
+                            <div class="col-md-4 mt-3 text-center failure-div" style="display: none;">
                                 <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
-                                <input type="file" name="failure-img" accept="image/*" id="failure-img" class="form-control file">
+                                <input type="file" name="failure-img" accept="image/*" id="failure-img" class="form-control file failure-img">
                                 <img class="img-fluid mt-3 rounded" id="preview-failure">
-                            </div> -->
+                            </div>
                         </div>
                     </section>
                     <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
@@ -455,7 +453,7 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="afteruse_rec_remark">หมายเหตุ</label>
-                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on" required>
+                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on">
                             </div>
                         </div>
                     </section>
@@ -469,7 +467,7 @@
                                     <li>
                                         <p>Charge Battery หลังใช้ตลอดเวลา&nbsp;<small class="text-info">ต้องเสียบไฟตลอดหลังการใช้งาน</small></p>
                                         <div class="form-check form-check-inline">
-                                            <input required class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
+                                            <input class="form-check-input" type="radio" name="afteruse-check-battery" id="afteruse-battery-pass" value="ผ่าน" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน" required>
                                             <label class="form-check-label text-success" for="afteruse-battery-pass" data-bs-toggle="tooltip" data-bs-placement="top" title="ปกติพร้อมใช้งาน">✔</label>
                                         </div>
                                         <div class="form-check form-check-inline">
@@ -509,6 +507,15 @@
                                         </div>
                                     </li>
                                 </ol>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success failure-div" style="display: none;">
+                        <div class="row justify-content-center align-items-start">
+                            <div class="col-md-4 mt-3 text-center">
+                                <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
+                                <input type="file" name="failure-img-aftercheck" accept="image/*" id="failure-img-aftercheck" class="form-control file failure-img">
+                                <img class="img-fluid mt-3 rounded" id="preview-failure-afteruse">
                             </div>
                         </div>
                     </section>
@@ -553,7 +560,6 @@
                 document.write('&copy;');
                 document.write(' 2022 ');
                 document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
-
             </script>
         </div>
     </footer>
@@ -563,23 +569,12 @@
         // var vConsole = new window.VConsole();
     </script>
     <script>
-        var firestore
+        var firestore, auth
         $(document).ready(function () {
-            // $('section[id="daily-check"] li input:radio').change(function () {
-            //     let radioArr = []
-            //     $('section[id="daily-check"] li input:radio:checked').each(function () {
-            //         radioArr.push($(this).val())
-            //     })
-            //     if (radioArr.includes('ไม่ผ่าน')) {
-            //         $('#failure-div').show(500)
-            //         $('#failure-img').prop('required', true)
-            //     } else {
-            //         $('#failure-div').hide(500)
-            //         $('#failure-img').prop('required', false)
-            //     }
-            // })
-
-
+            $('#daily-form li input:radio, #afteruse-daily-check li input:radio').change(function () {
+                let form = $(this).closest('form').attr('id')
+                checkFailureInput(form)
+            })
             // getDataForID()
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
@@ -594,14 +589,32 @@
             })
             showWeekly()
         });
-
         function showWeekly() {
             let day = moment().format('dddd')
             if (day == 'Monday') {
+                Swal.fire({
+                    icon: 'warning',
+                    html: '<p class="h4">กรุณาเช็ค<br><span class="text-danger fw-bold">ค่าพลังงานสูงสุด</span><br>ทุกวันจันทร์</p>',
+                    confirmButtonText: 'รับทราบ'
+                })
                 $('#weekly-check input').attr('required', true)
+                $('#weekly-check input').closest('section').show()
             }
         }
-
+        function checkFailureInput(form) {
+            let radioArr = []
+            $('[id="' + form + '"]' + ' li input:radio:checked').each(function () {
+                radioArr.push($(this).val())
+            })
+            form = $('[id="' + form + '"]')
+            if (radioArr.includes('ไม่ผ่าน')) {
+                form.find('.failure-div').show(500)
+                form.find('.failure-img').prop('required', true)
+            } else {
+                form.find('.failure-div').hide(500)
+                form.find('.failure-img').prop('required', false)
+            }
+        }
         function getDataForID() {
             firestore.collection(client)
                 .where("e_code", "==", id)
@@ -609,7 +622,6 @@
                 .limit(1)
                 .get()
                 .then(function (querySnapshot) {
-
                     if (querySnapshot.docs.length > 0) {
                         let data = querySnapshot.docs[0].data()
                         $('#e_brand, #afteruse_e_brand').val(data.e_brand)
@@ -619,10 +631,9 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-
-
     <script>
         var signaturePad, signaturePadAfterUse, resizeCanvas
+        var foldertoken
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
@@ -641,25 +652,21 @@
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
                             const firebaseConfig = c
                             const defaultProject = firebase.initializeApp(firebaseConfig);
-
                             firestore = defaultProject.firestore();
                             auth = defaultProject.auth();
                             if (!auth.currentUser) {
                                 await getAuth(await liff.getDecodedIDToken().sub)
                             }
-
                             await getDeptList(client)
+                            getFolderToken()
                             $.LoadingOverlay("hide");
                         })
                     }
-
                 })
                 .catch((err) => {
                     // Error happens during initialization
                     console.log(err.code, err.message);
                 });
-
-            //rl = new URL(decodeURI(url.searchParams("liff.state")))
             client = url.searchParams.get("client")
             dept = url.searchParams.get("dept")
             brand = url.searchParams.get("brand")
@@ -692,10 +699,8 @@
                     },
                     scanY = function (fromTop) {
                         var offset = fromTop ? 1 : -1;
-
                         // loop through each row
                         for (var y = fromTop ? 0 : imgHeight - 1; fromTop ? (y < imgHeight) : (y > -1); y += offset) {
-
                             // loop through each column
                             for (var x = 0; x < imgWidth; x++) {
                                 if (getAlpha(x, y)) {
@@ -707,10 +712,8 @@
                     },
                     scanX = function (fromLeft) {
                         var offset = fromLeft ? 1 : -1;
-
                         // loop through each column
                         for (var x = fromLeft ? 0 : imgWidth - 1; fromLeft ? (x < imgWidth) : (x > -1); x += offset) {
-
                             // loop through each row
                             for (var y = 0; y < imgHeight; y++) {
                                 if (getAlpha(x, y)) {
@@ -720,14 +723,11 @@
                         }
                         return null; // all image is white
                     };
-
                 var cropTop = scanY(true),
                     cropBottom = scanY(false),
                     cropLeft = scanX(true),
                     cropRight = scanX(false);
-
                 var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
-
                 this.canvas.width = cropRight - cropLeft;
                 this.canvas.height = cropBottom - cropTop;
                 this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
@@ -780,9 +780,7 @@
             }
             window.addEventListener("resize", resizeCanvas);
             resizeCanvas();
-
         })
-
         async function getDeptList(client) {
             return firestore.collection(client.toUpperCase() + '_summary').doc('dept').get().then(doc => {
                 let deptList = []
@@ -798,14 +796,11 @@
             }).catch(function (error) {
                 console.error(error)
             });
-
         }
-
         async function getAuth(uid) {
             let email = uid + '@dailycheck.com'
             let password = 'dailycheck'
             await auth.signInWithEmailAndPassword(email, password).then(function (user) {
-
                 console.log('sign in successful')
             }).catch(async function (error) {
                 // Handle Errors here.
@@ -837,15 +832,17 @@
                 });
             });
         }
-
-
+        function getFolderToken() {
+            $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (res) {
+                foldertoken = res
+            })
+        }
     </script>
     <script>
         var pdfDoc
         var PDFDocument = PDFLib.PDFDocument;
         var report = {}
         var client, dept, id, brand, model, name
-
         $('#report').change(function () {
             report = {}
             var file = this.files[0]
@@ -855,6 +852,30 @@
                 report.name = file.name
                 $('#preview').attr('src', e.target.result)
                 $('#preview').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
+        $('#failure-img').change(function () {
+            report = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onloadend = function (e) {
+                report.data = e.target.result
+                report.name = file.name
+                $('#preview-failure').attr('src', e.target.result)
+                $('#preview-failure').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
+        $('#failure-img-aftercheck').change(function () {
+            report = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onloadend = function (e) {
+                report.data = e.target.result
+                report.name = file.name
+                $('#preview-failure-afteruse').attr('src', e.target.result)
+                $('#preview-failure-afteruse').closest('.col-md-4').show()
             }
             reader.readAsDataURL(file)
         })
@@ -873,10 +894,13 @@
             event.preventDefault()
             uploadFile()
         })
-
-        async function saveFormDaily(img_url, signature_url, date = new Date()) {
-
-
+        async function saveFormDaily(img_url, signature_url, failure_img, date = new Date()) {
+            Swal.update({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล..',
+                allowOutsideClick: false,
+                showConfirmButton: false
+            })
             let formdata = $('#daily-form').serializeArray()
             let obj = {}
             formdata.forEach(function (item) {
@@ -885,6 +909,9 @@
             if (img_url) {
                 obj.img_url = img_url
                 obj.signature_staff = signature_url
+                if (failure_img) {
+                    obj.failure_img = failure_img
+                }
             } else {
                 obj.signature_staff_afteruse = signature_url
             }
@@ -929,10 +956,17 @@
         }
         $('#afteruse-form').submit(async function () {
             event.preventDefault()
+            if ($('#afteruse-form').find('.failure-div').is(':visible')) upload_num = 2
+            else upload_num = 1
             let form = $(this)
-            const updateData = function (url) {
+            const updateData = function (url, failure_url) {
+                Swal.update({
+                    icon: 'info',
+                    title: 'กำลังบันทึกข้อมูล..',
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                })
                 let formdata = $(form).serializeArray()
-
                 let obj = {}
                 formdata.forEach(function (item) {
                     obj[item.name] = item.value
@@ -949,6 +983,9 @@
                     day: "numeric",
                     year: "numeric"
                 })
+                if (failure_url) {
+                    obj.failure_url_afteruse = failure_url
+                }
                 return firestore.collection(client).add(obj).then(() => {
                     // obj.img = report.data
                     sendNotify(obj, 'afteruse')
@@ -1010,28 +1047,49 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
-                var metadata = {
-                    name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let signature_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        return updateData(signature_url += res.id)
-                    })
-            })
-
+            // return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
+            var metadata = {
+                name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let signature_url = 'https://drive.google.com/uc?id='
+            let failure_url = 'https://drive.google.com/uc?id='
+            return gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    signature_url += res.id
+                    if ($('#afteruse-form').find('.failure-div').is(':visible')) {
+                        metadata = {
+                            name: 'defib daily check failure afteruse ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        let failure_file = $('#afteruse-form .failure-img')[0].files[0]
+                        gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                failure_url += res.id
+                                return updateData(signature_url, failure_url)
+                            })
+                    } else {
+                        return updateData(signature_url)
+                    }
+                    // })
+                })
         })
     </script>
     <script>
+        var upload_num = 2
         function uploadFile() {
             const file = document.getElementById("report").files[0];
+            if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 3
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
             if (signaturePad.isEmpty()) {
                 return Swal.fire({
@@ -1057,65 +1115,77 @@
                 icon: 'info',
                 title: 'กำลังอัพโหลดรูปภาพ',
                 html: 'uploading...<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>',
-                allowOutsideClick: false
+                allowOutsideClick: false,
+                showConfirmButton: false
             })
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
-                console.log("🚀 ~ result", result)
-                var metadata = {
-                    name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let report_url = 'https://drive.google.com/uc?id='
-                let signature_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        report_url += res.id
-                        Swal.update({
-                            icon: 'info',
-                            title: 'กำลังบันทึกข้อมูล..',
-                            html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-</div>`,
-                            allowOutsideClick: false,
-                            showConfirmButton: false
+            // return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
+            var metadata = {
+                name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let report_url = 'https://drive.google.com/uc?id='
+            let signature_url = 'https://drive.google.com/uc?id='
+            let failure_url = 'https://drive.google.com/uc?id='
+            return gdriveUpload({ ...foldertoken, file, metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    report_url += res.id
+                    metadata = {
+                        name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
                         })
-                        metadata = {
-                            name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                                hour12: false,
-                                month: "numeric",
-                                day: "numeric",
-                                year: "numeric"
-                            })
-                        };
-                        gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                            .then(res => {
-                                if (!res.id) return console.error("Upload error: " + res.message);
-                                signature_url += res.id
+                    };
+                    gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                        .then(res => {
+                            if (!res.id) return console.error("Upload error: " + res.message);
+                            signature_url += res.id
+                            if ($('#daily-form').find('.failure-div').is(':visible')) {
+                                metadata = {
+                                    name: 'defib daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                        hour12: false,
+                                        month: "numeric",
+                                        day: "numeric",
+                                        year: "numeric"
+                                    })
+                                };
+                                let failure_file = $('#daily-form .failure-img')[0].files[0]
+                                gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                                    .then(res => {
+                                        if (!res.id) return console.error("Upload error: " + res.message);
+                                        failure_file += res.id
+                                        return saveFormDaily(report_url, signature_url, failure_url)
+                                    })
+                            } else {
                                 return saveFormDaily(report_url, signature_url)
-                            })
-                    })
-
-            })
+                            }
+                        })
+                })
+            // })
         }
         let firstfile = true
+        let secondfile = true
         function handleProgress(value) {
-            if (value === 0) console.log("Uploading...");
-            else if (value === 1) {
-                firstfile = !firstfile
-                console.log("Upload complete!");
+            let percent
+            if (upload_num == 1) percent = Math.round(value * 100)
+            else if (upload_num == 2) {
+                if (firstfile) percent = Math.round((value * 100) / 2)
+                else percent = Math.round((value * 100) / 2) + 50
             }
-            else {
-                console.log("Uploading... " + value * 100 + "%");
+            else if (upload_num == 3) {
+                if (firstfile) percent = Math.round((value * 100) / 3)
+                else if (!firstfile && secondfile) percent = Math.round(((value * 100) / 3) + (100 / 3))
+                else percent = Math.round(((value * 100) / 3) + (200 / 3))
             }
-            let percent = Math.round(value * 100)
             Swal.update({
                 // text: "Uploading... " +Math.round( value * 100) + "%",
                 html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
@@ -1124,6 +1194,19 @@
                 allowOutsideClick: false,
                 showConfirmButton: false
             })
+            if (value === 0) console.log("Uploading...");
+            else if (value === 1) {
+                if (!firstfile && secondfile) {
+                    secondfile = false
+                }
+                if (firstfile) {
+                    firstfile = false
+                }
+                console.log("Upload complete!");
+            }
+            else {
+                console.log("Uploading... " + value * 100 + "%");
+            }
             // Swal.showLoading(Swal.getConfirmButton())
         }
         function showUploadEnd(e) {
@@ -1217,7 +1300,6 @@
         }
         // sendNotify()
         function sendNotify(obj, form) {
-
             const notify_url = 'https://notify-api.line.me/api/notify'
             let msg = ''
             Object.keys(obj).forEach(key => {
@@ -1245,24 +1327,18 @@ ${msg.trim()}
 อาการ: 
 ${msg.trim()}`
                 }
-
                 let option = {
                     opt: 'notify',
                     msg: msg
                 }
                 if (obj.img_url) {
-
                     option.img = obj.img_url
                 }
                 option.client = client
-
                 $.post(script_url, option)
-
             }
-
         }
     </script>
-
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>

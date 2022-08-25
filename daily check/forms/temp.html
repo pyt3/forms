@@ -454,7 +454,7 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="afteruse_rec_remark">หมายเหตุ</label>
-                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on" required>
+                                <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on">
                             </div>
                         </div>
                     </section>
@@ -592,7 +592,12 @@
         });
         function showWeekly() {
             let day = moment().format('dddd')
-            if (day == 'Thursday') {
+            if (day == 'Monday') {
+                Swal.fire({
+                    icon: 'warning',
+                    html: '<p class="h4">กรุณาเช็ค<br><span class="text-danger fw-bold">ค่าพลังงานสูงสุด</span><br>ทุกวันจันทร์</p>',
+                    confirmButtonText: 'รับทราบ'
+                })
                 $('#weekly-check input').attr('required', true)
                 $('#weekly-check input').closest('section').show()
             }
@@ -631,39 +636,40 @@
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <script>
         var signaturePad, signaturePadAfterUse, resizeCanvas
+        var foldertoken
         $(document).ready(() => {
             // $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
-            // liff
-            //     .init({
-            //         liffId: "1657104960-wXQRkQ87", // Use own liffId
-            //     })
-            //     .then(() => {
-            //         // Start to use liff's api
-            //         if (!liff.isLoggedIn()) {
-            //             return liff.login({ redirectUri: url })
-            //         } else {
-            //             console.log('liff init success');
-            $.post(script_url, { opt: 'getconst' }, async function (c) {
-                const firebaseConfig = c
-                const defaultProject = firebase.initializeApp(firebaseConfig);
-                firestore = defaultProject.firestore();
-                auth = defaultProject.auth();
-                if (!auth.currentUser) {
-                    await getAuth()
-                    // await getAuth(await liff.getDecodedIDToken().sub)
-                }
-                await getDeptList(client)
-                $.LoadingOverlay("hide");
-            })
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         // Error happens during initialization
-            //         console.log(err.code, err.message);
-            //     });
+            liff
+                .init({
+                    liffId: "1657104960-wXQRkQ87", // Use own liffId
+                })
+                .then(() => {
+                    // Start to use liff's api
+                    if (!liff.isLoggedIn()) {
+                        return liff.login({ redirectUri: url })
+                    } else {
+                        console.log('liff init success');
+                        $.post(script_url, { opt: 'getconst' }, async function (c) {
+                            const firebaseConfig = c
+                            const defaultProject = firebase.initializeApp(firebaseConfig);
+                            firestore = defaultProject.firestore();
+                            auth = defaultProject.auth();
+                            if (!auth.currentUser) {
+                                await getAuth(await liff.getDecodedIDToken().sub)
+                            }
+                            await getDeptList(client)
+                            getFolderToken()
+                            $.LoadingOverlay("hide");
+                        })
+                    }
+                })
+                .catch((err) => {
+                    // Error happens during initialization
+                    console.log(err.code, err.message);
+                });
             client = url.searchParams.get("client")
             dept = url.searchParams.get("dept")
             brand = url.searchParams.get("brand")
@@ -829,6 +835,12 @@
                 });
             });
         }
+
+        function getFolderToken() {
+            $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (res) {
+                foldertoken = res
+            })
+        }
     </script>
     <script>
         var pdfDoc
@@ -859,6 +871,18 @@
             }
             reader.readAsDataURL(file)
         })
+        $('#failure-img-aftercheck').change(function () {
+            report = {}
+            var file = this.files[0]
+            var reader = new FileReader()
+            reader.onloadend = function (e) {
+                report.data = e.target.result
+                report.name = file.name
+                $('#preview-failure-afteruse').attr('src', e.target.result)
+                $('#preview-failure-afteruse').closest('.col-md-4').show()
+            }
+            reader.readAsDataURL(file)
+        })
         function toTitleCase(str) {
             return str.replace(
                 /\w\S*/g,
@@ -875,6 +899,12 @@
             uploadFile()
         })
         async function saveFormDaily(img_url, signature_url, failure_img, date = new Date()) {
+            Swal.update({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล..',
+                allowOutsideClick: false,
+                showConfirmButton: false
+            })
             let formdata = $('#daily-form').serializeArray()
             let obj = {}
             formdata.forEach(function (item) {
@@ -933,7 +963,13 @@
             if ($('#afteruse-form').find('.failure-div').is(':visible')) upload_num = 2
             else upload_num = 1
             let form = $(this)
-            const updateData = function (url) {
+            const updateData = function (url, failure_url) {
+                Swal.update({
+                    icon: 'info',
+                    title: 'กำลังบันทึกข้อมูล..',
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                })
                 let formdata = $(form).serializeArray()
                 let obj = {}
                 formdata.forEach(function (item) {
@@ -951,6 +987,9 @@
                     day: "numeric",
                     year: "numeric"
                 })
+                if (failure_url) {
+                    obj.failure_url_afteruse = failure_url
+                }
                 return firestore.collection(client).add(obj).then(() => {
                     // obj.img = report.data
                     sendNotify(obj, 'afteruse')
@@ -1012,42 +1051,42 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.75 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
-                var metadata = {
-                    name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let signature_url = 'https://drive.google.com/uc?id='
-                let failure_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        if ($('#afteruse-form').find('.failure-div').is(':visible')) {
-                            metadata = {
-                                name: 'defib daily check failure afteruse ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                                    hour12: false,
-                                    month: "numeric",
-                                    day: "numeric",
-                                    year: "numeric"
-                                })
-                            };
-                            let failure_file = $('#afteruse-form .failure-img')[0].files[0]
-                            gdriveUpload({ ...result, failure_file, metadata, chunkSize, onProgress: handleProgress })
-                                .then(res => {
-                                    if (!res.id) return console.error("Upload error: " + res.message);
-                                    failure_file += res.id
-                                    return saveFormDaily(report_url, signature_url, failure_file)
-                                })
-                        } else {
-                            return saveFormDaily(report_url, signature_url)
-                        }
-                        return updateData(signature_url += res.id)
-                    })
-            })
+            // return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
+            var metadata = {
+                name: `defib daily check afteruse ${$('#afteruse_rec_name').val()} ` + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let signature_url = 'https://drive.google.com/uc?id='
+            let failure_url = 'https://drive.google.com/uc?id='
+            return gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    signature_url += res.id
+                    if ($('#afteruse-form').find('.failure-div').is(':visible')) {
+                        metadata = {
+                            name: 'defib daily check failure afteruse ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        let failure_file = $('#afteruse-form .failure-img')[0].files[0]
+                        gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                failure_url += res.id
+                                return updateData(signature_url, failure_url)
+                            })
+                    } else {
+                        return updateData(signature_url)
+                    }
+                    // })
+                })
         })
     </script>
     <script>
@@ -1081,70 +1120,62 @@
                 icon: 'info',
                 title: 'กำลังอัพโหลดรูปภาพ',
                 html: 'uploading...<br><br><p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p>',
-                allowOutsideClick: false
+                allowOutsideClick: false,
+                showConfirmButton: false
             })
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
-            var chunkSize = Math.round(0.25 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
-                var metadata = {
-                    name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                let report_url = 'https://drive.google.com/uc?id='
-                let signature_url = 'https://drive.google.com/uc?id='
-                let failure_url = 'https://drive.google.com/uc?id='
-                gdriveUpload({ ...result, file, metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        report_url += res.id
-                        Swal.update({
-                            icon: 'info',
-                            title: 'กำลังบันทึกข้อมูล..',
-                            html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-</div>`,
-                            allowOutsideClick: false,
-                            showConfirmButton: false
+            var chunkSize = Math.round(0.75 * 1024 * 1024)
+            // return $.getJSON(script_url + `?id=${id}&form=defibrillator&client=${client}`, function (result) {
+            var metadata = {
+                name: `defib daily check report ${$('#rec_name').val()} ` + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            let report_url = 'https://drive.google.com/uc?id='
+            let signature_url = 'https://drive.google.com/uc?id='
+            let failure_url = 'https://drive.google.com/uc?id='
+            return gdriveUpload({ ...foldertoken, file, metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    report_url += res.id
+                    metadata = {
+                        name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                            hour12: false,
+                            month: "numeric",
+                            day: "numeric",
+                            year: "numeric"
                         })
-                        metadata = {
-                            name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                                hour12: false,
-                                month: "numeric",
-                                day: "numeric",
-                                year: "numeric"
-                            })
-                        };
-                        gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                            .then(res => {
-                                if (!res.id) return console.error("Upload error: " + res.message);
-                                signature_url += res.id
-                                if ($('#daily-form').find('.failure-div').is(':visible')) {
-                                    metadata = {
-                                        name: 'defib daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                                            hour12: false,
-                                            month: "numeric",
-                                            day: "numeric",
-                                            year: "numeric"
-                                        })
-                                    };
-                                    let failure_file = $('#daily-form .failure-img')[0].files[0]
-                                    gdriveUpload({ ...result, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
-                                        .then(res => {
-                                            if (!res.id) return console.error("Upload error: " + res.message);
-                                            failure_file += res.id
-                                            return saveFormDaily(report_url, signature_url, failure_url)
-                                        })
-                                } else {
-                                    return saveFormDaily(report_url, signature_url)
-                                }
-                            })
-                    })
-            })
+                    };
+                    gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                        .then(res => {
+                            if (!res.id) return console.error("Upload error: " + res.message);
+                            signature_url += res.id
+                            if ($('#daily-form').find('.failure-div').is(':visible')) {
+                                metadata = {
+                                    name: 'defib daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                        hour12: false,
+                                        month: "numeric",
+                                        day: "numeric",
+                                        year: "numeric"
+                                    })
+                                };
+                                let failure_file = $('#daily-form .failure-img')[0].files[0]
+                                gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                                    .then(res => {
+                                        if (!res.id) return console.error("Upload error: " + res.message);
+                                        failure_file += res.id
+                                        return saveFormDaily(report_url, signature_url, failure_url)
+                                    })
+                            } else {
+                                return saveFormDaily(report_url, signature_url)
+                            }
+                        })
+                })
+            // })
         }
         let firstfile = true
         let secondfile = true
@@ -1173,8 +1204,13 @@
             })
             if (value === 0) console.log("Uploading...");
             else if (value === 1) {
-                if (!firstfile && secondfile) secondfile = false
-                if (firstfile) firstfile = false
+                if (!firstfile && secondfile) {
+                    secondfile = false
+                }
+                if (firstfile) {
+                    firstfile = false
+                }
+
                 console.log("Upload complete!");
             }
             else {
