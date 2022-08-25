@@ -988,7 +988,6 @@
         var upload_num = 1
         function uploadFile() {
             if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 2
-            if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
             if (signaturePad.isEmpty()) {
                 return Swal.fire({
                     icon: 'info',
