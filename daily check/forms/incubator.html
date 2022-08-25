@@ -1229,6 +1229,7 @@ ${msg.trim()}`
                             msg: 'ภาพความผิดปกติเครื่อง',
                             img: obj.failure_url
                         }
+                        console.log("🚀 ~ option", option)
                         $.post(script_url, option)
                     } else if (form == 'afteruse' && obj.failure_url_afteruse) {
                         option = {
@@ -1236,6 +1237,7 @@ ${msg.trim()}`
                             msg: 'ภาพความผิดปกติเครื่อง',
                             img: obj.failure_url_afteruse
                         }
+                        console.log("🚀 ~ option", option)
                         $.post(script_url, option)
                     }
                 })
