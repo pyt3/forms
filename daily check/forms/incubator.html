@@ -1222,22 +1222,24 @@ ${msg.trim()}`
                 }
                 option.client = client
 
-                $.post(script_url, option)
-                if (form != 'afteruse' && obj.failure_url) {
-                    option = {
-                        opt: 'notify',
-                        msg: 'ภาพความผิดปกติเครื่อง',
-                        img: obj.failure_url
+                $.post(script_url, option, function () {
+                    if (form != 'afteruse' && obj.failure_url) {
+                        option = {
+                            opt: 'notify',
+                            msg: 'ภาพความผิดปกติเครื่อง',
+                            img: obj.failure_url
+                        }
+                        $.post(script_url, option)
+                    } else if (form == 'afteruse' && obj.failure_url_afteruse) {
+                        option = {
+                            opt: 'notify',
+                            msg: 'ภาพความผิดปกติเครื่อง',
+                            img: obj.failure_url_afteruse
+                        }
+                        $.post(script_url, option)
                     }
-                    $.post(script_url, option)
-                } else if (form == 'afteruse' && obj.failure_url_afteruse) {
-                    option = {
-                        opt: 'notify',
-                        msg: 'ภาพความผิดปกติเครื่อง',
-                        img: obj.failure_url_afteruse
-                    }
-                    $.post(script_url, option)
-                }
+                })
+
 
             }
 
