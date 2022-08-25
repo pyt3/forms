@@ -1222,7 +1222,7 @@ ${msg.trim()}`
                 }
                 option.client = client
 
-                $.post(script_url, option, function () {
+                $.post(script_url, option).done(function () {
                     if (form != 'afteruse' && obj.failure_url) {
                         option = {
                             opt: 'notify',
