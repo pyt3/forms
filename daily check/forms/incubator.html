@@ -263,9 +263,9 @@
                             </div>
                         </div>
                     </section>
-                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success">
+                    <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success failure-div" style="display: none;">
                         <div class="row justify-content-center align-items-start">
-                            <div class="col-md-4 mt-3 text-center failure-div" style="display: none;">
+                            <div class="col-md-4 mt-3 text-center">
                                 <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
                                 <input type="file" name="failure-img" accept="image/*" id="failure-img" class="form-control file failure-img">
                                 <img class="img-fluid mt-3 rounded" id="preview-failure">
@@ -1047,10 +1047,10 @@
                             .then(res => {
                                 if (!res.id) return console.error("Upload error: " + res.message);
                                 failure_file += res.id
-                                return saveFormDaily(report_url, signature_url, failure_url)
+                                return saveFormDaily(signature_url, failure_url)
                             })
                     } else {
-                        return saveFormDaily(report_url, signature_url)
+                        return saveFormDaily(signature_url)
                     }
                 })
 
