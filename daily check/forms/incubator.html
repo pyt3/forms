@@ -266,7 +266,7 @@
                     <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success failure-div" style="display: none;">
                         <div class="row justify-content-center align-items-start">
                             <div class="col-md-4 mt-3 text-center">
-                                <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
+                                <label for="report">ภาพถ่ายอาการผิดปกติของเครื่อง</label>
                                 <input type="file" name="failure-img" accept="image/*" id="failure-img" class="form-control file failure-img">
                                 <img class="img-fluid mt-3 rounded" id="preview-failure">
                             </div>
@@ -392,7 +392,7 @@
                     <section class="m-2 mt-4 rounded-2  p-4 shadow border border-success failure-div" style="display: none;">
                         <div class="row justify-content-center align-items-start">
                             <div class="col-md-4 mt-3 text-center">
-                                <label for="report">ภาพถ่ายอารการผิดปกติของเครื่อง</label>
+                                <label for="report">ภาพถ่ายอาการผิดปกติของเครื่อง</label>
                                 <input type="file" name="failure-img-aftercheck" accept="image/*" id="failure-img-aftercheck" class="form-control file failure-img">
                                 <img class="img-fluid mt-3 rounded" id="preview-failure-afteruse">
                             </div>
@@ -873,8 +873,8 @@
                 obj.e_code = obj.afteruse_e_code
                 obj.e_dept = obj.afteruse_e_dept
                 obj.form = 'incubator'
-                obj.afteruse_time = new Date().getTime()
                 obj.signature_staff_afteruse = url
+                obj.afteruse_time = new Date().getTime()
                 obj.time = obj.afteruse_time
                 obj.date = new Date().toLocaleString('th-TH', {
                     hour12: false,
@@ -1221,7 +1221,6 @@ ${msg.trim()}`
                     option.img = obj.img_url
                 }
                 option.client = client
-
                 $.post(script_url, option).done(function () {
                     if (form != 'afteruse' && obj.failure_url) {
                         option = {
@@ -1243,8 +1242,6 @@ ${msg.trim()}`
                         $.post(script_url, option)
                     }
                 })
-
-
             }
 
         }
