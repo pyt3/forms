@@ -262,7 +262,7 @@
                 console.log("🚀 ~ isNaN(t)", isNaN(t))
                 if (isNaN(t)) return
                 t = parseFloat(t)
-                if ((t < parseFloat($('#min').val()) && t > parseFloat($('#max').val())) || (t < parseFloat($('#min2').val()) || t > parseFloat($('#max2').val()))) {
+                if ((t < parseFloat($('#min').val()) && t > parseFloat($('#max').val())) || (t < parseFloat($('#min2').val()) && t > parseFloat($('#max2').val()))) {
                     if (!$('#failure-img').is(':visible')) {
                         $('#failure-img').closest('.row').show(500).prop('required', true)
                     }
