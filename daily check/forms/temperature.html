@@ -1199,7 +1199,7 @@
     <script>
         var upload_num = 1
         function uploadFile() {
-            if ($('.failure-div').is(':visible')) upload_num = 2
+            if ($('#failure-img').closest('.row').is(':visible')) upload_num = 2
             if (signaturePad.isEmpty()) {
                 return Swal.fire({
                     icon: 'info',
@@ -1228,7 +1228,7 @@
             })
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
-            var chunkSize = Math.round(0.25 * 1024 * 1024)
+            var chunkSize = Math.round(0.75 * 1024 * 1024)
             // return $.getJSON(script_url + `?id=${id}&form=temperature&client=${client}`, function (result) {
             let signature_url = 'https://drive.google.com/uc?id='
             let failure_url = 'https://drive.google.com/uc?id='
@@ -1253,7 +1253,7 @@
                                 year: "numeric"
                             })
                         };
-                        let failure_file = $('.failure-img')[0].files[0]
+                        let failure_file = $('#failure-img')[0].files[0]
                         gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
                             .then(res => {
                                 if (!res.id) return console.error("Upload error: " + res.message);
