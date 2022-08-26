@@ -260,7 +260,7 @@
                 let id = $(this).attr('id')
                 let t = $(this).val()
                 console.log("🚀 ~ isNaN(t)", isNaN(t))
-                if (isNaN(t)) return
+                if (isNaN(t) || t == '') return
                 t = parseFloat(t)
                 console.log(t < parseFloat($('#min').val()) || t > parseFloat($('#max').val()));
                 console.log(t < parseFloat($('#min2').val()) || t > parseFloat($('#max2').val()));
