@@ -148,7 +148,7 @@
             </div>
         </div> -->
         <!-- Tab panes -->
-        <div class="tab-content">
+        <div class="tab-content p-0">
             <div class="tab-pane fade m-0" id="defibrillator" role="tabpanel" aria-labelledby="defibrillator-tab">
                 <div class="form-check m-4">
                     <input class="form-check-input" type="checkbox" value="" id="defibrillator-display-approved">
@@ -499,6 +499,7 @@
                             // resizeCanvas();// previous active tab
                         })
                     } else {
+                        $.LoadingOverlay('hide')
                         Swal.fire({
                             title: 'เข้าสู่ระบบไม่สำเร็จ',
                             text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
