@@ -258,9 +258,10 @@
 
             $('#temp, #temp2').keyup(function () {
                 let t1 = $('#temp').val()
-                console.log("🚀 ~ t1", t1)
                 let t2 = $('#temp2').val()
-                console.log("🚀 ~ t2", t2)
+                if (t1 == '' && t2 == '') {
+                    return $('#failure-img').closest('.row').hide(500).prop('required', false)
+                }
                 if (t1 < $('#min').val() || t1 > $('#max').val()) t1 = true
                 else t1 = false
                 console.log("🚀 ~ t1", t1)
