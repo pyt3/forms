@@ -259,24 +259,36 @@
             $('#temp, #temp2').keyup(function () {
                 let t1 = $('#temp').val()
                 let t2 = $('#temp2').val()
+                let failureshow = false
                 if (t1 == '' && t2 == '') {
-                    return $('#failure-img').closest('.row').hide(500).prop('required', false)
-                }
-                if (t1 < $('#min').val() || t1 > $('#max').val()) t1 = true
-                else t1 = false
-                console.log("🚀 ~ t1", t1)
-
-                if (t2 < $('#min2').val() || t2 > $('#max2').val()) t2 = true
-
-                else t2 = false
-                console.log("🚀 ~ t2", t2)
-
-
-                console.log("🚀 ~ t1 || t2", t1 || t2)
-                if (t1 || t2) {
-                    if (!$('#failure-img').closest('.row').is(':visible')) {
-                        $('#failure-img').closest('.row').show(500).prop('required', true)
+                    failureshow = true
+                } else if (t1 != '' && t2 == '') {
+                    if (t1 < $('#min').val() || t1 > $('#max').val()) {
+                        failureshow = true
+                    } else {
+                        failureshow = false
                     }
+                    return
+                }
+                else if (t1 == '' && t2 != '') {
+                    if (t2 < $('#min2').val() || t2 > $('#max2').val()) {
+                        failureshow = true
+                    } else {
+                        failureshow = false
+                    }
+                    return
+                }
+                else if (t1 != '' && t2 != '') {
+                    if (t1 < $('#min').val() || t1 > $('#max').val()) {
+                        failureshow = true
+                    }
+                    if (t2 < $('#min2').val() || t2 > $('#max2').val()) {
+                        failureshow = true
+                    }
+                    return
+                }
+                if (failureshow) {
+                    $('#failure-img').closest('.row').show(500).prop('required', true)
                 } else {
                     $('#failure-img').closest('.row').hide(500).prop('required', false)
                 }
