@@ -871,7 +871,7 @@
             uploadFile()
         })
 
-        async function saveFormDaily(signature_url, date = new Date()) {
+        async function saveFormDaily(signature_url, failure_url, date = new Date()) {
             Swal.update({
                 icon: 'info',
                 title: 'กำลังบันทึกข้อมูล..',
@@ -935,7 +935,7 @@
             if ($('#afteruse-form').find('.failure-div').is(':visible')) upload_num = 2
             else upload_num = 1
             let form = $(this)
-            const updateData = function (url) {
+            const updateData = function (url, failure_url) {
                 Swal.update({
                     icon: 'info',
                     title: 'กำลังบันทึกข้อมูล..',
@@ -1121,7 +1121,7 @@
                                 year: "numeric"
                             })
                         };
-                        let failure_url = $('#daily-form .failure-img')[0].files[0]
+                        let failure_file = $('#daily-form .failure-img')[0].files[0]
                         gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
                             .then(res => {
                                 if (!res.id) return console.error("Upload error: " + res.message);

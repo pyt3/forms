@@ -970,7 +970,7 @@
                                 year: "numeric"
                             })
                         };
-                        let failure_url = $('#afteruse-form .failure-img')[0].files[0]
+                        let failure_file = $('#afteruse-form .failure-img')[0].files[0]
                         gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
                             .then(res => {
                                 if (!res.id) return console.error("Upload error: " + res.message);
