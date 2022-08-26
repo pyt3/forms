@@ -232,7 +232,7 @@
         // var vConsole = new window.VConsole();
     </script>
     <script>
-        var firestore
+        var firestore, auth, foldertoken
         var client, dept, id, nid, brand, model, name, min, max, min2, max2, isDefaultTemp = false, isDefaultTemp2 = false, checkShelf
 
         $(document).ready(() => {
@@ -266,13 +266,27 @@
                     if (t < parseFloat($('#min').val()) || t > parseFloat($('#max').val())) {
                         $('#failure-img').closest('.row').show(500).prop('required', true)
                     } else {
-                        $('#failure-img').closest('.row').hide(500).prop('required', true)
+                        $('#failure-img').closest('.row').hide(500).prop('required', false)
                     }
                 } else if (id == 'temp2') {
                     if (t < parseFloat($('#min2').val()) || t > parseFloat($('#max2').val())) {
-                        $('#failure-img').closest('.row').show(500)
+                        $('#failure-img').closest('.row').show(500).prop('required', true)
+                    } else {
+                        $('#failure-img').closest('.row').hide(500).prop('required', false)
                     }
                 }
+            })
+            $('#failure-img').change(function () {
+                report = {}
+                var file = this.files[0]
+                var reader = new FileReader()
+                reader.onloadend = function (e) {
+                    report.data = e.target.result
+                    report.name = file.name
+                    $('#preview-failure').attr('src', e.target.result)
+                    $('#preview-failure').closest('.col-md-4').show()
+                }
+                reader.readAsDataURL(file)
             })
             liff
                 .init({
@@ -454,7 +468,11 @@
                 });
             });
         }
-
+        function getFolderToken() {
+            $.getJSON(script_url + `?id=${id}&form=temperature&client=${client}`, function (res) {
+                foldertoken = res
+            })
+        }
 
 
     </script>
@@ -1183,6 +1201,7 @@
 
     </script>
     <script>
+        var upload_num = 1
         function uploadFile() {
             if (signaturePad.isEmpty()) {
                 return Swal.fire({
@@ -1213,23 +1232,41 @@
             Swal.showLoading(Swal.getConfirmButton())
             let now = new Date()
             var chunkSize = Math.round(0.25 * 1024 * 1024)
-            return $.getJSON(script_url + `?id=${id}&form=temperature&client=${client}`, function (result) {
-                let signature_url = 'https://drive.google.com/uc?id='
-                var metadata = {
-                    name: 'temperature check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                        hour12: false,
-                        month: "numeric",
-                        day: "numeric",
-                        year: "numeric"
-                    })
-                };
-                gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                    .then(res => {
-                        if (!res.id) return console.error("Upload error: " + res.message);
-                        signature_url += res.id
+            // return $.getJSON(script_url + `?id=${id}&form=temperature&client=${client}`, function (result) {
+            let signature_url = 'https://drive.google.com/uc?id='
+            var metadata = {
+                name: 'temperature check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                    hour12: false,
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            };
+            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                .then(res => {
+                    if (!res.id) return console.error("Upload error: " + res.message);
+                    signature_url += res.id
+                    if ($('.failure-div').is(':visible')) {
+                        metadata = {
+                            name: 'monitor bedside daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        let failure_file = $('.failure-img')[0].files[0]
+                        gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                failure_url += res.id
+                                return setValue(signature_url, failure_url)
+                            })
+                    } else {
                         return setValue(signature_url)
-                    })
-            })
+                    }
+                })
+            // })
         }
         let firstfile = true
         function handleProgress(value) {
