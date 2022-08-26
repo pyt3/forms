@@ -1203,6 +1203,7 @@
     <script>
         var upload_num = 1
         function uploadFile() {
+            if ($('.failure-div').is(':visible')) upload_num = 2
             if (signaturePad.isEmpty()) {
                 return Swal.fire({
                     icon: 'info',
@@ -1234,6 +1235,7 @@
             var chunkSize = Math.round(0.25 * 1024 * 1024)
             // return $.getJSON(script_url + `?id=${id}&form=temperature&client=${client}`, function (result) {
             let signature_url = 'https://drive.google.com/uc?id='
+            let failure_url = 'https://drive.google.com/uc?id='
             var metadata = {
                 name: 'temperature check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
                     hour12: false,
@@ -1270,23 +1272,38 @@
         }
         let firstfile = true
         function handleProgress(value) {
+            let percent
+            if (upload_num == 1) percent = Math.round(value * 100)
+            else if (upload_num == 2) {
+                if (firstfile) percent = Math.round((value * 100) / 2)
+                else percent = Math.round((value * 100) / 2) + 50
+            }
+            else if (upload_num == 3) {
+                if (firstfile) percent = Math.round((value * 100) / 3)
+                else if (!firstfile && secondfile) percent = Math.round(((value * 100) / 3) + (100 / 3))
+                else percent = Math.round(((value * 100) / 3) + (200 / 3))
+            }
+            Swal.update({
+                // text: "Uploading... " +Math.round( value * 100) + "%",
+                html: `<p class="text-danger">**ห้ามปิดหน้านี้จนกว่าจะบันทึกสำเร็จ<\p><div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
+</div>`,
+                allowOutsideClick: false,
+                showConfirmButton: false
+            })
             if (value === 0) console.log("Uploading...");
             else if (value === 1) {
-                firstfile = !firstfile
+                if (!firstfile && secondfile) {
+                    secondfile = false
+                }
+                if (firstfile) {
+                    firstfile = false
+                }
                 console.log("Upload complete!");
             }
             else {
                 console.log("Uploading... " + value * 100 + "%");
             }
-            let percent = firstfile ? Math.round(value * 50) : (Math.round(value * 50) + 50)
-            Swal.update({
-                // text: "Uploading... " +Math.round( value * 100) + "%",
-                html: `<div class="progress">
-      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar " style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">${percent}%</div>
-    </div>`,
-                allowOutsideClick: false,
-                showConfirmButton: false
-            })
             // Swal.showLoading(Swal.getConfirmButton())
         }
         function showUploadEnd(e) {
