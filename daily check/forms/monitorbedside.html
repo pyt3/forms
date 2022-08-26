@@ -1035,7 +1035,7 @@
             };
             let signature_url = 'https://drive.google.com/uc?id='
             let failure_url = 'https://drive.google.com/uc?id='
-            gdriveUpload({ ...result, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+            gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
                 .then(res => {
                     if (!res.id) return console.error("Upload error: " + res.message);
                     signature_url += res.id
