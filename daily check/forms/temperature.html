@@ -260,9 +260,13 @@
                 let t1 = $('#temp').val()
                 let t2 = $('#temp2').val()
                 let failureshow = false
+                console.log("🚀 ~ t1 == '' && t2 != ''", t1 == '' && t2 != '')
+                console.log("🚀 ~ t1 != '' && t2 == ''", t1 != '' && t2 == '')
+                console.log("🚀 ~ t1 != '' && t2 != ''", t1 != '' && t2 != '')
                 if (t1 == '' && t2 == '') {
                     failureshow = true
                 } else if (t1 != '' && t2 == '') {
+                    console.log("🚀 ~ t1 < $('#min').val() || t1 > $('#max').val()", t1 < $('#min').val() || t1 > $('#max').val())
                     if (t1 < $('#min').val() || t1 > $('#max').val()) {
                         failureshow = true
                     } else {
@@ -271,6 +275,7 @@
                     return
                 }
                 else if (t1 == '' && t2 != '') {
+                    console.log("🚀 ~ t2 < $('#min2').val() || t2 > $('#max2').val()", t2 < $('#min2').val() || t2 > $('#max2').val())
                     if (t2 < $('#min2').val() || t2 > $('#max2').val()) {
                         failureshow = true
                     } else {
@@ -282,11 +287,13 @@
                     if (t1 < $('#min').val() || t1 > $('#max').val()) {
                         failureshow = true
                     }
+                    console.log("🚀 ~ t2 < $('#min2').val() || t2 > $('#max2').val()", t2 < $('#min2').val() || t2 > $('#max2').val())
                     if (t2 < $('#min2').val() || t2 > $('#max2').val()) {
                         failureshow = true
                     }
                     return
                 }
+                console.log("🚀 ~ failureshow", failureshow)
                 if (failureshow) {
                     $('#failure-img').closest('.row').show(500).prop('required', true)
                 } else {
