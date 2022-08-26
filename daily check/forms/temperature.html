@@ -306,6 +306,7 @@
                             auth = defaultProject.auth();
                             await getAuth(await liff.getDecodedIDToken().sub)
                             await getDeptList(client)
+                            getFolderToken()
                             $.LoadingOverlay('hide')
                             if (checkShelf == 'undefined') {
                                 Swal.fire({
