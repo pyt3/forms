@@ -806,7 +806,7 @@
             });
         }
         function getFolderToken() {
-            $.getJSON(script_url + `?id=${id}&form=monitoebedside&client=${client}`, function (res) {
+            $.getJSON(script_url + `?id=${id}&form=monitorbedside&client=${client}`, function (res) {
                 foldertoken = res
             })
         }
@@ -1114,7 +1114,7 @@
                     signature_url += res.id
                     if ($('#daily-form').find('.failure-div').is(':visible')) {
                         metadata = {
-                            name: 'incubator daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                            name: 'monitor bedside daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
                                 hour12: false,
                                 month: "numeric",
                                 day: "numeric",
