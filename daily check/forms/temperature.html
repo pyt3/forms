@@ -255,7 +255,7 @@
 
             if ((min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
             if ((min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
-            $('#temp', '#temp2').on('keyup change', function () {
+            $('#temp', '#temp2').keyup(function () {
                 let id = $(this).attr('id')
                 let t = $(this).val()
                 console.log("🚀 ~ isNaN(t)", isNaN(t))
