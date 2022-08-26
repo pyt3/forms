@@ -258,6 +258,7 @@
             $('#temp', '#temp2').on('keyup', function () {
                 let id = $(this).attr('id')
                 let t = $(this).val()
+                console.log("🚀 ~ isNaN(t)", isNaN(t))
                 if (isNaN(t)) return
                 t = parseFloat(t)
                 if (id == 'temp') {
