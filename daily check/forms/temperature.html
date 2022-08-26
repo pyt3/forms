@@ -257,14 +257,20 @@
             if ((min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
 
             $('#temp, #temp2').keyup(function () {
-                let id = $(this).attr('id')
-                let t = $(this).val()
-                console.log("🚀 ~ isNaN(t)", isNaN(t))
-                if (isNaN(t) || t == '') return
-                t = parseFloat(t)
-                console.log(t < parseFloat($('#min').val()) || t > parseFloat($('#max').val()));
-                console.log(t < parseFloat($('#min2').val()) || t > parseFloat($('#max2').val()));
-                if ((t < parseFloat($('#min').val()) || t > parseFloat($('#max').val())) || (t < parseFloat($('#min2').val()) || t > parseFloat($('#max2').val()))) {
+                let t1 = $('#temp').val()
+                let t2 = $('#temp2').val()
+                if (!(t1 == '' || isNaN(t1))) {
+                    t1 = parseFloat(t1)
+                    if (t1 < parseFloat($('#min').val()) || t1 > parseFloat($('#max').val())) t1 = true
+                } else t1 = false
+
+                if (!(t2 == '' || isNaN(t2))) {
+                    t2 = parseFloat(t2)
+                    if (t2 < parseFloat($('#min').val()) || t2 > parseFloat($('#max').val())) t2 = true
+                } else t2 = false
+
+
+                if (t1 && t2) {
                     if (!$('#failure-img').closest('.row').is(':visible')) {
                         $('#failure-img').closest('.row').show(500).prop('required', true)
                     }
