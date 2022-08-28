@@ -260,6 +260,15 @@
             $.LoadingOverlay("show");
             let now = new Date().getTime()
             session = localStorage.getItem("session")
+            let config = localStorage.getItem("config")
+            if (config) {
+                setFirebase(JSON.parse(config))
+            } else {
+                $.post(script_url, { opt: 'getconst' }, async function (c) {
+                    localStorage.setItem('config', JSON.stringify(c))
+                    setFirebase(c)
+                })
+            }
             if (session) {
                 $.LoadingOverlay("hide");
 
@@ -363,6 +372,18 @@
 
             }
         });
+
+        async function setFirebase(c) {
+            const firebaseConfig = c
+            const defaultProject = firebase.initializeApp(firebaseConfig);
+            firestore = defaultProject.firestore();
+            auth = defaultProject.auth();
+            if (!auth.currentUser) {
+                await getAuth()
+            }
+            $.LoadingOverlay("hide");
+        }
+
         async function getAuth(uid = "manager") {
             let email = uid + '@dailycheck.com'
             let password = 'dailycheck'
