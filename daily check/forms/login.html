@@ -284,7 +284,9 @@
                     if (!auth.currentUser) {
                         await getAuth()
                     }
-                    Swal.close()
+                    setTimeout(() => {
+                        Swal.close()
+                    }, 2000);
                     return firestore.collection('user')
                         .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                         .get()
@@ -330,10 +332,10 @@
                 })
                 $('#signout-btn').show()
                 $('#data-div').show()
-                // $.LoadingOverlay("show");
+                $.LoadingOverlay("show");
                 getTableData(JSON.parse(session), active_tab)
+                $.LoadingOverlay('hide')
                 Swal.close()
-                // $.LoadingOverlay('hide')
                 $('#signout-btn').click(function () {
                     let session = localStorage.getItem("session")
                     firestore.collection('user')
