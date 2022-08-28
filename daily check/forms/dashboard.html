@@ -17,7 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
     <style>
         body {
-            max-width: 100vw;
             height: 100%;
             font-family: 'Akshar', sans-serif;
             font-family: 'Prompt', sans-serif;
@@ -49,10 +48,10 @@
             background-color: #fff;
         } */
     </style>
-    <title>Defibrillator Daily Maintenance</title>
+    <title>Daliy Check Dashboard</title>
 </head>
 
-<body>
+<body class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
@@ -81,6 +80,16 @@
         <div class="row justify-content-center">
             <div class="col text-center">
                 DASHBOARD&nbsp;<span id="thisdate"></span>
+            </div>
+            <div class="col-12 text-center mb-3" id="client-sel-div" style="display: none;">
+                <label for="client-sel">เลือกโรงพยาบาล</label>
+                <select class="form-select" id="client-sel">
+                    <option value="" selected disabled>เลือกโรงพยาบาล</option>
+                    <option value="pyt1">PYT1</option>
+                    <option value="pyt2">PYT2</option>
+                    <option value="pyt3">PYT3</option>
+                    <option value="plp">PLP</option>
+                </select>
             </div>
         </div>
         <div class="row justify-content-center" id="firstlevel-dashboard">
@@ -131,21 +140,37 @@
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbxlVshSHWBOLK3TlWk_KIykaUUSPLe2-OGM8qK0aYWWJWdtJ-0JBkfCDqCSiTsOzwMg/exec'
-        var firestore, auth
+        var firestore, auth, client, uid
         $(document).ready(function () {
-            $('#thisdate').text(moment().format('DD/MM/YYYY'))
-            $.LoadingOverlay('show')
-            let config = localStorage.getItem("config")
-            console.log("🚀 ~ config", config)
-            if (config) {
-                setFirebase(JSON.parse(config))
-            } else {
-                $.post(script_url, { opt: 'getconst' }, async function (c) {
-                    localStorage.setItem('config', JSON.stringify(c))
-                    setFirebase(c)
+            liff
+                .init({
+                    liffId: "1657104960-R3P2nPO4",
+                    withLoginOnExternalBrowser: true
                 })
-            }
-            // getDataForID()
+                .then(() => {
+                    console.log('liff init success');
+                    $('#thisdate').text(moment().format('DD/MM/YYYY'))
+                    $.LoadingOverlay('show')
+                    let config = localStorage.getItem("config")
+                    if (config) {
+                        setFirebase(JSON.parse(config))
+                    } else {
+                        $.post(script_url, { opt: 'getconst' }, async function (c) {
+                            localStorage.setItem('config', JSON.stringify(c))
+                            setFirebase(c)
+                        })
+                    }
+                })
+                .catch((err) => {
+                    // Error happens during initialization
+                    console.log(err.code, err.message);
+                });
+            $('#client-sel').change(function () {
+                localStorage.setItem('client', $(this).val())
+                $('#firstlevel-dashboard').html('')
+                client = $(this).val()
+                getSummary()
+            })
         });
         async function setFirebase(c) {
             const firebaseConfig = c
@@ -156,9 +181,25 @@
                 await getAuth()
             }
             // await getAuth(await liff.getDecodedIDToken().sub)
-            await getClient(profile.userId)
+            await getClient()
             await getSummary()
             $.LoadingOverlay("hide");
+        }
+        async function getClient() {
+            uid = await liff.getDecodedIDToken().sub
+            await firestore.collection('uid').doc(uid).get().then(doc => {
+                if (doc.exists) {
+                    client = doc.data().site
+                    if (client == 'all') {
+                        $('#client-sel-div').show()
+                        client = localStorage.getItem('client') || 'pyt3'
+                        $('#client-sel').val(client)
+                    }
+                    return true
+                } else {
+                    return false
+                }
+            })
         }
     </script>
     <script>
@@ -197,7 +238,44 @@
                 });
             });
         }
-        async function getSummary(client = 'pyt3') {
+        async function getSummary() {
+            if (!client) {
+                $.LoadingOverlay('hide')
+                const { value: cl } = await Swal.fire({
+                    title: 'กรุณาเลือกโรงพยาบาลของท่าน',
+                    text: 'เมื่อเลือกแล้วท่านจะไม่สามารถเปลี่ยนโรงพยาบาลได้',
+                    // buttonsStyling: false,
+                    // customClass: {
+                    //     confirmButton: 'btn btn-success',
+                    //     input: 'form-control container-fluid'
+                    // },
+                    input: 'select',
+                    inputOptions: {
+                        "pyt1": "PYT1",
+                        "pyt2": "PYT2",
+                        "pyt3": "PYT3",
+                        "plp": "PLP",
+                    },
+                    inputPlaceholder: 'เลือกโรงพยาบาล',
+                    confirmButtonText: 'ตกลง',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'กรุณาเลือกโรงพยาบาลของท่าน'
+                        }
+                    }
+                })
+                if (cl) {
+                    client = cl
+                    firestore.collection('uid').doc(uid).get()
+                        .then((docSnapshot) => {
+                            if (docSnapshot.exists) {
+                                firestore.collection('uid').doc(uid).update({ uid: uid, site: client })
+                            } else {
+                                firestore.collection('uid').doc(uid).set({ uid: uid, site: client })
+                            }
+                        });
+                }
+            }
             let now = new Date()
             let start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime()
             let end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).getTime()
@@ -218,7 +296,6 @@
                     console.error(error)
                 })
             ])
-            console.log("🚀 ~ promises", promises)
             setFirstlevelDashboard(promises)
             return
         }
@@ -299,38 +376,33 @@
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
             let dashboard_data = {}
             Object.keys(datas[1]).forEach(key => {
+                if (key == 'all') return
                 let today = 0
                 datas[0].forEach((e_code, i) => {
                     if (datas[1][key].all.includes(e_code)) {
-                        console.log("🚀 ~ e_code", e_code)
                         today++
                     }
                 })
                 dashboard_data[key] = {
                     dept: key,
-                    all: datas[1][key].all.length,
+                    all: datas[1][key]?.all?.length || 0,
                     today: today,
-                    remain: datas[1][key].all.length - today,
-                    percent: (today / datas[1][key].all.length) * 100
+                    remain: datas[1][key]?.all?.length - today,
+                    percent: (today / datas[1][key]?.all?.length) * 100
                 }
             })
             let d = Object.keys(dashboard_data).map(a => dashboard_data[a]).sort((a, b) => b.percent - a.percent)
-            console.log("🚀 ~ d", d)
             return d
         }
         function getSecondlevelDashboard(datas, dept) {
             dept = dept.replace(/\+/g, ' ').toUpperCase()
-            console.log("🚀 ~ dept", dept)
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
-            console.log("🚀 ~ datas", datas)
             let dashboard_data = {}
             Object.keys(datas[1][dept]).forEach(e => {
-                console.log("🚀 ~ e", e)
                 if (e == 'sum' || e == 'all') return
                 let today = 0
                 datas[0].forEach(e_code => {
-                    console.log("🚀 ~ e_code", e_code)
-                    // console.log("🚀 ~ datas[1][dept][e]", datas[1][dept][e])
+                    // 
                     if (datas[1][dept][e].arr.includes(e_code)) {
                         today++
                     }
@@ -345,7 +417,6 @@
                 }
             })
             let d = Object.keys(dashboard_data).map(a => dashboard_data[a]).sort((a, b) => b.percent - a.percent)
-            console.log("🚀 ~ d", d)
             return d
         }
         function getThirdlevelDashboard(datas, dept, name) {
@@ -355,11 +426,7 @@
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
             let edata = [...datas[1][dept][name].arr]
             datas[0].forEach(e_code => {
-                console.log("🚀 ~ e_code", e_code)
-                console.log(edata);
-                console.log(e_code);
                 if (edata.includes(e_code)) {
-                    console.log("🚀 ~ e_code", e_code)
                     done.push(e_code)
                     edata.splice(edata.indexOf(e_code), 1)
                 }
@@ -369,7 +436,6 @@
                 notyet: edata
             }
             // let d = Object.keys(dashboard_data).map(a => dashboard_data[a]).sort((a, b) => b.percent - a.percent)
-            console.log("🚀 ~ d", dashboard_data)
             return dashboard_data
         }
     </script>
