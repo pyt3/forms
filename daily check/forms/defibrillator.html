@@ -948,11 +948,13 @@
                     icon: 'success',
                     title: 'บันทึกข้อมูลเรียบร้อย',
                     showCancelButton: true,
-                    cancelBrttonText: 'แสกนเครื่องอื่นต่อ'
+                    cancelButtonText: 'แสกนเครื่องอื่นต่อ'
                 }).then((result) => {
                     if (result.isConfirmed) liff.closeWindow()
                     else if (result.isDismissed) {
-                        liff.openWindow('https://liff.line.me/1657104960-953rK3wq')
+                        liff.openWindow({
+                            url: 'https://liff.line.me/1657104960-953rK3wq',
+                        })
                     }
                 })
             }).catch(function (error) {
