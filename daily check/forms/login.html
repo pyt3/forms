@@ -280,39 +280,33 @@
                         allowOutsideClick: false,
                     })
                     Swal.showLoading(Swal.getConfirmButton())
-                    $.post(script_url, { opt: 'getconst' }, async function (c) {
-                        const firebaseConfig = c
-                        const defaultProject = firebase.initializeApp(firebaseConfig);
-                        firestore = defaultProject.firestore();
-                        auth = defaultProject.auth();
-                        // await getAuth(await liff.getDecodedIDToken().sub)
-                        if (!auth.currentUser) {
-                            await getAuth()
-                        }
-                        Swal.close()
-                        return firestore.collection('user')
-                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                            .get()
-                            .then(async function (querySnapshot) {
-                                if (querySnapshot.docs.length > 0) {
-                                    client = querySnapshot.docs[0].data().site.toUpperCase()
-                                    console.log("🚀 ~ client001", client)
-                                    querySnapshot.docs[0].ref.update({
-                                        sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                                    }).then(() => {
-                                        localStorage.removeItem('session')
-                                        $('#signout-btn').hide()
-                                        $('#data-div').hide()
-                                        return $('#sign-in-div').removeClass('hide')
-                                    })
-                                } else {
+                    // await getAuth(await liff.getDecodedIDToken().sub)
+                    if (!auth.currentUser) {
+                        await getAuth()
+                    }
+                    Swal.close()
+                    return firestore.collection('user')
+                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                        .get()
+                        .then(async function (querySnapshot) {
+                            if (querySnapshot.docs.length > 0) {
+                                client = querySnapshot.docs[0].data().site.toUpperCase()
+                                console.log("🚀 ~ client001", client)
+                                querySnapshot.docs[0].ref.update({
+                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                                }).then(() => {
                                     localStorage.removeItem('session')
                                     $('#signout-btn').hide()
                                     $('#data-div').hide()
                                     return $('#sign-in-div').removeClass('hide')
-                                }
-                            })
-                    })
+                                })
+                            } else {
+                                localStorage.removeItem('session')
+                                $('#signout-btn').hide()
+                                $('#data-div').hide()
+                                return $('#sign-in-div').removeClass('hide')
+                            }
+                        })
 
                 }
                 else {
@@ -506,7 +500,7 @@
                             }
                         } else {
                             session = {
-                                expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
+                                expiry: new Date().getTime() + (1000 * 30), // 2 hours
                                 user: u,
                                 sessionid: sissionid,
                             }
