@@ -947,8 +947,13 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'บันทึกข้อมูลเรียบร้อย',
-                }).then(() => {
-                    window.location.reload()
+                    showCancelButton: true,
+                    cancelBrttonText: 'แสกนเครื่องอื่นต่อ'
+                }).then((result) => {
+                    if (result.isConfirmed) liff.closeWindow()
+                    else if (result.isDismissed) {
+                        liff.openWindow('https://liff.line.me/1657104960-953rK3wq')
+                    }
                 })
             }).catch(function (error) {
                 console.error(error)
