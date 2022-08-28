@@ -262,24 +262,25 @@
             session = localStorage.getItem("session")
             if (session) {
                 $.LoadingOverlay("hide");
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Welcome back!!',
-                    text: 'กำลังดึงข้อมูล...',
-                    allowOutsideClick: false,
-                })
-                Swal.showLoading(Swal.getConfirmButton())
-                $.post(script_url, { opt: 'getconst' }, async function (c) {
-                    const firebaseConfig = c
-                    const defaultProject = firebase.initializeApp(firebaseConfig);
-                    firestore = defaultProject.firestore();
-                    auth = defaultProject.auth();
-                    // await getAuth(await liff.getDecodedIDToken().sub)
-                    if (!auth.currentUser) {
-                        await getAuth()
-                    }
-                    Swal.close()
-                    if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
+
+                if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Session Expired',
+                        html: 'กรุณาล็อคอินใหม่อีกครั้ง<br><br> ระบบกำลังนำท่านไปที่หน้าล็อคอิน',
+                        allowOutsideClick: false,
+                    })
+                    Swal.showLoading(Swal.getConfirmButton())
+                    $.post(script_url, { opt: 'getconst' }, async function (c) {
+                        const firebaseConfig = c
+                        const defaultProject = firebase.initializeApp(firebaseConfig);
+                        firestore = defaultProject.firestore();
+                        auth = defaultProject.auth();
+                        // await getAuth(await liff.getDecodedIDToken().sub)
+                        if (!auth.currentUser) {
+                            await getAuth()
+                        }
+                        Swal.close()
                         return firestore.collection('user')
                             .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
                             .get()
@@ -302,38 +303,48 @@
                                     return $('#sign-in-div').removeClass('hide')
                                 }
                             })
-                    }
-                    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-                        let area = $(this).attr('data-bs-target')
-                        $(area).LoadingOverlay('show');
-                        let id = $(this).attr('id').replace('-tab', '')
-                        active_tab = id
-                        localStorage.setItem('active_tab', active_tab)
-                        getTableData(JSON.parse(session), id)
-                        $(area).LoadingOverlay('hide');
-                        // resizeCanvas();// previous active tab
                     })
-                    $('#signout-btn').show()
-                    $('#data-div').show()
-                    $.LoadingOverlay("show");
-                    getTableData(JSON.parse(session), active_tab)
-                    $.LoadingOverlay('hide')
-                    $('#signout-btn').click(function () {
-                        let session = localStorage.getItem("session")
-                        firestore.collection('user')
-                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                            .get()
-                            .then(async function (querySnapshot) {
-                                querySnapshot.docs[0].ref.update({
-                                    sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                                }).then(() => {
-                                    localStorage.removeItem('session')
-                                    location.reload()
-                                })
+
+                }
+                else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Welcome back!!',
+                        text: 'กำลังดึงข้อมูล...',
+                        allowOutsideClick: false,
+                    })
+                    Swal.showLoading(Swal.getConfirmButton())
+                }
+                $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                    let area = $(this).attr('data-bs-target')
+                    $(area).LoadingOverlay('show');
+                    let id = $(this).attr('id').replace('-tab', '')
+                    active_tab = id
+                    localStorage.setItem('active_tab', active_tab)
+                    getTableData(JSON.parse(session), id)
+                    $(area).LoadingOverlay('hide');
+                    // resizeCanvas();// previous active tab
+                })
+                $('#signout-btn').show()
+                $('#data-div').show()
+                $.LoadingOverlay("show");
+                getTableData(JSON.parse(session), active_tab)
+                $.LoadingOverlay('hide')
+                $('#signout-btn').click(function () {
+                    let session = localStorage.getItem("session")
+                    firestore.collection('user')
+                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                        .get()
+                        .then(async function (querySnapshot) {
+                            querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                            }).then(() => {
+                                localStorage.removeItem('session')
+                                location.reload()
                             })
-                    })
-                    return false
-                });
+                        })
+                })
+                return false
             } else {
                 $.LoadingOverlay("hide");
                 $('#signout-btn').hide()
@@ -458,7 +469,7 @@
                             })
                             if (formValues) {
                                 session = {
-                                    expiry: new Date().getTime() + (1000 * 60 * 60 * 2), // 2 hours
+                                    expiry: new Date().getTime() + (1000 * 30), // 2 hours
                                     user: u,
                                     sessionid: sissionid,
                                 }
