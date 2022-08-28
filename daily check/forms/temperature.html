@@ -993,7 +993,7 @@
                 liff.sendMessages([
                     {
                         "type": "text",
-                        "text": "$ Submit Refrigerator Daily Check Successfully \n\n" + new Date().toLocaleString('th-TH', {
+                        "text": "Submit Refrigerator Daily Check Successfully \n\n" + new Date().toLocaleString('th-TH', {
                             hour12: false,
                             month: "numeric",
                             day: "numeric",
@@ -1011,9 +1011,15 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'บันทึกข้อมูลเรียบร้อย',
-
-                }).then(() => {
-                    location.reload()
+                    showCancelButton: true,
+                    cancelButtonText: 'แสกนเครื่องอื่นต่อ'
+                }).then((result) => {
+                    if (result.isConfirmed) liff.closeWindow()
+                    else if (result.isDismissed) {
+                        liff.openWindow({
+                            url: 'https://liff.line.me/1657104960-953rK3wq',
+                        })
+                    }
                 })
                 addData(date.toLocaleString('th-TH', {
                     hour12: false,
