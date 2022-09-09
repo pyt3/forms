@@ -254,6 +254,7 @@
             checkShelf = url.searchParams.get("checkShelf")
 
             if (min && max && (min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
+            console.log("🚀 ~ isDefaultTemp", isDefaultTemp)
             if (min2 && max2 && (min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
             console.log("🚀 ~ isDefaultTemp2", isDefaultTemp2)
 
@@ -337,7 +338,7 @@
                             await getDeptList(client)
                             getFolderToken()
                             $.LoadingOverlay('hide')
-                            if (checkShelf == 'undefined') {
+                            if (!checkShelf || checkShelf == 'undefined') {
                                 Swal.fire({
                                     icon: 'info',
                                     title: 'ระบุจำนวนชั้นของตู้เย็น',
