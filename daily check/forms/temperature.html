@@ -888,6 +888,7 @@
 
                 let label = []
                 snapshot.forEach(doc => {
+                    console.log("🚀 ~ doc", doc.data())
                     label.push(new Date(parseInt(doc.data().time)).toLocaleString('th-TH', {
                         hour12: false,
                         hour: "numeric",
