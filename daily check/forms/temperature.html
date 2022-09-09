@@ -86,7 +86,6 @@
                                 Model<p class="text-primary" id="text-model"></p>
                             </div>
                         </div>
-
                         <div class="row justify-content-center">
                             <div class="col-md-4 mt-3">
                                 <label for="rec_name">Recorder Name</label>
@@ -121,7 +120,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="row justify-content-center  p-2 m-2 border border-2 border-info rounded shadow" id="shelf2">
                             <div class="col-md-6 mt-2">
@@ -142,9 +140,7 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                         <div class="row justify-content-center align-items-start" style="display: none;">
                             <div class="col-md-4 mt-3 text-center">
                                 <label for="report">ภาพถ่ายอาการผิดปกติของเครื่อง</label>
@@ -171,15 +167,12 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
         <!-- <label for="temp" class="form-label">Temperature
                     <input type="number" id="temp" class="form-control">
                     <button id="set" class="btn btn-warning">save</button>
                 </label> -->
-
     </div>
     <div class="row justify-content-center align-items-end m-1">
         <div class="col-md-4 text-center">
@@ -222,7 +215,6 @@
                 document.write('&copy;');
                 document.write(' 2022 ');
                 document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
-
             </script>
         </div>
     </footer>
@@ -234,7 +226,6 @@
     <script>
         var firestore, auth, foldertoken
         var client, dept, id, nid, brand, model, name, min, max, min2, max2, isDefaultTemp = false, isDefaultTemp2 = false, checkShelf
-
         $(document).ready(() => {
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
@@ -246,56 +237,41 @@
             name = url.searchParams.get("name") || 'test'
             id = url.searchParams.get("id") || 'test'
             nid = url.searchParams.get("nid") || 'test'
-            console.log("🚀 ~ nid", nid)
             min = getTemp(url.searchParams.get("min"))
             max = getTemp(url.searchParams.get("max"))
             min2 = getTemp(url.searchParams.get("min2"))
             max2 = getTemp(url.searchParams.get("max2"))
             checkShelf = url.searchParams.get("checkShelf")
-
             if (min && max && (min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
-            console.log("🚀 ~ isDefaultTemp", isDefaultTemp)
             if (min2 && max2 && (min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
-            console.log("🚀 ~ isDefaultTemp2", isDefaultTemp2)
-
             $('#temp, #temp2').keyup(function () {
                 let t1 = $('#temp').val()
                 let t2 = $('#temp2').val()
                 let failureshow = false
-                console.log("🚀 ~ t1 == '' && t2 != ''", t1 == '' && t2 != '')
-                console.log("🚀 ~ t1 != '' && t2 == ''", t1 != '' && t2 == '')
-                console.log("🚀 ~ t1 != '' && t2 != ''", t1 != '' && t2 != '')
                 if (t1 == '' && t2 == '') {
                     failureshow = false
                 } else if (t1 != '' && t2 == '') {
-                    console.log("🚀 ~ t1 < $('#min').val() || t1 > $('#max').val()", t1 < $('#min').val() || t1 > $('#max').val())
                     if (t1 < $('#min').val() || t1 > $('#max').val()) {
                         failureshow = true
                     } else {
                         failureshow = false
                     }
-
                 }
                 else if (t1 == '' && t2 != '') {
-                    console.log("🚀 ~ t2 < $('#min2').val() || t2 > $('#max2').val()", t2 < $('#min2').val() || t2 > $('#max2').val())
                     if (t2 < $('#min2').val() || t2 > $('#max2').val()) {
                         failureshow = true
                     } else {
                         failureshow = false
                     }
-
                 }
                 else if (t1 != '' && t2 != '') {
                     if (t1 < $('#min').val() || t1 > $('#max').val()) {
                         failureshow = true
                     }
-                    console.log("🚀 ~ t2 < $('#min2').val() || t2 > $('#max2').val()", t2 < $('#min2').val() || t2 > $('#max2').val())
                     if (t2 < $('#min2').val() || t2 > $('#max2').val()) {
                         failureshow = true
                     }
-
                 }
-                console.log("🚀 ~ failureshow", failureshow)
                 if (failureshow) {
                     $('#failure-img').closest('.row').show(500).prop('required', true)
                 } else {
@@ -322,16 +298,13 @@
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
                         return liff.login()
-                        console.log("🚀 ~ url", url)
                         // return liff.login({ redirectUri: url })
                     } else {
-
                         console.log('liff init success');
                         $.LoadingOverlay('show')
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
                             const firebaseConfig = c
                             const defaultProject = firebase.initializeApp(firebaseConfig);
-                            console.log(defaultProject)
                             firestore = defaultProject.firestore();
                             auth = defaultProject.auth();
                             await getAuth(await liff.getDecodedIDToken().sub)
@@ -372,7 +345,6 @@
                                                 title: "โปรดอ่าน",
                                                 html: '<strong class="text-danger">กรณีตู้เย็นมี 2 ชั้น</strong><br>บันทึกอุณหภูมิชั้นบน ในช่องอุณหภูมิที่ 1<br>และ<br>บันทึกอุณหภูมิชั้นล่าง ในช่องอุณหภูมิที่ 2',
                                                 confirmButtonText: "ตกลง"
-
                                             })
                                         }
                                     }
@@ -385,14 +357,8 @@
                                 }
                             }
                             $('#filter').click()
-
                         })
-
-
-
-
                     }
-
                 })
                 .catch((err) => {
                     // Error happens during initialization
@@ -426,21 +392,16 @@
             let fromdate = new Date(new Date().setDate(new Date().getDate() - 30))
             $('#from').val(fromdate.getFullYear() + '-' + ('00' + (fromdate.getMonth() + 1)).slice(-2) + '-' + ('00' + (fromdate.getDate())).slice(-2));
             $('#to').val(today.getFullYear() + '-' + ('00' + (today.getMonth() + 1)).slice(-2) + '-' + ('00' + today.getDate()).slice(-2));
-
             // $.LoadingOverlay("show");
         })
-
         function getTemp(text) {
-            console.log("🚀 ~ text", text)
             if (!text || isNaN(text)) return ''
             return parseFloat(text)
         }
-
         function setTemp(value, key) {
             if (value === '') return false
             return $('#' + key).val(value.toString()).prop('readonly', true)
         }
-
         async function getDeptList(client) {
             return firestore.collection(client.toUpperCase() + '_summary').doc('dept').get().then(doc => {
                 let deptList = []
@@ -456,14 +417,11 @@
             }).catch(function (error) {
                 console.error(error)
             });
-
         }
-
         async function getAuth(uid) {
             let email = uid + '@dailycheck.com'
             let password = 'dailycheck'
             return await auth.signInWithEmailAndPassword(email, password).then(function (user) {
-
                 console.log('sign in successful')
             }).catch(async function (error) {
                 // Handle Errors here.
@@ -500,15 +458,10 @@
                 foldertoken = res
             })
         }
-
-
     </script>
     <script>
         var myChart
         function createCharts(label, data, data2) {
-            console.log("🚀 ~ data2", data2)
-            console.log("🚀 ~ data", data)
-
             if (myChart) {
                 myChart.destroy()
             }
@@ -646,8 +599,6 @@
         var myChart2
         function createCharts2(label, data2) {
             if (data2.length <= 0) return
-            console.log("🚀 ~ data2", data2)
-            console.log(max2)
             if (myChart2) {
                 myChart2.destroy()
             }
@@ -812,7 +763,6 @@
             //     // setValue(rand[i], 'PYT3', 'PHA1')
             //     // i++
             // }, 1000)
-
             if (temp == '') {
                 $('#temp').focus()
                 return Swal.fire({
@@ -831,7 +781,6 @@
                     timer: 1500,
                 })
             }
-
             if (temp2 != '' && ($('#min2').val() == '' || $('#max2').val() == '')) {
                 $('#min2').focus()
                 return Swal.fire({
@@ -859,17 +808,16 @@
                     timer: 1500,
                 })
             }
-            let updateobj = {}
-            if (!isDefaultTemp) {
-                updateobj.min = parseFloat($('#min').val())
-                updateobj.max = parseFloat($('#max').val())
-            }
-            if (!isDefaultTemp2 && $('#min2').val() && $('#max2').val()) {
-                updateobj.min2 = parseFloat($('#min2').val())
-                updateobj.max2 = parseFloat($('#max2').val())
-            }
-            console.log("🚀 ~ updateobj", updateobj)
-            firestore.collection(client.toUpperCase() + '_e').doc(nid).update(updateobj)
+            // let updateobj = {}
+            // if (!isDefaultTemp) {
+            //     updateobj.min = parseFloat($('#min').val())
+            //     updateobj.max = parseFloat($('#max').val())
+            // }
+            // if (!isDefaultTemp2 && $('#min2').val() && $('#max2').val()) {
+            //     updateobj.min2 = parseFloat($('#min2').val())
+            //     updateobj.max2 = parseFloat($('#max2').val())
+            // }
+            // firestore.collection(client.toUpperCase() + '_e').doc(nid).update(updateobj)
             uploadFile()
             // setValue(temp)
             // getValue()
@@ -886,10 +834,8 @@
             return firestore.collection(client).where('form', '==', 'temperature').where('time', '>=', from).where('time', '<=', to).where('e_dept', '==', dept).where('e_code', '==', id).get().then(snapshot => {
                 let data = []
                 let data2 = []
-
                 let label = []
                 snapshot.forEach(doc => {
-                    console.log("🚀 ~ doc", doc.data())
                     label.push(new Date(parseInt(doc.data().time)).toLocaleString('th-TH', {
                         hour12: false,
                         hour: "numeric",
@@ -901,7 +847,6 @@
                     if (doc.data().temp) data.push(doc.data().temp)
                     if (doc.data().temp2) data.push(doc.data().temp2)
                 })
-
                 createCharts(label, data)
                 createCharts2(label, data2)
             })
@@ -923,7 +868,6 @@
                         return 'กรุณาชั้นที่ต้องการ'
                     }
                 }
-
             }).then(result => {
                 var canvas = document.querySelector("#myChart");
                 var canvas_img = canvas.toDataURL("image/png", 1.0); //JPEG will not match background color
@@ -933,9 +877,8 @@
                 var blob = pdf.output("bloburl");
                 window.open(blob);
             })
-
         });
-        async function setValue(signature_url, date = new Date()) {
+        async function setValue(signature_url, failure_url, date = new Date()) {
             let col_date = date.toLocaleDateString().replace(/\//g, '_')
             let doc = date.getTime().toString()
             // await firestore.collection(client).doc(dept).collection(col_date).doc(doc).get().then(function (querySnapshot) {
@@ -950,7 +893,6 @@
             let temp = parseFloat($('#temp').val())
             min = parseFloat($('#min').val())
             max = parseFloat($('#max').val())
-
             let rec_name = $('#rec_name').val()
             let rec_dept = $('#rec_dept').val()
             let rec_remark = $('#rec_remark').val()
@@ -975,6 +917,7 @@
                 max: max,
                 time: date.getTime()
             }
+            if (failure_url) obj.failure_url = failure_url
             let temp2, min2, max2
             if ($('#temp2') && $('#temp2').val() != '') {
                 temp2 = parseFloat($('#temp2').val())
@@ -984,10 +927,7 @@
                 obj['min2'] = min2
                 obj['max2'] = max2
             }
-
-            console.log(obj)
             return await firestore.collection(client).add(obj).then(() => {
-
                 if (temp < min || temp > max) {
                     sendNotify(obj)
                 }
@@ -1055,8 +995,6 @@
                     data.push(doc.data().temp)
                     data2.push(doc.data().temp2)
                 });
-
-
                 createCharts(label, data, data2)
             })
         }
@@ -1069,7 +1007,6 @@
             myChart.options.plugins.annotation.annotations.box1.xMax = myChart.data.labels.length
             myChart.update();
         }
-
         const script_url = 'https://script.google.com/macros/s/AKfycbxlVshSHWBOLK3TlWk_KIykaUUSPLe2-OGM8qK0aYWWJWdtJ-0JBkfCDqCSiTsOzwMg/exec'
         function sendNotify(obj) {
             let msg = ''
@@ -1080,7 +1017,6 @@
                 msg = `อุณหภูมิมากกว่า ${max} องศาเซลเซียส`
             }
             msg = `แจ้งเตือนการบันทึก${msg}
-
 วันที่ ${new Date(obj.time).toLocaleString({
                 hour12: false,
                 hour: "numeric",
@@ -1096,9 +1032,6 @@
 รุ่น: ${obj.e_model}
 หน่วยงาน: ${obj.e_dept}
 ผู้บันทึก: ${obj.rec_name}`
-
-
-
             let option = {
                 opt: 'notify',
                 msg: msg
@@ -1115,7 +1048,6 @@
                 msg = `อุณหภูมิมากกว่า ${max2} องศาเซลเซียส'`
             }
             msg = `แจ้งเตือนการบันทึก${msg}
-
 วันที่ ${new Date(obj.time).toLocaleString({
                 hour12: false,
                 hour: "numeric",
@@ -1131,9 +1063,6 @@
 รุ่น: ${obj.e_model}
 หน่วยงาน: ${obj.e_dept}
 ผู้บันทึก: ${obj.rec_name}`
-
-
-
             let option = {
                 opt: 'notify',
                 msg: msg
@@ -1141,8 +1070,6 @@
             option.client = client
             $.post(script_url, option)
         }
-
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <script>
@@ -1158,10 +1085,8 @@
                     },
                     scanY = function (fromTop) {
                         var offset = fromTop ? 1 : -1;
-
                         // loop through each row
                         for (var y = fromTop ? 0 : imgHeight - 1; fromTop ? (y < imgHeight) : (y > -1); y += offset) {
-
                             // loop through each column
                             for (var x = 0; x < imgWidth; x++) {
                                 if (getAlpha(x, y)) {
@@ -1173,10 +1098,8 @@
                     },
                     scanX = function (fromLeft) {
                         var offset = fromLeft ? 1 : -1;
-
                         // loop through each column
                         for (var x = fromLeft ? 0 : imgWidth - 1; fromLeft ? (x < imgWidth) : (x > -1); x += offset) {
-
                             // loop through each row
                             for (var y = 0; y < imgHeight; y++) {
                                 if (getAlpha(x, y)) {
@@ -1186,14 +1109,11 @@
                         }
                         return null; // all image is white
                     };
-
                 var cropTop = scanY(true),
                     cropBottom = scanY(false),
                     cropLeft = scanX(true),
                     cropRight = scanX(false);
-
                 var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
-
                 this.canvas.width = cropRight - cropLeft;
                 this.canvas.height = cropBottom - cropTop;
                 this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
@@ -1204,7 +1124,6 @@
                 backgroundColor: "rgb(255,255,255,0)",
                 penColor: "rgb(0,0,255)",
             });
-
             (() => {
                 $('#save').on('click', () => {
                     event.preventDefault()
@@ -1228,12 +1147,10 @@
                 canvas.height = canvas.offsetHeight * ratio;
                 canvas.getContext("2d").scale(ratio, ratio);
                 signaturePad.clear(); // otherwise isEmpty() might return incorrect value
-
             }
             window.addEventListener("resize", resizeCanvas);
             resizeCanvas();
         })
-
     </script>
     <script>
         var upload_num = 1

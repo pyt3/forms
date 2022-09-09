@@ -1314,6 +1314,7 @@
         }
         // sendNotify()
         function sendNotify(obj, form) {
+
             const notify_url = 'https://notify-api.line.me/api/notify'
             let msg = ''
             Object.keys(obj).forEach(key => {
@@ -1330,8 +1331,7 @@
 แผนก: ${obj.afteruse_e_dept}
 ผู้บันทึก: ${obj.afteruse_rec_name}
 อาการ: 
-${msg.trim()}
-`
+${msg}`
                 } else {
                     msg = `แจ้งอาการผิดปกติเครื่อง Defibrillator
 วันที่: ${obj.date}
@@ -1341,16 +1341,39 @@ ${msg.trim()}
 อาการ: 
 ${msg.trim()}`
                 }
+
                 let option = {
                     opt: 'notify',
                     msg: msg
                 }
                 if (obj.img_url) {
+
                     option.img = obj.img_url
                 }
                 option.client = client
-                $.post(script_url, option)
+                $.post(script_url, option).done(function () {
+                    if (form != 'afteruse' && obj.failure_url) {
+                        option = {
+                            opt: 'notify',
+                            msg: 'ภาพความผิดปกติเครื่อง',
+                            img: obj.failure_url,
+                            client: client
+                        }
+                        console.log("🚀 ~ option", option)
+                        $.post(script_url, option)
+                    } else if (form == 'afteruse' && obj.failure_url_afteruse) {
+                        option = {
+                            opt: 'notify',
+                            msg: 'ภาพความผิดปกติเครื่อง',
+                            img: obj.failure_url_afteruse,
+                            client: client
+                        }
+                        console.log("🚀 ~ option", option)
+                        $.post(script_url, option)
+                    }
+                })
             }
+
         }
     </script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
