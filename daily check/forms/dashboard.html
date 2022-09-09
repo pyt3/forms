@@ -380,6 +380,7 @@
         }
         function getFirstlevelDashboard(datas) {
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
+            console.log("🚀 ~ datas", datas)
             let dashboard_data = {}
             Object.keys(datas[1]).forEach(key => {
                 if (key == 'all') return
@@ -405,7 +406,7 @@
             dept = dept.replace(/\+/g, ' ').toUpperCase()
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
             console.log("🚀 ~ dept", dept)
-            console.log("🚀 ~ datas", datas)
+
             let dashboard_data = {}
             Object.keys(datas[1][dept]).forEach(e => {
                 if (e == 'sum' || e == 'all') return
