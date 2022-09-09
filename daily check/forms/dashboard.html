@@ -395,6 +395,8 @@
             return d
         }
         function getSecondlevelDashboard(datas, dept) {
+            console.log("🚀 ~ dept", dept)
+            console.log("🚀 ~ datas", datas)
             dept = dept.replace(/\+/g, ' ').toUpperCase()
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
             let dashboard_data = {}
