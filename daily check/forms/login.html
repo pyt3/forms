@@ -24,6 +24,12 @@
     </script>
     <link rel="icon" href="/icon.png" type="image/png">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             min-height: 100vh;
             max-width: 100vw;
@@ -59,11 +65,11 @@
     </style>
 </head>
 
-<body class="container-fluid">
+<body class="container-fluid m-0 p-0">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center href=" #">
-                <img src="http://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="15">&nbsp;&nbsp;
+                <img src="https://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="15">&nbsp;&nbsp;
                 <span>Daily Check</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,7 +162,7 @@
                         แสดงเฉพาะรายการที่ยังไม่อนุมัติ
                     </label>
                 </div>
-                <div class="container-fluid table-responsive pt-3" style="min-height:200px">
+                <div class="container-fluid table-responsive pt-3 m-0 p-0" style="min-height:200px">
                 </div>
             </div>
             <div class="tab-pane fade" id="temperature" role="tabpanel" aria-labelledby="temperature-tab">
@@ -166,7 +172,7 @@
                         แสดงเฉพาะรายการที่ยังไม่อนุมัติ
                     </label>
                 </div>
-                <div class="container-fluid table-responsive pt-3" style="min-height:200px">
+                <div class="container-fluid table-responsive pt-3 m-0 p-0" style="min-height:200px">
                 </div>
             </div>
             <div class="tab-pane fade m-0" id="incubator" role="tabpanel" aria-labelledby="incubator-tab">
@@ -176,7 +182,7 @@
                         แสดงเฉพาะรายการที่ยังไม่อนุมัติ
                     </label>
                 </div>
-                <div class="container-fluid table-responsive pt-3" style="min-height:200px">
+                <div class="container-fluid table-responsive pt-3 m-0 p-0" style="min-height:200px">
                 </div>
             </div>
             <div class="tab-pane fade" id="monitorbedside" role="tabpanel" aria-labelledby="monitorbedside-tab">
@@ -186,7 +192,7 @@
                         แสดงเฉพาะรายการที่ยังไม่อนุมัติ
                     </label>
                 </div>
-                <div class="container-fluid table-responsive pt-3" style="min-height:200px">
+                <div class="container-fluid table-responsive pt-3 m-0 p-0" style="min-height:200px">
                 </div>
             </div>
         </div>
@@ -260,80 +266,97 @@
             $.LoadingOverlay("show");
             let now = new Date().getTime()
             session = localStorage.getItem("session")
+            let config = localStorage.getItem("config")
+            if (config) {
+                setFirebase(JSON.parse(config))
+            } else {
+                $.post(script_url, { opt: 'getconst' }, async function (c) {
+                    localStorage.setItem('config', JSON.stringify(c))
+                    setFirebase(c)
+                })
+            }
             if (session) {
                 $.LoadingOverlay("hide");
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Welcome back!!',
-                    text: 'กำลังดึงข้อมูล...',
-                    allowOutsideClick: false,
-                })
-                Swal.showLoading(Swal.getConfirmButton())
-                $.post(script_url, { opt: 'getconst' }, async function (c) {
-                    const firebaseConfig = c
-                    const defaultProject = firebase.initializeApp(firebaseConfig);
-                    firestore = defaultProject.firestore();
-                    auth = defaultProject.auth();
+
+                if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Session Expired',
+                        html: 'กรุณาล็อคอินใหม่อีกครั้ง<br><br> ระบบกำลังนำท่านไปที่หน้าล็อคอิน',
+                        allowOutsideClick: false,
+                    })
+                    Swal.showLoading(Swal.getConfirmButton())
                     // await getAuth(await liff.getDecodedIDToken().sub)
                     if (!auth.currentUser) {
                         await getAuth()
                     }
-                    Swal.close()
-                    if ((JSON.parse(session).expiry || 0) < new Date().getTime()) {
-                        return firestore.collection('user')
-                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                            .get()
-                            .then(async function (querySnapshot) {
-                                if (querySnapshot.docs.length > 0) {
-                                    client = querySnapshot.docs[0].data().site.toUpperCase()
-                                    console.log("🚀 ~ client001", client)
-                                    querySnapshot.docs[0].ref.update({
-                                        sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
-                                    }).then(() => {
-                                        localStorage.removeItem('session')
-                                        $('#signout-btn').hide()
-                                        $('#data-div').hide()
-                                        return $('#sign-in-div').removeClass('hide')
-                                    })
-                                } else {
-                                    localStorage.removeItem('session')
-                                    $('#signout-btn').hide()
-                                    $('#data-div').hide()
-                                    return $('#sign-in-div').removeClass('hide')
-                                }
-                            })
-                    }
-                    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-                        let area = $(this).attr('data-bs-target')
-                        $(area).LoadingOverlay('show');
-                        let id = $(this).attr('id').replace('-tab', '')
-                        active_tab = id
-                        localStorage.setItem('active_tab', active_tab)
-                        getTableData(JSON.parse(session), id)
-                        $(area).LoadingOverlay('hide');
-                        // resizeCanvas();// previous active tab
-                    })
-                    $('#signout-btn').show()
-                    $('#data-div').show()
-                    $.LoadingOverlay("show");
-                    getTableData(JSON.parse(session), active_tab)
-                    $.LoadingOverlay('hide')
-                    $('#signout-btn').click(function () {
-                        let session = localStorage.getItem("session")
-                        firestore.collection('user')
-                            .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
-                            .get()
-                            .then(async function (querySnapshot) {
+                    setTimeout(() => {
+                        Swal.close()
+                    }, 2000);
+                    return firestore.collection('user')
+                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                        .get()
+                        .then(async function (querySnapshot) {
+                            if (querySnapshot.docs.length > 0) {
+                                client = querySnapshot.docs[0].data().site.toUpperCase()
+                                console.log("🚀 ~ client001", client)
                                 querySnapshot.docs[0].ref.update({
                                     sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
                                 }).then(() => {
                                     localStorage.removeItem('session')
-                                    location.reload()
+                                    $('#signout-btn').hide()
+                                    $('#data-div').hide()
+                                    return $('#sign-in-div').removeClass('hide')
                                 })
-                            })
+                            } else {
+                                localStorage.removeItem('session')
+                                $('#signout-btn').hide()
+                                $('#data-div').hide()
+                                return $('#sign-in-div').removeClass('hide')
+                            }
+                        })
+
+                }
+                else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Welcome back!!',
+                        text: 'กำลังดึงข้อมูล...',
+                        allowOutsideClick: false,
                     })
-                    return false
-                });
+                    Swal.showLoading(Swal.getConfirmButton())
+                }
+                $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                    let area = $(this).attr('data-bs-target')
+                    $(area).LoadingOverlay('show');
+                    let id = $(this).attr('id').replace('-tab', '')
+                    active_tab = id
+                    localStorage.setItem('active_tab', active_tab)
+                    getTableData(JSON.parse(session), id)
+                    $(area).LoadingOverlay('hide');
+                    // resizeCanvas();// previous active tab
+                })
+                $('#signout-btn').show()
+                $('#data-div').show()
+                $.LoadingOverlay("show");
+                getTableData(JSON.parse(session), active_tab)
+                $.LoadingOverlay('hide')
+                Swal.close()
+                $('#signout-btn').click(function () {
+                    let session = localStorage.getItem("session")
+                    firestore.collection('user')
+                        .where('sessionid', "array-contains", JSON.parse(session).sessionid).limit(1)
+                        .get()
+                        .then(async function (querySnapshot) {
+                            querySnapshot.docs[0].ref.update({
+                                sessionid: firebase.firestore.FieldValue.arrayRemove(JSON.parse(session).sessionid),
+                            }).then(() => {
+                                localStorage.removeItem('session')
+                                location.reload()
+                            })
+                        })
+                })
+                return false
             } else {
                 $.LoadingOverlay("hide");
                 $('#signout-btn').hide()
@@ -352,6 +375,18 @@
 
             }
         });
+
+        async function setFirebase(c) {
+            const firebaseConfig = c
+            const defaultProject = firebase.initializeApp(firebaseConfig);
+            firestore = defaultProject.firestore();
+            auth = defaultProject.auth();
+            if (!auth.currentUser) {
+                await getAuth()
+            }
+            $.LoadingOverlay("hide");
+        }
+
         async function getAuth(uid = "manager") {
             let email = uid + '@dailycheck.com'
             let password = 'dailycheck'
