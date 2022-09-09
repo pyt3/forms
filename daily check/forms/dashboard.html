@@ -296,6 +296,7 @@
                     console.error(error)
                 })
             ])
+            console.log("🚀 ~ promises", promises)
             setFirstlevelDashboard(promises)
             return
         }
@@ -395,10 +396,11 @@
             return d
         }
         function getSecondlevelDashboard(datas, dept) {
-            console.log("🚀 ~ dept", dept)
-            console.log("🚀 ~ datas", datas)
+
             dept = dept.replace(/\+/g, ' ').toUpperCase()
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
+            console.log("🚀 ~ dept", dept)
+            console.log("🚀 ~ datas", datas)
             let dashboard_data = {}
             Object.keys(datas[1][dept]).forEach(e => {
                 if (e == 'sum' || e == 'all') return
