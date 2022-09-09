@@ -296,6 +296,10 @@
                     console.error(error)
                 })
             ])
+            let upperKeyData = {}
+            Object.keys(promise).forEach(key => {
+                upperKeyData[key] = promises[key]
+            })
             setFirstlevelDashboard(promises)
             return
         }
