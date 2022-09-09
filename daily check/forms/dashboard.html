@@ -296,11 +296,7 @@
                     console.error(error)
                 })
             ])
-            let upperKeyData = {}
-            Object.keys(promises).forEach(key => {
-                upperKeyData[key.toUpperCase()] = promises[key]
-            })
-            setFirstlevelDashboard(upperKeyData)
+            setFirstlevelDashboard(promises)
             return
         }
     </script>
@@ -330,7 +326,7 @@
             })
             $('.card').click(function () {
                 let dept = $(this).find('.card-header').text()
-                setSecondlevelDashboard([...datas], dept.toUpperCase())
+                setSecondlevelDashboard([...datas], dept)
             }).hover(function () {
                 $(this).css('cursor', 'pointer')
             }).mouseleave(function () {
@@ -388,7 +384,7 @@
                     }
                 })
                 dashboard_data[key] = {
-                    dept: key,
+                    dept: key.toUpperCase(),
                     all: datas[1][key]?.all?.length || 0,
                     today: today,
                     remain: datas[1][key]?.all?.length - today,
