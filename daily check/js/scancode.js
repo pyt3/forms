@@ -131,6 +131,8 @@ function getdata(result) {
                         url.searchParams.set("max", d.max)
                         url.searchParams.set("min2", d.min2)
                         url.searchParams.set("max2", d.max2)
+                        url.searchParams.set("nid", id)
+                        url.searchParams.set("checkShelf", d.checkShelf)
                     }
                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                     // 
@@ -155,6 +157,8 @@ function getdata(result) {
                                 url.searchParams.set("max", d.max)
                                 url.searchParams.set("min2", d.min2)
                                 url.searchParams.set("max2", d.max2)
+                                url.searchParams.set("nid", id)
+                                url.searchParams.set("checkShelf", d.checkShelf)
                             }
                             //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                             // 
@@ -179,6 +183,8 @@ function getdata(result) {
                                         url.searchParams.set("max", d.max)
                                         url.searchParams.set("min2", d.min2)
                                         url.searchParams.set("max2", d.max2)
+                                        url.searchParams.set("nid", id)
+                                        url.searchParams.set("checkShelf", d.checkShelf)
                                     }
                                     //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
                                     // 
