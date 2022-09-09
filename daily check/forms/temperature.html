@@ -253,8 +253,8 @@
             max2 = getTemp(url.searchParams.get("max2"))
             checkShelf = url.searchParams.get("checkShelf")
 
-            if ((min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
-            if ((min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
+            if (min && max && (min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
+            if (min2 && max2 && (min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
 
             $('#temp, #temp2').keyup(function () {
                 let t1 = $('#temp').val()
