@@ -297,6 +297,11 @@
                 })
             ])
             console.log("🚀 ~ promises", promises)
+            let upperCaseKey = {}
+            Object.keys(promises[1]).forEach(key => {
+                upperCaseKey[key.toUpperCase()] = promises[1][key]
+            })
+            promises[1] = upperCaseKey
             setFirstlevelDashboard(promises)
             return
         }
