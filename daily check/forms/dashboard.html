@@ -298,9 +298,9 @@
             ])
             let upperKeyData = {}
             Object.keys(promise).forEach(key => {
-                upperKeyData[key] = promises[key]
+                upperKeyData[key.toUpperCase()] = promises[key]
             })
-            setFirstlevelDashboard(promises)
+            setFirstlevelDashboard(upperKeyData)
             return
         }
     </script>
@@ -330,7 +330,7 @@
             })
             $('.card').click(function () {
                 let dept = $(this).find('.card-header').text()
-                setSecondlevelDashboard([...datas], dept)
+                setSecondlevelDashboard([...datas], dept.toUpperCase())
             }).hover(function () {
                 $(this).css('cursor', 'pointer')
             }).mouseleave(function () {
