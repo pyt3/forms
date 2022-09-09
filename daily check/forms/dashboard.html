@@ -383,6 +383,7 @@
             console.log("🚀 ~ datas", datas)
             let dashboard_data = {}
             Object.keys(datas[1]).forEach(key => {
+                console.log("🚀 ~ key", key)
                 if (key == 'all') return
                 let today = 0
                 datas[0].forEach((e_code, i) => {
@@ -398,6 +399,7 @@
                     percent: (today / datas[1][key]?.all?.length) * 100
                 }
             })
+
             let d = Object.keys(dashboard_data).map(a => dashboard_data[a]).sort((a, b) => b.percent - a.percent)
             return d
         }
