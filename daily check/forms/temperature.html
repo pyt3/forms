@@ -897,8 +897,8 @@
                         day: "numeric",
                         year: "numeric"
                     }))
-                    data.push(doc.data().temp)
-                    data2.push(doc.data().temp2)
+                    if (doc.data().temp) data.push(doc.data().temp)
+                    if (doc.data().temp2) data.push(doc.data().temp2)
                 })
 
                 createCharts(label, data)
