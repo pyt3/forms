@@ -637,9 +637,9 @@
         var foldertoken
         $(document).ready(() => {
             $.LoadingOverlay("show");
-            var url_string = window.location.href.split('liff.state=')
-            url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
-            var url = new URL(url_string.join(''))
+            var url_string = window.location.href.replace('liff.state=', '')
+            // url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
+            // var url = new URL(url_string.join(''))
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
@@ -647,7 +647,7 @@
                 .then(() => {
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
-                        return liff.login({ redirectUri: url_string.join('') })
+                        return liff.login({ redirectUri: url_string })
                     } else {
                         console.log('liff init success');
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
