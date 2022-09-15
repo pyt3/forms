@@ -589,6 +589,7 @@
                 resizeCanvas();// previous active tab
             })
             showWeekly()
+            compressFile('report')
         });
         function showWeekly() {
             let day = moment().format('dddd')
@@ -1104,7 +1105,8 @@
     <script>
         var upload_num = 2
         function uploadFile() {
-            let file = compressFile('report')
+            const file = document.getElementById("report").files[0];
+            console.log("🚀 ~ file", file)
             if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 3
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
             if (signaturePad.isEmpty()) {
@@ -1174,8 +1176,7 @@
                                         year: "numeric"
                                     })
                                 };
-                                // let failure_file = $('#daily-form .failure-img')[0].files[0]
-                                let failure_file = compressFile('daily-form .failure-img')
+                                let failure_file = $('#daily-form .failure-img')[0].files[0]
                                 gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
                                     .then(res => {
                                         if (!res.id) return console.error("Upload error: " + res.message);
@@ -1419,13 +1420,11 @@ ${msg.trim()}`
                 // rateSelector: '#comp_rate',
             });
             comp.on('compressed', (files) => {
-                let file = toblob(files[0])
-                return file
+                $('#' + id).val(files[0])
             });
 
             comp.on('compressing', () => console.log('compressing'))
         }
-
     </script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
