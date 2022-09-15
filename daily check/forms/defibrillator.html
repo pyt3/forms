@@ -1104,8 +1104,8 @@
     </script>
     <script>
         var upload_num = 2
-        function uploadFile() {
-            const file = compressFile('report')
+        async function uploadFile() {
+            const file = await compressFile('report')
             console.log("🚀 ~ file", file)
             if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 3
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
