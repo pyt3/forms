@@ -1105,8 +1105,6 @@
     <script>
         var upload_num = 2
         async function uploadFile() {
-            const file = await compressFile('report')
-            console.log("🚀 ~ file", file)
             if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 3
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
             if (signaturePad.isEmpty()) {
@@ -1151,43 +1149,80 @@
             let report_url = 'https://drive.google.com/uc?id='
             let signature_url = 'https://drive.google.com/uc?id='
             let failure_url = 'https://drive.google.com/uc?id='
-            return gdriveUpload({ ...foldertoken, file, metadata, chunkSize, onProgress: handleProgress })
-                .then(res => {
-                    if (!res.id) return console.error("Upload error: " + res.message);
-                    report_url += res.id
-                    metadata = {
-                        name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                            hour12: false,
-                            month: "numeric",
-                            day: "numeric",
-                            year: "numeric"
-                        })
-                    };
-                    gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
-                        .then(res => {
-                            if (!res.id) return console.error("Upload error: " + res.message);
-                            signature_url += res.id
-                            if ($('#daily-form').find('.failure-div').is(':visible')) {
-                                metadata = {
-                                    name: 'defib daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
-                                        hour12: false,
-                                        month: "numeric",
-                                        day: "numeric",
-                                        year: "numeric"
-                                    })
-                                };
-                                let failure_file = $('#daily-form .failure-img')[0].files[0]
-                                gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
-                                    .then(res => {
-                                        if (!res.id) return console.error("Upload error: " + res.message);
-                                        failure_url += res.id
-                                        return saveFormDaily(report_url, signature_url, failure_url)
-                                    })
-                            } else {
-                                return saveFormDaily(report_url, signature_url)
-                            }
-                        })
-                })
+
+            let comp = Compress({
+                inputSelector: '#report',
+                downloadSelector: '#compressimg',
+                // imageSelector: '#comp_img',
+                // dropSelector: ".img-con",
+                rate: 25,
+                imagePrefix: 'compressed-',
+                dimen: null,
+                // rateSelector: '#comp_rate',
+            });
+            comp.on('compressed', (files) => {
+                console.log("🚀 ~ files", files)
+                let file = toblob(files[0])
+                return gdriveUpload({ ...foldertoken, file, metadata, chunkSize, onProgress: handleProgress })
+                    .then(res => {
+                        if (!res.id) return console.error("Upload error: " + res.message);
+                        report_url += res.id
+                        metadata = {
+                            name: 'defib daily check staff ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                hour12: false,
+                                month: "numeric",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                        };
+                        gdriveUpload({ ...foldertoken, file: dataURItoBlob(signatureblob), metadata, chunkSize, onProgress: handleProgress })
+                            .then(res => {
+                                if (!res.id) return console.error("Upload error: " + res.message);
+                                signature_url += res.id
+                                if ($('#daily-form').find('.failure-div').is(':visible')) {
+                                    metadata = {
+                                        name: 'defib daily check failure ' + $('#rec_name').val() + ' ' + now.toLocaleString('th-TH', {
+                                            hour12: false,
+                                            month: "numeric",
+                                            day: "numeric",
+                                            year: "numeric"
+                                        })
+                                    };
+                                    let comp_fail = Compress({
+                                        inputSelector: '#daily-form .failure-img',
+                                        downloadSelector: '#compressimg',
+                                        // imageSelector: '#comp_img',
+                                        // dropSelector: ".img-con",
+                                        rate: 25,
+                                        imagePrefix: 'compressed-',
+                                        dimen: null,
+                                        // rateSelector: '#comp_rate',
+                                    });
+                                    comp_fail.on('compressed', (files) => {
+                                        console.log("🚀 ~ files", files)
+                                        let failure_file = toblob(files[0])
+                                        gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
+                                            .then(res => {
+                                                if (!res.id) return console.error("Upload error: " + res.message);
+                                                failure_url += res.id
+                                                return saveFormDaily(report_url, signature_url, failure_url)
+                                            })
+                                    });
+
+                                    comp_fail.on('compressing', () => console.log('compressing'))
+
+                                } else {
+                                    return saveFormDaily(report_url, signature_url)
+                                }
+                            })
+                    })
+            });
+
+            comp.on('compressing', () => console.log('compressing'))
+
+
+
+
             // })
         }
         let firstfile = true
@@ -1381,53 +1416,31 @@ ${msg.trim()}`
         }
     </script>
     <script>
-        function compressFile(id) {
-            console.log("🚀 ~ id", id)
-            const toblob = function (dataURI) {
-                // convert base64 to raw binary data held in a string
-                // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-                var byteString = atob(dataURI.split(',')[1]);
+        function toblob(dataURI) {
+            // convert base64 to raw binary data held in a string
+            // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+            var byteString = atob(dataURI.split(',')[1]);
 
-                // separate out the mime component
-                var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            // separate out the mime component
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
-                // write the bytes of the string to an ArrayBuffer
-                var ab = new ArrayBuffer(byteString.length);
-                var ia = new Uint8Array(ab);
-                for (var i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i);
-                }
-
-                //Old Code
-                //write the ArrayBuffer to a blob, and you're done
-                //var bb = new BlobBuilder();
-                //bb.append(ab);
-                //return bb.getBlob(mimeString);
-
-                //New Code
-                return new Blob([ab], { type: mimeString });
-
-
+            // write the bytes of the string to an ArrayBuffer
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
             }
-            let comp = Compress({
-                inputSelector: '#' + id,
-                downloadSelector: '#compressimg',
-                // imageSelector: '#comp_img',
-                // dropSelector: ".img-con",
-                rate: 25,
-                imagePrefix: 'compressed-',
-                dimen: null,
-                // rateSelector: '#comp_rate',
-            });
-            comp.on('compressed', (files) => {
-                console.log("🚀 ~ files", files)
-                let file = toblob(files[0])
-                return file
-            });
 
-            comp.on('compressing', () => console.log('compressing'))
-            $('#' + id).change()
-            // return comp
+            //Old Code
+            //write the ArrayBuffer to a blob, and you're done
+            //var bb = new BlobBuilder();
+            //bb.append(ab);
+            //return bb.getBlob(mimeString);
+
+            //New Code
+            return new Blob([ab], { type: mimeString });
+
+
         }
     </script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
