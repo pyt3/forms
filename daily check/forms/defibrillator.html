@@ -639,8 +639,14 @@
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
-            url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
-            var url = new URL(url_string.join(''))
+            var url
+            if (url_string[1]) {
+                url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
+                url = new URL(url_string.join(''))
+            } else {
+                url = new URL(url_string[0])
+            }
+
             client = url.searchParams.get("client")
             dept = url.searchParams.get("dept")
             brand = url.searchParams.get("brand")
@@ -665,8 +671,8 @@
                 .then(() => {
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
-                        return console.log(url_string)
-                        // return liff.login({ redirectUri: location.href })
+                        // return console.log(url_string)
+                        return liff.login({ redirectUri: url })
                     } else {
                         console.log('liff init success');
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
