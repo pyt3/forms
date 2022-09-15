@@ -1420,6 +1420,7 @@ ${msg.trim()}`
                 // rateSelector: '#comp_rate',
             });
             comp.on('compressed', (files) => {
+                console.log("🚀 ~ files", files)
                 let file = toblob(files[0])
                 return file
             });
