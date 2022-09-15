@@ -641,9 +641,24 @@
             url_string[1] = decodeURIComponent(url_string[1])
             var url = new URL(url_string.join(''))
             console.log("🚀 ~ url_string", url_string)
-            //https://pyt3.github.io/forms/daily%20check/forms/defibrillator?87&client=pyt3&id=pyt3_06556&name=defibrillator%2cexternal%2cmanual&dept=emergency%28%e0%b8%89%e0%b8%b8%e0%b8%81%e0%b9%80%e0%b8%89%e0%b8%b4%e0%b8%99%29&brand=zoll&model=x+series
+            client = url.searchParams.get("client")
+            dept = url.searchParams.get("dept")
+            brand = url.searchParams.get("brand")
+            model = url.searchParams.get("model")
+            name = url.searchParams.get("name")
+            id = url.searchParams.get("id")
+            if (!client || !dept || !brand || !model || !name || !id) {
+                $('body').html('')
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error occured, Please try again or contact BME',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                })
+                return false
+            }
 
-            //https://access.line.me/oauth2/v2.1/authorize?app_id=1657104960-wXQRkQ87&client_id=1657104960&scope=chat_message.write+openid&state=t7KzA4omI2p4&response_type=code&code_challenge_method=S256&code_challenge=vgaBmhwjml-nC6igRgu8QjU1-EimE5KYsV4U-lN8o-o&liff_sdk_version=2.21.1&type=L&redirect_uri=https%3A%2F%2Fpyt3.github.io%2Fforms%2Fdaily%252520check%2Fforms%2Fdefibrillator%3F87%26liff.state%3D%253Fclient%253Dpyt3%2526id%253Dpyt3_06556%2526name%253Ddefibrillator%25252cexternal%25252cmanual%2526dept%253Demergency%252528%2525e0%2525b8%252589%2525e0%2525b8%2525b8%2525e0%2525b8%252581%2525e0%2525b9%252580%2525e0%2525b8%252589%2525e0%2525b8%2525b4%2525e0%2525b8%252599%252529%2526brand%253Dzoll%2526model%253Dx%252Bseries
             liff
                 .init({
                     liffId: "1657104960-wXQRkQ87", // Use own liffId
@@ -672,23 +687,7 @@
                     // Error happens during initialization
                     console.log(err.code, err.message);
                 });
-            client = url.searchParams.get("client")
-            dept = url.searchParams.get("dept")
-            brand = url.searchParams.get("brand")
-            model = url.searchParams.get("model")
-            name = url.searchParams.get("name")
-            id = url.searchParams.get("id")
-            if (!client || !dept || !brand || !model || !name || !id) {
-                $('body').html('')
-                $.LoadingOverlay("hide");
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Error occured, Please try again or contact BME',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                })
-                return false
-            }
+
             $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
             $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
             $('#e_dept, #afteruse_e_dept').val(dept).attr('readonly', true)
