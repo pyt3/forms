@@ -671,7 +671,7 @@
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
                         prompt(url.toString())
-                        liff.login({ redirectUri: url })
+                        liff.login({ redirectUri: url.toString() })
                         // return console.log(url_string.join('?'))
                     } else {
                         console.log('liff init success');
