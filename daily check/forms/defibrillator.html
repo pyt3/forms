@@ -1105,7 +1105,7 @@
     <script>
         var upload_num = 2
         async function uploadFile() {
-            const file = await compressFile('report')
+            const file = compressed_report
             console.log("🚀 ~ file", file)
             if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 3
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
@@ -1176,7 +1176,8 @@
                                         year: "numeric"
                                     })
                                 };
-                                let failure_file = $('#daily-form .failure-img')[0].files[0]
+                                let failure_file = compressed_failure
+                                // let failure_file = $('#daily-form .failure-img')[0].files[0]
                                 gdriveUpload({ ...foldertoken, file: failure_file, metadata, chunkSize, onProgress: handleProgress })
                                     .then(res => {
                                         if (!res.id) return console.error("Upload error: " + res.message);
