@@ -665,7 +665,8 @@
                 .then(() => {
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
-                        return liff.login()
+                        // return console.log(url.href)
+                        return liff.login({ redirectUri: url.href })
                     } else {
                         console.log('liff init success');
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
