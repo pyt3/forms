@@ -638,7 +638,7 @@
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.replace(/liff\.state=/, '').split('?')
-            url_string[1] = decodeURIComponent(url_string[1]).split('&')[1]
+            url_string[1] = decodeURIComponent(url_string[1]).split('&').slice('1')
             var url = new URL(url_string.join('?'))
             console.log("🚀 ~ url_string", url_string)
             client = url.searchParams.get("client")
