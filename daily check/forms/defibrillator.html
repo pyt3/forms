@@ -15,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="../lib/compressjs/dist/compressjs.js"></script>
     <link rel="icon" href="/icon.png" type="image/png">
     <style>
         body {
@@ -1103,6 +1104,7 @@
         var upload_num = 2
         function uploadFile() {
             const file = document.getElementById("report").files[0];
+            console.log("🚀 ~ file", file)
             if ($('#daily-form').find('.failure-div').is(':visible')) upload_num = 3
             if (document.getElementById("report").files.length <= 0) return saveFormDaily('')
             if (signaturePad.isEmpty()) {

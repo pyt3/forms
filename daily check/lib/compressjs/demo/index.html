@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107394901-1"></script>
+    <script>
+		 window.dataLayer = window.dataLayer || [];
+		 function gtag(){dataLayer.push(arguments)};
+		 gtag('js', new Date());
+
+		 gtag('config', 'UA-107394901-1');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Compress 0.0.1</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/mdb.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+
+    </style>
+
+
+    <script src="../dist/compressjs.js"></script>
+</head>
+<body>
+<div class="row comp_container">
+
+    <!--Navbar-->
+    <nav class="navbar navbar-dark bg-primary">
+
+        <!-- Collapse button-->
+        <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#collapseEx2">
+            <i class="fa fa-bars"></i>
+        </button>
+
+        <div class="container">
+
+            <!--Collapse content-->
+            <div class="collapse navbar-toggleable-xs" id="collapseEx2">
+                <!--Navbar Brand-->
+                <a class="navbar-brand">CompressJs</a>
+                <!--Links-->
+                <ul class="nav navbar-nav pull-right">
+                    <li class="nav-item active">
+                        <a class="nav-link">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://github.com/kayslay/CompressJs" class="nav-link">Docs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://github.com/kayslay/" class="nav-link"><span class="fa fa-github fa-lg"></span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://www.facebook.com/badewa.kayode" class="nav-link"><span
+                                class="fa fa-facebook  fa-lg"></span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://twitter.com/Kayslaycode" class="nav-link"><span class="fa fa-twitter fa-lg"></span></a>
+                    </li>
+                </ul>
+            </div>
+            <!--/.Collapse content-->
+
+        </div>
+
+    </nav>
+    <!--/.Navbar-->
+
+    <div class="card col-sm-12 col-xs-12 col-lg-10 col-md-10 push-lg-1 push-md-1 comp_img_container">
+        <div class="img-con" title="drop an image here"><img src="" alt="" id="comp_img" class="img-fluid"></div>
+        <div class="btn-group" id="controls">
+            <label class="btn btn-primary" title="select an image (jpeg, png)">
+                <span id="comp_file_selector"><span class="fa fa-image"></span></span>
+                <input type="file" name="file" id="input_cmprss">
+            </label>
+            <a href="" download="file" id="comp_download" class="btn btn-primary">download</a>
+        </div>
+    </div>
+    <div class="card col-sm-12 col-xs-12 col-lg-10 col-md-10 push-lg-1 push-md-1">
+        <div class="card-block rate_container" title="control the compression rate">
+            <input type="range" min="0" max="80" id="comp_rate"></div>
+    </div>
+    <div class="card col-sm-12 col-xs-12 col-lg-10 col-md-10 push-lg-1 push-md-1">
+        <div class="card-block rate_container" >
+<h2 class="flex-center"> Created for fun by  <a href="https://twitter.com/Kayslaycode">@KayslayCode</a></h2>
+        </div>
+    </div>
+</div>
+
+
+<script src="./js/jquery.min.js"></script>
+<script src="./js/tether.min.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<script src="./js/mdb.min.js"></script>
+
+
+<script>
+
+	let comp = Compress({
+		inputSelector: '#input_cmprss',
+		downloadSelector: '#comp_download',
+		imageSelector: '#comp_img',
+		dropSelector: ".img-con",
+		rate: 100,
+		imagePrefix: 'compressed-',
+		dimen: null,
+		rateSelector: '#comp_rate',
+	});
+	comp.on('compressed', (files) => {
+		console.group('compressed images data url');
+		console.log('this array contains the url for the compressed images');
+		console.log(files);
+		console.log('listen to the compressed event to get the array');
+		console.groupEnd();
+	});
+
+	comp.on('compressing', () => console.log('compressing'))
+
+
+</script>
+</body>
+</html>
