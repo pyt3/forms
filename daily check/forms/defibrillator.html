@@ -666,7 +666,7 @@
                     // Start to use liff's api
                     if (!liff.isLoggedIn()) {
                         // return console.log(url.href)
-                        return liff.login({ redirectUri: url.href })
+                        return liff.login({ redirectUri: location.href })
                     } else {
                         console.log('liff init success');
                         $.post(script_url, { opt: 'getconst' }, async function (c) {
@@ -687,7 +687,7 @@
                     // Error happens during initialization
                     console.log(err.code, err.message);
                 });
-
+            //https://access.line.me/oauth2/v2.1/authorize?app_id=1657104960-wXQRkQ87&client_id=1657104960&scope=chat_message.write+openid&state=NUCZcYXlvIg0&response_type=code&code_challenge_method=S256&code_challenge=bQKhRbpEtXwDwjhWa3ZDGVSqsOPqf_a1z2dWVy38cNg&liff_sdk_version=2.21.1&type=L&redirect_uri=https%3A%2F%2Fpyt3.github.io%2Fforms%2Fdaily%252520check%2Fforms%2Fdefibrillator.html%3F87%26liff.state%3D%253Fclient%253DPYT3%2526id%253DPYT3_06556%2526name%253DDEFIBRILLATOR%25252C%252BEXTERNAL%25252C%252BMANUAL%2526dept%253DEMERGENCY%252528%252B%2525E0%2525B8%252589%2525E0%2525B8%2525B8%2525E0%2525B8%252581%2525E0%2525B9%252580%2525E0%2525B8%252589%2525E0%2525B8%2525B4%2525E0%2525B8%252599%252529%2526brand%253DZOLL%2526model%253DX%252BSeries
             $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
             $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
             $('#e_dept, #afteruse_e_dept').val(dept).attr('readonly', true)
