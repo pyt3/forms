@@ -173,7 +173,7 @@
             }
             let obj = {
                 dept: $('#dept').val(),
-                arr: arr
+                arr: JSON.stringify(arr)
             }
             console.log(obj)
             Swal.fire({
@@ -191,12 +191,16 @@
                         console.log(res)
                         if (res.status == 'success') {
                             arr = []
+
                             Swal.fire({
                                 icon: 'success',
                                 title: 'สำเร็จ',
                                 text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
-                                showConfirmButton: false,
-                                timer: 1500
+                                confirmButtonText: 'ตกลง',
+                                timer: 3000,
+                                allowOutsideClick: false
+                            }).then(()=>{
+                                location.reload()
                             })
                         } else {
                             Swal.fire({
