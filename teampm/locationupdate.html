@@ -130,15 +130,15 @@
     </script>
     <script>
         var arr = []
-        var Toast,profile
+        var Toast, profile
         $(document).ready(() => {
             liff.init({
                 liffId: '1657539607-EPzqza2K',
                 withLoginOnExternalBrowser: true
             })
-            liff.ready.then(async() => {
+            liff.ready.then(async () => {
                 profile = await liff.getProfile()
-                $('#profile').attr('src',profile.pictureUrl)
+                $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
                 Toast = Swal.mixin({
                     toast: true,
@@ -223,55 +223,59 @@
                     console.log(res)
                     if (res.status == 'success') {
                         let flex = {
-                            "type": "bubble",
-                            "header": {
-                                "type": "box",
-                                "layout": "vertical",
-                                "contents": [
-                                    {
-                                        "type": "text",
-                                        "text": "Brown Cafe",
-                                        "weight": "bold",
-                                        "size": "xl",
-                                        "adjustMode": "shrink-to-fit",
-                                        "color": "#ffffff"
-                                    }
-                                ],
-                                "backgroundColor": "#57acdc"
-                            },
-                            "body": {
-                                "type": "box",
-                                "layout": "vertical",
-                                "contents": [
-
-                                ],
-                                "spacing": "lg",
-                                "offsetTop": "none"
-                            },
-                            "styles": {
+                            type: 'flex',
+                            altText: 'Flex',
+                            content: {
+                                "type": "bubble",
                                 "header": {
-                                    "separator": false
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "Brown Cafe",
+                                            "weight": "bold",
+                                            "size": "xl",
+                                            "adjustMode": "shrink-to-fit",
+                                            "color": "#ffffff"
+                                        }
+                                    ],
+                                    "backgroundColor": "#57acdc"
                                 },
-                                "footer": {
-                                    "separator": true
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+
+                                    ],
+                                    "spacing": "lg",
+                                    "offsetTop": "none"
+                                },
+                                "styles": {
+                                    "header": {
+                                        "separator": false
+                                    },
+                                    "footer": {
+                                        "separator": true
+                                    }
                                 }
                             }
                         }
 
                         flex.header.contents[0].text = obj.dept
-                        arr.forEach((id,i) =>{
+                        arr.forEach((id, i) => {
                             flex.body.contents.push({
                                 type: 'text',
                                 text: id
                             })
-                            if(i == arr.length -1) {
+                            if (i == arr.length - 1) {
                                 console.log(flex)
                                 liff.sendMessages([flex]).catch((err) => {
                                     console.log("error", err);
                                 });
                             }
                         })
-                    
+
                         arr = []
 
                         Swal.fire({
@@ -282,7 +286,7 @@
                             timer: 3000,
                             allowOutsideClick: false
                         }).then(() => {
-                            // location.reload()
+                            location.reload()
                         })
                     } else {
                         Swal.fire({
