@@ -259,14 +259,17 @@
                         }
 
                         flex.header.contents[0].text = obj.dept
-                        arr.forEach(id =>{
+                        arr.forEach((id,i) =>{
                             flex.body.contents.push({
                                 type: 'text',
-                                text: 'id'
+                                text: id
                             })
+                            if(i == flex.length -1) {
+                                console.log(flex)
+                                liff.sendMessages([flex])
+                            }
                         })
-                        console.log(flex)
-                        liff.sendMessages([{type: 'text', text: JSON.stringify(flex)}])
+                    
                         arr = []
 
                         Swal.fire({
