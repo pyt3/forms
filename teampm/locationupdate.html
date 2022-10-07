@@ -22,12 +22,28 @@
         body {
             font-family: 'Prompt', sans-serif;
         }
+
+        img#profile {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+        }
     </style>
 </head>
 
 <body>
+    <nav class="navbar bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                &nbsp; <div>
+                    <span id="displayName">Team PM</span>
+                </div>
+            </a>
+        </div>
+    </nav>
     <div class="container">
-        <div class="row justify-contain-center py-3 ">
+        <div class="row justify-contain-center py-3">
             <div class="col-12 text-center">
                 <label for="dept" class="h3 fw-bold text-success">แผนก</label>
                 <select type="text" class="form-select text-center" id="dept">
@@ -85,7 +101,6 @@
                     <option value="X-RAY">X-RAY</option>
                     <option value="รับส่ง">รับส่ง</option>
                 </select>
-
             </div>
         </div>
         <div class="row justify-content-center">
@@ -110,13 +125,16 @@
     </div>
     <script>
         var arr = []
-        var Toast
+        var Toast,profile
         $(document).ready(() => {
             liff.init({
                 liffId: '1657539607-EPzqza2K',
                 withLoginOnExternalBrowser: true
             })
-            liff.ready.then(() => {
+            liff.ready.then(async() => {
+                profile = await liff.getProfile()
+                $('#profile').attr('src',profile.pictureUrl)
+                $('#displayName').text(profile.displayName)
                 Toast = Swal.mixin({
                     toast: true,
                     position: 'top',
