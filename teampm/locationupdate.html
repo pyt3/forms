@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
-    <title>ฟอร์มสมัครงาน</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         * {
             margin: 0;
@@ -112,56 +112,63 @@
         var arr = []
         var Toast
         $(document).ready(() => {
-            Toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
+            liff.init({
+                liffId: '1657539607-EPzqza2K',
+                withLoginOnExternalBrowser: true
             })
+            liff.ready.then(() => {
+                Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                })
 
-            var options = {
-                onComplete: function (cep) {
-                    if (arr.includes(cep)) {
-                        return Toast.fire({
-                            icon: 'warning',
-                            title: 'เพิ่มรหัสนี้ไปแล้ว'
+                var options = {
+                    onComplete: function (cep) {
+                        if (arr.includes(cep)) {
+                            return Toast.fire({
+                                icon: 'warning',
+                                title: 'เพิ่มรหัสนี้ไปแล้ว'
+                            })
+                        }
+                        let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
+                        $(pill).click(function () {
+                            let ele = $(this)
+                            Swal.fire({
+                                icon: 'question',
+                                title: `ลบรหัส ${cep}`,
+                                showCancelButton: true,
+                                confirmButtonText: 'ตกลง',
+                                cancelButtonText: 'ยกเลิก'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    arr = arr.filter(a => a != cep)
+                                    $(ele).remove()
+                                    console.log("🚀 ~ arr", arr)
+                                }
+                            })
                         })
+                        $('#id-sec').append(pill)
+                        $('#isDemo').change()
+                        arr.push(cep)
+                    },
+                };
+                $('#add-id').mask('PYT3_00000', options);
+                $('#isDemo').change(function () {
+                    $('#add-id').unmask();
+                    $('#add-id').val('');
+                    $('#add-id').focus();
+                    if ($(this).is(':checked')) {
+                        $('#add-id').mask('DEMO_000000', options);
+                    } else {
+                        $('#add-id').mask('PYT3_00000', options);
                     }
-                    let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
-                    $(pill).click(function () {
-                        let ele = $(this)
-                        Swal.fire({
-                            icon: 'question',
-                            title: `ลบรหัส ${cep}`,
-                            showCancelButton: true,
-                            confirmButtonText: 'ตกลง',
-                            cancelButtonText: 'ยกเลิก'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                arr = arr.filter(a => a != cep)
-                                $(ele).remove()
-                                console.log("🚀 ~ arr", arr)
-                            }
-                        })
-                    })
-                    $('#id-sec').append(pill)
-                    $('#isDemo').change()
-                    arr.push(cep)
-                },
-            };
-            $('#add-id').mask('PYT3_00000', options);
-            $('#isDemo').change(function () {
-                $('#add-id').unmask();
-                $('#add-id').val('');
-                $('#add-id').focus();
-                if ($(this).is(':checked')) {
-                    $('#add-id').mask('DEMO_000000', options);
-                } else {
-                    $('#add-id').mask('PYT3_00000', options);
-                }
 
+                })
             })
+
         })
 
         $('#add-btn').click(function () {
@@ -182,39 +189,39 @@
                 allowOutsideClick: false
             })
             Swal.showLoading(Swal.getConfirmButton())
-               $.ajax({
-                    url: script_url,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: obj,
-                    success: function (res) {
-                        console.log(res)
-                        if (res.status == 'success') {
-                            arr = []
+            $.ajax({
+                url: script_url,
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                success: function (res) {
+                    console.log(res)
+                    if (res.status == 'success') {
+                        arr = []
 
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'สำเร็จ',
-                                text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
-                                confirmButtonText: 'ตกลง',
-                                timer: 3000,
-                                allowOutsideClick: false
-                            }).then(()=>{
-                                location.reload()
-                            })
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'ผิดพลาด',
-                                text: 'เพิ่มข้อมูลไม่สำเร็จ',
-                                allowOutsideClick: false,
-                                showCancelButton: false,
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'ตกลง'
-                            })
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ',
+                            text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
+                            confirmButtonText: 'ตกลง',
+                            timer: 3000,
+                            allowOutsideClick: false
+                        }).then(() => {
+                            location.reload()
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ผิดพลาด',
+                            text: 'เพิ่มข้อมูลไม่สำเร็จ',
+                            allowOutsideClick: false,
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'ตกลง'
+                        })
                     }
-                })
+                }
+            })
         })
     </script>
     <script>
