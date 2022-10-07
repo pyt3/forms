@@ -198,7 +198,9 @@
             }
             let obj = {
                 dept: $('#dept').val(),
-                arr: JSON.stringify(arr)
+                arr: JSON.stringify(arr),
+                uid: profile.userId,
+                displayName: profile.displayName
             }
             console.log(obj)
             Swal.fire({
