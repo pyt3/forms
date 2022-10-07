@@ -266,7 +266,9 @@
                             })
                             if(i == flex.length -1) {
                                 console.log(flex)
-                                liff.sendMessages([flex])
+                                liff.sendMessages([flex]).catch((err) => {
+                                    console.log("error", err);
+                                });
                             }
                         })
                     
@@ -280,7 +282,7 @@
                             timer: 3000,
                             allowOutsideClick: false
                         }).then(() => {
-                            location.reload()
+                            // location.reload()
                         })
                     } else {
                         Swal.fire({
