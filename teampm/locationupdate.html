@@ -217,6 +217,50 @@
                 success: function (res) {
                     console.log(res)
                     if (res.status == 'success') {
+                        let flex = {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Brown Cafe",
+                                        "weight": "bold",
+                                        "size": "xl",
+                                        "adjustMode": "shrink-to-fit",
+                                        "color": "#ffffff"
+                                    }
+                                ],
+                                "backgroundColor": "#57acdc"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+
+                                ],
+                                "spacing": "lg",
+                                "offsetTop": "none"
+                            },
+                            "styles": {
+                                "header": {
+                                    "separator": false
+                                },
+                                "footer": {
+                                    "separator": true
+                                }
+                            }
+                        }
+
+                        flex.header.contents[0].text = obj.dept
+                        arr.forEach(id =>{
+                            flex.body.contents.push({
+                                type: 'text',
+                                text: 'id'
+                            })
+                        })
+                        liff.sendMessages([flex])
                         arr = []
 
                         Swal.fire({
