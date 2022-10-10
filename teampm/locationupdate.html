@@ -227,7 +227,7 @@
                             altText: 'Flex',
                             contents: {
                                 "type": "bubble",
-                                "size": "micro",
+                                //"size": "micro",
                                 "header": {
                                     "type": "box",
                                     "layout": "vertical",
@@ -267,7 +267,8 @@
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
                                 type: 'text',
-                                text: id
+                                text: id,
+                                align: "center"
                             })
                             if (i == arr.length - 1) {
                                 console.log(flex)
