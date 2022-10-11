@@ -102,6 +102,9 @@
                     <option value="รับส่ง">รับส่ง</option>
                 </select>
             </div>
+            <div class="col-12">
+                <input type="text" id="remark" class="form-control" placeholder="หมายเหตุ ชื่อห้อง/เลขห้อง/ตำแหน่ง/อื่นๆ">
+            </div>
         </div>
         <div class="row justify-content-center">
             <div class="col-12 flex-fill mb-2">
@@ -205,7 +208,8 @@
                 dept: $('#dept').val(),
                 arr: JSON.stringify(arr),
                 uid: profile.userId,
-                displayName: profile.displayName
+                displayName: profile.displayName,
+                remark: $('#remark').val()
             }
             console.log(obj)
             Swal.fire({
