@@ -231,7 +231,6 @@
                             altText: 'Flex',
                             contents: {
                                 "type": "bubble",
-                                //"size": "micro",
                                 "header": {
                                     "type": "box",
                                     "layout": "vertical",
@@ -243,6 +242,11 @@
                                             "size": "xl",
                                             "adjustMode": "shrink-to-fit",
                                             "color": "#ffffff"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "hello, world",
+                                            "color": "#ffffff"
                                         }
                                     ],
                                     "backgroundColor": "#57acdc"
@@ -251,11 +255,12 @@
                                     "type": "box",
                                     "layout": "vertical",
                                     "contents": [
-
+                                        
                                     ],
                                     "spacing": "lg",
                                     "offsetTop": "none"
                                 },
+                                
                                 "styles": {
                                     "header": {
                                         "separator": false
@@ -268,6 +273,7 @@
                         }
 
                         flex.contents.header.contents[0].text = obj.dept
+                        flex.contents.header.contents[1].text = obj.remark
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
                                 type: 'text',
