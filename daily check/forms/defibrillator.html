@@ -47,7 +47,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="20" class="d-inline-block">
+                <img src="../iconBME.png" alt="" height="20" class="d-inline-block">
                 Daily Check
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@
     <div class="container mb-5 p-0 pb-2">
         <div class="row mb-3">
             <div class="col-12 text-center px-5 mt-3">
-                <img src="https://img.in.th/images/92cc41f62e7a8b08398ed7cddcc22725.jpg" alt="banner" class="img-fluid" style="max-width: 150px;">
+                <img src="../nhealth.jpg" alt="banner" class="img-fluid" style="max-width: 150px;">
             </div>
         </div>
     </div>
@@ -83,7 +83,7 @@
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-daily" role="tabpanel" aria-labelledby="nav-daily-tab">
                 <form id="daily-form" class="mt-3 mb-5">
-                    <section class="m-0 mt-2 rounded-2  p-4 shadow border border-primary">
+                    <section class="m-0 mt-2 rounded-2 p-4 shadow border border-primary">
                         <div class="row justify-content-start align-items-center">
                             <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
                                 <p class="h5 mt-2 fw-bold timenow"></p>
@@ -121,6 +121,19 @@
                             <div class="col-md-3 mt-3">
                                 <label for="rec_remark">หมายเหตุ</label>
                                 <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on">
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <div>
+                                    เวร<br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="shift" id="inlineRadio1" value="DAY" required>
+                                        <label class="form-check-label" for="inlineRadio1">DAY</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="shift" id="inlineRadio2" value="NIGHT">
+                                        <label class="form-check-label" for="inlineRadio2">NIGHT</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -456,6 +469,19 @@
                                 <label for="afteruse_rec_remark">หมายเหตุ</label>
                                 <input type="text" name="afteruse_rec_remark" id="afteruse_rec_remark" class="form-control" autocomplete="on">
                             </div>
+                            <div class="col-md-3 mt-3">
+                                <div>
+                                    เวร<br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="afteruse_shift" id="inlineRadio1" value="DAY" required>
+                                        <label class="form-check-label" for="inlineRadio1">DAY</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="afteruse_shift" id="inlineRadio2" value="NIGHT">
+                                        <label class="form-check-label" for="inlineRadio2">NIGHT</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
                     <section class="m-0 mt-4 rounded-2  p-4 shadow border border-info" id="afteruse-daily-check">
@@ -545,10 +571,10 @@
     <footer>
         <div class="row justify-content-center align-items-center">
             <div class="col-12 text-center">
-                <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
+                <img src="../bmepyt3.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
             </div>
             <div class="col-12 text-center">
-                <img src="https://img.in.th/images/e5f742132b3648b83a134257cc05d903.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+                <img src="../bmeg5.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
             </div>
         </div>
         <div class="row justify-content-center align-items-center">
@@ -565,11 +591,11 @@
         </div>
         <img src="" alt="" id="compressimg" hidden>
     </footer>
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script>
+    </script> -->
     <script>
         var firestore, auth
         $(document).ready(function () {
@@ -641,12 +667,16 @@
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
-            client = url.searchParams.get("client")
+            client = url.searchParams.get("client") || 'PYT3'
             dept = url.searchParams.get("dept")
             brand = url.searchParams.get("brand")
             model = url.searchParams.get("model")
             name = url.searchParams.get("name")
             id = url.searchParams.get("id")
+
+
+
+
             if (!client || !dept || !brand || !model || !name || !id) {
                 $('body').html('')
                 $.LoadingOverlay("hide");
@@ -658,6 +688,11 @@
                 })
                 return false
             }
+
+
+
+
+
             // liff
             //     .init({
             //         liffId: "1657104960-wXQRkQ87", // Use own liffId

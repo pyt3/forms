@@ -46,7 +46,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://img.in.th/images/9a12e85d8bb613aa639e425f4ab87a09.png" alt="" height="20" class="d-inline-block">
+                <img src="../iconBME.png" alt="" height="20" class="d-inline-block">
                 Daily Check
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
     <div class="container-fluid">
         <div class="row mb-3">
             <div class="col-12 text-center px-5 mt-3">
-                <img src="https://img.in.th/images/92cc41f62e7a8b08398ed7cddcc22725.jpg" alt="banner" class="img-fluid" style="max-width: 150px;">
+                <img src="../iconBME.png" alt="banner" class="img-fluid" style="max-width: 150px;">
             </div>
         </div>
     </div>
@@ -505,10 +505,10 @@
     <footer>
         <div class="row justify-content-center align-items-center">
             <div class="col-12 text-center">
-                <img src="https://img.in.th/images/f54c58a2f8c9d8c09b308f12625a175e.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
+                <img src="../bmepyt3.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
             </div>
             <div class="col-12 text-center">
-                <img src="https://img.in.th/images/e5f742132b3648b83a134257cc05d903.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+                <img src="../bmeg5.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
             </div>
         </div>
         <div class="row justify-content-center align-items-center">
@@ -525,11 +525,11 @@
             </script>
         </div>
     </footer>
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script>
+    </script> -->
     <script>
         var firestore, auth
         $(document).ready(function () {
@@ -594,41 +594,56 @@
     <script>
         var signaturePad, signaturePadAfterUse, resizeCanvas
         var foldertoken
+        var firestore, auth
         $(document).ready(() => {
             $.LoadingOverlay("show");
             var url_string = window.location.href.split('liff.state=')
             url_string[1] = decodeURIComponent(url_string[1]).split('?')[1]
             var url = new URL(url_string.join(''))
-            liff
-                .init({
-                    liffId: "1657104960-p9V0QVJx", // Use own liffId
-                })
-                .then(() => {
-                    // Start to use liff's api
-                    if (!liff.isLoggedIn()) {
-                        return liff.login({ redirectUri: url })
-                    } else {
-                        console.log('liff init success');
-                        $.post(script_url, { opt: 'getconst' }, async function (c) {
-                            const firebaseConfig = c
-                            const defaultProject = firebase.initializeApp(firebaseConfig);
+            $.post(script_url, { opt: 'getconst' }, async function (c) {
+                const firebaseConfig = c
+                const defaultProject = firebase.initializeApp(firebaseConfig);
+                firestore = defaultProject.firestore();
+                auth = defaultProject.auth();
+                if (!auth.currentUser) {
+                    await getAuth()
+                    // await getAuth(await liff.getDecodedIDToken().sub)
+                }
+                await getDeptList(client)
+                getFolderToken()
+                $.LoadingOverlay("hide");
+            })
 
-                            firestore = defaultProject.firestore();
-                            auth = defaultProject.auth();
-                            if (!auth.currentUser) {
-                                await getAuth(await liff.getDecodedIDToken().sub)
-                            }
-                            await getDeptList(client)
-                            getFolderToken()
-                            $.LoadingOverlay("hide");
-                        })
-                    }
+            // liff
+            //     .init({
+            //         liffId: "1657104960-p9V0QVJx", // Use own liffId
+            //     })
+            //     .then(() => {
+            //         // Start to use liff's api
+            //         if (!liff.isLoggedIn()) {
+            //             return liff.login({ redirectUri: url })
+            //         } else {
+            //             console.log('liff init success');
+            //             $.post(script_url, { opt: 'getconst' }, async function (c) {
+            //                 const firebaseConfig = c
+            //                 const defaultProject = firebase.initializeApp(firebaseConfig);
 
-                })
-                .catch((err) => {
-                    // Error happens during initialization
-                    console.log(err.code, err.message);
-                });
+            //                 firestore = defaultProject.firestore();
+            //                 auth = defaultProject.auth();
+            //                 if (!auth.currentUser) {
+            //                     await getAuth(await liff.getDecodedIDToken().sub)
+            //                 }
+            //                 await getDeptList(client)
+            //                 getFolderToken()
+            //                 $.LoadingOverlay("hide");
+            //             })
+            //         }
+
+            //     })
+            //     .catch((err) => {
+            //         // Error happens during initialization
+            //         console.log(err.code, err.message);
+            //     });
             //
             //rl = new URL(decodeURI(url.searchParams("liff.state")))
             client = url.searchParams.get("client")
