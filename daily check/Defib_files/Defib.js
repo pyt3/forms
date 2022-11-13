@@ -137,8 +137,9 @@ $(document).ready(() => {
         if (count === len) {
             setTimeout(() => {
                 Swal.close()
-                window.print()
-            }, 600);
+                setTimeout(() => { window.print() }, 1000)
+
+            }, 200);
         }
     }
 })
