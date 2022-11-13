@@ -23,7 +23,7 @@
         document.write('<script defer src="../js/getIncubatorTableData.js?cache=' + new Date().getTime() + '"><\/script>')
         document.write('<script defer src="../js/getMonitorBedsideTabledata.js?cache=' + new Date().getTime() + '"><\/script>')
     </script>
-    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="../icon.png" type="image/png">
     <style>
         * {
             margin: 0;
@@ -483,77 +483,7 @@
         }
         $('#login-form').submit(checklogin)
         $('#export-btn').click(async function () {
-            while (!auth) {
-                console.log("waiting for auth")
-            }
-            if (!auth.currentUser) {
-                await getAuth()
-            }
-            let swalForm = $('#export-div').clone()
-            swalForm.find('#export-month').attr('id', 'swal-input-month')
-            swalForm.find('#export-year').attr('id', 'swal-input-year')
-            swalForm.find('#export-code').attr('id', 'swal-input-code')
-            let { value: formValues } = await Swal.fire({
-                title: 'กรุณาระบุ',
-                html: swalForm.html(),
-                focusConfirm: false,
-                confirmButtonText: 'สร้างรายงาน',
-                showCancelButton: true,
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                preConfirm: () => {
-                    let month = $('#swal-input-month').val()
-                    let year = $('#swal-input-year').val()
-                    let code = $('#swal-input-code').val()
-                    if (!month || !year || !code) {
-                        Swal.showValidationMessage(
-                            `กรุณาระบุข้อมูลให้ครบถ้วน`
-                        )
-                        setInterval(() => {
-                            Swal.resetValidationMessage()
-                        }, 2000);
-                    } else {
-                        return {
-                            month: $('#swal-input-month').val(),
-                            year: $('#swal-input-year').val(),
-                            id: $('#swal-input-code').val(),
-                        }
-                    }
-                },
-
-
-            })
-
-            if (formValues) {
-                let month = parseInt(formValues.month) - 1
-                let year = parseInt(formValues.year)
-                let code = formValues.id
-                let start = new Date(year, month, 1).getTime()
-                let end = new Date(year, month + 1, 1).getTime()
-                $.LoadingOverlay("show");
-                firestore.collection(client)
-                    .where('e_code', "==", code)
-                    .where('time', ">=", start)
-                    .where('time', "<", end)
-                    .get()
-                    .then(async function (querySnapshot) {
-                        console.log(querySnapshot.empty)
-                        let queryobj = {}
-                        querySnapshot.forEach((doc) => {
-                            let d = doc.data()
-                            if (!queryobj[d.e_code]) queryobj[d.e_code] = {}
-                            if (!queryobj[d.e_code][d.shift]) queryobj[d.e_code][d.shift] = {}
-                            d['firestore_id'] = doc.id
-                            queryobj[d.e_code][d.shift][d.date] = d
-                        });
-                        console.log(queryobj[code])
-                        localStorage.setItem('report_obj', JSON.stringify(queryobj[code]))
-                        $.LoadingOverlay("hide");
-                        window.open('https://pyt3.github.io/forms/daily%20check/Defib_files/index.html?openExternalBrowser=1', '_blank')
-                    })
-            }
-
+            window.open('https://pyt3.github.io/forms/daily%20check/forms/export.html?openExternalBrowser=1', '_blank')
         })
         async function checklogin() {
             let session
