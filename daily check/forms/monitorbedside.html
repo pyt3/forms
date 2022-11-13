@@ -602,7 +602,7 @@
             var url = new URL(url_string.join(''))
             $.post(script_url, { opt: 'getconst' }, async function (c) {
                 const firebaseConfig = c
-                const defaultProject = firebase.initializeApp(firebaseConfig);
+                const defaultProject = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
                 if (!auth.currentUser) {

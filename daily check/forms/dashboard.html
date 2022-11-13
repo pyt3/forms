@@ -174,7 +174,7 @@
         });
         async function setFirebase(c) {
             const firebaseConfig = c
-            const defaultProject = firebase.initializeApp(firebaseConfig);
+            const defaultProject = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
             firestore = defaultProject.firestore();
             auth = defaultProject.auth();
             if (!auth.currentUser) {
