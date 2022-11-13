@@ -84,7 +84,7 @@ $(document).ready(() => {
     })
     let keys = Object.keys(week_check).sort((a, b) => a.split('/')[0] - b.split('/')[0])
     console.log("🚀 ~ keys", keys)
-    for (let i = 5; i < keys.length; i--) {
+    for (var i = 5; i > keys.length; i--) {
         console.log("🚀 ~ i", i)
         $('[name="paper-week-' + i + '"]').remove()
     }
