@@ -124,6 +124,7 @@
         var url_string = window.location.href
         var url = new URL(url_string);
         client = url.searchParams.get("client");
+        console.log("🚀 ~ client", client)
         $(document).ready(async function () {
             $.LoadingOverlay("show");
             $('#export-month').val(new Date().getMonth() + 1)
