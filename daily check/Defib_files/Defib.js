@@ -57,7 +57,9 @@ $(document).ready(() => {
             for (let j = 1; j <= 31; j++) {
                 let q = testobj[key][j + '/' + month_num + '/' + year_bd]
                 q = q ? mapSign(q[q_key[i]]) : ""
-                $(paper + ' [name="defib-' + i + '-' + j + '"]').text(q).css('color', 'blue')
+                $(paper + ' [name="defib-' + i + '-' + j + '"]').text(q)
+                if (q == "✔") $(paper + ' [name="defib-' + i + '-' + j + '"]').css('color', 'blue')
+                if (q == "✘") $(paper + ' [name="defib-' + i + '-' + j + '"]').css('color', 'red')
             }
         }
 
