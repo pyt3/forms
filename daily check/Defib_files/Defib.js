@@ -72,10 +72,10 @@ $(document).ready(() => {
                 }
             }
             else q = ''
-            $(paper + ' [name="defib-approve' + '-' + i + '"]').replaceWith($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
-            $(paper + ' [name="defib-sign' + '-' + i + '"]').replaceWith($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
-            $(paper + ' [name="defib-afteruse-approve' + '-' + i + '"]').replaceWith($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
-            $(paper + ' [name="defib-afteruse-sign' + '-' + i + '"]').replaceWith($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
+            $(paper + ' [name="defib-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
+            $(paper + ' [name="defib-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
+            $(paper + ' [name="defib-afteruse-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
+            $(paper + ' [name="defib-afteruse-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
         }
         console.log(week_check)
 
