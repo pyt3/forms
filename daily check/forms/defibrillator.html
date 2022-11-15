@@ -970,7 +970,7 @@
             obj.form = 'defibrillator'
             obj.time = date.getTime()
             obj.afteruse_time = obj.time
-            if ((date.getHour() >= 0 && date.getHour() <= 9) && obj.shift == 'NIGHT') {
+            if ((date.getHours() >= 0 && date.getHours() <= 9) && obj.shift == 'NIGHT') {
                 let real_date = date.setDate(date.getDate() - 1)
                 obj.date = new Date(real_date).toLocaleString('th-TH', {
                     hour12: false,
