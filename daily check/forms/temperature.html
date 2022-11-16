@@ -395,6 +395,7 @@
             $('#to').val(today.getFullYear() + '-' + ('00' + (today.getMonth() + 1)).slice(-2) + '-' + ('00' + today.getDate()).slice(-2));
             // $.LoadingOverlay("show");
         })
+
         function getTemp(text) {
             if (!text || isNaN(text)) return ''
             return parseFloat(text)
@@ -921,7 +922,9 @@
             if (failure_url) obj.failure_url = failure_url
             let temp2, min2, max2
             if ($('#temp2') && $('#temp2').val() != '') {
+                console.log("🚀 ~ $('#temp2').val()", $('#temp2').val())
                 temp2 = parseFloat($('#temp2').val())
+                console.log("🚀 ~ temp2", temp2)
                 min2 = parseFloat($('#min2').val())
                 max2 = parseFloat($('#max2').val())
                 obj['temp2'] = temp2
