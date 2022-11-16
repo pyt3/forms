@@ -338,7 +338,9 @@
                                         let shelf = result.value
                                         firestore.collection(client.toUpperCase() + '_e').doc(nid).update({ checkShelf: shelf })
                                         if (shelf == '1') {
+                                            console.log('remove 2nd shelf')
                                             $('#shelf2, #myChart2-canvas').remove()
+                                            console.log($('#temp2'))
                                         } else {
                                             $('#upshelf-label').show()
                                             Swal.fire({
