@@ -15,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <script src="../lib/compressjs/dist/compressjs.js"></script>
     <link rel="icon" href="../icon.png" type="image/png">
     <style>
@@ -124,14 +125,14 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <div>
-                                    เวร<br>
+                                    รอบ<br>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="shift" id="inlineRadio1" value="DAY" required>
-                                        <label class="form-check-label" for="inlineRadio1">DAY</label>
+                                        <label class="form-check-label" for="inlineRadio1">รอบเช้า&nbsp;<i class="bi bi-cloud-sun"></i></label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="shift" id="inlineRadio2" value="NIGHT">
-                                        <label class="form-check-label" for="inlineRadio2">NIGHT</label>
+                                        <label class="form-check-label" for="inlineRadio2">รอบเย็น&nbsp;<i class="bi bi-cloud-moon"></i></label>
                                     </div>
                                 </div>
                             </div>
@@ -471,14 +472,14 @@
                             </div>
                             <div class="col-md-3 mt-3">
                                 <div>
-                                    เวร<br>
+                                    รอบ<br>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="afteruse_shift" id="inlineRadio1" value="DAY" required>
-                                        <label class="form-check-label" for="inlineRadio1">DAY</label>
+                                        <input class="form-check-input" type="radio" name="afteruse_shift" id="afteruse_inlineRadio1" value="DAY" required>
+                                        <label class="form-check-label" for="inlineRadio1">รอบเช้า&nbsp;<i class="bi bi-cloud-sun"></i></label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="afteruse_shift" id="inlineRadio2" value="NIGHT">
-                                        <label class="form-check-label" for="inlineRadio2">NIGHT</label>
+                                        <input class="form-check-input" type="radio" name="afteruse_shift" id="afteruse_inlineRadio2" value="NIGHT">
+                                        <label class="form-check-label" for="inlineRadio2">รอบเย็น&nbsp;<i class="bi bi-cloud-moon"></i></label>
                                     </div>
                                 </div>
                             </div>
@@ -591,11 +592,11 @@
         </div>
         <img src="" alt="" id="compressimg" hidden>
     </footer>
-    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script> -->
+    </script>
     <script>
         var firestore, auth
         $(document).ready(function () {
@@ -693,48 +694,34 @@
 
 
 
-            // liff
-            //     .init({
-            //         liffId: "1657104960-wXQRkQ87", // Use own liffId
-            //     })
-            //     .then(() => {
-            //         // Start to use liff's api
-            //         if (!liff.isLoggedIn()) {
-            //             return liff.login({ redirectUri: url })
-            //         } else {
-            //             console.log('liff init success');
-            //             $.post(script_url, { opt: 'getconst' }, async function (c) {
-            //                 const firebaseConfig = c
-            //                 const defaultProject = firebase.initializeApp(firebaseConfig);
-            //                 firestore = defaultProject.firestore();
-            //                 auth = defaultProject.auth();
-            //                 if (!auth.currentUser) {
-            //                     await getAuth(await liff.getDecodedIDToken().sub)
-            //                 }
-            //                 await getDeptList(client)
-            //                 getFolderToken()
-            //                 $.LoadingOverlay("hide");
-            //             })
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         // Error happens during initialization
-            //         console.log(err.code, err.message);
-            //     });
-
-            $.post(script_url, { opt: 'getconst' }, async function (c) {
-                const firebaseConfig = c
-                const defaultProject = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
-                firestore = defaultProject.firestore();
-                auth = defaultProject.auth();
-                if (!auth.currentUser) {
-                    await getAuth()
-                    // await getAuth(await liff.getDecodedIDToken().sub)
-                }
-                await getDeptList(client)
-                getFolderToken()
-                $.LoadingOverlay("hide");
-            })
+            liff
+                .init({
+                    liffId: "1657104960-wXQRkQ87", // Use own liffId
+                })
+                .then(() => {
+                    // Start to use liff's api
+                    if (!liff.isLoggedIn()) {
+                        return liff.login({ redirectUri: url })
+                    } else {
+                        console.log('liff init success');
+                        $.post(script_url, { opt: 'getconst' }, async function (c) {
+                            const firebaseConfig = c
+                            const defaultProject = firebase.initializeApp(firebaseConfig);
+                            firestore = defaultProject.firestore();
+                            auth = defaultProject.auth();
+                            if (!auth.currentUser) {
+                                await getAuth(await liff.getDecodedIDToken().sub)
+                            }
+                            await getDeptList(client)
+                            getFolderToken()
+                            $.LoadingOverlay("hide");
+                        })
+                    }
+                })
+                .catch((err) => {
+                    // Error happens during initialization
+                    console.log(err.code, err.message);
+                });
 
             $('#e_code, #afteruse_e_code').val(id).attr('readonly', true)
             $('#e_brand, #afteruse_e_brand').val(brand).attr('readonly', true)
@@ -970,7 +957,7 @@
             obj.form = 'defibrillator'
             obj.time = date.getTime()
             obj.afteruse_time = obj.time
-            if ((date.getHour() >= 0 && date.getHour() <= 9) && obj.shift == 'NIGHT') {
+            if ((date.getHours() >= 0 && date.getHours() <= 9) && obj.shift == 'NIGHT') {
                 let real_date = date.setDate(date.getDate() - 1)
                 obj.date = new Date(real_date).toLocaleString('th-TH', {
                     hour12: false,
