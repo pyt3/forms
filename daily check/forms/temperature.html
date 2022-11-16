@@ -338,9 +338,7 @@
                                         let shelf = result.value
                                         firestore.collection(client.toUpperCase() + '_e').doc(nid).update({ checkShelf: shelf })
                                         if (shelf == '1') {
-                                            console.log('remove 2nd shelf')
                                             $('#shelf2, #myChart2-canvas').remove()
-                                            console.log($('#temp2'))
                                         } else {
                                             $('#upshelf-label').show()
                                             Swal.fire({
@@ -354,9 +352,7 @@
                                 })
                             } else {
                                 if (checkShelf == 1) {
-                                    console.log('remove 2nd shelf')
                                     $('#shelf2, #myChart2-canvas').remove()
-                                    console.log($('#temp2'))
                                 } else {
                                     $('#upshelf-label').show()
                                 }
@@ -925,7 +921,7 @@
             }
             if (failure_url) obj.failure_url = failure_url
             let temp2, min2, max2
-            if ($('#temp2') && $('#temp2').val() != '') {
+            if ($('#temp2').length && $('#temp2').val() != '') {
                 console.log("🚀 ~ $('#temp2').val()", $('#temp2').val())
                 temp2 = parseFloat($('#temp2').val())
                 console.log("🚀 ~ temp2", temp2)
