@@ -809,16 +809,16 @@
                     timer: 1500,
                 })
             }
-            // let updateobj = {}
-            // if (!isDefaultTemp) {
-            //     updateobj.min = parseFloat($('#min').val())
-            //     updateobj.max = parseFloat($('#max').val())
-            // }
-            // if (!isDefaultTemp2 && $('#min2').val() && $('#max2').val()) {
-            //     updateobj.min2 = parseFloat($('#min2').val())
-            //     updateobj.max2 = parseFloat($('#max2').val())
-            // }
-            // firestore.collection(client.toUpperCase() + '_e').doc(nid).update(updateobj)
+            let updateobj = {}
+            if (!isDefaultTemp) {
+                updateobj.min = parseFloat($('#min').val())
+                updateobj.max = parseFloat($('#max').val())
+            }
+            if (!isDefaultTemp2 && $('#min2').val() && $('#max2').val()) {
+                updateobj.min2 = parseFloat($('#min2').val())
+                updateobj.max2 = parseFloat($('#max2').val())
+            }
+            firestore.collection(client.toUpperCase() + '_e').doc(nid).update(updateobj)
             uploadFile()
             // setValue(temp)
             // getValue()
