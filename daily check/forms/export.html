@@ -225,17 +225,19 @@
                         })
                     }
                     let queryobj = {}
+                    let form
                     querySnapshot.forEach((doc) => {
                         let d = doc.data()
                         if (!queryobj[d.e_code]) queryobj[d.e_code] = {}
                         if (!queryobj[d.e_code][d.shift]) queryobj[d.e_code][d.shift] = {}
                         d['firestore_id'] = doc.id
                         queryobj[d.e_code][d.shift][d.date] = d
+                        form = d.form
                     });
                     console.log(queryobj[code])
                     localStorage.setItem('report_obj', JSON.stringify(queryobj[code]))
                     $.LoadingOverlay("hide");
-                    window.open('https://pyt3.github.io/forms/daily%20check/Defib_files/index.html?openExternalBrowser=1', '_blank')
+                    window.open('https://pyt3.github.io/forms/daily%20check/Defib_files/' + d.form + '_report.html?openExternalBrowser=1', '_blank')
                 })
 
         })
