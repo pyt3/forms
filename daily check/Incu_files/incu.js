@@ -23,19 +23,12 @@ var month_num = new Date(testobj['DAY'][tempkey].time).getMonth() + 1
 var year = new Date(testobj['DAY'][tempkey].time).getFullYear()
 var year_bd = year + 543
 var q_key = {
-    1: "daily-check-system",
-    2: 'daily-check-switch',
-    3: 'daily-check-paddle',
-    4: 'daily-check-ekg',
-    5: 'daily-check-adhesive',
-    6: 'daily-check-reddot',
-    7: 'daily-check-transmissiongel',
-    8: 'daily-check-ekgpaper',
-    9: 'daily-check-cord',
-    10: 'daily-check-time',
-    11: 'daily-check-power',
-    12: 'afteruse-check-battery',
-    13: 'afteruse-check-clean',
+    1: 'daily-check-display',
+    2: "daily-check-switch",
+    3: 'daily-check-cord',
+    4: 'daily-check-alarm',
+    5: 'daily-check-probe',
+    6: 'daily-check-button',
     staff: 'signature_staff',
     manager: 'signature_manager',
     staff_afteruse: 'signature_staff_afteruse',
@@ -86,43 +79,43 @@ $(document).ready(() => {
 
 
     })
-    let keys = Object.keys(week_check).sort((a, b) => a.split('/')[0] - b.split('/')[0])
-    console.log("🚀 ~ keys", keys)
-    for (var i = 5; i > keys.length; i--) {
-        console.log("🚀 ~ i", i)
-        $('[name="paper-week-' + i + '"]').remove()
-    }
-    keys.forEach((key, weeknum) => {
-        console.log("🚀 ~ weeknum", weeknum)
-        console.log("🚀 ~ key", key)
-        let q = week_check[key]
-        console.log("🚀 ~ q", q)
-        let target = $('[name="paper-week-' + (weeknum + 1) + '"]')
-        let img = $('<img>', { src: q.img_url, id: 'paper-week-' + (weeknum + 1), height: 17 * 6.2 }).addClass('paper-week')
-        target.replaceWith($('<center>').append(img))
-        $('[name="date-week-' + (weeknum + 1) + '"]').text(key)
-        $('[name="staff-week-' + (weeknum + 1) + '"]').html($('<span>').text(q.rec_name)).append('&nbsp;&nbsp;&nbsp;')
-        $('[name="staff-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_staff, height: '17pt', class: (q.signature_staff ? 'isloading' : '') }))
-        $('[name="approve-week-' + (weeknum + 1) + '"]').html($('<span>').text(q.approve_name)).append('&nbsp;&nbsp;&nbsp;')
-        $('[name="approve-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_manager, height: '17pt', class: (q.signature_manager ? 'isloading' : '') }))
+    // let keys = Object.keys(week_check).sort((a, b) => a.split('/')[0] - b.split('/')[0])
+    // console.log("🚀 ~ keys", keys)
+    // for (var i = 5; i > keys.length; i--) {
+    //     console.log("🚀 ~ i", i)
+    //     $('[name="paper-week-' + i + '"]').remove()
+    // }
+    // keys.forEach((key, weeknum) => {
+    //     console.log("🚀 ~ weeknum", weeknum)
+    //     console.log("🚀 ~ key", key)
+    //     let q = week_check[key]
+    //     console.log("🚀 ~ q", q)
+    //     let target = $('[name="paper-week-' + (weeknum + 1) + '"]')
+    //     let img = $('<img>', { src: q.img_url, id: 'paper-week-' + (weeknum + 1), height: 17 * 6.2 }).addClass('paper-week')
+    //     target.replaceWith($('<center>').append(img))
+    //     $('[name="date-week-' + (weeknum + 1) + '"]').text(key)
+    //     $('[name="staff-week-' + (weeknum + 1) + '"]').html($('<span>').text(q.rec_name)).append('&nbsp;&nbsp;&nbsp;')
+    //     $('[name="staff-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_staff, height: '17pt', class: (q.signature_staff ? 'isloading' : '') }))
+    //     $('[name="approve-week-' + (weeknum + 1) + '"]').html($('<span>').text(q.approve_name)).append('&nbsp;&nbsp;&nbsp;')
+    //     $('[name="approve-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_manager, height: '17pt', class: (q.signature_manager ? 'isloading' : '') }))
 
-    })
+    // })
 
-    $('.paper-week').on('load', function () {
-        let img = $(this)
-        let id = img.attr('id')
-        let imgHeight = img.height()
-        let imgWidth = img.width()
-        if (imgHeight > imgWidth) {
-            img.css('width', imgHeight)
-            img.css('height', imgHeight / imgWidth * imgHeight)
-            img.css('transform', 'rotate(270deg) translate(-' + (imgHeight + 1) + 'px, ' + (-imgHeight / 4) + 'px)')
-            img.css('transform-origin', '0 0')
-            let parent = img.parent()
-            parent.css('max-height', imgWidth)
-        }
+    // $('.paper-week').on('load', function () {
+    //     let img = $(this)
+    //     let id = img.attr('id')
+    //     let imgHeight = img.height()
+    //     let imgWidth = img.width()
+    //     if (imgHeight > imgWidth) {
+    //         img.css('width', imgHeight)
+    //         img.css('height', imgHeight / imgWidth * imgHeight)
+    //         img.css('transform', 'rotate(270deg) translate(-' + (imgHeight + 1) + 'px, ' + (-imgHeight / 4) + 'px)')
+    //         img.css('transform-origin', '0 0')
+    //         let parent = img.parent()
+    //         parent.css('max-height', imgWidth)
+    //     }
 
-    })
+    // })
 
     let imgs = document.querySelectorAll('.isloading')
     let len = imgs.length
