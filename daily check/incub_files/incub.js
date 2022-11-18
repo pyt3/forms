@@ -1,6 +1,6 @@
-const beforeuse_question_num = 11
-const afteruse_question_num = 2
-const form_key = 'defibrillator'
+const beforeuse_question_num = 6
+const afteruse_question_num = 1
+const form_key = 'incubator'
 
 Swal.fire({
     icon: 'info',
@@ -27,20 +27,14 @@ var month_num = new Date(testobj['DAY']['before'][tempkey].time).getMonth() + 1
 var year = new Date(testobj['DAY']['before'][tempkey].time).getFullYear()
 var year_bd = year + 543
 var q_key = {
-    'defibrillator': {
-        1: "daily-check-system",
-        2: 'daily-check-switch',
-        3: 'daily-check-paddle',
-        4: 'daily-check-ekg',
-        5: 'daily-check-adhesive',
-        6: 'daily-check-reddot',
-        7: 'daily-check-transmissiongel',
-        8: 'daily-check-ekgpaper',
-        9: 'daily-check-cord',
-        10: 'daily-check-time',
-        11: 'daily-check-power',
-        12: 'afteruse-check-battery',
-        13: 'afteruse-check-clean',
+    'incubator': {
+        1: "daily-check-switch",
+        2: 'daily-check-cord',
+        3: 'daily-check-display',
+        4: 'daily-check-alarm',
+        5: 'daily-check-button',
+        6: 'daily-check-probe',
+        7: 'afteruse-check-clean',
     },
     staff: 'signature_staff',
     manager: 'signature_manager',
