@@ -1,7 +1,3 @@
-const beforeuse_question_num = 11
-const afteruse_question_num = 2
-const form_key = 'defibrillator'
-
 Swal.fire({
     icon: 'info',
     title: '0%',
@@ -13,35 +9,33 @@ Swal.fire({
 })
 var testobj = JSON.parse(localStorage.getItem('report_obj'))
 console.log("🚀 ~ testobj", testobj)
-var tempkey = Object.keys(testobj['DAY']['before'])[0]
+var tempkey = Object.keys(testobj['DAY'])[0]
 
 
 
-var e_code = testobj['DAY']['before'][tempkey].e_code
-var e_brand = testobj['DAY']['before'][tempkey].e_brand
-var e_model = testobj['DAY']['before'][tempkey].e_model
-var e_dept = testobj['DAY']['before'][tempkey].e_dept
+var e_code = testobj['DAY'][tempkey].e_code
+var e_brand = testobj['DAY'][tempkey].e_brand
+var e_model = testobj['DAY'][tempkey].e_model
+var e_dept = testobj['DAY'][tempkey].e_dept
 console.log("🚀 ~ e_dept", e_dept)
-var month = new Date(testobj['DAY']['before'][tempkey].time).toLocaleString('en-En', { month: 'long' })
-var month_num = new Date(testobj['DAY']['before'][tempkey].time).getMonth() + 1
-var year = new Date(testobj['DAY']['before'][tempkey].time).getFullYear()
+var month = new Date(testobj['DAY'][tempkey].time).toLocaleString('en-En', { month: 'long' })
+var month_num = new Date(testobj['DAY'][tempkey].time).getMonth() + 1
+var year = new Date(testobj['DAY'][tempkey].time).getFullYear()
 var year_bd = year + 543
 var q_key = {
-    'defibrillator': {
-        1: "daily-check-system",
-        2: 'daily-check-switch',
-        3: 'daily-check-paddle',
-        4: 'daily-check-ekg',
-        5: 'daily-check-adhesive',
-        6: 'daily-check-reddot',
-        7: 'daily-check-transmissiongel',
-        8: 'daily-check-ekgpaper',
-        9: 'daily-check-cord',
-        10: 'daily-check-time',
-        11: 'daily-check-power',
-        12: 'afteruse-check-battery',
-        13: 'afteruse-check-clean',
-    },
+    1: "daily-check-system",
+    2: 'daily-check-switch',
+    3: 'daily-check-paddle',
+    4: 'daily-check-ekg',
+    5: 'daily-check-adhesive',
+    6: 'daily-check-reddot',
+    7: 'daily-check-transmissiongel',
+    8: 'daily-check-ekgpaper',
+    9: 'daily-check-cord',
+    10: 'daily-check-time',
+    11: 'daily-check-power',
+    12: 'afteruse-check-battery',
+    13: 'afteruse-check-clean',
     staff: 'signature_staff',
     manager: 'signature_manager',
     staff_afteruse: 'signature_staff_afteruse',
@@ -59,46 +53,37 @@ $(document).ready(() => {
     Object.keys(testobj).forEach(key => {
         console.log("🚀 ~ key", key)
         let paper = '.' + key.toLowerCase()
-        let isSetImage = false
-        for (let i = 1; i <= (beforeuse_question_num + afteruse_question_num); i++) {
-
-            let check_index
-            if (i <= beforeuse_question_num) check_index = "before"
-            else {
-                check_index = "after"
-                isSetImage = false
-            }
-
+        for (let i = 1; i <= 13; i++) {
             for (let j = 1; j <= 31; j++) {
-                if (testobj[key][check_index] && testobj[key][check_index][j + '/' + month_num + '/' + year_bd]) {
-                    let q = testobj[key][check_index][j + '/' + month_num + '/' + year_bd]
-                    if (!isSetImage) setSignImage(q, paper, check_index, j)
-                    q = q ? mapSign(q[q_key[form_key][i]]) : ""
-                    $(paper + ' [name="daily-' + i + '-' + j + '"]').text(q)
-                    if (q == "✔") $(paper + ' [name="daily-' + i + '-' + j + '"]').css('color', 'blue')
-                    if (q == "✘") $(paper + ' [name="daily-' + i + '-' + j + '"]').css('color', 'red')
-                    if (q == "⚠") $(paper + ' [name="daily-' + i + '-' + j + '"]').css('color', 'orange')
-                    if (q == "N/A") $(paper + ' [name="daily-' + i + '-' + j + '"]').css('color', 'black')
-                }
-
-
+                let q = testobj[key][j + '/' + month_num + '/' + year_bd]
+                q = q ? mapSign(q[q_key[i]]) : ""
+                $(paper + ' [name="defib-' + i + '-' + j + '"]').text(q)
+                if (q == "✔") $(paper + ' [name="defib-' + i + '-' + j + '"]').css('color', 'blue')
+                if (q == "✘") $(paper + ' [name="defib-' + i + '-' + j + '"]').css('color', 'red')
             }
-            isSetImage = true
         }
 
-        // for (let i = 1; i <= 31; i++) {
-        //     let q = testobj[key][i + '/' + month_num + '/' + year_bd]
-
-        // }
-        // console.log(week_check)
+        for (let i = 1; i <= 31; i++) {
+            let q = testobj[key][i + '/' + month_num + '/' + year_bd]
+            if (q) {
+                let day = new Date(q['time'])
+                if (day.getDay() == 1) {
+                    week_check[i + '/' + month_num + '/' + year_bd] = q
+                }
+            }
+            else q = ''
+            $(paper + ' [name="defib-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
+            $(paper + ' [name="defib-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
+            $(paper + ' [name="defib-afteruse-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
+            $(paper + ' [name="defib-afteruse-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
+        }
+        console.log(week_check)
 
 
 
 
 
     })
-
-
     let keys = Object.keys(week_check).sort((a, b) => a.split('/')[0] - b.split('/')[0])
     console.log("🚀 ~ keys", keys)
     for (var i = 5; i > keys.length; i--) {
@@ -146,22 +131,6 @@ $(document).ready(() => {
         else img.addEventListener('load', incrementCounter, false);
     })
 
-    function setSignImage(q, paper, check_index, i) {
-        if (q) {
-            let day = new Date(q['time'])
-            if (day.toLocaleString('en-EN', { weekday: 'short' }) == "Mon") {
-                console.log("🚀 ~ i", i)
-                console.log("🚀 ~ q", q)
-                week_check[i + '/' + month_num + '/' + year_bd] = q
-            }
-        }
-        else q = ''
-        $(paper + ' [name="daily-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
-        $(paper + ' [name="daily-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
-        $(paper + ' [name="daily-afteruse-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
-        $(paper + ' [name="daily-afteruse-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
-    }
-
     function incrementCounter() {
         count++;
         Swal.update({
@@ -170,7 +139,7 @@ $(document).ready(() => {
         if (count === len) {
             setTimeout(() => {
                 Swal.close()
-                setTimeout(() => { window.print() }, 300)
+                setTimeout(() => { window.print() }, 1000)
 
             }, 200);
         }
@@ -183,10 +152,8 @@ function mapSign(text) {
             return "✔"
         case "ไม่ผ่าน":
             return "✘"
-        case "อยู่ระหว่างการซ่อม":
-            return "⚠"
         case "N/A":
-            return "N/A"
+            return "-"
         default:
             return ''
     }
