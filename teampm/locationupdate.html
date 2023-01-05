@@ -273,7 +273,9 @@
                         }
 
                         flex.contents.header.contents[0].text = obj.dept
-                        flex.contents.header.contents[1].text = obj.remark == "" ? "-----" : obj.remark
+                        if(obj.remark == ""){
+                            flex.contents.header.contents.pop()
+                        }
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
                                 type: 'text',
