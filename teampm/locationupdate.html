@@ -43,7 +43,14 @@
         </div>
     </nav>
     <div class="container">
-        <div class="row justify-contain-center py-3">
+        <div class="row justify-contain-center py-3 g-3">
+            <div class="col-12 text-center">
+                <label for="team">เลือกทีม</label>
+                <select name="team" id="team">
+                    <option value="team PM">team PM</option>
+                    <option value="team CAL">team CAL</option>
+                </select>
+            </div>
             <div class="col-12 text-center">
                 <label for="dept" class="h3 fw-bold text-success">แผนก</label>
                 <select type="text" class="form-select text-center" id="dept">
@@ -204,8 +211,17 @@
                     title: 'กรุณาเลือกแผนก'
                 })
             }
+
+            if ($('#team').val() == '' || !$('#team').val()) {
+                return Toast.fire({
+                    icon: 'warning',
+                    title: 'กรุณาเลือกทีม'
+                })
+            }
+
             let obj = {
                 dept: $('#dept').val(),
+                team: $('#team').val(),
                 arr: JSON.stringify(arr),
                 uid: profile.userId,
                 displayName: profile.displayName,
@@ -255,12 +271,12 @@
                                     "type": "box",
                                     "layout": "vertical",
                                     "contents": [
-                                        
+
                                     ],
                                     "spacing": "lg",
                                     "offsetTop": "none"
                                 },
-                                
+
                                 "styles": {
                                     "header": {
                                         "separator": false
@@ -301,7 +317,7 @@
                             // location.reload()
                             $('#id-sec').html('')
                             $('#remark').val('')
-                            arr =[]
+                            arr = []
                         })
                     } else {
                         Swal.fire({
