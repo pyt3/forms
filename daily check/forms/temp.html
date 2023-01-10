@@ -1,42 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../lib/compressjs/dist/compressjs.js"></script>
-    <title>Document</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <input type="file" name="input_cmprss" id="input_cmprss">
-    <button id="comp_download"></button>
-    <img src="" alt="" id="comp_img" hidden>
-    <script>
-        window.onload = function () {
-            let comp = Compress({
-                inputSelector: '#input_cmprss',
-                downloadSelector: '#comp_download',
-                // imageSelector: '#comp_img',
-                // dropSelector: ".img-con",
-                rate: 25,
-                imagePrefix: 'compressed-',
-                dimen: null,
-                // rateSelector: '#comp_rate',
-            });
-            comp.on('compressed', (files) => {
-                console.group('compressed images data url');
-                console.log('this array contains the url for the compressed images');
-                console.log(files);
-                console.log('listen to the compressed event to get the array');
-                console.groupEnd();
-            });
 
-            comp.on('compressing', () => console.log('compressing'))
-        }
+    <div class="container">
+        <h1>Rear Camera Full HD Image Capture</h1>
+        <p>Click the "Capture" button to open the rear camera and capture a full HD image.</p>
 
-    </script>
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="capture" class="btn btn-primary">Capture</button>
+        <canvas id="canvas" width="640" height="480"></canvas>
+
+        <script>
+            // Set up video
+            const video = document.getElementById('video');
+
+            // Get access to the camera
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
+                    video.srcObject = stream;
+                });
+            }
+
+            // Trigger photo take
+            document.getElementById("capture").addEventListener("click", function () {
+                var context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, 640, 480);
+            });
+        </script>
+
+    </div>
 
 </body>
 
