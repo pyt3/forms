@@ -46,7 +46,7 @@
         <div class="row justify-contain-center py-3 g-3">
             <div class="col-12 text-center">
                 <label for="team">เลือกทีม</label>
-                <select name="team" id="team">
+                <select name="team" id="team" class="form-control">
                     <option value="team PM">team PM</option>
                     <option value="team CAL">team CAL</option>
                 </select>
@@ -289,7 +289,7 @@
                         }
 
                         flex.contents.header.contents[0].text = obj.dept
-                        if(obj.remark == ""){
+                        if (obj.remark == "") {
                             flex.contents.header.contents.pop()
                         }
                         arr.forEach((id, i) => {
