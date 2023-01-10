@@ -133,11 +133,11 @@
 
         </section>
     </div>
-    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script> -->
+    </script>
     <script>
         var arr = []
         var Toast, profile
@@ -289,7 +289,9 @@
                         }
 
                         flex.contents.header.contents[0].text = obj.dept
-                        flex.contents.header.contents[1].text = obj.remark
+                        if(obj.remark == ""){
+                            flex.contents.header.contents.pop()
+                        }
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
                                 type: 'text',

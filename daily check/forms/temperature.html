@@ -219,11 +219,11 @@
             </script>
         </div>
     </footer>
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
-    </script>
+        var vConsole = new window.VConsole();
+    </script> -->
     <script>
         var firestore, auth, foldertoken
         var client, dept, id, nid, brand, model, name, min, max, min2, max2, isDefaultTemp = false, isDefaultTemp2 = false, checkShelf
@@ -245,7 +245,7 @@
             checkShelf = url.searchParams.get("checkShelf")
             if (min && max && (min === 0 || min != '') && (max == 0 || max != '')) isDefaultTemp = true
             if (min2 && max2 && (min2 === 0 || min2 != '') && (max2 == 0 || max2 != '')) isDefaultTemp2 = true
-            $('#temp, #temp2').keyup(function () {
+            $('#temp, #temp2, #min, #min2, #max, #max2').keyup(function () {
                 let t1 = $('#temp').val()
                 let t2 = $('#temp2').val()
                 let failureshow = false
@@ -395,6 +395,7 @@
             $('#to').val(today.getFullYear() + '-' + ('00' + (today.getMonth() + 1)).slice(-2) + '-' + ('00' + today.getDate()).slice(-2));
             // $.LoadingOverlay("show");
         })
+
         function getTemp(text) {
             if (!text || isNaN(text)) return ''
             return parseFloat(text)
@@ -809,16 +810,16 @@
                     timer: 1500,
                 })
             }
-            // let updateobj = {}
-            // if (!isDefaultTemp) {
-            //     updateobj.min = parseFloat($('#min').val())
-            //     updateobj.max = parseFloat($('#max').val())
-            // }
-            // if (!isDefaultTemp2 && $('#min2').val() && $('#max2').val()) {
-            //     updateobj.min2 = parseFloat($('#min2').val())
-            //     updateobj.max2 = parseFloat($('#max2').val())
-            // }
-            // firestore.collection(client.toUpperCase() + '_e').doc(nid).update(updateobj)
+            let updateobj = {}
+            if (!isDefaultTemp) {
+                updateobj.min = parseFloat($('#min').val())
+                updateobj.max = parseFloat($('#max').val())
+            }
+            if (!isDefaultTemp2 && $('#min2').val() && $('#max2').val()) {
+                updateobj.min2 = parseFloat($('#min2').val())
+                updateobj.max2 = parseFloat($('#max2').val())
+            }
+            firestore.collection(client.toUpperCase() + '_e').doc(nid).update(updateobj)
             uploadFile()
             // setValue(temp)
             // getValue()
@@ -920,8 +921,10 @@
             }
             if (failure_url) obj.failure_url = failure_url
             let temp2, min2, max2
-            if ($('#temp2') && $('#temp2').val() != '') {
+            if ($('#temp2').length && $('#temp2').val() != '') {
+                console.log("🚀 ~ $('#temp2').val()", $('#temp2').val())
                 temp2 = parseFloat($('#temp2').val())
+                console.log("🚀 ~ temp2", temp2)
                 min2 = parseFloat($('#min2').val())
                 max2 = parseFloat($('#max2').val())
                 obj['temp2'] = temp2
