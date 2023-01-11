@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
+
+        img#profile {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                &nbsp; <div>
+                    <span id="displayName">Team PM</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+    <!-- <div class="container">
+        <div class="row justify-contain-center py-3 g-3">
+            <div class="col-12 text-center">
+                <label for="team" class="h3 fw-bold text-primary">TEAM</label>
+                <select name="team" id="team" class="form-select text-center">
+                    <option value="" selected disabled>เลือกทีม</option>
+                    <option value="team PM">team PM</option>
+                    <option value="team CAL">team CAL</option>
+                    <option value="VENDER">VENDER</option>
+                </select>
+            </div>
+            <div class="col-12 text-center">
+                <label for="dept" class="h3 fw-bold text-success">แผนก</label>
+                <select type="text" class="form-select text-center" id="dept">
+                    <option value="" selected disabled>เลือกแผนก</option>
+                    <option value="ANESTHESIA (วิสัญญี)">ANESTHESIA (วิสัญญี)</option>
+                    <option value="ART-LAB (ศูนย์ผู้มีบุตรยาก)">ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
+                    <option value="BME-PYT3">BME-PYT3</option>
+                    <option value="CATH-LAB">CATH-LAB</option>
+                    <option value="CHECK-UP (ตรวจสุขภาพ)">CHECK-UP (ตรวจสุขภาพ)</option>
+                    <option value="CORPORATE CUSTOMER SERVICE">CORPORATE CUSTOMER SERVICE</option>
+                    <option value="CSSD (จ่ายกลาง)">CSSD (จ่ายกลาง)</option>
+                    <option value="DENTAL (ทันตกรรม)">DENTAL (ทันตกรรม)</option>
+                    <option value="DIABETIC&amp;METABOLIC(เบาหวาน)">DIABETIC&amp;METABOLIC(เบาหวาน)</option>
+                    <option value="EENT( หูตาคอจมูก)">EENT( หูตาคอจมูก)</option>
+                    <option value="EMERGENCY( ฉุกเฉิน)">EMERGENCY( ฉุกเฉิน)</option>
+                    <option value="GASTROINTESTINAL LABORATORY(GI)">GASTROINTESTINAL LABORATORY(GI)</option>
+                    <option value="HEMODIALYSIS (ไตเทียม)">HEMODIALYSIS (ไตเทียม)</option>
+                    <option value="HOPD CENTER (ศุนย์มะเร็ง)">HOPD CENTER (ศุนย์มะเร็ง)</option>
+                    <option value="INFECTION CONTROL ( IC)">INFECTION CONTROL ( IC)</option>
+                    <option value="INTENSIVE CARE UNIT(ผู้ป่วยหนัก)">INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
+                    <option value="LABOR ROOM(ห้องคลอด)">LABOR ROOM(ห้องคลอด)</option>
+                    <option value="LABORATORY">LABORATORY</option>
+                    <option value="MAID">MAID</option>
+                    <option value="MARKETING">MARKETING</option>
+                    <option value="NURSERY(เด็กอ่อน)">NURSERY(เด็กอ่อน)</option>
+                    <option value="NURSING DEPARTMENT">NURSING DEPARTMENT</option>
+                    <option value="OBSERVE(สังเกตอาการ)">OBSERVE(สังเกตอาการ)</option>
+                    <option value="OPD CARDIO(ศูนย์หัวใจ)">OPD CARDIO(ศูนย์หัวใจ)</option>
+                    <option value="OPD COUNTER NURSE (CN คัดกรอง)">OPD COUNTER NURSE (CN คัดกรอง)</option>
+                    <option value="OPD HEAD NECK BREAST(ศุนย์เต้านม)">OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
+                    <option value="OPD MEDICINE(อายุกรรม)">OPD MEDICINE(อายุกรรม)</option>
+                    <option value="OPD NEURO (ศูนย์สมอง)">OPD NEURO (ศูนย์สมอง)</option>
+                    <option value="OPD OB/GYN(ศุนย์สุขภาพหญิง)">OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
+                    <option value="OPD PEDIATRIC( แผนกเด็ก)">OPD PEDIATRIC( แผนกเด็ก)</option>
+                    <option value="OPD SURGERY(ศัลยกรรม)">OPD SURGERY(ศัลยกรรม)</option>
+                    <option value="OPD UROLOGY (ทางเดินปัสสาวะ)">OPD UROLOGY (ทางเดินปัสสาวะ)</option>
+                    <option value="OPERATING ROOM(ห้องผ่าตัด)">OPERATING ROOM(ห้องผ่าตัด)</option>
+                    <option value="PHARMARCY(เภสัชกรรม ห้องยา)">PHARMARCY(เภสัชกรรม ห้องยา)</option>
+                    <option value="PHYATHAI BEAUTY CENTER (PBC ความงาม)">PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
+                    <option value="PHYSICAL THERAPY( กายภาพ)">PHYSICAL THERAPY( กายภาพ)</option>
+                    <option value="PICU">PICU</option>
+                    <option value="PWA LIFE CENTER">PWA LIFE CENTER</option>
+                    <option value="PWA ชะลอวัย">PWA ชะลอวัย</option>
+                    <option value="VEHICLE">VEHICLE</option>
+                    <option value="WARD 10">WARD 10</option>
+                    <option value="WARD 11">WARD 11</option>
+                    <option value="WARD 12">WARD 12</option>
+                    <option value="WARD 14">WARD 14</option>
+                    <option value="WARD 15">WARD 15</option>
+                    <option value="WARD 17">WARD 17</option>
+                    <option value="WARD 7">WARD 7</option>
+                    <option value="WARD 8">WARD 8</option>
+                    <option value="WARD 9">WARD 9</option>
+                    <option value="WAREHOUSE">WAREHOUSE</option>
+                    <option value="X-RAY">X-RAY</option>
+                    <option value="รับส่ง">รับส่ง</option>
+                </select>
+            </div>
+            <div class="col-12 mt-3">
+                <input type="text" id="remark" class="form-control" placeholder="หมายเหตุ ชื่อห้อง/เลขห้อง/ตำแหน่ง/อื่นๆ">
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 flex-fill mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="isDemo">
+                    <label class="form-check-label" for="isDemo">
+                        Demo
+                    </label>
+                </div>
+            </div>
+            <div class="col-auto flex-fill mb-2">
+                <input type="text" id="add-id" name="add-id" class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
+            </div>
+            <div class="col-auto text-center mb-2">
+                <button class="btn btn-primary" id="add-btn">เพิ่มรหัส</button>
+            </div>
+        </div>
+        <section id="id-sec">
+
+        </section>
+    </div> -->
+    <div class="container">
+        <div class="table-responsive" id="dept_table"></div>
+    </div>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+//         var vConsole = new window.VConsole();
+    </script>
+    <script>
+        var arr = []
+        var Toast, profile
+        // $(document).ready(() => {
+        //     liff.init({
+        //         liffId: '1657539607-EPzqza2K',
+        //         withLoginOnExternalBrowser: true
+        //     })
+        //     liff.ready.then(async () => {
+        //         profile = await liff.getProfile()
+        //         $('#profile').attr('src', profile.pictureUrl)
+        //         $('#displayName').text(profile.displayName)
+        //         Toast = Swal.mixin({
+        //             toast: true,
+        //             position: 'top',
+        //             showConfirmButton: false,
+        //             timer: 1500,
+        //             timerProgressBar: true,
+        //         })
+
+        //         var options = {
+        //             onComplete: function (cep) {
+        //                 if (arr.includes(cep)) {
+        //                     return Toast.fire({
+        //                         icon: 'warning',
+        //                         title: 'เพิ่มรหัสนี้ไปแล้ว'
+        //                     })
+        //                 }
+        //                 let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
+        //                 $(pill).click(function () {
+        //                     let ele = $(this)
+        //                     Swal.fire({
+        //                         icon: 'question',
+        //                         title: `ลบรหัส ${cep}`,
+        //                         showCancelButton: true,
+        //                         confirmButtonText: 'ตกลง',
+        //                         cancelButtonText: 'ยกเลิก'
+        //                     }).then((result) => {
+        //                         if (result.isConfirmed) {
+        //                             arr = arr.filter(a => a != cep)
+        //                             $(ele).remove()
+        //                             console.log("🚀 ~ arr", arr)
+        //                         }
+        //                     })
+        //                 })
+        //                 $('#id-sec').append(pill)
+        //                 $('#isDemo').change()
+        //                 arr.push(cep)
+        //             },
+        //         };
+        //         $('#add-id').mask('PYT3_00000', options);
+        //         $('#isDemo').change(function () {
+        //             $('#add-id').unmask();
+        //             $('#add-id').val('');
+        //             $('#add-id').focus();
+        //             if ($(this).is(':checked')) {
+        //                 $('#add-id').mask('DEMO_000000', options);
+        //             } else {
+        //                 $('#add-id').mask('PYT3_00000', options);
+        //             }
+
+        //         })
+        //     })
+
+        // })
+        $(document).ready(() => {
+            // create table from depts
+            let table = $(`<table class="table table-bordered table-striped table-hover"></table>`)
+            let thead = $(`<thead></thead>`).addClass('text-bg-primary')
+            let tbody = $(`<tbody></tbody>`)
+            let tr = $(`<tr></tr>`).html(`<th>ชั้น</th><th>แผนก</th><th>จำนวนที่พบ</th>`).addClass('text-center')
+            $(thead).append(tr)
+            $(table).append(thead)
+            $(table).append(tbody)
+            $('#dept_table').append(table)
+            depts.forEach((dept, i) => {
+                dept = dept.split(' ')
+                let tr = $(`<tr></tr>`).html(`<td>${dept[0]}</td><td data-name="${dept.slice(1).join(' ')}">${dept.slice(1).join(' ')}</td><td class="text-center">0</td>`)
+                $(tbody).append(tr)
+            })
+        })
+
+        $('#add-btn').click(function () {
+            if ($('#dept').val() == '' || !$('#dept').val()) {
+                return Toast.fire({
+                    icon: 'warning',
+                    title: 'กรุณาเลือกแผนก'
+                })
+            }
+
+            if ($('#team').val() == '' || !$('#team').val()) {
+                return Toast.fire({
+                    icon: 'warning',
+                    title: 'กรุณาเลือกทีม'
+                })
+            }
+
+            let obj = {
+                dept: $('#dept').val(),
+                team: $('#team').val(),
+                arr: JSON.stringify(arr),
+                uid: profile.userId,
+                displayName: profile.displayName,
+                remark: $('#remark').val()
+            }
+            console.log(obj)
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึก',
+                allowOutsideClick: false
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            $.ajax({
+                url: script_url,
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                success: function (res) {
+                    console.log(res)
+                    if (res.status == 'success') {
+                        let flex = {
+                            type: 'flex',
+                            altText: 'Flex',
+                            contents: {
+                                "type": "bubble",
+                                "header": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "Brown Cafe",
+                                            "weight": "bold",
+                                            "size": "xl",
+                                            "adjustMode": "shrink-to-fit",
+                                            "color": "#ffffff"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "hello, world",
+                                            "color": "#ffffff"
+                                        }
+                                    ],
+                                    "backgroundColor": "#57acdc"
+                                },
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+
+                                    ],
+                                    "spacing": "lg",
+                                    "offsetTop": "none"
+                                },
+
+                                "styles": {
+                                    "header": {
+                                        "separator": false
+                                    },
+                                    "footer": {
+                                        "separator": true
+                                    }
+                                }
+                            }
+                        }
+
+                        flex.contents.header.contents[0].text = obj.dept
+                        if (obj.remark == "") {
+                            flex.contents.header.contents.pop()
+                        }
+                        arr.forEach((id, i) => {
+                            flex.contents.body.contents.push({
+                                type: 'text',
+                                text: id,
+                                align: "center"
+                            })
+                            if (i == arr.length - 1) {
+                                console.log(flex)
+                                liff.sendMessages([flex]).catch((err) => {
+                                    console.log("error", err);
+                                });
+                            }
+                        })
+
+                        arr = []
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ',
+                            text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
+                            confirmButtonText: 'ตกลง',
+                            timer: 3000,
+                            allowOutsideClick: false
+                        }).then(() => {
+                            // location.reload()
+                            $('#id-sec').html('')
+                            $('#remark').val('')
+                            arr = []
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ผิดพลาด',
+                            text: 'เพิ่มข้อมูลไม่สำเร็จ',
+                            allowOutsideClick: false,
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'ตกลง'
+                        })
+                    }
+                }
+            })
+        })
+    </script>
+    <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'
+    </script>
+    <script>
+        function formsubmit() {
+            let form = $('#mainform')
+            let data = form.serializeArray()
+            let obj = {}
+            data.forEach(a => obj[a.name] = a.value)
+            obj.files = files
+            $.ajax({
+                url: script_url + '?opt=submit',
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                success: function (res) {
+                    $.LoadingOverlay("hide")
+                    console.log(res)
+                    if (res.status == 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ',
+                            text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ผิดพลาด',
+                            text: 'เพิ่มข้อมูลไม่สำเร็จ',
+                            allowOutsideClick: false,
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'ตกลง'
+                        })
+                    }
+                }
+            })
+        }
+    </script>
+    <script>
+        var depts = [
+            "FL.19 OPD UROLOGY (ทางเดินปัสสาวะ)",
+            "FL.19 DIABETIC&METABOLIC(เบาหวาน)",
+            "FL.18 OPD HEAD NECK BREAST(ศุนย์เต้านม)",
+            "FL.18 CHECK-UP (ตรวจสุขภาพ)",
+            "FL.17 WARD 17",
+            "FL.17 HOPD CENTER (ศุนย์มะเร็ง)",
+            "FL.16 PHYSICAL THERAPY( กายภาพ)",
+            "FL.15 WARD 15",
+            "FL.14 WARD 14",
+            "FL.14 PWA ชะลอวัย",
+            "FL.14 PWA LIFE CENTER",
+            "FL.14 PHYATHAI BEAUTY CENTER (PBC ความงาม)",
+            "FL.14 OBSERVE(สังเกตอาการ)",
+            "FL.12 WARD 12",
+            "FL.11 WARD 11",
+            "FL.10 WARD 10",
+            "FL.09 WARD 9",
+            "FL.08 WARD 8",
+            "FL.07 WARD 7",
+            "FL.06-D WAREHOUSE",
+            "FL.06-D MAID",
+            "FL.06 NURSERY(เด็กอ่อน)",
+            "FL.06 LABOR ROOM(ห้องคลอด)",
+            "FL.06 ART-LAB (ศูนย์ผู้มีบุตรยาก)",
+            "FL.05 NURSING DEPARTMENT",
+            "FL.05 MARKETING",
+            "FL.05 INFECTION CONTROL ( IC)",
+            "FL.05 CORPORATE CUSTOMER SERVICE",
+            "FL.04 OPD PEDIATRIC( แผนกเด็ก)",
+            "FL.04 LABORATORY",
+            "FL.04 EENT( หูตาคอจมูก)",
+            "FL.03 PICU",
+            "FL.03 OPERATING ROOM(ห้องผ่าตัด)",
+            "FL.03 INTENSIVE CARE UNIT(ผู้ป่วยหนัก)",
+            "FL.03 HEMODIALYSIS (ไตเทียม)",
+            "FL.03 CSSD (จ่ายกลาง)",
+            "FL.03 CATH-LAB",
+            "FL.03 BME-PYT3",
+            "FL.03 ANESTHESIA (วิสัญญี)",
+            "FL.02 OPD OB/GYN(ศุนย์สุขภาพหญิง)",
+            "FL.02 OPD NEURO (ศูนย์สมอง)",
+            "FL.02 OPD CARDIO(ศูนย์หัวใจ)",
+            "FL.02 GASTROINTESTINAL LABORATORY(GI)",
+            "FL.02 DENTAL (ทันตกรรม)",
+            "FL.01 รับส่ง",
+            "FL.01 X-RAY",
+            "FL.01 VEHICLE",
+            "FL.01 PHARMARCY(เภสัชกรรม ห้องยา)",
+            "FL.01 OPD SURGERY(ศัลยกรรม)",
+            "FL.01 OPD MEDICINE(อายุกรรม)",
+            "FL.01 OPD COUNTER NURSE (CN คัดกรอง)",
+            "FL.01 EMERGENCY( ฉุกเฉิน)"
+        ]
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+</body>
+
+</html>
