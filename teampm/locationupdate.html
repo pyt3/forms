@@ -43,7 +43,16 @@
         </div>
     </nav>
     <div class="container">
-        <div class="row justify-contain-center py-3">
+        <div class="row justify-contain-center py-3 g-3">
+            <div class="col-12 text-center">
+                <label for="team" class="h3 fw-bold text-primary">TEAM</label>
+                <select name="team" id="team" class="form-select text-center">
+                    <option value="" selected disabled>เลือกทีม</option>
+                    <option value="team PM">team PM</option>
+                    <option value="team CAL">team CAL</option>
+                    <option value="VENDER">VENDER</option>
+                </select>
+            </div>
             <div class="col-12 text-center">
                 <label for="dept" class="h3 fw-bold text-success">แผนก</label>
                 <select type="text" class="form-select text-center" id="dept">
@@ -126,11 +135,11 @@
 
         </section>
     </div>
-    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
-    </script> -->
+//         var vConsole = new window.VConsole();
+    </script>
     <script>
         var arr = []
         var Toast, profile
@@ -204,8 +213,17 @@
                     title: 'กรุณาเลือกแผนก'
                 })
             }
+
+            if ($('#team').val() == '' || !$('#team').val()) {
+                return Toast.fire({
+                    icon: 'warning',
+                    title: 'กรุณาเลือกทีม'
+                })
+            }
+
             let obj = {
                 dept: $('#dept').val(),
+                team: $('#team').val(),
                 arr: JSON.stringify(arr),
                 uid: profile.userId,
                 displayName: profile.displayName,
@@ -255,12 +273,12 @@
                                     "type": "box",
                                     "layout": "vertical",
                                     "contents": [
-                                        
+
                                     ],
                                     "spacing": "lg",
                                     "offsetTop": "none"
                                 },
-                                
+
                                 "styles": {
                                     "header": {
                                         "separator": false
@@ -273,7 +291,9 @@
                         }
 
                         flex.contents.header.contents[0].text = obj.dept
-                        flex.contents.header.contents[1].text = obj.remark
+                        if (obj.remark == "") {
+                            flex.contents.header.contents.pop()
+                        }
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
                                 type: 'text',
@@ -301,7 +321,7 @@
                             // location.reload()
                             $('#id-sec').html('')
                             $('#remark').val('')
-                            arr =[]
+                            arr = []
                         })
                     } else {
                         Swal.fire({
