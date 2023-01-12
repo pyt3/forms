@@ -298,6 +298,7 @@
                         }
                         let count_text = {
                             type: 'text',
+                            size: 'sm',
                             text: `วันที่${new Date().toLocaleDateString('th',
                                 {
                                     year: 'numeric',
@@ -306,6 +307,7 @@
                                 })}  บันทึกไปแล้ว ${res.count} รายการ`,
                             align: "center"
                         }
+                        flex.contents.header.contents.push(count_text)
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
                                 type: 'text',
@@ -314,7 +316,7 @@
                             })
                             if (i == arr.length - 1) {
                                 console.log(flex)
-                                liff.sendMessages([flex, count_text]).catch((err) => {
+                                liff.sendMessages([flex]).catch((err) => {
                                     console.log("error", err);
                                 });
                             }
