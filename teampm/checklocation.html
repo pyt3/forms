@@ -42,7 +42,7 @@
             </a>
         </div>
     </nav>
-    <div class="container">
+    <!-- <div class="container">
         <div class="row justify-contain-center py-3 g-3">
             <div class="col-12 text-center">
                 <label for="team" class="h3 fw-bold text-primary">TEAM</label>
@@ -134,6 +134,9 @@
         <section id="id-sec">
 
         </section>
+    </div> -->
+    <div class="container">
+        <div class="table-responsive" id="dept_table"></div>
     </div>
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
@@ -143,67 +146,83 @@
     <script>
         var arr = []
         var Toast, profile
+        // $(document).ready(() => {
+        //     liff.init({
+        //         liffId: '1657539607-EPzqza2K',
+        //         withLoginOnExternalBrowser: true
+        //     })
+        //     liff.ready.then(async () => {
+        //         profile = await liff.getProfile()
+        //         $('#profile').attr('src', profile.pictureUrl)
+        //         $('#displayName').text(profile.displayName)
+        //         Toast = Swal.mixin({
+        //             toast: true,
+        //             position: 'top',
+        //             showConfirmButton: false,
+        //             timer: 1500,
+        //             timerProgressBar: true,
+        //         })
+
+        //         var options = {
+        //             onComplete: function (cep) {
+        //                 if (arr.includes(cep)) {
+        //                     return Toast.fire({
+        //                         icon: 'warning',
+        //                         title: 'เพิ่มรหัสนี้ไปแล้ว'
+        //                     })
+        //                 }
+        //                 let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
+        //                 $(pill).click(function () {
+        //                     let ele = $(this)
+        //                     Swal.fire({
+        //                         icon: 'question',
+        //                         title: `ลบรหัส ${cep}`,
+        //                         showCancelButton: true,
+        //                         confirmButtonText: 'ตกลง',
+        //                         cancelButtonText: 'ยกเลิก'
+        //                     }).then((result) => {
+        //                         if (result.isConfirmed) {
+        //                             arr = arr.filter(a => a != cep)
+        //                             $(ele).remove()
+        //                             console.log("🚀 ~ arr", arr)
+        //                         }
+        //                     })
+        //                 })
+        //                 $('#id-sec').append(pill)
+        //                 $('#isDemo').change()
+        //                 arr.push(cep)
+        //             },
+        //         };
+        //         $('#add-id').mask('PYT3_00000', options);
+        //         $('#isDemo').change(function () {
+        //             $('#add-id').unmask();
+        //             $('#add-id').val('');
+        //             $('#add-id').focus();
+        //             if ($(this).is(':checked')) {
+        //                 $('#add-id').mask('DEMO_000000', options);
+        //             } else {
+        //                 $('#add-id').mask('PYT3_00000', options);
+        //             }
+
+        //         })
+        //     })
+
+        // })
         $(document).ready(() => {
-            liff.init({
-                liffId: '1657539607-EPzqza2K',
-                withLoginOnExternalBrowser: true
+            // create table from depts
+            let table = $(`<table class="table table-bordered table-striped table-hover"></table>`)
+            let thead = $(`<thead></thead>`).addClass('text-bg-primary')
+            let tbody = $(`<tbody></tbody>`)
+            let tr = $(`<tr></tr>`).html(`<th>ชั้น</th><th>แผนก</th><th>จำนวนที่พบ</th>`).addClass('text-center')
+            $(thead).append(tr)
+            $(table).append(thead)
+            $(table).append(tbody)
+            $('#dept_table').append(table)
+            depts.forEach((dept, i) => {
+                dept = dept.split(' ')
+                let tr = $(`<tr></tr>`).html(`<td>${dept[0]}</td><td data-name="${dept.slice(1).join(' ')}">${dept.slice(1).join(' ')}</td><td class="text-center">0</td>`)
+                $(tbody).append(tr)
             })
-            liff.ready.then(async () => {
-                profile = await liff.getProfile()
-                $('#profile').attr('src', profile.pictureUrl)
-                $('#displayName').text(profile.displayName)
-                Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    timerProgressBar: true,
-                })
-
-                var options = {
-                    onComplete: function (cep) {
-                        if (arr.includes(cep)) {
-                            return Toast.fire({
-                                icon: 'warning',
-                                title: 'เพิ่มรหัสนี้ไปแล้ว'
-                            })
-                        }
-                        let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
-                        $(pill).click(function () {
-                            let ele = $(this)
-                            Swal.fire({
-                                icon: 'question',
-                                title: `ลบรหัส ${cep}`,
-                                showCancelButton: true,
-                                confirmButtonText: 'ตกลง',
-                                cancelButtonText: 'ยกเลิก'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    arr = arr.filter(a => a != cep)
-                                    $(ele).remove()
-                                    console.log("🚀 ~ arr", arr)
-                                }
-                            })
-                        })
-                        $('#id-sec').append(pill)
-                        $('#isDemo').change()
-                        arr.push(cep)
-                    },
-                };
-                $('#add-id').mask('PYT3_00000', options);
-                $('#isDemo').change(function () {
-                    $('#add-id').unmask();
-                    $('#add-id').val('');
-                    $('#add-id').focus();
-                    if ($(this).is(':checked')) {
-                        $('#add-id').mask('DEMO_000000', options);
-                    } else {
-                        $('#add-id').mask('PYT3_00000', options);
-                    }
-
-                })
-            })
-
         })
 
         $('#add-btn').click(function () {
@@ -293,18 +312,6 @@
                         flex.contents.header.contents[0].text = obj.dept
                         if (obj.remark == "") {
                             flex.contents.header.contents.pop()
-                        } else {
-                            flex.contents.header.contents[1].text = obj.remark
-                        }
-                        let count_text = {
-                            type: 'text',
-                            text: `วันที่${new Date().toLocaleDateString('th',
-                                {
-                                    year: 'numeric',
-                                    month: 'numeric',
-                                    day: 'numeric'
-                                })}  บันทึกไปแล้ว ${res.count} รายการ`,
-                            align: "center"
                         }
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
@@ -314,7 +321,7 @@
                             })
                             if (i == arr.length - 1) {
                                 console.log(flex)
-                                liff.sendMessages([flex, count_text]).catch((err) => {
+                                liff.sendMessages([flex]).catch((err) => {
                                     console.log("error", err);
                                 });
                             }
@@ -390,6 +397,62 @@
                 }
             })
         }
+    </script>
+    <script>
+        var depts = [
+            "FL.19 OPD UROLOGY (ทางเดินปัสสาวะ)",
+            "FL.19 DIABETIC&METABOLIC(เบาหวาน)",
+            "FL.18 OPD HEAD NECK BREAST(ศุนย์เต้านม)",
+            "FL.18 CHECK-UP (ตรวจสุขภาพ)",
+            "FL.17 WARD 17",
+            "FL.17 HOPD CENTER (ศุนย์มะเร็ง)",
+            "FL.16 PHYSICAL THERAPY( กายภาพ)",
+            "FL.15 WARD 15",
+            "FL.14 WARD 14",
+            "FL.14 PWA ชะลอวัย",
+            "FL.14 PWA LIFE CENTER",
+            "FL.14 PHYATHAI BEAUTY CENTER (PBC ความงาม)",
+            "FL.14 OBSERVE(สังเกตอาการ)",
+            "FL.12 WARD 12",
+            "FL.11 WARD 11",
+            "FL.10 WARD 10",
+            "FL.09 WARD 9",
+            "FL.08 WARD 8",
+            "FL.07 WARD 7",
+            "FL.06-D WAREHOUSE",
+            "FL.06-D MAID",
+            "FL.06 NURSERY(เด็กอ่อน)",
+            "FL.06 LABOR ROOM(ห้องคลอด)",
+            "FL.06 ART-LAB (ศูนย์ผู้มีบุตรยาก)",
+            "FL.05 NURSING DEPARTMENT",
+            "FL.05 MARKETING",
+            "FL.05 INFECTION CONTROL ( IC)",
+            "FL.05 CORPORATE CUSTOMER SERVICE",
+            "FL.04 OPD PEDIATRIC( แผนกเด็ก)",
+            "FL.04 LABORATORY",
+            "FL.04 EENT( หูตาคอจมูก)",
+            "FL.03 PICU",
+            "FL.03 OPERATING ROOM(ห้องผ่าตัด)",
+            "FL.03 INTENSIVE CARE UNIT(ผู้ป่วยหนัก)",
+            "FL.03 HEMODIALYSIS (ไตเทียม)",
+            "FL.03 CSSD (จ่ายกลาง)",
+            "FL.03 CATH-LAB",
+            "FL.03 BME-PYT3",
+            "FL.03 ANESTHESIA (วิสัญญี)",
+            "FL.02 OPD OB/GYN(ศุนย์สุขภาพหญิง)",
+            "FL.02 OPD NEURO (ศูนย์สมอง)",
+            "FL.02 OPD CARDIO(ศูนย์หัวใจ)",
+            "FL.02 GASTROINTESTINAL LABORATORY(GI)",
+            "FL.02 DENTAL (ทันตกรรม)",
+            "FL.01 รับส่ง",
+            "FL.01 X-RAY",
+            "FL.01 VEHICLE",
+            "FL.01 PHARMARCY(เภสัชกรรม ห้องยา)",
+            "FL.01 OPD SURGERY(ศัลยกรรม)",
+            "FL.01 OPD MEDICINE(อายุกรรม)",
+            "FL.01 OPD COUNTER NURSE (CN คัดกรอง)",
+            "FL.01 EMERGENCY( ฉุกเฉิน)"
+        ]
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
