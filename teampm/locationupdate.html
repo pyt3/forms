@@ -292,6 +292,18 @@
                         flex.contents.header.contents[0].text = obj.dept
                         if (obj.remark == "") {
                             flex.contents.header.contents.pop()
+                        } else {
+                            flex.contents.header.contents[1].text = obj.remark
+                        }
+                        let count_text = {
+                            type: 'text',
+                            text: `วันที่${new Date().toLocaleDateString('th',
+                                {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric'
+                                })}  บันทึกไปแล้ว ${res.count} รายการ`,
+                            align: "center"
                         }
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
@@ -301,7 +313,7 @@
                             })
                             if (i == arr.length - 1) {
                                 console.log(flex)
-                                liff.sendMessages([flex]).catch((err) => {
+                                liff.sendMessages([flex, count_text]).catch((err) => {
                                     console.log("error", err);
                                 });
                             }
