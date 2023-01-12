@@ -316,15 +316,9 @@
                         }
                         let count_text = {
                             type: 'text',
-                            size: 'sm',
+                            size: 'xxm',
                             align: "start",
-                            text: `วันที่ ${new Date().toLocaleDateString('th',
-                                {
-                                    year: 'numeric',
-                                    month: 'numeric',
-                                    day: 'numeric'
-                                })}  บันทึกไปแล้ว ${res.count} รายการ`,
-                            align: "center"
+                            text: `วันที่ ${new Date().toLocaleDateString('th', { year: 'numeric', month: 'numeric', day: 'numeric' })}  บันทึกไปแล้ว ${res.count} รายการ`,
                         }
                         flex.contents.footer.contents[0] = count_text
                         arr.forEach((id, i) => {
