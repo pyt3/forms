@@ -249,36 +249,54 @@
                             altText: 'Flex',
                             contents: {
                                 "type": "bubble",
-                                "header": {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-                                        {
-                                            "type": "text",
-                                            "text": "Brown Cafe",
-                                            "weight": "bold",
-                                            "size": "xl",
-                                            "adjustMode": "shrink-to-fit",
-                                            "color": "#ffffff"
-                                        },
-                                        {
-                                            "type": "text",
-                                            "text": "hello, world",
-                                            "color": "#ffffff"
-                                        }
-                                    ],
-                                    "backgroundColor": "#57acdc"
-                                },
                                 "body": {
                                     "type": "box",
                                     "layout": "vertical",
                                     "contents": [
-
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Brown Cafe",
+                                                    "weight": "bold",
+                                                    "size": "xl",
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "color": "#ffffff"
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": "hello, world",
+                                                    "color": "#ffffff"
+                                                }
+                                            ],
+                                            "backgroundColor": "#57acdc",
+                                            "paddingAll": "md"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [],
+                                            "spacing": "md"
+                                        }
                                     ],
                                     "spacing": "lg",
-                                    "offsetTop": "none"
+                                    "offsetTop": "none",
+                                    "paddingAll": "none"
                                 },
-
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "hello, world",
+                                            "align": "end",
+                                            "size": "xs"
+                                        }
+                                    ]
+                                },
                                 "styles": {
                                     "header": {
                                         "separator": false
@@ -290,10 +308,19 @@
                             }
                         }
 
-                        flex.contents.header.contents[0].text = obj.dept
+                        flex.contents.body.contents[0].contents[0].text = obj.dept
                         if (obj.remark == "") {
-                            flex.contents.header.contents.pop()
+                            flex.contents.body.contents[0].contents.pop()
+                        } else {
+                            flex.contents.body.contents[0].contents[1].text = obj.remark
                         }
+                        let count_text = {
+                            type: 'text',
+                            size: 'xxs',
+                            align: "end",
+                            text: `วันที่ ${new Date().toLocaleDateString('th', { year: 'numeric', month: 'numeric', day: 'numeric' })}  บันทึกไปแล้ว ${res.count} รายการ`,
+                        }
+                        flex.contents.footer.contents[0] = count_text
                         arr.forEach((id, i) => {
                             flex.contents.body.contents.push({
                                 type: 'text',
