@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <link rel=" stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         * {
@@ -28,11 +29,37 @@
             height: 60px;
             object-fit: cover;
         }
+
+        .blink-border {
+            animation: 1s linear infinite condemned_blink_effect;
+        }
+
+        @keyframes condemned_blink_effect {
+
+            /* red border with 2px width  and growing text*/
+            0% {
+                border: 2px solid #ffffff;
+                color: #ffffff;
+            }
+
+            50% {
+                border: 2px solid #ff0000;
+                color: #ff0000;
+            }
+
+            100% {
+                border: 2px solid #ffffff;
+                color: #ffffff;
+            }
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar bg-light">
+        <div class="container-fluid fs-2 text-info fw-bold d-flex justify-content-center">
+            ค้นหาตำแหน่งเครื่องมือแพทย์
+        </div>
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
@@ -136,6 +163,15 @@
         </section>
     </div> -->
     <div class="container">
+        <div class="row justify-content-center align-items-end mt-3">
+            <div class="col-auto flex-fill mb-2 text-center me-0 pe-0">
+                <label for="add-id">รหัสเครื่อง</label>
+                <input type="text" id="add-id" name="add-id" class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
+            </div>
+            <div class="col-auto text-center mb-2">
+                <button class="btn btn-success" id="add-btn">ค้นหา</button>
+            </div>
+        </div>
         <div class="table-responsive" id="dept_table"></div>
     </div>
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
@@ -144,260 +180,138 @@
 //         var vConsole = new window.VConsole();
     </script>
     <script>
-        var arr = []
-        var Toast, profile
-        // $(document).ready(() => {
-        //     liff.init({
-        //         liffId: '1657539607-EPzqza2K',
-        //         withLoginOnExternalBrowser: true
-        //     })
-        //     liff.ready.then(async () => {
-        //         profile = await liff.getProfile()
-        //         $('#profile').attr('src', profile.pictureUrl)
-        //         $('#displayName').text(profile.displayName)
-        //         Toast = Swal.mixin({
-        //             toast: true,
-        //             position: 'top',
-        //             showConfirmButton: false,
-        //             timer: 1500,
-        //             timerProgressBar: true,
-        //         })
-
-        //         var options = {
-        //             onComplete: function (cep) {
-        //                 if (arr.includes(cep)) {
-        //                     return Toast.fire({
-        //                         icon: 'warning',
-        //                         title: 'เพิ่มรหัสนี้ไปแล้ว'
-        //                     })
-        //                 }
-        //                 let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
-        //                 $(pill).click(function () {
-        //                     let ele = $(this)
-        //                     Swal.fire({
-        //                         icon: 'question',
-        //                         title: `ลบรหัส ${cep}`,
-        //                         showCancelButton: true,
-        //                         confirmButtonText: 'ตกลง',
-        //                         cancelButtonText: 'ยกเลิก'
-        //                     }).then((result) => {
-        //                         if (result.isConfirmed) {
-        //                             arr = arr.filter(a => a != cep)
-        //                             $(ele).remove()
-        //                             console.log("🚀 ~ arr", arr)
-        //                         }
-        //                     })
-        //                 })
-        //                 $('#id-sec').append(pill)
-        //                 $('#isDemo').change()
-        //                 arr.push(cep)
-        //             },
-        //         };
-        //         $('#add-id').mask('PYT3_00000', options);
-        //         $('#isDemo').change(function () {
-        //             $('#add-id').unmask();
-        //             $('#add-id').val('');
-        //             $('#add-id').focus();
-        //             if ($(this).is(':checked')) {
-        //                 $('#add-id').mask('DEMO_000000', options);
-        //             } else {
-        //                 $('#add-id').mask('PYT3_00000', options);
-        //             }
-
-        //         })
-        //     })
-
-        // })
-        $(document).ready(() => {
-            // create table from depts
-            let table = $(`<table class="table table-bordered table-striped table-hover"></table>`)
-            let thead = $(`<thead></thead>`).addClass('text-bg-primary')
-            let tbody = $(`<tbody></tbody>`)
-            let tr = $(`<tr></tr>`).html(`<th>ชั้น</th><th>แผนก</th><th>จำนวนที่พบ</th>`).addClass('text-center')
-            $(thead).append(tr)
-            $(table).append(thead)
-            $(table).append(tbody)
-            $('#dept_table').append(table)
-            depts.forEach((dept, i) => {
-                dept = dept.split(' ')
-                let tr = $(`<tr></tr>`).html(`<td>${dept[0]}</td><td data-name="${dept.slice(1).join(' ')}">${dept.slice(1).join(' ')}</td><td class="text-center">0</td>`)
-                $(tbody).append(tr)
-            })
-        })
-
-        $('#add-btn').click(function () {
-            if ($('#dept').val() == '' || !$('#dept').val()) {
-                return Toast.fire({
-                    icon: 'warning',
-                    title: 'กรุณาเลือกแผนก'
-                })
-            }
-
-            if ($('#team').val() == '' || !$('#team').val()) {
-                return Toast.fire({
-                    icon: 'warning',
-                    title: 'กรุณาเลือกทีม'
-                })
-            }
-
-            let obj = {
-                dept: $('#dept').val(),
-                team: $('#team').val(),
-                arr: JSON.stringify(arr),
-                uid: profile.userId,
-                displayName: profile.displayName,
-                remark: $('#remark').val()
-            }
-            console.log(obj)
-            Swal.fire({
-                icon: 'info',
-                title: 'กำลังบันทึก',
-                allowOutsideClick: false
-            })
-            Swal.showLoading(Swal.getConfirmButton())
-            $.ajax({
-                url: script_url,
-                type: 'POST',
-                dataType: 'json',
-                data: obj,
-                success: function (res) {
-                    console.log(res)
-                    if (res.status == 'success') {
-                        let flex = {
-                            type: 'flex',
-                            altText: 'Flex',
-                            contents: {
-                                "type": "bubble",
-                                "header": {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-                                        {
-                                            "type": "text",
-                                            "text": "Brown Cafe",
-                                            "weight": "bold",
-                                            "size": "xl",
-                                            "adjustMode": "shrink-to-fit",
-                                            "color": "#ffffff"
-                                        },
-                                        {
-                                            "type": "text",
-                                            "text": "hello, world",
-                                            "color": "#ffffff"
-                                        }
-                                    ],
-                                    "backgroundColor": "#57acdc"
-                                },
-                                "body": {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-
-                                    ],
-                                    "spacing": "lg",
-                                    "offsetTop": "none"
-                                },
-
-                                "styles": {
-                                    "header": {
-                                        "separator": false
-                                    },
-                                    "footer": {
-                                        "separator": true
-                                    }
-                                }
-                            }
-                        }
-
-                        flex.contents.header.contents[0].text = obj.dept
-                        if (obj.remark == "") {
-                            flex.contents.header.contents.pop()
-                        }
-                        arr.forEach((id, i) => {
-                            flex.contents.body.contents.push({
-                                type: 'text',
-                                text: id,
-                                align: "center"
-                            })
-                            if (i == arr.length - 1) {
-                                console.log(flex)
-                                liff.sendMessages([flex]).catch((err) => {
-                                    console.log("error", err);
-                                });
-                            }
-                        })
-
-                        arr = []
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'สำเร็จ',
-                            text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
-                            confirmButtonText: 'ตกลง',
-                            timer: 3000,
-                            allowOutsideClick: false
-                        }).then(() => {
-                            // location.reload()
-                            $('#id-sec').html('')
-                            $('#remark').val('')
-                            arr = []
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'ผิดพลาด',
-                            text: 'เพิ่มข้อมูลไม่สำเร็จ',
-                            allowOutsideClick: false,
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'ตกลง'
-                        })
-                    }
-                }
-            })
-        })
-    </script>
-    <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'
     </script>
     <script>
-        function formsubmit() {
-            let form = $('#mainform')
-            let data = form.serializeArray()
-            let obj = {}
-            data.forEach(a => obj[a.name] = a.value)
-            obj.files = files
+        $(document).ready(() => {
+            $('#add-id').on('keyup', (e) => {
+                if (e.keyCode == 13) {
+                    searchLocationData()
+                }
+            })
+            $('#add-btn').click(() => searchLocationData())
+            $('#add-id').mask('00000')
+
+            liff.init({
+                liffId: '1657539607-EPzqza2K',
+                withLoginOnExternalBrowser: true
+            })
+            liff.ready.then(async () => {
+                profile = await liff.getProfile()
+                $('#profile').attr('src', profile.pictureUrl)
+                $('#displayName').text(profile.displayName)
+            })
+        })
+
+        // //setup before functions
+        // let typingTimer;                //timer identifier
+        // let doneTypingInterval = 500;  //time in ms, 5 seconds for example
+        // let $input = $('#add-id');
+
+        // //on keyup, start the countdown
+        // $input.on('keyup', function () {
+        //     clearTimeout(typingTimer);
+        //     typingTimer = setTimeout(doneTyping, doneTypingInterval);
+        // });
+
+        // //on keydown, clear the countdown 
+        // $input.on('keydown', function () {
+        //     clearTimeout(typingTimer);
+        // });
+
+        // //user is "finished typing," do something
+        // function doneTyping() {
+        //     searchLocationData()
+        // }
+
+        function searchLocationData() {
+            $('#dept_table').slideUp(200)
+            $.LoadingOverlay("show")
+            let id = $('#add-id').val()
+            if (id.length == 0) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกรหัสเครื่อง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            if (id.length < 4) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกรหัสเครื่องให้ครบ 5 หลัก',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
             $.ajax({
-                url: script_url + '?opt=submit',
-                type: 'POST',
-                dataType: 'json',
-                data: obj,
-                success: function (res) {
+                url: script_url,
+                method: "GET",
+                dataType: "json",
+                data: {
+                    opt: 'searchlocationdata',
+                    id: id
+                },
+                success: function (response) {
                     $.LoadingOverlay("hide")
-                    console.log(res)
-                    if (res.status == 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'สำเร็จ',
-                            text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
+                    console.log(response)
+                    if (response.status == 'error') {
+                        return Swal.fire({
+                            icon: 'error',
+                            title: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'ผิดพลาด',
-                            text: 'เพิ่มข้อมูลไม่สำเร็จ',
-                            allowOutsideClick: false,
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'ตกลง'
-                        })
                     }
+                    createTable(response.data)
+
                 }
+            });
+            // createTable()
+        }
+
+        function createTable(data) {
+            if (data.length <= 0) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบข้อมูล',
+                    text: 'รหัส ' + $('#add-id').val(),
+                    confirmButtonText: 'ตกลง',
+                })
+            }
+            let table = $(`<table class="table table-bordered table-striped table-hover"></table>`)
+            table.attr('id', 'data_table')
+            let thead = $(`<thead></thead>`).addClass('text-bg-primary')
+            let tbody = $(`<tbody></tbody>`)
+            $(thead).append($(`<tr></tr>`).html(`<th>วันที่</th><th>แผนก</th><th>ห้อง</th><th>ผู้บันทึก</th>`).addClass('text-center'))
+            $(thead).append($(`<tr class="text-bg-success"></tr>`).append($('<th colspan="4"</th>').text(`ผลการค้นหารหัส ${$('#add-id').val()}`))).addClass('text-center')
+
+            $(table).append(thead)
+            $(table).append(tbody)
+            $('#data_table').remove()
+            $('#dept_table').append(table)
+            console.log("🚀 ~ data", data)
+            data.forEach((row, i) => {
+                if (i == 0) {
+                    row[1] = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row[1]
+                }
+                let tr = $(`<tr></tr>`).html(`<td>${new Date(row[0]).toLocaleString('th', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                })}</td><td>${row[1]}</td><td>${row[2] == "" ? '---' : row[2]}</td><td>${row[3]}</td>`)
+                $(tbody).append(tr)
             })
+            // format first row of tbody
+
+            // add blink border to first row of tbody
+            $(tbody).find('tr:first').addClass('blink-border')
+
+            // add pointer icon to 2nd column of first row of tbody
+            $('#dept_table').slideDown(200)
         }
     </script>
+
     <script>
         var depts = [
             "FL.19 OPD UROLOGY (ทางเดินปัสสาวะ)",
