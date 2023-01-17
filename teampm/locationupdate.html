@@ -97,15 +97,17 @@
                     <option value="PWA LIFE CENTER">PWA LIFE CENTER</option>
                     <option value="PWA ชะลอวัย">PWA ชะลอวัย</option>
                     <option value="VEHICLE">VEHICLE</option>
+                    <option value="WARD 7">WARD 7</option>
+                    <option value="WARD 8">WARD 8</option>
+                    <option value="WARD 9">WARD 9</option>
                     <option value="WARD 10">WARD 10</option>
                     <option value="WARD 11">WARD 11</option>
                     <option value="WARD 12">WARD 12</option>
                     <option value="WARD 14">WARD 14</option>
                     <option value="WARD 15">WARD 15</option>
                     <option value="WARD 17">WARD 17</option>
-                    <option value="WARD 7">WARD 7</option>
-                    <option value="WARD 8">WARD 8</option>
-                    <option value="WARD 9">WARD 9</option>
+                    <option value="FLOOR 19">FLOOR 19</option>
+                    <option value="FLOOR 20">FLOOR 20</option>
                     <option value="WAREHOUSE">WAREHOUSE</option>
                     <option value="X-RAY">X-RAY</option>
                     <option value="รับส่ง">รับส่ง</option>
@@ -144,11 +146,15 @@
         var arr = []
         var Toast, profile
         $(document).ready(() => {
+
             liff.init({
                 liffId: '1657539607-EPzqza2K',
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
+                $('#dept').select2({
+                    theme: 'bootstrap-5'
+                });
                 profile = await liff.getProfile()
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
@@ -411,6 +417,10 @@
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </body>
 
 </html>
