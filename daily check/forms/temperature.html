@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <script src="../lib/compressjs/dist/compressjs.js"></script>
     <link rel="icon" href="../icon.png" type="image/png">
     <style>
@@ -100,6 +101,19 @@
                             <div class="col-md-4 mt-3">
                                 <label for="rec_remark">หมายเหตุ</label>
                                 <input type="text" name="rec_remark" id="rec_remark" class="form-control" autocomplete="on">
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <div>
+                                    รอบ<br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="shift" id="inlineRadio1" value="DAY" required>
+                                        <label class="form-check-label" for="inlineRadio1">รอบเช้า 08:00 น.&nbsp;<i class="bi bi-cloud-sun"></i></label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="shift" id="inlineRadio2" value="NIGHT">
+                                        <label class="form-check-label" for="inlineRadio2">รอบเย็น 18:00 น.&nbsp;<i class="bi bi-cloud-moon"></i></label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row justify-content-center p-2 m-2 border border-2 border-primary rounded shadow" id="shelf1">
@@ -291,76 +305,73 @@
                 }
                 reader.readAsDataURL(file)
             })
-            liff
-                .init({
-                    liffId: "1657104960-92R4ZRQz", // Use own liffId
-                })
-                .then(() => {
-                    // Start to use liff's api
-                    if (!liff.isLoggedIn()) {
-                        return liff.login()
-                        // return liff.login({ redirectUri: url })
-                    } else {
-                        console.log('liff init success');
-                        $.LoadingOverlay('show')
-                        $.post(script_url, { opt: 'getconst' }, async function (c) {
-                            const firebaseConfig = c
-                            const defaultProject = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
-                            firestore = defaultProject.firestore();
-                            auth = defaultProject.auth();
-                            await getAuth(await liff.getDecodedIDToken().sub)
-                            await getDeptList(client)
-                            getFolderToken()
-                            $.LoadingOverlay('hide')
-                            if (!checkShelf || checkShelf == 'undefined') {
-                                Swal.fire({
-                                    icon: 'info',
-                                    title: 'ระบุจำนวนชั้นของตู้เย็น',
-                                    input: 'radio',
-                                    confirmButtonText: 'ตกลง',
-                                    buttonStyling: false,
-                                    allowOutsideClick: false,
-                                    customClass: {
-                                        input: 'fs-3'
-                                    },
-                                    inputOptions: { 1: '1 ชั้น', 2: '2 ชั้น' },
-                                    inputValidator: (value) => {
-                                        if (!value) {
-                                            return 'กรุณาเลือกจำนวนชั้น!'
-                                        }
+            // liff.init({ liffId: "1657104960-92R4ZRQz" })
+            liff.ready.then(() => {
+                // Start to use liff's api
+                if (!liff.isLoggedIn()) {
+                    return liff.login()
+                    // return liff.login({ redirectUri: url })
+                } else {
+                    console.log('liff init success');
+                    $.LoadingOverlay('show')
+                    $.post(script_url, { opt: 'getconst' }, async function (c) {
+                        const firebaseConfig = c
+                        const defaultProject = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+                        firestore = defaultProject.firestore();
+                        auth = defaultProject.auth();
+                        await getAuth(await liff.getDecodedIDToken().sub)
+                        await getDeptList(client)
+                        getFolderToken()
+                        $.LoadingOverlay('hide')
+                        if (!checkShelf || checkShelf == 'undefined') {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'ระบุจำนวนชั้นของตู้เย็น',
+                                input: 'radio',
+                                confirmButtonText: 'ตกลง',
+                                buttonStyling: false,
+                                allowOutsideClick: false,
+                                customClass: {
+                                    input: 'fs-3'
+                                },
+                                inputOptions: { 1: '1 ชั้น', 2: '2 ชั้น' },
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return 'กรุณาเลือกจำนวนชั้น!'
                                     }
-                                }).then(result => {
-                                    if (result.isConfirmed) {
-                                        $('#temp').focus()
-                                        while (!auth || !auth.currentUser) {
-                                            console.log('wait')
-                                        }
-                                        let shelf = result.value
-                                        firestore.collection(client.toUpperCase() + '_e').doc(nid).update({ checkShelf: shelf })
-                                        if (shelf == '1') {
-                                            $('#shelf2, #myChart2-canvas').remove()
-                                        } else {
-                                            $('#upshelf-label').show()
-                                            Swal.fire({
-                                                icon: 'info',
-                                                title: "โปรดอ่าน",
-                                                html: '<strong class="text-danger">กรณีตู้เย็นมี 2 ชั้น</strong><br>บันทึกอุณหภูมิชั้นบน ในช่องอุณหภูมิที่ 1<br>และ<br>บันทึกอุณหภูมิชั้นล่าง ในช่องอุณหภูมิที่ 2',
-                                                confirmButtonText: "ตกลง"
-                                            })
-                                        }
-                                    }
-                                })
-                            } else {
-                                if (checkShelf == 1) {
-                                    $('#shelf2, #myChart2-canvas').remove()
-                                } else {
-                                    $('#upshelf-label').show()
                                 }
+                            }).then(result => {
+                                if (result.isConfirmed) {
+                                    $('#temp').focus()
+                                    while (!auth || !auth.currentUser) {
+                                        console.log('wait')
+                                    }
+                                    let shelf = result.value
+                                    firestore.collection(client.toUpperCase() + '_e').doc(nid).update({ checkShelf: shelf })
+                                    if (shelf == '1') {
+                                        $('#shelf2, #myChart2-canvas').remove()
+                                    } else {
+                                        $('#upshelf-label').show()
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: "โปรดอ่าน",
+                                            html: '<strong class="text-danger">กรณีตู้เย็นมี 2 ชั้น</strong><br>บันทึกอุณหภูมิชั้นบน ในช่องอุณหภูมิที่ 1<br>และ<br>บันทึกอุณหภูมิชั้นล่าง ในช่องอุณหภูมิที่ 2',
+                                            confirmButtonText: "ตกลง"
+                                        })
+                                    }
+                                }
+                            })
+                        } else {
+                            if (checkShelf == 1) {
+                                $('#shelf2, #myChart2-canvas').remove()
+                            } else {
+                                $('#upshelf-label').show()
                             }
-                            $('#filter').click()
-                        })
-                    }
-                })
+                        }
+                        $('#filter').click()
+                    })
+                }
+            })
                 .catch((err) => {
                     // Error happens during initialization
                     console.log(err.code, err.message);
@@ -743,6 +754,7 @@
             let temp = $('#temp').val()
             let temp2 = $('#temp2').val()
             let rec_name = $('#rec_name').val()
+            let shift = $('#shift').val()
             let rand = Array.from({ length: 100 }, () => randomIntFromInterval(2, 8));
             // let i = 0
             // let date = new Date(2022, 2, 1, 0, 0, 0, 0)
@@ -806,6 +818,16 @@
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณาเลือก Recorder Department',
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+            }
+
+            if (shift == "") {
+                $('#shift').focus()
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกรอบการเช็ค',
                     showConfirmButton: false,
                     timer: 1500,
                 })
