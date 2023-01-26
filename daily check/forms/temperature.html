@@ -752,7 +752,6 @@
             let temp2 = $('#temp2').val()
             let rec_name = $('#rec_name').val()
             let shift = $('[name="shift"]:checked').val()
-            alert(shift)
             let rand = Array.from({ length: 100 }, () => randomIntFromInterval(2, 8));
             // let i = 0
             // let date = new Date(2022, 2, 1, 0, 0, 0, 0)
@@ -821,7 +820,7 @@
                 })
             }
 
-            if (shift == "") {
+            if (shift || shift == "") {
                 $('#shift').focus()
                 return Swal.fire({
                     icon: 'error',
