@@ -12,6 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <script src='https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js'></script>
     <style>
         * {
             margin: 0;
@@ -126,21 +128,47 @@
                     </label>
                 </div>
             </div>
-            <div class="col-auto flex-fill mb-2">
+            <div class="col-auto flex-fill mb-2 pe-0">
                 <input type="text" id="add-id" name="add-id" class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
             </div>
             <div class="col-auto text-center mb-2">
-                <button class="btn btn-primary" id="add-btn">เพิ่มรหัส</button>
+                <button class="btn btn-info" id="ocr-btn"><i class="bi bi-upc-scan"></i>&nbsp;OCR</button>
             </div>
+            <div class="col-auto text-center mb-2">
+                <button class="btn btn-primary" style="min-width: 100px;" id="add-btn">เพิ่มรหัส</button>
+            </div>
+
         </div>
         <section id="id-sec">
 
         </section>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">OCR Code</h1>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <video id="video" class="img-fluid rounded" width="100%" autoplay></video>
+                        <div class="row justift-centent-center">
+                            <div class="col text-center">
+                                <button id="snap" class="btn btn-lg btn-info"><i class="bi bi-camera"></i>&nbsp; อ่านภาพ</button>
+                            </div>
+                        </div>
+                        <canvas id="canvas" hidden></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-//         var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var arr = []
@@ -174,26 +202,7 @@
                                 title: 'เพิ่มรหัสนี้ไปแล้ว'
                             })
                         }
-                        let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
-                        $(pill).click(function () {
-                            let ele = $(this)
-                            Swal.fire({
-                                icon: 'question',
-                                title: `ลบรหัส ${cep}`,
-                                showCancelButton: true,
-                                confirmButtonText: 'ตกลง',
-                                cancelButtonText: 'ยกเลิก'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    arr = arr.filter(a => a != cep)
-                                    $(ele).remove()
-                                    console.log("🚀 ~ arr", arr)
-                                }
-                            })
-                        })
-                        $('#id-sec').append(pill)
-                        $('#isDemo').change()
-                        arr.push(cep)
+                        appendPill(cep)
                     },
                 };
                 $('#add-id').mask('PYT3_00000', options);
@@ -210,6 +219,38 @@
                 })
             })
 
+            $('#ocr-btn').click(function () {
+                $('#staticBackdrop').modal('show')
+            })
+
+        })
+
+        $('#staticBackdrop').on('show.bs.modal', function () {
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'environment',
+                    zoom: 2,
+                    focusMode: 'continuous',
+                },
+                audio: false
+            })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function (error) {
+                    console.error('Oops. Something is broken.', error);
+                });
+        })
+
+        $('#staticBackdrop').on('hide.bs.modal', function () {
+            // close video
+            let stream = video.srcObject;
+            let tracks = stream.getTracks();
+
+            for (let i = 0; i < tracks.length; i++) {
+                let track = tracks[i];
+                track.stop();
+            }
         })
 
         $('#add-btn').click(function () {
@@ -370,6 +411,29 @@
                 }
             })
         })
+
+        function appendPill(cep) {
+            let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
+            $(pill).click(function () {
+                let ele = $(this)
+                Swal.fire({
+                    icon: 'question',
+                    title: `ลบรหัส ${cep}`,
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        arr = arr.filter(a => a != cep)
+                        $(ele).remove()
+                        console.log("🚀 ~ arr", arr)
+                    }
+                })
+            })
+            $('#id-sec').append(pill)
+            $('#isDemo').change()
+            arr.push(cep)
+        }
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'
@@ -412,6 +476,119 @@
             })
         }
     </script>
+    <script>
+
+        // Get references to the video and canvas elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const snap = document.getElementById('snap');
+        var worker
+        (async () => {
+            worker = await Tesseract.createWorker();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+            await worker.setParameters({
+                // tessedit_char_whitelist: '_PYTBDEM0123456789',
+                // tessedit_ocr_engine_mode: 'OEM_TESSERACT_LSTM_COMBINED',
+            });
+            console.log("worker ready")
+        })();
+
+        // Get access to the camera
+
+
+
+        // Add a listener to the snap button
+        snap.addEventListener("click", function () {
+            console.log("snap")
+            // focus video before take picture
+            // get imageData form video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            // var imageData = canvas.toDataURL('image/png');
+            findText()
+
+        });
+
+        function findText() {
+            video.pause();
+            Swal.fire({
+                title: 'กำลังค้นหารหัส',
+                allowOutsideClick: false,
+            })
+            Swal.showLoading(Swal.getConfirmButton());
+            worker.recognize(canvas)
+                .then(function (result) {
+                    let text = result.data.text.replace(/\s/g, '')
+                    console.log("🚀 ~ text", text)
+                    // extract only text in format PYT3_00000
+                    let regex = /(BMEPYT3_\d{3}|PYT(3|3D)_\d{5})/g;
+                    let match = text.match(regex);
+                    console.log(match);
+                    // pause video
+                    // show alert
+                    Swal.hideLoading();
+                    if (match == null) {
+                        Swal.fire({
+                            title: 'ไม่พบรหัส',
+                            text: 'กรุณาถ่ายรูปใหม่',
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง',
+                            allowOutsideClick: false,
+                            showConfirmButton: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // resume video
+                                video.play();
+                            }
+                        })
+                        return;
+                    }
+                    Swal.fire({
+                        title: match[0],
+                        text: 'กรุณายืนยันรหัส',
+                        icon: 'question',
+                        confirmButtonText: 'ตกลง',
+                        denyButtonText: 'ถ่ายรูปใหม่',
+                        showDenyButton: true,
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if(arr.includes(match[0])){
+                                return Swal.fire({
+                                    icon: 'warning',
+                                    title: 'เพิ่มรหัสนี้ไปแล้ว',
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                }).then(() => {
+                                    $('#add-id').val('')
+                                    video.play()
+                                })
+                            }
+                            appendPill(match[0])
+                            Swal.fire({
+                                title: 'สำเร็จ',
+                                text: 'เพิ่มรหัสเรียบร้อยแล้ว',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                showDenyButton: false,
+                            })
+                        }
+                        video.play();
+                    })
+                })
+                .catch(function (error) {
+                    console.error('Oops. Something is broken.', error);
+                });
+        }
+
+            // setInterval(function () {
+            //     snap.click()
+            //     }, 100);
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
@@ -421,6 +598,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 </body>
 
 </html>
