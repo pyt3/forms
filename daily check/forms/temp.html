@@ -1,45 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: sans-serif;
+            font-size: 1.2em;
+            text-align: center;
+            width: 100%;
+        }
+
+        #video {
+            background-color: #666;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        
+    </style>
 </head>
 
 <body>
-
-    <div class="container">
-        <h1>Rear Camera Full HD Image Capture</h1>
-        <p>Click the "Capture" button to open the rear camera and capture a full HD image.</p>
-
-        <video id="video" width="640" height="480" autoplay></video>
-        <button id="capture" class="btn btn-primary">Capture</button>
-        <canvas id="canvas" width="640" height="480"></canvas>
-
-        <script>
-            // Set up video
-            const video = document.getElementById('video');
-
-            // Get access to the camera
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
-                    video.srcObject = stream;
-                });
-            }
-
-            // Trigger photo take
-            document.getElementById("capture").addEventListener("click", function () {
-                var context = canvas.getContext('2d');
-                context.drawImage(video, 0, 0, 640, 480);
-            });
-        </script>
-
+    <div>
+        <video id="video" width="100%" autoplay></video>
+        <button id="snap">Snap Photo</button>
+        <canvas id="canvas"></canvas>
     </div>
+    <!-- v4 -->
+    <script src='https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js'></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        var vConsole = new window.VConsole();
+    </script>
+    <script>
+        // Get references to the video and canvas elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const snap = document.getElementById('snap');
+        var worker
+        (async () => {
+            worker = await Tesseract.createWorker();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+            await worker.setParameters({
+                tessedit_char_whitelist: '_PYTD0123456789',
+                // tessedit_ocr_engine_mode: 'OEM_TESSERACT_LSTM_COMBINED',
+            });
+            console.log("worker ready")
+        })();
 
+        // Get access to the camera
+        navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'environment',
+                zoom: 2
+            },
+            audio: false
+        })
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch(function (error) {
+                console.error('Oops. Something is broken.', error);
+            });
+
+
+        // Add a listener to the snap button
+        snap.addEventListener("click", function () {
+            console.log("snap")
+            // get imageData form video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            var imageData = canvas.toDataURL('image/png');
+            findText(imageData)
+
+        });
+
+        function findText(imageData) {
+            video.pause();
+            Swal.fire({
+                title: 'กำลังค้นหารหัส',
+                allowOutsideClick: false,
+            })
+            Swal.showLoading(Swal.getConfirmButton());
+            worker.recognize(imageData)
+                .then(function (result) {
+                    let text = result.data.text.replace(/\s/g, '')
+                    console.log("🚀 ~ text", text)
+                    // extract only text in format PYT3_00000
+                    let regex = /PYT(3|3D)_\d{5}/g;
+                    let match = text.match(regex);
+                    console.log(match);
+                    // pause video
+                    // show alert
+                    Swal.hideLoading();
+                    if (match == null) {
+                        Swal.fire({
+                            title: 'ไม่พบรหัส',
+                            text: 'กรุณาถ่ายรูปใหม่',
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง',
+                            allowOutsideClick: false,
+                            showConfirmButton: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // resume video
+                                video.play();
+                            }
+                        })
+                        return;
+                    }
+                    Swal.fire({
+                        title: 'พบรหัส',
+                        text: match[0],
+                        icon: 'success',
+                        confirmButtonText: 'ตกลง',
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                    }).then((result) => {
+                        video.play();
+                    })
+                })
+                .catch(function (error) {
+                    console.error('Oops. Something is broken.', error);
+                });
+        }
+
+        // setInterval(function () {
+        //     snap.click()
+        //     }, 100);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
