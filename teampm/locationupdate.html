@@ -230,25 +230,25 @@
                 video: {
                     facingMode: 'environment',
                     zoom: 2,
-                    width: {
-                        min: 720,
-                        ideal: 1280,
-                        max: 1920
-                    },
-                    height: {
-                        min: 720,
-                        ideal: 720,
-                        max: 1080
-                    }
+                    width: { ideal: 720, max: 1280 },
+                    height: { ideal: 720, max: 1280 },
+                    focusMode: 'continuous',
+                    exposureMode: 'continuous',
+                    whiteBalanceMode: 'continuous',
+                    frameRate: { ideal: 10, max: 15 }
+
                 },
                 audio: false
             })
                 .then(function (stream) {
                     video.srcObject = stream;
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
                 })
                 .catch(function (error) {
                     console.error('Oops. Something is broken.', error);
                 });
+
         })
 
         $('#staticBackdrop').on('hide.bs.modal', function () {
@@ -497,7 +497,7 @@
             await worker.loadLanguage('eng');
             await worker.initialize('eng');
             await worker.setParameters({
-                // tessedit_char_whitelist: '_PYTBDEM0123456789',
+                tessedit_char_whitelist: '_PYTBDEM0123456789',
                 // tessedit_ocr_engine_mode: 'OEM_TESSERACT_LSTM_COMBINED',
             });
             console.log("worker ready")
@@ -565,7 +565,7 @@
                         showConfirmButton: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            if(arr.includes(match[0])){
+                            if (arr.includes(match[0])) {
                                 return Swal.fire({
                                     icon: 'warning',
                                     title: 'เพิ่มรหัสนี้ไปแล้ว',
