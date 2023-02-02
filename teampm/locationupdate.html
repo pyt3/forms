@@ -168,17 +168,17 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
+        //var vConsole = new window.VConsole();
     </script>
     <script>
         var arr = []
         var Toast, profile
         $(document).ready(() => {
 
-            // liff.init({
-            //     liffId: '1657539607-EPzqza2K',
-            //     withLoginOnExternalBrowser: true
-            // })
+             liff.init({
+                 liffId: '1657539607-EPzqza2K',
+                 withLoginOnExternalBrowser: true
+             })
             liff.ready.then(async () => {
                 $('#dept').select2({
                     theme: 'bootstrap-5'
