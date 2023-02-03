@@ -116,7 +116,7 @@
                 </select>
             </div>
             <div class="col-12 mt-3">
-                <input type="text" id="remark" class="form-control" placeholder="หมายเหตุ ชื่อห้อง/เลขห้อง/ตำแหน่ง/อื่นๆ">
+                <input type="text" id="remark" class="form-control" placeholder="หมายเหตุ ชื่อห้อง/เลขห้อง/ตำแหน่ง/อื่นๆ" autocomplete="on">
             </div>
         </div>
         <div class="row justify-content-center">
@@ -168,17 +168,17 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
+        //var vConsole = new window.VConsole();
     </script>
     <script>
         var arr = []
         var Toast, profile
         $(document).ready(() => {
 
-            // liff.init({
-            //     liffId: '1657539607-EPzqza2K',
-            //     withLoginOnExternalBrowser: true
-            // })
+             liff.init({
+                 liffId: '1657539607-EPzqza2K',
+                 withLoginOnExternalBrowser: true
+             })
             liff.ready.then(async () => {
                 $('#dept').select2({
                     theme: 'bootstrap-5'
@@ -235,7 +235,7 @@
                     focusMode: 'continuous',
                     exposureMode: 'continuous',
                     whiteBalanceMode: 'continuous',
-                    frameRate: { ideal: 10, max: 15 }
+                    frameRate: { ideal: 30, max: 60 }
 
                 },
                 audio: false
