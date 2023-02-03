@@ -89,6 +89,7 @@ function getdata(result) {
     }
     firestore.collection('PYT3_e').doc(id).get().then(docs => {
         let d = docs.data()
+        console.log("🚀 ~ d", d)
         if (docs.exists && liffId[d.form]) {
             // let url = new URL('https://liff.line.me/' + liffId[d.form])
             let url = new URL('line://app/' + liffId[d.form])
@@ -115,6 +116,7 @@ function getdata(result) {
         } else {
             firestore.collection('PYT2_e').doc(id).get().then(docs => {
                 let d = docs.data()
+                console.log("🚀 ~ d", d)
                 if (docs.exists && liffId[d.form]) {
                     // let url = new URL('https://liff.line.me/' + liffId[d.form])
                     let url = new URL('line://app/' + liffId[d.form])
@@ -141,6 +143,7 @@ function getdata(result) {
                 } else {
                     firestore.collection('PYT1_e').doc(id).get().then(docs => {
                         let d = docs.data()
+                        console.log("🚀 ~ d", d)
                         if (docs.exists && liffId[d.form]) {
                             // let url = new URL('https://liff.line.me/' + liffId[d.form])
                             let url = new URL('line://app/' + liffId[d.form])
@@ -167,6 +170,7 @@ function getdata(result) {
                         } else {
                             firestore.collection('PLP_e').doc(id).get().then(docs => {
                                 let d = docs.data()
+                                console.log("🚀 ~ d", d)
                                 if (docs.exists && liffId[d.form]) {
                                     // let url = new URL('https://liff.line.me/' + liffId[d.form])
                                     let url = new URL('line://app/' + liffId[d.form])
@@ -193,6 +197,7 @@ function getdata(result) {
                                 } else {
                                     firestore.collection('DEMO_e').doc(id).get().then(docs => {
                                         let d = docs.data()
+                                        console.log("🚀 ~ demo_e", d)
                                         if (docs.exists && liffId[d.form]) {
                                             // let url = new URL('https://liff.line.me/' + liffId[d.form])
                                             let url = new URL('line://app/' + liffId[d.form])
