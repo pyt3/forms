@@ -38,9 +38,8 @@ async function getDefibTableData(session) {
     let before30days = now.setDate(now.getDate() - 30)
     let promises, resultData
 
-    if (user.level == 'director') {
+    if (user.level == 'director' || user.level == 'demo') {
         if (user.site == 'all') {
-
             ref = firestore.collection('PYT3')
                 .where('form', '==', 'defibrillator')
                 .where('time', '>=', before30days)
