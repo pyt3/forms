@@ -191,19 +191,51 @@ function getdata(result) {
                                     // liff.closeWindow()
                                     window.open(url, '_self')
                                 } else {
-                                    Swal.fire({
-                                        icon: 'warning',
-                                        title: 'ไม่พบข้อมูล หรือท่านอาจเลือกชนิดเครื่องมือไม่ถูกต้อง',
-                                        confirmButtonText: 'แสกนอีกครั้ง',
-                                        cancelButtonText: 'ปิดหน้าต่าง',
-                                        showCancelButton: true,
-                                    }).then(result => {
-                                        if (result.isConfirmed) {
-                                            scancode()
+                                    firestore.collection('DEMO_e').doc(id).get().then(docs => {
+                                        let d = docs.data()
+                                        if (docs.exists && liffId[d.form]) {
+                                            // let url = new URL('https://liff.line.me/' + liffId[d.form])
+                                            let url = new URL('line://app/' + liffId[d.form])
+                                            // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
+                                            // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
+                                            url.searchParams.set("client", 'DEMO')
+                                            url.searchParams.set("id", d.code)
+                                            url.searchParams.set("name", d.name)
+                                            url.searchParams.set("dept", d.dept)
+                                            url.searchParams.set("brand", d.brand)
+                                            url.searchParams.set("model", d.model)
+                                            if (d.form == 'temperature') {
+                                                url.searchParams.set("min", d.min)
+                                                url.searchParams.set("max", d.max)
+                                                url.searchParams.set("min2", d.min2)
+                                                url.searchParams.set("max2", d.max2)
+                                                url.searchParams.set("nid", id)
+                                                url.searchParams.set("checkShelf", d.checkShelf)
+                                            }
+                                            //url = `${url}?id=${id}&name=${d.name}&dept=${d.dept}&model=${d.model}&brand=${d.brand}`
+                                            // 
+                                            // liff.closeWindow()
+                                            window.open(url, '_self')
                                         } else {
-                                            liff.closeWindow()
+                                            Swal.fire({
+                                                icon: 'warning',
+                                                title: 'ไม่พบข้อมูล หรือท่านอาจเลือกชนิดเครื่องมือไม่ถูกต้อง',
+                                                confirmButtonText: 'แสกนอีกครั้ง',
+                                                cancelButtonText: 'ปิดหน้าต่าง',
+                                                showCancelButton: true,
+                                            }).then(result => {
+                                                if (result.isConfirmed) {
+                                                    scancode()
+                                                } else {
+                                                    liff.closeWindow()
+                                                }
+                                            })
                                         }
                                     })
+                                        .catch((err) => {
+                                            console.log(err);
+                                            liff.closeWindow()
+                                        });
                                 }
                             })
                                 .catch((err) => {
