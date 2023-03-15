@@ -192,6 +192,7 @@
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
+                checkRegist()
                 profile = await liff.getProfile()
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
@@ -203,6 +204,31 @@
                 theme: 'bootstrap-5'
             })
         })
+
+        function checkRegist(){
+            let uid = liff.getDecodedIDToken().sub
+            $.ajax({
+                method: 'POST',
+                url: script_url,
+                data: {
+                    opt: 'checkRegist',
+                    uid: uid
+                },
+                success: function (res) {
+                    if (res == 'false') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'กรุณาลงทะเบียนก่อนใช้งาน',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            allowOutsideClick: false
+                        }).then(()=>{
+                            liff.closeWindow()
+                        })
+                    }
+                }
+            })
+        }
 
         $('#submit-btn').click(function () {
             var code = $('#code').val()
