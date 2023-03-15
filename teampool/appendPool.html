@@ -184,13 +184,13 @@
         </div>
     </div>
     <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
+        var profile
         $(document).ready(function () {
             liff.init({
                 liffId: '1655873446-MpmBPPzl',
                 withLoginOnExternalBrowser: true
             })
-            var profile
-            var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
             liff.ready.then(async () => {
                 profile = await liff.getProfile()
                 $('#profile').attr('src', profile.pictureUrl)
@@ -251,7 +251,7 @@
                 url: script_url,
                 type: 'POST',
                 data: data,
-                
+
                 success: function (res) {
                     $.LoadingOverlay('hide')
                     Swal.fire({
