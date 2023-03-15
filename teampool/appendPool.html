@@ -246,13 +246,12 @@
                 uid: liff.decodeIDToken().sub,
                 displayName: profile.displayName
             }
+            $.LoadingOverlay('show')
             $.ajax({
                 url: script_url,
                 type: 'POST',
                 data: data,
-                beforeSend: function () {
-                    $.LoadingOverlay('show')
-                },
+                
                 success: function (res) {
                     $.LoadingOverlay('hide')
                     Swal.fire({
