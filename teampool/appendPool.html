@@ -209,6 +209,7 @@
             $.LoadingOverlay('show')
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
+            console.log("🚀 ~ regist:", regist)
             if (regist == uid) {
                 $.LoadingOverlay('hide')
                 return
