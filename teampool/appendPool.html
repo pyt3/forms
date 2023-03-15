@@ -206,9 +206,11 @@
         })
 
         function checkRegist(){
+            $.LoadingOverlay('show')
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
             if (regist == uid) {
+                $.LoadingOverlay('hide')
                 return
             }
             $.ajax({
@@ -219,6 +221,9 @@
                     uid: uid
                 },
                 success: function (res) {
+                    console.log("🚀 ~ res:", res)
+
+                    $.LoadingOverlay('hide')
                     if (res == 'false') {
                         Swal.fire({
                             icon: 'error',
