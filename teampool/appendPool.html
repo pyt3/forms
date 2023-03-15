@@ -207,6 +207,10 @@
 
         function checkRegist(){
             let uid = liff.getDecodedIDToken().sub
+            let regist = localStorage.getItem('regist')
+            if (regist == uid) {
+                return
+            }
             $.ajax({
                 method: 'POST',
                 url: script_url,
@@ -225,6 +229,8 @@
                         }).then(()=>{
                             liff.closeWindow()
                         })
+                    }else{
+                        localStorage.setItem('regist', uid)
                     }
                 }
             })
@@ -284,8 +290,9 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'บันทึกข้อมูลสำเร็จ',
-                            showConfirmButton: false,
-                            timer: 1500
+                            confirmButtonText: 'ตกลง',
+                        }).then(()=>{
+                            liff.closeWindow()
                         })
                     }else{
                         console.log(res);
