@@ -240,7 +240,7 @@
 
             let data = {
                 opt: 'add',
-                code: code,
+                code: convertCode(code),
                 start: start,
                 end: end,
                 uid: liff.getDecodedIDToken().sub,
@@ -254,7 +254,7 @@
 
                 success: function (res) {
                     $.LoadingOverlay('hide')
-                    if(res.status == 'sucess'){
+                    if(res.status == 'success'){
                         Swal.fire({
                             icon: 'success',
                             title: 'บันทึกข้อมูลสำเร็จ',
@@ -270,8 +270,23 @@
 
         function checkcode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
-            if (code.length < 4 || code.length > 11) return false
+            if (code.length < 4 || code.length > 11 || Number(code) == NaN) {
+                return false
+            }
+
             return true
+        }
+
+        function convertCode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
+            if(code.length >=4 || code.length <= 5){
+                code = ('00000'+code).slice(-5)
+                code = 'PYT3_'+code
+            }else if(code.length == 6){
+                code = ('000000'+code).slice(-6)
+                code = 'DEMO_'+code
+            }
+            return code
         }
     </script>
 
