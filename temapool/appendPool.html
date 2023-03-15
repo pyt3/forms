@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกข้อมูลการขนย้าย</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cedarville+Cursive&family=Mitr&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #FF8604;
+            width: 100vw;
+            font-family: 'Abril Fatface', cursive;
+            font-family: 'Cedarville Cursive', cursive;
+            font-family: 'Mitr', sans-serif;
+        }
+
+        img#profile {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                &nbsp; <div>
+                    <span id="displayName">Team PM</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+    <div class="container-fluid h-100 d-flex justify-content-center align-items-center">
+        <div class="p-4">
+            <div class="row justify-content-center">
+                <div class="col h2 fw-bold text-center text-dark">
+                    บันทึกข้อมูลการขนย้าย
+                </div>
+            </div>
+            <div class="row g-2 justify-content-center">
+                <div class="col-md-6">
+                    <label for="code">รหัสเครื่อง</label>
+                    <input type="text" class="form-control" id="code" name="code">
+                </div>
+                <div class="col-md-6">
+                    <label for="start">แผนกต้นทาง</label>
+                    <select name="start" id="start" class="form-select">
+                        <option value="" selected disabled>เลือกแผนกต้นทาง</option>
+                        <option>ANESTHESIA (วิสัญญี)</option>
+                        <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
+                        <option>BME-PYT3</option>
+                        <option>CATH-LAB</option>
+                        <option>CHECK-UP (ตรวจสุขภาพ)</option>
+                        <option>CORPORATE CUSTOMER SERVICE</option>
+                        <option>CSSD (จ่ายกลาง)</option>
+                        <option>DENTAL (ทันตกรรม)</option>
+                        <option>DIABETIC&amp;METABOLIC(เบาหวาน)</option>
+                        <option>EENT( หูตาคอจมูก)</option>
+                        <option>EMERGENCY( ฉุกเฉิน)</option>
+                        <option>GASTROINTESTINAL LABORATORY(GI)</option>
+                        <option>HEMODIALYSIS (ไตเทียม)</option>
+                        <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
+                        <option>INFECTION CONTROL ( IC)</option>
+                        <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
+                        <option>LABOR ROOM(ห้องคลอด)</option>
+                        <option>LABORATORY</option>
+                        <option>MAID</option>
+                        <option>MARKETING</option>
+                        <option>NURSERY(เด็กอ่อน)</option>
+                        <option>NURSING DEPARTMENT</option>
+                        <option>OBSERVE(สังเกตอาการ)</option>
+                        <option>OPD CARDIO(ศูนย์หัวใจ)</option>
+                        <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
+                        <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
+                        <option>OPD MEDICINE(อายุกรรม)</option>
+                        <option>OPD NEURO (ศูนย์สมอง)</option>
+                        <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
+                        <option>OPD PEDIATRIC( แผนกเด็ก)</option>
+                        <option>OPD SURGERY(ศัลยกรรม)</option>
+                        <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
+                        <option>OPERATING ROOM(ห้องผ่าตัด)</option>
+                        <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
+                        <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
+                        <option>PHYSICAL THERAPY( กายภาพ)</option>
+                        <option>PICU</option>
+                        <option>PWA LIFE CENTER</option>
+                        <option>PWA ชะลอวัย</option>
+                        <option>VEHICLE</option>
+                        <option>WARD 10</option>
+                        <option>WARD 11</option>
+                        <option>WARD 12</option>
+                        <option>WARD 14</option>
+                        <option>WARD 15</option>
+                        <option>WARD 17</option>
+                        <option>WARD 7</option>
+                        <option>WARD 8</option>
+                        <option>WARD 9</option>
+                        <option>WAREHOUSE</option>
+                        <option>X-RAY</option>
+                        <option>รับส่ง</option>
+                    </select>
+
+                </div>
+                <div class="col-md-6">
+                    <label for="end">แผนกปลายทาง</label>
+                    <select name="end" id="end" class="form-select">
+                        <option value="" selected disabled>เลือกแผนกปลายทาง</option>
+                        <option>ANESTHESIA (วิสัญญี)</option>
+                        <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
+                        <option>BME-PYT3</option>
+                        <option>CATH-LAB</option>
+                        <option>CHECK-UP (ตรวจสุขภาพ)</option>
+                        <option>CORPORATE CUSTOMER SERVICE</option>
+                        <option>CSSD (จ่ายกลาง)</option>
+                        <option>DENTAL (ทันตกรรม)</option>
+                        <option>DIABETIC&amp;METABOLIC(เบาหวาน)</option>
+                        <option>EENT( หูตาคอจมูก)</option>
+                        <option>EMERGENCY( ฉุกเฉิน)</option>
+                        <option>GASTROINTESTINAL LABORATORY(GI)</option>
+                        <option>HEMODIALYSIS (ไตเทียม)</option>
+                        <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
+                        <option>INFECTION CONTROL ( IC)</option>
+                        <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
+                        <option>LABOR ROOM(ห้องคลอด)</option>
+                        <option>LABORATORY</option>
+                        <option>MAID</option>
+                        <option>MARKETING</option>
+                        <option>NURSERY(เด็กอ่อน)</option>
+                        <option>NURSING DEPARTMENT</option>
+                        <option>OBSERVE(สังเกตอาการ)</option>
+                        <option>OPD CARDIO(ศูนย์หัวใจ)</option>
+                        <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
+                        <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
+                        <option>OPD MEDICINE(อายุกรรม)</option>
+                        <option>OPD NEURO (ศูนย์สมอง)</option>
+                        <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
+                        <option>OPD PEDIATRIC( แผนกเด็ก)</option>
+                        <option>OPD SURGERY(ศัลยกรรม)</option>
+                        <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
+                        <option>OPERATING ROOM(ห้องผ่าตัด)</option>
+                        <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
+                        <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
+                        <option>PHYSICAL THERAPY( กายภาพ)</option>
+                        <option>PICU</option>
+                        <option>PWA LIFE CENTER</option>
+                        <option>PWA ชะลอวัย</option>
+                        <option>VEHICLE</option>
+                        <option>WARD 10</option>
+                        <option>WARD 11</option>
+                        <option>WARD 12</option>
+                        <option>WARD 14</option>
+                        <option>WARD 15</option>
+                        <option>WARD 17</option>
+                        <option>WARD 7</option>
+                        <option>WARD 8</option>
+                        <option>WARD 9</option>
+                        <option>WAREHOUSE</option>
+                        <option>X-RAY</option>
+                        <option>รับส่ง</option>
+                    </select>
+                </div>
+                <div class="col-md-6 text-center">
+                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            liff.init({
+                liffId: '1655873446-MpmBPPzl',
+                withLoginOnExternalBrowser: true
+            })
+            var profile
+            var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
+            liff.ready.then(async () => {
+                profile = await liff.getProfile()
+                $('#profile').attr('src', profile.pictureUrl)
+                $('#displayName').text(profile.displayName)
+            })
+            $('select option').each(function () {
+                $(this).val($(this).text().trim())
+            })
+            $('select').select2({
+                theme: 'bootstrap-5'
+            })
+        })
+
+        $('#submit-btn').click(function () {
+            var code = $('#code').val()
+            var start = $('#start').val()
+            var end = $('#end').val()
+            if (code == '' && checkcode(code)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกรหัสเครื่อง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return false
+            }
+            if (start == '' || start == null) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกแผนกต้นทาง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return false
+            }
+
+            if (end == '' || end == null) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกแผนกปลายทาง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return false
+            }
+
+
+            let data = {
+                opt: 'add',
+                code: code,
+                start: start,
+                end: end,
+                uid: liff.decodeIDToken().sub,
+                displayName: profile.displayName
+            }
+            $.ajax({
+                url: script_url,
+                type: 'POST',
+                data: data,
+                beforeSend: function () {
+                    $.LoadingOverlay('show')
+                },
+                success: function (res) {
+                    $.LoadingOverlay('hide')
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            })
+        })
+
+        function checkcode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
+            if (code.length < 4 || code.length > 11) return false
+            return true
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+</body>
+
+</html>
