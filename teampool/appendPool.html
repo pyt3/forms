@@ -302,12 +302,8 @@
                     if (res.status == 'success') {
                         liff.sendMessages([{
                             type: 'text',
-                            text: `เครื่อง ${data.code} ได้ถูกย้ายจาก ${data.start} ไปยัง ${data.end} โดย @${data.displayName}`
-                        }]).then(function () {
-                            liff.closeWindow()
-                        }).catch(function (error) {
-                            liff.closeWindow()
-                        });
+                            text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                        }])
                         Swal.fire({
                             icon: 'success',
                             title: 'บันทึกข้อมูลสำเร็จ',
