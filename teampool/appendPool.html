@@ -321,7 +321,7 @@
 
         function checkcode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
-            if (code.length < 4 || code.length > 11 || Number(code) == NaN) {
+            if (!Number(code) == NaN &&(code.length < 4 || code.length > 11)) {
                 return false
             }
 
@@ -330,6 +330,9 @@
 
         function convertCode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
+            if(isNaN(code)){
+                return code
+            }
             if (code.length >= 4 || code.length <= 5) {
                 code = ('00000' + code).slice(-5)
                 code = 'PYT3_' + code
