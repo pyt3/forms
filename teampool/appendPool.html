@@ -39,7 +39,7 @@
 
 <body>
     <nav class="navbar">
-        <div class="container-fluid">
+        <div class="container-fluid" style="display: none">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
                 &nbsp; <div>
@@ -51,7 +51,7 @@
     <div class="container-fluid h-100 d-flex justify-content-center align-items-center">
         <div class="px-4 pb-4 pt-1">
             <div class="row justify-content-center">
-                <div class="col h2 fw-bold text-center text-dark">
+                <div class="col h4 fw-bold text-center text-dark">
                     บันทึกข้อมูลการขนย้าย
                 </div>
             </div>
@@ -192,6 +192,7 @@
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
         $(document).ready(function () {
+            $.LoadingOverlay('show')
             liff.init({
                 liffId: '1660749495-G5e9Av6r',
                 withLoginOnExternalBrowser: true
@@ -201,6 +202,7 @@
                 profile = await liff.getProfile()
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
+                $('.navbar .container-fluid').show(400)
             })
             $('select option').each(function () {
                 $(this).val($(this).text().trim())
@@ -211,7 +213,7 @@
         })
 
         function checkRegist(){
-            $.LoadingOverlay('show')
+            
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
             console.log("🚀 ~ regist:", regist)
