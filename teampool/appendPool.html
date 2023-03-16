@@ -212,8 +212,8 @@
             })
         })
 
-        function checkRegist(){
-            
+        function checkRegist() {
+
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
             console.log("🚀 ~ regist:", regist)
@@ -233,16 +233,16 @@
 
                     $.LoadingOverlay('hide')
                     if (!res) {
-                        
+
                         Swal.fire({
                             icon: 'error',
                             title: 'กรุณาลงทะเบียนก่อนใช้งาน',
-                            showConfirmButton: false,
-                            allowOutsideClick: false
-                        }).then(()=>{
+                            allowOutsideClick: false,
+                            confirmButtonText: 'ตกลง'
+                        }).then(() => {
                             liff.closeWindow()
                         })
-                    }else{
+                    } else {
                         localStorage.setItem('regist', uid)
                     }
                 }
@@ -299,15 +299,23 @@
 
                 success: function (res) {
                     $.LoadingOverlay('hide')
-                    if(res.status == 'success'){
+                    if (res.status == 'success') {
                         Swal.fire({
                             icon: 'success',
                             title: 'บันทึกข้อมูลสำเร็จ',
                             confirmButtonText: 'ตกลง',
-                        }).then(()=>{
+                        }).then(() => {
+                            liff.sendMessages([{
+                                type: 'text',
+                                text: `เครื่อง ${res.code} ได้ถูกย้ายจาก ${data.start} ไปยัง ${data.end} โดย @${data.displayName}`
+                            }]).then(function () {
+                                liff.closeWindow()
+                            }).catch(function (error) {
+                                liff.closeWindow()
+                            });
                             liff.closeWindow()
                         })
-                    }else{
+                    } else {
                         console.log(res);
                     }
                 }
@@ -325,12 +333,12 @@
 
         function convertCode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
-            if(code.length >=4 || code.length <= 5){
-                code = ('00000'+code).slice(-5)
-                code = 'PYT3_'+code
-            }else if(code.length == 6){
-                code = ('000000'+code).slice(-6)
-                code = 'DEMO_'+code
+            if (code.length >= 4 || code.length <= 5) {
+                code = ('00000' + code).slice(-5)
+                code = 'PYT3_' + code
+            } else if (code.length == 6) {
+                code = ('000000' + code).slice(-6)
+                code = 'DEMO_' + code
             }
             return code
         }
