@@ -197,16 +197,16 @@
         var profile
         var history_code_code
         $(document).ready(function () {
-            // $.LoadingOverlay('show')
+            $.LoadingOverlay('show')
             history_code = localStorage.getItem('history_code')
 
             console.log("🚀 ~ history_code:", history_code)
             if (history_code == null || !history_code) history_code = {}
             else history_code = JSON.parse(history_code)
-            // liff.init({
-            //     liffId: '1660749495-G5e9Av6r',
-            //     withLoginOnExternalBrowser: true
-            // })
+            liff.init({
+                liffId: '1660749495-G5e9Av6r',
+                withLoginOnExternalBrowser: true
+            })
             liff.ready.then(async () => {
                 checkRegist()
                 profile = await liff.getProfile()
@@ -356,10 +356,10 @@
                 code: convertCode(code),
                 start: start,
                 end: end,
-                uid: 'test',
-                displayName: 'yeah'
-                // uid: liff.getDecodedIDToken().sub,
-                // displayName: profile.displayName
+                // uid: 'test',
+                // displayName: 'yeah'
+                uid: liff.getDecodedIDToken().sub,
+                displayName: profile.displayName
             }
             $.LoadingOverlay('show')
             $.ajax({
