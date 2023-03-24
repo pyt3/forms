@@ -195,14 +195,14 @@
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
-        var history_code_code
+        var history_code = {}
         $(document).ready(function () {
             $.LoadingOverlay('show')
-            history_code = localStorage.getItem('history_code')
+            $.getJSON(script_url, function (data) {
+                console.log("🚀 ~ data", data)
+                history_code = data
+            })
 
-            console.log("🚀 ~ history_code:", history_code)
-            if (history_code == null || !history_code) history_code = {}
-            else history_code = JSON.parse(history_code)
             liff.init({
                 liffId: '1660749495-G5e9Av6r',
                 withLoginOnExternalBrowser: true
