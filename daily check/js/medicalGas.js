@@ -33,11 +33,15 @@ $(document).ready(() => {
         let invalid = $('<div>', { class: 'invalid-feedback' }).text('กรุณากรอก ' + $(parent.find('label')[0]).text())
         parent.append(invalid)
     })
-    liff
-        .init({
-            liffId: "1657104960-Rn9z79Ag",
-            withLoginOnExternalBrowser: true,
-        })
+    $('#clear-data-btn').click(() => {
+        localStorage.removeItem('history')
+        location.reload()
+    })
+    // liff
+    //     .init({
+    //         liffId: "1657104960-Rn9z79Ag",
+    //         withLoginOnExternalBrowser: true,
+    //     })
     liff.ready.then(() => {
         console.log('liff init success');
         $.LoadingOverlay("hide");
@@ -59,7 +63,7 @@ function autoSave() {
     Toast.fire({
         icon: 'success',
         title: 'temp saved',
-        timer: 500
+        timer: 700
     })
 }
 function getHistory() {
