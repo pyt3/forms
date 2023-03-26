@@ -37,11 +37,11 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    // liff
-    //     .init({
-    //         liffId: "1657104960-Rn9z79Ag",
-    //         withLoginOnExternalBrowser: true,
-    //     })
+    liff
+        .init({
+            liffId: "1657104960-Rn9z79Ag",
+            withLoginOnExternalBrowser: true,
+        })
     liff.ready.then(() => {
         console.log('liff init success');
         $.LoadingOverlay("hide");
