@@ -201,7 +201,7 @@
         $(document).ready(function () {
             $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
-                history_code = JSON.parse(data)
+                history_code = data
                 console.log("🚀 ~ history_code:", history_code)
             })
 
