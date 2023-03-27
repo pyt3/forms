@@ -202,7 +202,7 @@
             $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 console.log("🚀 ~ data", data)
-                history_code = data
+                history_code = JSON.parse(data)
             })
 
             liff.init({
