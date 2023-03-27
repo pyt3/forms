@@ -11,11 +11,6 @@ $(document).ready(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
     }, 1000);
-    $('[data-toggle="tooltip"]').tooltip()
-    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
-        resizeCanvas();
-    })
-    // showWeekly()
 });
 
 $(document).ready(() => {
@@ -34,45 +29,28 @@ $(document).ready(() => {
     }
     $('#main-form input, #main-form select, input[type="checkbox"]').attr('required', true).each(function () {
         let parent = $(this).parent()
-        if($(this).attr('type') == 'checkbox') parent = $(this).parent().parent()
+        if ($(this).attr('type') == 'checkbox') parent = $(this).parent().parent()
         let invalid = $('<div>', { class: 'invalid-feedback' }).text('กรุณากรอก ' + $(parent.find('label')[0]).text())
         parent.append(invalid)
     })
-    // liff
-    //     .init({
-    //         liffId: "1657104960-wXQRkQ87", 
-    //         withLoginOnExternalBrowser: true,
-    //     })
+    $('#clear-data-btn').click(() => {
+        localStorage.removeItem('history')
+        location.reload()
+    })
+    liff
+        .init({
+            liffId: "1657104960-Rn9z79Ag",
+            withLoginOnExternalBrowser: true,
+        })
     liff.ready.then(() => {
-        if (!liff.isLoggedIn()) {
-            return liff.login({ redirectUri: url })
-        } else {
-            console.log('liff init success');
-            $.post(script_url, { opt: 'getconst' }, async function (c) {
-                const firebaseConfig = {
-                    apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
-                    authDomain: "daily-check-form.firebaseapp.com",
-                    projectId: "daily-check-form",
-                    storageBucket: "daily-check-form.appspot.com",
-                    messagingSenderId: "544837049860",
-                    appId: "1:544837049860:web:462e6b854290b1dec39f51"
-                }
-                const defaultProject = firebase.initializeApp(firebaseConfig);
-                firestore = defaultProject.firestore();
-                auth = defaultProject.auth();
-                if (!auth.currentUser) {
-                    await getAuth()
-                }
-                await getDeptList(client)
-                getFolderToken()
-                $.LoadingOverlay("hide");
-            })
-        }
+        console.log('liff init success');
+        $.LoadingOverlay("hide");
     })
         .catch((err) => {
             console.log(err.code, err.message);
         });
 })
+
 function autoSave() {
     let form = $('#main-form')
     let data = form.serializeArray()
@@ -84,7 +62,7 @@ function autoSave() {
     console.log(obj)
     Toast.fire({
         icon: 'success',
-        title: 'Autosaved',
+        title: 'temp saved',
         timer: 700
     })
 }
