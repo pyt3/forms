@@ -5,7 +5,8 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timer: 1500,
 })
-$(document).ready(function () {
+
+$(document).ready(() => {
     $.LoadingOverlay("show");
     $.when(getLastSaved(), getHistory()).done(function () {
         $.LoadingOverlay("hide");
@@ -14,9 +15,7 @@ $(document).ready(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
     }, 1000);
-});
-
-$(document).ready(() => {
+    
     var typingTimer;
     var doneTypingInterval = 700;
     var $input = $('#main-form input, #main-form select, input[type="checkbox"]')
