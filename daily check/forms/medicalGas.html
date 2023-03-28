@@ -44,6 +44,7 @@
             color: #00000033 !important;
             opacity: 0.2;
         }
+
         /* section{
             background-color: #fff;
         } */
@@ -356,12 +357,12 @@
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-        $(document).ready(function(){
-            liff
-                .init({
-                    liffId: "1657104960-Rn9z79Ag",
-                    withLoginOnExternalBrowser: true,
-                })
+        $(document).ready(function () {
+            liff.init({
+                liffId: "1657104960-Rn9z79Ag",
+                withLoginOnExternalBrowser: true,
+            })
+            
             liff.ready.then(async () => {
                 console.log('liff init success');
                 let profile = await liff.getProfile()
