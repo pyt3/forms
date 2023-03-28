@@ -36,6 +36,14 @@
             color: #0080FF;
         }
 
+        input[type="checkbox"] {
+            transform: scale(1.5);
+        }
+
+        input::placeholder {
+            color: #00000033 !important;
+            opacity: 0.2;
+        }
         /* section{
             background-color: #fff;
         } */
@@ -47,18 +55,19 @@
     </script>
 </head>
 
-<body class="container-fluid bg-white">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<body class="container-fluid bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="../bmepyt3_icon-removebg-preview.png" alt="" height="20px" class="d-inline-block">
                 &nbsp;
             </a>
+            <img src="../bmepyt3.jpg" alt="display" width="35px" height="35px" class="rounded-circle img-fluid" id="line-display" style="display: none;">
         </div>
     </nav>
     <div class="container mb-3 p-0">
         <div class="row">
-            <div class="col-12 text-center mt-4 display-6 fw-bold">
+            <div class="col-12 text-center text-light mt-4 display-6 fw-bold">
                 Medical Gas Daily Check
             </div>
         </div>
@@ -68,11 +77,11 @@
             <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
                 <p class="h5 mt-2 fw-bold timenow"></p>
             </div>
-            <div class="col text-start ms-1 mt-3 fs-5 lh-1">
+            <div class="col text-start ms-1 mt-3 fs-5 lh-1 text-light">
                 <p>Daily Maintenance<br><small class="text-secondary fs-6">ดำเนินการตรวจเช็คทุกวัน</small></p>
             </div>
             <div class="col text-end">
-                <button class="btn btn-sm btn-outline-success" id="clear-data-btn">ล้างข้อมูล</button>
+                <button class="btn btn-sm btn-outline-light" id="clear-data-btn">ล้างข้อมูล</button>
             </div>
         </div>
         <form id="main-form" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
@@ -279,20 +288,20 @@
                                 <input type="text" name="compressor-3" id="compressor-3" class="form-control text-center">
                             </div>
                             <div class="col-6 text-center">
-                                <label for="reg-low-1">Reg Low 1</label>
-                                <input type="text" name="reg-low-1" id="reg-low-1" class="form-control text-center">
+                                <label for="reg-1">Reg 1</label>
+                                <input type="text" name="reg-1" id="reg-1" class="form-control text-center">
                             </div>
                             <div class="col-6 text-center">
-                                <label for="reg-low-2">Reg Low 2</label>
-                                <input type="text" name="reg-low-2" id="reg-low-2" class="form-control text-center">
+                                <label for="reg-2">Reg 2</label>
+                                <input type="text" name="reg-2" id="reg-2" class="form-control text-center">
                             </div>
                             <div class="col-6 text-center">
-                                <label for="reg-high-1">Reg High 1</label>
-                                <input type="text" name="reg-high-1" id="reg-high-1" class="form-control text-center">
+                                <label for="reg-3">Reg 3</label>
+                                <input type="text" name="reg-3" id="reg-3" class="form-control text-center">
                             </div>
                             <div class="col-6 text-center">
-                                <label for="reg-high-2">Reg High 2</label>
-                                <input type="text" name="reg-high-2" id="reg-high-2" class="form-control text-center">
+                                <label for="reg-4">Reg 4</label>
+                                <input type="text" name="reg-4" id="reg-4" class="form-control text-center">
                             </div>
                         </div>
                     </div>
@@ -318,15 +327,15 @@
         </form>
     </div>
     <footer>
-        <div class="row justify-content-center align-items-center">
+        <!-- <div class="row justify-content-center align-items-center">
             <div class="col-12 text-center">
                 <img src="../bmepyt3.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
             </div>
             <div class="col-12 text-center">
                 <img src="../bmeg5.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
             </div>
-        </div>
-        <div class="row justify-content-center align-items-center">
+        </div> -->
+        <div class="row justify-content-center align-items-center text-light">
             <div class="col text-center text-end" style="font-size: 0.7rem;">
                 Developed by <span class="text-primary">Daranphop Yimyam (BME PYT3)</span>
             </div>
