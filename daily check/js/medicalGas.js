@@ -15,7 +15,7 @@ $(document).ready(() => {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
     }, 1000);
-    
+
     var typingTimer;
     var doneTypingInterval = 700;
     var $input = $('#main-form input, #main-form select, input[type="checkbox"]')
@@ -39,21 +39,7 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    liff
-        .init({
-            liffId: "1657104960-Rn9z79Ag",
-            withLoginOnExternalBrowser: true,
-        })
-    liff.ready.then(async () => {
-        console.log('liff init success');
-        let profile = await liff.getProfile()
-        console.log("🚀 ~ profile:", profile)
-        $('#line-display').attr('src', profile.pictureUrl).show(200)
-        $.LoadingOverlay("hide");
-    })
-        .catch((err) => {
-            console.log(err.code, err.message);
-        });
+    
 })
 
 function getLastSaved() {
