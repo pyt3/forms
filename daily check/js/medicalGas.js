@@ -48,6 +48,7 @@ $(document).ready(() => {
     liff.ready.then(async () => {
         console.log('liff init success');
         let profile = await liff.getProfile()
+        console.log("🚀 ~ profile:", profile)
         $('#line-display').attr('src', profile.pictureUrl).show(200)
         $.LoadingOverlay("hide");
     })
