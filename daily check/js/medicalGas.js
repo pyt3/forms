@@ -48,6 +48,7 @@ $(document).ready(() => {
         console.log('liff init success');
         let profile = await liff.getProfile()
         console.log("🚀 ~ profile:", profile)
+        console.log(liff.getDecodedIDToken().sub);
         $('#line-display').attr('src', profile.pictureUrl).show(200)
         $.LoadingOverlay("hide");
     })
