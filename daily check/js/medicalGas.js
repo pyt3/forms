@@ -45,12 +45,10 @@ $(document).ready(() => {
             liffId: "1657104960-Rn9z79Ag",
             withLoginOnExternalBrowser: true,
         })
-    liff.ready.then(() => {
+    liff.ready.then(async () => {
         console.log('liff init success');
-        let profile = liff.getProfile()
-        profile.then((res) => {
-            $('#line-display').attr('src', res.pictureUrl).show(200)
-        })
+        let profile = await liff.getProfile()
+        $('#line-display').attr('src', profile.pictureUrl).show(200)
         $.LoadingOverlay("hide");
     })
         .catch((err) => {
