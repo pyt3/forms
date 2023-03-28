@@ -358,21 +358,9 @@
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
         $(document).ready(function () {
-            liff.init({
-                liffId: "1657104960-Rn9z79Ag",
-                withLoginOnExternalBrowser: true,
-            })
             
-            liff.ready.then(async () => {
-                console.log('liff init success');
-                let profile = await liff.getProfile()
-                console.log("🚀 ~ profile:", profile)
-                $('#line-display').attr('src', profile.pictureUrl).show(200)
-                $.LoadingOverlay("hide");
-            })
-                .catch((err) => {
-                    console.log(err.code, err.message);
-                });
+
+        
         })
     </script>
 </body>

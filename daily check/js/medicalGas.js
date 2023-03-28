@@ -8,9 +8,23 @@ const Toast = Swal.mixin({
 
 $(document).ready(() => {
     $.LoadingOverlay("show");
-    $.when(getLastSaved(), getHistory()).done(function () {
+    $.when(getLastSaved(), getHistory(), liff.init({
+        liffId: "1657104960-Rn9z79Ag",
+        withLoginOnExternalBrowser: true,
+    })).done(function () {
         $.LoadingOverlay("hide");
     })
+
+    liff.ready.then( () => {
+        console.log('liff init success');
+        let profile = liff.getProfile()
+        console.log("🚀 ~ profile:", profile)
+        $('#line-display').attr('src', profile.pictureUrl).show(200)
+        $.LoadingOverlay("hide");
+    })
+        .catch((err) => {
+            console.log(err.code, err.message);
+        });
     setInterval(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
@@ -39,7 +53,7 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    
+
 })
 
 function getLastSaved() {
@@ -55,7 +69,7 @@ function getLastSaved() {
             if (res.status == 'success') {
                 let data = res.data
                 Object.keys(data).forEach(key => {
-                    $('#'+key).attr('placeholder', data[key])
+                    $('#' + key).attr('placeholder', data[key])
                 })
             } else {
                 Toast.fire({
