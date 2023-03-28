@@ -39,14 +39,13 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    liff
-        .init({
-            liffId: "1657104960-Rn9z79Ag",
+    liff.init({
+            liffId: "1657104960-Rn9Z79Ag",
             withLoginOnExternalBrowser: true,
         })
-    liff.ready.then(async () => {
+    liff.ready.then( () => {
         console.log('liff init success');
-        let profile = await liff.getProfile()
+        let profile =  liff.getProfile()
         console.log("🚀 ~ profile:", profile)
         console.log(liff.getDecodedIDToken().sub);
         $('#line-display').attr('src', profile.pictureUrl).show(200)
