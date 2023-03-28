@@ -6,7 +6,10 @@ const Toast = Swal.mixin({
     timer: 1500,
 })
 $(document).ready(function () {
-    getHistory()
+    $.LoadingOverlay("show");
+    $.when(getLastSaved(), getHistory()).done(function () {
+        $.LoadingOverlay("hide");
+    })
     setInterval(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
@@ -44,12 +47,41 @@ $(document).ready(() => {
         })
     liff.ready.then(() => {
         console.log('liff init success');
+        let profile = liff.getProfile()
+        profile.then((res) => {
+            $('#line-display').attr('src', res.pictureUrl).show(200)
+        })
         $.LoadingOverlay("hide");
     })
         .catch((err) => {
             console.log(err.code, err.message);
         });
 })
+
+function getLastSaved() {
+    let obj = {
+        opt: 'getLastSaved'
+    }
+    return $.ajax({
+        url: script_url,
+        data: obj,
+        type: 'GET',
+        success: function (res) {
+            console.log(res)
+            if (res.status == 'success') {
+                let data = res.data
+                Object.keys(data).forEach(key => {
+                    $('#'+key).attr('placeholder', data[key])
+                })
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'ไม่สามารถดึงข้อมูลล่าสุดได้'
+                })
+            }
+        },
+    })
+}
 
 function autoSave() {
     let form = $('#main-form')
