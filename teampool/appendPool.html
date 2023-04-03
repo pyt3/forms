@@ -229,7 +229,7 @@
         function initHistory_code() {
             //setup before functions
             var typingTimer;                //timer identifier
-            var doneTypingInterval = 500;  //time in ms, 5 seconds for example
+            var doneTypingInterval = 500;  //time in ms, 0.5 seconds for example
             var $input = $('#code');
 
             //on keyup, start the countdown
@@ -254,23 +254,23 @@
                     $('#start').val(his.start).change()
                     $('#end').val(his.end).change()
                     $('.bi-arrow-down-up').parent().show(200)
-                }else{
+                } else {
                     $('.bi-arrow-down-up').parent().hide(200)
                     $('#start').val('').change()
                     $('#end').val('').change()
                 }
             }
 
-            $('.bi-arrow-down-up').click(function(){
+            $('.bi-arrow-down-up').click(function () {
                 // rotate element 360 degrees in 1 second
-                $(this).animate({  borderSpacing: -360 }, {
-                    step: function(now,fx) {
-                      $(this).css('-webkit-transform','rotate('+now+'deg)'); 
-                      $(this).css('-moz-transform','rotate('+now+'deg)');
-                      $(this).css('transform','rotate('+now+'deg)');
+                $(this).animate({ borderSpacing: -360 }, {
+                    step: function (now, fx) {
+                        $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
+                        $(this).css('-moz-transform', 'rotate(' + now + 'deg)');
+                        $(this).css('transform', 'rotate(' + now + 'deg)');
                     },
                     duration: 'slow'
-                },'linear');
+                }, 'linear');
 
                 let start = $('#start').val()
                 let end = $('#end').val()
@@ -352,7 +352,6 @@
                 return false
             }
 
-
             let data = {
                 opt: 'add',
                 code: convertCode(code),
@@ -363,6 +362,36 @@
                 uid: liff.getDecodedIDToken().sub,
                 displayName: profile.displayName
             }
+
+            if (start == end) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาระบุห้องต้นทาง และปลายทาง',
+                    html: `<div class="container-fluid"><div class="row"><div class="col-12"><label for="start-room">ห้องต้นทาง</label><input id="start-room" class="container-fluid"></div><div class="col-12"><label for="end-room">ห้องปลายทาง</label><input id="end-room" class="container-fluid"></div></div></div>`,
+                    showCancelButton: true,
+                    confirmButtonText: 'ยืนยัน',
+                    cancelButtonText: 'ยกเลิก',
+                    preConfirm: () => {
+                        let start_room = $('#start-room').val()
+                        let end_room = $('#end-room').val()
+                        if (start_room == '' || end_room == '') {
+                            Swal.showValidationMessage(`กรุณากรอกห้องต้นทาง และปลายทาง`)
+                        }
+                        return { start_room, end_room }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        data['start-room'] = result.value.start_room
+                        data['end-room'] = end_room = result.value.end_room
+                    }
+                })
+            } else {
+                sendPost(data)
+            }
+        })
+
+        function sendPost(data) {
+
             $.LoadingOverlay('show')
             $.ajax({
                 url: script_url,
@@ -397,8 +426,7 @@
                     liff.closeWindow()
                 })
             }, 1500)
-            
-        })
+        }
 
         function checkcode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
