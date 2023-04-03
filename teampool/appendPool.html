@@ -382,6 +382,7 @@
                     if (result.isConfirmed) {
                         data['start-room'] = result.value.start_room
                         data['end-room'] = end_room = result.value.end_room
+                        sendPost(data)
                     }
                 })
             } else {
