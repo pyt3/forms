@@ -90,11 +90,6 @@ function autoSave() {
     })
     localStorage.setItem('history', JSON.stringify(obj))
     console.log(obj)
-    Toast.fire({
-        icon: 'success',
-        title: 'temp saved',
-        timer: 700
-    })
 }
 function getHistory() {
     let history = localStorage.getItem('history')
