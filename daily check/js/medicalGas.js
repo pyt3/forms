@@ -92,6 +92,7 @@ function autoSave() {
     console.log(obj)
 }
 function getHistory() {
+    $('#name').val(localStorage.getItem('user'))
     let history = localStorage.getItem('history')
     if (history != null) {
         let obj = JSON.parse(history)
@@ -125,6 +126,7 @@ function formSubmit() {
     })
     obj.opt = 'submit'
     $.LoadingOverlay("show");
+    localStorage.setItem('user', obj.name)
     $.ajax({
         url: script_url,
         data: obj,
