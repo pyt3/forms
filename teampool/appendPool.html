@@ -212,6 +212,39 @@
             liff.ready.then(async () => {
                 checkRegist()
                 profile = await liff.getProfile()
+                if (profile.userId == 'U5c0c8ed83945a138718d146af61636db') {
+                    Swal.fire({
+                        tltle: 'เนื่องจากเป็น Line On Call กรุณาระบุชื่อของคุณ',
+                        input: 'text',
+                        inputAttributes: {
+                            autocapitalize: 'off'
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: 'ยืนยัน',
+                        allowOutsideClick: false,
+                        preConfirm: (name) => {
+                            if (name == '') {
+                                Swal.showValidationMessage(
+                                    `กรุณาระบุชื่อของคุณ`
+                                )
+                            }
+                            return name
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            profile.displayName = result.value + ' (Line On Call)'
+                            $('#profile').attr('src', profile.pictureUrl)
+                            $('#displayName').text(profile.displayName)
+                            $('.navbar .container-fluid').show(400)
+                            Swal.fire({
+                                title: 'สวัสดีคุณ ' + result.value,
+                                text: 'ทำรายการต่อได้ครับ',
+                                icon: 'success',
+                                timer: 2000
+                            })
+                        }
+                    }
+                }
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
                 $('.navbar .container-fluid').show(400)
