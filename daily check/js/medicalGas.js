@@ -180,8 +180,6 @@ function formSubmit() {
 }
 
 function sendLineNotify(obj) {
-    let endpoint = 'https://notify-api.line.me/api/notify'
-    let token = 'zmuUHA0pcVo4MSikcya267XhtdD6q7BzVaePBqMcsgD'
     let today = new Date().toLocaleTimeString('en-GB', {
         timeZone: 'Asia/Bangkok',
         day: "2-digit",
@@ -198,19 +196,14 @@ function sendLineNotify(obj) {
 
     บันทึกโดย
     @${obj.name}`
-    let image = convertBase64ToBlob(img_file)
-    let formData = new FormData()
-    formData.append('message', message)
-    formData.append('imageFile', image)
     $.ajax({
-        url: endpoint,
+        url: script_url,
         type: 'POST',
-        headers: {
-            Authorization: `Bearer ${token}`
+        data: {
+            opt: 'sendLineNotify',
+            msg: message,
+            img: img_file
         },
-        data: formData,
-        processData: false,
-        contentType: false,
         success: function (res) {
             console.log(res)
         },
