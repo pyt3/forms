@@ -67,7 +67,7 @@ $('#liquid-o2-volume-img').change(function () {
     reader.readAsDataURL(file)
     reader.onloadend = function (e) {
         $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
-        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInX animate__fast')
+        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY animate__fast')
         img_file = e.target.result
     }
 })
