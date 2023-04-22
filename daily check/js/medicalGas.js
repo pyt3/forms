@@ -40,10 +40,10 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    // liff.init({
-    //         liffId: "1657104960-Rn9Z79Ag",
-    //         withLoginOnExternalBrowser: true,
-    //     })
+    liff.init({
+            liffId: "1657104960-Rn9Z79Ag",
+            withLoginOnExternalBrowser: true,
+        })
     liff.ready.then( async() => {
         console.log('liff init success');
         let profile = await liff.getProfile()
