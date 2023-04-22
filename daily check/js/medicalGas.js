@@ -7,16 +7,18 @@ const Toast = Swal.mixin({
 })
 
 $(document).ready(() => {
-    $.LoadingOverlay("show");
-    $.when(getLastSaved(), getHistory()).done(function () {
-        $.LoadingOverlay("hide");
-        $('#header-text').addClass('animate__animated animate__rubberBand')
-    })
     setInterval(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
     }, 1000);
-    
+    $.LoadingOverlay("show");
+    $.when(getHistory()).done(function () {
+        $.LoadingOverlay("hide");
+        $('#header-text').addClass('animate__animated animate__rubberBand animate__delay-1s')
+        $('#main-div').addClass(' animate__animated animate__backInUp').show()
+    })
+    getLastSaved()
+
     var typingTimer;
     var doneTypingInterval = 700;
     var $input = $('#main-form input, #main-form select, input[type="checkbox"]')
@@ -40,11 +42,11 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    liff.init({
-            liffId: "1657104960-Rn9Z79Ag",
-            withLoginOnExternalBrowser: true,
-        })
-    liff.ready.then( async() => {
+    // liff.init({
+    //     liffId: "1657104960-Rn9Z79Ag",
+    //     withLoginOnExternalBrowser: true,
+    // })
+    liff.ready.then(async () => {
         console.log('liff init success');
         let profile = await liff.getProfile()
         console.log("🚀 ~ profile:", profile)
@@ -65,7 +67,7 @@ $('#liquid-o2-volume-img').change(function () {
     reader.readAsDataURL(file)
     reader.onloadend = function (e) {
         $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
-        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__tada')
+        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInX animate__fast')
         img_file = e.target.result
     }
 })
@@ -83,7 +85,7 @@ function getLastSaved() {
             if (res.status == 'success') {
                 let data = res.data
                 Object.keys(data).forEach(key => {
-                    $('#'+key).attr('placeholder', data[key])
+                    $('#' + key).attr('placeholder', data[key])
                 })
             } else {
                 Toast.fire({
@@ -141,6 +143,7 @@ function formSubmit() {
     obj.opt = 'submit'
     $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
+    // sendLineNotify(obj)
     $.ajax({
         url: script_url,
         data: obj,
@@ -152,6 +155,7 @@ function formSubmit() {
             }, 500);
             $.LoadingOverlay("hide");
             if (res.status) {
+                sendLineNotify(obj)
                 form[0].reset()
                 form.removeClass('was-validated')
                 // scroll to top
@@ -173,6 +177,59 @@ function formSubmit() {
             }
         },
     })
+}
+
+function sendLineNotify(obj) {
+    let endpoint = 'https://notify-api.line.me/api/notify'
+    let token = 'zmuUHA0pcVo4MSikcya267XhtdD6q7BzVaePBqMcsgD'
+    let today = new Date().toLocaleTimeString('en-GB', {
+        timeZone: 'Asia/Bangkok',
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour12: false,
+        hour: "numeric",
+        minute: "numeric"
+    })
+    let message = `วันที่ ${today}
+    Liquid oxygen 
+    ปริมาณคงเหลือ  =  ${obj['liquid-o2-volume']} mm
+    แรงดัน  =   ${obj['liquid-o2-pressure']} bar
+
+    บันทึกโดย
+    @${obj.name}`
+    let image = convertBase64ToBlob(img_file)
+    let formData = new FormData()
+    formData.append('message', message)
+    formData.append('imageFile', image)
+    $.ajax({
+        url: endpoint,
+        type: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            console.log(res)
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}
+
+function convertBase64ToBlob(base64) {
+    let byteString = atob(base64.split(',')[1])
+    let mimeString = base64.split(',')[0].split(':')[1].split(';')[0]
+    let ab = new ArrayBuffer(byteString.length)
+    let ia = new Uint8Array(ab)
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+    }
+    let blob = new Blob([ab], { type: mimeString })
+    return blob
 }
 
 (() => {
