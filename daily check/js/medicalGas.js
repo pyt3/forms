@@ -10,6 +10,7 @@ $(document).ready(() => {
     $.LoadingOverlay("show");
     $.when(getLastSaved(), getHistory()).done(function () {
         $.LoadingOverlay("hide");
+        $('#header-text').addClass('animate__animated animate__rubberBand')
     })
     setInterval(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
@@ -55,6 +56,18 @@ $(document).ready(() => {
             console.log(err.code, err.message);
         });
 
+})
+
+let img_file
+$('#liquid-o2-volume-img').change(function () {
+    let file = this.files[0]
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = function (e) {
+        $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
+        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__tada')
+        img_file = e.target.result
+    }
 })
 
 function getLastSaved() {
