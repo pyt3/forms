@@ -67,14 +67,20 @@ $('#liquid-o2-volume-img').change(function () {
     reader.readAsDataURL(file)
     reader.onloadend = function (e) {
         $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
-        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY animate__fast')
+        // scroll image to center of screen
+        $('html, body').animate({
+            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 100
+        }, 100)
+
+        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
+
         img_file = e.target.result
     }
 })
 
 function getLastSaved() {
     let obj = {
-        opt: 'getLastSaved'
+        opt: 'get_last'
     }
     return $.ajax({
         url: script_url,
@@ -189,13 +195,12 @@ function sendLineNotify(obj) {
         hour: "numeric",
         minute: "numeric"
     })
-    let message = `วันที่ ${today}
-    Liquid oxygen 
-    ปริมาณคงเหลือ  =  ${obj['liquid-o2-volume']} mm
-    แรงดัน  =   ${obj['liquid-o2-pressure']} bar
+    let message = `Liquid oxygen 
+ปริมาณคงเหลือ  =  ${obj['liquid-o2-volume']} mm
+แรงดัน  =   ${obj['liquid-o2-pressure']} bar
 
-    บันทึกโดย
-    @${obj.name}`
+บันทึกโดย
+@${obj.name}`
     $.ajax({
         url: script_url,
         type: 'POST',
