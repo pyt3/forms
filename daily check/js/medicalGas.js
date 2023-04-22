@@ -195,9 +195,25 @@ function sendLineNotify(obj) {
         hour: "numeric",
         minute: "numeric"
     })
-    let message = `Liquid oxygen 
+    let message = `👉 Liquid oxygen 
 ปริมาณคงเหลือ  =  ${obj['liquid-o2-volume']} mm
 แรงดัน  =   ${obj['liquid-o2-pressure']} bar
+-------------------------------
+
+👉 Oxygen Manifold
+Left  =  ${obj['oxygen-manifold-left']} psi
+Right  =  ${obj['oxygen-manifold-right']} psi
+-------------------------------
+
+👉 Carbon Dioxide Manifold
+Left  =  ${obj['c02-manifold-left']} psi
+Right  =  ${obj['c02-manifold-right']} psi
+-------------------------------
+
+👉 Nitrous Manifold
+Left  =  ${obj['nitrous-manifold-left']} psi
+Right  =  ${obj['nitrous-manifold-right']} psi
+-------------------------------
 
 บันทึกโดย
 @${obj.name}`
