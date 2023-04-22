@@ -16,6 +16,7 @@
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"> -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="icon" href="../icon.png" type="image/png">
     <style>
         body {
@@ -69,12 +70,12 @@
     </nav>
     <div class="container mb-3 p-0" style="margin-top: 30px;">
         <div class="row">
-            <div class="col-12 text-center text-light mt-4 display-6 fw-bold">
+            <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
                 Medical Gas Daily Check
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid animate__animated animate__backInUp animate__slow animate__delay-1s" id="main-div">
         <div class="row justify-content-start align-items-center">
             <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
                 <p class="h5 mt-2 fw-bold timenow"></p>
@@ -128,6 +129,12 @@
                             <div class="col-6 text-center">
                                 <label for="liquid-o2-pressure">แรงดัน</label>
                                 <input type="text" name="liquid-o2-pressure" id="liquid-o2-pressure" class="form-control text-center">
+                            </div>
+                            <div class="col-12">
+                                <!-- รูปมาตรวัดปริมาตร -->
+                                <label for="liquid-o2-volume-img" class="form-label">รูปมาตรวัดปริมาตร</label>
+                                <input type="file" name="liquid-o2-volume-img" id="liquid-o2-volume-img" class="form-control" accept="image/*" capture="user">
+                                <img src="" alt="" id="liquid-o2-volume-img-preview" class="img-fluid" style="display: none;">
                             </div>
                         </div>
                     </div>
