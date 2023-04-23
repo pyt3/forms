@@ -7,6 +7,35 @@ const Toast = Swal.mixin({
 })
 
 $(document).ready(() => {
+    let comp = Compress({
+        inputSelector: '#liquid-o2-volume-img',
+        downloadSelector: '#compressing',
+        rate: 60,
+        imagePrefix: 'compressed-',
+        dimen: null,
+    });
+    comp.on('compressed', (files) => {
+        console.group('compressed images data url');
+        console.log('this array contains the url for the compressed images');
+        console.log(files);
+        console.log('listen to the compressed event to get the array');
+        console.groupEnd();
+        // log dataurl size in kb
+        console.log('dataurl size', files[0].length / 1024, 'kb')
+        $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
+        $('#liquid-o2-volume-img-preview').attr('src', files[0]).show()
+        // scroll image to center of screen
+        $('html, body').animate({
+            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
+        }, 100)
+
+        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
+
+        img_file = files[0]
+    });
+
+    comp.on('compressing', () => console.log('compressing'))
+
     setInterval(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
@@ -66,16 +95,18 @@ $('#liquid-o2-volume-img').change(function () {
     let reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onloadend = function (e) {
-        $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
-        $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
-        // scroll image to center of screen
-        $('html, body').animate({
-            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
-        }, 100)
+        // log file size in kb
+        console.log('file size', file.size / 1024, 'kb')
+        // $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
+        // $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
+        // // scroll image to center of screen
+        // $('html, body').animate({
+        //     scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
+        // }, 100)
 
-        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
+        // $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
 
-        img_file = e.target.result
+        // img_file = e.target.result
     }
 })
 
@@ -92,8 +123,22 @@ function getLastSaved() {
             if (res.status == 'success') {
                 let data = res.data
                 Object.keys(data).forEach(key => {
+                    if($('#' + key).is(':checkbox')){
+                        if (data[key] == '✓'){
+                            $('#' + key).prop('checked', true).val('✓')
+                        }else{
+                            $('#' + key).prop('checked', false).val('')
+                        }
+                        return
+                    }
                     $('#' + key).attr('placeholder', data[key])
                 })
+                console.log(localStorage.getItem('user'));
+                if(localStorage.getItem('user') != null){
+                    $('#name').val(localStorage.getItem('user') || "")
+                }else{
+                    $('#name').val("")
+                }
             } else {
                 Toast.fire({
                     icon: 'error',
@@ -109,8 +154,19 @@ function autoSave() {
     let data = form.serializeArray()
     let obj = {}
     data.forEach(a => {
+        if ($('#'+ a.name).is(':checkbox')) {
+            if (a.value == '✓') {
+                obj[a.name] = '✓'
+            } else {
+                obj[a.name] = '✗'
+            }
+            return
+        }
         obj[a.name] = a.value
     })
+    if($('#name').val() != ""){
+        localStorage.setItem('user', $('#name').val())
+    }
     localStorage.setItem('history', JSON.stringify(obj))
     console.log(obj)
 }
@@ -163,18 +219,20 @@ function formSubmit() {
             $.LoadingOverlay("hide");
             if (res.status) {
                 sendLineNotify(obj)
-                form[0].reset()
-                form.removeClass('was-validated')
-                // scroll to top
-                localStorage.removeItem('history')
-                Swal.fire({
-                    icon: 'success',
-                    title: 'บันทึกข้อมูลสำเร็จ',
-                    text: 'กรุณาปิดหน้าต่างนี้',
-                    confirmButtonText: 'ปิดหน้าต่าง',
-                }).then(() => {
-                    liff.closeWindow()
-                })
+                setTimeout(() => {
+                    form[0].reset()
+                    form.removeClass('was-validated')
+                    // scroll to top
+                    localStorage.removeItem('history')
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        text: 'กรุณาปิดหน้าต่างนี้',
+                        confirmButtonText: 'ปิดหน้าต่าง',
+                    }).then(() => {
+                        liff.closeWindow()
+                    })
+                }, 1000);
             } else {
                 Toast.fire({
                     icon: 'error',
@@ -187,15 +245,7 @@ function formSubmit() {
 }
 
 function sendLineNotify(obj) {
-    let today = new Date().toLocaleTimeString('en-GB', {
-        timeZone: 'Asia/Bangkok',
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour12: false,
-        hour: "numeric",
-        minute: "numeric"
-    })
+    
     let message = `👉 Liquid oxygen 
 ปริมาณคงเหลือ  =  ${obj['liquid-o2-volume']} mm
 แรงดัน  =   ${obj['liquid-o2-pressure']} bar
