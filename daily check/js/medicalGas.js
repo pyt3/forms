@@ -66,10 +66,11 @@ $('#liquid-o2-volume-img').change(function () {
     let reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onloadend = function (e) {
+        $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
         $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
         // scroll image to center of screen
         $('html, body').animate({
-            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 100
+            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
         }, 100)
 
         $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
