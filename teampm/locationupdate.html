@@ -175,10 +175,10 @@
         var Toast, profile
         $(document).ready(() => {
 
-             liff.init({
-                 liffId: '1657539607-EPzqza2K',
-                 withLoginOnExternalBrowser: true
-             })
+            liff.init({
+                liffId: '1657539607-EPzqza2K',
+                withLoginOnExternalBrowser: true
+            })
             liff.ready.then(async () => {
                 $('#dept').select2({
                     theme: 'bootstrap-5'
@@ -292,6 +292,9 @@
                 allowOutsideClick: false
             })
             Swal.showLoading(Swal.getConfirmButton())
+            setTimeout(() => {
+                sendLiffMessage(obj)
+            }, 500);
             $.ajax({
                 url: script_url,
                 type: 'POST',
@@ -299,127 +302,118 @@
                 data: obj,
                 success: function (res) {
                     console.log(res)
-                    if (res.status == 'success') {
-                        let flex = {
-                            type: 'flex',
-                            altText: 'Flex',
-                            contents: {
-                                "type": "bubble",
-                                "body": {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-                                        {
-                                            "type": "box",
-                                            "layout": "vertical",
-                                            "contents": [
-                                                {
-                                                    "type": "text",
-                                                    "text": "Brown Cafe",
-                                                    "weight": "bold",
-                                                    "size": "xl",
-                                                    "adjustMode": "shrink-to-fit",
-                                                    "color": "#ffffff"
-                                                },
-                                                {
-                                                    "type": "text",
-                                                    "text": "hello, world",
-                                                    "color": "#ffffff"
-                                                }
-                                            ],
-                                            "backgroundColor": "#57acdc",
-                                            "paddingAll": "md"
-                                        },
-                                        {
-                                            "type": "box",
-                                            "layout": "vertical",
-                                            "contents": [],
-                                            "spacing": "md"
-                                        }
-                                    ],
-                                    "spacing": "lg",
-                                    "offsetTop": "none",
-                                    "paddingAll": "none"
-                                },
-                                "footer": {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-                                        {
-                                            "type": "text",
-                                            "text": "hello, world",
-                                            "align": "end",
-                                            "size": "xs"
-                                        }
-                                    ]
-                                },
-                                "styles": {
-                                    "header": {
-                                        "separator": false
-                                    },
-                                    "footer": {
-                                        "separator": true
-                                    }
-                                }
-                            }
-                        }
-
-                        flex.contents.body.contents[0].contents[0].text = obj.dept
-                        if (obj.remark == "") {
-                            flex.contents.body.contents[0].contents.pop()
-                        } else {
-                            flex.contents.body.contents[0].contents[1].text = obj.remark
-                        }
-                        let count_text = {
-                            type: 'text',
-                            size: 'xxs',
-                            align: "end",
-                            text: `วันที่ ${new Date().toLocaleDateString('th', { year: 'numeric', month: 'numeric', day: 'numeric' })}  บันทึกไปแล้ว ${res.count} รายการ`,
-                        }
-                        flex.contents.footer.contents[0] = count_text
-                        arr.forEach((id, i) => {
-                            flex.contents.body.contents.push({
-                                type: 'text',
-                                text: id,
-                                align: "center"
-                            })
-                            if (i == arr.length - 1) {
-                                console.log(flex)
-                                liff.sendMessages([flex]).catch((err) => {
-                                    console.log("error", err);
-                                });
-                            }
-                        })
-
-                        arr = []
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'สำเร็จ',
-                            text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
-                            confirmButtonText: 'ตกลง',
-                            timer: 3000,
-                            allowOutsideClick: false
-                        }).then(() => {
-                            // location.reload()
-                            $('#id-sec').html('')
-                            $('#remark').val('')
-                            arr = []
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'ผิดพลาด',
-                            text: 'เพิ่มข้อมูลไม่สำเร็จ',
-                            allowOutsideClick: false,
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'ตกลง'
-                        })
-                    }
                 }
             })
         })
+
+        function sendLiffMessage(obj) {
+            let flex = {
+                type: 'flex',
+                altText: 'Flex',
+                contents: {
+                    "type": "bubble",
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Brown Cafe",
+                                        "weight": "bold",
+                                        "size": "xl",
+                                        "adjustMode": "shrink-to-fit",
+                                        "color": "#ffffff"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "hello, world",
+                                        "color": "#ffffff"
+                                    }
+                                ],
+                                "backgroundColor": "#57acdc",
+                                "paddingAll": "md"
+                            },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [],
+                                "spacing": "md"
+                            }
+                        ],
+                        "spacing": "lg",
+                        "offsetTop": "none",
+                        "paddingAll": "none"
+                    },
+                    "footer": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "hello, world",
+                                "align": "end",
+                                "size": "xs"
+                            }
+                        ]
+                    },
+                    "styles": {
+                        "header": {
+                            "separator": false
+                        },
+                        "footer": {
+                            "separator": true
+                        }
+                    }
+                }
+            }
+
+            flex.contents.body.contents[0].contents[0].text = obj.dept
+            if (obj.remark == "") {
+                flex.contents.body.contents[0].contents.pop()
+            } else {
+                flex.contents.body.contents[0].contents[1].text = obj.remark
+            }
+            let count_text = {
+                type: 'text',
+                size: 'xxs',
+                align: "end",
+                text: `วันที่ ${new Date().toLocaleDateString('th', { year: 'numeric', month: 'numeric', day: 'numeric' })}  บันทึกไปแล้ว ${res.count} รายการ`,
+            }
+            flex.contents.footer.contents[0] = count_text
+            arr.forEach((id, i) => {
+                flex.contents.body.contents.push({
+                    type: 'text',
+                    text: id,
+                    align: "center"
+                })
+                if (i == arr.length - 1) {
+                    console.log(flex)
+                    liff.sendMessages([flex]).catch((err) => {
+                        console.log("error", err);
+                    });
+                }
+            })
+
+            arr = []
+
+            Swal.fire({
+                icon: 'success',
+                title: 'สำเร็จ',
+                text: 'เพิ่มข้อมูลเรียบร้อยแล้ว',
+                confirmButtonText: 'ตกลง',
+                timer: 3000,
+                allowOutsideClick: false
+            }).then(() => {
+                // location.reload()
+                $('#id-sec').html('')
+                $('#remark').val('')
+                arr = []
+            })
+        }
 
         function appendPill(cep) {
             let pill = $(`<span class="badge badged text-bg-success p-2 m-1" style="cursor: pointer">${cep}</span>`)
