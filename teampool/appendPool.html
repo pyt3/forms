@@ -15,6 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cedarville+Cursive&family=Mitr&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -61,7 +63,7 @@
                     <label for="code">รหัสเครื่อง</label>
                     <input type="text" class="form-control text-center" id="code" name="code">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" id="div-start">
                     <label for="start">แผนกต้นทาง</label>
                     <select name="start" id="start" class="form-select">
                         <option value="" selected disabled>เลือกแผนกต้นทาง</option>
@@ -122,8 +124,8 @@
                     </select>
 
                 </div>
-                <div class="col-12 text-center mt-3" style="display: none"><i class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
-                <div class="col-md-6">
+                <div class="col-12 text-center mt-3" style="display"><i class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
+                <div class="col-md-6" id="div-end">
                     <label for="end">แผนกปลายทาง</label>
                     <select name="end" id="end" class="form-select">
                         <option value="" selected disabled>เลือกแผนกปลายทาง</option>
@@ -199,7 +201,7 @@
         var profile
         var history_code = {}
         $(document).ready(function () {
-            $.LoadingOverlay('show')
+            // $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
@@ -295,6 +297,20 @@
             }
 
             $('.bi-arrow-down-up').click(function () {
+                // $(this).removeClass('animate__animated animate__bounceIn')
+                $('#div-start').addClass('animate__animated animate__backOutRight animate__faster')
+                $('#div-end').addClass('animate__animated animate__backOutLeft animate__faster')
+                setTimeout(() => {
+                    let start = $('#start').val()
+                    let end = $('#end').val()
+                    $('#start').val(end).change()
+                    $('#end').val(start).change()
+                    $('#div-start').removeClass('animate__animated animate__backOutRight')
+                    $('#div-end').removeClass('animate__animated animate__backOutLeft')
+                    $('#div-start').addClass('animate__animated animate__backInLeft')
+                    $('#div-end').addClass('animate__animated animate__backInRight')
+
+                }, 500);
                 // rotate element 360 degrees in 1 second
                 $(this).animate({ borderSpacing: -360 }, {
                     step: function (now, fx) {
