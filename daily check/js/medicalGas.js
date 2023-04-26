@@ -40,13 +40,25 @@ $(document).ready(() => {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
     }, 1000);
-    $.LoadingOverlay("show");
+    
     $.when(getHistory()).done(function () {
         $.LoadingOverlay("hide");
         $('#header-text').addClass('animate__animated animate__rubberBand animate__delay-1s')
-        $('#main-div').addClass(' animate__animated animate__backInUp').show()
+        $('#main-form').addClass('animate__animated animate__backInUp').show()
+        $('#remark-div').addClass('animate__animated animate__fadeInRight').show()
+        setTimeout(() => {
+            $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
+            $('#main-form').removeClass('animate__backInUp').addClass('animate__fadeInLeft')
+        }, 1000);
     })
-    getLastSaved()
+
+    const tabEl = document.querySelector('button[data-bs-toggle="tab"]')
+    tabEl.addEventListener('shown.bs.tab', event => {
+        event.target // newly activated tab
+        event.relatedTarget // previous active tab
+        console.log(event.target)
+        console.log(event.relatedTarget)
+    })
 
     var typingTimer;
     var doneTypingInterval = 700;
@@ -71,11 +83,13 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    liff.init({
-        liffId: "1657104960-Rn9Z79Ag",
-        withLoginOnExternalBrowser: true,
-    })
+    // liff.init({
+    //     liffId: "1657104960-Rn9Z79Ag",
+    //     withLoginOnExternalBrowser: true,
+    // })
     liff.ready.then(async () => {
+        $.LoadingOverlay("show");
+        getLastSaved()
         console.log('liff init success');
         let profile = await liff.getProfile()
         console.log("🚀 ~ profile:", profile)
@@ -108,6 +122,52 @@ $('#liquid-o2-volume-img').change(function () {
 
         // img_file = e.target.result
     }
+})
+
+$('#remark-btn').click(() => {
+    let o2 = $('#o2-remark').val()
+    let co2 = $('#co2-remark').val()
+    let n2o = $('#n2o-remark').val()
+    if(o2 == '' || co2 == '' || n2o == ''){
+        return Swal.fire({
+            icon: 'error',
+            title: 'กรุณากรอกข้อมูลก่อนกดบันทึก',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+
+    $.ajax({
+        url: script_url,
+        method: 'POST',
+        data:{
+            opt: 'save_remark',
+            o2: o2,
+            co2: co2,
+            n2o: n2o
+        },
+        success: function(res){
+            if(res.status == 'success'){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกข้อมูลสำเร็จ',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#o2-remark').val('')
+                    $('#co2-remark').val('')
+                    $('#n2o-remark').val('')
+                })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'บันทึกข้อมูลไม่สำเร็จ',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        }
+    })
 })
 
 function getLastSaved() {

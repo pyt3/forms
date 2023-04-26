@@ -284,6 +284,7 @@
                 let his = _.pickBy(history_code, (v, k) => {
                     return k.includes(code)
                 })
+                console.log(his);
                 if (_.size(his) > 0) {
                     his = _.values(his)[0]
                     $('#start').val(his.start).change()
@@ -321,10 +322,6 @@
                     duration: 'slow'
                 }, 'linear');
 
-                let start = $('#start').val()
-                let end = $('#end').val()
-                $('#start').val(end).change()
-                $('#end').val(start).change()
 
             })
 
