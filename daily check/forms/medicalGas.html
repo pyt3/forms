@@ -83,8 +83,8 @@
         </div>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link  flex-fill" id="nav-form-tab" data-bs-toggle="tab" data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form" aria-selected="true">Check List</button>
-                <button class="nav-link active flex-fill" id="nav-remark-tab" data-bs-toggle="tab" data-bs-target="#nav-remark" type="button" role="tab" aria-controls="nav-remark" aria-selected="false">หมายเหตุ</button>
+                <button class="nav-link flex-fill active" id="nav-form-tab" data-bs-toggle="tab" data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form" aria-selected="true">Check List</button>
+                <button class="nav-link flex-fill" id="nav-remark-tab" data-bs-toggle="tab" data-bs-target="#nav-remark" type="button" role="tab" aria-controls="nav-remark" aria-selected="false">หมายเหตุ</button>
             </div>
         </nav>
         <div class="container-fluid" id="main-div" style="display: none;">
@@ -101,7 +101,7 @@
             </div>
         </div>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade " id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab" tabindex="0">
+            <div class="tab-pane fade  show active" id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab" tabindex="0">
 
                 <form id="main-form" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
                     <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
@@ -353,7 +353,7 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade show active" id="nav-remark" role="tabpanel" aria-labelledby="nav-remark-tab" tabindex="0">
+            <div class="tab-pane fade" id="nav-remark" role="tabpanel" aria-labelledby="nav-remark-tab" tabindex="0">
                 <div id="remark-div">
                     <section class="row mt-3 rounded-2 p-4 m-2 bg-dark-subtle">
                         <div class="col-12 text-start fw-light mb-1 fs-3 text-secondary">
@@ -382,9 +382,17 @@
                             <textarea name="n2o-remark" id="n2o-remark" rows="3" class="form-control"></textarea>
                         </div>
                     </section>
+                    <section class="row mt-3 rounded-2 p-4 m-2 bg-success-subtle">
+                        <div class="col-12 text-start fw-light mb-1 fs-2 text-secondary">
+                            <span class="fw-bold text-white rounded-pill border px-3" style="background-color: #cca123;">ห้อง PUMP</span>
+                        </div>
+                        <div class="col-12">
+                            <textarea name="pump-remark" id="pump-remark" rows="3" class="form-control"></textarea>
+                        </div>
+                    </section>
                     <div class="row mt-3 p-2 mb-5">
                         <div class="col-12">
-                            <button class="btn btn-warning w-100" id="remark-btn">บันทึกข้อมูล</button>
+                            <button class="btn btn-lg btn-warning w-100" id="remark-btn">บันทึกข้อมูล</button>
                         </div>
                     </div>
                 </div>

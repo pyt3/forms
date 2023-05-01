@@ -40,15 +40,15 @@ $(document).ready(() => {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
     }, 1000);
-    
+
     $.when(getHistory()).done(function () {
         $.LoadingOverlay("hide");
-        $('#header-text').addClass('animate__animated animate__rubberBand animate__delay-1s')
+        $('#header-text').addClass('animate__animated animate__rubberBand')
         $('#main-form').addClass('animate__animated animate__backInUp').show()
         $('#remark-div').addClass('animate__animated animate__fadeInRight').show()
         setTimeout(() => {
             $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
-            $('#main-form').removeClass('animate__backInUp').addClass('animate__fadeInLeft')
+            
         }, 1000);
     })
 
@@ -58,6 +58,7 @@ $(document).ready(() => {
         event.relatedTarget // previous active tab
         console.log(event.target)
         console.log(event.relatedTarget)
+        $('#main-form').removeClass('animate__backInUp').addClass('animate__fadeInLeft').show()
     })
 
     var typingTimer;
@@ -88,8 +89,8 @@ $(document).ready(() => {
     //     withLoginOnExternalBrowser: true,
     // })
     liff.ready.then(async () => {
-        $.LoadingOverlay("show");
         getLastSaved()
+        $.LoadingOverlay("show");
         console.log('liff init success');
         let profile = await liff.getProfile()
         console.log("🚀 ~ profile:", profile)
@@ -128,7 +129,8 @@ $('#remark-btn').click(() => {
     let o2 = $('#o2-remark').val()
     let co2 = $('#co2-remark').val()
     let n2o = $('#n2o-remark').val()
-    if(o2 == '' || co2 == '' || n2o == ''){
+    let pump = $('#pump-remark').val()
+    if (o2 == '' && co2 == '' && n2o == '' && pupm == '') {
         return Swal.fire({
             icon: 'error',
             title: 'กรุณากรอกข้อมูลก่อนกดบันทึก',
@@ -136,29 +138,29 @@ $('#remark-btn').click(() => {
             timer: 1500
         })
     }
+    Swal.fire({
+        icon: 'info',
+        title: 'กำลังบันทึกข้อมูล',
+        html: 'กรุณารอสักครู่',
+        allowOutsideClick: false,
+    })
+    Swal.showLoading(Swal.getConfirmButton())
 
     $.ajax({
         url: script_url,
         method: 'POST',
-        data:{
+        data: {
             opt: 'save_remark',
             o2: o2,
             co2: co2,
-            n2o: n2o
+            n2o: n2o,
+            pump: pump
         },
-        success: function(res){
-            if(res.status == 'success'){
-                Swal.fire({
-                    icon: 'success',
-                    title: 'บันทึกข้อมูลสำเร็จ',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#o2-remark').val('')
-                    $('#co2-remark').val('')
-                    $('#n2o-remark').val('')
-                })
-            }else{
+        success: function (res) {
+            Swal.close()
+            if (res.status == 'success') {
+
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'บันทึกข้อมูลไม่สำเร็จ',
@@ -167,7 +169,21 @@ $('#remark-btn').click(() => {
                 })
             }
         }
+
     })
+    setTimeout(() => {
+        Swal.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+            showConfirmButton: false,
+            timer: 1500
+        }).then(() => {
+            $('#o2-remark').val('')
+            $('#co2-remark').val('')
+            $('#n2o-remark').val('')
+            $('#pump-remark').val('')
+        })
+    }, 1500);
 })
 
 function getLastSaved() {
@@ -183,10 +199,10 @@ function getLastSaved() {
             if (res.status == 'success') {
                 let data = res.data
                 Object.keys(data).forEach(key => {
-                    if($('#' + key).is(':checkbox')){
-                        if (data[key] == '✓'){
+                    if ($('#' + key).is(':checkbox')) {
+                        if (data[key] == '✓') {
                             $('#' + key).prop('checked', true).val('✓')
-                        }else{
+                        } else {
                             $('#' + key).prop('checked', false).val('')
                         }
                         return
@@ -194,9 +210,9 @@ function getLastSaved() {
                     $('#' + key).attr('placeholder', data[key])
                 })
                 console.log(localStorage.getItem('user'));
-                if(localStorage.getItem('user') != null){
+                if (localStorage.getItem('user') != null) {
                     $('#name').val(localStorage.getItem('user') || "")
-                }else{
+                } else {
                     $('#name').val("")
                 }
             } else {
@@ -214,7 +230,7 @@ function autoSave() {
     let data = form.serializeArray()
     let obj = {}
     data.forEach(a => {
-        if ($('#'+ a.name).is(':checkbox')) {
+        if ($('#' + a.name).is(':checkbox')) {
             if (a.value == '✓') {
                 obj[a.name] = '✓'
             } else {
@@ -224,7 +240,7 @@ function autoSave() {
         }
         obj[a.name] = a.value
     })
-    if($('#name').val() != ""){
+    if ($('#name').val() != "") {
         localStorage.setItem('user', $('#name').val())
     }
     localStorage.setItem('history', JSON.stringify(obj))
@@ -237,10 +253,10 @@ function getHistory() {
         let obj = JSON.parse(history)
         console.log("🚀 ~ obj:", obj)
         Object.keys(obj).forEach(key => {
-            if (key == 'vaccuum-pressure') {
-                $(`[name="${key}"]`).prop('checked', true)
-                return
-            }
+            // if (key == 'vaccuum-pressure') {
+            //     $(`[name="${key}"]`).prop('checked', true)
+            //     return
+            // }
             $(`[name="${key}"]`).val(obj[key])
         })
     }
@@ -305,7 +321,7 @@ function formSubmit() {
 }
 
 function sendLineNotify(obj) {
-    
+
     let message = `👉 Liquid oxygen 
 ปริมาณคงเหลือ  =  ${obj['liquid-o2-volume']} mm
 แรงดัน  =   ${obj['liquid-o2-pressure']} bar
