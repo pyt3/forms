@@ -88,8 +88,8 @@ $(document).ready(() => {
         liffId: "1657104960-Rn9Z79Ag",
         withLoginOnExternalBrowser: true,
     })
+    getLastSaved()
     liff.ready.then(async () => {
-        getLastSaved()
         $.LoadingOverlay("show");
         console.log('liff init success');
         let profile = await liff.getProfile()
@@ -199,15 +199,17 @@ function getLastSaved() {
             if (res.status == 'success') {
                 let data = res.data
                 Object.keys(data).forEach(key => {
+                    if(key.length < 1) return
+                    if(!$('#' + key)) return
                     if ($('#' + key).is(':checkbox')) {
-                        if (data[key] == '✓') {
-                            $('#' + key).prop('checked', true).val('✓')
-                        } else {
-                            $('#' + key).prop('checked', false).val('')
-                        }
+                        // if (data[key] == '✓') {
+                        //     $('#' + key).prop('checked', true).val('✓')
+                        // } else {
+                        //     $('#' + key).prop('checked', false).val('')
+                        // }
                         return
                     }
-                    $('#' + key).attr('placeholder', data[key])
+                    $('#' + key).attr('placeholder', data[key]).val(data[key])
                 })
                 console.log(localStorage.getItem('user'));
                 if (localStorage.getItem('user') != null) {
@@ -277,7 +279,7 @@ function formSubmit() {
     let data = form.serializeArray()
     let obj = {}
     data.forEach(a => {
-        obj[a.name] = a.value
+        obj[a.name] = a.value.toString()
     })
     obj.opt = 'submit'
     $.LoadingOverlay("show");
