@@ -200,6 +200,9 @@
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
         var history_code = {}
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
         $(document).ready(function () {
             $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
