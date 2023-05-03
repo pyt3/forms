@@ -89,8 +89,8 @@ $(document).ready(() => {
         liffId: "1657104960-Rn9Z79Ag",
         withLoginOnExternalBrowser: true,
     })
-    getLastSaved()
     liff.ready.then(async () => {
+        getLastSaved()
         $.LoadingOverlay("show");
         console.log('liff init success');
         let profile = await liff.getProfile()
