@@ -32,6 +32,7 @@ $(document).ready(() => {
         $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
 
         img_file = files[0]
+        console.log("🚀 ~ img_file:", img_file)
     });
 
     comp.on('compressing', () => console.log('compressing'))
@@ -88,8 +89,8 @@ $(document).ready(() => {
         liffId: "1657104960-Rn9Z79Ag",
         withLoginOnExternalBrowser: true,
     })
+    getLastSaved()
     liff.ready.then(async () => {
-        getLastSaved()
         $.LoadingOverlay("show");
         console.log('liff init success');
         let profile = await liff.getProfile()
@@ -275,6 +276,17 @@ function toTitleCase(str) {
 }
 
 function formSubmit() {
+    // check if not attach image
+    if ($('#liquid-o2-volume-img').val() == '') {
+        return Swal.fire({
+            icon: 'error',
+            title: 'กรุณาแนบรูปภาพก่อนกดบันทึก',
+            showConfirmButton: false,
+            timer: 1500
+        }).then(()=>{
+            $('#liquid-o2-volume-img').focus()
+        })
+    }
     let form = $('#main-form')
     let data = form.serializeArray()
     let obj = {}
