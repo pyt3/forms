@@ -144,12 +144,12 @@
                                     </div>
                                     <div class="col-6 text-center">
                                         <label for="liquid-o2-pressure">แรงดัน</label>
-                                        <input type="number" name="liquid-o2-pressure" id="liquid-o2-pressure" class="form-control text-center" step="0.1" inputmode="numeric">
+                                        <input type="number" name="liquid-o2-pressure" id="liquid-o2-pressure" class="form-control text-center" step="0.01" inputmode="numeric">
                                     </div>
                                     <div class="col-12">
                                         <!-- รูปมาตรวัดปริมาตร -->
                                         <label for="liquid-o2-volume-img" class="form-label">รูปมาตรวัดปริมาตร</label>
-                                        <input type="file" name="liquid-o2-volume-img" id="liquid-o2-volume-img" class="form-control" accept="image/*" capture="user">
+                                        <input type="file" name="liquid-o2-volume-img" id="liquid-o2-volume-img" class="form-control" accept="image/*">
                                         <img src="" alt="" id="liquid-o2-volume-img-preview" class="rounded mt-3" style="display: none; width: 100%; height: auto; object-fit: cover; object-position: center; aspect-ratio: 3/4;">
                                     </div>
                                 </div>
@@ -206,6 +206,9 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-3 m-2">
+                                    <div class="col-12 text-primary">
+                                        <i class="bi bi-question-circle-fill"></i> ตรวจสอบแรงดัน Regulator อยู่ในช่วงที่กำหนดหรือไม่ <i class="bi bi-question-circle-fill"></i>
+                                    </div>
                                     <div class="col-12">
                                         <div class="form-check d-flex align-items-center w-100 justify-content-start">
                                             <input class="form-check-input me-2" type="checkbox" value="✓" id="oxygen-reg-high" name="oxygen-reg-high">
@@ -215,7 +218,7 @@
                                     <div class="col-12">
                                         <div class="form-check d-flex align-items-center w-100 justify-content-start">
                                             <input class="form-check-input me-2" type="checkbox" value="✓" id="oxygen-reg-low" name="oxygen-reg-low">
-                                            <label for="oxygen-reg-low">Reg* Row <span class="text-danger fw-bold">(50 Psi)</span></label>
+                                            <label for="oxygen-reg-low">Reg* Low <span class="text-danger fw-bold">(50 Psi)</span></label>
                                         </div>
                                     </div>
                                 </div>
@@ -277,6 +280,9 @@
                                         <input type="number" step="0.01" inputmode="numeric" name="vaccuum-3" id="vaccuum-3" class="form-control text-center">
                                     </div>
                                     <div class="col-12">
+                                        <div class="col-12 mb-2 text-primary">
+                                            <i class="bi bi-question-circle-fill"></i> ตรวจสอบแรงดัน Regulator อยู่ในช่วงที่กำหนดหรือไม่ <i class="bi bi-question-circle-fill"></i>
+                                        </div>
                                         <div class="form-check d-flex align-items-center w-100 justify-content-start">
                                             <input class="form-check-input me-2" type="checkbox" value="✓" id="vaccuum-pressure" name="vaccuum-pressure">
                                             <label for="vaccuum-pressure" class="form-check-label">Vaccuum Tank แรงดัน <span class="text-danger fw-bold">-0.6 ถึง -0.8</span></label>
