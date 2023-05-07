@@ -10,7 +10,7 @@ $(document).ready(() => {
     let comp = Compress({
         inputSelector: '#liquid-o2-volume-img',
         downloadSelector: '#compressing',
-        rate: 60,
+        rate: 40,
         imagePrefix: 'compressed-',
         dimen: null,
     });
