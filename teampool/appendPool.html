@@ -412,15 +412,12 @@
                     preConfirm: () => {
                         let start_room = $('#start-room').val()
                         let end_room = $('#end-room').val()
-                        if (start_room == '' || end_room == '') {
-                            Swal.showValidationMessage(`กรุณากรอกห้องต้นทาง และปลายทาง`)
-                        }
                         return { start_room, end_room }
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        data['start-room'] = result.value.start_room
-                        data['end-room'] = end_room = result.value.end_room
+                        if(result.value.start_room != '') data['start-room'] = result.value.start_room
+                        if(result.value.end_oom != '') data['end-room'] = end_room = result.value.end_room
                         sendPost(data)
                     }
                 })
