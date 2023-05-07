@@ -7,16 +7,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>บันทึกข้อมูลการขนย้าย</title>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cedarville+Cursive&family=Mitr&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cedarville+Cursive&family=Mitr&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous"
-        referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -44,7 +51,8 @@
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
+                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
                 &nbsp; <div>
                     <span id="displayName">Team PM</span>
                 </div>
@@ -124,65 +132,12 @@
                     </select>
 
                 </div>
-                <div class="col-12 text-center mt-3" style="display:none"><i class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
+                <div class="col-12 text-center mt-3" style="display:none"><i
+                        class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
                 <div class="col-md-6" id="div-end">
                     <label for="end">แผนกปลายทาง</label>
                     <select name="end" id="end" class="form-select">
                         <option value="" selected disabled>เลือกแผนกปลายทาง</option>
-                        <option>ANESTHESIA (วิสัญญี)</option>
-                        <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
-                        <option>BME-PYT3</option>
-                        <option>CATH-LAB</option>
-                        <option>CHECK-UP (ตรวจสุขภาพ)</option>
-                        <option>CORPORATE CUSTOMER SERVICE</option>
-                        <option>CSSD (จ่ายกลาง)</option>
-                        <option>DENTAL (ทันตกรรม)</option>
-                        <option>DIABETIC&amp;METABOLIC(เบาหวาน)</option>
-                        <option>EENT( หูตาคอจมูก)</option>
-                        <option>EMERGENCY( ฉุกเฉิน)</option>
-                        <option>GASTROINTESTINAL LABORATORY(GI)</option>
-                        <option>HEMODIALYSIS (ไตเทียม)</option>
-                        <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
-                        <option>INFECTION CONTROL ( IC)</option>
-                        <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
-                        <option>LABOR ROOM(ห้องคลอด)</option>
-                        <option>LABORATORY</option>
-                        <option>MAID</option>
-                        <option>MARKETING</option>
-                        <option>NURSERY(เด็กอ่อน) FL.6</option>
-                        <option>NURSERY(เด็กอ่อน) FL.7</option>
-                        <option>NURSING DEPARTMENT</option>
-                        <option>OBSERVE(สังเกตอาการ)</option>
-                        <option>OPD CARDIO(ศูนย์หัวใจ)</option>
-                        <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
-                        <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
-                        <option>OPD Lasik (ศูนย์เลสิก)</option>
-                        <option>OPD MEDICINE(อายุกรรม)</option>
-                        <option>OPD NEURO (ศูนย์สมอง)</option>
-                        <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
-                        <option>OPD PEDIATRIC( แผนกเด็ก)</option>
-                        <option>OPD SURGERY(ศัลยกรรม)</option>
-                        <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
-                        <option>OPERATING ROOM(ห้องผ่าตัด)</option>
-                        <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
-                        <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
-                        <option>PHYSICAL THERAPY( กายภาพ)</option>
-                        <option>PICU</option>
-                        <option>PWA LIFE CENTER</option>
-                        <option>PWA ชะลอวัย</option>
-                        <option>VEHICLE</option>
-                        <option>WARD 10</option>
-                        <option>WARD 11</option>
-                        <option>WARD 12</option>
-                        <option>WARD 14</option>
-                        <option>WARD 15</option>
-                        <option>WARD 17</option>
-                        <option>WARD 7</option>
-                        <option>WARD 8</option>
-                        <option>WARD 9</option>
-                        <option>WAREHOUSE</option>
-                        <option>X-RAY</option>
-                        <option>รับส่ง</option>
                     </select>
                 </div>
                 <div class="col-md-6 text-center">
@@ -204,7 +159,8 @@
             document.querySelector('.select2-search__field').focus();
         });
         $(document).ready(function () {
-            $.LoadingOverlay('show')
+            $('#end').append($('#start option').not(':first-child').clone())
+            // $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
@@ -416,7 +372,7 @@
                     title: 'กรุณาระบุห้องต้นทาง และปลายทาง',
                     html: `<div class="container-fluid"><div class="row"><div class="col-12"><label for="start-room">ห้องต้นทาง</label><input id="start-room" class="form-control"></div><div class="col-12"><label for="end-room">ห้องปลายทาง</label><input id="end-room" class="form-control"></div></div></div>`,
                     showCancelButton: true,
-                    confirmButtonText: 'ยืนยัน',
+                    confirmButtonText: 'บันทึกเลย',
                     cancelButtonText: 'ยกเลิก',
                     preConfirm: () => {
                         let start_room = $('#start-room').val()
@@ -433,7 +389,43 @@
                         sendPost(data)
                     }
                 })
-            } else {
+            } else if (start.toLowerCase().indexOf('ward') > -1 || end.toLowerCase().indexOf('ward') > -1) {
+                let start_room_html = `<div class="col-12"><label for="start-room">ห้องต้นทาง ${start}</label><input id="start-room" class="form-control"></div>`
+                let end_room_html = `<div class="col-12"><label for="end-room">ห้องปลายทาง ${end}</label><input id="end-room" class="form-control"></div>`
+                let div = $('<div>', { class: 'container-fluid' }).append($('<div>', { class: 'row g-2' }))
+                    div.find('.row').append($('<div>',{class: 'col-12 alert alert-warning'}).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้องกรุณาเว้นว่างไว้</u>`))
+                let title = 'กรุณาระบุ'
+                if (start.toLowerCase().indexOf('ward') > -1) {
+                    title+='ห้องต้นทาง'
+                    div.find('.row').append($(start_room_html))
+                }
+                if (end.toLowerCase().indexOf('ward') > -1){
+                    title+=' ห้องปลายทาง'
+                    div.find('.row').append($(end_room_html))
+                }
+                return Swal.fire({
+                    title: title,
+                    html: div[0].outerHTML,
+                    showCancelButton: true,
+                    confirmButtonText: 'บันทึกเลย',
+                    cancelButtonText: 'ยกเลิก',
+                    preConfirm: () => {
+                        let start_room = $('#start-room').val()
+                        let end_room = $('#end-room').val()
+                        if (start_room == '' || end_room == '') {
+                            Swal.showValidationMessage(`กรุณากรอกห้องต้นทาง และปลายทาง`)
+                        }
+                        return { start_room, end_room }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        data['start-room'] = result.value.start_room
+                        data['end-room'] = end_room = result.value.end_room
+                        sendPost(data)
+                    }
+                })
+            }
+            else {
                 sendPost(data)
             }
         })
@@ -502,7 +494,8 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
