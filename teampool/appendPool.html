@@ -393,7 +393,7 @@
                 let start_room_html = `<div class="col-12"><label for="start-room">ห้องต้นทาง ${start}</label><input id="start-room" class="form-control"></div>`
                 let end_room_html = `<div class="col-12"><label for="end-room">ห้องปลายทาง ${end}</label><input id="end-room" class="form-control"></div>`
                 let div = $('<div>', { class: 'container-fluid' }).append($('<div>', { class: 'row g-2' }))
-                    div.find('.row').append($('<div>',{class: 'col-12 alert alert-warning'}).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้องกรุณาเว้นว่างไว้</u>`))
+                    div.find('.row').append($('<div>',{class: 'col-12 alert alert-warning'}).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้อง<br>กรุณาเว้นว่างไว้</u>`))
                 let title = 'กรุณาระบุ'
                 if (start.toLowerCase().indexOf('ward') > -1) {
                     title+='ห้องต้นทาง'
