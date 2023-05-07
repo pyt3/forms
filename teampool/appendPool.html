@@ -160,7 +160,7 @@
         });
         $(document).ready(function () {
             $('#end').append($('#start option').not(':first-child').clone())
-            // $.LoadingOverlay('show')
+            $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
@@ -393,18 +393,18 @@
                 let start_room_html = `<div class="col-12"><label for="start-room">ห้องต้นทาง ${start}</label><input id="start-room" class="form-control"></div>`
                 let end_room_html = `<div class="col-12"><label for="end-room">ห้องปลายทาง ${end}</label><input id="end-room" class="form-control"></div>`
                 let div = $('<div>', { class: 'container-fluid' }).append($('<div>', { class: 'row g-2' }))
-                    div.find('.row').append($('<div>',{class: 'col-12 alert alert-warning'}).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้อง<br>กรุณาเว้นว่างไว้</u>`))
                 let title = 'กรุณาระบุ'
+                div.find('.row').append($('<div>', { class: 'col-12 h5' }).html(`<i class="bi bi-door-open-fill"></i><span id="room-swal-title">${title}</span>`))
+                div.find('.row').append($('<div>', { class: 'col-12 alert alert-warning p-1' }).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้อง<br>กรุณาเว้นว่างไว้</u>`))
                 if (start.toLowerCase().indexOf('ward') > -1) {
-                    title+='ห้องต้นทาง'
+                    title += 'ห้องต้นทาง'
                     div.find('.row').append($(start_room_html))
                 }
-                if (end.toLowerCase().indexOf('ward') > -1){
-                    title+=' ห้องปลายทาง'
+                if (end.toLowerCase().indexOf('ward') > -1) {
+                    title += ' ห้องปลายทาง'
                     div.find('.row').append($(end_room_html))
                 }
                 return Swal.fire({
-                    title: title,
                     html: div[0].outerHTML,
                     showCancelButton: true,
                     confirmButtonText: 'บันทึกเลย',
@@ -413,11 +413,14 @@
                         let start_room = $('#start-room').val()
                         let end_room = $('#end-room').val()
                         return { start_room, end_room }
+                    },
+                    didOpen: () => {
+                        $('#room-swal-title').text(title)
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        if(result.value.start_room != '') data['start-room'] = result.value.start_room
-                        if(result.value.end_oom != '') data['end-room'] = end_room = result.value.end_room
+                        if (result.value.start_room != '') data['start-room'] = result.value.start_room
+                        if (result.value.end_oom != '') data['end-room'] = end_room = result.value.end_room
                         sendPost(data)
                     }
                 })
