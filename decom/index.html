@@ -6,10 +6,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <!-- icon -->
+    <link rel="icon" href="https://img.icons8.com/3d-fluency/96/trash.png" type="image/x-icon" />
     <style>
         * {
             margin: 0;
@@ -20,6 +27,8 @@
         body {
             width: 100%;
             height: 100%;
+            font-family: 'Prompt', sans-serif;
+            background-color: #26bbed;
             /* background-color: #D3D3D3; */
         }
 
@@ -32,278 +41,340 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 text-center px-5 mt-3">
-                <img src="https://img.in.th/images/92cc41f62e7a8b08398ed7cddcc22725.jpg" alt="banner" class="img-fluid">
+    <header class="">
+        <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
+            <div class="col-auto">
+                <img width="80" height="80" src="https://img.icons8.com/3d-fluency/94/trash.png" alt="trash" />
+            </div>
+
+            <div class="col text-center">
+                <h4 class="h1 fw-bold text-light">Decommissioning Determination Form</h4>
+                <h4 class="fw-bold">แบบบันทึกยกเลิกการใช้งาน</h4>
             </div>
         </div>
-
-        <form id="myForm" class="mt-3 mb-5">
-            <div class="row justify-content-center">
-                <div class="col text-center">
-                    <h4>Decommissioning Determination Form</h4>
-                    <h4>แบบบันทึกยกเลิกการใช้งาน</h4>
-                </div>
-            </div>
-            <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow border border-primary">
-                <div class="row justify-content-start">
-                    <div class="col-md-4 mt-3">
-                        <label for="e_name">ชื่อเครื่องมือ</label>
-                        <input type="text" name="e_name" id="e_name" class="form-control">
+    </header>
+    <main>
+        <div class="container-fluid">
+            <form id="myForm" class="mt-3 mb-5">
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                    <div class="row justify-content-end">
+                        <div class="col-md-3 text-end">
+                            <button class="btn btn-warning" id="auto-fill" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#autoFillOffCanvas" aria-controls="autoFillOffCanvas">Auto Fill</button>
+                        </div>
                     </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="dept">แผนก</label>
-                        <select name="dept" id="dept" class="form-select">
-                            <option value="" disabled selected>Select value</option>
-                            <option>ANESTHESIA (วิสัญญี)</option>
-                            <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
-                            <option>BME-PYT3</option>
-                            <option>CATH-LAB</option>
-                            <option>CHECK-UP (ตรวจสุขภาพ)</option>
-                            <option>CORPORATE CUSTOMER SERVICE</option>
-                            <option>CSSD (จ่ายกลาง)</option>
-                            <option>DENTAL (ทันตกรรม)</option>
-                            <option>DIABETIC&amp;METABOLIC(เบาหวาน)</option>
-                            <option>EENT( หูตาคอจมูก)</option>
-                            <option>EMERGENCY( ฉุกเฉิน)</option>
-                            <option>GASTROINTESTINAL LABORATORY(GI)</option>
-                            <option>HEMODIALYSIS (ไตเทียม)</option>
-                            <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
-                            <option>INFECTION CONTROL ( IC)</option>
-                            <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
-                            <option>LABOR ROOM(ห้องคลอด)</option>
-                            <option>LABORATORY</option>
-                            <option>MAID</option>
-                            <option>MARKETING</option>
-                            <option>NURSERY(เด็กอ่อน)</option>
-                            <option>NURSING DEPARTMENT</option>
-                            <option>OBSERVE(สังเกตอาการ)</option>
-                            <option>OPD CARDIO(ศูนย์หัวใจ)</option>
-                            <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
-                            <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
-                            <option>OPD MEDICINE(อายุกรรม)</option>
-                            <option>OPD NEURO (ศูนย์สมอง)</option>
-                            <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
-                            <option>OPD PEDIATRIC( แผนกเด็ก)</option>
-                            <option>OPD SURGERY(ศัลยกรรม)</option>
-                            <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
-                            <option>OPERATING ROOM(ห้องผ่าตัด)</option>
-                            <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
-                            <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
-                            <option>PHYSICAL THERAPY( กายภาพ)</option>
-                            <option>PICU</option>
-                            <option>PWA LIFE CENTER</option>
-                            <option>PWA ชะลอวัย</option>
-                            <option>WARD 10</option>
-                            <option>WARD 11</option>
-                            <option>WARD 12</option>
-                            <option>WARD 14</option>
-                            <option>WARD 15</option>
-                            <option>WARD 17</option>
-                            <option>WARD 7</option>
-                            <option>WARD 8</option>
-                            <option>WARD 9</option>
-                            <option>X-RAY</option>
-                            <option>รับส่ง</option>
-                            <option>ห้องเก็บของชั้น 19</option>
-                        </select>
+                    <div class="row justify-content-start">
+                        <div class="col-md-4 mt-3">
+                            <label for="e_name">ชื่อเครื่องมือ</label>
+                            <input type="text" name="e_name" id="e_name" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="dept">แผนก</label>
+                            <select name="dept" id="dept" class="form-select">
+                                <option value="" disabled selected>Select value</option>
+                                <option>ANESTHESIA (วิสัญญี)</option>
+                                <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
+                                <option>BME-PYT3</option>
+                                <option>CATH-LAB</option>
+                                <option>CHECK-UP (ตรวจสุขภาพ)</option>
+                                <option>CORPORATE CUSTOMER SERVICE</option>
+                                <option>CSSD (จ่ายกลาง)</option>
+                                <option>DENTAL (ทันตกรรม)</option>
+                                <option>DIABETIC&amp;METABOLIC(เบาหวาน)</option>
+                                <option>EENT( หูตาคอจมูก)</option>
+                                <option>EMERGENCY( ฉุกเฉิน)</option>
+                                <option>GASTROINTESTINAL LABORATORY(GI)</option>
+                                <option>HEMODIALYSIS (ไตเทียม)</option>
+                                <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
+                                <option>INFECTION CONTROL ( IC)</option>
+                                <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
+                                <option>LABOR ROOM(ห้องคลอด)</option>
+                                <option>LABORATORY</option>
+                                <option>MAID</option>
+                                <option>MARKETING</option>
+                                <option>NURSERY(เด็กอ่อน)</option>
+                                <option>NURSING DEPARTMENT</option>
+                                <option>OBSERVE(สังเกตอาการ)</option>
+                                <option>OPD CARDIO(ศูนย์หัวใจ)</option>
+                                <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
+                                <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
+                                <option>OPD MEDICINE(อายุกรรม)</option>
+                                <option>OPD NEURO (ศูนย์สมอง)</option>
+                                <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
+                                <option>OPD PEDIATRIC( แผนกเด็ก)</option>
+                                <option>OPD SURGERY(ศัลยกรรม)</option>
+                                <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
+                                <option>OPERATING ROOM(ห้องผ่าตัด)</option>
+                                <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
+                                <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
+                                <option>PHYSICAL THERAPY( กายภาพ)</option>
+                                <option>PICU</option>
+                                <option>PWA LIFE CENTER</option>
+                                <option>PWA ชะลอวัย</option>
+                                <option>WARD 10</option>
+                                <option>WARD 11</option>
+                                <option>WARD 12</option>
+                                <option>WARD 14</option>
+                                <option>WARD 15</option>
+                                <option>WARD 17</option>
+                                <option>WARD 7</option>
+                                <option>WARD 8</option>
+                                <option>WARD 9</option>
+                                <option>X-RAY</option>
+                                <option>รับส่ง</option>
+                                <option>ห้องเก็บของชั้น 19</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_manufacturer">ผู้ผลิต</label>
+                            <input type="text" name="e_manufacturer" id="e_manufacturer" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_date">วันที่ซื้อ</label>
+                            <input type="text" name="e_date" id="e_date" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_hospital_code">หมายเลขทรัพย์สิน</label>
+                            <input type="text" name="e_hospital_code" id="e_hospital_code" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_brand/model">ยี่ห้อ/รุ่น</label>
+                            <input type="text" name="e_brand/model" id="e_brand/model" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_sn">เลขเครื่อง (SN)</label>
+                            <input type="text" name="e_sn" id="e_sn" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_me_code">หมายเลขเครื่อง (ME Code)</label>
+                            <input type="text" name="e_me_code" id="e_me_code" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_brand/distributor">ตัวแทนจำหน่าย</label>
+                            <input type="text" name="e_brand/distributor" id="e_brand/distributor" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_price">ราคาซื้อ</label>
+                            <input type="text" name="e_price" id="e_price" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_depreciation">ราคาค่าเสื่อมปัจจุบัน</label>
+                            <input type="text" name="e_depreciation" id="e_depreciation" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_decom_location">สถานที่จัดเก็บเครื่องมือที่ขอยกเลิกการใช้งาน</label>
+                            <input type="text" name="e_decom_location" id="e_decom_location" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_decom_by">ผู้ยกเลิก</label>
+                            <input type="text" name="e_decom_by" id="e_decom_by" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_sticker">รูป Code Sticker เครื่องมือยกเลิก</label>
+                            <input type="file" accept="image/*" name="e_sticker" id="e_sticker" class="form-control">
+                        </div>
                     </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_manufacturer">ผู้ผลิต</label>
-                        <input type="text" name="e_manufacturer" id="e_manufacturer" class="form-control">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3" style="display: none;">
+                            <img alt="sticker" id="sticker" class="img-fluid">
+                        </div>
                     </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_date">วันที่ซื้อ</label>
-                        <input type="text" name="e_date" id="e_date" class="form-control">
+                </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                    <div class="row justify-content-start">
+                        <div class="col text-start ms-1">
+                            <p>ข้อควรพิจารณาสำหรับยกเลิกการใช้งานเครื่องมือแพทย์</p>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="repair_cost_exceed_65"
+                                    name="repair_cost_exceed_65">
+                                <label class="form-check-label" for="repair_cost_exceed_65">
+                                    1. ราคาค่าซ่อมสะสมรวมสูงกว่า 65% ของราคาซื้อ (The estimated cumulative repair cost
+                                    exceed 65% of acquisition Cost)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="deprecate_value_exceed_65"
+                                    name="deprecate_value_exceed_65">
+                                <label class="form-check-label" for="deprecate_value_exceed_65">
+                                    2. ราคาค่าเสื่อมสูงกว่า 65% ของราคาซื้อ (Current deprecated value exceed 65% of
+                                    acquisition cost)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="any_uncorrecttable_hazard"
+                                    name="any_uncorrecttable_hazard">
+                                <label class="form-check-label" for="any_uncorrecttable_hazard">
+                                    3. มีการแจ้งเตือนอันตราย การแจ้งห้ามใช้เครื่องมือ/ยกเลิกใช้งานที่เกิดจาก Status
+                                    Decom
+                                    (Any uncorrectable hazard
+                                    warning preclude equipment use / Disable operations caused by Status Decom)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="lack_of_repair_part"
+                                    name="lack_of_repair_part">
+                                <label class="form-check-label" for="lack_of_repair_part">
+                                    4. ขาดแคลนอะไหล่ที่ใช้ในการซ่อมเครื่องมือ ทำให้เครื่องมือไม่สามารถซ่อมแซมได้ (The
+                                    lack
+                                    of repair parts render
+                                    equipment irreparable)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="calibration_inacculate"
+                                    name="calibration_inacculate">
+                                <label class="form-check-label" for="calibration_inacculate">
+                                    5. ผลการสอบเทียบไม่ผ่าน และไม่สามารถปรับแต่งได้ (Calibration measurement range
+                                    inacceurate and cannot adjusted)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="expected_life"
+                                    name="expected_life">
+                                <label class="form-check-label" for="expected_life">
+                                    6. อายุการใช้งานเครื่องมือตามมาตรฐาน ECRI เอกสารสนับสุน Expected Life Healthcare
+                                    Device
+                                    (SD-BME-BMC-00-
+                                    MN-001)/ อายุของอะใหล่และการหยุดการผลิตแล้วของอะไหล่ตามที่บริษัทผู้แทนกำหนด
+                                    (Expccted
+                                    Life Healthcare
+                                    Device ECRI /Age of spare parts and discontinuation of parts as specified by the
+                                    representative company)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="high_priority_replcaement"
+                                    name="high_priority_replcaement">
+                                <label class="form-check-label" for="high_priority_replcaement">
+                                    7. สรุปผลการทำประเมินสภาพเครื่องมือทางการแพทข์ มีลำดับความสำคัญสูง (Summary of the
+                                    evaluation of the medical
+                                    device condition High Priority Replacement)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="outdated_technology"
+                                    name="outdated_technology">
+                                <label class="form-check-label" for="outdated_technology">
+                                    8. การประเมินเทคโนโลยีที่ล้าสมัยของเครื่องมือ ( Outdated technology assessment )
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓"
+                                    id="required_termination_of_use" name="required_termination_of_use">
+                                <label class="form-check-label" for="required_termination_of_use">
+                                    9. กฎหมาย กฎระเบียบบังคับให้ยกเลิก (Regulations require the termination of use.)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="✓" id="information_deleted"
+                                    name="information_deleted">
+                                <label class="form-check-label" for="information_deleted">
+                                    10. เครื่องมือแพทย์ที่ยกเลิกให้ทำการลบข้อมูลผู้ป่วยที่อยู่ในหน่วยความจำเครื่อง
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-start ms-1 mt-2">
+                            <label for="e_sticker"> 11. อื่นๆ</label>
+                            <input name="other" id="other" name="other" class="form-control">
+                        </div>
                     </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_hospital_code">หมายเลขทรัพย์สิน</label>
-                        <input type="text" name="e_hospital_code" id="e_hospital_code" class="form-control">
+                </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                    <div class="row justify-content-center align-items-start">
+                        <div class="col-md-4 mt-3 text-center">
+                            <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
+                            <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
+                                class="form-control file">
+                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
+                        </div>
+                        <div class="col-md-4 mt-3 text-center">
+                            <label for="2-file-img">ไฟล์รูปภาพเครื่อง</label>
+                            <input type="file" name="2-file-img" id="2-file-img" accept="application/pdf"
+                                class="form-control file">
+                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
+                        </div>
+                        <div class="col-md-4 mt-3 text-center">
+                            <label for="3-file-other">ไฟล์เอกสารเพิ่มเติม</label>
+                            <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf"
+                                class="form-control file">
+                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
+                        </div>
                     </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_brand/model">ยี่ห้อ/รุ่น</label>
-                        <input type="text" name="e_brand/model" id="e_brand/model" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_sn">เลขเครื่อง (SN)</label>
-                        <input type="text" name="e_sn" id="e_sn" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_me_code">หมายเลขเครื่อง (ME Code)</label>
-                        <input type="text" name="e_me_code" id="e_me_code" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_brand/distributor">ตัวแทนจำหน่าย</label>
-                        <input type="text" name="e_brand/distributor" id="e_brand/distributor" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_price">ราคาซื้อ</label>
-                        <input type="text" name="e_price" id="e_price" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_depreciation">ราคาค่าเสื่อมปัจจุบัน</label>
-                        <input type="text" name="e_depreciation" id="e_depreciation" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_decom_location">สถานที่จัดเก็บเครื่องมือที่ขอยกเลิกการใช้งาน</label>
-                        <input type="text" name="e_decom_location" id="e_decom_location" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_decom_by">ผู้ยกเลิก</label>
-                        <input type="text" name="e_decom_by" id="e_decom_by" class="form-control">
-                    </div>
-                    <div class="col-md-4 mt-3">
-                        <label for="e_sticker">รูป Code Sticker เครื่องมือยกเลิก</label>
-                        <input type="file" accept="image/*" name="e_sticker" id="e_sticker" class="form-control">
+                </section>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mt-3 text-center">
+                        <button type="submit" class="btn btn-primary" style="min-width: 200px;"><img width="30" src="https://img.icons8.com/3d-plastilina/69/opened-folder.png" alt="opened-folder"/> สร้างไฟล์</button>
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-md-4 mt-3" style="display: none;">
-                        <img alt="sticker" id="sticker" class="img-fluid">
+                    <div class="col-md-4 mt-3 mb-4 text-center">
+                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
                     </div>
                 </div>
-            </section>
-            <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow border border-info">
-                <div class="row justify-content-start">
-                    <div class="col text-start ms-1">
-                        <p>ข้อควรพิจารณาสำหรับยกเลิกการใช้งานเครื่องมือแพทย์</p>
+            </form>
+            <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+        </div>
+    </main>
+
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="autoFillOffCanvas"
+        aria-labelledby="autoFillOffCanvasLabel">
+
+        <div class="offcanvas-body container-fluid">
+            <div class="alert alert-info" role="alert">
+                <div class="row">
+                    <div class="col m-0">
+                        <input name="console-code" id="console-code" class="form-control" value='console.clear(),console.group("START");const getselectOpt=e=>e.options[e.selectedIndex].innerText,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};console.log("Getting data...");let obj={id:document.getElementsByName("sap_code")[0].value,name:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("catagory")[0]),brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sub_dept")[0]),recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sup_sale")[0])},str=JSON.stringify(obj);copy(str);'
+                            readonly>
                     </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="repair_cost_exceed_65" name="repair_cost_exceed_65">
-                            <label class="form-check-label" for="repair_cost_exceed_65">
-                                1. ราคาค่าซ่อมสะสมรวมสูงกว่า 65% ของราคาซื้อ (The estimated cumulative repair cost exceed 65% of acquisition Cost)
-                            </label>
-                        </div>
+                    <div class="col-auto m-0">
+                        <button class="btn btn-primary"
+                            onclick="copy()"><span id="copy-icon"><img
+                                    width="20" src="https://img.icons8.com/cotton/64/documents.png"
+                                    alt="documents" /></span>&nbsp;Copy</button>
                     </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="deprecate_value_exceed_65" name="deprecate_value_exceed_65">
-                            <label class="form-check-label" for="deprecate_value_exceed_65">
-                                2. ราคาค่าเสื่อมสูงกว่า 65% ของราคาซื้อ (Current deprecated value exceed 65% of acquisition cost)
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="any_uncorrecttable_hazard" name="any_uncorrecttable_hazard">
-                            <label class="form-check-label" for="any_uncorrecttable_hazard">
-                                3. มีการแจ้งเตือนอันตราย การแจ้งห้ามใช้เครื่องมือ/ยกเลิกใช้งานที่เกิดจาก Status Decom (Any uncorrectable hazard
-                                warning preclude equipment use / Disable operations caused by Status Decom)
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="lack_of_repair_part" name="lack_of_repair_part">
-                            <label class="form-check-label" for="lack_of_repair_part">
-                                4. ขาดแคลนอะไหล่ที่ใช้ในการซ่อมเครื่องมือ ทำให้เครื่องมือไม่สามารถซ่อมแซมได้ (The lack of repair parts render
-                                equipment irreparable)
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="calibration_inacculate" name="calibration_inacculate">
-                            <label class="form-check-label" for="calibration_inacculate">
-                                5. ผลการสอบเทียบไม่ผ่าน และไม่สามารถปรับแต่งได้ (Calibration measurement range inacceurate and cannot adjusted)
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="expected_life" name="expected_life">
-                            <label class="form-check-label" for="expected_life">
-                                6. อายุการใช้งานเครื่องมือตามมาตรฐาน ECRI เอกสารสนับสุน Expected Life Healthcare Device (SD-BME-BMC-00-
-                                MN-001)/ อายุของอะใหล่และการหยุดการผลิตแล้วของอะไหล่ตามที่บริษัทผู้แทนกำหนด (Expccted Life Healthcare
-                                Device ECRI /Age of spare parts and discontinuation of parts as specified by the representative company)
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="high_priority_replcaement" name="high_priority_replcaement">
-                            <label class="form-check-label" for="high_priority_replcaement">
-                                7. สรุปผลการทำประเมินสภาพเครื่องมือทางการแพทข์ มีลำดับความสำคัญสูง (Summary of the evaluation of the medical
-                                device condition High Priority Replacement)
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="outdated_technology" name="outdated_technology">
-                            <label class="form-check-label" for="outdated_technology">
-                                8. การประเมินเทคโนโลยีที่ล้าสมัยของเครื่องมือ ( Outdated technology assessment )
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="required_termination_of_use" name="required_termination_of_use">
-                            <label class="form-check-label" for="required_termination_of_use">
-                                9. กฎหมาย กฎระเบียบบังคับให้ยกเลิก (Regulations require the termination of use.)
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="✓" id="information_deleted" name="information_deleted">
-                            <label class="form-check-label" for="information_deleted">
-                                10. เครื่องมือแพทย์ที่ยกเลิกให้ทำการลบข้อมูลผู้ป่วยที่อยู่ในหน่วยความจำเครื่อง
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-start ms-1 mt-2">
-                        <label for="e_sticker"> 11. อื่นๆ</label>
-                        <input name="other" id="other" name="other" class="form-control">
-                    </div>
-                </div>
-            </section>
-            <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow border border-success">
-                <div class="row justify-content-center align-items-start">
-                    <div class="col-md-4 mt-3 text-center">
-                        <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
-                        <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart" class="form-control file">
-                        <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
-                    </div>
-                    <div class="col-md-4 mt-3 text-center">
-                        <label for="2-file-img">ไฟล์รูปภาพเครื่อง</label>
-                        <input type="file" name="2-file-img" id="2-file-img" accept="application/pdf" class="form-control file">
-                        <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
-                    </div>
-                    <div class="col-md-4 mt-3 text-center">
-                        <label for="3-file-other">ไฟล์เอกสารเพิ่มเติม</label>
-                        <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf" class="form-control file">
-                        <iframe class="mt-2" frameborder="0" notoolbar=1 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
-                    </div>
-                </div>
-            </section>
-            <div class="row justify-content-center">
-                <div class="col-md-4 mt-3 text-center">
-                    <button type="submit" class="btn btn-primary" style="min-width: 200px;">สร้างไฟล์</button>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-md-4 mt-3 mb-4 text-center">
-                    <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
+            <div class="row g-3">
+                <div class="col-12">
+                    <textarea name="input-json" id="input-json" class="form-control" rows="10"
+                        placeholder="ข้อมูลจากหน้า Add Update"></textarea>
                 </div>
-            </div>
-        </form>
-        <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
-    </div>
-    <footer>
-        <div class="row justify-content-center">
-            <div class="col text-center">
-                <img src="https://img.in.th/images/e4d09ac180fac9fc6bb998593ef6bc30.jpg" alt="footer" class="img-fluid" style="max-width:150px">
+                <div class="col-12">
+                    <button class="btn btn-warning w-100" id="input-json-btn"><img width="30"
+                            src="https://img.icons8.com/color/48/task--v1.png" alt="task--v1" /> กรอกฟอร์ม</button>
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
     <script>
         $(document).ready(function () {
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
+            // $('#autoFillOffCanvas').offcanvas('show')
         })
     </script>
     <script>
@@ -424,7 +495,56 @@
     </script>
     <script>
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script>
+        function copy() {
+            let str = $('#console-code').val()
+            console.log("🚀 ~ str:", str)
+            // copy to clipboard
+            
+            $('#console-code')[0].select()
+            document.execCommand("copy")
+            let Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: false
+            })
+            Toast.fire({
+                icon: 'success',
+                title: 'คัดลอกสำเร็จ'
+            })
+            console.groupEnd()
+        }
+
+        $('#input-json-btn').click(function () {
+            let json_text = $('#input-json').val()
+            let obj = JSON.parse(json_text)
+            fillValue('e_name', obj.name)
+            fillValue('dept', obj.dept)
+            fillValue('e_dec_location', obj.dept)
+            fillValue('e_manufacturer', obj.brand)
+            fillValue('e_date', obj.recieve_date)
+            fillValue('e_hospital_code', obj.hos_id)
+            fillValue('e_brand/model', obj.brand + '/' + obj.model)
+            fillValue('e_brand/distributor', obj.sup_sale)
+            fillValue('e_sn', obj.sn_no)
+            fillValue('e_me_code', obj.id)
+            fillValue('e_price', obj.price)
+
+            $('#input-json').val('')
+            $('#autoFillOffCanvas').offcanvas('hide')
+        })
+
+        function fillValue(id,value){
+            if(!value || value == '') return
+            $('[id="'+id+'"]').val(value).addClass('bg-primary-subtle')
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
