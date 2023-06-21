@@ -44,7 +44,7 @@
     <header>
         <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
             <div class="col-auto">
-                <img width="80" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" alt="move-by-trolley"/>
+                <img width="80" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" alt="move-by-trolley" />
             </div>
 
             <div class="col text-center">
@@ -63,6 +63,10 @@
                         </div>
                     </div>
                     <div class="row justify-content-start">
+                        <div class="col-md-4 mt-3">
+                            <label for="job_id">Job No.</label>
+                            <input type="text" name="job_id" id="job_id" class="form-control">
+                        </div>
                         <div class="col-md-4 mt-3">
                             <label for="e_name">ชื่อเครื่องมือ</label>
                             <input type="text" name="e_name" id="e_name" class="form-control">
@@ -149,12 +153,40 @@
                             <input type="text" name="e_me_code" id="e_me_code" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="e_brand/distributor">ตัวแทนจำหน่าย</label>
-                            <input type="text" name="e_brand/distributor" id="e_brand/distributor" class="form-control">
+                            <label for="e_price">ราคาซื้อ <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="e_price" id="e_price" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="e_price">ราคาซื้อ</label>
-                            <input type="text" name="e_price" id="e_price" class="form-control">
+                            <label for="pr_vender">Vender</label>
+                            <input type="text" name="pr_vender" id="pr_vender" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_no">เลขใบเสนอราคา</label>
+                            <input type="text" name="pr_no" id="pr_no" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_price">ราคาสินค้า/บริการ <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="pr_price" id="pr_price" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_vat">ภาษีมูลค่าเพิ่ม 7% <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="pr_vat" id="pr_vat" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_grand_price">ราคาทั้งสิ้น <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="pr_grand_price" id="pr_grand_price" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_cm_estimated_send">กำหนดส่งของ <span class="text-secondary">(วัน)</span></label>
+                            <input type="text" name="pr_cm_estimated_send" id="pr_cm_estimated_send" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_cm_standing">กำหนดยืนราคา <span class="text-secondary">(วัน)</span></label>
+                            <input type="text" name="pr_cm_standing" id="pr_cm_standing" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_cm_waranty">การรับประกัน <span class="text-secondary">(วัน)</span></label>
+                            <input type="text" name="pr_cm_waranty" id="pr_cm_waranty" class="form-control">
                         </div>
                     </div>
                 </section>
@@ -172,7 +204,9 @@
                 </section>
                 <div class="row justify-content-center">
                     <div class="col-md-4 mt-3 text-center">
-                        <button type="submit" class="btn btn-warning btn-lg shadow" style="min-width: 200px;"><img width="40" src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf"/> สร้างไฟล์</button>
+                        <button type="submit" class="btn btn-warning btn-lg shadow" style="min-width: 200px;"><img
+                                width="40" src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" />
+                            สร้างไฟล์</button>
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -192,13 +226,13 @@
             <div class="alert alert-info" role="alert">
                 <div class="row">
                     <div class="col m-0">
-                        <input name="console-code" id="console-code" class="form-control" value='console.clear(),console.group("START");const getselectOpt=e=>e.options[e.selectedIndex].innerText,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};console.log("Getting data...");let obj={id:document.getElementsByName("sap_code")[0].value,name:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("catagory")[0]),brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sub_dept")[0]),recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sup_sale")[0])},str=JSON.stringify(obj);copy(str);'
+                        <input name="console-code" id="console-code" class="form-control"
+                            value='console.clear(),console.group("START");const getselectOpt=e=>e.options[e.selectedIndex].innerText,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};console.log("Getting data...");let obj={id:document.getElementsByName("sap_code")[0].value,name:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("catagory")[0]),brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sub_dept")[0]),recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sup_sale")[0])},str=JSON.stringify(obj);copy(str);'
                             readonly>
                     </div>
                     <div class="col-auto m-0">
-                        <button class="btn btn-primary"
-                            onclick="copy()"><span id="copy-icon"><img
-                                    width="20" src="https://img.icons8.com/cotton/64/documents.png"
+                        <button class="btn btn-primary" onclick="copy()"><span id="copy-icon"><img width="20"
+                                    src="https://img.icons8.com/cotton/64/documents.png"
                                     alt="documents" /></span>&nbsp;Copy</button>
                     </div>
                 </div>
@@ -220,6 +254,12 @@
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
+
+            $('form').find('input, select').each(function () {
+                let _this = $(this)
+                let id = $(this).attr('id')
+                $('label[for="' + id + '"]').html($('label[for="' + id + '"]').text()+' '+_this.attr('id'))
+            })
             // $('#autoFillOffCanvas').offcanvas('show')
         })
     </script>
@@ -269,19 +309,6 @@
                     copyPages(data[0], data[1], data[2])
                 }
             })
-        })
-        var sticker = {}
-        $('#e_sticker').change(function () {
-            sticker = {}
-            var file = this.files[0]
-            var reader = new FileReader()
-            reader.onload = function (e) {
-                sticker.data = e.target.result
-                sticker.name = file.name
-                $('.img-fluid').attr('src', e.target.result)
-                $('.img-fluid').closest('.col-md-4').show()
-            }
-            reader.readAsDataURL(file)
         })
         function toTitleCase(str) {
             return str.replace(
@@ -346,7 +373,7 @@
             let str = $('#console-code').val()
             console.log("🚀 ~ str:", str)
             // copy to clipboard
-            
+
             $('#console-code')[0].select()
             document.execCommand("copy")
             let Toast = Swal.mixin({
@@ -382,9 +409,9 @@
             $('#autoFillOffCanvas').offcanvas('hide')
         })
 
-        function fillValue(id,value){
-            if(!value || value == '') return
-            $('[id="'+id+'"]').val(value).addClass('bg-primary-subtle')
+        function fillValue(id, value) {
+            if (!value || value == '') return
+            $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
         }
     </script>
 
