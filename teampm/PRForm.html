@@ -11,7 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
@@ -52,9 +53,35 @@
             </div>
         </div>
     </header>
-    <main>
+    <main class="container-fluid">
         <div class="container-fluid">
             <form id="myForm" class="mt-3 mb-5">
+                <section class="mt-4 m-2">
+                    <div class="row">
+                        <div class="col">
+                            <label for="name">ชื่อผู้กรอก</label>
+                            <select name="name" id="name" class="form-select">
+                                <option value="" selected disabled>ชื่อผู้กรอก</option>
+                                <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                                <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                                <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                                <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                                <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                                <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                                <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                                <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                                <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                                <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                                <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                                <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                                <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
+                                <option value="PHIMRAPEEPORN PHRASOPOL">PHIMRAPEEPORN PHRASOPOL</option>
+                                <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                                <option value="SOM KONKAEW">SOM KONKAEW</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-end">
                         <div class="col-md-3 text-end">
@@ -63,8 +90,13 @@
                         </div>
                     </div>
                     <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-defibrillator-medical-and-healthcare-flaticons-flat-flat-icons.png"
+                                alt="icon" width="50">
+                            <h4 class="fw-bold">&nbsp;รายละเอียดเครื่องมือ</h4>
+                        </div>
                         <div class="col-md-4 mt-3">
-                            <label for="job_id">Job No.</label>
+                            <label for="job_id">Work Order</label>
                             <input type="text" name="job_id" id="job_id" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
@@ -156,6 +188,57 @@
                             <label for="e_price">ราคาซื้อ <span class="text-secondary">(บาท)</span></label>
                             <input type="text" name="e_price" id="e_price" class="form-control">
                         </div>
+                        <div class="col-12 mt-3">
+                            <label for="pr_failure">อาการเสีย</label>
+                            <input type="text" name="pr_failure" id="pr_failure" class="form-control">
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label for="pr_result">ผลการตรวจเช็ค</label>
+                            <input type="text" name="pr_result" id="pr_result" class="form-control">
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label for="pr_recommend">การดำเนินการ</label>
+                            <input type="text" name="pr_recommend" id="pr_recommend" class="form-control">
+                        </div>
+
+                        <div class="col-12 m-0 p-0">
+                            <div class="row m-0 p-0">
+                                <div class="col-md-4 mt-3">
+                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
+                                        id="e_img_div">
+                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
+                                            id="preview-img" />
+                                        &nbsp;รูปภาพเครื่อง
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-3 ">
+                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
+                                        id="e_img_code_div">
+                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
+                                            id="preview-img-code" />
+                                        &nbsp;รูปภาพโค้ด
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
+                                        id="e_img_nameplate_div">
+                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
+                                            id="preview-img-nameplate" />
+                                        &nbsp;รูปภาพ Nameplate
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" name="e_img_file" id="e_img_file" hidden>
+
+                    </div>
+                </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                    <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/cotton/64/red-file--v2.png" alt="icon" width="50">
+                            <h4 class="fw-bold">&nbsp;รายละเอียดใบเสนอราคา</h4>
+                        </div>
                         <div class="col-md-4 mt-3">
                             <label for="pr_vender">Vender</label>
                             <input type="text" name="pr_vender" id="pr_vender" class="form-control">
@@ -177,8 +260,10 @@
                             <input type="text" name="pr_grand_price" id="pr_grand_price" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_cm_estimated_send">กำหนดส่งของ <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="pr_cm_estimated_send" id="pr_cm_estimated_send" class="form-control">
+                            <label for="pr_cm_estimated_send">กำหนดส่งของ <span
+                                    class="text-secondary">(วัน)</span></label>
+                            <input type="text" name="pr_cm_estimated_send" id="pr_cm_estimated_send"
+                                class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
                             <label for="pr_cm_standing">กำหนดยืนราคา <span class="text-secondary">(วัน)</span></label>
@@ -190,15 +275,83 @@
                         </div>
                     </div>
                 </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
+                    <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/stickers/100/bank.png" alt=" icon" width="50">
+                            <h4 class="fw-bold">&nbsp;ประเภทของค่าใช้จ่ายที่นาเสนอให้ดำเนินการ</h4>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr-cm">เลือกประเภทค่าใช้จ่าย</label>
+                            <select name="pr-cm" id="pr-cm" class="form-select">
+                                <option value="MAINTENANCE" id="pr_cm_maintenance" selected>MAINTENANCE</option>
+                                <option value="REPLACEMENT" id="pr_cm_replacement">REPLACEMENT</option>
+                                <option value="Other" id="pr_cm_other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="pr_cm_maintenance_ea">จำนวน (ea)</label>
+                            <input type="text" name="pr_cm_maintenance_ea" id="pr_cm_maintenance_ea"
+                                class="form-control" value="1">
+                        </div>
+                        <div class="col-md-4 mt-3" style="display:none">
+                            <label for="pr_cm_other_text">ระบุ</label>
+                            <input type="text" name="pr_cm_other_text" id="pr_cm_other_text" class="form-control">
+                        </div>
+                    </div>
+                </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
+                    <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/color/48/engineer.png" alt=" icon" width="50">
+                            <h4 class="fw-bold">&nbsp;ความเห็นของทางแผนกวิศวกรรมการแพทย์</h4>
+                        </div>
+                        <div class="col-12 m-0 p-o d-flex gap-3">
+                            <div class="col-md-4 mt-3">
+                                <label for="pr-status">สถานะเครื่องมือ</label>
+                                <select name="pr-status" id="pr-status" class="form-select">
+                                    <option value="Normal" id="pr_status_normal">ใช้งานได้ปกติ</option>
+                                    <option value="Waitpart" id="pr_status_waitpart">รออะไหล่</option>
+                                    <option value="Vender" id="pr_status_vender">ส่งซ่อมบริษัท</option>
+                                    <option value="Other" id="pr_status_other">อื่นๆ</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8 mt-3" style="display:none">
+                                <label for="pr_status_other_text">ระบุ</label>
+                                <input type="text" name="pr_status_other_text" id="pr_status_other_text"
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-12 m-0 p-o d-flex gap-3 ">
+                            <div class="col-md-4 mt-3">
+                                <label for="pr-process">การดำเนินการ</label>
+                                <select name="pr-process" id="pr-process" class="form-select">
+                                    <option value="" selected></option>
+                                    <option value="Waranty" id="pr_process_waranty">อยู่ในรับประกัน</option>
+                                    <option value="Self" id="pr_process_self">ซ่อมเอง</option>
+                                    <option value="Vender" id="pr_process_vender">ซ่อมบริษัท</option>
+                                    <option value="Changepart" id="pr_process_changepart">ควรเปลี่ยนอะไหล่</option>
+                                    <option value="Other" id="pr_process_other">อื่นๆ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-center align-items-start">
                         <div class="col-md-4 mt-3 text-center">
                             <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
                             <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
                                 class="form-control file">
+                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
-                        <div class="col">
-                            <iframe src="" frameborder="0" class="w-100" style="height: 500px; display: none;"></iframe>
+                        <div class="col-md-4 mt-3 text-center">
+                            <label for="2-file-quatation">ไฟล์ใบเสนอราคา</label>
+                            <input type="file" name="2-file-quatation" id="2-file-quatation" accept="application/pdf"
+                                class="form-control file">
+                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
                     </div>
                 </section>
@@ -215,7 +368,9 @@
                     </div>
                 </div>
             </form>
-            <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+            <div class="container-fluid">
+                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+            </div>
         </div>
     </main>
 
@@ -227,11 +382,11 @@
                 <div class="row">
                     <div class="col m-0">
                         <input name="console-code" id="console-code" class="form-control"
-                            value='console.clear(),console.group("START");const getselectOpt=e=>e.options[e.selectedIndex].innerText,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};console.log("Getting data...");let obj={id:document.getElementsByName("sap_code")[0].value,name:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("catagory")[0]),brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sub_dept")[0]),recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sup_sale")[0])},str=JSON.stringify(obj);copy(str);'
+                            value='console.clear(),console.group("START");let page=location.origin+location.pathname;console.log("🚀 !! page:",page);var e,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};if(page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/asset_mast_record.php")>-1)console.log("Getting data..."),copy(JSON.stringify({page:"addupdate",id:document.getElementsByName("sap_code")[0].value,name:(e=document.getElementsByName("catagory")[0]).options[e.selectedIndex].innerText,brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=document.getElementsByName("sub_dept")[0]).options[e.selectedIndex].innerText,recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=document.getElementsByName("sup_sale")[0]).options[e.selectedIndex].innerText,pr_vender:(e=document.getElementsByName("sup_serv")[0]).options[e.selectedIndex].innerText}));else if(page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_05.php")>-1){let e=document.getElementsByName("job_status")[0].value;if(console.log("🚀 !! status:",e),12==e){let e,t,l=document.getElementsByName("note")[0].value,o=document.querySelectorAll("th");for(let t=0;t<o.length;t++){let n=o[t];"Work order no."===n.innerText&&(e=n.nextElementSibling.innerText.trim())}for(let e=0;e<o.length;e++){let n=o[e];"ID CODE"===n.innerText&&(t=n.nextElementSibling.innerText.trim())}a=l.split("\n")[4].split(" ")[2].trim().replace(",",""),a=Number(a),i=(a/1.07).toFixed(2),n=(a-i).toFixed(2),a=a.toFixed(2),copy(JSON.stringify({page:"closejob",quatation:l.split("\n")[1].split(":")[1].trim(),month:l.split("\n")[3].split("- ")[1].trim(),price:a,vat:n,base_price:i,job_no:e})),window.open("https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?s_code=&s_sap_code="+t,"_self")}else{var r=document.querySelectorAll("select[name=\"bec_id\"] option");for(let e=0;e<r.length;e++){let t=r[e];"12-Service contract"===t.innerText&&(t.selected=!0)}r=document.querySelectorAll("input[name=\"jobout_type\"]");for(let e=0;e<r.length;e++){let t=r[e];"2"==t.value&&(t.checked=!0)}let e=document.querySelectorAll("input[name=\"req_date1\"]")[0].value,t=(e=e.indexOf(", ")>-1?e.split(", "):e.split(" "))[0].split("/").map(Number);e=e[1].split(":"),e=new Date(t[2],t[1]-1,t[0],e[0],e[1]),document.querySelectorAll("input[name=\"jobdate\"]")[0].value=document.querySelectorAll("input[name=\"req_date1\"]")[0].value,document.querySelectorAll("input[name=\"assign_date\"]")[0].value=document.querySelectorAll("input[name=\"req_date1\"]")[0].value,document.querySelectorAll("input[name=\"arrive_date\"]")[0].value=new Date(e.setMinutes(e.getMinutes()+2)).toLocaleString("en-GB",{hour12:!1,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).replace(",",""),document.querySelectorAll("input[name=\"act_dstart\"]")[0].value=document.querySelectorAll("input[name=\"arrive_date\"]")[0].value,document.querySelectorAll("input[name=\"act_dfin\"]")[0].value=new Date(e.setMinutes(e.getMinutes()+2)).toLocaleString("en-GB",{hour12:!1,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).replace(",",""),r=document.querySelectorAll("select[name=\"job_result\"] option");for(let e=0;e<r.length;e++){let t=r[e];"Self repair"===t.innerText&&(t.selected=!0)}document.getElementsByName("note")[0].value="- \n- ใบเสนอราคาเลขที่: \n- จำนวน  ครั้ง ระยะวลา   ปี\n- เข้าทำเดือน: \n- ราคาทั้งสิ้น  บาท"}}'
                             readonly>
                     </div>
                     <div class="col-auto m-0">
-                        <button class="btn btn-primary" onclick="copy()"><span id="copy-icon"><img width="20"
+                        <button class="btn btn-warning" onclick="copy()"><span id="copy-icon"><img width="20"
                                     src="https://img.icons8.com/cotton/64/documents.png"
                                     alt="documents" /></span>&nbsp;Copy</button>
                     </div>
@@ -243,72 +398,628 @@
                         placeholder="ข้อมูลจากหน้า Add Update"></textarea>
                 </div>
                 <div class="col-12">
-                    <button class="btn btn-warning w-100" id="input-json-btn"><img width="30"
+                    <button class="btn btn-primary w-100" id="input-json-btn"><img width="30"
                             src="https://img.icons8.com/color/48/task--v1.png" alt="task--v1" /> กรอกฟอร์ม</button>
                 </div>
             </div>
         </div>
     </div>
     <script>
-        $(document).ready(function () {
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwnb57VU-CveziAzWMWtFfbnXiX_mZIWJERI_XLLnNEILEgapodymzeFcWcxMry86EA5Q/exec'
+        var form_pdf_bytes, font_bytes, signature_bytes, e_img_bytes, e_img_code_bytes, e_img_nameplate_bytes
+        $(document).ready(async function () {
+            // get file bytes from ./formPDF.pdf
+            form_pdf_bytes = await fetch('./formPDF.pdf').then(res => res.arrayBuffer())
+            // get font bytes from ./THSarabunNew.ttf
+            font_bytes = await fetch('./THSarabun.ttf').then(res => res.arrayBuffer())
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
+            $('#input-json').on('keyup', function () {
+                // detect enter key
+                if (event.keyCode == 13) {
+                    $('#input-json-btn').click()
+                }
+            })
+            $('#name').change(async function () {
+                let name = $(this).val()
+                signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
+                
+            })
 
-            $('form').find('input, select').each(function () {
-                let _this = $(this)
-                let id = $(this).attr('id')
-                $('label[for="' + id + '"]').html($('label[for="' + id + '"]').text()+' '+_this.attr('id'))
+            // $('form').find('input, select').each(function () {
+            //     let _this = $(this)
+            //     let id = $(this).attr('id')
+            //     $('label[for="' + id + '"]').html($('label[for="' + id + '"]').text() + ' ' + _this.attr('id'))
+            // })
+
+            $('#pr-cm').change(function () {
+                let data_id = $(this).find('option:selected').attr('id')
+                $(this).attr('data-id', data_id)
+                if (data_id == 'pr_cm_maintenance') {
+                    $('#pr_cm_maintenance_ea').val('1').parent().show()
+                } else {
+                    $('#pr_cm_maintenance_ea').val('').parent().hide()
+                }
+                if (data_id == 'pr_cm_other') {
+                    Swal.fire({
+                        title: 'ระบุ อื่นๆ',
+                        input: 'text',
+                        inputLabel: 'ระบุ',
+                        inputPlaceholder: 'ระบุ',
+                        showCancelButton: true,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'กรุณากรอกข้อมูล'
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#pr_cm_other_text').val(result.value).parent().show()
+                        }
+                    })
+                } else {
+                    $('#pr_cm_other_text').val('').parent().hide()
+                }
+
+            })
+            $('#pr-status').change(function () {
+                let data_id = $(this).find('option:selected').attr('id')
+                $(this).attr('data-id', data_id)
+                if (data_id == 'pr_status_other') {
+                    Swal.fire({
+                        title: 'ระบุ อื่นๆ',
+                        input: 'text',
+                        inputLabel: 'ระบุ',
+                        inputPlaceholder: 'ระบุ',
+                        showCancelButton: true,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'กรุณากรอกข้อมูล'
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#pr_status_other_text').val(result.value).parent().show()
+                        }
+                    })
+                } else {
+                    $('#pr_status_other_text').val('').parent().hide()
+                }
+            })
+            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('click', function () {
+                $('#e_img_file').attr('data-id', $(this).attr('id')).click()
+            })
+
+            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragover', function (e) {
+                e.preventDefault()
+                e.stopPropagation()
+                $(this).removeClass('bg-info-subtle').addClass('text-bg-info')
+            })
+            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragleave', function (e) {
+                e.preventDefault()
+                e.stopPropagation()
+                $(this).removeClass('text-bg-info').addClass('bg-info-subtle')
+            })
+
+            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('drop', function (e) {
+                e.preventDefault()
+                e.stopPropagation()
+                const base64ToArrayBuffer = function (base64) {
+                    var binaryString = atob(base64);
+                    var bytes = new Uint8Array(binaryString.length);
+                    for (var i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    
+                    return bytes.buffer;
+                }
+                let dataID = $(this).attr('id')
+                $('#e_img_file').attr('data-id', dataID)
+                
+                let preview
+                switch (dataID) {
+                    case 'e_img_div':
+                        preview = $('#preview-img')
+                        break;
+                    case 'e_img_code_div':
+                        preview = $('#preview-img-code')
+                        break;
+                    case 'e_img_nameplate_div':
+                        preview = $('#preview-img-nameplate')
+                        break;
+                    default:
+                        break;
+                }
+                $('#' + dataID).LoadingOverlay('show')
+                // check if file is url
+                if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
+                    preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
+                    
+                    // getArrayBuffer from url
+                    $.ajax({
+                        url: scriptUrl,
+                        method: 'POST',
+                        data: {
+                            url: preview.attr('src'),
+                            opt: 'getImage'
+                        },
+                        success: function (data) {
+                            
+                            
+                            let quality
+
+                            // convert base64 to file
+                            let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
+                                type: data.type,
+                                lastModified: Date.now()
+                            })
+                            switch (true) {
+                                case file.size / 1024 <= 200:
+                                    quality = 0.8
+                                    break;
+
+                                case file.size / 1024 <= 600:
+                                    quality = 0.6
+                                    break;
+
+                                case file.size / 1024 <= 2000:
+                                    quality = 0.4
+                                    break;
+                                default:
+                                    quality = 0.3
+                                    break;
+                            }
+                            
+                            
+                            new Compressor(file, {
+                                quality: quality,
+
+                                // The compression process is asynchronous,
+                                // which means you have to access the `result` in the `success` hook function.
+                                success(result) {
+                                    
+                                    let fr = new FileReader()
+                                    fr.onload = function (e) {
+                                        switch (dataID) {
+                                            case 'e_img_div':
+                                                e_img_bytes = e.target.result
+                                                break;
+                                            case 'e_img_code_div':
+                                                e_img_code_bytes = e.target.result
+                                                break;
+                                            case 'e_img_nameplate_div':
+                                                e_img_nameplate_bytes = e.target.result
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        preview.attr('data-type', data.type.split('/')[1])
+                                        $('#' + dataID).LoadingOverlay('hide')
+                                    }
+                                    fr.readAsArrayBuffer(result)
+                                },
+                                error(err) {
+                                    console.log(err.message);
+                                },
+                            });
+
+                        }
+                    })
+                    return
+                }
+                let file = e.originalEvent.dataTransfer.files[0]
+                let quality
+                switch (true) {
+                    case data.base64.length / 1024 <= 200:
+                        quality = 0.8
+                        break;
+
+                    case data.base64.length / 1024 <= 600:
+                        quality = 0.6
+                        break;
+
+                    case data.base64.length / 1024 <= 2000:
+                        quality = 0.4
+                        break;
+                    default:
+                        quality = 0.3
+                        break;
+                }
+                new Compressor(file, {
+                    quality: quality,
+
+                    // The compression process is asynchronous,
+                    // which means you have to access the `result` in the `success` hook function.
+                    success(result) {
+                        
+                        let reader = new FileReader()
+                        reader.onloadend = function (e) {
+                            
+                            preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                            // convert dataURL to arrayBuffer
+
+                            switch (dataID) {
+                                case 'e_img_div':
+                                    e_img_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
+                                    break;
+                                case 'e_img_code_div':
+                                    e_img_code_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
+                                    break;
+                                case 'e_img_nameplate_div':
+                                    e_img_nameplate_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
+                                    break;
+                                default:
+                                    break;
+                            }
+                            $('#' + dataID).LoadingOverlay('hide')
+
+                        }
+                        reader.readAsDataURL(file)
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                });
+            })
+
+            $('#e_img_file').change(function () {
+                let dataID = $('#e_img_file').attr('data-id')
+                let preview
+                switch (dataID) {
+                    case 'e_img_div':
+                        preview = $('#preview-img')
+                        break;
+                    case 'e_img_code_div':
+                        preview = $('#preview-img-code')
+                        break;
+                    case 'e_img_nameplate_div':
+                        preview = $('#preview-img-nameplate')
+                        break;
+                    default:
+                        break;
+                }
+                $('#' + dataID).LoadingOverlay('show')
+                let file = $(this)[0].files[0]
+                let quality
+                switch (true) {
+                    case file.size / 1024 <= 200:
+                        quality = 0.8
+                        break;
+
+                    case file.size / 1024 <= 600:
+                        quality = 0.6
+                        break;
+
+                    case file.size / 1024 <= 2000:
+                        quality = 0.4
+                        break;
+
+                    default:
+                        quality = 0.3
+                        break;
+                }
+                new Compressor(file, {
+                    quality: quality,
+
+                    // The compression process is asynchronous,
+                    // which means you have to access the `result` in the `success` hook function.
+                    success(result) {
+                        let reader = new FileReader()
+
+                        reader.onloadend = function (e) {
+                            preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                            // convert dataURL to arrayBuffer
+                            const base64ToArrayBuffer = function (base64) {
+                                var binaryString = atob(base64);
+                                var bytes = new Uint8Array(binaryString.length);
+                                for (var i = 0; i < binaryString.length; i++) {
+                                    bytes[i] = binaryString.charCodeAt(i);
+                                }
+                                
+                                return bytes.buffer;
+                            }
+                            switch (dataID) {
+                                case 'e_img_div':
+                                    e_img_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
+                                    break;
+                                case 'e_img_code_div':
+                                    e_img_code_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
+                                    break;
+                                case 'e_img_nameplate_div':
+                                    e_img_nameplate_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
+                                    break;
+                                default:
+                                    break;
+                            }
+                            $('#' + dataID).LoadingOverlay('hide')
+
+                        }
+                        reader.readAsDataURL(result)
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                });
             })
             // $('#autoFillOffCanvas').offcanvas('show')
+        })
+        $('#pr_price').on('keyup', function () {
+            let price = $(this).val()
+            let vat = price * 0.07
+            let total = price * 1.07
+            if (isNaN(price)) return
+            if (isNaN(vat)) return
+            if (isNaN(total)) return
+            $('#pr_vat').val(vat.toFixed(2))
+            $('#pr_grand_price').val(total.toFixed(2))
+        })
+        $('#pr_vat').on('keyup', function () {
+            let vat = $(this).val()
+            let total = Number($('#pr_price').val()) + Number(vat)
+            if (isNaN(vat)) return
+            if (isNaN(total)) return
+            $('#pr_grand_price').val(total.toFixed(2))
         })
     </script>
     <script>
         var pdfDoc
         var PDFDocument = PDFLib.PDFDocument;
-        $('#myForm').submit(async function () {
-            pdfDoc = await PDFDocument.create();
-            event.preventDefault()
-            let formData = $(this).serializeArray()
-            let obj = {}
-            formData.forEach(function (e) {
-                if (e.value == '') e.value = '-'
-                obj[e.name] = e.value
-            })
-            $('input[type=checkbox]').each(function () {
-                if ($(this).is(':checked')) {
-                    obj[$(this).attr('name')] = '✓'
-                } else {
-                    obj[$(this).attr('name')] = ''
-                }
-            })
-            if (sticker.data) obj.e_sticker = JSON.stringify(sticker)
-            obj['e_me_code'] = obj['e_me_code'].toUpperCase().indexOf('PYT') > -1 ? obj['e_me_code'].toUpperCase() : ('PYT3_' + ('00000' + obj['e_me_code']).slice(-5))
-            obj['e_decom_by'] = obj['e_decom_by'].toUpperCase()
-            obj['e_name'] = toTitleCase(obj['e_name'])
-            Swal.fire({
-                icon: 'info',
-                title: 'กำลังสร้างไฟล์...',
-                allowOutsideClick: false,
-            })
-            Swal.showLoading(Swal.getConfirmButton())
-            Object.keys(pdfFiles).forEach(async key => {
-                let pdf = await PDFDocument.load(pdfFiles[key])
+        var StandardFonts = PDFLib.StandardFonts;
+        // $('#myForm').submit(async function () {
+        //     pdfDoc = await PDFDocument.create();
+        //     event.preventDefault()
+        //     let formData = $(this).serializeArray()
+        //     let obj = {}
+        //     formData.forEach(function (e) {
+        //         if (e.value == '') e.value = '-'
+        //         obj[e.name] = e.value
+        //     })
+        //     $('input[type=checkbox]').each(function () {
+        //         if ($(this).is(':checked')) {
+        //             obj[$(this).attr('name')] = '✓'
+        //         } else {
+        //             obj[$(this).attr('name')] = ''
+        //         }
+        //     })
+        //     if (sticker.data) obj.e_sticker = JSON.stringify(sticker)
+        //     obj['e_me_code'] = obj['e_me_code'].toUpperCase().indexOf('PYT') > -1 ? obj['e_me_code'].toUpperCase() : ('PYT3_' + ('00000' + obj['e_me_code']).slice(-5))
+        //     obj['e_decom_by'] = obj['e_decom_by'].toUpperCase()
+        //     obj['e_name'] = toTitleCase(obj['e_name'])
+        //     Swal.fire({
+        //         icon: 'info',
+        //         title: 'กำลังสร้างไฟล์...',
+        //         allowOutsideClick: false,
+        //     })
+        //     Swal.showLoading(Swal.getConfirmButton())
+        //     Object.keys(pdfFiles).forEach(async key => {
+        //         let pdf = await PDFDocument.load(pdfFiles[key])
+        //         let pages = pdf.getPages().length
+        //         for (var i = 0; i < pages; i++) {
+        //             let [page] = await pdfDoc.copyPages(pdf, [i])
+        //             pdfDoc.insertPage(0, page)
+        //         }
+        //     })
+        //     let scripturl = 'https://script.google.com/macros/s/AKfycbwdHWd3KFg6GMJsNKmVp69oyRAhpzWRjiWxUYFU8QBXoLHkNYM07qUEbR0s5roYpAnHag/exec?opt=save'
+        //     $.ajax({
+        //         url: scripturl,
+        //         type: 'POST',
+        //         data: obj,
+        //         success: function (data) {
+        //             copyPages(data[0], data[1], data[2])
+        //         }
+        //     })
+        // }).
+        var pdfFiles = []
+        $('#1-file-nsmart, #2-file-quatation').on('dragover', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).addClass('text-bg-info')
+        })
+        $('#1-file-nsmart, #2-file-quatation').on('dragleave', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('text-bg-info')
+        })
+        $('#1-file-nsmart, #2-file-quatation').on('drop', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('from-control-lg')
+            let files = e.originalEvent.dataTransfer.files
+            let file = files[0]
+            // set files to $(this)
+            $(this).prop('files', files)
+            renderNsmartFile(file, $(this))
+        })
+
+        $('#1-file-nsmart, #2-file-quatation').on('change', function (e) {
+            let files = e.target.files
+            let file = files[0]
+            renderNsmartFile(file, $(this))
+        })
+
+        function renderNsmartFile(file, ele) {
+            if (file.type != 'application/pdf') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกไฟล์ PDF',
+                    text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
+                })
+                return
+            }
+            if (file.size > 10000000) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไฟล์มีขนาดใหญ่เกินไป',
+                    text: 'ไฟล์มีขนาดใหญ่เกิน 10 MB',
+                })
+                return
+            }
+            let obj = $(ele)
+            let id = obj.attr('id')
+            let reader = new FileReader()
+            reader.onloadend = async function (e) {
+                if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+                pdfFiles[id] = e.target.result
+                // load pdf
+                let pdf = await PDFDocument.load(e.target.result)
                 let pages = pdf.getPages().length
                 for (var i = 0; i < pages; i++) {
                     let [page] = await pdfDoc.copyPages(pdf, [i])
-                    pdfDoc.insertPage(0, page)
+                    pdfDoc.insertPage(1, page)
                 }
+                pdf = await pdf.save()
+                let iframe = $(obj).parent().find('iframe')[0]
+                // open pdf in new small window
+                var blob = new Blob([pdf], {
+                    type: 'application/pdf'
+                })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&view=fitH'
+
+                $(iframe).show()
+
+            }
+            reader.readAsArrayBuffer(file);
+        }
+
+        $('#myForm').submit(async function () {
+            const embedImage = async function (bytes, key) {
+                let preview, e_img
+                switch (key) {
+                    case 'e_img_file':
+                        preview = $('#preview-img')
+                        break;
+                    case 'e_img_code_file':
+                        preview = $('#preview-img-code')
+                        break;
+                    case 'e_img_nameplate_file':
+                        preview = $('#preview-img-nameplate')
+                        break;
+                    default:
+                        break;
+                }
+                if (preview.attr('data-type') == 'png') {
+                    e_img = await pdfDoc.embedPng(bytes)
+                } else if (preview.attr('data-type') == 'jpg') {
+                    e_img = await pdfDoc.embedJpg(bytes)
+                } else if (preview.attr('data-type') == 'jpeg') {
+                    e_img = await pdfDoc.embedJpg(bytes)
+                }
+                return e_img
+            }
+            $.LoadingOverlay("show");
+            event.preventDefault()
+            let form_obj = {}
+            $('#myForm input:not([type="file"]), select').each(function () {
+                form_obj[$(this).attr('name')] = $(this).val()
             })
-            let scripturl = 'https://script.google.com/macros/s/AKfycbwdHWd3KFg6GMJsNKmVp69oyRAhpzWRjiWxUYFU8QBXoLHkNYM07qUEbR0s5roYpAnHag/exec?opt=save'
             $.ajax({
-                url: scripturl,
+                url: scriptUrl,
                 type: 'POST',
-                data: obj,
-                success: function (data) {
-                    copyPages(data[0], data[1], data[2])
+                data: {
+                    opt: 'save',
+                    form_obj: JSON.stringify(form_obj)
                 }
             })
+            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            var form = pdfDoc.getForm()
+            pdfDoc.registerFontkit(fontkit);
+            const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
+            const symbol = await pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
+            var signature, e_img
+            if (signature_bytes) {
+                signature = await pdfDoc.embedPng(signature_bytes)
+            }
+            let imgs_obj = {}
+            if (e_img_bytes) {
+                imgs_obj['e_img'] = await embedImage(e_img_bytes, 'e_img_file')
+            }
+            if (e_img_code_bytes) {
+                imgs_obj['e_img_code'] = await embedImage(e_img_code_bytes, 'e_img_code_file')
+            }
+            if (e_img_nameplate_bytes) {
+                imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
+            }
+            form.getTextField('pmhee').setText('คุณชัยวัฒน์ ไสลวงษ์')
+            form.getTextField('BME').setText('แผนกวิศวกรรมการแพทย์ โรงพยาบาลพญาไท 3')
+            form.getTextField('pr_date').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }).toLocaleUpperCase()))
+            form.getTextField('pr_date_short').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' })))
+            $('form input').each(function () {
+                let _this = $(this)
+                if (_this.val() == '') return
+                if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation'].includes(_this.prop('id'))) return
+                if (['pr_price', 'pr_vat', 'pr_grand_price'].includes(_this.prop('id'))) {
+                    let value = Number(_this.val())
+                    if (value != NaN) {
+                        value = value.toFixed(2).split('.')
+                        
+                        value[0] = Number(value[0]).toLocaleString()
+                        
+                        form.getTextField(_this.prop('id')).setText(value.join('.'))
+                    }
+                    return
+                }
+                if (_this.prop('id') == 'e_brand/model') {
+                    let val = _this.val().split('/')
+                    form.getTextField('e_brand').setText(val[0])
+                    form.getTextField('e_model').setText(val[1])
+                    return
+                }
+                form.getTextField(_this.prop('id')).setText(_this.val())
+                if (_this.prop('id') == 'e_name') {
+                    form.getTextField(_this.prop('id'), { paragraphs: true, alignment: 'below' })
+                }
+            })
+            $('.has-checkboxes option').each(function () {
+                if ($(this).prop('id') == '') {
+                    return
+                }
+                if ($(this).is(':selected')) {
+                    let textField = form.getTextField($(this).prop('id'))
+                    textField.setText('✓')
+                    textField.updateAppearances(symbol)
+
+                } else {
+                    form.getTextField($(this).prop('id')).setText('')
+                }
+            })
+            if (signature) form.getTextField('bme_sign').setImage(signature)
+            if (imgs_obj['e_img']) form.getTextField('e_img').setImage(imgs_obj['e_img'])
+            if (imgs_obj['e_img_code']) form.getTextField('e_img_code').setImage(imgs_obj['e_img_code'])
+            if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
+            form.updateFieldAppearances(sarabun);
+            form.flatten()
+            var pdfBytes = await pdfDoc.save()
+            var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 2000,
+                showConfirmButton: false,
+            }).then(async () => {
+                var iframe = document.getElementById('pdf')
+                // open pdf in new small window
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&view=fitH'
+                let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
+                let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
+                let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
+                let name = 'PR-' + e_code + '-' + e_name + '-' + dept + '.pdf'
+                $(iframe).show()
+                $('#a-download').attr('href', url)
+                $('#a-download').attr('download', name).show()
+                // scroll to pdf
+                $('html, body').animate({
+                    scrollTop: $(iframe).offset().top
+                }, 500);
+                pdfDoc = await PDFDocument.load(form_pdf_bytes)
+
+            })
+            // $('#a-download').attr('href', pdfDataUri)
+            // $('#a-download').attr('download', name).show()
         })
         function toTitleCase(str) {
             return str.replace(
@@ -320,14 +1031,8 @@
         }
     </script>
     <script>
-        async function copyPages(url, res, name) {
-            var binary_string = window.atob(res);
-            var len = binary_string.length;
-            var bytes = new Uint8Array(len);
-            for (var i = 0; i < len; i++) {
-                bytes[i] = binary_string.charCodeAt(i);
-            }
-            const firstPDFBytes = bytes.buffer
+        async function copyPages(bytes, name) {
+            const firstPDFBytes = bytes
             const firstPDFDoc = await PDFDocument.load(firstPDFBytes)
             const [firstPDFPage] = await pdfDoc.copyPages(firstPDFDoc, [0])
             pdfDoc.insertPage(0, firstPDFPage)
@@ -345,24 +1050,10 @@
             iframe.src = pdfDataUri
             $(iframe).slideDown(100)
         }
-        let pdfFiles = []
         $('.file').change(function () {
             let files = this.files
             for (var i = 0; i < files.length; i++) {
-                let obj = this
-                let id = $(this).attr('id')
-                let file = files[i]
-                let reader = new FileReader();
-                let reader2 = new FileReader();
-                reader.onloadend = function (e) {
-                    pdfFiles[id] = e.target.result
-                    console.log("🚀 ~ pdfFiles", pdfFiles)
-                }
-                reader.readAsArrayBuffer(file);
-                reader2.onloadend = function (e) {
-                    $(obj).parent().parent().find('iframe').attr('src', e.target.result + '#navpanes=0&scrollbar=0').slideDown(100)
-                }
-                reader2.readAsDataURL(file);
+
             }
         })
     </script>
@@ -371,7 +1062,7 @@
     <script>
         function copy() {
             let str = $('#console-code').val()
-            console.log("🚀 ~ str:", str)
+            
             // copy to clipboard
 
             $('#console-code')[0].select()
@@ -393,24 +1084,40 @@
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
             let obj = JSON.parse(json_text)
-            fillValue('e_name', obj.name)
-            fillValue('dept', obj.dept)
-            fillValue('e_dec_location', obj.dept)
-            fillValue('e_manufacturer', obj.brand)
-            fillValue('e_date', obj.recieve_date)
-            fillValue('e_hospital_code', obj.hos_id)
-            fillValue('e_brand/model', obj.brand + '/' + obj.model)
-            fillValue('e_brand/distributor', obj.sup_sale)
-            fillValue('e_sn', obj.sn_no)
-            fillValue('e_me_code', obj.id)
-            fillValue('e_price', obj.price)
+            if (obj.page == 'addupdate') {
+                fillValue('e_name', obj.name)
+                fillValue('dept', obj.dept)
+                fillValue('e_manufacturer', obj.brand)
+                fillValue('e_date', obj.recieve_date)
+                fillValue('e_hospital_code', obj.hos_id)
+                fillValue('e_brand/model', ['/', obj.brand, obj.model])
+                fillValue('e_brand/distributor', obj.sup_sale)
+                fillValue('e_sn', obj.sn_no)
+                fillValue('e_me_code', obj.id)
+                fillValue('e_price', obj.price)
+                fillValue('pr_vender', obj.pr_vender)
+            } else if (obj.page == 'closejob') {
+                fillValue('pr_no', obj.quatation)
+                fillValue('pr_price', obj.base_price)
+                fillValue('pr_vat', obj.vat)
+                fillValue('pr_grand_price', obj.price)
+                fillValue('job_id', obj.job_no)
+            }
 
             $('#input-json').val('')
             $('#autoFillOffCanvas').offcanvas('hide')
         })
 
         function fillValue(id, value) {
-            if (!value || value == '') return
+            if (Array.isArray(value)) {
+                let chain = value.shift()
+                value = value.map((v) => {
+                    return v ? v : ''
+                })
+                return fillValue(id, value.join(chain))
+
+            }
+            if (!value || value == '') value = 'N/A'
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
         }
     </script>
@@ -419,6 +1126,9 @@
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
 </body>
 
 </html>
