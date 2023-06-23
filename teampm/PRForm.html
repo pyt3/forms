@@ -339,14 +339,14 @@
                 </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-center align-items-start">
-                        <div class="col-md-4 mt-3 text-center">
+                        <div class="col-md-6 mt-3 text-center">
                             <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
                             <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
                                 class="form-control file">
                             <iframe class="mt-2" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
-                        <div class="col-md-4 mt-3 text-center">
+                        <div class="col-md-6 mt-3 text-center">
                             <label for="2-file-quatation">ไฟล์ใบเสนอราคา</label>
                             <input type="file" name="2-file-quatation" id="2-file-quatation" accept="application/pdf"
                                 class="form-control file">
@@ -369,7 +369,7 @@
                 </div>
             </form>
             <div class="container-fluid">
-                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142));"></iframe>
+                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
             </div>
         </div>
 
@@ -795,6 +795,7 @@
             if (e_img_nameplate_bytes) {
                 imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
             }
+           
             form.getTextField('pmhee').setText('คุณชัยวัฒน์ ไสลวงษ์')
             form.getTextField('BME').setText('แผนกวิศวกรรมการแพทย์ โรงพยาบาลพญาไท 3')
             form.getTextField('pr_date').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }).toLocaleUpperCase()))
@@ -844,6 +845,10 @@
             if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
             form.updateFieldAppearances(sarabun);
             form.flatten()
+            if(!e_img_bytes && !e_img_code_bytes && !e_img_nameplate_bytes){
+                // remove last page
+                pdfDoc.removePage(pdfDoc.getPages().length - 1)
+            }
             var pdfBytes = await pdfDoc.save()
             var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
             $.LoadingOverlay("hide");
@@ -862,7 +867,7 @@
                 let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
                 let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
                 let name = 'PR-' + e_code + '-' + e_name + '-' + dept + '.pdf'
-                $(iframe).parent().show(200)
+                $(iframe).show(200)
                 $('#a-download').attr('href', url)
                 $('#a-download').attr('download', name).show()
                 // scroll to pdf
