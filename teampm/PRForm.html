@@ -53,12 +53,12 @@
             </div>
         </div>
     </header>
-    <main class="container-fluid">
+    <main class="container-fluid row">
         <div class="container-fluid">
             <form id="myForm" class="mt-3 mb-5">
                 <section class="mt-4 m-2">
                     <div class="row">
-                        <div class="col">
+                        <div class="col-md-4">
                             <label for="name">ชื่อผู้กรอก</label>
                             <select name="name" id="name" class="form-select">
                                 <option value="" selected disabled>ชื่อผู้กรอก</option>
@@ -369,9 +369,10 @@
                 </div>
             </form>
             <div class="container-fluid">
-                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142));"></iframe>
             </div>
         </div>
+       
     </main>
 
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="autoFillOffCanvas"
@@ -408,9 +409,7 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbwnb57VU-CveziAzWMWtFfbnXiX_mZIWJERI_XLLnNEILEgapodymzeFcWcxMry86EA5Q/exec'
         var form_pdf_bytes, font_bytes, signature_bytes, e_img_bytes, e_img_code_bytes, e_img_nameplate_bytes
         $(document).ready(async function () {
-            // get file bytes from ./formPDF.pdf
             form_pdf_bytes = await fetch('./formPDF.pdf').then(res => res.arrayBuffer())
-            // get font bytes from ./THSarabunNew.ttf
             font_bytes = await fetch('./THSarabun.ttf').then(res => res.arrayBuffer())
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
@@ -424,14 +423,8 @@
             $('#name').change(async function () {
                 let name = $(this).val()
                 signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
-                
-            })
 
-            // $('form').find('input, select').each(function () {
-            //     let _this = $(this)
-            //     let id = $(this).attr('id')
-            //     $('label[for="' + id + '"]').html($('label[for="' + id + '"]').text() + ' ' + _this.attr('id'))
-            // })
+            })
 
             $('#pr-cm').change(function () {
                 let data_id = $(this).find('option:selected').attr('id')
@@ -442,22 +435,7 @@
                     $('#pr_cm_maintenance_ea').val('').parent().hide()
                 }
                 if (data_id == 'pr_cm_other') {
-                    Swal.fire({
-                        title: 'ระบุ อื่นๆ',
-                        input: 'text',
-                        inputLabel: 'ระบุ',
-                        inputPlaceholder: 'ระบุ',
-                        showCancelButton: true,
-                        inputValidator: (value) => {
-                            if (!value) {
-                                return 'กรุณากรอกข้อมูล'
-                            }
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#pr_cm_other_text').val(result.value).parent().show()
-                        }
-                    })
+                    showOtherFieldInput('pr_cm_other_text')
                 } else {
                     $('#pr_cm_other_text').val('').parent().hide()
                 }
@@ -467,22 +445,7 @@
                 let data_id = $(this).find('option:selected').attr('id')
                 $(this).attr('data-id', data_id)
                 if (data_id == 'pr_status_other') {
-                    Swal.fire({
-                        title: 'ระบุ อื่นๆ',
-                        input: 'text',
-                        inputLabel: 'ระบุ',
-                        inputPlaceholder: 'ระบุ',
-                        showCancelButton: true,
-                        inputValidator: (value) => {
-                            if (!value) {
-                                return 'กรุณากรอกข้อมูล'
-                            }
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#pr_status_other_text').val(result.value).parent().show()
-                        }
-                    })
+                    showOtherFieldInput('pr_status_other_text')
                 } else {
                     $('#pr_status_other_text').val('').parent().hide()
                 }
@@ -505,37 +468,15 @@
             $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('drop', function (e) {
                 e.preventDefault()
                 e.stopPropagation()
-                const base64ToArrayBuffer = function (base64) {
-                    var binaryString = atob(base64);
-                    var bytes = new Uint8Array(binaryString.length);
-                    for (var i = 0; i < binaryString.length; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    
-                    return bytes.buffer;
-                }
                 let dataID = $(this).attr('id')
                 $('#e_img_file').attr('data-id', dataID)
-                
-                let preview
-                switch (dataID) {
-                    case 'e_img_div':
-                        preview = $('#preview-img')
-                        break;
-                    case 'e_img_code_div':
-                        preview = $('#preview-img-code')
-                        break;
-                    case 'e_img_nameplate_div':
-                        preview = $('#preview-img-nameplate')
-                        break;
-                    default:
-                        break;
-                }
+
+                let preview = $('#' + dataID + ' img')
                 $('#' + dataID).LoadingOverlay('show')
                 // check if file is url
                 if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
                     preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
-                    
+
                     // getArrayBuffer from url
                     $.ajax({
                         url: scriptUrl,
@@ -545,55 +486,25 @@
                             opt: 'getImage'
                         },
                         success: function (data) {
-                            
-                            
-                            let quality
+
+
 
                             // convert base64 to file
                             let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
                                 type: data.type,
                                 lastModified: Date.now()
                             })
-                            switch (true) {
-                                case file.size / 1024 <= 200:
-                                    quality = 0.8
-                                    break;
 
-                                case file.size / 1024 <= 600:
-                                    quality = 0.6
-                                    break;
+                            let quality = getCompressionQuality(file)
 
-                                case file.size / 1024 <= 2000:
-                                    quality = 0.4
-                                    break;
-                                default:
-                                    quality = 0.3
-                                    break;
-                            }
-                            
-                            
+
                             new Compressor(file, {
                                 quality: quality,
-
-                                // The compression process is asynchronous,
-                                // which means you have to access the `result` in the `success` hook function.
                                 success(result) {
-                                    
+
                                     let fr = new FileReader()
                                     fr.onload = function (e) {
-                                        switch (dataID) {
-                                            case 'e_img_div':
-                                                e_img_bytes = e.target.result
-                                                break;
-                                            case 'e_img_code_div':
-                                                e_img_code_bytes = e.target.result
-                                                break;
-                                            case 'e_img_nameplate_div':
-                                                e_img_nameplate_bytes = e.target.result
-                                                break;
-                                            default:
-                                                break;
-                                        }
+                                        setImageBytes(dataID, e.target.result)
                                         preview.attr('data-type', data.type.split('/')[1])
                                         $('#' + dataID).LoadingOverlay('hide')
                                     }
@@ -609,49 +520,21 @@
                     return
                 }
                 let file = e.originalEvent.dataTransfer.files[0]
-                let quality
-                switch (true) {
-                    case data.base64.length / 1024 <= 200:
-                        quality = 0.8
-                        break;
-
-                    case data.base64.length / 1024 <= 600:
-                        quality = 0.6
-                        break;
-
-                    case data.base64.length / 1024 <= 2000:
-                        quality = 0.4
-                        break;
-                    default:
-                        quality = 0.3
-                        break;
+                if(!file){
+                    return
                 }
+                let quality = getCompressionQuality(file)
+
                 new Compressor(file, {
                     quality: quality,
-
-                    // The compression process is asynchronous,
-                    // which means you have to access the `result` in the `success` hook function.
                     success(result) {
-                        
                         let reader = new FileReader()
                         reader.onloadend = function (e) {
-                            
+
                             preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
                             // convert dataURL to arrayBuffer
 
-                            switch (dataID) {
-                                case 'e_img_div':
-                                    e_img_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
-                                    break;
-                                case 'e_img_code_div':
-                                    e_img_code_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
-                                    break;
-                                case 'e_img_nameplate_div':
-                                    e_img_nameplate_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setImageBytes(dataID, e.target.result)
                             $('#' + dataID).LoadingOverlay('hide')
 
                         }
@@ -665,40 +548,10 @@
 
             $('#e_img_file').change(function () {
                 let dataID = $('#e_img_file').attr('data-id')
-                let preview
-                switch (dataID) {
-                    case 'e_img_div':
-                        preview = $('#preview-img')
-                        break;
-                    case 'e_img_code_div':
-                        preview = $('#preview-img-code')
-                        break;
-                    case 'e_img_nameplate_div':
-                        preview = $('#preview-img-nameplate')
-                        break;
-                    default:
-                        break;
-                }
+                let preview = $('#' + dataID + ' img')
                 $('#' + dataID).LoadingOverlay('show')
                 let file = $(this)[0].files[0]
-                let quality
-                switch (true) {
-                    case file.size / 1024 <= 200:
-                        quality = 0.8
-                        break;
-
-                    case file.size / 1024 <= 600:
-                        quality = 0.6
-                        break;
-
-                    case file.size / 1024 <= 2000:
-                        quality = 0.4
-                        break;
-
-                    default:
-                        quality = 0.3
-                        break;
-                }
+                let quality = getCompressionQuality(file)
                 new Compressor(file, {
                     quality: quality,
 
@@ -709,29 +562,7 @@
 
                         reader.onloadend = function (e) {
                             preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
-                            // convert dataURL to arrayBuffer
-                            const base64ToArrayBuffer = function (base64) {
-                                var binaryString = atob(base64);
-                                var bytes = new Uint8Array(binaryString.length);
-                                for (var i = 0; i < binaryString.length; i++) {
-                                    bytes[i] = binaryString.charCodeAt(i);
-                                }
-                                
-                                return bytes.buffer;
-                            }
-                            switch (dataID) {
-                                case 'e_img_div':
-                                    e_img_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
-                                    break;
-                                case 'e_img_code_div':
-                                    e_img_code_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
-                                    break;
-                                case 'e_img_nameplate_div':
-                                    e_img_nameplate_bytes = base64ToArrayBuffer(e.target.result.split(',')[1])
-                                    break;
-                                default:
-                                    break;
-                            }
+                            setImageBytes(dataID, e.target.result)
                             $('#' + dataID).LoadingOverlay('hide')
 
                         }
@@ -761,55 +592,78 @@
             if (isNaN(total)) return
             $('#pr_grand_price').val(total.toFixed(2))
         })
+
+        function showOtherFieldInput(key) {
+            Swal.fire({
+                title: 'ระบุ อื่นๆ',
+                input: 'text',
+                inputLabel: 'ระบุ',
+                inputPlaceholder: 'ระบุ',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'กรุณากรอกข้อมูล'
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#' + key).val(result.value).parent().show()
+                }
+            })
+        }
+
+        function base64ToArrayBuffer(base64) {
+            var binaryString = atob(base64);
+            var bytes = new Uint8Array(binaryString.length);
+            for (var i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+
+            return bytes.buffer;
+        }
+
+        function getCompressionQuality(file) {
+            let quality = 0.3
+            switch (true) {
+                case file.size / 1024 <= 200:
+                    quality = 0.8
+                    break;
+
+                case file.size / 1024 <= 600:
+                    quality = 0.6
+                    break;
+
+                case file.size / 1024 <= 2000:
+                    quality = 0.4
+                    break;
+                default:
+                    quality = 0.3
+                    break;
+            }
+            return quality
+        }
+
+        function setImageBytes(dataID,file) {
+            if(typeof file == 'string') file = base64ToArrayBuffer(file.split(',')[1])
+            switch (dataID) {
+                case 'e_img_div':
+                    e_img_bytes = file
+                    break;
+                case 'e_img_code_div':
+                    e_img_code_bytes = file
+                    break;
+                case 'e_img_nameplate_div':
+                    e_img_nameplate_bytes = file
+                    break;
+                default:
+                    break;
+            }
+        }
     </script>
     <script>
         var pdfDoc
         var PDFDocument = PDFLib.PDFDocument;
         var StandardFonts = PDFLib.StandardFonts;
-        // $('#myForm').submit(async function () {
-        //     pdfDoc = await PDFDocument.create();
-        //     event.preventDefault()
-        //     let formData = $(this).serializeArray()
-        //     let obj = {}
-        //     formData.forEach(function (e) {
-        //         if (e.value == '') e.value = '-'
-        //         obj[e.name] = e.value
-        //     })
-        //     $('input[type=checkbox]').each(function () {
-        //         if ($(this).is(':checked')) {
-        //             obj[$(this).attr('name')] = '✓'
-        //         } else {
-        //             obj[$(this).attr('name')] = ''
-        //         }
-        //     })
-        //     if (sticker.data) obj.e_sticker = JSON.stringify(sticker)
-        //     obj['e_me_code'] = obj['e_me_code'].toUpperCase().indexOf('PYT') > -1 ? obj['e_me_code'].toUpperCase() : ('PYT3_' + ('00000' + obj['e_me_code']).slice(-5))
-        //     obj['e_decom_by'] = obj['e_decom_by'].toUpperCase()
-        //     obj['e_name'] = toTitleCase(obj['e_name'])
-        //     Swal.fire({
-        //         icon: 'info',
-        //         title: 'กำลังสร้างไฟล์...',
-        //         allowOutsideClick: false,
-        //     })
-        //     Swal.showLoading(Swal.getConfirmButton())
-        //     Object.keys(pdfFiles).forEach(async key => {
-        //         let pdf = await PDFDocument.load(pdfFiles[key])
-        //         let pages = pdf.getPages().length
-        //         for (var i = 0; i < pages; i++) {
-        //             let [page] = await pdfDoc.copyPages(pdf, [i])
-        //             pdfDoc.insertPage(0, page)
-        //         }
-        //     })
-        //     let scripturl = 'https://script.google.com/macros/s/AKfycbwdHWd3KFg6GMJsNKmVp69oyRAhpzWRjiWxUYFU8QBXoLHkNYM07qUEbR0s5roYpAnHag/exec?opt=save'
-        //     $.ajax({
-        //         url: scripturl,
-        //         type: 'POST',
-        //         data: obj,
-        //         success: function (data) {
-        //             copyPages(data[0], data[1], data[2])
-        //         }
-        //     })
-        // }).
         var pdfFiles = []
         $('#1-file-nsmart, #2-file-quatation').on('dragover', function (e) {
             e.preventDefault()
@@ -870,7 +724,6 @@
                 }
                 pdf = await pdf.save()
                 let iframe = $(obj).parent().find('iframe')[0]
-                // open pdf in new small window
                 var blob = new Blob([pdf], {
                     type: 'application/pdf'
                 })
@@ -953,9 +806,9 @@
                     let value = Number(_this.val())
                     if (value != NaN) {
                         value = value.toFixed(2).split('.')
-                        
+
                         value[0] = Number(value[0]).toLocaleString()
-                        
+
                         form.getTextField(_this.prop('id')).setText(value.join('.'))
                     }
                     return
@@ -1008,7 +861,7 @@
                 let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
                 let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
                 let name = 'PR-' + e_code + '-' + e_name + '-' + dept + '.pdf'
-                $(iframe).show()
+                $(iframe).parent().show(200)
                 $('#a-download').attr('href', url)
                 $('#a-download').attr('download', name).show()
                 // scroll to pdf
@@ -1031,38 +884,9 @@
         }
     </script>
     <script>
-        async function copyPages(bytes, name) {
-            const firstPDFBytes = bytes
-            const firstPDFDoc = await PDFDocument.load(firstPDFBytes)
-            const [firstPDFPage] = await pdfDoc.copyPages(firstPDFDoc, [0])
-            pdfDoc.insertPage(0, firstPDFPage)
-            const pdfBytes = await pdfDoc.save()
-            const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
-            Swal.fire({
-                icon: 'success',
-                title: 'สร้างไฟล์เสร็จสิ้น',
-                timer: 2000,
-                showConfirmButton: false,
-            })
-            $('#a-download').attr('href', pdfDataUri)
-            $('#a-download').attr('download', name).show()
-            var iframe = document.getElementById('pdf')
-            iframe.src = pdfDataUri
-            $(iframe).slideDown(100)
-        }
-        $('.file').change(function () {
-            let files = this.files
-            for (var i = 0; i < files.length; i++) {
-
-            }
-        })
-    </script>
-    <script>
-    </script>
-    <script>
         function copy() {
             let str = $('#console-code').val()
-            
+
             // copy to clipboard
 
             $('#console-code')[0].select()
