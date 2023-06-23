@@ -11,7 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
@@ -46,7 +47,6 @@
             <div class="col-auto">
                 <img width="80" height="80" src="https://img.icons8.com/3d-fluency/94/trash.png" alt="trash" />
             </div>
-
             <div class="col text-center">
                 <h4 class="h1 fw-bold text-light">Decommissioning Determination Form</h4>
                 <h4 class="fw-bold">แบบบันทึกยกเลิกการใช้งาน</h4>
@@ -150,8 +150,8 @@
                             <input type="text" name="e_me_code" id="e_me_code" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="e_brand/distributor">ตัวแทนจำหน่าย</label>
-                            <input type="text" name="e_brand/distributor" id="e_brand/distributor" class="form-control">
+                            <label for="e_vender">ตัวแทนจำหน่าย</label>
+                            <input type="text" name="e_vender" id="e_vender" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
                             <label for="e_price">ราคาซื้อ</label>
@@ -167,18 +167,77 @@
                         </div>
                         <div class="col-md-4 mt-3">
                             <label for="e_decom_by">ผู้ยกเลิก</label>
-                            <input type="text" name="e_decom_by" id="e_decom_by" class="form-control">
+                            <select name="e_decom_by" id="e_decom_by" class="form-select">
+                                <option value="" selected disabled>เลือกชื่อ</option>
+                                <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                                <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                                <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                                <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                                <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                                <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                                <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                                <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                                <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                                <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                                <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                                <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                                <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
+                                <option value="PHIMRAPEEPORN PHRASOPOL">PHIMRAPEEPORN PHRASOPOL</option>
+                                <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                                <option value="SOM KONKAEW">SOM KONKAEW</option>
+                            </select>
                         </div>
-                        <div class="col-md-4 mt-3">
+                        <div class="col-md-12 mt-3">
+                            <label for="reason">เหตุผลในการยกเลิก</label>
+                            <textarea name="reason" id="reason" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="col-12 m-0 p-0">
+                            <div class="row m-0 p-0">
+                                <div class="col-md-3 mt-3">
+                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
+                                        id="e_sticker_div">
+                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
+                                            id="preview-img" />
+                                        &nbsp;รูป Code Sticker เครื่องมือยกเลิก
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-3">
+                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
+                                        id="e_img_div">
+                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
+                                            id="preview-img" />
+                                        &nbsp;รูปภาพเครื่อง
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-3 ">
+                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
+                                        id="e_img_code_div">
+                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
+                                            id="preview-img-code" />
+                                        &nbsp;รูปภาพโค้ด
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-3">
+                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
+                                        id="e_img_nameplate_div">
+                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
+                                            id="preview-img-nameplate" />
+                                        &nbsp;รูปภาพ Nameplate
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="file" name="e_img_file" id="e_img_file" hidden>
+                        </div>
+                        <!-- <div class="col-md-4 mt-3">
                             <label for="e_sticker">รูป Code Sticker เครื่องมือยกเลิก</label>
                             <input type="file" accept="image/*" name="e_sticker" id="e_sticker" class="form-control">
-                        </div>
+                        </div> -->
                     </div>
-                    <div class="row justify-content-center">
+                    <!-- <div class="row justify-content-center">
                         <div class="col-md-4 mt-3" style="display: none;">
                             <img alt="sticker" id="sticker" class="img-fluid">
                         </div>
-                    </div>
+                    </div> -->
                 </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-start">
@@ -301,23 +360,16 @@
                 </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-center align-items-start">
-                        <div class="col-md-4 mt-3 text-center">
+                        <div class="col-md-6 mt-3 text-center">
                             <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
                             <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
                                 class="form-control file">
                             <iframe class="mt-2" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
-                        <div class="col-md-4 mt-3 text-center">
-                            <label for="2-file-img">ไฟล์รูปภาพเครื่อง</label>
-                            <input type="file" name="2-file-img" id="2-file-img" accept="application/pdf"
-                                class="form-control file">
-                            <iframe class="mt-2" frameborder="0" notoolbar=1
-                                style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
-                        </div>
-                        <div class="col-md-4 mt-3 text-center">
-                            <label for="3-file-other">ไฟล์เอกสารเพิ่มเติม</label>
-                            <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf"
+                        <div class="col-md-6 mt-3 text-center">
+                            <label for="2-file-other">ไฟล์เอกสารเพิ่มเติม</label>
+                            <input type="file" name="2-file-other" id="2-file-other" accept="application/pdf"
                                 class="form-control file">
                             <iframe class="mt-2" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
@@ -326,7 +378,9 @@
                 </section>
                 <div class="row justify-content-center">
                     <div class="col-md-4 mt-3 text-center">
-                        <button type="submit" class="btn btn-primary" style="min-width: 200px;"><img width="30" src="https://img.icons8.com/3d-plastilina/69/opened-folder.png" alt="opened-folder"/> สร้างไฟล์</button>
+                        <button type="submit" class="btn btn-primary" style="min-width: 200px;"><img width="30"
+                                src="https://img.icons8.com/3d-plastilina/69/opened-folder.png" alt="opened-folder" />
+                            สร้างไฟล์</button>
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -338,21 +392,19 @@
             <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
         </div>
     </main>
-
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="autoFillOffCanvas"
         aria-labelledby="autoFillOffCanvasLabel">
-
         <div class="offcanvas-body container-fluid">
             <div class="alert alert-info" role="alert">
                 <div class="row">
                     <div class="col m-0">
-                        <input name="console-code" id="console-code" class="form-control" value='console.clear(),console.group("START");const getselectOpt=e=>e.options[e.selectedIndex].innerText,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};console.log("Getting data...");let obj={id:document.getElementsByName("sap_code")[0].value,name:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("catagory")[0]),brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sub_dept")[0]),recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sup_sale")[0])},str=JSON.stringify(obj);copy(str);'
+                        <input name="console-code" id="console-code" class="form-control"
+                            value='console.clear(),console.group("START");const getselectOpt=e=>e.options[e.selectedIndex].innerText,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};console.log("Getting data...");let obj={id:document.getElementsByName("sap_code")[0].value,name:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("catagory")[0]),brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sub_dept")[0]),recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sup_sale")[0])},str=JSON.stringify(obj);copy(str);'
                             readonly>
                     </div>
                     <div class="col-auto m-0">
-                        <button class="btn btn-primary"
-                            onclick="copy()"><span id="copy-icon"><img
-                                    width="20" src="https://img.icons8.com/cotton/64/documents.png"
+                        <button class="btn btn-primary" onclick="copy()"><span id="copy-icon"><img width="20"
+                                    src="https://img.icons8.com/cotton/64/documents.png"
                                     alt="documents" /></span>&nbsp;Copy</button>
                     </div>
                 </div>
@@ -370,72 +422,375 @@
         </div>
     </div>
     <script>
-        $(document).ready(function () {
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwdHWd3KFg6GMJsNKmVp69oyRAhpzWRjiWxUYFU8QBXoLHkNYM07qUEbR0s5roYpAnHag/exec'
+        var form_pdf_bytes, font_bytes, signature_bytes, e_img_bytes, e_img_code_bytes, e_img_nameplate_bytes, e_img_sticker_bytes
+        $(document).ready(async function () {
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
-            // $('#autoFillOffCanvas').offcanvas('show')
+            form_pdf_bytes = await fetch('../teampm/formDecom.pdf').then(res => res.arrayBuffer())
+            font_bytes = await fetch('../teampm/THSarabun.ttf').then(res => res.arrayBuffer())
         })
+        $('#dept option').not(':disabled').each(function () {
+            $(this).val($(this).text());
+        });
+        $('#input-json').on('keyup', function () {
+            // detect enter key
+            if (event.keyCode == 13) {
+                $('#input-json-btn').click()
+            }
+        })
+        $('#name').change(async function () {
+            let name = $(this).val()
+            signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
+        })
+        $('#e_sticker_div, #e_img_div, #e_img_code_div, #e_img_nameplate_div').on('click', function () {
+            $('#e_img_file').attr('data-id', $(this).attr('id')).click()
+        })
+        $('#e_sticker_div, #e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragover', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('bg-info-subtle').addClass('text-bg-info')
+        })
+        $('#e_sticker_div, #e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragleave', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('text-bg-info').addClass('bg-info-subtle')
+        })
+        $('#e_sticker_div, #e_img_div, #e_img_code_div, #e_img_nameplate_div').on('drop', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            let dataID = $(this).attr('id')
+            $('#e_img_file').attr('data-id', dataID)
+            let preview = $('#' + dataID + ' img')
+            $('#' + dataID).LoadingOverlay('show')
+            // check if file is url
+            if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
+                preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
+                // getArrayBuffer from url
+                $.ajax({
+                    url: scriptUrl,
+                    method: 'POST',
+                    data: {
+                        url: preview.attr('src'),
+                        opt: 'getImage'
+                    },
+                    success: function (data) {
+                        // convert base64 to file
+                        let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
+                            type: data.type,
+                            lastModified: Date.now()
+                        })
+                        let quality = getCompressionQuality(file)
+                        new Compressor(file, {
+                            quality: quality,
+                            success(result) {
+                                let fr = new FileReader()
+                                fr.onload = function (e) {
+                                    setImageBytes(dataID, e.target.result)
+                                    preview.attr('data-type', data.type.split('/')[1])
+                                    $('#' + dataID).LoadingOverlay('hide')
+                                }
+                                fr.readAsArrayBuffer(result)
+                            },
+                            error(err) {
+                                console.log(err.message);
+                            },
+                        });
+                    }
+                })
+                return
+            }
+            let file = e.originalEvent.dataTransfer.files[0]
+            if (!file) {
+                return
+            }
+            let quality = getCompressionQuality(file)
+            new Compressor(file, {
+                quality: quality,
+                success(result) {
+                    let reader = new FileReader()
+                    reader.onloadend = function (e) {
+                        preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                        // convert dataURL to arrayBuffer
+                        setImageBytes(dataID, e.target.result)
+                        $('#' + dataID).LoadingOverlay('hide')
+                    }
+                    reader.readAsDataURL(file)
+                },
+                error(err) {
+                    console.log(err.message);
+                },
+            });
+        })
+        $('#e_img_file').change(function () {
+            let dataID = $('#e_img_file').attr('data-id')
+            let preview = $('#' + dataID + ' img')
+            $('#' + dataID).LoadingOverlay('show')
+            let file = $(this)[0].files[0]
+            let quality = getCompressionQuality(file)
+            new Compressor(file, {
+                quality: quality,
+                // The compression process is asynchronous,
+                // which means you have to access the `result` in the `success` hook function.
+                success(result) {
+                    let reader = new FileReader()
+                    reader.onloadend = function (e) {
+                        preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                        setImageBytes(dataID, e.target.result)
+                        $('#' + dataID).LoadingOverlay('hide')
+                    }
+                    reader.readAsDataURL(result)
+                },
+                error(err) {
+                    console.log(err.message);
+                },
+            });
+        })
+        function base64ToArrayBuffer(base64) {
+            var binaryString = atob(base64);
+            var bytes = new Uint8Array(binaryString.length);
+            for (var i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+        function getCompressionQuality(file) {
+            let quality = 0.3
+            switch (true) {
+                case file.size / 1024 <= 200:
+                    quality = 0.8
+                    break;
+                case file.size / 1024 <= 600:
+                    quality = 0.6
+                    break;
+                case file.size / 1024 <= 2000:
+                    quality = 0.4
+                    break;
+                default:
+                    quality = 0.3
+                    break;
+            }
+            return quality
+        }
+        function setImageBytes(dataID, file) {
+            if (typeof file == 'string') file = base64ToArrayBuffer(file.split(',')[1])
+            switch (dataID) {
+                case 'e_sticker_div':
+                    e_img_sticker_bytes = file
+                    break;
+                case 'e_img_div':
+                    e_img_bytes = file
+                    break;
+                case 'e_img_code_div':
+                    e_img_code_bytes = file
+                    break;
+                case 'e_img_nameplate_div':
+                    e_img_nameplate_bytes = file
+                    break;
+                default:
+                    break;
+            }
+        }
     </script>
     <script>
         var pdfDoc
         var PDFDocument = PDFLib.PDFDocument;
-        $('#myForm').submit(async function () {
-            pdfDoc = await PDFDocument.create();
-            event.preventDefault()
-            let formData = $(this).serializeArray()
-            let obj = {}
-            formData.forEach(function (e) {
-                if (e.value == '') e.value = '-'
-                obj[e.name] = e.value
-            })
-            $('input[type=checkbox]').each(function () {
-                if ($(this).is(':checked')) {
-                    obj[$(this).attr('name')] = '✓'
-                } else {
-                    obj[$(this).attr('name')] = ''
-                }
-            })
-            if (sticker.data) obj.e_sticker = JSON.stringify(sticker)
-            obj['e_me_code'] = obj['e_me_code'].toUpperCase().indexOf('PYT') > -1 ? obj['e_me_code'].toUpperCase() : ('PYT3_' + ('00000' + obj['e_me_code']).slice(-5))
-            obj['e_decom_by'] = obj['e_decom_by'].toUpperCase()
-            obj['e_name'] = toTitleCase(obj['e_name'])
-            Swal.fire({
-                icon: 'info',
-                title: 'กำลังสร้างไฟล์...',
-                allowOutsideClick: false,
-            })
-            Swal.showLoading(Swal.getConfirmButton())
-            Object.keys(pdfFiles).forEach(async key => {
-                let pdf = await PDFDocument.load(pdfFiles[key])
+        var StandardFonts = PDFLib.StandardFonts;
+        var pdfFiles = []
+        $('#1-file-nsmart, #2-file-other').on('dragover', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).addClass('text-bg-info')
+        })
+        $('#1-file-nsmart, #2-file-other').on('dragleave', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('text-bg-info')
+        })
+        $('#1-file-nsmart, #2-file-other').on('drop', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('from-control-lg')
+            let files = e.originalEvent.dataTransfer.files
+            let file = files[0]
+            // set files to $(this)
+            $(this).prop('files', files)
+            renderNsmartFile(file, $(this))
+        })
+        $('#1-file-nsmart, #2-file-other').on('change', function (e) {
+            let files = e.target.files
+            let file = files[0]
+            renderNsmartFile(file, $(this))
+        })
+        function renderNsmartFile(file, ele) {
+            if (file.type != 'application/pdf') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกไฟล์ PDF',
+                    text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
+                })
+                return
+            }
+            if (file.size > 10000000) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไฟล์มีขนาดใหญ่เกินไป',
+                    text: 'ไฟล์มีขนาดใหญ่เกิน 10 MB',
+                })
+                return
+            }
+            let obj = $(ele)
+            let id = obj.attr('id')
+            let reader = new FileReader()
+            reader.onloadend = async function (e) {
+                if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+                pdfFiles[id] = e.target.result
+                // load pdf
+                let pdf = await PDFDocument.load(e.target.result)
                 let pages = pdf.getPages().length
                 for (var i = 0; i < pages; i++) {
                     let [page] = await pdfDoc.copyPages(pdf, [i])
-                    pdfDoc.insertPage(0, page)
+                    pdfDoc.insertPage(1, page)
                 }
-            })
-            let scripturl = 'https://script.google.com/macros/s/AKfycbwdHWd3KFg6GMJsNKmVp69oyRAhpzWRjiWxUYFU8QBXoLHkNYM07qUEbR0s5roYpAnHag/exec?opt=save'
-            $.ajax({
-                url: scripturl,
-                type: 'POST',
-                data: obj,
-                success: function (data) {
-                    copyPages(data[0], data[1], data[2])
-                }
-            })
-        })
-        var sticker = {}
-        $('#e_sticker').change(function () {
-            sticker = {}
-            var file = this.files[0]
-            var reader = new FileReader()
-            reader.onload = function (e) {
-                sticker.data = e.target.result
-                sticker.name = file.name
-                $('.img-fluid').attr('src', e.target.result)
-                $('.img-fluid').closest('.col-md-4').show()
+                pdf = await pdf.save()
+                let iframe = $(obj).parent().find('iframe')[0]
+                var blob = new Blob([pdf], {
+                    type: 'application/pdf'
+                })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&view=fitH'
+                $(iframe).show()
             }
-            reader.readAsDataURL(file)
+            reader.readAsArrayBuffer(file);
+        }
+        $('#myForm').submit(async function () {
+            const embedImage = async function (bytes, key) {
+                let preview = $('#'+key+' img')
+                console.log(preview.attr('data-type'));
+                let e_img
+                if (preview.attr('data-type') == 'png') {
+                    e_img = await pdfDoc.embedPng(bytes)
+                } else if (preview.attr('data-type') == 'jpg') {
+                    e_img = await pdfDoc.embedJpg(bytes)
+                } else if (preview.attr('data-type') == 'jpeg') {
+                    e_img = await pdfDoc.embedJpg(bytes)
+                }
+                return e_img
+            }
+            $.LoadingOverlay("show");
+            event.preventDefault()
+            let form_obj = {}
+            $('#myForm').serializeArray().forEach(function (item) {
+                form_obj[item.name] = item.value
+            })
+            form_obj['e_name'] = toTitleCase(form_obj['e_name'])
+            $.ajax({
+                url: scriptUrl,
+                type: 'POST',
+                data: {
+                    opt: 'save',
+                    form_obj: JSON.stringify(form_obj)
+                }
+            })
+            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            var form = pdfDoc.getForm()
+            pdfDoc.registerFontkit(fontkit);
+            const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
+            const symbol = await pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
+            var signature, e_img
+            if (signature_bytes) {
+                signature = await pdfDoc.embedPng(signature_bytes)
+            }
+            let imgs_obj = {}
+            if (e_img_bytes) {
+                imgs_obj['e_img'] = await embedImage(e_img_bytes, 'e_img_file')
+            }
+            if (e_img_code_bytes) {
+                imgs_obj['e_img_code'] = await embedImage(e_img_code_bytes, 'e_img_code_file')
+            }
+            if (e_img_nameplate_bytes) {
+                imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
+            }
+            if (e_img_sticker_bytes) {
+                console.log("🚀 !! e_img_sticker_bytes:", e_img_sticker_bytes)
+                imgs_obj['e_img_sticker'] = await embedImage(e_img_sticker_bytes, 'e_sticker_div')
+            }
+            console.log(imgs_obj);
+            $('input[type=checkbox]').each(function () {
+                let textField = form.getTextField($(this).prop('id'))
+                if ($(this).prop('checked')) {
+                    let textField = form.getTextField($(this).prop('id'))
+                    textField.setText('✓')
+                    textField.updateAppearances(symbol)
+                    
+                } else {
+                    console.log($(this).prop('id'))
+                    form.getTextField($(this).prop('id')).setText('')
+                }
+            })
+
+            form.getTextField('dept').setText(form_obj['dept'])
+            form.getTextField('e_decom_by').setText(form_obj['e_decom_by'])
+            form.getTextField('reason').setText(form_obj['reason'])
+            form.getTextField('date').setText(new Date().toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric'
+            }))
+            form.getTextField('e_hospital').setText('โรงพยาบาลพญาไท 3')
+
+            $('form input').not('input[type="checkbox"]').each(function () {
+                let _this = $(this)
+                if (_this.val() == '') return
+                if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-other'].includes(_this.prop('id'))) return
+                if (_this.prop('id') == 'e_brand/model') {
+                    let val = _this.val().split('/')
+                    form.getTextField('e_brand').setText(val[0])
+                    form.getTextField('e_brand/model').setText(_this.val())
+                    return
+                }
+                form.getTextField(_this.prop('id')).setText(_this.val())
+            })
+            if (signature) form.getTextField('bme_sign').setImage(signature)
+            if (imgs_obj['e_img_sticker']) form.getTextField('sticker_img').setImage(imgs_obj['e_img_sticker'])
+            if (imgs_obj['e_img']) form.getTextField('e_img').setImage(imgs_obj['e_img'])
+            if (imgs_obj['e_img_code']) form.getTextField('e_img_code').setImage(imgs_obj['e_img_code'])
+            if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
+            form.updateFieldAppearances(sarabun);
+            form.flatten()
+            if (!e_img_bytes && !e_img_code_bytes && !e_img_nameplate_bytes) {
+                // remove last page
+                pdfDoc.removePage(pdfDoc.getPages().length - 1)
+            }
+            var pdfBytes = await pdfDoc.save()
+            var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 2000,
+                showConfirmButton: false,
+            }).then(async () => {
+                var iframe = document.getElementById('pdf')
+                // open pdf in new small window
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&view=fitH'
+                let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
+                let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
+                let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
+                let name = 'DECOM-' + e_code + '-' + e_name + '-' + dept + '.pdf'
+                $(iframe).show(200)
+                $('#a-download').attr('href', url)
+                $('#a-download').attr('download', name).show()
+                // scroll to pdf
+                $('html, body').animate({
+                    scrollTop: $(iframe).offset().top
+                }, 500);
+                pdfDoc = await PDFDocument.load(form_pdf_bytes)
+
+            })
         })
         function toTitleCase(str) {
             return str.replace(
@@ -445,6 +800,9 @@
                 }
             );
         }
+        $('.offcanvas').on('shown.bs.offcanvas', function () {
+            $('.offcanvas').find('textarea').focus()
+        })
     </script>
     <script>
         async function copyPages(url, res, name) {
@@ -472,35 +830,12 @@
             iframe.src = pdfDataUri
             $(iframe).slideDown(100)
         }
-        let pdfFiles = []
-        $('.file').change(function () {
-            let files = this.files
-            for (var i = 0; i < files.length; i++) {
-                let obj = this
-                let id = $(this).attr('id')
-                let file = files[i]
-                let reader = new FileReader();
-                let reader2 = new FileReader();
-                reader.onloadend = function (e) {
-                    pdfFiles[id] = e.target.result
-                    console.log("🚀 ~ pdfFiles", pdfFiles)
-                }
-                reader.readAsArrayBuffer(file);
-                reader2.onloadend = function (e) {
-                    $(obj).closest('.col-md-4').find('iframe').attr('src', e.target.result + '#toolbar=0&navpanes=0&scrollbar=0').slideDown(100)
-                }
-                reader2.readAsDataURL(file);
-            }
-        })
-    </script>
-    <script>
     </script>
     <script>
         function copy() {
             let str = $('#console-code').val()
             console.log("🚀 ~ str:", str)
             // copy to clipboard
-            
             $('#console-code')[0].select()
             document.execCommand("copy")
             let Toast = Swal.mixin({
@@ -516,36 +851,36 @@
             })
             console.groupEnd()
         }
-
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
             let obj = JSON.parse(json_text)
             fillValue('e_name', obj.name)
             fillValue('dept', obj.dept)
-            fillValue('e_dec_location', obj.dept)
+            fillValue('e_decom_location', obj.dept)
             fillValue('e_manufacturer', obj.brand)
             fillValue('e_date', obj.recieve_date)
             fillValue('e_hospital_code', obj.hos_id)
             fillValue('e_brand/model', obj.brand + '/' + obj.model)
-            fillValue('e_brand/distributor', obj.sup_sale)
             fillValue('e_sn', obj.sn_no)
             fillValue('e_me_code', obj.id)
             fillValue('e_price', obj.price)
-
+            fillValue('e_vender', obj.sup_sale)
+            fillValue('e_hospital', 'โรงพยาบาลพญาไท 3')
             $('#input-json').val('')
             $('#autoFillOffCanvas').offcanvas('hide')
         })
-
-        function fillValue(id,value){
-            if(!value || value == '') return
-            $('[id="'+id+'"]').val(value).addClass('bg-primary-subtle')
+        function fillValue(id, value) {
+            if (!value || value == '') return
+            $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
         }
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
 </body>
 
 </html>
