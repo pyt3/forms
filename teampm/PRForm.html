@@ -372,7 +372,7 @@
                 <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142));"></iframe>
             </div>
         </div>
-       
+
     </main>
 
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="autoFillOffCanvas"
@@ -409,172 +409,173 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbwnb57VU-CveziAzWMWtFfbnXiX_mZIWJERI_XLLnNEILEgapodymzeFcWcxMry86EA5Q/exec'
         var form_pdf_bytes, font_bytes, signature_bytes, e_img_bytes, e_img_code_bytes, e_img_nameplate_bytes
         $(document).ready(async function () {
-            form_pdf_bytes = await fetch('./formPDF.pdf').then(res => res.arrayBuffer())
+            form_pdf_bytes = await fetch('./formPR.pdf').then(res => res.arrayBuffer())
             font_bytes = await fetch('./THSarabun.ttf').then(res => res.arrayBuffer())
-            $('#dept option').not(':disabled').each(function () {
-                $(this).val($(this).text());
-            });
-            $('#input-json').on('keyup', function () {
-                // detect enter key
-                if (event.keyCode == 13) {
-                    $('#input-json-btn').click()
-                }
-            })
-            $('#name').change(async function () {
-                let name = $(this).val()
-                signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
-
-            })
-
-            $('#pr-cm').change(function () {
-                let data_id = $(this).find('option:selected').attr('id')
-                $(this).attr('data-id', data_id)
-                if (data_id == 'pr_cm_maintenance') {
-                    $('#pr_cm_maintenance_ea').val('1').parent().show()
-                } else {
-                    $('#pr_cm_maintenance_ea').val('').parent().hide()
-                }
-                if (data_id == 'pr_cm_other') {
-                    showOtherFieldInput('pr_cm_other_text')
-                } else {
-                    $('#pr_cm_other_text').val('').parent().hide()
-                }
-
-            })
-            $('#pr-status').change(function () {
-                let data_id = $(this).find('option:selected').attr('id')
-                $(this).attr('data-id', data_id)
-                if (data_id == 'pr_status_other') {
-                    showOtherFieldInput('pr_status_other_text')
-                } else {
-                    $('#pr_status_other_text').val('').parent().hide()
-                }
-            })
-            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('click', function () {
-                $('#e_img_file').attr('data-id', $(this).attr('id')).click()
-            })
-
-            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragover', function (e) {
-                e.preventDefault()
-                e.stopPropagation()
-                $(this).removeClass('bg-info-subtle').addClass('text-bg-info')
-            })
-            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragleave', function (e) {
-                e.preventDefault()
-                e.stopPropagation()
-                $(this).removeClass('text-bg-info').addClass('bg-info-subtle')
-            })
-
-            $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('drop', function (e) {
-                e.preventDefault()
-                e.stopPropagation()
-                let dataID = $(this).attr('id')
-                $('#e_img_file').attr('data-id', dataID)
-
-                let preview = $('#' + dataID + ' img')
-                $('#' + dataID).LoadingOverlay('show')
-                // check if file is url
-                if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
-                    preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
-
-                    // getArrayBuffer from url
-                    $.ajax({
-                        url: scriptUrl,
-                        method: 'POST',
-                        data: {
-                            url: preview.attr('src'),
-                            opt: 'getImage'
-                        },
-                        success: function (data) {
-
-
-
-                            // convert base64 to file
-                            let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
-                                type: data.type,
-                                lastModified: Date.now()
-                            })
-
-                            let quality = getCompressionQuality(file)
-
-
-                            new Compressor(file, {
-                                quality: quality,
-                                success(result) {
-
-                                    let fr = new FileReader()
-                                    fr.onload = function (e) {
-                                        setImageBytes(dataID, e.target.result)
-                                        preview.attr('data-type', data.type.split('/')[1])
-                                        $('#' + dataID).LoadingOverlay('hide')
-                                    }
-                                    fr.readAsArrayBuffer(result)
-                                },
-                                error(err) {
-                                    console.log(err.message);
-                                },
-                            });
-
-                        }
-                    })
-                    return
-                }
-                let file = e.originalEvent.dataTransfer.files[0]
-                if(!file){
-                    return
-                }
-                let quality = getCompressionQuality(file)
-
-                new Compressor(file, {
-                    quality: quality,
-                    success(result) {
-                        let reader = new FileReader()
-                        reader.onloadend = function (e) {
-
-                            preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
-                            // convert dataURL to arrayBuffer
-
-                            setImageBytes(dataID, e.target.result)
-                            $('#' + dataID).LoadingOverlay('hide')
-
-                        }
-                        reader.readAsDataURL(file)
-                    },
-                    error(err) {
-                        console.log(err.message);
-                    },
-                });
-            })
-
-            $('#e_img_file').change(function () {
-                let dataID = $('#e_img_file').attr('data-id')
-                let preview = $('#' + dataID + ' img')
-                $('#' + dataID).LoadingOverlay('show')
-                let file = $(this)[0].files[0]
-                let quality = getCompressionQuality(file)
-                new Compressor(file, {
-                    quality: quality,
-
-                    // The compression process is asynchronous,
-                    // which means you have to access the `result` in the `success` hook function.
-                    success(result) {
-                        let reader = new FileReader()
-
-                        reader.onloadend = function (e) {
-                            preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
-                            setImageBytes(dataID, e.target.result)
-                            $('#' + dataID).LoadingOverlay('hide')
-
-                        }
-                        reader.readAsDataURL(result)
-                    },
-                    error(err) {
-                        console.log(err.message);
-                    },
-                });
-            })
-            // $('#autoFillOffCanvas').offcanvas('show')
         })
+        $('#dept option').not(':disabled').each(function () {
+            $(this).val($(this).text());
+        });
+        $('#input-json').on('keyup', function () {
+            // detect enter key
+            if (event.keyCode == 13) {
+                $('#input-json-btn').click()
+            }
+        })
+        $('#name').change(async function () {
+            let name = $(this).val()
+            signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
+
+        })
+
+        $('#pr-cm').change(function () {
+            let data_id = $(this).find('option:selected').attr('id')
+            $(this).attr('data-id', data_id)
+            if (data_id == 'pr_cm_maintenance') {
+                $('#pr_cm_maintenance_ea').val('1').parent().show()
+            } else {
+                $('#pr_cm_maintenance_ea').val('').parent().hide()
+            }
+            if (data_id == 'pr_cm_other') {
+                showOtherFieldInput('pr_cm_other_text')
+            } else {
+                $('#pr_cm_other_text').val('').parent().hide()
+            }
+
+        })
+        $('#pr-status').change(function () {
+            let data_id = $(this).find('option:selected').attr('id')
+            $(this).attr('data-id', data_id)
+            if (data_id == 'pr_status_other') {
+                showOtherFieldInput('pr_status_other_text')
+            } else {
+                $('#pr_status_other_text').val('').parent().hide()
+            }
+        })
+        $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('click', function () {
+            $('#e_img_file').attr('data-id', $(this).attr('id')).click()
+        })
+
+        $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragover', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('bg-info-subtle').addClass('text-bg-info')
+        })
+        $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragleave', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            $(this).removeClass('text-bg-info').addClass('bg-info-subtle')
+        })
+
+        $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('drop', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            let dataID = $(this).attr('id')
+            $('#e_img_file').attr('data-id', dataID)
+
+            let preview = $('#' + dataID + ' img')
+            $('#' + dataID).LoadingOverlay('show')
+            // check if file is url
+            if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
+                preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
+
+                // getArrayBuffer from url
+                $.ajax({
+                    url: scriptUrl,
+                    method: 'POST',
+                    data: {
+                        url: preview.attr('src'),
+                        opt: 'getImage'
+                    },
+                    success: function (data) {
+
+
+
+                        // convert base64 to file
+                        let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
+                            type: data.type,
+                            lastModified: Date.now()
+                        })
+
+                        let quality = getCompressionQuality(file)
+
+
+                        new Compressor(file, {
+                            quality: quality,
+                            success(result) {
+
+                                let fr = new FileReader()
+                                fr.onload = function (e) {
+                                    setImageBytes(dataID, e.target.result)
+                                    preview.attr('data-type', data.type.split('/')[1])
+                                    $('#' + dataID).LoadingOverlay('hide')
+                                }
+                                fr.readAsArrayBuffer(result)
+                            },
+                            error(err) {
+                                console.log(err.message);
+                            },
+                        });
+
+                    }
+                })
+                return
+            }
+            let file = e.originalEvent.dataTransfer.files[0]
+            if (!file) {
+                return
+            }
+            let quality = getCompressionQuality(file)
+
+            new Compressor(file, {
+                quality: quality,
+                success(result) {
+                    let reader = new FileReader()
+                    reader.onloadend = function (e) {
+
+                        preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                        // convert dataURL to arrayBuffer
+
+                        setImageBytes(dataID, e.target.result)
+                        $('#' + dataID).LoadingOverlay('hide')
+
+                    }
+                    reader.readAsDataURL(file)
+                },
+                error(err) {
+                    console.log(err.message);
+                },
+            });
+        })
+
+        $('#e_img_file').change(function () {
+            let dataID = $('#e_img_file').attr('data-id')
+            let preview = $('#' + dataID + ' img')
+            $('#' + dataID).LoadingOverlay('show')
+            let file = $(this)[0].files[0]
+            let quality = getCompressionQuality(file)
+            new Compressor(file, {
+                quality: quality,
+
+                // The compression process is asynchronous,
+                // which means you have to access the `result` in the `success` hook function.
+                success(result) {
+                    let reader = new FileReader()
+
+                    reader.onloadend = function (e) {
+                        preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                        setImageBytes(dataID, e.target.result)
+                        $('#' + dataID).LoadingOverlay('hide')
+
+                    }
+                    reader.readAsDataURL(result)
+                },
+                error(err) {
+                    console.log(err.message);
+                },
+            });
+        })
+        // $('#autoFillOffCanvas').offcanvas('show')
+
         $('#pr_price').on('keyup', function () {
             let price = $(this).val()
             let vat = price * 0.07
@@ -643,8 +644,8 @@
             return quality
         }
 
-        function setImageBytes(dataID,file) {
-            if(typeof file == 'string') file = base64ToArrayBuffer(file.split(',')[1])
+        function setImageBytes(dataID, file) {
+            if (typeof file == 'string') file = base64ToArrayBuffer(file.split(',')[1])
             switch (dataID) {
                 case 'e_img_div':
                     e_img_bytes = file
