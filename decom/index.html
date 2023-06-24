@@ -666,7 +666,7 @@
         }
         $('#myForm').submit(async function () {
             const embedImage = async function (bytes, key) {
-                let preview = $('#'+key+' img')
+                let preview = $('#' + key + ' img')
                 console.log(preview.attr('data-type'));
                 let e_img
                 if (preview.attr('data-type') == 'png') {
@@ -680,19 +680,7 @@
             }
             $.LoadingOverlay("show");
             event.preventDefault()
-            let form_obj = {}
-            $('#myForm').serializeArray().forEach(function (item) {
-                form_obj[item.name] = item.value
-            })
-            form_obj['e_name'] = toTitleCase(form_obj['e_name'])
-            $.ajax({
-                url: scriptUrl,
-                type: 'POST',
-                data: {
-                    opt: 'save',
-                    form_obj: JSON.stringify(form_obj)
-                }
-            })
+
             if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
             pdfDoc.registerFontkit(fontkit);
@@ -723,16 +711,16 @@
                     let textField = form.getTextField($(this).prop('id'))
                     textField.setText('✓')
                     textField.updateAppearances(symbol)
-                    
+
                 } else {
                     console.log($(this).prop('id'))
                     form.getTextField($(this).prop('id')).setText('')
                 }
             })
 
-            form.getTextField('dept').setText(form_obj['dept'])
-            form.getTextField('e_decom_by').setText(form_obj['e_decom_by'])
-            form.getTextField('reason').setText(form_obj['reason'])
+            form.getTextField('dept').setText($('#dept').val())
+            form.getTextField('e_decom_by').setText($('#e_decom_by').val())
+            form.getTextField('reason').setText($('#reason').val())
             form.getTextField('date').setText(new Date().toLocaleDateString('th-TH', {
                 year: 'numeric',
                 month: 'numeric',
@@ -782,6 +770,22 @@
                 let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
                 let name = 'DECOM-' + e_code + '-' + e_name + '-' + dept + '.pdf'
                 $(iframe).show(200)
+                let form_obj = {}
+                $('#myForm').serializeArray().forEach(function (item) {
+                    form_obj[item.name] = item.value
+                })
+                form_obj['e_name'] = toTitleCase(form_obj['e_name'])
+                form_obj['pdfFile'] = pdfdatauri
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'POST',
+                    data: {
+                        opt: 'save',
+                        form_obj: JSON.stringify(form_obj)
+                    }
+                })
+
+
                 $('#a-download').attr('href', url)
                 $('#a-download').attr('download', name).show()
                 // scroll to pdf
@@ -803,33 +807,6 @@
         $('.offcanvas').on('shown.bs.offcanvas', function () {
             $('.offcanvas').find('textarea').focus()
         })
-    </script>
-    <script>
-        async function copyPages(url, res, name) {
-            var binary_string = window.atob(res);
-            var len = binary_string.length;
-            var bytes = new Uint8Array(len);
-            for (var i = 0; i < len; i++) {
-                bytes[i] = binary_string.charCodeAt(i);
-            }
-            const firstPDFBytes = bytes.buffer
-            const firstPDFDoc = await PDFDocument.load(firstPDFBytes)
-            const [firstPDFPage] = await pdfDoc.copyPages(firstPDFDoc, [0])
-            pdfDoc.insertPage(0, firstPDFPage)
-            const pdfBytes = await pdfDoc.save()
-            const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
-            Swal.fire({
-                icon: 'success',
-                title: 'สร้างไฟล์เสร็จสิ้น',
-                timer: 2000,
-                showConfirmButton: false,
-            })
-            $('#a-download').attr('href', pdfDataUri)
-            $('#a-download').attr('download', name).show()
-            var iframe = document.getElementById('pdf')
-            iframe.src = pdfDataUri
-            $(iframe).slideDown(100)
-        }
     </script>
     <script>
         function copy() {
