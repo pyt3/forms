@@ -764,18 +764,7 @@
             }
             $.LoadingOverlay("show");
             event.preventDefault()
-            let form_obj = {}
-            $('#myForm input:not([type="file"]), select').each(function () {
-                form_obj[$(this).attr('name')] = $(this).val()
-            })
-            $.ajax({
-                url: scriptUrl,
-                type: 'POST',
-                data: {
-                    opt: 'save',
-                    form_obj: JSON.stringify(form_obj)
-                }
-            })
+
             if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
             pdfDoc.registerFontkit(fontkit);
@@ -795,7 +784,7 @@
             if (e_img_nameplate_bytes) {
                 imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
             }
-           
+
             form.getTextField('pmhee').setText('คุณชัยวัฒน์ ไสลวงษ์')
             form.getTextField('BME').setText('แผนกวิศวกรรมการแพทย์ โรงพยาบาลพญาไท 3')
             form.getTextField('pr_date').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }).toLocaleUpperCase()))
@@ -845,12 +834,25 @@
             if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
             form.updateFieldAppearances(sarabun);
             form.flatten()
-            if(!e_img_bytes && !e_img_code_bytes && !e_img_nameplate_bytes){
+            if (!e_img_bytes && !e_img_code_bytes && !e_img_nameplate_bytes) {
                 // remove last page
                 pdfDoc.removePage(pdfDoc.getPages().length - 1)
             }
             var pdfBytes = await pdfDoc.save()
             var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
+            let form_obj = {}
+            $('#myForm input:not([type="file"]), select').each(function () {
+                form_obj[$(this).attr('name')] = $(this).val()
+            })
+            form_obj['pdfFile'] = pdfdatauri
+            $.ajax({
+                url: scriptUrl,
+                type: 'POST',
+                data: {
+                    opt: 'save',
+                    form_obj: JSON.stringify(form_obj)
+                }
+            })
             $.LoadingOverlay("hide");
             Swal.fire({
                 icon: 'success',
