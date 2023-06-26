@@ -159,7 +159,7 @@
                         </div>
                         <div class="col-md-4 mt-3">
                             <label for="e_depreciation">ราคาค่าเสื่อมปัจจุบัน</label>
-                            <input type="text" name="e_depreciation" id="e_depreciation" class="form-control">
+                            <input type="text" name="e_deprication" id="e_deprication" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
                             <label for="e_decom_location">สถานที่จัดเก็บเครื่องมือที่ขอยกเลิกการใช้งาน</label>
@@ -476,6 +476,7 @@
                         opt: 'getImage'
                     },
                     success: function (data) {
+                        console.log(data)
                         // convert base64 to file
                         let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
                             type: data.type,
@@ -591,6 +592,11 @@
                 default:
                     break;
             }
+            console.log('e_img_sticker_bytes', e_img_sticker_bytes);
+            console.log('e_img_bytes', e_img_bytes);
+            console.log('e_img_code_bytes', e_img_code_bytes);
+            console.log('e_img_nameplate_bytes', e_img_nameplate_bytes);
+
         }
     </script>
     <script>
@@ -621,17 +627,10 @@
         $('#1-file-nsmart, #2-file-other').on('change', function (e) {
             let files = e.target.files
             let file = files[0]
+            if(!file) return;
             renderNsmartFile(file, $(this))
         })
         function renderNsmartFile(file, ele) {
-            if (file.type != 'application/pdf') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณาเลือกไฟล์ PDF',
-                    text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
-                })
-                return
-            }
             if (file.size > 10000000) {
                 Swal.fire({
                     icon: 'error',
@@ -692,16 +691,15 @@
             }
             let imgs_obj = {}
             if (e_img_bytes) {
-                imgs_obj['e_img'] = await embedImage(e_img_bytes, 'e_img_file')
+                imgs_obj['e_img'] = await embedImage(e_img_bytes, 'e_img_div')
             }
             if (e_img_code_bytes) {
-                imgs_obj['e_img_code'] = await embedImage(e_img_code_bytes, 'e_img_code_file')
+                imgs_obj['e_img_code'] = await embedImage(e_img_code_bytes, 'e_img_code_div')
             }
             if (e_img_nameplate_bytes) {
-                imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
+                imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_div')
             }
             if (e_img_sticker_bytes) {
-                console.log("🚀 !! e_img_sticker_bytes:", e_img_sticker_bytes)
                 imgs_obj['e_img_sticker'] = await embedImage(e_img_sticker_bytes, 'e_sticker_div')
             }
             console.log(imgs_obj);
@@ -718,9 +716,9 @@
                 }
             })
 
-            form.getTextField('dept').setText($('#dept').val())
-            form.getTextField('e_decom_by').setText($('#e_decom_by').val())
-            form.getTextField('reason').setText($('#reason').val())
+            form.getTextField('dept').setText($('#dept').val()|| '-')
+            form.getTextField('e_decom_by').setText($('#e_decom_by').val()|| '-')
+            form.getTextField('reason').setText($('#reason').val() || '-')
             form.getTextField('date').setText(new Date().toLocaleDateString('th-TH', {
                 year: 'numeric',
                 month: 'numeric',
@@ -730,7 +728,7 @@
 
             $('form input').not('input[type="checkbox"]').each(function () {
                 let _this = $(this)
-                if (_this.val() == '') return
+                if (_this.val() == '' && _this.val() == null) return
                 if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-other'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'e_brand/model') {
                     let val = _this.val().split('/')
@@ -740,6 +738,7 @@
                 }
                 form.getTextField(_this.prop('id')).setText(_this.val())
             })
+            console.log('aaaaa')
             if (signature) form.getTextField('bme_sign').setImage(signature)
             if (imgs_obj['e_img_sticker']) form.getTextField('sticker_img').setImage(imgs_obj['e_img_sticker'])
             if (imgs_obj['e_img']) form.getTextField('e_img').setImage(imgs_obj['e_img'])
@@ -793,6 +792,7 @@
                     scrollTop: $(iframe).offset().top
                 }, 500);
                 pdfDoc = await PDFDocument.load(form_pdf_bytes)
+                $('#1-file-nsmart, #2-file-other').change()
 
             })
         })
