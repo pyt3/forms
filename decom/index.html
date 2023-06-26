@@ -733,11 +733,6 @@
 
             form.getTextField('dept').setText($('#dept').val() || '-')
             form.getTextField('e_decom_by').setText($('#e_decom_by').val() || '-')
-            form.getTextField('date').setText(new Date().toLocaleDateString('th-TH', {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric'
-            }))
             form.getTextField('e_hospital').setText('โรงพยาบาลพญาไท 3')
 
             $('form input').not('input[type="checkbox"]').each(function () {
