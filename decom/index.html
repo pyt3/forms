@@ -673,7 +673,7 @@
                     type: 'application/pdf'
                 })
                 var url = URL.createObjectURL(blob)
-                iframe.src = url + '#toolbar=1&view=fitH'
+                iframe.src = url + '#view=fitV'
                 $(iframe).show()
             }
             reader.readAsArrayBuffer(file);
@@ -772,7 +772,7 @@
                 // open pdf in new small window
                 var blob = new Blob([pdfBytes], { type: 'application/pdf' })
                 var url = URL.createObjectURL(blob)
-                iframe.src = url + '#toolbar=1&view=fitH'
+                iframe.src = url + '#toolbar=1&zoom=75'
                 let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
                 let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
                 let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
