@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+    <!-- dont keep cache -->    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
     <base target="_top">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -186,10 +189,6 @@
                                 <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
                                 <option value="SOM KONKAEW">SOM KONKAEW</option>
                             </select>
-                        </div>
-                        <div class="col-md-12 mt-3">
-                            <label for="reason">เหตุผลในการยกเลิก</label>
-                            <textarea name="reason" id="reason" class="form-control" rows="3"></textarea>
                         </div>
                         <div class="col-12 m-0 p-0">
                             <div class="row m-0 p-0">
@@ -620,7 +619,7 @@
             $(this).removeClass('from-control-lg')
             let files = e.originalEvent.dataTransfer.files
             let file = files[0]
-            if(!file) return;
+            if (!file) return;
             // set files to $(this)
             $(this).prop('files', files)
             renderNsmartFile(file, $(this))
@@ -628,7 +627,7 @@
         $('#1-file-nsmart, #2-file-other').on('change', function (e) {
             let files = e.target.files
             let file = files[0]
-            if(!file) return;
+            if (!file) return;
             renderNsmartFile(file, $(this))
         })
         function renderNsmartFile(file, ele) {
@@ -725,8 +724,8 @@
                 }
             })
 
-            form.getTextField('dept').setText($('#dept').val()|| '-')
-            form.getTextField('e_decom_by').setText($('#e_decom_by').val()|| '-')
+            form.getTextField('dept').setText($('#dept').val() || '-')
+            form.getTextField('e_decom_by').setText($('#e_decom_by').val() || '-')
             form.getTextField('reason').setText($('#reason').val() || '-')
             form.getTextField('date').setText(new Date().toLocaleDateString('th-TH', {
                 year: 'numeric',
