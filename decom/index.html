@@ -620,6 +620,7 @@
             $(this).removeClass('from-control-lg')
             let files = e.originalEvent.dataTransfer.files
             let file = files[0]
+            if(!file) return;
             // set files to $(this)
             $(this).prop('files', files)
             renderNsmartFile(file, $(this))
@@ -631,6 +632,14 @@
             renderNsmartFile(file, $(this))
         })
         function renderNsmartFile(file, ele) {
+            if (file.type != 'application/pdf') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกไฟล์ PDF',
+                    text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
+                })
+                return
+            }
             if (file.size > 10000000) {
                 Swal.fire({
                     icon: 'error',
