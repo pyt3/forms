@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <!-- icon -->
+    <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Prompt', sans-serif;
+            /* background-color: #e9b33b; */
+            /* background-color: #D3D3D3; */
+        }
+
+        #sticker {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <title>PR Form</title>
+</head>
+
+<body class="bg-body-tertiary">
+    <main>
+        <div class="container-fluid">
+            <div class="row mt-3 g-3 justify-content-center">
+                <div class="col-md-4 has-code d-none">
+                    <div class="form-floating">
+                        <input type="text" id="request-no" name="request-no" class="form-control" id="floatingInput"
+                            readonly>
+                        <label for="request-no">Request No.</label>
+                    </div>
+                </div>
+                <div class="col-md-4 has-code d-none">
+                    <div class="form-floating">
+                        <input type="text" id="code" name="code" class="form-control" id="floatingInput" readonly>
+                        <label for="code">Code</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="update">อัพเดท</label>
+                    <textarea name="update" id="update" class="form-control" rows="5"
+                        placeholder="กรอกข้อมูลอัพเดท"></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label for="name">ชื่อผู้กรอก</label>
+                    <select name="name" id="name" class="form-select">
+                        <option value="" selected disabled>ชื่อผู้กรอก</option>
+                        <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                        <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                        <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                        <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                        <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                        <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                        <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                        <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                        <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                        <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                        <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                        <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                        <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
+                        <option value="PHIMRAPEEPORN PHRASOPOL">PHIMRAPEEPORN PHRASOPOL</option>
+                        <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                        <option value="SOM KONKAEW">SOM KONKAEW</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3 justify-content-center">
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100" id="submit">ยืนยัน</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        $(document).ready(() => {
+            liff.init({
+                liffId: '1661543046-a1pJexbX',
+                withLoginOnExternalBrowser: true
+            })
+
+            liff.ready.then(() => {
+                initialData();
+            })
+        })
+        function initialData() {
+            let url = new URL(window.location.href);
+            let code = url.searchParams.get("code");
+            let request_no = url.searchParams.get("request_no");
+            $("#code").val(code);
+            $("#request-no").val(request_no);
+            $(".has-code").removeClass("d-none")
+            $("#submit").click(() => {
+                let update = $("#update").val();
+                let name = $("#name").val();
+                if (update == "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณากรอกข้อมูลอัพเดท',
+                        text: 'กรุณากรอกข้อมูลอัพเดท',
+                    })
+                } else if (name == null || name == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาเลือกชื่อผู้กรอก',
+                        text: 'กรุณาเลือกชื่อผู้กรอก',
+                    })
+                } else {
+                    $.LoadingOverlay("show");
+                    $.post("https://pro.sakorncable.com/index.php/account/updatejob",
+                        {
+                            code: code,
+                            request_no: request_no,
+                            update: update,
+                        }, function (data) {
+                            $.LoadingOverlay("hide");
+                            if (data == 1) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'อัพเดทข้อมูลสำเร็จ',
+                                    text: 'อัพเดทข้อมูลสำเร็จ',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.close();
+                                    }
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'อัพเดทข้อมูลไม่สำเร็จ',
+                                    text: 'อัพเดทข้อมูลไม่สำเร็จ',
+                                })
+                            }
+                        })
+                }
+            })
+
+        }    
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</body>
+
+</html>
