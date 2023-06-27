@@ -143,7 +143,7 @@
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                     })
                 } else {
-                    let text = `UPDATE ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} \nรหัส ${code} \n\n${update} \n\n#${name}`
+                    let text = `UPDATE ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })}<br>รหัส ${code} <br><br>${update} <br><br>#${name}`
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
                         text: text,
@@ -154,16 +154,15 @@
                         allowEscapeKey: false,
                     }).then(result => {
                         if (result.isConfirmed) {
-                            updateData(code, jobid, update, text);
+                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'));
                         }
                     })
-                    $.LoadingOverlay("show");
-
+                    
                 }
             })
-
+            
         }
-
+        
         function updateData(code, jobid, update, text) {
             $.ajax({
                 url: scriptUrl,
