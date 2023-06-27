@@ -96,6 +96,7 @@
         </div>
     </main>
     <script>
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         $(document).ready(() => {
             liff.init({
                 liffId: '1661543046-a1pJexbX',
@@ -103,6 +104,17 @@
             })
 
             liff.ready.then(() => {
+                // if (liff.getContext().type != 'group') {
+                //     return Swal.fire({
+                //         icon: 'error',
+                //         title: 'กรุณาเข้าใช้งานในกลุ่มไลน์บนมือถือ',
+                //         allowOutsideClick: false,
+                //         allowEscapeKey: false,
+                //         confirmButtonText: 'ตกลง'
+                //     }).then(() => {
+                //         liff.closeWindow();
+                //     })
+                // }
                 initialData();
             })
         })
@@ -111,7 +123,7 @@
             let code = url.searchParams.get("code");
             let jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
-            if(action == 'close') return
+            if (action == 'close') return
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -131,36 +143,59 @@
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                     })
                 } else {
+                    let text = `UPDATE ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} \nรหัส ${code} \n\n${update} \n\n#${name}`
+                    Swal.fire({
+                        title: 'ตรวจสอบข้อมูล',
+                        text: text,
+                        showCancelButton: true,
+                        confirmButtonText: 'ยืนยัน',
+                        cancelButtonText: 'ยกเลิก',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            updateData(code, jobid, update, text);
+                        }
+                    })
                     $.LoadingOverlay("show");
-                    $.post("https://pro.sakorncable.com/index.php/account/updatejob",
-                        {
-                            code: code,
-                            jobid: jobid,
-                            update: update,
-                        }, function (data) {
-                            $.LoadingOverlay("hide");
-                            if (data == 1) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'อัพเดทข้อมูลสำเร็จ',
-                                    text: 'อัพเดทข้อมูลสำเร็จ',
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.close();
-                                    }
-                                })
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'อัพเดทข้อมูลไม่สำเร็จ',
-                                    text: 'อัพเดทข้อมูลไม่สำเร็จ',
-                                })
-                            }
-                        })
+
                 }
             })
 
-        }    
+        }
+
+        function updateData(code, jobid, update, text) {
+            $.ajax({
+                url: scriptUrl,
+                method: 'POST',
+                data: {
+                    code: code,
+                    jobid: jobid,
+                    update: update
+                },
+                success: (res) => {
+                    if (res.status == 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'อัพเดทข้อมูลสำเร็จ',
+                            text: 'อัพเดทข้อมูลสำเร็จ',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'อัพเดทข้อมูลไม่สำเร็จ',
+                            text: 'อัพเดทข้อมูลไม่สำเร็จ',
+                        })
+                    }
+                },
+            })
+            liff.sendMessages([{
+                type: 'text',
+                text: text
+            }]).then(() => {
+                liff.closeWindow();
+            })
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
