@@ -123,7 +123,9 @@
             let code = url.searchParams.get("code");
             let jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
-            if (action == 'close') return
+            if (action == 'close') {
+                return liff.closeWindow();
+            } 
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none").addclass('bg-primary-subtle')
