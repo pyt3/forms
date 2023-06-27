@@ -149,7 +149,7 @@
                     let text = `UPDATE ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })}<br>รหัส ${code} <br><br>${update} <br><br>#${name}`
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
-                        text: text,
+                        html: text,
                         showCancelButton: true,
                         confirmButtonText: 'ยืนยัน',
                         cancelButtonText: 'ยกเลิก',
