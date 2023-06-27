@@ -109,9 +109,11 @@
         function initialData() {
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
-            let request_no = url.searchParams.get("request_no");
+            let jobid = url.searchParams.get("jobid");
+            let action = url.searchParams.get("action");
+            if(action == 'close') return
             $("#code").val(code);
-            $("#request-no").val(request_no);
+            $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
             $("#submit").click(() => {
                 let update = $("#update").val();
@@ -133,7 +135,7 @@
                     $.post("https://pro.sakorncable.com/index.php/account/updatejob",
                         {
                             code: code,
-                            request_no: request_no,
+                            jobid: jobid,
                             update: update,
                         }, function (data) {
                             $.LoadingOverlay("hide");
