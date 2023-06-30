@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -117,15 +119,16 @@
                         <option>PWA LIFE CENTER</option>
                         <option>PWA ชะลอวัย</option>
                         <option>VEHICLE</option>
+                        <option>WARD 7</option>
+                        <option>WARD 8</option>
+                        <option>WARD 9</option>
                         <option>WARD 10</option>
                         <option>WARD 11</option>
                         <option>WARD 12</option>
                         <option>WARD 14</option>
                         <option>WARD 15</option>
                         <option>WARD 17</option>
-                        <option>WARD 7</option>
-                        <option>WARD 8</option>
-                        <option>WARD 9</option>
+                        <option>ชั้น 20</option>
                         <option>WAREHOUSE</option>
                         <option>X-RAY</option>
                         <option>รับส่ง</option>
@@ -389,18 +392,18 @@
                         sendPost(data)
                     }
                 })
-            } else if (start.toLowerCase().indexOf('ward') > -1 || end.toLowerCase().indexOf('ward') > -1) {
+            } else if (start.toLowerCase().indexOf('ward') > -1 || end.toLowerCase().indexOf('ward') > -1 || start == 'ชั้น 20' || end == 'ชั้น 20') {
                 let start_room_html = `<div class="col-12"><label for="start-room">ห้องต้นทาง ${start}</label><input id="start-room" class="form-control"></div>`
                 let end_room_html = `<div class="col-12"><label for="end-room">ห้องปลายทาง ${end}</label><input id="end-room" class="form-control"></div>`
                 let div = $('<div>', { class: 'container-fluid' }).append($('<div>', { class: 'row g-2' }))
                 let title = 'กรุณาระบุ'
                 div.find('.row').append($('<div>', { class: 'col-12 h5' }).html(`<i class="bi bi-door-open-fill"></i><span id="room-swal-title">${title}</span>`))
                 div.find('.row').append($('<div>', { class: 'col-12 alert alert-warning p-1' }).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้อง<br>กรุณาเว้นว่างไว้</u>`))
-                if (start.toLowerCase().indexOf('ward') > -1) {
+                if (start.toLowerCase().indexOf('ward') > -1 || start == 'ชั้น 20') {
                     title += 'ห้องต้นทาง'
                     div.find('.row').append($(start_room_html))
                 }
-                if (end.toLowerCase().indexOf('ward') > -1) {
+                if (end.toLowerCase().indexOf('ward') > -1 || end == 'ชั้น 20') {
                     title += ' ห้องปลายทาง'
                     div.find('.row').append($(end_room_html))
                 }
