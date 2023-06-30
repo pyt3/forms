@@ -104,17 +104,17 @@
             })
 
             liff.ready.then(() => {
-                // if (liff.getContext().type != 'group') {
-                //     return Swal.fire({
-                //         icon: 'error',
-                //         title: 'กรุณาเข้าใช้งานในกลุ่มไลน์บนมือถือ',
-                //         allowOutsideClick: false,
-                //         allowEscapeKey: false,
-                //         confirmButtonText: 'ตกลง'
-                //     }).then(() => {
-                //         liff.closeWindow();
-                //     })
-                // }
+                if (liff.getContext().type != 'group') {
+                    return Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาเข้าใช้งานในกลุ่มไลน์บนมือถือ',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonText: 'ตกลง'
+                    }).then(() => {
+                        liff.closeWindow();
+                    })
+                }
                 initialData();
             })
         })
