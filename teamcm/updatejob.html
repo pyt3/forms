@@ -60,12 +60,12 @@
                         <label for="code">Code</label>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12 mobile">
                     <label for="update">อัพเดท</label>
                     <textarea name="update" id="update" class="form-control" rows="5"
                         placeholder="กรอกข้อมูลอัพเดท"></textarea>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 mobile">
                     <label for="name">ชื่อผู้กรอก</label>
                     <select name="name" id="name" class="form-select">
                         <option value="" selected disabled>ชื่อผู้กรอก</option>
@@ -88,9 +88,19 @@
                     </select>
                 </div>
             </div>
-            <div class="row mt-3 justify-content-center">
+            <div class="row mt-3 justify-content-center mobile">
                 <div class="col-md-4">
                     <button class="btn btn-primary w-100" id="submit">ยืนยัน</button>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row g-3 mt-3 mb-5 justify-content-center">
+                <div class="col-md-4">
+                    <button class="btn btn-danger w-100" id="summary-btn">สรุปงาน</button>
+                </div>
+                <div class="col-12 d-none">
+                    <textarea name="" id="summary" class="form-control" rows="15"></textarea>
                 </div>
             </div>
         </div>
@@ -105,18 +115,10 @@
 
             liff.ready.then(() => {
                 if (liff.getContext().type != 'group') {
-                    return Swal.fire({
-                        icon: 'error',
-                        title: 'กรุณาเข้าใช้งานในกลุ่มไลน์บนมือถือ',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        confirmButtonText: 'ตกลง'
-                    }).then(() => {
-                        liff.closeWindow();
-                    })
+                    $('.mobile').addClass('d-none')
                 }
-                initialData();
             })
+            initialData();
         })
         function initialData() {
             let url = new URL(window.location.href);
@@ -125,7 +127,7 @@
             let action = url.searchParams.get("action");
             if (action == 'close') {
                 return liff.closeWindow();
-            } 
+            }
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -159,12 +161,38 @@
                             updateData(code, jobid, update, text.replace(/<br>/g, '\n'));
                         }
                     })
-                    
+
                 }
             })
-            
+
+            $('#summary-btn').click(function () {
+                $.LoadingOverlay("show");
+                $.ajax({
+                    url: scriptUrl,
+                    method: 'POST',
+                    data: {
+                        jobid: jobid,
+                        opt: 'summary'
+                    },
+                    success: (res) => {
+                        console.log("🚀 !! res:", res)
+                        $.LoadingOverlay("hide");
+                        if (res.status == 'success') {
+                            $('#summary').val(res.result)
+                            $('#summary').parent().removeClass('d-none').focus()
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'สรุปงานไม่สำเร็จ',
+                                text: 'สรุปงานไม่สำเร็จ',
+                            })
+                        }
+                    },
+                })
+            })
+
         }
-        
+
         function updateData(code, jobid, update, text) {
             $.ajax({
                 url: scriptUrl,
