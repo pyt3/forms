@@ -77,9 +77,10 @@
                                 <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
                                 <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
                                 <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
-                                <option value="PHIMRAPEEPORN PHRASOPOL">PHIMRAPEEPORN PHRASOPOL</option>
                                 <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
                                 <option value="SOM KONKAEW">SOM KONKAEW</option>
+                                <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
+                                <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
                             </select>
                         </div>
                     </div>
@@ -684,7 +685,7 @@
             $(this).removeClass('from-control-lg')
             let files = e.originalEvent.dataTransfer.files
             let file = files[0]
-            if(!file) return;
+            if (!file) return;
             // set files to $(this)
             $(this).prop('files', files)
             renderNsmartFile(file, $(this))
@@ -693,7 +694,7 @@
         $('#1-file-nsmart, #2-file-quatation').on('change', function (e) {
             let files = e.target.files
             let file = files[0]
-            if(!file) return;
+            if (!file) return;
             renderNsmartFile(file, $(this))
         })
 
