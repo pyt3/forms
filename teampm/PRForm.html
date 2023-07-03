@@ -230,6 +230,11 @@
                                         &nbsp;รูปภาพ Nameplate
                                     </div>
                                 </div>
+                                <div class="col-12 text-end">
+                                    <button type="button"
+                                        class="btn btn-sm btn-outline-danger bg-danger-subtle mt-3 text-dark"
+                                        id="img-only-btn">สร้างเฉพาะรูปภาพ</button>
+                                </div>
                             </div>
                         </div>
                         <input type="file" name="e_img_file" id="e_img_file" hidden>
@@ -427,6 +432,84 @@
         $('#name').change(async function () {
             let name = $(this).val()
             signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
+
+        })
+
+        $('#img-only-btn').click(async function () {
+            const embedImage = async function (bytes, key) {
+                let preview, e_img
+                switch (key) {
+                    case 'e_img_file':
+                        preview = $('#preview-img')
+                        break;
+                    case 'e_img_code_file':
+                        preview = $('#preview-img-code')
+                        break;
+                    case 'e_img_nameplate_file':
+                        preview = $('#preview-img-nameplate')
+                        break;
+                    default:
+                        break;
+                }
+                if (preview.attr('data-type') == 'png') {
+                    e_img = await pdfDoc.embedPng(bytes)
+                } else if (preview.attr('data-type') == 'jpg') {
+                    e_img = await pdfDoc.embedJpg(bytes)
+                } else if (preview.attr('data-type') == 'jpeg') {
+                    e_img = await pdfDoc.embedJpg(bytes)
+                }
+                return e_img
+            }
+            $.LoadingOverlay("show");
+            event.preventDefault()
+
+            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            var form = pdfDoc.getForm()
+            let imgs_obj = {}
+            if (e_img_bytes) {
+                imgs_obj['e_img'] = await embedImage(e_img_bytes, 'e_img_file')
+            }
+            if (e_img_code_bytes) {
+                imgs_obj['e_img_code'] = await embedImage(e_img_code_bytes, 'e_img_code_file')
+            }
+            if (e_img_nameplate_bytes) {
+                imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
+            }
+            if (imgs_obj['e_img']) form.getTextField('e_img').setImage(imgs_obj['e_img'])
+            if (imgs_obj['e_img_code']) form.getTextField('e_img_code').setImage(imgs_obj['e_img_code'])
+            if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
+            form.flatten()
+            // remove first page
+            pdfDoc.removePage(0)
+            var pdfBytes = await pdfDoc.save()
+            var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 2000,
+                showConfirmButton: false,
+            }).then(async () => {
+                var iframe = document.getElementById('pdf')
+                // open pdf in new small window
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&view=fitH'
+                let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
+                let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
+                let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
+                let name = 'IMAGE-ONLY-' + e_code + '-' + e_name + '-' + dept + '.pdf'
+                $(iframe).show(200)
+                $('#a-download').attr('href', url)
+                $('#a-download').attr('download', name).show()
+                // scroll to pdf
+                $('html, body').animate({
+                    scrollTop: $(iframe).offset().top
+                }, 500);
+                pdfDoc = await PDFDocument.load(form_pdf_bytes)
+                $('#1-file-nsmart, #2-file-quatation').change()
+
+            })
 
         })
 
