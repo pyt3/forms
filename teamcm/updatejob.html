@@ -158,7 +158,7 @@
                         allowEscapeKey: false,
                     }).then(result => {
                         if (result.isConfirmed) {
-                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'));
+                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'),name);
                         }
                     })
 
@@ -193,14 +193,15 @@
 
         }
 
-        function updateData(code, jobid, update, text) {
+        function updateData(code, jobid, update, text ,name) {
             $.ajax({
                 url: scriptUrl,
                 method: 'POST',
                 data: {
                     code: code,
                     jobid: jobid,
-                    update: update
+                    update: update,
+                    name: name,
                 },
                 success: (res) => {
                     if (res.status == 'success') {
