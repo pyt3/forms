@@ -147,7 +147,7 @@
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                     })
                 } else {
-                    let text = `UPDATE<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br>#${name}`
+                    let text = `UPDATE<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
                         html: text,
@@ -223,6 +223,21 @@
                 text: text
             }]).then(() => {
                 liff.closeWindow();
+            })
+        }
+
+        $('.user-select-all').click(function () {
+            // copy to clipboard
+            var $temp = $("<textarea>");
+            $("body").append($temp);
+            $temp.val($(this).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+            Swal.fire({
+                icon: 'success',
+                title: 'คัดลอกข้อความสำเร็จ',
+                text: 'คัดลอกข้อความสำเร็จ',
+                timer: 1000,
             })
         }
     </script>
