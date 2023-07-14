@@ -821,9 +821,11 @@
             resizeCanvas();
         })
         async function getDeptList(client) {
+            console.log(client)
             return firestore.collection(client.toUpperCase() + '_summary').doc('dept').get().then(doc => {
                 let deptList = []
                 let docdata = doc.data()
+                console.log("🚀 !! docdata:", docdata)
                 Object.keys(docdata).forEach(arr => {
                     deptList.push(docdata[arr])
                 })
