@@ -203,7 +203,7 @@ function getdata(result) {
                                             let url = new URL('line://app/' + liffId[d.form])
                                             // let url = new URL('https://liff.line.me/1655873446-gp23vvmV')
                                             // let url = new URL('https://pyt3.github.io/forms/daily%20check/forms/' + d.form + '?' + new Date().getTime())
-                                            url.searchParams.set("client", 'DEMO')
+                                            url.searchParams.set("client", 'SNH')
                                             url.searchParams.set("id", d.code)
                                             url.searchParams.set("name", d.name)
                                             url.searchParams.set("dept", d.dept)
