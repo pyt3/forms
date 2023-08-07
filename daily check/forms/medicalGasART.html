@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous"></script>
+    <!-- <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"> -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="icon" href="../icon.png" type="image/png">
+    <style>
+        body {
+            max-width: 100vw;
+            height: 100%;
+            /* overflow-x: hidden; */
+            font-family: 'Akshar', sans-serif;
+            font-family: 'Prompt', sans-serif;
+            background-color: #F8C8DC22;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #FAA0A0;
+            color: #673147;
+        }
+
+        .nav-tabs .nav-link {
+            color: #673147;
+            font-weight: bolder;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+        }
+
+        input::placeholder {
+            color: #00000033 !important;
+            opacity: 0.2;
+        }
+
+        main {
+            min-height: 100vh;
+        }
+
+
+        /* section{
+            background-color: #fff;
+        } */
+    </style>
+    <title>Medical Gas Daily Check</title>
+
+    <script>
+        // document.write('<script defer src="../js/../js/medicalGas.js?cache=' + new Date().getTime() + '"><\/script>')
+    </script>
+</head>
+
+<body class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-subtle px-2 fixed-top py-0">
+        <div class="container-fluid p-0">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="../bmepyt3_icon-removebg-preview.png" alt="" height="20px" class="d-inline-block">
+                &nbsp;
+            </a>
+            <img src="../bmepyt3.jpg" alt="display" width="25px" height="25px" class="rounded-circle img-fluid" id="line-display" style="display: none;">
+        </div>
+    </nav>
+    <main style="margin-top: 50px;">
+
+        <div class="container mb-3 p-0">
+            <div class="row">
+                <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                    Medical Gas Daily Check <span class="text-danger">ART</span>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link flex-fill active" id="nav-form-tab" data-bs-toggle="tab"
+                    data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form"
+                    aria-selected="true">Check List</button>
+                <button class="nav-link flex-fill" id="nav-remark-tab" data-bs-toggle="tab" data-bs-target="#nav-remark"
+                    type="button" role="tab" aria-controls="nav-remark" aria-selected="false">หมายเหตุ</button>
+            </div>
+        </nav>
+        <div class="container-fluid" id="main-div" style="display: none;">
+            <div class="row justify-content-start align-items-center">
+                <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
+                    <p class="h5 mt-2 fw-bold timenow">01 January 1984 00:00:00</p>
+                </div>
+                <div class="col text-start ms-1 mt-3 fs-5 lh-1 text-dark">
+                    <p>Daily Maintenance<br><small class="text-secondary fs-6">ตรวจเช็คทุกวัน</small></p>
+                </div>
+                <div class="col text-end">
+                    <button class="btn btn-sm btn-outline-light" id="clear-data-btn">ล้างข้อมูล</button>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade  show active" id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab"
+                tabindex="0">
+
+                <form id="main-form" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <select name="name" id="name" class="form-select text-center">
+                                    <option value="" selected disabled>เลือกชื่อผู้ตรวจสอบ</option>
+                                    <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                                    <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                                    <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                                    <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                                    <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                                    <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                                    <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                                    <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                                    <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                                    <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                                    <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                                    <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                                    <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
+                                    <option value="PHIMRAPEEPORN PHRASOPOL">PHIMRAPEEPORN PHRASOPOL</option>
+                                    <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                                    <option value="SOM KONKAEW">SOM KONKAEW</option>
+                                    <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
+                                    <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-danger-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center g-3 mt-2">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                        <span class="fw-bold text-white bg-success rounded-pill border px-2">Liquid Oxygen</span>
+                                        <div>Tank</div>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="liquid-o2-volume">ปริมาตร</label>
+                                        <input type="number" name="liquid-o2-volume" id="liquid-o2-volume" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="liquid-o2-pressure">แรงดัน</label>
+                                        <input type="number" name="liquid-o2-pressure" id="liquid-o2-pressure" class="form-control text-center" step="0.01" inputmode="decimal">
+                                    </div>
+                                    <div class="col-12">
+                                        <!-- รูปมาตรวัดปริมาตร -->
+                                        <label for="liquid-o2-volume-img" class="form-label">รูปมาตรวัดปริมาตร</label>
+                                        <input type="file" name="liquid-o2-volume-img" id="liquid-o2-volume-img" class="form-control" accept="image/*">
+                                        <img src="" alt="" id="liquid-o2-volume-img-preview" class="rounded mt-3" style="display: none; width: 100%; height: auto; object-fit: cover; object-position: center; aspect-ratio: 3/4;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                        <span
+                                            class="fw-bold text-white bg-dark rounded-pill border px-2">Carbondioxide</span>
+                                        <div>Manifold</div>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="c02-mgd">แรงดันใช้งาน (MGD)</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-mgd" id="c02-mgd"
+                                            class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-2">
+                                    <div class="col-6 text-center">
+                                        <label for="c02-manifold-left">แรงดันฝั่งซ้าย</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-left"
+                                            id="c02-manifold-left" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="c02-manifold-right">แรงดันฝั่งขวา</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-right"
+                                            id="c02-manifold-right" class="form-control text-center">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                        <span class="fw-bold text-white bg-success rounded-pill border px-2">Oxygen</span>
+                                        <p>Manifold</p>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="oxygen-mgd">แรงดันใช้งาน (MGD)</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-mgd"
+                                            id="oxygen-mgd" class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 my-2">
+                                    <div class="col-6 text-center">
+                                        <label for="oxygen-manifold-left">แรงดันฝั่งซ้าย</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-manifold-left"
+                                            id="oxygen-manifold-left" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="oxygen-manifold-right">แรงดันฝั่งขวา</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-manifold-right"
+                                            id="oxygen-manifold-right" class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 m-2">
+                                    <div class="col-12 text-primary">
+                                        <i class="bi bi-question-circle-fill"></i> ตรวจสอบแรงดัน Regulator
+                                        อยู่ในช่วงที่กำหนดหรือไม่ <i class="bi bi-question-circle-fill"></i>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check d-flex align-items-center w-100 justify-content-start">
+                                            <input class="form-check-input me-2" type="checkbox" value="✓"
+                                                id="oxygen-reg-high" name="oxygen-reg-high">
+                                            <label for="oxygen-reg-high">Reg* High <span class="text-danger fw-bold">(60
+                                                    Psi)</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check d-flex align-items-center w-100 justify-content-start">
+                                            <input class="form-check-input me-2" type="checkbox" value="✓"
+                                                id="oxygen-reg-low" name="oxygen-reg-low">
+                                            <label for="oxygen-reg-low">Reg* Low <span class="text-danger fw-bold">(50
+                                                    Psi)</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2">
+                                    <div class="col-12 text-center fw-light fs-2 text-secondary mt-2">
+                                        <span class="fw-bold text-white rounded-pill border px-3" style="background-color: #0000ff;">Nitrous</span>
+                                        <p>Manifold</p>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="nitrous-manifold-mgd">แรงดันใช้งาน (MGD)</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="nitrous-manifold-mgd" id="nitrous-manifold-mgd" class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-2">
+                                    <div class="col-6 text-center">
+                                        <label for="nitrous-manifold-left">แรงดันฝั่งซ้าย</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="nitrous-manifold-left" id="nitrous-manifold-left" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="nitrous-manifold-right">แรงดันฝั่งขวา</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="nitrous-manifold-right" id="nitrous-manifold-right" class="form-control text-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 p-0 pe-2">
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    <label for="manifold-temp">อุณหภูมิ °C</label>
+                                    <input type="number" step="0.01" inputmode="decimal" name="manifold-temp"
+                                        id="manifold-temp" class="form-control text-center">
+                                </div>
+                            </div>
+                            <div class="col-6 p-0 ps-2">
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    <label for="manifold-rh">ความชื้น %Rh</label>
+                                    <input type="number" step="0.01" inputmode="decimal" name="manifold-rh"
+                                        id="manifold-rh" class="form-control text-center">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center g-3 my-2">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                        <span class="fw-bold text-dark bg-white rounded-pill border px-2">Vaccuum</span>
+                                        <p>Pump</p>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="vaccuum-1">Vaccuum Pump <span class="text-danger fw-bold">#1</span> ชั่วโมงทำงาน (hrs)</label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="vaccuum-1" id="vaccuum-1" class="form-control text-center">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="vaccuum-2">Vaccuum Pump <span class="text-danger fw-bold">#2</span> ชั่วโมงทำงาน (hrs)</label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="vaccuum-2" id="vaccuum-2" class="form-control text-center">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="vaccuum-3">Vaccuum Pump <span class="text-danger fw-bold">#3</span> ชั่วโมงทำงาน (hrs)</label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="vaccuum-3" id="vaccuum-3" class="form-control text-center">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="col-12 mb-2 text-primary">
+                                            <i class="bi bi-question-circle-fill"></i> ตรวจสอบแรงดัน Regulator อยู่ในช่วงที่กำหนดหรือไม่ <i class="bi bi-question-circle-fill"></i>
+                                        </div>
+                                        <div class="form-check d-flex align-items-center w-100 justify-content-start">
+                                            <input class="form-check-input me-2" type="checkbox" value="✓" id="vaccuum-pressure" name="vaccuum-pressure">
+                                            <label for="vaccuum-pressure" class="form-check-label">Vaccuum Tank แรงดัน <span class="text-danger fw-bold">-0.6 ถึง -0.8</span></label>
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center m-2">
+                                    <div class="col-12 text-center fw-light fs-2 text-secondary mt-2">
+                                        <span class="fw-bold text-dark rounded-pill border px-3" style="background-color: #ffff00;">Air</span>
+                                        <p>Pump</p>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <label for="compressor-pressure">แรงดัน <br><span class="text-danger">
+                                            <div class="row m-0 p-0 justify-content-center">
+                                                <div class="col-12 m-0 p-0">
+                                                    <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                                                    <!-- attention -->
+                                                    หากอ่านค่าแรงดันจากหน้าตู้ปั้ม ให้นำค่าที่อ่านได้คุณด้วย 10 ก่อนกรอกลงในช่องนี้
+                                                </div>
+                                                <div class="col-6 m-0 p-0">
+                                                    <input type="number" step="0.1" min="1" inputmode="decimal" name="compressor-pressure" id="compressor-pressure" class="form-control text-center">
+                                                </div>
+                                            </div>
+                                        </span></label>
+
+                                    </div>
+
+                                </div>
+                                <div class="row justify-content-center g-3">
+
+                                    <div class="col-4 text-center">
+                                        <label for="compressor-1">CP1</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="compressor-1" id="compressor-1" class="form-control text-center">
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <label for="compressor-2">CP2</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="compressor-2" id="compressor-2" class="form-control text-center">
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <label for="compressor-3">CP3</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="compressor-3" id="compressor-3" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="reg-1">Reg 1</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="reg-1" id="reg-1" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="reg-2">Reg 2</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="reg-2" id="reg-2" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="reg-3">Reg 3</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="reg-3" id="reg-3" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="reg-4">Reg 4</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="reg-4" id="reg-4" class="form-control text-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 p-0 pe-2">
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    <label for="pump-room-temp">อุณหภูมิ °C</label>
+                                    <input type="number" step="0.01" inputmode="decimal" name="pump-room-temp" id="pump-room-temp" class="form-control text-center">
+                                </div>
+                            </div>
+                            <div class="col-6 p-0 ps-2">
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    <label for="pump-room-rh">ความชื้น %Rh</label>
+                                    <input type="number" step="0.01" inputmode="decimal" name="pump-room-rh" id="pump-room-rh" class="form-control text-center">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="nav-remark" role="tabpanel" aria-labelledby="nav-remark-tab" tabindex="0">
+                <div id="remark-div">
+                    <section class="row mt-3 rounded-2 p-2 m-2 bg-dark-subtle">
+                        <div class="col-12 text-start fw-light mb-1 py-2 fs-3 text-secondary">
+                            <span class="fw-bold text-white bg-dark rounded-pill border px-2">Carbondioxide</span>
+                            Manifold
+                        </div>
+                        <div class="col-12">
+                            <textarea name="co2-remark" id="co2-remark" rows="3" class="form-control"></textarea>
+                        </div>
+                    </section>
+                    <section class="row mt-3 rounded-2 p-2 m-2 bg-success-subtle">
+                        <div class="col-12 text-start fw-light mb-1 py-2 fs-3 text-secondary">
+                            <span class="fw-bold text-white bg-success rounded-pill border px-2">Oxygen</span>
+                            Manifold
+                        </div>
+                        <div class="col-12">
+                            <textarea name="o2-remark" id="o2-remark" rows="3" class="form-control"></textarea>
+                        </div>
+                    </section>
+                    <section class="row mt-3 rounded-2 p-2 m-2 bg-success-subtle">
+                        <div class="col-12 text-start fw-light mb-1 py-2 fs-2 text-secondary">
+                            <span class="fw-bold text-white rounded-pill border px-3"
+                                style="background-color: #0000ff;">Nitrous</span>
+                            Manifold
+                        </div>
+                        <div class="col-12">
+                            <textarea name="n2o-remark" id="n2o-remark" rows="3" class="form-control"></textarea>
+                        </div>
+                    </section>
+                    <section class="row mt-3 rounded-2 p-2 m-2 bg-success-subtle">
+                        <div class="col-12 text-start fw-light mb-1 py-2 fs-2 text-secondary">
+                            <span class="fw-bold text-white rounded-pill border px-3"
+                                style="background-color: #cca123;">ห้อง PUMP</span>
+                        </div>
+                        <div class="col-12">
+                            <textarea name="pump-remark" id="pump-remark" rows="3" class="form-control"></textarea>
+                        </div>
+                    </section>
+                    <div class="row mt-3 p-2 mb-5">
+                        <div class="col-12">
+                            <button class="btn btn-lg btn-warning w-100" id="remark-btn">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <!-- <div class="row justify-content-center align-items-center">
+            <div class="col-12 text-center">
+                <img src="../bmepyt3.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-12 text-center">
+                <img src="../bmeg5.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+        </div> -->
+        <div class="row justify-content-center align-items-center text-light">
+            <div class="col text-center text-end" style="font-size: 0.7rem;">
+                Developed by <span class="text-primary">Daranphop Yimyam (BME PYT3)</span>
+            </div>
+        </div>
+        <div class="copyright mb-3" align="center">
+            <script>
+                document.write('&copy;');
+                document.write(' 2022 ');
+                document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
+            </script>
+        </div>
+        <img src="" alt="" id="compressing" hidden>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/compress-js@2.0.2/dist/compressjs.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        // var vConsole = new window.VConsole();
+    </script>
+</body>
+
+</html>
