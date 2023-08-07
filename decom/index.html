@@ -192,6 +192,7 @@
                                 <option value="SOM KONKAEW">SOM KONKAEW</option>
                                 <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
                                 <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
+                                <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
                             </select>
                         </div>
                         <div class="col-12 m-0 p-0">
@@ -741,7 +742,7 @@
             $('form input').not('input[type="checkbox"]').each(function () {
                 let _this = $(this)
                 if (_this.val() == '' && _this.val() == null) return
-                if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-other'].includes(_this.prop('id'))) return
+                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-other'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'e_brand/model') {
                     let val = _this.val().split('/')
                     form.getTextField('e_brand').setText(val[0])
