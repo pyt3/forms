@@ -85,6 +85,7 @@
                         <option value="SOM KONKAEW">SOM KONKAEW</option>
                         <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
                         <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
+                        <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
                     </select>
                 </div>
             </div>
@@ -99,8 +100,8 @@
                 <div class="col-md-4">
                     <button class="btn btn-danger w-100" id="summary-btn">สรุปงาน</button>
                 </div>
-                <div class="col-12 d-none">
-                    <textarea name="" id="summary" class="form-control" rows="15"></textarea>
+                <div class="col-12 d-none m-1 border p-3 rounded mt-3 bg-info-subtle">
+                    <p class="user-select-all" id="summary"></p>
                 </div>
             </div>
         </div>
@@ -147,7 +148,7 @@
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                     })
                 } else {
-                    let text = `UPDATE<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br>#${name}`
+                    let text = `UPDATE<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
                         html: text,
@@ -158,7 +159,7 @@
                         allowEscapeKey: false,
                     }).then(result => {
                         if (result.isConfirmed) {
-                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'));
+                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'),name);
                         }
                     })
 
@@ -178,7 +179,7 @@
                         console.log("🚀 !! res:", res)
                         $.LoadingOverlay("hide");
                         if (res.status == 'success') {
-                            $('#summary').val(res.result)
+                            $('#summary').html(res.result.replace(/\n/g,'<br>'))
                             $('#summary').parent().removeClass('d-none').focus()
                         } else {
                             Swal.fire({
@@ -193,14 +194,15 @@
 
         }
 
-        function updateData(code, jobid, update, text) {
+        function updateData(code, jobid, update, text ,name) {
             $.ajax({
                 url: scriptUrl,
                 method: 'POST',
                 data: {
                     code: code,
                     jobid: jobid,
-                    update: update
+                    update: update,
+                    name: name,
                 },
                 success: (res) => {
                     if (res.status == 'success') {
@@ -225,6 +227,21 @@
                 liff.closeWindow();
             })
         }
+
+        $('.user-select-all').click(function () {
+            // copy to clipboard
+            var $temp = $("<textarea>");
+            $("body").append($temp);
+            $temp.val($(this).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+            Swal.fire({
+                icon: 'success',
+                title: 'คัดลอกข้อความสำเร็จ',
+                text: 'คัดลอกข้อความสำเร็จ',
+                timer: 1000,
+            })
+        })
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"

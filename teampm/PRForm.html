@@ -916,7 +916,7 @@
                     form.getTextField($(this).prop('id')).setText('')
                 }
             })
-            if (signature) form.getTextField('bme_sign').setImage(signature)
+            if (signature && $('#name').val() == 'DARANPHOP YIMYAM') form.getTextField('bme_sign').setImage(signature)
             if (imgs_obj['e_img']) form.getTextField('e_img').setImage(imgs_obj['e_img'])
             if (imgs_obj['e_img_code']) form.getTextField('e_img_code').setImage(imgs_obj['e_img_code'])
             if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
