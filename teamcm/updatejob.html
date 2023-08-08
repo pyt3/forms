@@ -252,43 +252,48 @@
                     }
                 },
             })
-            liff.sendMessages([{
-                type: 'text',
-                text: text
-            },
-            {
-                type: 'flex',
-                altText: 'Update ' + code,
-                contents: {
-                    "type": "bubble",
-                    "size": "nano",
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "ดูสรุปงาน",
-                                "weight": "bold",
-                                "size": "xl",
-                                "align": "center",
-                                "scaling": true,
-                                "color": "#ffffff"
-                            }
-                        ],
-                        "action": {
-                            "type": "uri",
-                            "label": "action",
-                            "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary?jobid=" + jobid + "&code=" + code
-                        }
-                    },
-                    "styles": {
+            liff.sendMessages([
+                {
+                    type: 'text',
+                    text: text
+                },
+                {
+                    type: 'text',
+                    text: text
+                },
+                {
+                    type: 'flex',
+                    altText: 'Update ' + code,
+                    contents: {
+                        "type": "bubble",
+                        "size": "nano",
                         "body": {
-                            "backgroundColor": "#0069d9"
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "ดูสรุปงาน",
+                                    "weight": "bold",
+                                    "size": "xl",
+                                    "align": "center",
+                                    "scaling": true,
+                                    "color": "#ffffff"
+                                }
+                            ],
+                            "action": {
+                                "type": "uri",
+                                "label": "action",
+                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary?jobid=" + jobid + "&code=" + code
+                            }
+                        },
+                        "styles": {
+                            "body": {
+                                "backgroundColor": "#0069d9"
+                            }
                         }
                     }
                 }
-            }
             ]).then(() => {
                 liff.closeWindow();
             })
