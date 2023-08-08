@@ -306,14 +306,16 @@
             $temp.val($(this).text()).select();
             document.execCommand("copy");
             $temp.remove();
-            // toast
-            Swal.fire({
-                icon: 'success',
-                text: 'คัดลอกสำเร็จ',
+            const Toast = Swal.mixin({
                 toast: true,
-                postion: 'top-end',
+                position: 'top-end',
                 showConfirmButton: false,
-                timer: 1000,
+                timer: 1000
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'คัดลอกสำเร็จ'
             })
         })
     </script>
