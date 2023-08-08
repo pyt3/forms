@@ -45,7 +45,7 @@
 
 <body class="bg-body-tertiary">
     <main>
-        <div class="container-fluid">
+        <div class="container-fluid d-none">
             <div class="row mt-3 g-3 justify-content-center">
                 <div class="col-md-4 has-code d-none">
                     <div class="form-floating">
@@ -136,6 +136,7 @@
                 $('#summary').parent().removeClass('d-none')
                 $('#summary').parents('.row').find('.col-md-4').addClass('d-none')
                 $('#summary').parents('.container-fluid').removeClass('d-none')
+                $('#request-no').parents('.container-fluid').removeClass('d-none')
                 $.LoadingOverlay("show");
                 $.ajax({
                     url: scriptUrl,
@@ -305,11 +306,11 @@
             $temp.val($(this).text()).select();
             document.execCommand("copy");
             $temp.remove();
+            // toast
             Swal.fire({
                 icon: 'success',
-                title: 'คัดลอกข้อความสำเร็จ',
-                text: 'คัดลอกข้อความสำเร็จ',
-                timer: 1000,
+                text: 'คัดลอกสำเร็จ',
+                toast: true,
             })
         })
     </script>
