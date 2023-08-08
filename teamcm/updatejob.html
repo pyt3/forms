@@ -86,6 +86,7 @@
                         <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
                         <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
                         <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
+                        <option value="THANIPONG PHIEWKHLAM">THANIPONG PHIEWKHLAM</option>
                     </select>
                 </div>
             </div>
@@ -95,7 +96,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid">
+        <div class="container-fluid d-none">
             <div class="row g-3 mt-3 mb-5 justify-content-center">
                 <div class="col-md-4">
                     <button class="btn btn-danger w-100" id="summary-btn">สรุปงาน</button>
@@ -109,16 +110,16 @@
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         $(document).ready(() => {
-            liff.init({
-                liffId: '1661543046-a1pJexbX',
-                withLoginOnExternalBrowser: true
-            })
+            // liff.init({
+            //     liffId: '1661543046-a1pJexbX',
+            //     withLoginOnExternalBrowser: true
+            // })
 
-            liff.ready.then(() => {
-                if (liff.getContext().type != 'group') {
-                    $('.mobile').addClass('d-none')
-                }
-            })
+            // liff.ready.then(() => {
+            //     if (liff.getContext().type != 'group') {
+            //         $('.mobile').addClass('d-none')
+            //     }
+            // })
             initialData();
         })
         function initialData() {
@@ -126,12 +127,43 @@
             let code = url.searchParams.get("code");
             let jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
-            if (action == 'close') {
-                return liff.closeWindow();
-            }
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
+            if (action == 'summary') {
+                $('.mobile').addClass('d-none')
+                $('input').attr('readonly', true)
+                $('#summary').parent().removeClass('d-none')
+                $('#summary').parents('.row').find('.col-md-4').addClass('d-none')
+                $('#summary').parents('.container-fluid').removeClass('d-none')
+                $.LoadingOverlay("show");
+                $.ajax({
+                    url: scriptUrl,
+                    method: 'POST',
+                    data: {
+                        jobid: jobid,
+                        opt: 'summary'
+                    },
+                    success: (res) => {
+                        console.log("🚀 !! res:", res)
+                        $.LoadingOverlay("hide");
+                        if (res.status == 'success') {
+                            if (res.result.replace(/\n/g, '<br>') == '') res = 'ยังไม่มีสรุปงาน'
+                            else res = res.result.replace(/\n/g, '<br>')
+                            $('#summary').html(res)
+                            $('#summary').parent().removeClass('d-none').focus()
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'สรุปงานไม่สำเร็จ',
+                                text: 'สรุปงานไม่สำเร็จ',
+                            })
+                        }
+                    },
+                })
+            } else {
+                $('.container-fluid').removeClass('d-none')
+            }
             $("#submit").click(() => {
                 let update = $("#update").val();
                 let name = $("#name").val();
@@ -159,7 +191,7 @@
                         allowEscapeKey: false,
                     }).then(result => {
                         if (result.isConfirmed) {
-                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'),name);
+                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'), name);
                         }
                     })
 
@@ -179,7 +211,7 @@
                         console.log("🚀 !! res:", res)
                         $.LoadingOverlay("hide");
                         if (res.status == 'success') {
-                            $('#summary').html(res.result.replace(/\n/g,'<br>'))
+                            $('#summary').html(res.result.replace(/\n/g, '<br>'))
                             $('#summary').parent().removeClass('d-none').focus()
                         } else {
                             Swal.fire({
@@ -194,7 +226,7 @@
 
         }
 
-        function updateData(code, jobid, update, text ,name) {
+        function updateData(code, jobid, update, text, name) {
             $.ajax({
                 url: scriptUrl,
                 method: 'POST',
@@ -223,7 +255,41 @@
             liff.sendMessages([{
                 type: 'text',
                 text: text
-            }]).then(() => {
+            },
+            {
+                type: 'flex',
+                altText: 'Update ' + code,
+                contents: {
+                    "type": "bubble",
+                    "size": "nano",
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "ดูสรุปงาน",
+                                "weight": "bold",
+                                "size": "xl",
+                                "align": "center",
+                                "scaling": true,
+                                "color": "#ffffff"
+                            }
+                        ],
+                        "action": {
+                            "type": "uri",
+                            "label": "action",
+                            "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary?jobid=" + jobid + "&code=" + code
+                        }
+                    },
+                    "styles": {
+                        "body": {
+                            "backgroundColor": "#0069d9"
+                        }
+                    }
+                }
+            }
+            ]).then(() => {
                 liff.closeWindow();
             })
         }
