@@ -101,17 +101,21 @@
                 <div class="col-md-4">
                     <button class="btn btn-danger w-100" id="summary-btn">สรุปงาน</button>
                 </div>
-                <div class="col-12 d-none m-1 border p-3 rounded mt-3 bg-info-subtle">
+                <div class="col-12 d-none m-3 border p-3 rounded mt-3 bg-info-subtle">
                     <p class="user-select-all" id="summary"></p>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning w-100" id="more-update-btn">อัพเดทเพิ่ม</button>
                 </div>
             </div>
         </div>
     </main>
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
+        const liff_id = '1661543046-a1pJexbX'
         $(document).ready(() => {
             liff.init({
-                liffId: '1661543046-a1pJexbX',
+                liffId: liff_id,
                 withLoginOnExternalBrowser: true
             })
 
@@ -134,7 +138,7 @@
                 $('.mobile').addClass('d-none')
                 $('input').attr('readonly', true)
                 $('#summary').parent().removeClass('d-none')
-                $('#summary').parents('.row').find('.col-md-4').addClass('d-none')
+                $('#summary').parents('.row').find('.col-md-4').first().addClass('d-none')
                 $('#summary').parents('.container-fluid').removeClass('d-none')
                 $('#request-no').parents('.container-fluid').removeClass('d-none')
                 $.LoadingOverlay("show");
@@ -161,6 +165,13 @@
                             })
                         }
                     },
+                })
+                $('#more-update-btn').click(() => {
+                    let url = new URL('line://app/' + liff_id)
+                    url.searchParams.set('code', code)
+                    url.searchParams.set('jobid', jobid)
+                    url.searchParams.set('action', 'update')
+                    window.open(url, '_self')
                 })
             } else {
                 $('.container-fluid').removeClass('d-none')
