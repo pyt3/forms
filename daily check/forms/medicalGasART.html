@@ -6,8 +6,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous"></script>
     <!-- <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,16 +28,17 @@
             /* overflow-x: hidden; */
             font-family: 'Akshar', sans-serif;
             font-family: 'Prompt', sans-serif;
-            /* background-color: #fafafa; */
+            background-color: #F8C8DC22;
         }
 
         .nav-tabs .nav-link.active {
-            background-color: #0080FF;
-            color: #FFF;
+            background-color: #FAA0A0;
+            color: #673147;
         }
 
         .nav-tabs .nav-link {
-            color: #0080FF;
+            color: #673147;
+            font-weight: bolder;
         }
 
         input[type="checkbox"] {
@@ -58,7 +62,7 @@
     <title>Medical Gas Daily Check</title>
 
     <script>
-        document.write('<script defer src="../js/../js/medicalGas.js?cache=' + new Date().getTime() + '"><\/script>')
+        // document.write('<script defer src="../js/../js/medicalGas.js?cache=' + new Date().getTime() + '"><\/script>')
     </script>
 </head>
 
@@ -77,14 +81,17 @@
         <div class="container mb-3 p-0">
             <div class="row">
                 <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
-                    Medical Gas Daily Check
+                    Medical Gas Daily Check <span class="text-danger">ART</span>
                 </div>
             </div>
         </div>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link flex-fill active" id="nav-form-tab" data-bs-toggle="tab" data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form" aria-selected="true">Check List</button>
-                <button class="nav-link flex-fill" id="nav-remark-tab" data-bs-toggle="tab" data-bs-target="#nav-remark" type="button" role="tab" aria-controls="nav-remark" aria-selected="false">หมายเหตุ</button>
+                <button class="nav-link flex-fill active" id="nav-form-tab" data-bs-toggle="tab"
+                    data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form"
+                    aria-selected="true">Check List</button>
+                <button class="nav-link flex-fill" id="nav-remark-tab" data-bs-toggle="tab" data-bs-target="#nav-remark"
+                    type="button" role="tab" aria-controls="nav-remark" aria-selected="false">หมายเหตุ</button>
             </div>
         </nav>
         <div class="container-fluid" id="main-div" style="display: none;">
@@ -101,7 +108,8 @@
             </div>
         </div>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade  show active" id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab" tabindex="0">
+            <div class="tab-pane fade  show active" id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab"
+                tabindex="0">
 
                 <form id="main-form" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
                     <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
@@ -163,22 +171,26 @@
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
                                     <div class="col-12 text-center fw-light fs-3 text-secondary">
-                                        <span class="fw-bold text-white bg-dark rounded-pill border px-2">Carbondioxide</span>
+                                        <span
+                                            class="fw-bold text-white bg-dark rounded-pill border px-2">Carbondioxide</span>
                                         <div>Manifold</div>
                                     </div>
                                     <div class="col-6 mt-0 text-center">
                                         <label for="c02-mgd">แรงดันใช้งาน (MGD)</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="c02-mgd" id="c02-mgd" class="form-control text-center">
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-mgd" id="c02-mgd"
+                                            class="form-control text-center">
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-3 mt-2">
                                     <div class="col-6 text-center">
                                         <label for="c02-manifold-left">แรงดันฝั่งซ้าย</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-left" id="c02-manifold-left" class="form-control text-center">
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-left"
+                                            id="c02-manifold-left" class="form-control text-center">
                                     </div>
                                     <div class="col-6 text-center">
                                         <label for="c02-manifold-right">แรงดันฝั่งขวา</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-right" id="c02-manifold-right" class="form-control text-center">
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-right"
+                                            id="c02-manifold-right" class="form-control text-center">
                                     </div>
                                 </div>
                             </div>
@@ -194,33 +206,41 @@
                                     </div>
                                     <div class="col-6 mt-0 text-center">
                                         <label for="oxygen-mgd">แรงดันใช้งาน (MGD)</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-mgd" id="oxygen-mgd" class="form-control text-center">
+                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-mgd"
+                                            id="oxygen-mgd" class="form-control text-center">
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-3 my-2">
                                     <div class="col-6 text-center">
                                         <label for="oxygen-manifold-left">แรงดันฝั่งซ้าย</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-manifold-left" id="oxygen-manifold-left" class="form-control text-center">
+                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-manifold-left"
+                                            id="oxygen-manifold-left" class="form-control text-center">
                                     </div>
                                     <div class="col-6 text-center">
                                         <label for="oxygen-manifold-right">แรงดันฝั่งขวา</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-manifold-right" id="oxygen-manifold-right" class="form-control text-center">
+                                        <input type="number" step="0.1" inputmode="decimal" name="oxygen-manifold-right"
+                                            id="oxygen-manifold-right" class="form-control text-center">
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-3 m-2">
                                     <div class="col-12 text-primary">
-                                        <i class="bi bi-question-circle-fill"></i> ตรวจสอบแรงดัน Regulator อยู่ในช่วงที่กำหนดหรือไม่ <i class="bi bi-question-circle-fill"></i>
+                                        <i class="bi bi-question-circle-fill"></i> ตรวจสอบแรงดัน Regulator
+                                        อยู่ในช่วงที่กำหนดหรือไม่ <i class="bi bi-question-circle-fill"></i>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-check d-flex align-items-center w-100 justify-content-start">
-                                            <input class="form-check-input me-2" type="checkbox" value="✓" id="oxygen-reg-high" name="oxygen-reg-high">
-                                            <label for="oxygen-reg-high">Reg* High <span class="text-danger fw-bold">(60 Psi)</span></label>
+                                            <input class="form-check-input me-2" type="checkbox" value="✓"
+                                                id="oxygen-reg-high" name="oxygen-reg-high">
+                                            <label for="oxygen-reg-high">Reg* High <span class="text-danger fw-bold">(60
+                                                    Psi)</span></label>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-check d-flex align-items-center w-100 justify-content-start">
-                                            <input class="form-check-input me-2" type="checkbox" value="✓" id="oxygen-reg-low" name="oxygen-reg-low">
-                                            <label for="oxygen-reg-low">Reg* Low <span class="text-danger fw-bold">(50 Psi)</span></label>
+                                            <input class="form-check-input me-2" type="checkbox" value="✓"
+                                                id="oxygen-reg-low" name="oxygen-reg-low">
+                                            <label for="oxygen-reg-low">Reg* Low <span class="text-danger fw-bold">(50
+                                                    Psi)</span></label>
                                         </div>
                                     </div>
                                 </div>
@@ -250,13 +270,15 @@
                             <div class="col-6 p-0 pe-2">
                                 <div class="border border-dark rounded p-3 bg-light text-center shadow">
                                     <label for="manifold-temp">อุณหภูมิ °C</label>
-                                    <input type="number" step="0.01" inputmode="decimal" name="manifold-temp" id="manifold-temp" class="form-control text-center">
+                                    <input type="number" step="0.01" inputmode="decimal" name="manifold-temp"
+                                        id="manifold-temp" class="form-control text-center">
                                 </div>
                             </div>
                             <div class="col-6 p-0 ps-2">
                                 <div class="border border-dark rounded p-3 bg-light text-center shadow">
                                     <label for="manifold-rh">ความชื้น %Rh</label>
-                                    <input type="number" step="0.01" inputmode="decimal" name="manifold-rh" id="manifold-rh" class="form-control text-center">
+                                    <input type="number" step="0.01" inputmode="decimal" name="manifold-rh"
+                                        id="manifold-rh" class="form-control text-center">
                                 </div>
                             </div>
                         </div>
@@ -393,7 +415,8 @@
                     </section>
                     <section class="row mt-3 rounded-2 p-2 m-2 bg-success-subtle">
                         <div class="col-12 text-start fw-light mb-1 py-2 fs-2 text-secondary">
-                            <span class="fw-bold text-white rounded-pill border px-3" style="background-color: #0000ff;">Nitrous</span>
+                            <span class="fw-bold text-white rounded-pill border px-3"
+                                style="background-color: #0000ff;">Nitrous</span>
                             Manifold
                         </div>
                         <div class="col-12">
@@ -402,7 +425,8 @@
                     </section>
                     <section class="row mt-3 rounded-2 p-2 m-2 bg-success-subtle">
                         <div class="col-12 text-start fw-light mb-1 py-2 fs-2 text-secondary">
-                            <span class="fw-bold text-white rounded-pill border px-3" style="background-color: #cca123;">ห้อง PUMP</span>
+                            <span class="fw-bold text-white rounded-pill border px-3"
+                                style="background-color: #cca123;">ห้อง PUMP</span>
                         </div>
                         <div class="col-12">
                             <textarea name="pump-remark" id="pump-remark" rows="3" class="form-control"></textarea>
@@ -442,8 +466,11 @@
         </div>
         <img src="" alt="" id="compressing" hidden>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/compress-js@2.0.2/dist/compressjs.min.js"></script>
