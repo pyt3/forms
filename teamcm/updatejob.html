@@ -110,16 +110,16 @@
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         $(document).ready(() => {
-            // liff.init({
-            //     liffId: '1661543046-a1pJexbX',
-            //     withLoginOnExternalBrowser: true
-            // })
+            liff.init({
+                liffId: '1661543046-a1pJexbX',
+                withLoginOnExternalBrowser: true
+            })
 
-            // liff.ready.then(() => {
-            //     if (liff.getContext().type != 'group') {
-            //         $('.mobile').addClass('d-none')
-            //     }
-            // })
+            liff.ready.then(() => {
+                if (liff.getContext().type != 'group') {
+                    $('.mobile').addClass('d-none')
+                }
+            })
             initialData();
         })
         function initialData() {
