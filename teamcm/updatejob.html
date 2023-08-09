@@ -212,7 +212,11 @@
             })
 
             $('#summary-btn').click(function () {
-                $('#more-update-btn').click()
+                let url = new URL('line://app/' + liff_id)
+                url.searchParams.set('code', code)
+                url.searchParams.set('jobid', jobid)
+                url.searchParams.set('action', 'update')
+                window.open(url, '_self')
             })
 
         }
