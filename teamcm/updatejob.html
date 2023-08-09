@@ -134,6 +134,10 @@
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
+            $('#name').val(localStorage.getItem('name') || '')
+            $('#name').change(function () {
+                localStorage.setItem('name', $(this).val())
+            })
             if (action == 'summary') {
                 $('.mobile').addClass('d-none')
                 $('input').attr('readonly', true)
