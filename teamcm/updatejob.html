@@ -212,29 +212,7 @@
             })
 
             $('#summary-btn').click(function () {
-                $.LoadingOverlay("show");
-                $.ajax({
-                    url: scriptUrl,
-                    method: 'POST',
-                    data: {
-                        jobid: jobid,
-                        opt: 'summary'
-                    },
-                    success: (res) => {
-                        console.log("🚀 !! res:", res)
-                        $.LoadingOverlay("hide");
-                        if (res.status == 'success') {
-                            $('#summary').html(res.result.replace(/\n/g, '<br>'))
-                            $('#summary').parent().removeClass('d-none').focus()
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'สรุปงานไม่สำเร็จ',
-                                text: 'สรุปงานไม่สำเร็จ',
-                            })
-                        }
-                    },
-                })
+                $('#more-update-btn').click()
             })
 
         }
