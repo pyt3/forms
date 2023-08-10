@@ -134,6 +134,10 @@
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
+            $('#name').val(localStorage.getItem('name') || '')
+            $('#name').change(function () {
+                localStorage.setItem('name', $(this).val())
+            })
             if (action == 'summary') {
                 $('.mobile').addClass('d-none')
                 $('input').attr('readonly', true)
@@ -212,29 +216,11 @@
             })
 
             $('#summary-btn').click(function () {
-                $.LoadingOverlay("show");
-                $.ajax({
-                    url: scriptUrl,
-                    method: 'POST',
-                    data: {
-                        jobid: jobid,
-                        opt: 'summary'
-                    },
-                    success: (res) => {
-                        console.log("🚀 !! res:", res)
-                        $.LoadingOverlay("hide");
-                        if (res.status == 'success') {
-                            $('#summary').html(res.result.replace(/\n/g, '<br>'))
-                            $('#summary').parent().removeClass('d-none').focus()
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'สรุปงานไม่สำเร็จ',
-                                text: 'สรุปงานไม่สำเร็จ',
-                            })
-                        }
-                    },
-                })
+                let url = new URL('line://app/' + liff_id)
+                url.searchParams.set('code', code)
+                url.searchParams.set('jobid', jobid)
+                url.searchParams.set('action', 'summary')
+                window.open(url, '_self')
             })
 
         }
@@ -265,11 +251,43 @@
                     }
                 },
             })
+            const colorArrays = [
+                ["#ffffff", "#00438c"],
+                ["#000000", "#F4A460"],
+                ["#800080", "#00FF00"],
+                ["#FF4500", "#7FFFD4"],
+                ["#8A2BE2", "#FFD700"],
+                ["#2E8B57", "#BA55D3"],
+                ["#FF1493", "#32CD32"],
+                ["#4169E1", "#FF69B4"],
+                ["#DAA520", "#8B008B"],
+                ["#228B22", "#FF4500"],
+                ["#FFD700", "#2F4F4F"],
+                ["#8B4513", "#20B2AA"],
+                ["#800000", "#66CDAA"],
+                ["#9932CC", "#FF6347"],
+                ["#A0522D", "#00CED1"],
+                ["#8B0000", "#48D1CC"],
+                ["#6A5ACD", "#CD5C5C"],
+                ["#BDB76B", "#3CB371"],
+                ["#FF6347", "#9370DB"],
+                ["#DC143C", "#48D1CC"],
+                ["#87CEEB", "#FF4500"],
+                ["#8B4513", "#DAA520"],
+                ["#1E90FF", "#8B008B"],
+                ["#006400", "#FFA500"],
+                ["#7B68EE", "#00FF7F"],
+                ["#FF69B4", "#4682B4"],
+                ["#556B2F", "#FF1493"],
+                ["#2F4F4F", "#FF4500"],
+                ["#800080", "#008080"],
+                ["#9932CC", "#20B2AA"],
+                ["#D2691E", "#4169E1"]
+            ];
+            let random = Math.floor(Math.random() * colorArrays.length);
+            let color = colorArrays[random];
+
             liff.sendMessages([
-                {
-                    type: 'text',
-                    text: text
-                },
                 {
                     type: 'text',
                     text: text
@@ -290,7 +308,7 @@
                                     "weight": "bold",
                                     "align": "center",
                                     "scaling": true,
-                                    "color": "#ffffff"
+                                    "color": color[0]
                                 }
                             ],
                             "action": {
@@ -301,7 +319,7 @@
                         },
                         "styles": {
                             "body": {
-                                "backgroundColor": "#00438c"
+                                "backgroundColor": color[1]
                             }
                         }
                     }
