@@ -7,6 +7,7 @@ const Toast = Swal.mixin({
 })
 
 $(document).ready(() => {
+    $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD").attr('width','100%')
     let width = $('iframe').width()
     let height = width * 1.4167
     $('iframe').height(height)

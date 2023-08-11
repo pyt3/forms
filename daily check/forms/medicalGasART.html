@@ -338,6 +338,9 @@
 
         $(document).ready(() => {
             $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/c4138b94-68e0-48e5-9021-57d76f7c9348/page/V9LZD").attr('width', '100%')
+            let width = $('iframe').width()
+            let height = width * 0.5833
+            $('iframe').height(height)
             setInterval(function () {
                 let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
                 $('.timenow').html(timenow);
