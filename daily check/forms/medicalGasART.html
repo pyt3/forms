@@ -61,7 +61,7 @@
             background-color: #fff;
         } */
     </style>
-    <title>Medical Gas Daily Check</title>
+    <title>ART Medical Gas Daily Check</title>
 
     <script>
         // document.write('<script defer src="../js/../js/medicalGas-art.js?cache=' + new Date().getTime() + '"><\/script>')
@@ -604,7 +604,7 @@
                     }, 500);
                     $.LoadingOverlay("hide");
                     if (res.status) {
-                        // sendLineNotify(obj)
+                        sendLineNotify(obj)
                         setTimeout(() => {
                             form[0].reset()
                             form.removeClass('was-validated')
@@ -655,7 +655,6 @@ Right  =  ${obj['n2-manifold-right']} psi
                 data: {
                     opt: 'sendLineNotify',
                     msg: message,
-                    img: img_file
                 },
                 success: function (res) {
                     console.log(res)
