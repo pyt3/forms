@@ -305,6 +305,15 @@
             console.log("🚀 ~ promises", promises)
             let upperCaseKey = {}
             Object.keys(promises[1]).forEach(key => {
+                if(!promises[1][key].all){
+                    // delete promises[1][key]
+                    firestore.collection(client.toUpperCase() + '_summary').doc(client.toUpperCase()).update({ [key]: firebase.firestore.FieldValue.delete() }).then(() => {
+                        console.log('delete ' + key)
+                    }).catch((error) => {
+                        console.error(error)
+                    })
+                    return
+                }
                 upperCaseKey[key.toUpperCase()] = promises[1][key]
             })
             promises[1] = upperCaseKey
@@ -389,15 +398,6 @@
             let dashboard_data = {}
             Object.keys(datas[1]).forEach(async key => {
                 console.log("🚀 ~ key", key)
-                if (!datas[1][key].all) {
-                    // delete datas[1][key]
-                    await firestore.collection(client.toUpperCase() + '_summary').doc(client.toUpperCase()).update({ [key]: firebase.firestore.FieldValue.delete() }).then(() => {
-                        console.log('delete ' + key)
-                    }).catch((error) => {
-                        console.error(error)
-                    })
-                    return
-                }
                 if (key == 'ALL') return
                 let today = 0
                 datas[0].forEach((e_code, i) => {
