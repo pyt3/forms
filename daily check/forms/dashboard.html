@@ -94,6 +94,7 @@
                     <option value="pyt2">PYT2</option>
                     <option value="pyt3">PYT3</option>
                     <option value="plp">PLP</option>
+                    <option value="snh">SNH</option>
                 </select>
             </div>
         </div>
@@ -155,7 +156,7 @@
                 .then(() => {
                     console.log('liff init success');
                     $('#thisdate').text(moment().format('DD/MM/YYYY'))
-                    // $.LoadingOverlay('show')
+                    $.LoadingOverlay('show')
                     let config = localStorage.getItem("config")
                     if (config) {
                         setFirebase(JSON.parse(config))
