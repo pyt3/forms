@@ -152,7 +152,7 @@
                 .then(() => {
                     console.log('liff init success');
                     $('#thisdate').text(moment().format('DD/MM/YYYY'))
-                    $.LoadingOverlay('show')
+                    // $.LoadingOverlay('show')
                     let config = localStorage.getItem("config")
                     if (config) {
                         setFirebase(JSON.parse(config))
