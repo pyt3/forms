@@ -389,7 +389,10 @@
                 if (key == 'ALL') return
                 let today = 0
                 datas[0].forEach((e_code, i) => {
-                    if(!datas[1][key].all) return
+                    if(!datas[1][key].all){
+                        // delete datas[1][key]
+                        firestore.collection(client.toUpperCase() + '_summary').doc(client.toUpperCase()).update({[key]: firebase.firestore.FieldValue.delete()})
+                    }
                     if (datas[1][key].all.includes(e_code)) {
                         today++
                     }
