@@ -383,15 +383,13 @@
         }
         function getFirstlevelDashboard(datas) {
             datas[0] = [...new Set(datas[0].map(obj => obj.e_code))]
-            console.log("🚀 ~ datas", datas)
             let dashboard_data = {}
             Object.keys(datas[1]).forEach(key => {
                 console.log("🚀 ~ key", key)
                 if (key == 'ALL') return
                 let today = 0
                 datas[0].forEach((e_code, i) => {
-                    console.log("🚀 !! e_code:", e_code)
-                    console.log("🚀 !! datas[1][key]:", datas[1][key])
+                    if(!datas[1][key].all) return
                     if (datas[1][key].all.includes(e_code)) {
                         today++
                     }
