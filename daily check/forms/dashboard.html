@@ -392,6 +392,7 @@
                     if(!datas[1][key].all){
                         // delete datas[1][key]
                         firestore.collection(client.toUpperCase() + '_summary').doc(client.toUpperCase()).update({[key]: firebase.firestore.FieldValue.delete()})
+                        return
                     }
                     if (datas[1][key].all.includes(e_code)) {
                         today++
