@@ -391,7 +391,11 @@
                 console.log("🚀 ~ key", key)
                 if (!datas[1][key].all) {
                     // delete datas[1][key]
-                    await firestore.collection(client.toUpperCase() + '_summary').doc(client.toUpperCase()).update({ [key]: firebase.firestore.FieldValue.delete() })
+                    await firestore.collection(client.toUpperCase() + '_summary').doc(client.toUpperCase()).update({ [key]: firebase.firestore.FieldValue.delete() }).then(() => {
+                        console.log('delete ' + key)
+                    }).catch((error) => {
+                        console.error(error)
+                    })
                     return
                 }
                 if (key == 'ALL') return
