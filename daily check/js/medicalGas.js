@@ -7,7 +7,7 @@ const Toast = Swal.mixin({
 })
 
 $(document).ready(() => {
-    $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD").attr('width','100%')
+    $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD").attr('width', '100%')
     let width = $('iframe').width()
     let height = width * 1.4167
     $('iframe').height(height)
@@ -53,7 +53,7 @@ $(document).ready(() => {
         $('#remark-div').addClass('animate__animated animate__fadeInRight').show()
         setTimeout(() => {
             $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
-            
+
         }, 1000);
     })
 
@@ -204,8 +204,8 @@ function getLastSaved() {
             if (res.status == 'success') {
                 let data = res.data
                 Object.keys(data).forEach(key => {
-                    if(key.length < 1) return
-                    if(!$('#' + key)) return
+                    if (key.length < 1) return
+                    if (!$('#' + key)) return
                     if ($('#' + key).is(':checkbox')) {
                         // if (data[key] == '✓') {
                         //     $('#' + key).prop('checked', true).val('✓')
@@ -287,7 +287,7 @@ function formSubmit() {
             title: 'กรุณาแนบรูปภาพก่อนกดบันทึก',
             showConfirmButton: false,
             timer: 1500
-        }).then(()=>{
+        }).then(() => {
             $('#liquid-o2-volume-img').focus()
         })
     }
@@ -301,7 +301,7 @@ function formSubmit() {
     obj.img = img_file
     $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
-    // sendLineNotify(obj)
+    sendLineNotify(obj)
     $.ajax({
         url: script_url,
         data: obj,
@@ -313,21 +313,7 @@ function formSubmit() {
             }, 500);
             $.LoadingOverlay("hide");
             if (res.status) {
-                // sendLineNotify(obj)
-                setTimeout(() => {
-                    form[0].reset()
-                    form.removeClass('was-validated')
-                    // scroll to top
-                    localStorage.removeItem('history')
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'บันทึกข้อมูลสำเร็จ',
-                        text: 'กรุณาปิดหน้าต่างนี้',
-                        confirmButtonText: 'ปิดหน้าต่าง',
-                    }).then(() => {
-                        liff.closeWindow()
-                    })
-                }, 1000);
+
             } else {
                 Toast.fire({
                     icon: 'error',
@@ -337,6 +323,21 @@ function formSubmit() {
             }
         },
     })
+    setTimeout(() => {
+        // sendLineNotify(obj)
+        form[0].reset()
+        form.removeClass('was-validated')
+        // scroll to top
+        localStorage.removeItem('history')
+        Swal.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+            text: 'กรุณาปิดหน้าต่างนี้',
+            confirmButtonText: 'ปิดหน้าต่าง',
+        }).then(() => {
+            liff.closeWindow()
+        })
+    },1500)
 }
 
 function sendLineNotify(obj) {
