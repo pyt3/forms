@@ -298,6 +298,7 @@ function formSubmit() {
         obj[a.name] = a.value.toString()
     })
     obj.opt = 'submit'
+    obj.img = img_file
     $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
     // sendLineNotify(obj)
@@ -312,7 +313,7 @@ function formSubmit() {
             }, 500);
             $.LoadingOverlay("hide");
             if (res.status) {
-                sendLineNotify(obj)
+                // sendLineNotify(obj)
                 setTimeout(() => {
                     form[0].reset()
                     form.removeClass('was-validated')
