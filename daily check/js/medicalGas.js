@@ -14,7 +14,7 @@ $(document).ready(() => {
     let comp = Compress({
         inputSelector: '#liquid-o2-volume-img',
         downloadSelector: '#compressing',
-        rate: 40,
+        rate: 20,
         imagePrefix: 'compressed-',
         dimen: null,
     });
@@ -362,14 +362,15 @@ Right  =  ${obj['nitrous-manifold-right']} psi
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj.name}
+
+🔊 Dashboard สรุปผลการตรวจเช็คแก็ส จะอัพเดทและส่งผลภายใน 15 นาที`
     $.ajax({
         url: script_url,
         type: 'POST',
         data: {
             opt: 'sendLineNotify',
             msg: message,
-            img: img_file
         },
         success: function (res) {
             console.log(res)
