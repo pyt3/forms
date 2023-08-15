@@ -306,24 +306,25 @@ function formSubmit() {
         url: script_url,
         data: obj,
         type: 'POST',
-        success: function (res) {
-            console.log(res)
-            $('html, body').animate({
-                scrollTop: 0
-            }, 500);
-            $.LoadingOverlay("hide");
-            if (res.status) {
+        // success: function (res) {
 
-            } else {
-                Toast.fire({
-                    icon: 'error',
-                    title: 'บันทึกข้อมูลไม่สำเร็จ'
-                })
-                $.LoadingOverlay("hide");
-            }
-        },
+        //     if (res.status) {
+
+        //     } else {
+        //         Toast.fire({
+        //             icon: 'error',
+        //             title: 'บันทึกข้อมูลไม่สำเร็จ'
+        //         })
+        //         $.LoadingOverlay("hide");
+        //     }
+        // },
     })
     setTimeout(() => {
+        console.log(res)
+        $('html, body').animate({
+            scrollTop: 0
+        }, 500);
+        $.LoadingOverlay("hide");
         // sendLineNotify(obj)
         form[0].reset()
         form.removeClass('was-validated')
@@ -337,7 +338,7 @@ function formSubmit() {
         }).then(() => {
             liff.closeWindow()
         })
-    },1500)
+    }, 1500)
 }
 
 function sendLineNotify(obj) {
