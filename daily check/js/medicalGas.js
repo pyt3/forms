@@ -320,7 +320,6 @@ function formSubmit() {
         // },
     })
     setTimeout(() => {
-        console.log(res)
         $('html, body').animate({
             scrollTop: 0
         }, 500);
