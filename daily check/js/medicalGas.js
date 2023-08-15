@@ -301,7 +301,7 @@ function formSubmit() {
     obj.img = img_file
     $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
-    sendLineNotify(obj)
+    
     $.ajax({
         url: script_url,
         data: obj,
@@ -320,6 +320,7 @@ function formSubmit() {
         // },
     })
     setTimeout(() => {
+        sendLineNotify(obj)
         $('html, body').animate({
             scrollTop: 0
         }, 500);
@@ -337,7 +338,7 @@ function formSubmit() {
         }).then(() => {
             liff.closeWindow()
         })
-    }, 1500)
+    }, 2000)
 }
 
 function sendLineNotify(obj) {
