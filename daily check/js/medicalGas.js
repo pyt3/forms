@@ -298,7 +298,6 @@ function formSubmit() {
         obj[a.name] = a.value.toString()
     })
     obj.opt = 'submit'
-    obj.img = img_file
     $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
     
