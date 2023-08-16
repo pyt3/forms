@@ -564,89 +564,61 @@
             $('#' + dataID).LoadingOverlay('show')
             // check if file is url
             if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
-                preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
-                // get image from preview
-                let canvas = document.createElement('canvas')
-                let ctx = canvas.getContext('2d')
-                let img = new Image()
-                img.onload = function () {
-                    canvas.width = img.width
-                    canvas.height = img.height
-                    let type = preview.attr('src').split(';')[0].split('/')[1]
-                    ctx.drawImage(img, 0, 0)
-                    let dataURL = canvas.toDataURL('image/' + type)
-                    let base64 = dataURL.split(',')[1]
-                    let mimeType = dataURL.split(';')[0].split(':')[1]
-                    let file = new File([base64ToArrayBuffer(base64)], 'filename', {
-                        type: mimeType,
-                        lastModified: Date.now()
-                    })
-                    let quality = getCompressionQuality(file)
-                    new Compressor(file, {
-                        quality: quality,
-                        success(result) {
-                            let reader = new FileReader()
-                            reader.onloadend = function (e) {
-                                preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
-                                // convert dataURL to arrayBuffer
-                                setImageBytes(dataID, e.target.result)
-                                $('#' + dataID).LoadingOverlay('hide')
-
-                            }
-                            reader.readAsDataURL(result)
-                        },
-                        error(err) {
-                            console.log(err.message);
-                        },
-                    });
-                    
-                    setImageBytes(dataID, dataURL)
-                    $('#' + dataID).LoadingOverlay('hide')
-                }
-                img.src = preview.attr('src')
+                $('#' + dataID).LoadingOverlay('hide')
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ผิดพลาด',
+                    text: 'เนื่องจาก NSmart ป้องกันการดึงภาพโดยตรง กรุณาบันทึกภาพลงคอมพิวเตอร์ และเลือกจากคอมพิวเตอร์เท่านั้น',
+                    confirmButtonText: 'ตกลง',
+                })
                 return
+                
+               
+                preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
 
                 // getArrayBuffer from url
-                // $.ajax({
-                //     url: scriptUrl,
-                //     method: 'POST',
-                //     data: {
-                //         url: preview.attr('src'),
-                //         opt: 'getImage'
-                //     },
-                //     success: function (data) {
+                $.ajax({
+                    url: scriptUrl,
+                    method: 'POST',
+                    data: {
+                        url: preview.attr('src'),
+                        opt: 'getImage'
+                    },
+                    success: function (data) {
+                    console.log("🚀 !! data:", data)
 
 
 
-                //         // convert base64 to file
-                //         let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
-                //             type: data.type,
-                //             lastModified: Date.now()
-                //         })
+                        // convert base64 to file
+                        let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
+                            type: data.type,
+                            lastModified: Date.now()
+                        })
+                        console.log("🚀 !! file:", file)
 
-                //         let quality = getCompressionQuality(file)
+                        let quality = getCompressionQuality(file)
 
 
-                //         new Compressor(file, {
-                //             quality: quality,
-                //             success(result) {
+                        new Compressor(file, {
+                            quality: quality,
+                            success(result) {
 
-                //                 let fr = new FileReader()
-                //                 fr.onload = function (e) {
-                //                     setImageBytes(dataID, e.target.result)
-                //                     preview.attr('data-type', data.type.split('/')[1])
-                //                     $('#' + dataID).LoadingOverlay('hide')
-                //                 }
-                //                 fr.readAsArrayBuffer(result)
-                //             },
-                //             error(err) {
-                //                 console.log(err.message);
-                //             },
-                //         });
+                                let fr = new FileReader()
+                                fr.onload = function (e) {
+                                    setImageBytes(dataID, e.target.result)
+                                    preview.attr('data-type', data.type.split('/')[1])
+                                    $('#' + dataID).LoadingOverlay('hide')
+                                }
+                                fr.readAsArrayBuffer(result)
+                            },
+                            error(err) {
+                                console.log(err.message);
+                            },
+                        });
 
-                //     }
-                // })
-                // return
+                    }
+                })
+                return
             }
             let file = e.originalEvent.dataTransfer.files[0]
             if (!file) {
