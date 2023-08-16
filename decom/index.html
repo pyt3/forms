@@ -477,6 +477,14 @@
             $('#' + dataID).LoadingOverlay('show')
             // check if file is url
             if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
+                $('#' + dataID).LoadingOverlay('hide')
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ผิดพลาด',
+                    text: 'เนื่องจาก NSmart ป้องกันการดึงภาพโดยตรง กรุณาบันทึกภาพลงคอมพิวเตอร์ และเลือกจากคอมพิวเตอร์เท่านั้น',
+                    confirmButtonText: 'ตกลง',
+                })
+                return
                 preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
                 // getArrayBuffer from url
                 $.ajax({
