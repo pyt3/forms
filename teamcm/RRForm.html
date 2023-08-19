@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <!-- icon -->
-    <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
+    <link rel="icon" href="https://img.icons8.com/3d-fluency/94/maintenance.png" type="image/x-icon" />
     <style>
         * {
             margin: 0;
@@ -31,7 +31,7 @@
             width: 100%;
             height: 100%;
             font-family: 'Prompt', sans-serif;
-            background-color: #e9b33b;
+            background-color: #f05217;
             /* background-color: #D3D3D3; */
         }
 
@@ -40,33 +40,33 @@
             height: 100%;
         }
 
-        .nsmart-img {
+        .nsmart-img{
             cursor: grab;
-        }
+        } 
 
         .nsmart-img:active {
             cursor: grabbing;
         }
     </style>
-    <title>PR Form</title>
+    <title>RR Form</title>
 </head>
 
 <body>
     <header>
         <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
             <div class="col-auto">
-                <img width="80" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" alt="move-by-trolley" />
+                <img width="80" src="https://img.icons8.com/3d-fluency/94/maintenance.png" alt="repair" />
             </div>
 
             <div class="col text-center">
-                <h4 class="h1 fw-bold text-light">PR Form</h4>
+                <h4 class="h1 fw-bold text-light">RR Form</h4>
             </div>
         </div>
     </header>
     <main>
         <div class="container-fluid">
             <form id="myForm" class="mt-3 mb-5">
-                <section class="mt-4 m-2">
+                <!-- <section class="mt-4 m-2">
                     <div class="row">
                         <div class="col-md-4">
                             <label for="name">ชื่อผู้กรอก</label>
@@ -94,7 +94,7 @@
                             </select>
                         </div>
                     </div>
-                </section>
+                </section> -->
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-end">
                         <div class="col-md-3 text-end">
@@ -109,6 +109,10 @@
                             <h4 class="fw-bold">&nbsp;รายละเอียดเครื่องมือ</h4>
                         </div>
                         <div class="col-md-4 mt-3">
+                            <label for="rr_no">เลข RR</label>
+                            <input type="text" name="rr_no" id="rr_no" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
                             <label for="job_id">Work Order</label>
                             <input type="text" name="job_id" id="job_id" class="form-control">
                         </div>
@@ -117,8 +121,8 @@
                             <input type="text" name="e_name" id="e_name" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="dept">แผนก</label>
-                            <select name="dept" id="dept" class="form-select">
+                            <label for="e_dept">แผนก</label>
+                            <select name="e_dept" id="e_dept" class="form-select">
                                 <option value="" disabled selected>Select value</option>
                                 <option>ANESTHESIA (วิสัญญี)</option>
                                 <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
@@ -174,44 +178,52 @@
                             </select>
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="e_manufacturer">ผู้ผลิต</label>
-                            <input type="text" name="e_manufacturer" id="e_manufacturer" class="form-control">
-                        </div>
-                        <div class="col-md-4 mt-3">
                             <label for="e_date">วันที่ซื้อ</label>
                             <input type="text" name="e_date" id="e_date" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="e_hospital_code">หมายเลขทรัพย์สิน</label>
-                            <input type="text" name="e_hospital_code" id="e_hospital_code" class="form-control">
+                            <label for="e_brand">ยี่ห้อ</label>
+                            <input type="text" name="e_brand" id="e_brand" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="e_brand/model">ยี่ห้อ/รุ่น</label>
-                            <input type="text" name="e_brand/model" id="e_brand/model" class="form-control">
+                            <label for="e_model">รุ่น</label>
+                            <input type="text" name="e_model" id="e_model" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
                             <label for="e_sn">เลขเครื่อง (SN)</label>
                             <input type="text" name="e_sn" id="e_sn" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="e_me_code">หมายเลขเครื่อง (ME Code)</label>
-                            <input type="text" name="e_me_code" id="e_me_code" class="form-control">
+                            <label for="e_code">หมายเลขเครื่อง (ME Code)</label>
+                            <input type="text" name="e_code" id="e_code" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_age">อายุเครื่อง</label>
+                            <input type="text" name="e_age" id="e_age" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
                             <label for="e_price">ราคาซื้อ <span class="text-secondary">(บาท)</span></label>
                             <input type="text" name="e_price" id="e_price" class="form-control">
                         </div>
-                        <div class="col-12 mt-3">
-                            <label for="pr_failure">อาการเสีย</label>
-                            <input type="text" name="pr_failure" id="pr_failure" class="form-control">
+                        <div class="col-md-4 mt-3">
+                            <label for="e_repair_price">ค่าซ่อมสะสม <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="e_repair_price" id="e_repair_price" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="e_repair_percent">คิดเป็น % ของราคาซื้อ</label>
+                            <input type="text" name="e_repair_percent" id="e_repair_percent" class="form-control">
                         </div>
                         <div class="col-12 mt-3">
-                            <label for="pr_result">ผลการตรวจเช็ค</label>
-                            <input type="text" name="pr_result" id="pr_result" class="form-control">
+                            <label for="failure">อาการเสีย</label>
+                            <input type="text" name="failure" id="failure" class="form-control">
                         </div>
                         <div class="col-12 mt-3">
-                            <label for="pr_recommend">การดำเนินการ</label>
-                            <input type="text" name="pr_recommend" id="pr_recommend" class="form-control">
+                            <label for="result">ผลการตรวจเช็ค</label>
+                            <input type="text" name="result" id="result" class="form-control">
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label for="recommend">การดำเนินการ</label>
+                            <textarea rows="2" name="recommend" id="recommend" class="form-control"></textarea>
                         </div>
 
                         <div class="col-12 m-0 p-0">
@@ -258,38 +270,36 @@
                             <h4 class="fw-bold">&nbsp;รายละเอียดใบเสนอราคา</h4>
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_vender">Vender</label>
-                            <input type="text" name="pr_vender" id="pr_vender" class="form-control">
+                            <label for="rr_vender">Vender</label>
+                            <input type="text" name="rr_vender" id="rr_vender" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_no">เลขใบเสนอราคา</label>
-                            <input type="text" name="pr_no" id="pr_no" class="form-control">
+                            <label for="quatation_no">เลขใบเสนอราคา</label>
+                            <input type="text" name="quatation_no" id="quatation_no" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_price">ราคาสินค้า/บริการ <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="pr_price" id="pr_price" class="form-control">
+                            <label for="rr_price">ราคาสินค้า/บริการ <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="rr_price" id="rr_price" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_vat">ภาษีมูลค่าเพิ่ม 7% <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="pr_vat" id="pr_vat" class="form-control">
+                            <label for="rr_vat">ภาษีมูลค่าเพิ่ม 7% <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="rr_vat" id="rr_vat" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_grand_price">ราคาทั้งสิ้น <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="pr_grand_price" id="pr_grand_price" class="form-control">
+                            <label for="rr_grand_price">ราคาทั้งสิ้น <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="rr_grand_price" id="rr_grand_price" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_cm_estimated_send">กำหนดส่งของ <span
-                                    class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="pr_cm_estimated_send" id="pr_cm_estimated_send"
-                                class="form-control">
+                            <label for="delivery">กำหนดส่งของ <span class="text-secondary">(วัน)</span></label>
+                            <input type="text" name="delivery" id="delivery" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_cm_standing">กำหนดยืนราคา <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="pr_cm_standing" id="pr_cm_standing" class="form-control">
+                            <label for="valadity">กำหนดยืนราคา <span class="text-secondary">(วัน)</span></label>
+                            <input type="text" name="valadity" id="valadity" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr_cm_waranty">การรับประกัน <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="pr_cm_waranty" id="pr_cm_waranty" class="form-control">
+                            <label for="warranty">การรับประกัน <span class="text-secondary">(วัน)</span></label>
+                            <input type="text" name="warranty" id="warranty" class="form-control">
                         </div>
                     </div>
                 </section>
@@ -300,57 +310,13 @@
                             <h4 class="fw-bold">&nbsp;ประเภทของค่าใช้จ่ายที่นาเสนอให้ดำเนินการ</h4>
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="pr-cm">เลือกประเภทค่าใช้จ่าย</label>
-                            <select name="pr-cm" id="pr-cm" class="form-select">
-                                <option value="MAINTENANCE" id="pr_cm_maintenance" selected>MAINTENANCE</option>
-                                <option value="REPLACEMENT" id="pr_cm_replacement">REPLACEMENT</option>
-                                <option value="Other" id="pr_cm_other">Other</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_cm_maintenance_ea">จำนวน (ea)</label>
-                            <input type="text" name="pr_cm_maintenance_ea" id="pr_cm_maintenance_ea"
-                                class="form-control" value="1">
-                        </div>
-                        <div class="col-md-4 mt-3" style="display:none">
-                            <label for="pr_cm_other_text">ระบุ</label>
-                            <input type="text" name="pr_cm_other_text" id="pr_cm_other_text" class="form-control">
-                        </div>
-                    </div>
-                </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
-                    <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/color/48/engineer.png" alt=" icon" width="50">
-                            <h4 class="fw-bold">&nbsp;ความเห็นของทางแผนกวิศวกรรมการแพทย์</h4>
-                        </div>
-                        <div class="col-12 m-0 p-0">
-                            <div class="row m-0 p-0">
-                                <div class="col col-md-4 mt-3">
-                                    <label for="pr-status">สถานะเครื่องมือ</label>
-                                    <select name="pr-status" id="pr-status" class="form-select">
-                                        <option value="Normal" id="pr_status_normal">ใช้งานได้ปกติ</option>
-                                        <option value="Waitpart" id="pr_status_waitpart">รออะไหล่</option>
-                                        <option value="Vender" id="pr_status_vender">ส่งซ่อมบริษัท</option>
-                                        <option value="Other" id="pr_status_other">อื่นๆ</option>
-                                    </select>
-                                </div>
-                                <div class="col-8 mt-3" style="display:none">
-                                    <label for="pr_status_other_text">ระบุ</label>
-                                    <input type="text" name="pr_status_other_text" id="pr_status_other_text"
-                                        class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr-process">การดำเนินการ</label>
-                            <select name="pr-process" id="pr-process" class="form-select">
-                                <option value="" selected></option>
-                                <option value="Waranty" id="pr_process_waranty">อยู่ในรับประกัน</option>
-                                <option value="Self" id="pr_process_self">ซ่อมเอง</option>
-                                <option value="Vender" id="pr_process_vender">ซ่อมบริษัท</option>
-                                <option value="Changepart" id="pr_process_changepart">ควรเปลี่ยนอะไหล่</option>
-                                <option value="Other" id="pr_process_other">อื่นๆ</option>
+                            <label for="rr-cm">เลือกประเภทค่าใช้จ่าย</label>
+                            <select name="rr-cm" id="rr-cm" class="form-select">
+                                <option value="" disabled selected>เลือก</option>
+                                <option value="Accessory" id="Accessory">Accessory</option>
+                                <option value="Consumable" id="Consumable">Consumable</option>
+                                <option value="Replacement" id="Replacement">Replacement</option>
+                                <option value="Other" id="other">Other</option>
                             </select>
                         </div>
                     </div>
@@ -422,11 +388,12 @@
         </div>
     </div>
     <script>
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwnb57VU-CveziAzWMWtFfbnXiX_mZIWJERI_XLLnNEILEgapodymzeFcWcxMry86EA5Q/exec'
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwQBbvEpNXYqFZBuai4IRpDvy-kR4YeJZFt4KcGdOpMry7SphLRox1JL233Io7jYxfFeA/exec'
         var form_pdf_bytes, font_bytes, signature_bytes, e_img_bytes, e_img_code_bytes, e_img_nameplate_bytes
         $(document).ready(async function () {
-            form_pdf_bytes = await fetch('./formPR.pdf').then(res => res.arrayBuffer())
-            font_bytes = await fetch('./THSarabun.ttf').then(res => res.arrayBuffer())
+            form_pdf_bytes = await fetch('./formRR.pdf').then(res => res.arrayBuffer())
+            font_bytes = await fetch('../teampm/THSarabun.ttf').then(res => res.arrayBuffer())
+            // read text from file
             let text = await fetch('./console.js').then(res => res.text())
             $('#console-code').val(text)
         })
@@ -477,6 +444,7 @@
             var form = pdfDoc.getForm()
             let imgs_obj = {}
             if (e_img_bytes) {
+                console.log('aa');
                 imgs_obj['e_img'] = await embedImage(e_img_bytes, 'e_img_file')
             }
             if (e_img_code_bytes) {
@@ -505,7 +473,7 @@
                 var blob = new Blob([pdfBytes], { type: 'application/pdf' })
                 var url = URL.createObjectURL(blob)
                 iframe.src = url + '#toolbar=1&view=fitH'
-                let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
+                let e_code = $('#e_code').val() ? $('#e_code').val() : 'no_code'
                 let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
                 let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
                 let name = 'IMAGE-ONLY-' + e_code + '-' + e_name + '-' + dept + '.pdf'
@@ -526,25 +494,25 @@
         $('#pr-cm').change(function () {
             let data_id = $(this).find('option:selected').attr('id')
             $(this).attr('data-id', data_id)
-            if (data_id == 'pr_cm_maintenance') {
-                $('#pr_cm_maintenance_ea').val('1').parent().show()
+            if (data_id == 'rr_cm_maintenance') {
+                $('#rr_cm_maintenance_ea').val('1').parent().show()
             } else {
-                $('#pr_cm_maintenance_ea').val('').parent().hide()
+                $('#rr_cm_maintenance_ea').val('').parent().hide()
             }
-            if (data_id == 'pr_cm_other') {
-                showOtherFieldInput('pr_cm_other_text')
+            if (data_id == 'rr_cm_other') {
+                showOtherFieldInput('rr_cm_other_text')
             } else {
-                $('#pr_cm_other_text').val('').parent().hide()
+                $('#rr_cm_other_text').val('').parent().hide()
             }
 
         })
         $('#pr-status').change(function () {
             let data_id = $(this).find('option:selected').attr('id')
             $(this).attr('data-id', data_id)
-            if (data_id == 'pr_status_other') {
-                showOtherFieldInput('pr_status_other_text')
+            if (data_id == 'rr_status_other') {
+                showOtherFieldInput('rr_status_other_text')
             } else {
-                $('#pr_status_other_text').val('').parent().hide()
+                $('#rr_status_other_text').val('').parent().hide()
             }
         })
         $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('click', function () {
@@ -631,22 +599,22 @@
         })
         // $('#autoFillOffCanvas').offcanvas('show')
 
-        $('#pr_price').on('keyup', function () {
+        $('#rr_price').on('keyup', function () {
             let price = $(this).val()
             let vat = price * 0.07
             let total = price * 1.07
             if (isNaN(price)) return
             if (isNaN(vat)) return
             if (isNaN(total)) return
-            $('#pr_vat').val(vat.toFixed(2))
-            $('#pr_grand_price').val(total.toFixed(2))
+            $('#rr_vat').val(vat.toFixed(2))
+            $('#rr_grand_price').val(total.toFixed(2))
         })
-        $('#pr_vat').on('keyup', function () {
+        $('#rr_vat').on('keyup', function () {
             let vat = $(this).val()
-            let total = Number($('#pr_price').val()) + Number(vat)
+            let total = Number($('#rr_price').val()) + Number(vat)
             if (isNaN(vat)) return
             if (isNaN(total)) return
-            $('#pr_grand_price').val(total.toFixed(2))
+            $('#rr_grand_price').val(total.toFixed(2))
         })
 
         function showOtherFieldInput(key) {
@@ -841,36 +809,54 @@
             if (e_img_nameplate_bytes) {
                 imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
             }
+            const setText = (inputId, pdfElementId) => {
+                let val = $('#' + inputId).val()
+                if (val == '' || val == null || val == undefined) return
+                let pdfElement = form.getTextField(pdfElementId)
+                if (pdfElement.isMultiline()) {
+                    pdfElement.setLineHeight(0.5)
+                }
+                else if (val.length >= 45) pdfElement.setFontSize(11)
+                else if (val.length >= 35) pdfElement.setFontSize(12)
+                else if (val.length >= 29) pdfElement.setFontSize(13)
+                console.log(pdfElement.doc);
+                pdfElement.setText(val)
+            }
+            form.getTextField('date').setText(new Date().toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            }))
+            setText('d_dept', 'e_dept_2')
+            setText('e_name', 'e_name')
+            form.getTextField('quotation').setText(toTitleCase($('#rr_vender').val()) + ' (ใบเสนอราคาเลขที่ ' + $('#quatation_no').val() + ')')
 
-            form.getTextField('pmhee').setText('คุณชัยวัฒน์ ไสลวงษ์')
-            form.getTextField('BME').setText('แผนกวิศวกรรมการแพทย์ โรงพยาบาลพญาไท 3')
-            form.getTextField('pr_date').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }).toLocaleUpperCase()))
-            form.getTextField('pr_date_short').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' })))
-            $('form input').each(function () {
+            $('form input, form select, form textarea').each(function () {
                 let _this = $(this)
-                if (_this.val() == '') return
-                if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation'].includes(_this.prop('id'))) return
-                if (['pr_price', 'pr_vat', 'pr_grand_price'].includes(_this.prop('id'))) {
-                    let value = Number(_this.val())
-                    if (value != NaN) {
-                        value = value.toFixed(2).split('.')
-
-                        value[0] = Number(value[0]).toLocaleString()
-
-                        form.getTextField(_this.prop('id')).setText(value.join('.'))
-                    }
+                if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
+                if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no'].includes(_this.prop('id'))) return
+                if (_this.prop('id') == 'rr-cm') {
+                    let v = _this.find('option:selected').val()
+                    if (v == '') return
+                    form.getTextField(v).setText('✓')
                     return
                 }
                 if (_this.prop('id') == 'e_brand/model') {
+                    if (_this.val() == '') return
                     let val = _this.val().split('/')
                     form.getTextField('e_brand').setText(val[0])
                     form.getTextField('e_model').setText(val[1])
                     return
                 }
-                form.getTextField(_this.prop('id')).setText(_this.val())
-                if (_this.prop('id') == 'e_name') {
-                    form.getTextField(_this.prop('id'), { paragraphs: true, alignment: 'below' })
+                if (['rr_price', 'rr_vat', 'rr_grand_price'].includes(_this.prop('id'))) {
+                    if (_this.val() == '') return
+                    let val = _this.val().toString().split('.').map((a, i) => i == 1 ? a : Number(a).toLocaleString()).join('.')
+                    form.getTextField(_this.prop('id')).setText(val)
+                    if (_this.prop('id') == 'rr_grand_price') form.getTextField('total_text').setText(toThaiBathText(_this.val().toString()))
+                    return
                 }
+                console.log(_this.prop('id'));
+                form.getTextField(_this.prop('id')).setText(_this.val())
             })
             $('.has-checkboxes option').each(function () {
                 if ($(this).prop('id') == '') {
@@ -902,7 +888,6 @@
                 form_obj[$(this).attr('name')] = $(this).val()
             })
             form_obj['pdfFile'] = pdfdatauri
-            console.log("🚀 !! form_obj:", form_obj)
             $.ajax({
                 url: scriptUrl,
                 type: 'POST',
@@ -923,7 +908,7 @@
                 var blob = new Blob([pdfBytes], { type: 'application/pdf' })
                 var url = URL.createObjectURL(blob)
                 iframe.src = url + '#toolbar=1&view=fitH'
-                let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
+                let e_code = $('#e_code').val() ? $('#e_code').val() : 'no_code'
                 let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
                 let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
                 let name = 'PR-' + e_code + '-' + e_name + '-' + dept + '.pdf'
@@ -994,39 +979,43 @@
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
             let obj = JSON.parse(json_text)
+            console.log("🚀 !! obj:", obj)
             if (obj.page == 'addupdate') {
-                fillValue('e_name', obj.name)
-                fillValue('dept', obj.dept)
-                fillValue('e_manufacturer', obj.brand)
-                fillValue('e_date', obj.recieve_date)
-                fillValue('e_hospital_code', obj.hos_id)
-                fillValue('e_brand/model', ['/', obj.brand, obj.model])
-                fillValue('e_brand/distributor', obj.sup_sale)
-                fillValue('e_sn', obj.sn_no)
-                fillValue('e_me_code', obj.id)
-                fillValue('e_price', obj.price)
-                fillValue('pr_vender', obj.pr_vender)
+                Object.keys(obj).forEach(key => {
+                    fillValue(key, obj[key])
+                })
                 if (obj.imgs) {
-                    let imgs = JSON.parse(obj.imgs)
-                    if (imgs.length > 0) {
-                        $('#imgs_row, #head_imgs_row').remove()
-                        let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
-                        let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
-                        head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
-                        imgs.forEach(img => {
-                            let col = $('<div>').addClass('col-2')
-                            let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
-                            col.append(imgEle)
-                            row.append(col)
-                        })
-                        $('#e_name').closest('section').append(head_row).append(row)
-                    }
+                let imgs = JSON.parse(obj.imgs)
+                if (imgs.length > 0) {
+                    $('#imgs_row, #head_imgs_row').remove()
+                    let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
+                    let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
+                    head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
+                    imgs.forEach(img => {
+                        let col = $('<div>').addClass('col-2')
+                        let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
+                        col.append(imgEle)
+                        row.append(col)
+                    })
+                    $('#e_name').closest('section').append(head_row).append(row)
                 }
+            }
+                // fillValue('e_name', obj.name)
+                // fillValue('dept', obj.dept)
+                // fillValue('e_manufacturer', obj.brand)
+                // fillValue('e_date', obj.recieve_date)
+                // fillValue('e_hospital_code', obj.hos_id)
+                // fillValue('e_brand/model', ['/', obj.brand, obj.model])
+                // fillValue('e_brand/distributor', obj.sup_sale)
+                // fillValue('e_sn', obj.sn_no)
+                // fillValue('e_code', obj.id)
+                // fillValue('e_price', obj.price)
+                // fillValue('rr_vender', obj.rr_vender)
             } else if (obj.page == 'closejob') {
-                fillValue('pr_no', obj.quatation)
-                fillValue('pr_price', obj.base_price)
-                fillValue('pr_vat', obj.vat)
-                fillValue('pr_grand_price', obj.price)
+                fillValue('rr_no', obj.quatation)
+                fillValue('rr_price', obj.base_price)
+                fillValue('rr_vat', obj.vat)
+                fillValue('rr_grand_price', obj.price)
                 fillValue('job_id', obj.job_no)
             }
 
@@ -1045,6 +1034,97 @@
             }
             if (!value || value == '') value = 'N/A'
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
+        }
+
+        function toThaiBathText(inputNumber = '1375230.00') {
+            var ThaiNumberToText = function (number) {
+                number = number.replace(/๐/gi, '0');
+                number = number.replace(/๑/gi, '1');
+                number = number.replace(/๒/gi, '2');
+                number = number.replace(/๓/gi, '3');
+                number = number.replace(/๔/gi, '4');
+                number = number.replace(/๕/gi, '5');
+                number = number.replace(/๖/gi, '6');
+                number = number.replace(/๗/gi, '7');
+                number = number.replace(/๘/gi, '8');
+                number = number.replace(/๙/gi, '9');
+                return number
+            }
+            var CheckNumber = function (number) {
+                var decimal = false;
+                number = number.toString();
+                number = number.replace(/ |,|บาท|สตางค์|฿/gi, '');
+                for (var i = 0; i < number.length; i++) {
+                    if (number[i] == '.') {
+                        decimal = true;
+                    }
+                }
+                if (decimal == false) {
+                    number = number + '.00';
+                }
+                return ThaiNumberToText(number)
+            }
+            var getText = function (input, isLarge) {
+                var toNumber = input.toString();
+                var numbers = toNumber.split('').reverse();
+                var numberText = "/หนึ่ง/สอง/สาม/สี่/ห้า/หก/เจ็ด/แปด/เก้า/สิบ".split('/');
+                var unitText = "/สิบ/ร้อย/พ้น/หมื่น/แสน/ล้าน".split('/');
+                var output = "";
+                for (var i = 0; i < numbers.length; i++) {
+                    var number = parseInt(numbers[i]);
+                    var text = numberText[number];
+                    var unit = unitText[i];
+                    if (number == 0) continue;
+                    if (i == 1 && number == 2) {
+                        output = "ยี่สิบ" + output;
+                        continue;
+                    }
+                    if (i == 1 && number == 1) {
+                        output = "สิบ" + output;
+                        continue;
+                    }
+                    output = text + unit + output;
+                }
+                return isLarge ? output + 'ล้าน' : output
+            }
+            inputNumber = CheckNumber(inputNumber)
+            var fullNumber = []
+            inputNumber = inputNumber.split('')
+            while (inputNumber.length > 0) {
+                let arr = []
+                arr = inputNumber.splice(inputNumber.length - 3)
+                fullNumber.unshift(arr.join(''))
+            }
+            var decimal = fullNumber[fullNumber.length - 1].split('.').length > 1 ? Number(fullNumber[fullNumber.length - 1].split('.')[1]) / 100 : 0
+            fullNumber.pop()
+            let text = ''
+            let tempNumber = fullNumber
+            if (tempNumber.length <= 4) {
+                let arr = tempNumber.join('')
+                let largeNumber = arr.substring(0, arr.length > 6 ? arr.length - 6 : arr.length)
+                let smallNumber = arr.substring(arr.length - 6)
+                text = (getText(largeNumber, true) + (smallNumber != largeNumber ? getText(smallNumber) : ''))
+                // fullNumber = tempNumber.substring(tempNumber.length - 6)
+            } else {
+                let count = 0
+                while (tempNumber.length > 0) {
+                    let arr = []
+                    arr = tempNumber.splice(tempNumber.length - 4).join('')
+                    let largeNumber = arr.substring(0, arr.length > 6 ? arr.length - 6 : arr.length)
+                    let smallNumber = arr.substring(arr.length - 6)
+                    text = (getText(largeNumber) + (largeNumber.length > 6 ? 'ล้าน' : '') + (smallNumber != largeNumber ? getText(smallNumber) : '')) + (count > 0 ? 'ล้าน' : '') + text
+                    count++
+                }
+                fullNumber = fullNumber.toString().substring(fullNumber.toString().length - 6)
+            }
+            if (decimal == 0) {
+                return text + "บาทถ้วน";
+            } else {
+                // convert decimal into full number, need only 2 digits
+                decimal = decimal * 100;
+                decimal = Math.round(decimal);
+                return text + "บาท" + getText(decimal) + "สตางค์";
+            }
         }
     </script>
 
