@@ -43,6 +43,14 @@
             width: 100%;
             height: 100%;
         }
+
+        .nsmart-img {
+            cursor: grab;
+        }
+
+        .nsmart-img:active {
+            cursor: grabbing;
+        }
     </style>
     <title>Decommission Form</title>
 </head>
@@ -403,9 +411,7 @@
             <div class="alert alert-info" role="alert">
                 <div class="row">
                     <div class="col m-0">
-                        <input name="console-code" id="console-code" class="form-control"
-                            value='console.clear(),console.group("START");const getselectOpt=e=>e.options[e.selectedIndex].innerText,copy=e=>{console.log("Copying to clipboard...");let t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),console.log("END"),console.groupEnd()};console.log("Getting data...");let obj={id:document.getElementsByName("sap_code")[0].value,name:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("catagory")[0]),brand:document.getElementsByName("brand")[0].value,model:document.getElementsByName("model")[0].value,sn_no:document.getElementsByName("serial_no")[0].value,dept:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sub_dept")[0]),recieve_date:document.getElementsByName("receive_date")[0].value,warranty_end:document.getElementsByName("w_finish_date_repair_part")[0].value,price:document.getElementsByName("price")[0].value,hos_id:document.getElementsByName("code_equip")[0].value,sup_sale:(e=>e.options[e.selectedIndex].innerText)(document.getElementsByName("sup_sale")[0])},str=JSON.stringify(obj);copy(str);'
-                            readonly>
+                        <input name="console-code" id="console-code" class="form-control" readonly>
                     </div>
                     <div class="col-auto m-0">
                         <button class="btn btn-primary" onclick="copy()"><span id="copy-icon"><img width="20"
@@ -435,6 +441,8 @@
             });
             form_pdf_bytes = await fetch('../teampm/formDecom.pdf').then(res => res.arrayBuffer())
             font_bytes = await fetch('../teampm/THSarabun.ttf').then(res => res.arrayBuffer())
+            let text = await fetch('./console.js').then(res => res.text())
+            $('#console-code').val(text)
         })
         $('.form-check').parent().on('mouseover', function () {
             $(this).addClass('bg-primary-subtle shadow-sm')
@@ -477,71 +485,34 @@
             $('#' + dataID).LoadingOverlay('show')
             // check if file is url
             if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
-                $('#' + dataID).LoadingOverlay('hide')
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'ผิดพลาด',
-                    text: 'เนื่องจาก NSmart ป้องกันการดึงภาพโดยตรง กรุณาบันทึกภาพลงคอมพิวเตอร์ และเลือกจากคอมพิวเตอร์เท่านั้น',
-                    confirmButtonText: 'ตกลง',
-                })
-                return
+                // $('#' + dataID).LoadingOverlay('hide')
+                // Swal.fire({
+                //     icon: 'warning',
+                //     title: 'ผิดพลาด',
+                //     text: 'เนื่องจาก NSmart ป้องกันการดึงภาพโดยตรง กรุณาบันทึกภาพลงคอมพิวเตอร์ และเลือกจากคอมพิวเตอร์เท่านั้น',
+                //     confirmButtonText: 'ตกลง',
+                // })
+                // return
+
+
                 preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
-                // getArrayBuffer from url
-                $.ajax({
-                    url: scriptUrl,
-                    method: 'POST',
-                    data: {
-                        url: preview.attr('src'),
-                        opt: 'getImage'
-                    },
-                    success: function (data) {
-                        console.log(data)
-                        // convert base64 to file
-                        let file = new File([base64ToArrayBuffer(data.base64)], 'filename', {
-                            type: data.type,
-                            lastModified: Date.now()
-                        })
-                        let quality = getCompressionQuality(file)
-                        new Compressor(file, {
-                            quality: quality,
-                            success(result) {
-                                let fr = new FileReader()
-                                fr.onload = function (e) {
-                                    setImageBytes(dataID, e.target.result)
-                                    preview.attr('data-type', data.type.split('/')[1])
-                                    $('#' + dataID).LoadingOverlay('hide')
-                                }
-                                fr.readAsArrayBuffer(result)
-                            },
-                            error(err) {
-                                console.log(err.message);
-                            },
-                        });
-                    }
-                })
-                return
+                // check if src is base64
+                if (preview.attr('src').includes('base64')) {
+                    let base64 = preview.attr('src').split(',')[1]
+                    let type = preview.attr('src').split(';')[0].split(':')[1]
+                    let file = new File([base64ToArrayBuffer(base64)], 'filename.' + preview.attr('src').split(',')[0].split('/')[1].split(';')[0], {
+                        type: type,
+                        lastModified: Date.now()
+                    })
+                    compressImage(file, dataID, preview)
+                    return
+                }
             }
             let file = e.originalEvent.dataTransfer.files[0]
             if (!file) {
                 return
             }
-            let quality = getCompressionQuality(file)
-            new Compressor(file, {
-                quality: quality,
-                success(result) {
-                    let reader = new FileReader()
-                    reader.onloadend = function (e) {
-                        preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
-                        // convert dataURL to arrayBuffer
-                        setImageBytes(dataID, e.target.result)
-                        $('#' + dataID).LoadingOverlay('hide')
-                    }
-                    reader.readAsDataURL(file)
-                },
-                error(err) {
-                    console.log(err.message);
-                },
-            });
+            compressImage(file, dataID, preview)
         })
         $('#e_img_file').change(function () {
             let dataID = $('#e_img_file').attr('data-id')
@@ -829,6 +800,25 @@
         $('.offcanvas').on('shown.bs.offcanvas', function () {
             $('.offcanvas').find('textarea').focus()
         })
+
+        function compressImage(file, dataID, preview) {
+            let quality = getCompressionQuality(file)
+            new Compressor(file, {
+                quality: quality,
+                success(result) {
+                    let fr = new FileReader()
+                    fr.onload = function (e) {
+                        setImageBytes(dataID, e.target.result)
+                        preview.attr('data-type', file.type.split('/')[1])
+                        $('#' + dataID).LoadingOverlay('hide')
+                    }
+                    fr.readAsDataURL(result)
+                },
+                error(err) {
+                    console.log(err.message);
+                },
+            });
+        }
     </script>
     <script>
         function copy() {
@@ -853,6 +843,7 @@
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
             let obj = JSON.parse(json_text)
+            console.log("🚀 !! obj:", obj)
             fillValue('e_name', obj.name)
             fillValue('dept', obj.dept)
             fillValue('e_decom_location', obj.dept)
@@ -865,8 +856,25 @@
             fillValue('e_price', obj.price)
             fillValue('e_vender', obj.sup_sale)
             fillValue('e_hospital', 'โรงพยาบาลพญาไท 3')
+            fillValue('e_deprication', obj.e_deprication)
             $('#input-json').val('')
             $('#autoFillOffCanvas').offcanvas('hide')
+            if (obj.imgs) {
+                let imgs = JSON.parse(obj.imgs)
+                if (imgs.length > 0) {
+                    $('#imgs_row, #head_imgs_row').remove()
+                    let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
+                    let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
+                    head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
+                    imgs.forEach(img => {
+                        let col = $('<div>').addClass('col-2')
+                        let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
+                        col.append(imgEle)
+                        row.append(col)
+                    })
+                    $('#e_name').closest('section').append(head_row).append(row)
+                }
+            }
         })
         function fillValue(id, value) {
             if (!value || value == '') return
