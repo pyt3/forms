@@ -7,10 +7,7 @@ const Toast = Swal.mixin({
 })
 
 $(document).ready(() => {
-    $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD").attr('width', '100%')
-    let width = $('iframe').width()
-    let height = width * 1.4167
-    $('iframe').height(height)
+
     let comp = Compress({
         inputSelector: '#liquid-o2-volume-img',
         downloadSelector: '#compressing',
@@ -51,6 +48,10 @@ $(document).ready(() => {
         $('#header-text').addClass('animate__animated animate__rubberBand')
         $('#main-form').addClass('animate__animated animate__backInUp').show()
         $('#remark-div').addClass('animate__animated animate__fadeInRight').show()
+        $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD").attr('width', '100%')
+        let width = $('iframe').width()
+        let height = width * 1.4167
+        $('iframe').height(height)
         setTimeout(() => {
             $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
 
@@ -300,7 +301,7 @@ function formSubmit() {
     obj.opt = 'submit'
     $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
-    
+
     $.ajax({
         url: script_url,
         data: obj,
@@ -318,8 +319,8 @@ function formSubmit() {
         //     }
         // },
     })
+    sendLineNotify(obj)
     setTimeout(() => {
-        sendLineNotify(obj)
         $('html, body').animate({
             scrollTop: 0
         }, 500);
