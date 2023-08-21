@@ -301,7 +301,7 @@ function formSubmit() {
     obj.opt = 'submit'
     $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
-
+    console.log(obj)
     $.ajax({
         url: script_url,
         data: obj,
