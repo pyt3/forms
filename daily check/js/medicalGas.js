@@ -90,7 +90,6 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    getLastSaved()
     liff.init({
         liffId: "1657104960-Rn9Z79Ag",
         withLoginOnExternalBrowser: true,
