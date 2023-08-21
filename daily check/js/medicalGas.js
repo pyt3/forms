@@ -102,7 +102,9 @@ $(document).ready(() => {
         console.log("🚀 ~ profile:", profile)
         console.log(liff.getDecodedIDToken().sub);
         $('#line-display').attr('src', profile.pictureUrl).show(200)
-        $.LoadingOverlay("hide");
+        $.when(getLastSaved()).done(function () {
+            $.LoadingOverlay("hide");
+        })
     })
         .catch((err) => {
             console.log(err.code, err.message);
