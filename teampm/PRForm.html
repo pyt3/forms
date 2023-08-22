@@ -441,13 +441,11 @@
         })
         $('#name').change(async function () {
             let name = $(this).val()
-            console.log("🚀 !! name:", name)
             if(!name.toLowerCase().includes('daranphop')) {
                 signature_bytes = false
             }else{
                 signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
             }
-            console.log("🚀 !! signature_bytes:", signature_bytes)
 
         })
 
