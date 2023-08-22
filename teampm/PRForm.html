@@ -441,6 +441,9 @@
         })
         $('#name').change(async function () {
             let name = $(this).val()
+            if(name.toLowerCase() != 'daranphop') {
+                signature_bytes = false
+            }
             signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
 
         })
@@ -596,6 +599,8 @@
                 }
             }
             let file = e.originalEvent.dataTransfer.files[0]
+            // convert file to src
+            preview.attr('src', URL.createObjectURL(file))
             if (!file) {
                 return
             }
