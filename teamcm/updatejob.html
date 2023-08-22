@@ -114,23 +114,25 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(() => {
-            liff.init({
-                liffId: liff_id,
-                withLoginOnExternalBrowser: true
-            })
+            // liff.init({
+            //     liffId: liff_id,
+            //     withLoginOnExternalBrowser: true
+            // })
 
             liff.ready.then(() => {
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
             })
-            initialData();
         })
+        initialData();
         function initialData() {
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
             let jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
+            let updateText = localStorage.getItem('updateText')
+            if(updateText != null) $('#update').val(updateText)
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -223,6 +225,24 @@
                 window.open(url, '_self')
             })
 
+            // listen on user finish typing on update field
+            let typingTimer;
+            let doneTypingInterval = 800;
+            $('#update').keyup(function () {
+                clearTimeout(typingTimer);
+                if ($('#update').val()) {
+                    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+                }
+            });
+
+
+            
+
+        }
+
+        function doneTyping() {
+            let update = $("#update").val();
+            localStorage.setItem('updateText', update)
         }
 
         function updateData(code, jobid, update, text, name) {
@@ -237,6 +257,7 @@
                 },
                 success: (res) => {
                     if (res.status == 'success') {
+                        localStorage.removeItem('updateText')
                         Swal.fire({
                             icon: 'success',
                             title: 'อัพเดทข้อมูลสำเร็จ',
