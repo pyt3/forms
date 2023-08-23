@@ -13,7 +13,7 @@ var e, t, isfinish = 0;
             console.log("END"),
             console.groupEnd();
     };
-if (page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/asset_mast_record.php") > -1) {
+if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_record.php") > -1) {
     let parameter = location.href.split("?")[1];
     console.log("Getting data...");
     window.name = "main";
@@ -60,7 +60,7 @@ if (page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/asset_mast_record.php") > -
             copy.select();
             newwindow.document.execCommand("copy");
             await newwindow.navigator.clipboard.writeText(JSON.stringify(t));
-            console.log("🚀 !! DONE");
+            console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
             console.groupEnd();
             setTimeout(() => {
                 newwindow.close();
@@ -83,6 +83,8 @@ if (page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/asset_mast_record.php") > -
         t.imgs = [];
         for (let i = 0; i < imgs.length; i++) {
             console.log("🚀 !! Getting image", i + 1, "of", imgs.length);
+            let rect = imgs[i].getBoundingClientRect();
+            newwindow2.scrollTo(0, rect.top);
             let datablob = await fetch(imgs[i].src).then(r => r.blob());
             let dataurl = await new Promise((resolve, reject) => {
                 let reader = new FileReader();
@@ -102,7 +104,7 @@ if (page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/asset_mast_record.php") > -
             copy.select();
             newwindow2.document.execCommand("copy");
             await newwindow2.navigator.clipboard.writeText(JSON.stringify(t));
-            console.log("🚀 !! DONE");
+            console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
             console.groupEnd();
             setTimeout(() => {
                 newwindow.close();
@@ -117,7 +119,7 @@ if (page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/asset_mast_record.php") > -
     })
 }
 else if (
-    page.indexOf("//nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_05.php") > -1
+    page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/jobs/BJOBA_05.php") > -1
 ) {
     let e = document.getElementsByName("job_status")[0].value;
     if ((console.log("🚀 !! status:", e), 12 == e)) {
