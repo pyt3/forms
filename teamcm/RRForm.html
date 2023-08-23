@@ -411,6 +411,25 @@
             signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
 
         })
+        $('#e_price, #e_repair_price').on('keyup', function () {
+            let price = $('#e_price').val().toString().replace(/,/g, '')
+            console.log("🚀 !! price:", price)
+            let repair_price = $('#e_repair_price').val().toString().replace(/,/g, '')
+            price = Number(price)
+            repair_price = Number(repair_price)
+            let percent
+            if(price == '' || price == NaN || price == undefined || price == null){
+                price = 0
+                repair_price = 0
+            }
+            else if(repair_price == '' || repair_price == NaN || repair_price == undefined || repair_price == null){
+                repair_price = 0
+            }
+            console.log("🚀 !! price:", price)
+            console.log("🚀 !! repair_price:", repair_price)
+            percent = (repair_price / price) * 100
+            $('#e_repair_percent').val(percent.toFixed(2))
+        })
 
         $('#img-only-btn').click(async function () {
             const embedImage = async function (bytes, key) {
@@ -836,7 +855,7 @@
             $('form input, form select, form textarea').each(function () {
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
-                if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no'].includes(_this.prop('id'))) return
+                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'rr-cm') {
                     let v = _this.find('option:selected').val()
                     if (v == '') return
@@ -856,6 +875,9 @@
                     form.getTextField(_this.prop('id')).setText(val)
                     if (_this.prop('id') == 'rr_grand_price') form.getTextField('total_text').setText(toThaiBathText(_this.val().toString()))
                     return
+                }
+                if(_this.prop('id') == 'e_dept'){
+                    form.getTextField('e_dept_2').setText(_this.val())
                 }
                 console.log(_this.prop('id'));
                 form.getTextField(_this.prop('id')).setText(_this.val())
