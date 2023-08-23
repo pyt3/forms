@@ -257,7 +257,6 @@
                 },
                 success: (res) => {
                     if (res.status == 'success') {
-                        localStorage.removeItem('updateText'+jobid)
                         Swal.fire({
                             icon: 'success',
                             title: 'อัพเดทข้อมูลสำเร็จ',
@@ -272,6 +271,7 @@
                     }
                 },
             })
+            localStorage.removeItem('updateText'+jobid)
             const colorArrays = [
                 ["#ffffff", "#1a237e"],
                 ["#000000", "#ffb74d"],

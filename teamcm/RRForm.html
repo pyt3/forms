@@ -304,7 +304,7 @@
                     </div>
                 </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
-                    <div class="row justify-content-start">
+                    <div class="row justify-content-start align-items-end">
                         <div class="col-12 d-flex align-items-center mt-3">
                             <img src="https://img.icons8.com/stickers/100/bank.png" alt=" icon" width="50">
                             <h4 class="fw-bold">&nbsp;ประเภทของค่าใช้จ่ายที่นาเสนอให้ดำเนินการ</h4>
@@ -316,8 +316,11 @@
                                 <option value="Accessory" id="Accessory">Accessory</option>
                                 <option value="Consumable" id="Consumable">Consumable</option>
                                 <option value="Replacement" id="Replacement">Replacement</option>
-                                <option value="Other" id="other">Other</option>
+                                <option value="Other" id="Other">Other</option>
                             </select>
+                        </div>
+                        <div class="col-md-4 mt-3" style="display: none;">
+                            <input type="text" name="rr-cm-other" id="rr-cm-other" class="form-control" placeholder="กรอกข้อมูลกรณีเลือกอื่นๆ">
                         </div>
                     </div>
                 </section>
@@ -410,6 +413,14 @@
             let name = $(this).val()
             signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
 
+        })
+        $('#rr-cm').change(function () {
+            let val = $(this).val()
+            if (val == 'Other') {
+                $('#rr-cm-other').parent().show()
+            } else {
+                $('#rr-cm-other').parent().hide()
+            }
         })
         $('#e_price, #e_repair_price').on('keyup', function () {
             let price = $('#e_price').val().toString().replace(/,/g, '')
@@ -856,11 +867,14 @@
             $('form input, form select, form textarea').each(function () {
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
-                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no'].includes(_this.prop('id'))) return
+                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no','rr-cm-other'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'rr-cm') {
                     let v = _this.find('option:selected').val()
                     if (v == '') return
                     form.getTextField(v).setText('✓')
+                    if(v == 'Other'){
+                        form.getTextField('rr_cm_other_text').setText($('#rr-cm-other').val())
+                    }
                     return
                 }
                 if (_this.prop('id') == 'e_brand/model') {
@@ -1015,6 +1029,29 @@
                 title: 'คัดลอกสำเร็จ'
             })
             console.groupEnd()
+            let starttime = new Date()
+            let checkdata = setInterval(() => {
+                // if interval more than 10 sec, clear interval
+                if (new Date() - starttime > (1000 * 60 *5)) {
+                    clearInterval(checkdata)
+                    return
+                }
+                // read data from clipboard
+                if(!document.hasFocus()) return
+                navigator.clipboard.readText().then(clipText => {
+                    // check if data is json
+                    try {
+                        let obj = JSON.parse(clipText)
+                        if(!obj.e_name) return
+                        clearInterval(checkdata)
+                        $('#input-json').val(clipText)
+                        $('#input-json-btn').click()
+                        // delete data from clipboard
+                        navigator.clipboard.writeText('')
+                    } catch (error) {
+                    }
+                })
+            }, 1000);
         }
 
         $('#input-json-btn').click(function () {
