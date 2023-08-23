@@ -875,7 +875,10 @@
                     return
                 }
                 if(_this.prop('id') == 'e_dept'){
-                    form.getTextField('e_dept_2').setText(_this.val())
+                    return form.getTextField('e_dept_2').setText(_this.val())
+                }
+                if(['delivery', 'valadity', 'warranty'].includes(_this.prop('id'))){
+                    return form.getTextField(_this.prop('id')).setText(_this.val() + ' วัน')
                 }
                 console.log(_this.prop('id'));
                 form.getTextField(_this.prop('id')).setText(_this.val())
