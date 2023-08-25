@@ -139,11 +139,11 @@
                 url: scriptUrl,
                 data: {
                     opt: 'get_reciever',
-                    jobid: jobid,
+                    jobno: jobno,
                 },
                 success: (res) => {
+                    console.log(res);
                     if (res.status == 'success') {
-                        console.log(res);
                     }
                 }
             })
