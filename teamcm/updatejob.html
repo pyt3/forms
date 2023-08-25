@@ -20,6 +20,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <!-- icon -->
     <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -46,7 +48,15 @@
 <body class="bg-body-tertiary">
     <main>
         <div class="container-fluid d-none">
-            <div class="row mt-3 g-3 justify-content-center">
+            <div class="row mt-3">
+                <div class="col-md-4 d-none">
+                    <div class="alert alert-success">
+                        WO. <span id="workorder"></span><br>
+                        <i class="bi bi-check-circle-fill"></i><span id="reciever"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 justify-content-center">
                 <div class="col-md-4 has-code d-none">
                     <div class="form-floating">
                         <input type="text" id="request-no" name="request-no" class="form-control" id="floatingInput"
@@ -144,7 +154,19 @@
                 success: (res) => {
                     console.log(res);
                     if (res.status == 'success') {
+                        $('#reciever').html(' รับงานโดย ' + res.reciever)
+                        $('#workorder').html(res.workorder)
+                        $('#reciever').parent().find('i').removeClass('bi-x-circle-fill').addClass('bi-check-circle-fill')
+                        $('#reciever').parent().removeClass('alert-danger').addClass('alert-success')
+                    }else{
+                        $('#reciever').html(' ยังไม่มีผู้รับงาน')
+                        $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
+                        $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
                     }
+                    $('#reciever').parents('.col-md-4').removeClass('d-none').addClass('animate__animated animate__bounce')
+                    setTimeout(() => {
+                        $('#reciever').parents('.col-md-4').removeClass('animate__animated animate__bounce')
+                    }, 1000);
                 }
             })
             $("#code").val(code);
