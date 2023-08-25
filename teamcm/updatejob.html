@@ -131,7 +131,20 @@
             let code = url.searchParams.get("code");
             let jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
-            $("#code").val(code);
+            $.ajax({
+                method: 'POST',
+                url: scriptUrl,
+                data: {
+                    opt: 'get_reciever',
+                    jobid: jobid,
+                },
+                success: (res) => {
+                    if (res.status == 'success') {
+                        console.log(res);
+                    }
+                }
+            })
+            $("#code").val(code);ciever
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
             $('#name').val(localStorage.getItem('name') || '')
