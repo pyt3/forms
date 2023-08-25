@@ -127,10 +127,13 @@
             initialData();
         })
         function initialData() {
+           
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
             let jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
+            let updateText = localStorage.getItem('updateText'+jobid)
+            if(updateText != null) $('#update').val(updateText)
             $.ajax({
                 method: 'POST',
                 url: scriptUrl,
