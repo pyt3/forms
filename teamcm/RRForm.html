@@ -40,9 +40,9 @@
             height: 100%;
         }
 
-        .nsmart-img{
+        .nsmart-img {
             cursor: grab;
-        } 
+        }
 
         .nsmart-img:active {
             cursor: grabbing;
@@ -320,7 +320,8 @@
                             </select>
                         </div>
                         <div class="col-md-4 mt-3" style="display: none;">
-                            <input type="text" name="rr-cm-other" id="rr-cm-other" class="form-control" placeholder="กรอกข้อมูลกรณีเลือกอื่นๆ">
+                            <input type="text" name="rr-cm-other" id="rr-cm-other" class="form-control"
+                                placeholder="กรอกข้อมูลกรณีเลือกอื่นๆ">
                         </div>
                     </div>
                 </section>
@@ -429,11 +430,11 @@
             price = Number(price)
             repair_price = Number(repair_price)
             let percent
-            if(price == '' || price == NaN || price == undefined || price == null){
+            if (price == '' || price == NaN || price == undefined || price == null) {
                 price = 0
                 repair_price = 0
             }
-            else if(repair_price == '' || repair_price == NaN || repair_price == undefined || repair_price == null){
+            else if (repair_price == '' || repair_price == NaN || repair_price == undefined || repair_price == null) {
                 repair_price = 0
             }
             console.log("🚀 !! price:", price)
@@ -846,10 +847,9 @@
                 if (pdfElement.isMultiline()) {
                     pdfElement.setLineHeight(0.5)
                 }
-                else if (val.length >= 45) pdfElement.setFontSize(11)
-                else if (val.length >= 35) pdfElement.setFontSize(12)
-                else if (val.length >= 29) pdfElement.setFontSize(13)
-                console.log(pdfElement.doc);
+                else if (val.length >= 45) pdfElement.setFontSize(10)
+                else if (val.length >= 35) pdfElement.setFontSize(11)
+                else if (val.length >= 29) pdfElement.setFontSize(12)
                 pdfElement.setText(val)
             }
             form.getTextField('date').setText(new Date().toLocaleDateString('th-TH', {
@@ -857,22 +857,23 @@
                 month: 'long',
                 day: 'numeric',
             }))
-            setText('d_dept', 'e_dept_2')
+            setText('e_dept', 'e_dept')
+            setText('e_dept', 'e_dept_2')
             setText('e_name', 'e_name')
             form.getTextField('quotation').setText(toTitleCase($('#rr_vender').val()) + ' (ใบเสนอราคาเลขที่ ' + $('#quatation_no').val() + ')')
-            if($('#e_dept').val() != null && $('#e_dept').val() != undefined && $('#e_dept').val() != ''){
+            if ($('#e_dept').val() != null && $('#e_dept').val() != undefined && $('#e_dept').val() != '') {
                 form.getTextField('dept_no').setText($('#e_dept option:selected').data('dept-id').toString())
             }
 
             $('form input, form select, form textarea').each(function () {
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
-                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no','rr-cm-other'].includes(_this.prop('id'))) return
+                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other','e_dept'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'rr-cm') {
                     let v = _this.find('option:selected').val()
                     if (v == '') return
                     form.getTextField(v).setText('✓')
-                    if(v == 'Other'){
+                    if (v == 'Other') {
                         form.getTextField('rr_cm_other_text').setText($('#rr-cm-other').val())
                     }
                     return
@@ -888,23 +889,20 @@
                     if (_this.val() == '') return
                     let val = _this.val().toString().split('.').map((a, i) => i == 1 ? a : Number(a).toLocaleString()).join('.')
                     form.getTextField(_this.prop('id')).setText(val)
-                    if (_this.prop('id') == 'rr_grand_price') form.getTextField('total_text').setText(toThaiBathText(_this.val().toString()))
+                    if (_this.prop('id') == 'rr_grand_price') form.getTextField('total_text').setText(ArabicNumberToText(_this.val().toString()))
                     return
                 }
-                if(_this.prop('id') == 'e_dept'){
-                    return form.getTextField('e_dept_2').setText(_this.val())
-                }
-                if(['delivery', 'valadity', 'warranty'].includes(_this.prop('id'))){
+                if (['delivery', 'valadity', 'warranty'].includes(_this.prop('id'))) {
                     return form.getTextField(_this.prop('id')).setText(_this.val() + ' วัน')
                 }
-                if(_this.prop('id') =='recommend'){
+                if (_this.prop('id') == 'recommend') {
                     let reccommend = _this.val().split('\n')
                     let formElement = form.getTextField(_this.prop('id'))
-                    if(reccommend.length == 1){
+                    if (reccommend.length == 1) {
                         formElement.setFontSize(14)
-                    }else if(reccommend.length == 2){
+                    } else if (reccommend.length == 2) {
                         formElement.setFontSize(12)
-                    }else{
+                    } else {
                         formElement.setFontSize(10)
                     }
                     return formElement.setText(_this.val())
@@ -966,7 +964,7 @@
                 let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
                 let dept = $('#e_dept').val() ? $('#e_dept').val() : 'no_department'
                 let rr_no = $('#rr_no').val()
-                let name = 'RR_'+rr_no.split('_').slice(1).join('_')+ '_'+ e_name + ', ' + dept + '.pdf'
+                let name = 'RR_' + rr_no.split('_').slice(1).join('_') + '_' + e_name + ', ' + dept + '.pdf'
                 $(iframe).show(200)
                 $('#a-download').attr('href', url)
                 $('#a-download').attr('download', name).show()
@@ -1032,17 +1030,17 @@
             let starttime = new Date()
             let checkdata = setInterval(() => {
                 // if interval more than 10 sec, clear interval
-                if (new Date() - starttime > (1000 * 60 *5)) {
+                if (new Date() - starttime > (1000 * 60 * 5)) {
                     clearInterval(checkdata)
                     return
                 }
                 // read data from clipboard
-                if(!document.hasFocus()) return
+                if (!document.hasFocus()) return
                 navigator.clipboard.readText().then(clipText => {
                     // check if data is json
                     try {
                         let obj = JSON.parse(clipText)
-                        if(!obj.e_name) return
+                        if (!obj.e_name) return
                         clearInterval(checkdata)
                         $('#input-json').val(clipText)
                         $('#input-json-btn').click()
@@ -1063,21 +1061,21 @@
                     fillValue(key, obj[key])
                 })
                 if (obj.imgs) {
-                let imgs = JSON.parse(obj.imgs)
-                if (imgs.length > 0) {
-                    $('#imgs_row, #head_imgs_row').remove()
-                    let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
-                    let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
-                    head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
-                    imgs.forEach(img => {
-                        let col = $('<div>').addClass('col-2')
-                        let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
-                        col.append(imgEle)
-                        row.append(col)
-                    })
-                    $('#e_name').closest('section').append(head_row).append(row)
+                    let imgs = JSON.parse(obj.imgs)
+                    if (imgs.length > 0) {
+                        $('#imgs_row, #head_imgs_row').remove()
+                        let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
+                        let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
+                        head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
+                        imgs.forEach(img => {
+                            let col = $('<div>').addClass('col-2')
+                            let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
+                            col.append(imgEle)
+                            row.append(col)
+                        })
+                        $('#e_name').closest('section').append(head_row).append(row)
+                    }
                 }
-            }
                 // fillValue('e_name', obj.name)
                 // fillValue('dept', obj.dept)
                 // fillValue('e_manufacturer', obj.brand)
@@ -1114,95 +1112,98 @@
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
         }
 
-        function toThaiBathText(inputNumber = '1375230.00') {
-            var ThaiNumberToText = function (number) {
-                number = number.replace(/๐/gi, '0');
-                number = number.replace(/๑/gi, '1');
-                number = number.replace(/๒/gi, '2');
-                number = number.replace(/๓/gi, '3');
-                number = number.replace(/๔/gi, '4');
-                number = number.replace(/๕/gi, '5');
-                number = number.replace(/๖/gi, '6');
-                number = number.replace(/๗/gi, '7');
-                number = number.replace(/๘/gi, '8');
-                number = number.replace(/๙/gi, '9');
-                return number
-            }
-            var CheckNumber = function (number) {
-                var decimal = false;
-                number = number.toString();
-                number = number.replace(/ |,|บาท|สตางค์|฿/gi, '');
-                for (var i = 0; i < number.length; i++) {
-                    if (number[i] == '.') {
-                        decimal = true;
-                    }
-                }
-                if (decimal == false) {
-                    number = number + '.00';
-                }
-                return ThaiNumberToText(number)
-            }
-            var getText = function (input, isLarge) {
-                var toNumber = input.toString();
-                var numbers = toNumber.split('').reverse();
-                var numberText = "/หนึ่ง/สอง/สาม/สี่/ห้า/หก/เจ็ด/แปด/เก้า/สิบ".split('/');
-                var unitText = "/สิบ/ร้อย/พ้น/หมื่น/แสน/ล้าน".split('/');
-                var output = "";
-                for (var i = 0; i < numbers.length; i++) {
-                    var number = parseInt(numbers[i]);
-                    var text = numberText[number];
-                    var unit = unitText[i];
-                    if (number == 0) continue;
-                    if (i == 1 && number == 2) {
-                        output = "ยี่สิบ" + output;
-                        continue;
-                    }
-                    if (i == 1 && number == 1) {
-                        output = "สิบ" + output;
-                        continue;
-                    }
-                    output = text + unit + output;
-                }
-                return isLarge ? output + 'ล้าน' : output
-            }
-            inputNumber = CheckNumber(inputNumber)
-            var fullNumber = []
-            inputNumber = inputNumber.split('')
-            while (inputNumber.length > 0) {
-                let arr = []
-                arr = inputNumber.splice(inputNumber.length - 3)
-                fullNumber.unshift(arr.join(''))
-            }
-            var decimal = fullNumber[fullNumber.length - 1].split('.').length > 1 ? Number(fullNumber[fullNumber.length - 1].split('.')[1]) / 100 : 0
-            fullNumber.pop()
-            let text = ''
-            let tempNumber = fullNumber
-            if (tempNumber.length <= 4) {
-                let arr = tempNumber.join('')
-                let largeNumber = arr.substring(0, arr.length > 6 ? arr.length - 6 : arr.length)
-                let smallNumber = arr.substring(arr.length - 6)
-                text = (getText(largeNumber, true) + (smallNumber != largeNumber ? getText(smallNumber) : ''))
-                // fullNumber = tempNumber.substring(tempNumber.length - 6)
+        // "use strict";
+
+        function ThaiNumberToText(Number) {
+            Number = Number.replace(/๐/gi, '0');
+            Number = Number.replace(/๑/gi, '1');
+            Number = Number.replace(/๒/gi, '2');
+            Number = Number.replace(/๓/gi, '3');
+            Number = Number.replace(/๔/gi, '4');
+            Number = Number.replace(/๕/gi, '5');
+            Number = Number.replace(/๖/gi, '6');
+            Number = Number.replace(/๗/gi, '7');
+            Number = Number.replace(/๘/gi, '8');
+            Number = Number.replace(/๙/gi, '9');
+            return ArabicNumberToText(Number);
+        }
+
+        function ArabicNumberToText(Number) {
+            if (typeof Number == 'string') Number = parseFloat(Number.replace(/,/g, ''))
+            var Number = CheckNumber(Number);
+            var NumberArray = new Array("ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า", "สิบ");
+            var DigitArray = new Array("", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน");
+            var BahtText = "";
+            if (isNaN(Number)) {
+                return "ข้อมูลนำเข้าไม่ถูกต้อง";
             } else {
-                let count = 0
-                while (tempNumber.length > 0) {
-                    let arr = []
-                    arr = tempNumber.splice(tempNumber.length - 4).join('')
-                    let largeNumber = arr.substring(0, arr.length > 6 ? arr.length - 6 : arr.length)
-                    let smallNumber = arr.substring(arr.length - 6)
-                    text = (getText(largeNumber) + (largeNumber.length > 6 ? 'ล้าน' : '') + (smallNumber != largeNumber ? getText(smallNumber) : '')) + (count > 0 ? 'ล้าน' : '') + text
-                    count++
+                if ((Number - 0) > 9999999.9999) {
+                    return "ข้อมูลนำเข้าเกินขอบเขตที่ตั้งไว้";
+                } else {
+                    Number = Number.split(".");
+                    if (Number[1].length > 0) {
+                        Number[1] = Number[1].substring(0, 2);
+                    }
+                    var NumberLen = Number[0].length - 0;
+                    for (var i = 0; i < NumberLen; i++) {
+                        var tmp = Number[0].substring(i, i + 1) - 0;
+                        if (tmp != 0) {
+                            if ((i == (NumberLen - 1)) && (tmp == 1)) {
+                                BahtText += "เอ็ด";
+                            } else
+                                if ((i == (NumberLen - 2)) && (tmp == 2)) {
+                                    BahtText += "ยี่";
+                                } else
+                                    if ((i == (NumberLen - 2)) && (tmp == 1)) {
+                                        BahtText += "";
+                                    } else {
+                                        BahtText += NumberArray[tmp];
+                                    }
+                            BahtText += DigitArray[NumberLen - i - 1];
+                        }
+                    }
+                    BahtText += "บาท";
+                    if ((Number[1] == "0") || (Number[1] == "00")) {
+                        BahtText += "ถ้วน";
+                    } else {
+                        DecimalLen = Number[1].length - 0;
+                        for (var i = 0; i < DecimalLen; i++) {
+                            var tmp = Number[1].substring(i, i + 1) - 0;
+                            if (tmp != 0) {
+                                if ((i == (DecimalLen - 1)) && (tmp == 1)) {
+                                    BahtText += "เอ็ด";
+                                } else
+                                    if ((i == (DecimalLen - 2)) && (tmp == 2)) {
+                                        BahtText += "ยี่";
+                                    } else
+                                        if ((i == (DecimalLen - 2)) && (tmp == 1)) {
+                                            BahtText += "";
+                                        } else {
+                                            BahtText += NumberArray[tmp];
+                                        }
+                                BahtText += DigitArray[DecimalLen - i - 1];
+                            }
+                        }
+                        BahtText += "สตางค์";
+                    }
+                    return BahtText;
                 }
-                fullNumber = fullNumber.toString().substring(fullNumber.toString().length - 6)
             }
-            if (decimal == 0) {
-                return text + "บาทถ้วน";
-            } else {
-                // convert decimal into full number, need only 2 digits
-                decimal = decimal * 100;
-                decimal = Math.round(decimal);
-                return text + "บาท" + getText(decimal) + "สตางค์";
+        }
+
+        function CheckNumber(Number) {
+            var decimal = false;
+            Number = Number.toString();
+            Number = Number.replace(/ |,|บาท|฿/gi, '');
+            for (var i = 0; i < Number.length; i++) {
+                if (Number[i] == '.') {
+                    decimal = true;
+                }
             }
+            if (decimal == false) {
+                Number = Number + '.00';
+            }
+            return Number
         }
     </script>
 
