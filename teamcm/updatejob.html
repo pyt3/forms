@@ -21,7 +21,9 @@
     <!-- icon -->
     <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -191,21 +193,24 @@
             //     if (liff.getContext().type != 'group') {
             //         $('.mobile').addClass('d-none')
             //     }
-
-            liff.ready.then(() => {
-                if (liff.getContext().type != 'group') {
-                    $('.mobile').addClass('d-none')
-                }
-                initialData();
-            })
+            const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
+            firestore = defaultProject.firestore();
+            auth = defaultProject.auth();
+            if (!auth.currentUser) {
+                await getAuth()
+                // await getAuth(await liff.getDecodedIDToken().sub)
+            }
+            initialData();
+            // })
         })
+        var jobid
         function initialData() {
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
-            let jobid = url.searchParams.get("jobid");
+            jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
-            let updateText = localStorage.getItem('updateText'+jobid)
-            if(updateText != null) $('#update').val(updateText)
+            let updateText = localStorage.getItem('updateText' + jobid)
+            if (updateText != null) $('#update').val(updateText)
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -241,10 +246,13 @@
 
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     data = data.data()
-                    console.log("🚀 !! data:", data)
-                    $('#code').val(data.code)
-                    $('#request-no').val(data.jobid)
-                    $('#name').val(data.name)
+                    if (!data.name && !data.reciever) {
+                        $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
+                        $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
+                        $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
+                    }
+                    else $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
+                    $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
                 })
                 // $.ajax({
                 //     url: scriptUrl,
@@ -278,11 +286,17 @@
                     window.open(url, '_self')
                 })
             } else {
-                // get data from jobdata/{jobid}/
-                // let data = await firestore.collection('jobdata').doc(jobid).get()
-                // data = data.data()
-                // console.log("🚀 !! data:", data)
-                console.log("🚀 !! data:", data)
+                firestore.collection('jobdata/').doc(jobid).get().then(data => {
+                    $('.load-bar').addClass('d-none')
+                    data = data.data()
+                    if (!data.name && !data.reciever) {
+                        $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
+                        $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
+                        $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
+                    }
+                    else $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
+                    $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
+                })
                 $('.container-fluid').removeClass('d-none')
                 $('#more-update-btn').addClass('d-none')
             }
@@ -339,42 +353,48 @@
             });
 
 
-            
+
 
         }
 
         function doneTyping() {
+            console.log(jobid);
             let update = $("#update").val();
-            localStorage.setItem('updateText'+jobid, update)
+            localStorage.setItem('updateText' + jobid, update)
         }
 
         function updateData(code, jobid, update, text, name) {
-            $.ajax({
-                url: scriptUrl,
-                method: 'POST',
-                data: {
-                    code: code,
-                    jobid: jobid,
-                    update: update,
-                    name: name,
-                },
-                success: (res) => {
-                    if (res.status == 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'อัพเดทข้อมูลสำเร็จ',
-                            text: 'อัพเดทข้อมูลสำเร็จ',
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'อัพเดทข้อมูลไม่สำเร็จ',
-                            text: 'อัพเดทข้อมูลไม่สำเร็จ',
-                        })
-                    }
-                },
+            // $.ajax({
+            //     url: scriptUrl,
+            //     method: 'POST',
+            //     data: {
+            //         code: code,
+            //         jobid: jobid,
+            //         update: update,
+            //         name: name,
+            //     },
+            //     success: (res) => {
+            //         if (res.status == 'success') {
+            //             Swal.fire({
+            //                 icon: 'success',
+            //                 title: 'อัพเดทข้อมูลสำเร็จ',
+            //                 text: 'อัพเดทข้อมูลสำเร็จ',
+            //             })
+            //         } else {
+            //             Swal.fire({
+            //                 icon: 'error',
+            //                 title: 'อัพเดทข้อมูลไม่สำเร็จ',
+            //                 text: 'อัพเดทข้อมูลไม่สำเร็จ',
+            //             })
+            //         }
+            //     },
+            // })
+            firestore.collection('jobdata/').doc(jobid).collection('update').add({
+                update: update,
+                name: name,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             })
-            localStorage.removeItem('updateText'+jobid)
+            localStorage.removeItem('updateText' + jobid)
             const colorArrays = [
                 ["#ffffff", "#1a237e"],
                 ["#000000", "#ffb74d"],
