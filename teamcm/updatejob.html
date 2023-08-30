@@ -39,11 +39,68 @@
             width: 100%;
             height: 100%;
         }
+
+        .load-bar {
+            position: relative;
+            margin-top: 0px;
+            width: 100%;
+            height: 6px;
+            background-color: #fdba2c;
+        }
+
+        .bar {
+            content: "";
+            display: inline;
+            position: absolute;
+            width: 0;
+            height: 100%;
+            left: 50%;
+            text-align: center;
+        }
+
+        .bar:nth-child(1) {
+            background-color: #da4733;
+            animation: loading 3s linear infinite;
+        }
+
+        .bar:nth-child(2) {
+            background-color: #3b78e7;
+            animation: loading 3s linear 1s infinite;
+        }
+
+        .bar:nth-child(3) {
+            background-color: #fdba2c;
+            animation: loading 3s linear 2s infinite;
+        }
+
+        @keyframes loading {
+            from {
+                left: 0;
+                width: 0;
+                z-index: 100;
+            }
+
+            33.3333% {
+                left: 0;
+                width: 100%;
+                z-index: 10;
+            }
+
+            to {
+                left: 0;
+                width: 100%;
+            }
+        }
     </style>
     <title>อัพเดทงาน</title>
 </head>
 
 <body class="bg-body-tertiary">
+    <div class="load-bar">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
     <main>
         <div class="container-fluid d-none">
             <div class="row mt-3 g-3 justify-content-center">
@@ -113,26 +170,36 @@
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
-        $(document).ready(() => {
-            liff.init({
-                liffId: liff_id,
-                withLoginOnExternalBrowser: true
-            })
+        $(document).ready(async () => {
+            moment.locale('th')
+            // liff.init({
+            //     liffId: liff_id,
+            //     withLoginOnExternalBrowser: true
+            // })
 
-            liff.ready.then(() => {
-                if (liff.getContext().type != 'group') {
-                    $('.mobile').addClass('d-none')
-                }
-                initialData();
-            })
+            // liff.ready.then(async () => {
+            //     if (liff.getContext().type != 'group') {
+            //         $('.mobile').addClass('d-none')
+            //     }
+
+            const defaultProject = firebase.initializeApp(await $.getJSON('./service-account.json'));
+            firestore = defaultProject.firestore();
+            auth = defaultProject.auth();
+            if (!auth.currentUser) {
+                await getAuth()
+                // await getAuth(liff.getDecodedIDToken().sub)
+            }
+            initialData();
+
+            // })
         })
-        function initialData() {
+        async function initialData() {
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
             let jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
-            let updateText = localStorage.getItem('updateText'+jobid)
-            if(updateText != null) $('#update').val(updateText)
+            let updateText = localStorage.getItem('updateText' + jobid)
+            if (updateText != null) $('#update').val(updateText)
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -148,30 +215,55 @@
                 $('#summary').parents('.container-fluid').removeClass('d-none')
                 $('#request-no').parents('.container-fluid').removeClass('d-none')
                 $.LoadingOverlay("show");
-                $.ajax({
-                    url: scriptUrl,
-                    method: 'POST',
-                    data: {
-                        jobid: jobid,
-                        opt: 'summary'
-                    },
-                    success: (res) => {
-                        console.log("🚀 !! res:", res)
-                        $.LoadingOverlay("hide");
-                        if (res.status == 'success') {
-                            if (res.result.replace(/\n/g, '<br>') == '') res = 'ยังไม่มีสรุปงาน'
-                            else res = res.result.replace(/\n/g, '<br>')
-                            $('#summary').html(res)
-                            $('#summary').parent().removeClass('d-none').focus()
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'สรุปงานไม่สำเร็จ',
-                                text: 'สรุปงานไม่สำเร็จ',
-                            })
-                        }
-                    },
+
+
+                firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
+                    data = data.docs.map(doc => doc.data())
+                    let msg
+                    if (data.length == 0) msg = 'ยังไม่มีการอัพเดทงาน'
+                    else msg = data.map(r => {
+                        r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                        return r
+                    }).map(d => {
+                        return `${d.timestamp}<br>${d.update}<br>#${d.name}`
+                    }).join('<br><br>-----------------------------------')
+                    $('#summary').html(msg)
+                    $('#summary').parent().removeClass('d-none').focus()
+                    $.LoadingOverlay("hide");
+                    $('.load-bar').addClass('d-none')
                 })
+
+                firestore.collection('jobdata/').doc(jobid).get().then(data => {
+                    data = data.data()
+                    console.log("🚀 !! data:", data)
+                    $('#code').val(data.code)
+                    $('#request-no').val(data.jobid)
+                    $('#name').val(data.name)
+                })
+                // $.ajax({
+                //     url: scriptUrl,
+                //     method: 'POST',
+                //     data: {
+                //         jobid: jobid,
+                //         opt: 'summary'
+                //     },
+                //     success: (res) => {
+                //         console.log("🚀 !! res:", res)
+                //         $.LoadingOverlay("hide");
+                //         if (res.status == 'success') {
+                //             if (res.result.replace(/\n/g, '<br>') == '') res = 'ยังไม่มีสรุปงาน'
+                //             else res = res.result.replace(/\n/g, '<br>')
+                //             $('#summary').html(res)
+                //             $('#summary').parent().removeClass('d-none').focus()
+                //         } else {
+                //             Swal.fire({
+                //                 icon: 'error',
+                //                 title: 'สรุปงานไม่สำเร็จ',
+                //                 text: 'สรุปงานไม่สำเร็จ',
+                //             })
+                //         }
+                //     },
+                // })
                 $('#more-update-btn').click(() => {
                     let url = new URL('line://app/' + liff_id)
                     url.searchParams.set('code', code)
@@ -180,6 +272,11 @@
                     window.open(url, '_self')
                 })
             } else {
+                // get data from jobdata/{jobid}/
+                // let data = await firestore.collection('jobdata').doc(jobid).get()
+                // data = data.data()
+                // console.log("🚀 !! data:", data)
+                console.log("🚀 !! data:", data)
                 $('.container-fluid').removeClass('d-none')
                 $('#more-update-btn').addClass('d-none')
             }
@@ -236,13 +333,13 @@
             });
 
 
-            
+
 
         }
 
         function doneTyping() {
             let update = $("#update").val();
-            localStorage.setItem('updateText'+jobid, update)
+            localStorage.setItem('updateText' + jobid, update)
         }
 
         function updateData(code, jobid, update, text, name) {
@@ -271,7 +368,7 @@
                     }
                 },
             })
-            localStorage.removeItem('updateText'+jobid)
+            localStorage.removeItem('updateText' + jobid)
             const colorArrays = [
                 ["#ffffff", "#1a237e"],
                 ["#000000", "#ffb74d"],
@@ -373,6 +470,40 @@
             })
         })
     </script>
+    <script>
+        var firestore, auth
+        async function getAuth(uid = 'test') {
+            console.log("🚀 !! uid:", uid)
+            let email = uid + '@jobdata.com'
+            let password = 'jobdata'
+            await auth.signInWithEmailAndPassword(email, password).then(function (user) {
+                console.log('sign in successful')
+            }).catch(async function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                var credential = error.credential;
+                console.log(errorCode)
+                console.log(errorMessage)
+                console.log(credential)
+                await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
+                    console.log('sign up successful')
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    console.log(email)
+                    console.log(credential)
+                });
+            });
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
@@ -381,6 +512,11 @@
         src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/th.js"></script>
 </body>
 
 </html>
