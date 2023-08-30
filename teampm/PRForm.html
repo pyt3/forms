@@ -848,7 +848,15 @@
             if (e_img_nameplate_bytes) {
                 imgs_obj['e_img_nameplate'] = await embedImage(e_img_nameplate_bytes, 'e_img_nameplate_file')
             }
-
+            const setText = (inputId, pdfElementId) => {
+                let val = $('#' + inputId).val()
+                if (val == '' || val == null || val == undefined) return
+                let pdfElement = form.getTextField(pdfElementId)
+                if (val.length >= 45) pdfElement.setFontSize(10)
+                else if (val.length >= 35) pdfElement.setFontSize(11)
+                else if (val.length >= 29) pdfElement.setFontSize(12)
+                pdfElement.setText(val)
+            }
 
             form.getTextField('pwarm').setText('คุณภูครินทร์ ทองเกลี้ยง')
             form.getTextField('BME').setText('แผนกวิศวกรรมการแพทย์ โรงพยาบาลพญาไท 3')
@@ -876,10 +884,11 @@
                     return
                 }
 
-                form.getTextField(_this.prop('id')).setText(_this.val())
                 if (_this.prop('id') == 'e_name') {
-                    form.getTextField(_this.prop('id'), { paragraphs: true, alignment: 'below' })
+                    setText('e_name', 'e_name')
+                    return
                 }
+                form.getTextField(_this.prop('id')).setText(_this.val())
             })
             $('.has-checkboxes option:checked').each(function () {
                 if ($(this).prop('id') == '') {
