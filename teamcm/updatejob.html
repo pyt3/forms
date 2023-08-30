@@ -254,6 +254,7 @@
 
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     data = data.data()
+                    $('#code').val(data.code)
                     if (!data.name && !data.reciever) {
                         $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
