@@ -245,7 +245,7 @@
                         return r
                     }).map(d => {
                         return `${d.timestamp}<br>${d.update}<br>#${d.name}`
-                    }).join('<br><br>-----------------------------------')
+                    }).join('<br><br>-----------------------------------<br>')
                     $('#summary').html(msg)
                     $('#summary').parent().removeClass('d-none').focus()
                     $.LoadingOverlay("hide");
