@@ -205,6 +205,7 @@
         })
         var jobid
         function initialData() {
+            let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if(!jobid || jobid == '' || jobid == undefined || jobid == null){
                 Swal.fire({
@@ -214,7 +215,6 @@
                 })
                 return liff.closeWindow()
             }
-            let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
             let action = url.searchParams.get("action");
             let updateText = localStorage.getItem('updateText' + jobid)
