@@ -184,24 +184,24 @@
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(async () => {
             moment.locale('th')
-            // liff.init({
-            //     liffId: liff_id,
-            //     withLoginOnExternalBrowser: true
-            // })
+            liff.init({
+                liffId: liff_id,
+                withLoginOnExternalBrowser: true
+            })
 
-            // liff.ready.then(async () => {
-            //     if (liff.getContext().type != 'group') {
-            //         $('.mobile').addClass('d-none')
-            //     }
-            const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
-            firestore = defaultProject.firestore();
-            auth = defaultProject.auth();
-            if (!auth.currentUser) {
-                // await getAuth()
-                await getAuth(await liff.getDecodedIDToken().sub)
-            }
-            initialData();
-            // })
+            liff.ready.then(async () => {
+                if (liff.getContext().type != 'group') {
+                    $('.mobile').addClass('d-none')
+                }
+                const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
+                firestore = defaultProject.firestore();
+                auth = defaultProject.auth();
+                if (!auth.currentUser) {
+                    // await getAuth()
+                    await getAuth(await liff.getDecodedIDToken().sub)
+                }
+                initialData();
+            })
         })
         var jobid
         function initialData() {
