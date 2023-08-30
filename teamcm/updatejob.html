@@ -205,9 +205,17 @@
         })
         var jobid
         function initialData() {
+            jobid = url.searchParams.get("jobid");
+            if(!jobid || jobid == '' || jobid == undefined || jobid == null){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบข้อมูล',
+                    text: 'ไม่พบข้อมูล',
+                })
+                return liff.closeWindow()
+            }
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
-            jobid = url.searchParams.get("jobid");
             let action = url.searchParams.get("action");
             let updateText = localStorage.getItem('updateText' + jobid)
             if (updateText != null) $('#update').val(updateText)
