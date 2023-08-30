@@ -237,7 +237,7 @@
 
 
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
-                    data = data.docs.map(doc => doc.data()).revert()
+                    data = data.docs.map(doc => doc.data()).reverse()
                     let msg
                     if (data.length == 0) msg = 'ยังไม่มีการอัพเดทงาน'
                     else msg = data.map(r => {
