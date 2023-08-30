@@ -197,8 +197,8 @@
             firestore = defaultProject.firestore();
             auth = defaultProject.auth();
             if (!auth.currentUser) {
-                await getAuth()
-                // await getAuth(await liff.getDecodedIDToken().sub)
+                // await getAuth()
+                await getAuth(await liff.getDecodedIDToken().sub)
             }
             initialData();
             // })
