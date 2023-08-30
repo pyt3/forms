@@ -508,7 +508,6 @@
     <script>
         var firestore, auth
         async function getAuth(uid = 'test') {
-            console.log("🚀 !! uid:", uid)
             let email = uid + '@jobdata.com'
             let password = 'jobdata'
             await auth.signInWithEmailAndPassword(email, password).then(function (user) {
