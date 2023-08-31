@@ -180,10 +180,10 @@
         </div>
     </main>
      <!-- vconsole -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
-    </script>
+    </script> -->
    
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
@@ -314,6 +314,7 @@
                     else{
                         $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
                     }
+                    $('#code').val(data.code)
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
                 })
                 $('.container-fluid').removeClass('d-none')
