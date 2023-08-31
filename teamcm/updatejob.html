@@ -309,7 +309,9 @@
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
                         $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
                     }
-                    else $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
+                    else{
+                        $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
+                    }
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
                 })
                 $('.container-fluid').removeClass('d-none')
