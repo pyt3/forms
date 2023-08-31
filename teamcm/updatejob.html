@@ -267,6 +267,7 @@
                         $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
                     }
                     else $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
+                    $('#code').val(data.code)
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
                 })
                 // $.ajax({
@@ -308,6 +309,7 @@
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
                         $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
+
                     }
                     else{
                         $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
