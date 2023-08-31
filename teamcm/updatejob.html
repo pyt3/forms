@@ -384,7 +384,7 @@
             localStorage.setItem('updateText' + jobid, update)
         }
 
-        function updateData(code, jobid, update, text, name) {
+        async function updateData(code, jobid, update, text, name) {
             // $.ajax({
             //     url: scriptUrl,
             //     method: 'POST',
@@ -410,7 +410,7 @@
             //         }
             //     },
             // })
-            firestore.collection('jobdata/').doc(jobid).collection('update').add({
+            await firestore.collection('jobdata/').doc(jobid).collection('update').add({
                 update: update,
                 name: name,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
