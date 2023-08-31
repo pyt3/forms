@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -32,7 +31,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             background-color: #FF8604;
             width: 100vw;
@@ -40,7 +38,6 @@
             font-family: 'Cedarville Cursive', cursive;
             font-family: 'Mitr', sans-serif;
         }
-
         img#profile {
             width: 30px;
             height: 30px;
@@ -48,7 +45,6 @@
         }
     </style>
 </head>
-
 <body>
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
@@ -133,7 +129,6 @@
                         <option>X-RAY</option>
                         <option>รับส่ง</option>
                     </select>
-
                 </div>
                 <div class="col-12 text-center mt-3" style="display:none"><i
                         class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
@@ -168,7 +163,6 @@
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
             })
-
             liff.init({
                 liffId: '1660749495-G5e9Av6r',
                 withLoginOnExternalBrowser: true
@@ -219,7 +213,6 @@
             $('select').select2({
                 theme: 'bootstrap-5'
             })
-
             initHistory_code()
         })
         function initHistory_code() {
@@ -227,18 +220,15 @@
             var typingTimer;                //timer identifier
             var doneTypingInterval = 500;  //time in ms, 0.5 seconds for example
             var $input = $('#code');
-
             //on keyup, start the countdown
             $input.on('keyup', function () {
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(doneTyping, doneTypingInterval);
             });
-
             //on keydown, clear the countdown 
             $input.on('keydown', function () {
                 clearTimeout(typingTimer);
             });
-
             //user is "finished typing," do something
             function doneTyping() {
                 let code = $('#code').val().toUpperCase()
@@ -257,7 +247,6 @@
                     $('#end').val('').change()
                 }
             }
-
             $('.bi-arrow-down-up').click(function () {
                 // $(this).removeClass('animate__animated animate__bounceIn')
                 $('#div-start').addClass('animate__animated animate__backOutRight animate__faster')
@@ -271,7 +260,6 @@
                     $('#div-end').removeClass('animate__animated animate__backOutLeft')
                     $('#div-start').addClass('animate__animated animate__backInLeft animate__faster')
                     $('#div-end').addClass('animate__animated animate__backInRight animate__faster')
-
                 }, 500);
                 // rotate element 360 degrees in 1 second
                 $(this).animate({ borderSpacing: -360 }, {
@@ -282,15 +270,9 @@
                     },
                     duration: 'slow'
                 }, 'linear');
-
-
             })
-
-
         }
-
         function checkRegist() {
-
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
             console.log("🚀 ~ regist:", regist)
@@ -307,10 +289,8 @@
                 },
                 success: function (res) {
                     console.log("🚀 ~ res:", res)
-
                     $.LoadingOverlay('hide')
                     if (!res) {
-
                         Swal.fire({
                             icon: 'error',
                             title: 'กรุณาลงทะเบียนก่อนใช้งาน',
@@ -325,7 +305,6 @@
                 }
             })
         }
-
         $('#submit-btn').click(function () {
             var code = $('#code').val()
             var start = $('#start').val()
@@ -348,7 +327,6 @@
                 })
                 return false
             }
-
             if (end == '' || end == null) {
                 Swal.fire({
                     icon: 'error',
@@ -358,7 +336,6 @@
                 })
                 return false
             }
-
             let data = {
                 opt: 'add',
                 code: convertCode(code),
@@ -369,7 +346,6 @@
                 uid: liff.getDecodedIDToken().sub,
                 displayName: profile.displayName
             }
-
             if (start == end) {
                 return Swal.fire({
                     title: 'กรุณาระบุห้องต้นทาง และปลายทาง',
@@ -432,54 +408,44 @@
                 sendPost(data)
             }
         })
-
         function sendPost(data) {
-
             $.LoadingOverlay('show')
             $.ajax({
                 url: script_url,
                 type: 'POST',
                 data: data,
-
                 success: function (res) {
                     $.LoadingOverlay('hide')
                     if (res.status == 'success') {
-                        console.log(res)
+                        liff.sendMessages([{
+                            type: 'text',
+                            text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                        }])
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'บันทึกข้อมูลสำเร็จ',
+                            confirmButtonText: 'ตกลง',
+                        }).then(() => {
+                            history_code[data.code] = {
+                                start: data.start,
+                                end: data.end
+                            }
+                            localStorage.setItem('history_code', JSON.stringify(history_code))
+                            liff.closeWindow()
+                        })
                     } else {
                         console.log(res);
                     }
                 }
             })
-            setTimeout(() => {
-                $.LoadingOverlay('hide')
-                liff.sendMessages([{
-                    type: 'text',
-                    text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                }])
-                Swal.fire({
-                    icon: 'success',
-                    title: 'บันทึกข้อมูลสำเร็จ',
-                    confirmButtonText: 'ตกลง',
-                }).then(() => {
-                    history_code[data.code] = {
-                        start: data.start,
-                        end: data.end
-                    }
-                    localStorage.setItem('history_code', JSON.stringify(history_code))
-                    liff.closeWindow()
-                })
-            }, 1500)
         }
-
         function checkcode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
             if (!Number(code) == NaN && (code.length < 4 || code.length > 11)) {
                 return false
             }
-
             return true
         }
-
         function convertCode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
             if (isNaN(code)) {
@@ -495,7 +461,6 @@
             return code
         }
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
@@ -503,7 +468,5 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-
 </body>
-
 </html>
