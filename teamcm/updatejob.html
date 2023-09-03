@@ -502,10 +502,11 @@
 
         $('.user-select-all').click(function () {
             // copy to clipboard
-            // var $temp = $("<textarea>");
-            // $("body").append($temp);
-            // $temp.text($(this).text()).select();
-            navigator.clipboard.writeText($(this).text())
+            var $temp = $("<textarea>");
+            var brRegex = /<br\s*[\/]?>/gi;
+            $("body").append($temp);
+            $temp.val($(this).html().replace(brRegex, "\r\n")).select();
+          
             document.execCommand("copy");
             $temp.remove();
             const Toast = Swal.mixin({
