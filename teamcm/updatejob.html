@@ -199,6 +199,7 @@
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
+                $.LoadingOverlay("show");
                 const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
@@ -214,6 +215,7 @@
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if(!jobid || jobid == '' || jobid == undefined || jobid == null){
+                $.LoadingOverlay("hide");
                 Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูล',
@@ -239,7 +241,6 @@
                 $('#summary').parents('.row').find('.col-md-4').first().addClass('d-none')
                 $('#summary').parents('.container-fluid').removeClass('d-none')
                 $('#request-no').parents('.container-fluid').removeClass('d-none')
-                $.LoadingOverlay("show");
 
 
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
@@ -301,6 +302,7 @@
                     url.searchParams.set('action', 'update')
                     window.open(url, '_self')
                 })
+                $.LoadingOverlay("hide");
             } else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     $('.load-bar').addClass('d-none')
@@ -319,6 +321,7 @@
                 })
                 $('.container-fluid').removeClass('d-none')
                 $('#more-update-btn').addClass('d-none')
+                $.LoadingOverlay("hide");
             }
             $("#submit").click(() => {
                 let update = $("#update").val();
@@ -501,7 +504,9 @@
             // copy to clipboard
             var $temp = $("<textarea>");
             $("body").append($temp);
-            $temp.val($(this).text()).select();
+            $temp.text($(this).text()).select();
+            // copy with include new line
+            
             document.execCommand("copy");
             $temp.remove();
             const Toast = Swal.mixin({
