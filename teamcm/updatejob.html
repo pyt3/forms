@@ -223,7 +223,6 @@
             }
             let code = url.searchParams.get("code");
             let action = url.searchParams.get("action");
-            console.log("🚀 !! action:", action)
             let updateText = localStorage.getItem('updateText' + jobid)
             if (updateText != null) $('#update').val(updateText)
             $("#code").val(code);
@@ -244,7 +243,7 @@
 
 
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
-                    data = data.docs.map(doc => doc.data()).sort((a, b) => b.timestamp - a.timestamp)
+                    data = data.docs.map(doc => doc.data()).sort((a, b) => a.timestamp - b.timestamp)
                     let msg
                     if (data.length == 0) msg = 'ยังไม่มีการอัพเดทงาน'
                     else msg = data.map(r => {
