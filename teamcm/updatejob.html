@@ -223,6 +223,7 @@
             }
             let code = url.searchParams.get("code");
             let action = url.searchParams.get("action");
+            console.log("🚀 !! action:", action)
             let updateText = localStorage.getItem('updateText' + jobid)
             if (updateText != null) $('#update').val(updateText)
             $("#code").val(code);
