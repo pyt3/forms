@@ -279,10 +279,9 @@
                         firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
                             site: result.value
                         }, { merge: true }).then(() => {
+                            $.LoadingOverlay("show");
                             initialData()
                         })
-                        // reload page
-                        location.reload()
                     }
                 })
             }
@@ -298,8 +297,9 @@
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
-            $('#name').val(localStorage.getItem('name') || '')
+            $('#name').val(localStorage.getItem('name') || '').trigger('change')
             $('#name').change(function () {
+                console.log($(this).val());
                 localStorage.setItem('name', $(this).val())
             })
 
