@@ -252,8 +252,9 @@
             }
             let user_site = await firestore.collection('user').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data()?.site)
             if(!user_site || user_site == '' || user_site == undefined || user_site == null) {
-                if(localStorage.getIem('name') != null){
-                    let n = $('#name option').toArray().find(o => o.value == localStorage.getItem('name'))
+                let l = localStorage.getItem('name')
+                if(l != null){
+                    let n = $('#name option').toArray().find(o => o.value == l)
                     if(n) return firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
                         site: n.parentElement.label
                     }, { merge: true }).then(() => {
