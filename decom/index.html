@@ -88,6 +88,7 @@
                                 <option value="" disabled selected>Select value</option>
                                 <option>ANESTHESIA (วิสัญญี)</option>
                                 <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
+                                <option>Biomolecular Laboratory</option>
                                 <option>BME-PYT3</option>
                                 <option>CATH-LAB</option>
                                 <option>CHECK-UP (ตรวจสุขภาพ)</option>
@@ -846,17 +847,17 @@
             let starttime = new Date()
             let checkdata = setInterval(() => {
                 // if interval more than 10 sec, clear interval
-                if (new Date() - starttime > (1000 * 60 *5)) {
+                if (new Date() - starttime > (1000 * 60 * 5)) {
                     clearInterval(checkdata)
                     return
                 }
                 // read data from clipboard
-                if(!document.hasFocus()) return
+                if (!document.hasFocus()) return
                 navigator.clipboard.readText().then(clipText => {
                     // check if data is json
                     try {
                         let obj = JSON.parse(clipText)
-                        if(!obj.name) return
+                        if (!obj.name) return
                         clearInterval(checkdata)
                         $('#input-json').val(clipText)
                         $('#input-json-btn').click()
