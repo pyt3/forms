@@ -225,7 +225,7 @@
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
-                $.LoadingOverlay("show");
+                $('main').LoadingOverlay("show");
                 const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
@@ -242,7 +242,7 @@
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if (!jobid || jobid == '' || jobid == undefined || jobid == null) {
-                $.LoadingOverlay("hide");
+                $('main').LoadingOverlay("hide");
                 Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูล',
@@ -258,11 +258,11 @@
                     if(n) return firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
                         site: n.parentElement.label
                     }, { merge: true }).then(() => {
-                        $.LoadingOverlay("show");
+                        $('main').LoadingOverlay("show");
                         initialData()
                     })
                 }
-                $.LoadingOverlay("hide");
+                $('main').LoadingOverlay("hide");
                 return Swal.fire({
                     title: 'กรุณาเลือก Site ของคุณ',
                     input: 'select',
@@ -289,12 +289,13 @@
                         firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
                             site: result.value
                         }, { merge: true }).then(() => {
-                            $.LoadingOverlay("show");
+                            $('main').LoadingOverlay("show");
                             initialData()
                         })
                     }
                 })
             }
+            $('main').LoadingOverlay("hide");
             $('#name optgroup').not('[label="' + user_site + '"]').remove()
             $('#name').select2({
                 theme: 'bootstrap-5',
@@ -334,7 +335,7 @@
                     }).join('<br><br>-----------------------------------<br>')
                     $('#summary').html(msg)
                     $('#summary').parent().removeClass('d-none').focus()
-                    $.LoadingOverlay("hide");
+                    $('main').LoadingOverlay("hide");
                     $('.load-bar').addClass('d-none')
                 })
 
@@ -381,7 +382,7 @@
                     url.searchParams.set('action', 'update')
                     window.open(url, '_self')
                 })
-                $.LoadingOverlay("hide");
+                $('main').LoadingOverlay("hide");
             } else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     $('.load-bar').addClass('d-none')
@@ -400,7 +401,7 @@
                 })
                 $('.container-fluid').removeClass('d-none')
                 $('#more-update-btn').addClass('d-none')
-                $.LoadingOverlay("hide");
+                $('main').LoadingOverlay("hide");
             }
             $("#submit").click(() => {
                 let update = $("#update").val();
