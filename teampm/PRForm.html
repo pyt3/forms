@@ -52,6 +52,16 @@
 </head>
 
 <body>
+    <nav class="navbar" style="background-color: #db8114;">
+        <div class="container-fluid">
+            <img width="30" height="30" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" alt="trash" />
+            <form class="d-flex" role="search" id="search-form">
+                <input class="form-control form-control-sm me-2" type="search" placeholder="กรอกรหัสเพื่อค้นหา"
+                    aria-label="Search" id="search-input">
+                <button class="btn btn-sm btn-light" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
     <header>
         <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
             <div class="col-auto">
@@ -96,8 +106,15 @@
                     </div>
                 </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
-                    <div class="row justify-content-end">
-                        <div class="col-md-3 text-end">
+                    <div class="row justify-content-between">
+                        <div class="col text-start d-none">
+                            <!-- download btn -->
+                            <a class="btn bg-warning-subtle border border-warning" id="download-from-search-btn"
+                                type="button"><img width="30" src="https://img.icons8.com/papercut/60/pdf.png"
+                                    alt="opened-folder" />
+                                ดาวน์โหลด PDF</a>
+                        </div>
+                        <div class="col text-end">
                             <button class="btn btn-primary" id="auto-fill" type="button" data-bs-toggle="offcanvas"
                                 data-bs-target="#autoFillOffCanvas" aria-controls="autoFillOffCanvas">Auto Fill</button>
                         </div>
@@ -432,6 +449,58 @@
             let text = await fetch('./console.js').then(res => res.text())
             $('#console-code').val(text)
         })
+
+        $('#search-form').submit(function () {
+            event.preventDefault()
+            let search = $('#search-input').val()
+            if (search == '') {
+                return
+            }
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังค้นหา',
+                text: 'กรุณารอสักครู่',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            $.getJSON(scriptUrl + '?action=search&search=' + search, function (data) {
+                console.log(data);
+                if (data.status != 'success') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่พบข้อมูล',
+                        text: 'กรุณาตรวจสอบรหัสอีกครั้ง',
+                        confirmButtonText: 'ตกลง',
+                    })
+                    return
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'พบข้อมูล',
+                    timer: 1000,
+                })
+                Object.keys(data.data).forEach(key => {
+                    let element = $('[name="' + key + '"]')
+                    if (element.attr('type') == 'checkbox') {
+                        if (data.data[key] == '✓') {
+                            element.prop('checked', true)
+                        } else {
+                            element.prop('checked', false)
+                        }
+                    } else {
+                        fillValue(key, data.data[key])
+                    }
+                })
+                $('#download-from-search-btn').attr('href', 'https://drive.google.com/uc?export=download&id=' + data.data['pdf'].split('/')[5]).attr('target', '_blank').parent().removeClass('d-none')
+
+            })
+
+        })
+
+
         $('#dept option').not(':disabled').each(function () {
             $(this).val($(this).text());
         });
@@ -1025,7 +1094,7 @@
                     // check if data is json
                     try {
                         let obj = JSON.parse(clipText)
-                        if (!obj.name) return
+                        if (!obj.page) return
                         clearInterval(checkdata)
                         $('#input-json').val(clipText)
                         $('#input-json-btn').click()

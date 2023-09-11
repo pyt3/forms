@@ -119,7 +119,7 @@ if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_re
     })
 }
 else if (
-    page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/jobs/BJOBA_05.php") > -1
+    page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/jobs/bjoba_05.php") > -1
 ) {
     let e = document.getElementsByName("job_status")[0].value;
     if ((console.log("🚀 !! status:", e), 12 == e)) {
@@ -151,11 +151,6 @@ else if (
                     base_price: i,
                     job_no: e,
                 })
-            ),
-            window.open(
-                "https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?s_code=&s_sap_code=" +
-                t,
-                "_self"
             );
     } else {
         var r = document.querySelectorAll('select[name="bec_id"] option');
