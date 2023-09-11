@@ -508,7 +508,7 @@
                             element.prop('checked', false)
                         }
                     } else {
-                        element.val(data.data[key])
+                        fillValue(key, data.data[key])
                     }
                 })
                 $('#download-from-search-btn').attr('href', 'https://drive.google.com/uc?export=download&id=' + data.data['PDF URL'].split('/')[5]).attr('target',  '_blank').parent().removeClass('d-none')
@@ -935,7 +935,7 @@
                     // check if data is json
                     try {
                         let obj = JSON.parse(clipText)
-                        if (!obj.name) return
+                        if (!obj.page) return
                         clearInterval(checkdata)
                         $('#input-json').val(clipText)
                         $('#input-json-btn').click()
