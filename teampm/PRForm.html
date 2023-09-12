@@ -932,7 +932,7 @@
             form.getTextField('BME').setText('แผนกวิศวกรรมการแพทย์ โรงพยาบาลพญาไท 3')
             form.getTextField('pr_date').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }).toLocaleUpperCase()))
             form.getTextField('pr_date_short').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' })))
-            $('form input').each(function () {
+            $('form input').not('input[type="search"]').each(function () {
                 let _this = $(this)
                 if (_this.val() == '') return
                 if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation'].includes(_this.prop('id'))) return
