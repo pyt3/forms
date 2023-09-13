@@ -109,10 +109,9 @@
                     <div class="row justify-content-between">
                         <div class="col text-start d-none">
                             <!-- download btn -->
-                            <a class="btn bg-warning-subtle border border-warning" id="download-from-search-btn"
-                                type="button"><img width="30" src="https://img.icons8.com/papercut/60/pdf.png"
-                                    alt="opened-folder" />
-                                ดาวน์โหลด PDF</a>
+                            <a class="btn btn-primary" id="download-from-search-btn" type="button"><img width="30"
+                                    src="https://img.icons8.com/papercut/60/pdf.png" alt="opened-folder" />
+                                ดูไฟล์ PDF</a>
                         </div>
                         <div class="col text-end">
                             <button class="btn btn-primary" id="auto-fill" type="button" data-bs-toggle="offcanvas"
@@ -494,11 +493,26 @@
                         fillValue(key, data.data[key])
                     }
                 })
-                $('#download-from-search-btn').attr('href', 'https://drive.google.com/uc?export=download&id=' + data.data['pdf'].split('/')[5]).attr('target', '_blank').parent().removeClass('d-none')
+                // show pdf in new tab
+                let base64 = data.pdf.base64
+                let type = data.pdf.type
+                let dataurl = 'data:' + type + ';base64,' + base64
+                let blob = base64ToBlob(base64, type)
+                let blobUrl = URL.createObjectURL(blob) + '#toolbar=1&view=fit'
+                $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('d-none')
 
             })
 
         })
+
+        function base64ToBlob(base64, type){{
+            let binary = atob(base64)
+            let array = []
+            for (let i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i))
+            }
+            return new Blob([new Uint8Array(array)], {type: type})
+        }}
 
 
         $('#dept option').not(':disabled').each(function () {
