@@ -29,11 +29,12 @@
 
         body {
             font-family: 'Prompt', sans-serif;
+            min-height: 100vh;  
         }
     </style>
 </head>
 
-<body>
+<body class="text-bg-dark d-flex align-items-center justify-centent-center">
     <main>
         <div class="container-fluid">
             <form id="mainform" class="row justify-content-center g-3">
@@ -250,12 +251,24 @@
                     <input type="date" class="form-control" id="date" name="date">
                 </div>
                 <div class="col-md-4">
-                    <label for="safety">Safety</label>
-                    <select name="safyty" class="form-select">
-                        <option selected disabled>Select value</option>
-                        <option>Electrical Safety Analyzer</option>
-                        <option>-</option>
-                    </select>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" value="" id="safety" name="safety">
+                        <label class="form-check-label" for="safety">
+                            Electrical Safety Analyzer
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" value="" id="is_pm" name="is_pm" checked>
+                        <label class="form-check-label" for="is_pm">
+                            Close PM
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="is_cal" name="is_cal">
+                        <label class="form-check-label" for="is_cal">
+                            Close CAL
+                        </label>
+                    </div>
                 </div>
                 <div class="col-md-4 text-center">
                     <button class="btn btn-primary w-100" type="submit">ตกลง</button>
@@ -277,18 +290,42 @@
                     width: '100%',
                     closeOnSelect: true
                 })
+                $(document).on('select2:open', () => {
+                    document.querySelector('.select2-search__field').focus();
+                });
             })
         })
         $('#mainform').submit(async function (e) {
             e.preventDefault()
-            let data = $(this).serializeArray()
-            let code = data[0].value
-            let vender = data[1].value
-            let date = data[2].value
-            let safety = data[3].value
+            let code = $('#code').val()
+            let vender = $('#vender').val()
+            let date = $('#date').val()
+            let safety = $('#safety').is(':checked') ? 'safety' : undefined
+            let close_pm = $('#is_pm').is(':checked')
+            let close_cal = $('#is_cal').is(':checked')
             date = date.split('-').reverse().join('/')
             code = code.split(',').map(a => a.trim())
-            for(let c of code){
+            if (vender == null || vender == '') {
+                return Swal.fire({
+                    title: 'กรุณาเลือก Vender',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    setTimeout(() => {
+                        $('#vender').select2('open')
+                    }, 1000);
+                })
+            }
+            if(!close_pm && !close_cal){
+                return Swal.fire({
+                    title: 'กรุณาเลือกประเภทการปิดงาน',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            for (let c of code) {
                 Swal.fire({
                     title: c,
                     allowOutsideClick: false,
@@ -296,7 +333,14 @@
                         Swal.showLoading()
                     }
                 })
-                let msg = 'closepm=' + c + ',' + vender + ',' + date + ',' + safety
+                let mode = close_pm && close_cal ? 'closepmcal' : close_pm ? 'closepm' : 'closecal'
+                let msg = mode + c + ',' + vender  //+ ',' + date + ',' + safety
+                if (date != null && date != '') {
+                    msg += ',' + date
+                }
+                if (safety != null && safety != '') {
+                    msg += ',' + safety
+                }
                 await new Promise((resolve, reject) => setTimeout(() => resolve(), 3000)).then(() => {
                     liff.sendMessages([{
                         'type': 'text',
@@ -308,7 +352,7 @@
                     })
                     // $('body').append(msg + '<br>')
                 })
-                if(c == code[code.length - 1]){
+                if (c == code[code.length - 1]) {
                     Swal.fire({
                         title: 'เสร็จสิ้น',
                         icon: 'success',
