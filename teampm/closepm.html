@@ -334,14 +334,14 @@
                     }
                 })
                 let mode = close_pm && close_cal ? 'closepmcal' : close_pm ? 'closepm' : 'closecal'
-                let msg = mode + c + ',' + vender  //+ ',' + date + ',' + safety
+                let msg = mode+'=' + c + ',' + vender  //+ ',' + date + ',' + safety
                 if (date != null && date != '') {
                     msg += ',' + date
                 }
                 if (safety != null && safety != '') {
                     msg += ',' + safety
                 }
-                await new Promise((resolve, reject) => setTimeout(() => resolve(), 3000)).then(() => {
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 2000)).then(() => {
                     liff.sendMessages([{
                         'type': 'text',
                         'text': msg
