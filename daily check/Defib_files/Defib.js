@@ -10,17 +10,18 @@ Swal.fire({
 var testobj = JSON.parse(localStorage.getItem('report_obj'))
 console.log("🚀 ~ testobj", testobj)
 var tempkey = Object.keys(testobj['DAY'])[0]
+console.log("🚀 !! tempkey:", tempkey)
 
 
 
-var e_code = testobj['DAY'][tempkey].e_code
-var e_brand = testobj['DAY'][tempkey].e_brand
-var e_model = testobj['DAY'][tempkey].e_model
-var e_dept = testobj['DAY'][tempkey].e_dept
+var e_code = Object.values(testobj['DAY'][tempkey])[0].e_code
+var e_brand = Object.values(testobj['DAY'][tempkey])[0].e_brand
+var e_model = Object.values(testobj['DAY'][tempkey])[0].e_model
+var e_dept = Object.values(testobj['DAY'][tempkey])[0].e_dept
 console.log("🚀 ~ e_dept", e_dept)
-var month = new Date(testobj['DAY'][tempkey].time).toLocaleString('en-En', { month: 'long' })
-var month_num = new Date(testobj['DAY'][tempkey].time).getMonth() + 1
-var year = new Date(testobj['DAY'][tempkey].time).getFullYear()
+var month = new Date(Object.values(testobj['DAY'][tempkey])[0].time).toLocaleString('en-En', { month: 'long' })
+var month_num = new Date(Object.values(testobj['DAY'][tempkey])[0].time).getMonth() + 1
+var year = new Date(Object.values(testobj['DAY'][tempkey])[0].time).getFullYear()
 var year_bd = year + 543
 var q_key = {
     1: "daily-check-system",
@@ -55,16 +56,18 @@ $(document).ready(() => {
         let paper = '.' + key.toLowerCase()
         for (let i = 1; i <= 13; i++) {
             for (let j = 1; j <= 31; j++) {
-                let q = testobj[key][j + '/' + month_num + '/' + year_bd]
+                let q = testobj[key][tempkey][j + '/' + month_num + '/' + year_bd]
                 q = q ? mapSign(q[q_key[i]]) : ""
-                $(paper + ' [name="defib-' + i + '-' + j + '"]').text(q)
-                if (q == "✔") $(paper + ' [name="defib-' + i + '-' + j + '"]').css('color', 'blue')
-                if (q == "✘") $(paper + ' [name="defib-' + i + '-' + j + '"]').css('color', 'red')
+                $(paper + ' [name="daily-' + i + '-' + j + '"]').text(q)
+                if (q == "✔") $(paper + ' [name="daily-' + i + '-' + j + '"]').css('color', 'blue')
+                console.log("🚀 !! ", paper + ' [name="daily-' + i + '-' + j + '"]')
+                if (q == "✘") $(paper + ' [name="daily-' + i + '-' + j + '"]').css('color', 'red')
             }
         }
 
         for (let i = 1; i <= 31; i++) {
-            let q = testobj[key][i + '/' + month_num + '/' + year_bd]
+            let q = testobj[key][tempkey][i + '/' + month_num + '/' + year_bd]
+            console.log("🚀 !! q:", q)
             if (q) {
                 let day = new Date(q['time'])
                 if (day.getDay() == 1) {
@@ -72,16 +75,12 @@ $(document).ready(() => {
                 }
             }
             else q = ''
-            $(paper + ' [name="defib-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
-            $(paper + ' [name="defib-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
-            $(paper + ' [name="defib-afteruse-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
-            $(paper + ' [name="defib-afteruse-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
+            $(paper + ' [name="daily-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
+            $(paper + ' [name="daily-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
+            $(paper + ' [name="daily-afteruse-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
+            $(paper + ' [name="daily-afteruse-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
         }
-        console.log(week_check)
-
-
-
-
+        console.log("🚀 !! week_check:", week_check)
 
     })
     let keys = Object.keys(week_check).sort((a, b) => a.split('/')[0] - b.split('/')[0])
@@ -100,10 +99,9 @@ $(document).ready(() => {
         target.replaceWith($('<center>').append(img))
         $('[name="date-week-' + (weeknum + 1) + '"]').text(key)
         $('[name="staff-week-' + (weeknum + 1) + '"]').html($('<span>').text(q.rec_name)).append('&nbsp;&nbsp;&nbsp;')
-        $('[name="staff-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_staff, height: '17pt', class: (q.signature_staff ? 'isloading' : '') }))
+        $('[name="staff-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_staff, height: '14pt', class: (q.signature_staff ? 'isloading' : '') }))
         $('[name="approve-week-' + (weeknum + 1) + '"]').html($('<span>').text(q.approve_name)).append('&nbsp;&nbsp;&nbsp;')
-        $('[name="approve-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_manager, height: '17pt', class: (q.signature_manager ? 'isloading' : '') }))
-
+        $('[name="approve-week-' + (weeknum + 1) + '"]').append($('<img>', { src: q.signature_manager, height: '14pt', class: (q.signature_manager ? 'isloading' : '') }))
     })
 
     $('.paper-week').on('load', function () {

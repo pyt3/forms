@@ -229,6 +229,7 @@
                     let form
                     querySnapshot.forEach((doc) => {
                         let d = doc.data()
+                        console.log("🚀 !! d:", d)
                         if (d.form == 'defibrillator') {
                             if (!queryobj[d.e_code]) queryobj[d.e_code] = {}
                             if (!queryobj[d.e_code][d.shift]) queryobj[d.e_code][d.shift] = {}
@@ -245,6 +246,12 @@
                             d['firestore_id'] = doc.id
                             queryobj[d.e_code][d.shift][d.date] = d
                             form = d.form
+                        }else{
+                            return Swal.fire({
+                                icon: 'warning',
+                                title: 'ยังไม่เปิดใช้งาน',
+                                text: 'ยังไม่เปิดระบบสำหรับรายงานแบบฟอร์ม ' + d.e_name
+                            })
                         }
                     });
                     console.log(queryobj[code])
