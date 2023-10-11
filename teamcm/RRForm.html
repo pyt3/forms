@@ -944,7 +944,7 @@
             setText('e_name', 'e_name')
             form.getTextField('quotation').setText(toTitleCase($('#rr_vender').val()) + ' (ใบเสนอราคาเลขที่ ' + $('#quatation_no').val() + ')')
             if ($('#e_dept').val() != null && $('#e_dept').val() != undefined && $('#e_dept').val() != '') {
-                form.getTextField('dept_no').setText($('#e_dept option:selected').data('dept-id').toString())
+                if($('#e_dept option:selected').data('dept-id') && $('#e_dept option:selected').data('dept-id') != '') form.getTextField('dept_no').setText($('#e_dept option:selected').data('dept-id').toString())
             }
 
             $('form input, form select, form textarea').not('input[type="search"]').each(function () {
