@@ -634,7 +634,7 @@ $(document).ready(() => {
         if (count === len) {
             setTimeout(() => {
                 Swal.close()
-                // setTimeout(() => { window.print() }, 1000)
+                setTimeout(() => { window.print() }, 1000)
 
             }, 200);
         }
