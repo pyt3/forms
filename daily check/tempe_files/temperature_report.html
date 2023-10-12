@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=.25">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/leader-line-new@1.1.9/leader-line.min.js"></script>
     <link rel="icon" href="../icon.png" type="image/png">
@@ -45,8 +46,8 @@
         }
 
         .sheet-outer.A4 .sheet {
-            height: 210mm;
-            width: 296mm
+            height: 209mm;
+            width: 297mm
         }
 
         .sheet-outer.A4.portrait .sheet {
@@ -279,13 +280,12 @@
         }
 
         @media print {
-            .sheet-outer.A4.portrait {
-                -webkit-transform: rotate(90deg);
-                -moz-transform: rotate(90deg);
-                -o-transform: rotate(90deg);
-                -ms-transform: rotate(90deg);
-                transform: rotate(90deg);
+            /* @page{
+                margin: 0;
             }
+            .sheet-outer.A4.portrait {
+                height: 290mm;
+            } */
         }
     </style>
 </head>
@@ -302,141 +302,196 @@
                     <tr>
                         <td style="border-top-style:solid;border-top-width:2pt;border-left-style:solid;border-left-width:2pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt; padding-top: 5px; padding-bottom: 5px;"
                             colspan="65">
-                            <img width="131" height="42" alt="image" src="../form-img/pyt3.png" /> <span class="s2-header header-span-left">REFRIGERATOR
+                            <img width="131" height="42" alt="image" src="../form-img/pyt3.png" /> <span
+                                class="s2-header header-span-left">REFRIGERATOR
                                 TEMPERATURE CHART</span>
                         </td>
                     </tr>
                     <tr style="height:20pt">
                         <td style="width:64pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:2pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt; vertical-align: bottom"
                             colspan="4">
-                            <p class="s3" style="padding-right: 2pt; padding-top: 2pt; text-indent: 0pt;line-height: 15pt;text-align: right;">MONTH</p>
+                            <p class="s3"
+                                style="padding-right: 2pt; padding-top: 2pt; text-indent: 0pt;line-height: 15pt;text-align: right;">
+                                MONTH</p>
                         </td>
-                        <td style="width:100pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt" colspan="9">
-                            <p style="text-indent: 0pt;text-align: left;margin-top: 5px;margin-left: 5px" id="month"></p>
+                        <td style="width:100pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                            colspan="9">
+                            <p style="text-indent: 0pt;text-align: left;margin-top: 5px;margin-left: 5px" id="month">
+                            </p>
                         </td>
-                        <td style="width:413pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt" colspan="37">
-                            <p class="s4" style="padding-top: 2pt; padding-left: 143pt;padding-right: 140pt;text-indent: 0pt;line-height: 17pt;text-align: center;">แบบบันทึกอุณหภูมิตู้เย็นแช่ยา</p>
+                        <td style="width:413pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                            colspan="37">
+                            <p class="s4"
+                                style="padding-top: 2pt; padding-left: 143pt;padding-right: 140pt;text-indent: 0pt;line-height: 17pt;text-align: center;">
+                                แบบบันทึกอุณหภูมิตู้เย็นแช่ยา</p>
                         </td>
-                        <td style="width:167pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt" colspan="15">
-                            <p class="s3" style="padding-left: 2pt;text-indent: 0pt;line-height: 15pt;text-align: left; padding-top: 5pt;">แผนก. <span id="dept"> </span></p>
+                        <td style="width:167pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt"
+                            colspan="15">
+                            <p class="s3"
+                                style="padding-left: 2pt;text-indent: 0pt;line-height: 15pt;text-align: left; padding-top: 5pt;">
+                                แผนก. <span id="dept"> </span></p>
                         </td>
                     </tr>
                     <tr style="height:20pt">
                         <td style="width:64pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:2pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt; vertical-align: bottom"
                             colspan="4">
-                            <p class="s3" style="padding-right: 2pt; padding-top: 2pt; text-indent: 0pt;line-height: 15pt;text-align: right;">YEAR</p>
+                            <p class="s3"
+                                style="padding-right: 2pt; padding-top: 2pt; text-indent: 0pt;line-height: 15pt;text-align: right;">
+                                YEAR</p>
                         </td>
-                        <td style="width:100pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt" colspan="9">
+                        <td style="width:100pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                            colspan="9">
                             <p style="text-indent: 0pt;text-align: left;margin-top: 5px;margin-left: 5px" id="year"></p>
                         </td>
-                        <td style="width:413pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt" colspan="37">
-                            <p class="s4" style="padding-top: 2pt; padding-left: 143pt;padding-right: 140pt;text-indent: 0pt;line-height: 17pt;text-align: center;">ช่วงอุณหภูมิ 2 to 8 °C</p>
+                        <td style="width:413pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                            colspan="37">
+                            <p class="s4"
+                                style="padding-top: 2pt; padding-left: 143pt;padding-right: 140pt;text-indent: 0pt;line-height: 17pt;text-align: center;">
+                                ช่วงอุณหภูมิ 2 to 8 °C</p>
                         </td>
-                        <td style="width:167pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt" colspan="15">
-                            <p class="s3" style="padding-left: 2pt;text-indent: 0pt;line-height: 15pt;text-align: left; padding-top: 4pt;">ตู้เย็น No. <span id="refrig-no"></span></p>
+                        <td style="width:167pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt"
+                            colspan="15">
+                            <p class="s3"
+                                style="padding-left: 2pt;text-indent: 0pt;line-height: 15pt;text-align: left; padding-top: 4pt;">
+                                ตู้เย็น No. <span id="refrig-no"></span></p>
                         </td>
                     </tr>
                     <tr style="height:24pt">
-                        <td style="width:21pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:2pt">
+                        <td
+                            style="width:21pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:2pt">
                             <p style="text-indent: 0pt;text-align: left;"><br /></p>
                         </td>
                         <td style="width:20pt;border-top-style:solid;border-top-width:1pt">
-                            <p class="s5" style="padding-top: 5pt;padding-left: 1pt;padding-right: 2pt;text-indent: 0pt;text-align: center;">Date</p>
+                            <p class="s5"
+                                style="padding-top: 5pt;padding-left: 1pt;padding-right: 2pt;text-indent: 0pt;text-align: center;">
+                                Date</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt">
+                        <td
+                            style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt">
                             <p style="text-indent: 0pt;text-align: left;"><br /></p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">1</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">2</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">3</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">4</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">5</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">6</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">7</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">8</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">9</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">10</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">11</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">12</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">13</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">14</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">15</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">16</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">17</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">18</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">19</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">20</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">21</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">22</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">23</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">24</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">25</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">26</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">27</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">28</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">29</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">30</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">31</p>
                         </td>
                     </tr>
@@ -444,7 +499,8 @@
                         <td style="width:20pt;border-left-style:solid;border-left-width:2pt">
                             <p class="s7" style="padding-left: 4pt;text-indent: 0pt;text-align: left;">°C</p>
                         </td>
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">8</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -605,8 +661,11 @@
 
                     </tr>
                     <tr class="row-odd">
-                        <td class="vertical-td" style="width:21pt;border-left-style:solid;border-left-width:2pt; writing-mode: vertical-lr" rowspan="13">
-                            <p class="s7 rot270" style="text-align: center; padding-left:4pt">(เวลา 8.00 น.) Temperature</p>
+                        <td class="vertical-td"
+                            style="width:21pt;border-left-style:solid;border-left-width:2pt; writing-mode: vertical-lr"
+                            rowspan="13">
+                            <p class="s7 rot270" style="text-align: center; padding-left:4pt">(เวลา 8.00 น.) Temperature
+                            </p>
                         </td>
                         <td class="cell cell-even"></td>
                         <td class="cell cell-odd">
@@ -768,7 +827,8 @@
                         <!-- <td style="width:21pt;border-left-style:solid;border-left-width:2pt; writing-mode: vertical-lr" rowspan="12">
                 <p class="s7 rot270" style="padding-top: 4pt;padding-left: 4pt;text-indent: 0pt;text-align: center;">(เวลา 8.00 น.) Temperature</p>
             </td> -->
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">7</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -1090,7 +1150,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">6</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -1415,7 +1476,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">5</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -1740,7 +1802,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">4</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -2065,7 +2128,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">3</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -2390,7 +2454,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">2</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -2714,7 +2779,8 @@
 
                     </tr>
                     <tr style="height:34pt">
-                        <td style="width:53pt;border-left-style:solid;border-left-width:2pt;border-right-style:solid;border-right-width:1pt" colspan="3">
+                        <td style="width:53pt;border-left-style:solid;border-left-width:2pt;border-right-style:solid;border-right-width:1pt"
+                            colspan="3">
                             <p class="s8" style="padding-top: 7pt;padding-left: 17pt;text-align: center;">ลงชื่อ</p>
                         </td>
                         <td class="cell-image rotate" colspan="2">
@@ -2818,102 +2884,135 @@
                             <p style="text-indent: 0pt;text-align: left;"><br /></p>
                         </td>
                         <td>
-                            <p class="s5" style="padding-top: 5pt;padding-left: 1pt;padding-right: 2pt;text-indent: 0pt;text-align: center;">Date</p>
+                            <p class="s5"
+                                style="padding-top: 5pt;padding-left: 1pt;padding-right: 2pt;text-indent: 0pt;text-align: center;">
+                                Date</p>
                         </td>
                         <td style="border-bottom-style:solid;border-bottom-width:1pt">
                             <p style="text-indent: 0pt;text-align: left;"><br /></p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">1</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">2</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">3</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">4</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">5</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">6</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">7</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">8</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">9</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">10</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">11</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">12</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">13</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">14</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">15</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">16</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">17</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">18</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">19</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">20</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">21</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">22</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">23</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">24</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">25</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">26</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">27</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">28</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">29</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">30</p>
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt" colspan="2">
+                        <td style="border-top-style:solid;border-top-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:2pt"
+                            colspan="2">
                             <p class="s6" style="padding-top: 6pt;text-indent: 0pt;text-align: center;">31</p>
                         </td>
                     </tr>
@@ -2921,7 +3020,8 @@
                         <td style="width:20pt;border-left-style:solid;border-left-width:2pt">
                             <p class="s7" style="padding-left: 4pt;text-indent: 0pt;text-align: left;">°C</p>
                         </td>
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">8</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -3082,8 +3182,11 @@
 
                     </tr>
                     <tr class="row-odd">
-                        <td class="vertical-td" style="width:21pt;border-left-style:solid;border-left-width:2pt; writing-mode: vertical-lr" rowspan="13">
-                            <p class="s7 rot270" style="text-align: center; padding-left:4pt">(เวลา 8.00 น.) Temperature</p>
+                        <td class="vertical-td"
+                            style="width:21pt;border-left-style:solid;border-left-width:2pt; writing-mode: vertical-lr"
+                            rowspan="13">
+                            <p class="s7 rot270" style="text-align: center; padding-left:4pt">(เวลา 8.00 น.) Temperature
+                            </p>
                         </td>
                         <td class="cell cell-even"></td>
                         <td class="cell cell-odd">
@@ -3245,7 +3348,8 @@
                         <!-- <td style="width:21pt;border-left-style:solid;border-left-width:2pt; writing-mode: vertical-lr" rowspan="12">
                 <p class="s7 rot270" style="padding-top: 4pt;padding-left: 4pt;text-indent: 0pt;text-align: center;">(เวลา 8.00 น.) Temperature</p>
             </td> -->
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">7</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -3567,7 +3671,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">6</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -3892,7 +3997,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">5</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -4217,7 +4323,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">4</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -4542,7 +4649,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">3</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -4867,7 +4975,8 @@
                     </tr>
                     <tr class="row-even">
 
-                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle" rowspan="2">
+                        <td style="width:20pt;border-right-style:solid;border-right-width:1pt; vertical-align: middle"
+                            rowspan="2">
                             <p class="s3" style="text-align: center;">2</p>
                         </td>
                         <td class="cell cell-even"></td>
@@ -5190,7 +5299,8 @@
 
                     </tr>
                     <tr style="height:34pt">
-                        <td style="width:53pt;border-left-style:solid;border-left-width:2pt;border-right-style:solid;border-right-width:1pt" colspan="3">
+                        <td style="width:53pt;border-left-style:solid;border-left-width:2pt;border-right-style:solid;border-right-width:1pt"
+                            colspan="3">
                             <p class="s8" style="padding-top: 7pt;padding-left: 17pt;text-align: center;">ลงชื่อ</p>
                         </td>
                         <td class="cell-image rotate" colspan="2">
@@ -5294,8 +5404,11 @@
                         <td style="border-top-style:solid;border-top-width:1pt">
 
                         </td>
-                        <td style="border-top-style:solid;border-top-width:1pt;border-right-style:solid;border-right-width:2pt" colspan="61">
-                            <p class="s8" style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">การตรวจวัดอุณหภูมิกำหนดวันละ 2 ครั้ง ช่วงเช้าในเวลา 08.00 น. และช่วงเย็นในเวลา 18.00 น.
+                        <td style="border-top-style:solid;border-top-width:1pt;border-right-style:solid;border-right-width:2pt"
+                            colspan="61">
+                            <p class="s8"
+                                style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">
+                                การตรวจวัดอุณหภูมิกำหนดวันละ 2 ครั้ง ช่วงเช้าในเวลา 08.00 น. และช่วงเย็นในเวลา 18.00 น.
                                 ถ้าพบว่าอุณหภูมิไม่อยู่ในช่วงเกณฑ์ที่กำหนดให้ดำเนินการดังนี้</p>
                         </td>
                     </tr>
@@ -5307,7 +5420,9 @@
 
                         </td>
                         <td style="border-right-style:solid;border-right-width:2pt" colspan="61">
-                            <p class="s8" style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">1. ทำการตรวจสอบการปิดสนิทของประตูตู้เย็น หรือการจัดเก็บยาไม่ให้หนาแน่นเกินไป
+                            <p class="s8"
+                                style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">
+                                1. ทำการตรวจสอบการปิดสนิทของประตูตู้เย็น หรือการจัดเก็บยาไม่ให้หนาแน่นเกินไป
                                 จนทำให้อากาศภายในตู้ไม่สามารถไหลเวียนได้ทั่วถึง
                             </p>
                         </td>
@@ -5318,24 +5433,32 @@
                         </td>
                         <td></td>
                         <td style="border-right-style:solid;border-right-width:2pt" colspan="61">
-                            <p class="s8" style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">2. ถ้าทำการแก้ไขแล้วและอุณหภูมิไม่กลับมาปกติในระยะเวลา 30 นาทีติดต่อกัน ให้ทำการขนย้ายยา
+                            <p class="s8"
+                                style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">
+                                2. ถ้าทำการแก้ไขแล้วและอุณหภูมิไม่กลับมาปกติในระยะเวลา 30 นาทีติดต่อกัน ให้ทำการขนย้ายยา
                                 ไปจัดเก็บไว้ที่ตู้เย็นแช่ยาเครื่องอื่นตามที่แผนกกำหนดไว้</p>
                         </td>
                     </tr>
                     <tr style="height:18pt">
-                        <td style="width:53pt;border-left-style:solid;border-left-width:2pt;border-bottom-style:solid;border-bottom-width:2pt" colspan="3">
+                        <td style="width:53pt;border-left-style:solid;border-left-width:2pt;border-bottom-style:solid;border-bottom-width:2pt"
+                            colspan="3">
 
                         </td>
                         <td style="border-bottom-style:solid;border-bottom-width:2pt"></td>
-                        <td style="border-right-style:solid;border-right-width:2pt;border-bottom-style:solid;border-bottom-width:2pt" colspan="61">
-                            <p class="s8" style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">3. แจ้งแผนกวิศวกรรมการแพทย์ ที่หมายเลข 3313 - 3314 พร้อมบันทึกความผิดปกติและแก้ไข</p>
+                        <td style="border-right-style:solid;border-right-width:2pt;border-bottom-style:solid;border-bottom-width:2pt"
+                            colspan="61">
+                            <p class="s8"
+                                style="padding-left: 2pt;text-indent: 0pt;line-height: 14pt;text-align: left;padding-top:4pt">
+                                3. แจ้งแผนกวิศวกรรมการแพทย์ ที่หมายเลข 3313 - 3314 พร้อมบันทึกความผิดปกติและแก้ไข</p>
                         </td>
                     </tr>
 
                 </tbody>
             </table>
             <!-- !!-----------------------------------------End of table section-------------------------------------------- -->
-            <p style="font-size: 7pt;padding-left: 7pt;text-indent: 0pt;line-height: 17pt;text-align: left; position: relative">PT3–FM–BME–1029 ; Revision 03 ; Issued Date 01/11/2565; Page 1/2; <span><b>Internal Use</b></span></p>
+            <p
+                style="font-size: 7pt;padding-left: 7pt;text-indent: 0pt;line-height: 17pt;text-align: left; position: relative">
+                PT3–FM–BME–1029 ; Revision 03 ; Issued Date 01/11/2565; Page 1/2; <span><b>Internal Use</b></span></p>
             <p style="text-indent: 0pt;text-align: left;"><br /></p>
             <p style="text-indent: 0pt;text-align: left;"><br /></p>
         </section>
