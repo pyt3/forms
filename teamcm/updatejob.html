@@ -237,7 +237,7 @@
             initialData();
             })
         })
-        var jobid
+        var jobid,wo
         async function initialData() {
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
@@ -349,6 +349,7 @@
                     }
                     else $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
                     $('#code').val(data.code)
+                    wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
                 })
                 // $.ajax({
@@ -359,7 +360,6 @@
                 //         opt: 'summary'
                 //     },
                 //     success: (res) => {
-                //         console.log("🚀 !! res:", res)
                 //         $.LoadingOverlay("hide");
                 //         if (res.status == 'success') {
                 //             if (res.result.replace(/\n/g, '<br>') == '') res = 'ยังไม่มีสรุปงาน'
@@ -397,6 +397,7 @@
                         $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
                     }
                     $('#code').val(data.code)
+                    wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
                 })
                 $('.container-fluid').removeClass('d-none')
@@ -420,7 +421,7 @@
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                     })
                 } else {
-                    let text = `UPDATE<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
+                    let text = `UPDATE ${wo? ('WO.'+wo): ''}<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
                         html: text,
