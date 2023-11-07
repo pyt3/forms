@@ -110,8 +110,8 @@
                         <div class="col text-start d-none">
                             <!-- download btn -->
                             <a class="btn btn-primary" id="download-from-search-btn" type="button"><img width="30"
-                                src="https://img.icons8.com/papercut/60/pdf.png" alt="opened-folder" />
-                            ดูไฟล์ PDF</a>
+                                    src="https://img.icons8.com/papercut/60/pdf.png" alt="opened-folder" />
+                                ดูไฟล์ PDF</a>
                         </div>
                         <div class="col text-end">
                             <button class="btn btn-primary" id="auto-fill" type="button" data-bs-toggle="offcanvas"
@@ -233,12 +233,13 @@
                         </div>
                         <div class="col-12"></div>
                         <div class="col-md-4 mt-3">
-                            <label for="consumable">ค่า Accessory  & Consumable สะสม  <span class="text-secondary">(บาท)</span></label>
+                            <label for="consumable">ค่า Accessory & Consumable สะสม <span
+                                    class="text-secondary">(บาท)</span></label>
                             <input type="text" name="consumable" id="consumable" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
-                            <label for="consumable-percent">คิดเป็น % ของราคาซื้อ</label>
-                            <input type="text" name="consumable-percent" id="consumable-percent" class="form-control">
+                            <label for="consumable_percent">คิดเป็น % ของราคาซื้อ</label>
+                            <input type="text" name="consumable_percent" id="consumable_percent" class="form-control">
                         </div>
 
                         <div class="col-12 mt-3">
@@ -253,7 +254,6 @@
                             <label for="recommend">การดำเนินการ</label>
                             <textarea rows="2" name="recommend" id="recommend" class="form-control"></textarea>
                         </div>
-
                         <div class="col-12 m-0 p-0">
                             <div class="row m-0 p-0">
                                 <div class="col-md-4 mt-3">
@@ -291,6 +291,26 @@
 
                     </div>
                 </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
+                    <div class="row justify-content-start align-items-end">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/color/48/fail.png" alt=" icon" width="50">
+                            <h4 class="fw-bold">&nbsp;สาเหตุอาการเสีย</h4>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="cause_of_fail">เลือกสาเหตุ</label>
+                            <select name="cause_of_fail" id="cause_of_fail" class="form-select">
+                                <option value="" disabled selected>เลือก</option>
+                                <option value="cause_of_fail_user" id="cause_of_fail_user">
+                                    Users
+                                </option>
+                                <option value="cause_of_fail_other" id="cause_of_fail_other">
+                                    Other
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-start">
                         <div class="col-12 d-flex align-items-center mt-3">
@@ -318,6 +338,12 @@
                             <input type="text" name="rr_grand_price" id="rr_grand_price" class="form-control">
                         </div>
                         <div class="col-md-4 mt-3">
+                            <label for="e_current_repair_percent">คิดเป็น % ของราคาเครื่อง <span
+                                    class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="e_current_repair_percent" id="e_current_repair_percent"
+                                class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
                             <label for="delivery">กำหนดส่งของ <span class="text-secondary">(วัน)</span></label>
                             <input type="text" name="delivery" id="delivery" class="form-control">
                         </div>
@@ -343,7 +369,7 @@
                                 <option value="" disabled selected>เลือก</option>
                                 <option value="Accessory" id="Accessory">Accessory</option>
                                 <option value="Sparepart" id="Sparepart">Spare part</option>
-                                <option value="Consumable" id="Consumable">Consumable</option>
+                                <option value="Component" id="Component">Component</option>
                                 <option value="Other" id="Other">Other</option>
                             </select>
                         </div>
@@ -363,8 +389,10 @@
                             <label for="rr-contract">เลือกประเภทสัญญา</label>
                             <select name="rr-contract" id="rr-contract" class="form-select">
                                 <option value="" disabled selected>เลือก</option>
-                                <option value="contract-part-include" id="contract-part-include">สัญญาบริการรวมอะไหล่</option>
-                                <option value="contract-part-exclude" id="contract-part-exclude">สัญญาบริการไม่รวมอะไหล่</option>
+                                <option value="contract_part_include" id="contract_part_include">สัญญาบริการรวมอะไหล่
+                                </option>
+                                <option value="contract_part_exclude" id="contract_part_exclude">สัญญาบริการไม่รวมอะไหล่
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -444,6 +472,31 @@
             // read text from file
             let text = await fetch('./console.js').then(res => res.text())
             $('#console-code').val(text)
+            // if no decimal mask input with localestring else mask with 2 decimal
+            let mask_options = {
+                reverse: true,
+                onKeyPress: function (cep, e, field, options) {
+                    calRepairPricePercent()
+                    calConsumablePercent()
+                    calCurrentRepairPercent()
+                }
+            }
+            let mask_options2 = {
+                reverse: true,
+                onKeyPress: function (cep, e, field, options) {
+                    calConsumablePercent()
+                }
+            }
+            let mask_options3 = {
+                reverse: true,
+                onKeyPress: function (cep, e, field, options) {
+                    // calCurrentRepairPercent()
+                }
+            }
+            $('#e_price, #e_repair_price').mask('#,##0.00', mask_options)
+            $('#consumable').mask('#,##0.00', mask_options2)
+            $('#rr_price, #rr_vat, #rr_grand_price').mask('#,##0.00', mask_options3)
+
         })
         $('#search-form').submit(function () {
             event.preventDefault()
@@ -489,8 +542,8 @@
                         fillValue(key, data.data[key])
                     }
                 })
-                 // show pdf in new tab
-                 let base64 =  data.pdf.base64
+                // show pdf in new tab
+                let base64 = data.pdf.base64
                 let type = data.pdf.type
                 let dataurl = 'data:' + type + ';base64,' + base64
                 let blob = base64ToBlob(base64, type)
@@ -501,14 +554,16 @@
 
         })
 
-        function base64ToBlob(base64, type){{
-            let binary = atob(base64)
-            let array = []
-            for (let i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i))
+        function base64ToBlob(base64, type) {
+            {
+                let binary = atob(base64)
+                let array = []
+                for (let i = 0; i < binary.length; i++) {
+                    array.push(binary.charCodeAt(i))
+                }
+                return new Blob([new Uint8Array(array)], { type: type })
             }
-            return new Blob([new Uint8Array(array)], {type: type})
-        }}
+        }
 
         $('#dept option').not(':disabled').each(function () {
             $(this).val($(this).text());
@@ -532,25 +587,74 @@
                 $('#rr-cm-other').parent().hide()
             }
         })
-        $('#e_price, #e_repair_price').on('keyup', function () {
+        function calRepairPricePercent() {
             let price = $('#e_price').val().toString().replace(/,/g, '')
             console.log("🚀 !! price:", price)
             let repair_price = $('#e_repair_price').val().toString().replace(/,/g, '')
             price = Number(price)
             repair_price = Number(repair_price)
-            let percent
+            let percent = 0
             if (price == '' || price == NaN || price == undefined || price == null) {
                 price = 0
                 repair_price = 0
+                percent = 0
             }
             else if (repair_price == '' || repair_price == NaN || repair_price == undefined || repair_price == null) {
                 repair_price = 0
+                percent = 0
+            } else {
+                percent = (repair_price / price) * 100
             }
             console.log("🚀 !! price:", price)
             console.log("🚀 !! repair_price:", repair_price)
-            percent = (repair_price / price) * 100
             $('#e_repair_percent').val(percent.toFixed(2))
-        })
+        }
+        function calConsumablePercent() {
+            let price = $('#e_price').val().toString().replace(/,/g, '')
+            let consumable = $('#consumable').val().toString().replace(/,/g, '')
+            price = Number(price)
+            console.log("🚀 !! price:", price)
+            consumable = Number(consumable)
+            console.log("🚀 !! consumable:", consumable)
+            let percent = 0
+            if (price == '' || price == NaN || price == undefined || price == null) {
+                price = 0
+                consumable = 0
+                percent = 0
+            }
+            else if (consumable == '' || consumable == NaN || consumable == undefined || consumable == null) {
+                consumable = 0
+                percent = 0
+            } else {
+                percent = (consumable / price) * 100
+            }
+            console.log("🚀 !! price:", price)
+            console.log("🚀 !! consumable:", consumable)
+            $('#consumable_percent').val(percent.toFixed(2))
+        }
+        function calCurrentRepairPercent() {
+            let price = $('#e_price').val().toString().replace(/,/g, '')
+            let rr_grand_price = $('#rr_grand_price').val().toString().replace(/,/g, '')
+            price = Number(price)
+            console.log("🚀 !! price:", price)
+            rr_grand_price = Number(rr_grand_price)
+            console.log("🚀 !! rr_grand_price:", rr_grand_price)
+            let percent = 0
+            if (price == '' || price == NaN || price == undefined || price == null) {
+                price = 0
+                rr_grand_price = 0
+                percent = 0
+            }
+            else if (rr_grand_price == '' || rr_grand_price == NaN || rr_grand_price == undefined || rr_grand_price == null) {
+                rr_grand_price = 0
+                percent = 0
+            } else {
+                percent = (rr_grand_price / price) * 100
+            }
+            console.log("🚀 !! price:", price)
+            console.log("🚀 !! rr_grand_price:", rr_grand_price)
+            $('#e_current_repair_percent').val(percent.toFixed(2))
+        }
 
         $('#img-only-btn').click(async function () {
             const embedImage = async function (bytes, key) {
@@ -740,21 +844,46 @@
         // $('#autoFillOffCanvas').offcanvas('show')
 
         $('#rr_price').on('keyup', function () {
-            let price = $(this).val()
+            let price = Number($(this).val().replace(/,/g, ''))
             let vat = price * 0.07
             let total = price * 1.07
             if (isNaN(price)) return
             if (isNaN(vat)) return
             if (isNaN(total)) return
-            $('#rr_vat').val(vat.toFixed(2))
-            $('#rr_grand_price').val(total.toFixed(2))
+            $('#rr_vat').val(vat.toFixed(2).split('.').map(function (item, idx) {
+                return idx > 0 ? item.padStart(2, '0') : Number(item).toLocaleString()
+            }).join('.'))
+            $('#rr_grand_price').val(total.toFixed(2).split('.').map(function (item, idx) {
+                return idx > 0 ? item.padStart(2, '0') : Number(item).toLocaleString()
+            }).join('.'))
+            calCurrentRepairPercent()
         })
         $('#rr_vat').on('keyup', function () {
-            let vat = $(this).val()
+            let vat = Number($(this).val().replace(/,/g, ''))
             let total = Number($('#rr_price').val()) + Number(vat)
             if (isNaN(vat)) return
             if (isNaN(total)) return
-            $('#rr_grand_price').val(total.toFixed(2))
+            $('#rr_grand_price').val(total.toFixed(2).split('.').map(function (item, idx) {
+                return idx > 0 ? item.padStart(2, '0') : Number(item).toLocaleString()
+            }).join('.'))
+            calCurrentRepairPercent()
+        })
+
+        $('#rr_grand_price').on('keyup', function () {
+            let grand_price = Number($(this).val().replace(/,/g, ''))
+            console.log("🚀 !! grand_price:", grand_price)
+            let price = grand_price / 1.07
+            let vat = grand_price - price
+            if (isNaN(grand_price)) return
+            if (isNaN(price)) return
+            if (isNaN(vat)) return
+            $('#rr_price').val(price.toFixed(2).split('.').map(function (item, idx) {
+                return idx > 0 ? item.padStart(2, '0') : Number(item).toLocaleString()
+            }).join('.'))
+            $('#rr_vat').val(vat.toFixed(2).split('.').map(function (item, idx) {
+                return idx > 0 ? item.padStart(2, '0') : Number(item).toLocaleString()
+            }).join('.'))
+            calCurrentRepairPercent()
         })
 
         function showOtherFieldInput(key) {
@@ -971,13 +1100,13 @@
             setText('e_name', 'e_name')
             form.getTextField('quotation').setText(toTitleCase($('#rr_vender').val()) + ' (ใบเสนอราคาเลขที่ ' + $('#quatation_no').val() + ')')
             if ($('#e_dept').val() != null && $('#e_dept').val() != undefined && $('#e_dept').val() != '') {
-                if($('#e_dept option:selected').data('dept-id') && $('#e_dept option:selected').data('dept-id') != '') form.getTextField('dept_no').setText($('#e_dept option:selected').data('dept-id').toString())
+                if ($('#e_dept option:selected').data('dept-id') && $('#e_dept option:selected').data('dept-id') != '') form.getTextField('dept_no').setText($('#e_dept option:selected').data('dept-id').toString())
             }
 
             $('form input, form select, form textarea').not('input[type="search"]').each(function () {
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
-                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept'].includes(_this.prop('id'))) return
+                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept', 'cause_of_fail'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'rr-cm' || _this.prop('id') == 'rr-contract') {
                     let v = _this.find('option:selected').val()
                     if (v == '') return
@@ -994,12 +1123,8 @@
                     form.getTextField('e_model').setText(val[1])
                     return
                 }
-                if (['rr_price', 'rr_vat', 'rr_grand_price'].includes(_this.prop('id'))) {
-                    if (_this.val() == '') return
-                    let val = _this.val().toString().split('.').map((a, i) => i == 1 ? a : Number(a).toLocaleString()).join('.')
-                    form.getTextField(_this.prop('id')).setText(val)
-                    if (_this.prop('id') == 'rr_grand_price') form.getTextField('total_text').setText(ArabicNumberToText(_this.val().toString()))
-                    return
+                if (_this.prop('id') == 'rr_grand_price') {
+                    form.getTextField('total_text').setText(ArabicNumberToText(Number(_this.val().toString().replace(/,/g, ''))))
                 }
                 if (['delivery', 'valadity', 'warranty'].includes(_this.prop('id'))) {
                     return form.getTextField(_this.prop('id')).setText(_this.val() + ' วัน')
@@ -1019,6 +1144,21 @@
                 console.log(_this.prop('id'));
                 form.getTextField(_this.prop('id')).setText(_this.val())
             })
+
+            // $('#e_price, #e_repair_price #consumable').each(function () {
+            //     if ($(this).val() == '') return
+            //     let val = $(this).val().replace(/,/g, '')
+            //     let pdfElement = form.getTextField($(this).prop('id'))
+            //     console.log("🚀 !! $(this).prop('id'):", $(this).prop('id'))
+            //     console.log($(this).val(),$(this).val().length);
+            //     if ($(this).val().length >= 12) pdfElement.setFontSize(7)
+            //     else if ($(this).val().length >= 11) pdfElement.setFontSize(8)
+            //     else if ($(this).val().length >= 10) pdfElement.setFontSize(6)
+            //     else if ($(this).val().length >= 9) pdfElement.setFontSize(11)
+            //     else if ($(this).val().length > 7) pdfElement.setFontSize(12)
+            //     pdfElement.setText($(this).val())
+            // })
+
             $('.has-checkboxes option').each(function () {
                 if ($(this).prop('id') == '') {
                     return
@@ -1049,14 +1189,14 @@
                 form_obj[$(this).attr('name')] = $(this).val()
             })
             form_obj['pdfFile'] = pdfdatauri
-            $.ajax({
-                url: scriptUrl,
-                type: 'POST',
-                data: {
-                    opt: 'save',
-                    form_obj: JSON.stringify(form_obj)
-                }
-            })
+            // $.ajax({
+            //     url: scriptUrl,
+            //     type: 'POST',
+            //     data: {
+            //         opt: 'save',
+            //         form_obj: JSON.stringify(form_obj)
+            //     }
+            // })
             $.LoadingOverlay("hide");
             Swal.fire({
                 icon: 'success',
@@ -1238,6 +1378,7 @@
         }
 
         function ArabicNumberToText(Number) {
+            console.log("🚀 !! Number:", Number)
             if (typeof Number == 'string') Number = parseFloat(Number.replace(/,/g, ''))
             var Number = CheckNumber(Number);
             var NumberArray = new Array("ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า", "สิบ");
@@ -1295,6 +1436,7 @@
                         }
                         BahtText += "สตางค์";
                     }
+                    console.log("🚀 !! BahtText:", BahtText)
                     return BahtText;
                 }
             }
@@ -1323,6 +1465,7 @@
     <script
         src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-mask-plugin@1.14.16/dist/jquery.mask.min.js"></script>
 </body>
 
 </html>
