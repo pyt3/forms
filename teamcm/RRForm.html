@@ -222,6 +222,7 @@
                             <label for="e_price">ราคาซื้อ <span class="text-secondary">(บาท)</span></label>
                             <input type="text" name="e_price" id="e_price" class="form-control">
                         </div>
+                        <div class="col-12"></div>
                         <div class="col-md-4 mt-3">
                             <label for="e_repair_price">ค่าซ่อมสะสม <span class="text-secondary">(บาท)</span></label>
                             <input type="text" name="e_repair_price" id="e_repair_price" class="form-control">
@@ -230,6 +231,16 @@
                             <label for="e_repair_percent">คิดเป็น % ของราคาซื้อ</label>
                             <input type="text" name="e_repair_percent" id="e_repair_percent" class="form-control">
                         </div>
+                        <div class="col-12"></div>
+                        <div class="col-md-4 mt-3">
+                            <label for="consumable">ค่า Accessory  & Consumable สะสม  <span class="text-secondary">(บาท)</span></label>
+                            <input type="text" name="consumable" id="consumable" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="consumable-percent">คิดเป็น % ของราคาซื้อ</label>
+                            <input type="text" name="consumable-percent" id="consumable-percent" class="form-control">
+                        </div>
+
                         <div class="col-12 mt-3">
                             <label for="failure">อาการเสีย</label>
                             <input type="text" name="failure" id="failure" class="form-control">
@@ -331,14 +342,30 @@
                             <select name="rr-cm" id="rr-cm" class="form-select">
                                 <option value="" disabled selected>เลือก</option>
                                 <option value="Accessory" id="Accessory">Accessory</option>
+                                <option value="Sparepart" id="Sparepart">Spare part</option>
                                 <option value="Consumable" id="Consumable">Consumable</option>
-                                <option value="Replacement" id="Replacement">Replacement</option>
                                 <option value="Other" id="Other">Other</option>
                             </select>
                         </div>
                         <div class="col-md-4 mt-3" style="display: none;">
                             <input type="text" name="rr-cm-other" id="rr-cm-other" class="form-control"
                                 placeholder="กรอกข้อมูลกรณีเลือกอื่นๆ">
+                        </div>
+                    </div>
+                </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
+                    <div class="row justify-content-start align-items-end">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/fluency/48/signing-a-document.png" alt=" icon" width="50">
+                            <h4 class="fw-bold">&nbsp;ประเภทสัญญาบริการของโรงพยาบาล</h4>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="rr-contract">เลือกประเภทสัญญา</label>
+                            <select name="rr-contract" id="rr-contract" class="form-select">
+                                <option value="" disabled selected>เลือก</option>
+                                <option value="contract-part-include" id="contract-part-include">สัญญาบริการรวมอะไหล่</option>
+                                <option value="contract-part-exclude" id="contract-part-exclude">สัญญาบริการไม่รวมอะไหล่</option>
+                            </select>
                         </div>
                     </div>
                 </section>
@@ -951,7 +978,7 @@
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
                 if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept'].includes(_this.prop('id'))) return
-                if (_this.prop('id') == 'rr-cm') {
+                if (_this.prop('id') == 'rr-cm' || _this.prop('id') == 'rr-contract') {
                     let v = _this.find('option:selected').val()
                     if (v == '') return
                     form.getTextField(v).setText('✓')

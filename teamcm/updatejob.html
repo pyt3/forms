@@ -421,7 +421,7 @@
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                     })
                 } else {
-                    let text = `UPDATE ${wo? ('WO.'+wo): ''}<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
+                    let text = `UPDATE<br>${wo? ('WO.'+wo): ''}<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
                         html: text,
