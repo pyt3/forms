@@ -4,10 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equip="Cache-control" content="no-cache , no-store, must-revalidate">
+    <meta http-equip="Pragma" content="no-cache">
+    <meta http-equip="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
@@ -62,7 +67,8 @@
         </div>
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
+                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
                 &nbsp; <div>
                     <span id="displayName">Team PM</span>
                 </div>
@@ -166,7 +172,8 @@
         <div class="row justify-content-center align-items-end mt-3">
             <div class="col-auto flex-fill mb-2 text-center me-0 pe-0">
                 <label for="add-id">รหัสเครื่อง</label>
-                <input type="text" id="add-id" name="add-id" class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
+                <input type="search" id="add-id" name="add-id"
+                    class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
             </div>
             <div class="col-auto text-center mb-2">
                 <button class="btn btn-success" id="add-btn">ค้นหา</button>
@@ -177,12 +184,13 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-//         var vConsole = new window.VConsole();
+        //         var vConsole = new window.VConsole();
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'
     </script>
     <script>
+        var client
         $(document).ready(() => {
             $('#add-id').on('keyup', (e) => {
                 if (e.keyCode == 13) {
@@ -193,13 +201,60 @@
             $('#add-id').mask('00000')
 
             liff.init({
-                liffId: '1657539607-ovPRPQe6',
+                // liffId: '1655873446-3xe866Ql', // test id
+                liffId: '1657539607-ovPRPQe6', // prod id
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
+                $.LoadingOverlay('show')
                 profile = await liff.getProfile()
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
+                const defaultProject = firebase.initializeApp(await $.getJSON('./service-account.json'));
+                firestore = defaultProject.firestore();
+                auth = defaultProject.auth();
+                if (!auth.currentUser) {
+                    // await getAuth()
+                    await getAuth(await liff.getDecodedIDToken().sub)
+                    $.LoadingOverlay('hide', true)
+                }
+                if (!await checkClient()) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'กรุณาเลือก Site ของท่าน',
+                        html: `<div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <select class="form-select" id="client">
+                                                <option value="" selected disabled>เลือก Site</option>
+                                                <option value="PYT1">PHYATHAI 1</option>
+                                                <option value="PYT2">PHYATHAI 2</option>
+                                                <option value="PYT3">PHYATHAI 3</option>    
+                                            </select>    
+                                        </div>
+                                    </div>
+                                </div>`,
+                        allowOutsideClick: false,
+                        showCancelButton: false,
+                        confirmButtonText: 'ตกลง',
+                    }).then(res => {
+                        if (res.isConfirmed) {
+                            cl = $('#client').val()
+                            firestore.collection('users').doc(auth.currentUser.uid).set({
+                                client: cl
+                            }).then(() => {
+                                client = cl
+                                return Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ',
+                                    text: 'เพิ่มข้อมูล Site เรียบร้อยแล้ว',
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                })
+                            })
+                        }
+                    })
+                }
             })
         })
 
@@ -224,6 +279,16 @@
         //     searchLocationData()
         // }
 
+        async function checkClient() {
+            let user = await firestore.collection('users').doc(auth.currentUser.uid).get()
+            if (user.exists) {
+                client = user.data().client
+                return true
+            } else {
+                return false
+            }
+        }
+
         function searchLocationData() {
             $('#dept_table').slideUp(200)
             $.LoadingOverlay("show")
@@ -244,34 +309,58 @@
                     timer: 1500
                 })
             }
-            $.ajax({
-                url: script_url,
-                method: "GET",
-                dataType: "json",
-                data: {
-                    opt: 'searchlocationdata',
-                    id: id
-                },
-                success: function (response) {
-                    $.LoadingOverlay("hide")
-                    console.log(response)
-                    if (response.status == 'error') {
-                        return Swal.fire({
-                            icon: 'error',
-                            title: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
-                    createTable(response.data)
-
+            // replace not number character
+            id = id.replace(/\D/g, '')
+            let query_id1 = client + '_' + (('00000'+id).slice(-5))
+            let query_id2 = client + 'D_' + (('00000'+id).slice(-5))
+            let query_id3 = 'DEMO_' + (('000000'+id).slice(-6))
+            firestore.collectionGroup('location').where("code", 'in', [query_id1, query_id2, query_id3]).limit(1000).get().then(doc => {
+                console.log("🚀 !! doc:", doc)
+                if(doc.empty){
+                    $.LoadingOverlay("hide",true)
+                    return Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่พบข้อมูล',
+                        text: 'รหัส ' + $('#add-id').val(),
+                        confirmButtonText: 'ตกลง',
+                    })
                 }
-            });
+                let data = []
+                doc.forEach(d => {
+                    data.push(d.data())
+                })
+                console.log(data);
+                createTable(data)
+            })
+            // $.ajax({
+            //     url: script_url,
+            //     method: "GET",
+            //     dataType: "json",
+            //     data: {
+            //         opt: 'searchlocationdata',
+            //         id: id
+            //     },
+            //     success: function (response) {
+            //         $.LoadingOverlay("hide")
+            //         console.log(response)
+            //         if (response.status == 'error') {
+            //             return Swal.fire({
+            //                 icon: 'error',
+            //                 title: response.message,
+            //                 showConfirmButton: false,
+            //                 timer: 1500
+            //             })
+            //         }
+            //         createTable(response.data)
+
+            //     }
+            // });
             // createTable()
         }
 
         function createTable(data) {
             if (data.length <= 0) {
+                
                 return Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูล',
@@ -293,13 +382,17 @@
             console.log("🚀 ~ data", data)
             data.forEach((row, i) => {
                 if (i == 0) {
-                    row[1] = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row[1]
+                    row.dept = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row.dept
                 }
-                let tr = $(`<tr></tr>`).html(`<td>${new Date(row[0]).toLocaleString('th', {
+                let date = new Date(row.timestamp.seconds)
+                if(date.getFullYear() > 2300){
+                    date.setFullYear(date.getFullYear() - 543)
+                }
+                let tr = $(`<tr></tr>`).html(`<td>${date.toLocaleDateString('th-TH', {
                     year: 'numeric',
                     month: 'numeric',
                     day: 'numeric',
-                })}</td><td>${row[1]}</td><td>${row[2] == "" ? '---' : row[2]}</td><td>${row[3]}</td>`)
+                })}</td><td>${row.dept}</td><td>${row.remark == "" ? '---' : row.remark}</td><td>${row.line}</td>`)
                 $(tbody).append(tr)
             })
             // format first row of tbody
@@ -309,6 +402,7 @@
 
             // add pointer icon to 2nd column of first row of tbody
             $('#dept_table').slideDown(200)
+            $.LoadingOverlay("hide")
         }
     </script>
 
@@ -368,11 +462,52 @@
             "FL.01 EMERGENCY( ฉุกเฉิน)"
         ]
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    <script>
+        var firestore, auth
+        async function getAuth(uid = 'test') {
+            let email = uid + '@minion-location.com'
+            let password = 'minion-location'
+            await auth.signInWithEmailAndPassword(email, password).then(function (user) {
+                console.log('sign in successful')
+            }).catch(async function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                var credential = error.credential;
+                console.log(errorCode)
+                console.log(errorMessage)
+                console.log(credential)
+                await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
+                    console.log('sign up successful')
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    console.log(email)
+                    console.log(credential)
+                });
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"
+        integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </body>
 
 </html>
