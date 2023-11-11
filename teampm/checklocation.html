@@ -385,7 +385,7 @@
                 if (i == 0) {
                     row.dept = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row.dept
                 }
-                let date = new Date(row.timestamp.seconds)
+                let date = new Date(row.timestamp.seconds.toMillis())
                 if(date.getFullYear() > 2300){
                     date.setFullYear(date.getFullYear() - 543)
                 }
