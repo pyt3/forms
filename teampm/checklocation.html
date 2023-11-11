@@ -184,7 +184,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-                var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'
@@ -312,13 +312,13 @@
             }
             // replace not number character
             id = id.replace(/\D/g, '')
-            let query_id1 = client + '_' + (('00000'+id).slice(-5))
-            let query_id2 = client + 'D_' + (('00000'+id).slice(-5))
-            let query_id3 = 'DEMO_' + (('000000'+id).slice(-6))
+            let query_id1 = client + '_' + (('00000' + id).slice(-5))
+            let query_id2 = client + 'D_' + (('00000' + id).slice(-5))
+            let query_id3 = 'DEMO_' + (('000000' + id).slice(-6))
             firestore.collectionGroup('location').where("code", 'in', [query_id1, query_id2, query_id3]).limit(100).get().then(doc => {
                 console.log("🚀 !! doc:", doc)
-                if(doc.empty){
-                    $.LoadingOverlay("hide",true)
+                if (doc.empty) {
+                    $.LoadingOverlay("hide", true)
                     return Swal.fire({
                         icon: 'error',
                         title: 'ไม่พบข้อมูล',
@@ -361,7 +361,7 @@
 
         function createTable(data) {
             if (data.length <= 0) {
-                
+
                 return Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูล',
@@ -384,19 +384,20 @@
             data.forEach((row, i) => {
                 if (i == 0) {
                     row.dept = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row.dept
-        
-                console.log(row.timestamp.seconds.toMillis());
-                console.log(row.timestamp.seconds.toDate());
-                let date = new Date(row.timestamp.seconds.toMillis())
-                if(date.getFullYear() > 2300){
-                    date.setFullYear(date.getFullYear() - 543)
+
+                    console.log(row.timestamp.seconds.toMillis())
+                    console.log(row.timestamp.seconds.toDate())
+                    let date = new Date(row.timestamp.seconds.toMillis())
+                    if (date.getFullYear() > 2300) {
+                        date.setFullYear(date.getFullYear() - 543)
+                    }
+                    let tr = $(`<tr></tr>`).html(`<td>${date.toLocaleDateString('th-TH', {
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                    })}</td><td>${row.dept}</td><td>${row.remark == "" ? '---' : row.remark}</td><td>${row.line}</td>`)
+                    $(tbody).append(tr)
                 }
-                let tr = $(`<tr></tr>`).html(`<td>${date.toLocaleDateString('th-TH', {
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric',
-                })}</td><td>${row.dept}</td><td>${row.remark == "" ? '---' : row.remark}</td><td>${row.line}</td>`)
-                $(tbody).append(tr)
             })
             // format first row of tbody
 
