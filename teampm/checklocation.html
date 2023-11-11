@@ -184,7 +184,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        //         var vConsole = new window.VConsole();
+                var vConsole = new window.VConsole();
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'
@@ -207,7 +207,6 @@
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
-                $.LoadingOverlay('show')
                 profile = await liff.getProfile()
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
@@ -316,7 +315,7 @@
             let query_id1 = client + '_' + (('00000'+id).slice(-5))
             let query_id2 = client + 'D_' + (('00000'+id).slice(-5))
             let query_id3 = 'DEMO_' + (('000000'+id).slice(-6))
-            firestore.collectionGroup('location').where("code", 'in', [query_id1, query_id2, query_id3]).limit(1000).get().then(doc => {
+            firestore.collectionGroup('location').where("code", 'in', [query_id1, query_id2, query_id3]).limit(100).get().then(doc => {
                 console.log("🚀 !! doc:", doc)
                 if(doc.empty){
                     $.LoadingOverlay("hide",true)
