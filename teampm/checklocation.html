@@ -192,6 +192,7 @@
     <script>
         var client
         $(document).ready(() => {
+            $.LoadingOverlay("show")
             $('#add-id').on('keyup', (e) => {
                 if (e.keyCode == 13) {
                     searchLocationData()
@@ -216,8 +217,8 @@
                 if (!auth.currentUser) {
                     // await getAuth()
                     await getAuth(await liff.getDecodedIDToken().sub)
-                    $.LoadingOverlay('hide', true)
                 }
+                $.LoadingOverlay('hide', true)
                 if (!await checkClient()) {
                     Swal.fire({
                         icon: 'info',
