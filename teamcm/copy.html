@@ -56,6 +56,7 @@
                 let params = (new URL(document.location)).searchParams;
                 let doc_path = params.get("doc_path");
                 let doc = await firestore.doc(doc_path).get()
+                $.LoadingOverlay("hide");
                 console.log("🚀 !! doc:", doc)
                 if (doc.empty) {
                     Swal.fire({
