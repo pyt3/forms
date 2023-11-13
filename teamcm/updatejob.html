@@ -430,7 +430,8 @@
 
             let update_data
             $("#submit").click(() => {
-                let update = $("#update").val();
+                var brRegex = /<br\s*[\/]?>/gi;
+                let update = $("#update").html().replace(brRegex, "\r\n")
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
@@ -595,7 +596,7 @@
             // ]).then(() => {
 
             // })
-          let flex = {
+            let flex = {
                 "type": "bubble",
                 "body": {
                     "type": "box",
@@ -801,7 +802,7 @@
                     title: 'อัพเดทสำเร็จ',
                     text: 'อัพเดทสำเร็จ',
                     timer: 1500,
-                }).then(()=>{
+                }).then(() => {
                     liff.closeWindow();
                 })
             })
