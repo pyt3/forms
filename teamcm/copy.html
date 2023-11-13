@@ -74,54 +74,23 @@
                 } else {
                     let data = doc.data()
                     let update = data.update
-                    // ขอสิทธิ์เข้าถึง clipboard ของผู้ใช้
-                    await navigator.permissions.query({
-                        name: "clipboard-write"
-                    }).then(result => {
-                        if (result.state == "granted" || result.state == "prompt") {
-                            console.log("🚀 !! result:", result)
-                        }
-                    });
-                    //  copy update to clipboard
-                    navigator.clipboard.writeText(update).then(function () {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'คัดลอกสำเร็จ',
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then((result) => {
-                            liff.closeWindow()
-                        })
-                    }, function (err) {
-                        try {
-                            let textToCopy = update;
-                            let textarea = document.createElement('textarea');
-                            textarea.value = textToCopy;
-                            document.body.appendChild(textarea);
-                            textarea.select();
-                            document.execCommand('copy');
-                            document.body.removeChild(textarea);
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'คัดลอกสำเร็จ',
-                                showConfirmButton: false,
-                                timer: 2000
-                            }).then((result) => {
-                                liff.closeWindow()
-                            })
-                        } catch (error) {
-                            console.log(error)
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'คัดลอกไม่สำเร็จ',
-                                text: 'กรุณาลองใหม่อีกครั้ง',
-                                confirmButtonText: 'ตกลง'
-                            }).then((result) => {
-                                liff.closeWindow()
-                            })
-                        }
 
-                    });
+                    var $temp = $("<textarea>");
+                    var brRegex = /<br\s*[\/]?>/gi;
+                    $("body").append($temp);
+                    $temp.val(update).select();
+
+                    document.execCommand("copy");
+                    $temp.remove();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'คัดลอกสำเร็จ',
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then((result) => {
+                        liff.closeWindow()
+                    })
                 }
             })
         })
