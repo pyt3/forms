@@ -504,10 +504,18 @@
         }
 
         async function updateData(update_data) {
+            let doc_ref
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
                 name: update_data.name,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then((docRef) => {
+                doc_ref = docRef
+                console.log("🚀 !! docRef:", docRef)
+                console.log("🚀 !! docRef.id:", docRef.id)
+                console.log('update success');
+            }).catch(err => {
+                console.log(err);
             })
             localStorage.removeItem('updateText' + update_data.jobid)
             const colorArrays = [
@@ -656,7 +664,7 @@
                                                 },
                                                 {
                                                     "type": "text",
-                                                    "text": update_data.code == ''? 'Component': update_data.code,
+                                                    "text": update_data.code == '' ? 'Component' : update_data.code,
                                                     "flex": 5,
                                                     "adjustMode": "shrink-to-fit",
                                                     "scaling": true,
@@ -773,7 +781,11 @@
                     text: 'อัพเดทสำเร็จ',
                     timer: 1000,
                 })
-                liff.closeWindow();
+                if (lifff.getDecodedIDToken() == '"U798fc2c46a2efd7013b12eac4dac408a"') {
+
+                } else {
+                    liff.closeWindow();
+                }
             })
         }
 
