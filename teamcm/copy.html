@@ -38,9 +38,7 @@
     <script>
         const liff_id = '1661543046-YWbxeK8Q'
         $(document).ready(async () => {
-            $.LoadingOverlay("show", {
-                text: 'กำลังคัดลอก...'
-            });
+            $.LoadingOverlay("show");
             liff.init({
                 liffId: liff_id,
                 withLoginOnExternalBrowser: true
@@ -72,7 +70,9 @@
                         }
                     })
                 } else {
-                    $('body').addClass('d-flex justify-content-center align-items-center h-100')
+                    $('body').addClass('d-flex justify-content-center align-items-center').css({
+                        'height': '100vh'
+                    })
                     let row = $('<div class="row justify-content-center"></div>')
                     let col = $('<div class="col-md-4"></div>')
                     let btn = $('<button class="btn btn-primary btn-lg btn-block"><i class="bi bi-clipboard"></i> คัดลอก</button>')
