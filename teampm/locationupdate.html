@@ -186,7 +186,7 @@
         var arr = []
         var Toast, profile, client
         $(document).ready(() => {
-
+            $.LoadingOverlay("show")
             liff.init({
                 // liffId: '1655873446-3xe866Ql', // test id
                 liffId: '1657539607-EPzqza2K', // prod id
@@ -203,6 +203,7 @@
                     // await getAuth()
                     await getAuth(await liff.getDecodedIDToken().sub)
                 }
+                $.LoadingOverlay("hide",true)
                 if (!await checkClient()) {
                     Swal.fire({
                         icon: 'info',
