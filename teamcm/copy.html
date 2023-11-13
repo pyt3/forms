@@ -38,7 +38,9 @@
     <script>
         const liff_id = '1661543046-YWbxeK8Q'
         $(document).ready(async () => {
-            $.LoadingOverlay("show");
+            $.LoadingOverlay("show",{
+                text: 'กำลังคัดลอก...'
+            });
             liff.init({
                 liffId: liff_id,
                 withLoginOnExternalBrowser: true
@@ -58,7 +60,7 @@
                 let doc = await firestore.doc(doc_path).get()
                 $.LoadingOverlay("hide");
                 console.log("🚀 !! doc:", doc)
-                if (doc.empty) {
+                if (doc.exists == false) {
                     Swal.fire({
                         icon: 'error',
                         title: 'ไม่พบข้อมูล',
@@ -70,7 +72,7 @@
                         }
                     })
                 } else {
-                    let data = doc.docs[0].data()
+                    let data = doc.data()
                     let update = data.update
                     //  copy update to clipboard
                     navigator.clipboard.writeText(update).then(function () {
