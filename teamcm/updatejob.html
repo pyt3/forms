@@ -133,8 +133,8 @@
                         </div>
 
                         <div class="d-flex flex-stretch justify-content-end">
-                            <img src="https://img.icons8.com/fluency/48/image--v1.png"
-                                alt="image" id="image" class="img-fluid rounded shadow shadow-sm border"
+                            <img src="https://img.icons8.com/fluency/48/image--v1.png" alt="image" id="image"
+                                class="img-fluid rounded shadow shadow-sm border"
                                 style="max-width: 80px; height: auto;">
 
                         </div>
@@ -427,7 +427,7 @@
                 $('#more-update-btn').addClass('d-none')
                 $.LoadingOverlay("hide");
             }
-            
+
             let update_data
             $("#submit").click(() => {
                 let update = $("#update").val();
@@ -636,7 +636,8 @@
                                                             "text": update_data.wo,
                                                             "flex": 5,
                                                             "adjustMode": "shrink-to-fit",
-                                                            "scaling": true
+                                                            "scaling": true,
+                                                            "align": "end"
                                                         }
                                                     ]
                                                 },
@@ -655,10 +656,11 @@
                                                         },
                                                         {
                                                             "type": "text",
-                                                            "text": update_data.code,
+                                                            "text": update_data.code,   
                                                             "flex": 5,
                                                             "adjustMode": "shrink-to-fit",
-                                                            "scaling": true
+                                                            "scaling": true,
+                                                            "align": "end"
                                                         }
                                                     ]
                                                 },
@@ -670,7 +672,9 @@
                                                             "type": "text",
                                                             "text": update_data.date,
                                                             "size": "sm",
-                                                            "color": "#bcbcbc"
+                                                            "color": "#bcbcbc",
+                                                            "scaling": true,
+                                                            "align": "end"
                                                         }
                                                     ],
                                                     "spacing": "sm"
@@ -681,30 +685,6 @@
                                     ],
                                     "spacing": "xl",
                                     "paddingAll": "20px"
-                                },
-                                {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-                                        {
-                                            "type": "text",
-                                            "text": "ชื่อเครื่อง",
-                                            "weight": "bold",
-                                            "flex": 2,
-                                            "color": "#000000",
-                                            "adjustMode": "shrink-to-fit",
-                                            "scaling": true
-                                        },
-                                        {
-                                            "type": "text",
-                                            "text": update_data.name,
-                                            "flex": 5,
-                                            "adjustMode": "shrink-to-fit",
-                                            "scaling": true,
-                                            "wrap": true
-                                        }
-                                    ],
-                                    "paddingAll": "lg"
                                 },
                                 {
                                     "type": "separator"
@@ -732,11 +712,16 @@
                                             "action": {
                                                 "type": "uri",
                                                 "label": "ดูสรุปงาน 👆",
-                                                "uri": "http://linecorp.com/"
+                                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
                                             },
-                                            "style": "link"
+                                            "style": "primary",
+                                            "height": "sm",
+                                            "scaling": true
                                         }
-                                    ]
+                                    ],
+                                    "paddingAll": "lg",
+                                    "paddingEnd": "xxl",
+                                    "paddingStart": "xxl"
                                 },
                                 {
                                     "type": "separator"
@@ -754,10 +739,11 @@
                                     "contents": [
                                         {
                                             "type": "text",
-                                            "text": "#CHANCHAI SAE-LEE",
-                                            "size": "sm",
+                                            "text": update_data.name,
+                                            "size": "xs",
                                             "color": "#bcbcbc",
-                                            "align": "start"
+                                            "align": "start",
+                                            "scaling": true
                                         },
                                         {
                                             "type": "icon",
@@ -770,16 +756,6 @@
                                     "spacing": "sm",
                                     "justifyContent": "space-between",
                                     "alignItems": "center"
-                                },
-                                {
-                                    "type": "box",
-                                    "layout": "baseline",
-                                    "contents": [],
-                                    "position": "relative",
-                                    "paddingAll": "sm",
-                                    "offsetTop": "sm",
-                                    "alignItems": "center",
-                                    "justifyContent": "flex-end"
                                 }
                             ]
                         }
