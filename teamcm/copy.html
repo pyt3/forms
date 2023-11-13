@@ -47,11 +47,11 @@
             liff.ready.then(async () => {
                 const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
                 firestore = defaultProject.firestore();
-                auth = defaultProject.auth();
-                if (!auth.currentUser) {
-                    // await getAuth()
-                    await getAuth(await liff.getDecodedIDToken().sub)
-                }
+                // auth = defaultProject.auth();
+                // if (!auth.currentUser) {
+                //     // await getAuth()
+                //     await getAuth(await liff.getDecodedIDToken().sub)
+                // }
 
                 let params = (new URL(document.location)).searchParams;
                 let doc_path = params.get("doc_path");
