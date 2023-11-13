@@ -549,235 +549,231 @@
             let random = Math.floor(Math.random() * colorArrays.length);
             let color = colorArrays[random];
 
-            liff.sendMessages([
-                {
-                    type: 'text',
-                    text: update_data.text
-                },
-                {
-                    type: 'flex',
-                    altText: 'Update ' + update_data.code,
-                    contents: {
-                        "type": "bubble",
-                        "size": "nano",
-                        "body": {
+            // liff.sendMessages([
+            //     {
+            //         type: 'text',
+            //         text: update_data.text
+            //     },
+            //     {
+            //         type: 'flex',
+            //         altText: 'Update ' + update_data.code,
+            //         contents: {
+            //             "type": "bubble",
+            //             "size": "nano",
+            //             "body": {
+            //                 "type": "box",
+            //                 "layout": "vertical",
+            //                 "contents": [
+            //                     {
+            //                         "type": "text",
+            //                         "text": "ดูสรุปงาน",
+            //                         "weight": "bold",
+            //                         "align": "center",
+            //                         "scaling": true,
+            //                         "color": color[0]
+            //                     }
+            //                 ],
+            //                 "action": {
+            //                     "type": "uri",
+            //                     "label": "action",
+            //                     "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
+            //                 }
+            //             },
+            //             "styles": {
+            //                 "body": {
+            //                     "backgroundColor": color[1]
+            //                 }
+            //             }
+            //         }
+            //     }
+            // ]).then(() => {
+
+            // })
+            let flex = {
+                "type": "bubble",
+                "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                        {
                             "type": "box",
-                            "layout": "vertical",
-                            "contents": [
-                                {
-                                    "type": "text",
-                                    "text": "ดูสรุปงาน",
-                                    "weight": "bold",
-                                    "align": "center",
-                                    "scaling": true,
-                                    "color": color[0]
-                                }
-                            ],
-                            "action": {
-                                "type": "uri",
-                                "label": "action",
-                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
-                            }
-                        },
-                        "styles": {
-                            "body": {
-                                "backgroundColor": color[1]
-                            }
-                        }
-                    }
-                }
-            ]).then(() => {
-                if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') {
-                    // let text = `UPDATE<br>${wo? ('WO.'+wo): ''}<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
-                    let flex = {
-                        "type": "bubble",
-                        "body": {
-                            "type": "box",
-                            "layout": "vertical",
+                            "layout": "horizontal",
                             "contents": [
                                 {
                                     "type": "box",
-                                    "layout": "horizontal",
+                                    "layout": "vertical",
                                     "contents": [
                                         {
-                                            "type": "box",
-                                            "layout": "vertical",
-                                            "contents": [
-                                                {
-                                                    "type": "image",
-                                                    "url": update_data.image,
-                                                    "aspectMode": "cover",
-                                                    "size": "full"
-                                                }
-                                            ],
-                                            "width": "72px",
-                                            "height": "72px",
-                                            "cornerRadius": "md"
-                                        },
-                                        {
-                                            "type": "box",
-                                            "layout": "vertical",
-                                            "contents": [
-                                                {
-                                                    "type": "box",
-                                                    "layout": "horizontal",
-                                                    "contents": [
-                                                        {
-                                                            "type": "text",
-                                                            "text": "Update",
-                                                            "weight": "bold",
-                                                            "flex": 3,
-                                                            "color": "#000000",
-                                                            "adjustMode": "shrink-to-fit",
-                                                            "scaling": true
-                                                        },
-                                                        {
-                                                            "type": "text",
-                                                            "text": update_data.wo,
-                                                            "flex": 5,
-                                                            "adjustMode": "shrink-to-fit",
-                                                            "scaling": true,
-                                                            "align": "end"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "box",
-                                                    "layout": "horizontal",
-                                                    "contents": [
-                                                        {
-                                                            "type": "text",
-                                                            "text": "รหัส",
-                                                            "weight": "bold",
-                                                            "flex": 3,
-                                                            "color": "#000000",
-                                                            "adjustMode": "shrink-to-fit",
-                                                            "scaling": true
-                                                        },
-                                                        {
-                                                            "type": "text",
-                                                            "text": update_data.code,   
-                                                            "flex": 5,
-                                                            "adjustMode": "shrink-to-fit",
-                                                            "scaling": true,
-                                                            "align": "end"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "box",
-                                                    "layout": "baseline",
-                                                    "contents": [
-                                                        {
-                                                            "type": "text",
-                                                            "text": update_data.date,
-                                                            "size": "sm",
-                                                            "color": "#bcbcbc",
-                                                            "scaling": true,
-                                                            "align": "end"
-                                                        }
-                                                    ],
-                                                    "spacing": "sm"
-                                                }
-                                            ],
-                                            "justifyContent": "space-between"
+                                            "type": "image",
+                                            "url": update_data.image,
+                                            "aspectMode": "cover",
+                                            "size": "full"
                                         }
                                     ],
-                                    "spacing": "xl",
-                                    "paddingAll": "20px"
-                                },
-                                {
-                                    "type": "separator"
+                                    "width": "72px",
+                                    "height": "72px",
+                                    "cornerRadius": "md"
                                 },
                                 {
                                     "type": "box",
                                     "layout": "vertical",
                                     "contents": [
                                         {
-                                            "type": "text",
-                                            "text": update_data.update,
-                                            "wrap": true,
-                                            "scaling": true,
-                                            "adjustMode": "shrink-to-fit"
-                                        }
-                                    ],
-                                    "paddingAll": "lg"
-                                },
-                                {
-                                    "type": "box",
-                                    "layout": "horizontal",
-                                    "contents": [
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Update",
+                                                    "weight": "bold",
+                                                    "flex": 3,
+                                                    "color": "#000000",
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": update_data.wo,
+                                                    "flex": 5,
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true,
+                                                    "align": "end"
+                                                }
+                                            ]
+                                        },
                                         {
-                                            "type": "button",
-                                            "action": {
-                                                "type": "uri",
-                                                "label": "ดูสรุปงาน 👆",
-                                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
-                                            },
-                                            "style": "primary",
-                                            "height": "sm",
-                                            "scaling": true
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "รหัส",
+                                                    "weight": "bold",
+                                                    "flex": 3,
+                                                    "color": "#000000",
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": update_data.code,
+                                                    "flex": 5,
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true,
+                                                    "align": "end"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "baseline",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": update_data.date,
+                                                    "size": "sm",
+                                                    "color": "#bcbcbc",
+                                                    "scaling": true,
+                                                    "align": "end"
+                                                }
+                                            ],
+                                            "spacing": "sm"
                                         }
                                     ],
-                                    "paddingAll": "lg",
-                                    "paddingEnd": "xxl",
-                                    "paddingStart": "xxl"
-                                },
-                                {
-                                    "type": "separator"
+                                    "justifyContent": "space-between"
                                 }
                             ],
-                            "paddingAll": "0px"
+                            "spacing": "xl",
+                            "paddingAll": "20px"
                         },
-                        "footer": {
+                        {
+                            "type": "separator"
+                        },
+                        {
                             "type": "box",
                             "layout": "vertical",
                             "contents": [
                                 {
-                                    "type": "box",
-                                    "layout": "baseline",
-                                    "contents": [
-                                        {
-                                            "type": "text",
-                                            "text": update_data.name,
-                                            "size": "xs",
-                                            "color": "#bcbcbc",
-                                            "align": "start",
-                                            "scaling": true
-                                        },
-                                        {
-                                            "type": "icon",
-                                            "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
-                                            "scaling": true,
-                                            "size": "xl",
-                                            "offsetTop": "sm"
-                                        }
-                                    ],
-                                    "spacing": "sm",
-                                    "justifyContent": "space-between",
-                                    "alignItems": "center"
+                                    "type": "text",
+                                    "text": update_data.update,
+                                    "wrap": true,
+                                    "scaling": true,
+                                    "adjustMode": "shrink-to-fit"
                                 }
-                            ]
-                        }
-                    }
-                    liff.sendMessages([
+                            ],
+                            "paddingAll": "lg"
+                        },
                         {
-                            type: 'flex',
-                            altText: 'Update ' + update_data.code,
-                            contents: flex
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "ดูสรุปงาน 👆",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
+                                    },
+                                    "style": "primary",
+                                    "height": "sm",
+                                    "scaling": true
+                                }
+                            ],
+                            "paddingAll": "lg",
+                            "paddingEnd": "xxl",
+                            "paddingStart": "xxl"
+                        },
+                        {
+                            "type": "separator"
                         }
-                    ]).then(() => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'อัพเดทสำเร็จ',
-                            text: 'อัพเดทสำเร็จ',
-                            timer: 1000,
-                        })
-                        liff.closeWindow();
-                    })
-                } else {
-                    liff.closeWindow();
+                    ],
+                    "paddingAll": "0px"
+                },
+                "footer": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "box",
+                            "layout": "baseline",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": update_data.name,
+                                    "size": "xs",
+                                    "color": "#bcbcbc",
+                                    "align": "start",
+                                    "scaling": true
+                                },
+                                {
+                                    "type": "icon",
+                                    "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
+                                    "scaling": true,
+                                    "size": "xl",
+                                    "offsetTop": "sm"
+                                }
+                            ],
+                            "spacing": "sm",
+                            "justifyContent": "space-between",
+                            "alignItems": "center"
+                        }
+                    ]
                 }
+            }
+            liff.sendMessages([
+                {
+                    type: 'flex',
+                    altText: 'Update ' + update_data.code,
+                    contents: flex
+                }
+            ]).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'อัพเดทสำเร็จ',
+                    text: 'อัพเดทสำเร็จ',
+                    timer: 1000,
+                })
+                liff.closeWindow();
             })
         }
 
