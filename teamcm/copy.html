@@ -38,7 +38,7 @@
     <script>
         const liff_id = '1661543046-YWbxeK8Q'
         $(document).ready(async () => {
-            $.LoadingOverlay("show",{
+            $.LoadingOverlay("show", {
                 text: 'กำลังคัดลอก...'
             });
             liff.init({
@@ -87,16 +87,38 @@
                             }
                         })
                     }, function (err) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'คัดลอกไม่สำเร็จ',
-                            text: 'กรุณาลองใหม่อีกครั้ง',
-                            confirmButtonText: 'ตกลง'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                liff.closeWindow()
-                            }
-                        })
+                        try {
+                            let textToCopy = update;
+                            let textarea = document.createElement('textarea');
+                            textarea.value = textToCopy;
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textarea);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'คัดลอกสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    liff.closeWindow()
+                                }
+                            })
+                        } catch (error) {
+                            console.log(error)
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'คัดลอกไม่สำเร็จ',
+                                text: 'กรุณาลองใหม่อีกครั้ง',
+                                confirmButtonText: 'ตกลง'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    liff.closeWindow()
+                                }
+                            })
+                        }
+
                     });
                 }
             })
