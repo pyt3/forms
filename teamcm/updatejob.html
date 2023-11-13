@@ -511,7 +511,6 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then((docRef) => {
                 doc_ref = docRef
-                console.log("🚀 !! docRef:", docRef.path)
                 console.log('update success');
             }).catch(err => {
                 console.log(err);
@@ -778,7 +777,7 @@
                                     "action": {
                                         "type": "uri",
                                         "label": "copy",
-                                        "uri": "https://liff.line.me/1661543046-YWbxeK8Q?path=" + doc_ref.id
+                                        "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
                                     }
                                 }
                             ],
