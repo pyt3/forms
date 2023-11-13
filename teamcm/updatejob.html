@@ -511,8 +511,6 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then((docRef) => {
                 doc_ref = docRef
-                console.log("🚀 !! docRef:", docRef)
-                console.log("🚀 !! docRef.id:", docRef.id)
                 console.log('update success');
             }).catch(err => {
                 console.log(err);
@@ -597,7 +595,7 @@
             // ]).then(() => {
 
             // })
-            let flex = {
+          let flex = {
                 "type": "bubble",
                 "body": {
                     "type": "box",
@@ -695,9 +693,6 @@
                             "paddingAll": "20px"
                         },
                         {
-                            "type": "separator"
-                        },
-                        {
                             "type": "box",
                             "layout": "vertical",
                             "contents": [
@@ -709,7 +704,11 @@
                                     "adjustMode": "shrink-to-fit"
                                 }
                             ],
-                            "paddingAll": "lg"
+                            "paddingAll": "lg",
+                            "height": "100px",
+                            "borderColor": "#bcbcbc",
+                            "borderWidth": "light",
+                            "cornerRadius": "md"
                         },
                         {
                             "type": "box",
@@ -735,7 +734,10 @@
                             "type": "separator"
                         }
                     ],
-                    "paddingAll": "0px"
+                    "paddingTop": "none",
+                    "paddingBottom": "none",
+                    "paddingStart": "md",
+                    "paddingEnd": "md"
                 },
                 "footer": {
                     "type": "box",
@@ -743,7 +745,7 @@
                     "contents": [
                         {
                             "type": "box",
-                            "layout": "baseline",
+                            "layout": "horizontal",
                             "contents": [
                                 {
                                     "type": "text",
@@ -754,11 +756,29 @@
                                     "scaling": true
                                 },
                                 {
-                                    "type": "icon",
-                                    "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
-                                    "scaling": true,
-                                    "size": "xl",
-                                    "offsetTop": "sm"
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "copy",
+                                            "size": "xs",
+                                            "flex": 5,
+                                            "align": "end"
+                                        },
+                                        {
+                                            "type": "image",
+                                            "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
+                                            "size": "20px",
+                                            "flex": 1
+                                        }
+                                    ],
+                                    "justifyContent": "flex-end",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "copy",
+                                        "uri": "https://pyt3.github.io/forms/teamcm/copy?path=" + doc_ref.id
+                                    }
                                 }
                             ],
                             "spacing": "sm",
