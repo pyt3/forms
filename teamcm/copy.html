@@ -72,24 +72,32 @@
                         }
                     })
                 } else {
-                    let data = doc.data()
-                    let update = data.update
+                    $('body').addClass('d-flex justify-content-center align-items-center h-100')
+                    let row = $('<div class="row justify-content-center"></div>')
+                    let col = $('<div class="col-md-4"></div>')
+                    let btn = $('<button class="btn btn-primary btn-lg btn-block"><i class="bi bi-clipboard"></i> คัดลอก</button>')
+                    row.append(col.append(btn))
+                    $('body').append(row)
+                    btn.click(function () {
+                        let data = doc.data()
+                        let update = data.update
 
-                    var $temp = $("<textarea>");
-                    var brRegex = /<br\s*[\/]?>/gi;
-                    $("body").append($temp);
-                    $temp.val(update).select();
+                        var $temp = $("<textarea>");
+                        // var brRegex = /<br\s*[\/]?>/gi;
+                        $("body").append($temp);
+                        $temp.val(update).select();
 
-                    document.execCommand("copy");
-                    $temp.remove();
+                        document.execCommand("copy");
+                        $temp.remove();
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'คัดลอกสำเร็จ',
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then((result) => {
-                        liff.closeWindow()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'คัดลอกสำเร็จ',
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then((result) => {
+                            liff.closeWindow()
+                        })
                     })
                 }
             })
