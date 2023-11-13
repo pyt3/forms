@@ -109,30 +109,31 @@
         <div class="bar"></div>
     </div>
     <main>
-        <div class="container-fluid ">
-            <!-- <div class="container-fluid d-none"> -->
+        <!-- <div class="container-fluid "> -->
+        <div class="container-fluid d-none">
             <div class="row mt-3">
-                <div class="col-md-4 d-flex justify-content-between">
+                <div class="col-md-4 d-none justify-content-between">
                     <!-- <div class="col-md-4 d-none"> -->
-                    <div class="alert alert-success w-100 d-flex justify-content-between gap-2" style="font-size: 0.8rem;">
+                    <div class="alert alert-success w-100 d-flex justify-content-between gap-2"
+                        style="font-size: 0.8rem;">
                         <div>
                             WO. <span id="workorder"></span>
                             <div class="mt-2">
                                 <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
-                                    style="font-size: 0.8rem;">รับงานโดย
-                                    DARANPHOP YIMYAM</span>
+                                    style="font-size: 0.8rem;"></span>
                             </div>
-                            <div class="has-code mt-2">
+                            <div class="has-code mt-2 d-none">
                                 <!-- <div class="col-md-4 has-code d-none"> -->
                                 <div class="input-group">
                                     <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
-                                    <input type="text" class="form-control" id="request-no" name="request-no" style="font-size: 0.8rem;">
+                                    <input type="text" class="form-control" id="request-no" name="request-no"
+                                        style="font-size: 0.8rem;">
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-flex flex-stretch justify-content-end">
-                            <img src="https://nsmart.nhealth-asia.com/MTDPDB01/img.php?files=201910310958210.LIQUID%20TOC.jpg"
+                            <img src="https://img.icons8.com/fluency/48/image--v1.png"
                                 alt="image" id="image" class="img-fluid rounded shadow shadow-sm border"
                                 style="max-width: 80px; height: auto;">
 
@@ -141,8 +142,8 @@
                 </div>
             </div>
             <div class="row g-3 justify-content-center">
-                <div class="col-md-4 has-code">
-                    <!-- <div class="col-md-4 has-code d-none"> -->
+                <!-- <div class="col-md-4 has-code"> -->
+                <div class="col-md-4 has-code d-none">
                     <!-- <div class="form-floating">
                         <input type="text" id="code" name="code" class="form-control" id="floatingInput" readonly>
                         <label for="code">Code</label>
@@ -338,7 +339,7 @@
                 $('.mobile').addClass('d-none')
                 $('input').attr('readonly', true)
                 $('#summary').parent().removeClass('d-none')
-                $('#summary').parents('.row').find('.col-md-4').first().addClass('d-none')
+                $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
                 $('#summary').parents('.container-fluid').removeClass('d-none')
                 $('#request-no').parents('.container-fluid').removeClass('d-none')
 
@@ -367,10 +368,11 @@
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
                         $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
                     }
-                    else $('#reciever').html("&nbsp;รับงานโดย: " + (data.name || data.reciever))
+                    else $('#reciever').html("&nbsp;รับงานโดย:<br>" + (data.name || data.reciever))
                     $('#code').val(data.code)
                     wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
+                    $('#image').attr('src', data.image || 'https://img.icons8.com/fluency/48/image--v1.png')
                 })
                 // $.ajax({
                 //     url: scriptUrl,
@@ -419,22 +421,25 @@
                     $('#code').val(data.code)
                     wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
+                    $('#image').attr('src', data.image || 'https://img.icons8.com/fluency/48/image--v1.png')
                 })
                 $('.container-fluid').removeClass('d-none')
                 $('#more-update-btn').addClass('d-none')
                 $.LoadingOverlay("hide");
             }
+            
+            let update_data
             $("#submit").click(() => {
                 let update = $("#update").val();
                 let name = $("#name").val();
                 let code = $("#code").val();
-                let update_data = {
+                update_data = {
                     wo: wo,
                     code: code,
                     jobid: jobid,
                     update: update,
                     name: name,
-                    image: update_data.image? update_data.image: 'https://img.icons8.com/fluency/48/image--v1.png',
+                    image: $('#image').attr('src'),
                     date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })
                 }
                 if (update == "") {
@@ -794,7 +799,7 @@
                         })
                         liff.closeWindow();
                     })
-                }else{
+                } else {
                     liff.closeWindow();
                 }
             })
