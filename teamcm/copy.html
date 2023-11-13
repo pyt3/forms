@@ -74,6 +74,14 @@
                 } else {
                     let data = doc.data()
                     let update = data.update
+                    // ขอสิทธิ์เข้าถึง clipboard ของผู้ใช้
+                    await navigator.permissions.query({
+                        name: "clipboard-write"
+                    }).then(result => {
+                        if (result.state == "granted" || result.state == "prompt") {
+                            console.log("🚀 !! result:", result)
+                        }
+                    });
                     //  copy update to clipboard
                     navigator.clipboard.writeText(update).then(function () {
                         Swal.fire({
@@ -82,9 +90,7 @@
                             showConfirmButton: false,
                             timer: 2000
                         }).then((result) => {
-                            if (result.isConfirmed) {
-                                liff.closeWindow()
-                            }
+                            liff.closeWindow()
                         })
                     }, function (err) {
                         try {
@@ -101,9 +107,7 @@
                                 showConfirmButton: false,
                                 timer: 2000
                             }).then((result) => {
-                                if (result.isConfirmed) {
-                                    liff.closeWindow()
-                                }
+                                liff.closeWindow()
                             })
                         } catch (error) {
                             console.log(error)
@@ -113,9 +117,7 @@
                                 text: 'กรุณาลองใหม่อีกครั้ง',
                                 confirmButtonText: 'ตกลง'
                             }).then((result) => {
-                                if (result.isConfirmed) {
-                                    liff.closeWindow()
-                                }
+                                liff.closeWindow()
                             })
                         }
 
