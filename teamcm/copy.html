@@ -31,7 +31,10 @@
 </head>
 
 <body class="bg-body-tertiary">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <script>
+        var vConsole = new VConsole();
+    </script>
     <script>
         const liff_id = '1661543046-YWbxeK8Q'
         $(document).ready(async () => {
@@ -51,11 +54,51 @@
                 }
 
                 let params = (new URL(document.location)).searchParams;
-                let id = params.get("id");
-                let doc = await firestore.collectionGroup('update/'+ id).get()
+                let doc_path = params.get("doc_path");
+                let doc = await firestore.doc(doc_path).get()
+                console.log("🚀 !! doc:", doc)
+                if (doc.empty) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่พบข้อมูล',
+                        text: 'ไม่พบข้อมูลที่ต้องการคัดลอก',
+                        confirmButtonText: 'ตกลง'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            liff.closeWindow()
+                        }
+                    })
+                } else {
+                    let data = doc.docs[0].data()
+                    let update = data.update
+                    //  copy update to clipboard
+                    navigator.clipboard.writeText(update).then(function () {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'คัดลอกสำเร็จ',
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                liff.closeWindow()
+                            }
+                        })
+                    }, function (err) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'คัดลอกไม่สำเร็จ',
+                            text: 'กรุณาลองใหม่อีกครั้ง',
+                            confirmButtonText: 'ตกลง'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                liff.closeWindow()
+                            }
+                        })
+                    });
+                }
             })
         })
-     </script>
+    </script>
     <script>
         var firestore, auth
         async function getAuth(uid = 'test') {
