@@ -109,27 +109,47 @@
         <div class="bar"></div>
     </div>
     <main>
-        <div class="container-fluid d-none">
+        <div class="container-fluid ">
+            <!-- <div class="container-fluid d-none"> -->
             <div class="row mt-3">
-                <div class="col-md-4 d-none">
-                    <div class="alert alert-success">
-                        WO. <span id="workorder"></span><br>
-                        <i class="bi bi-check-circle-fill"></i><span id="reciever"></span>
+                <div class="col-md-4 d-flex justify-content-between">
+                    <!-- <div class="col-md-4 d-none"> -->
+                    <div class="alert alert-success w-100 d-flex justify-content-between gap-2" style="font-size: 0.8rem;">
+                        <div>
+                            WO. <span id="workorder"></span>
+                            <div class="mt-2">
+                                <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
+                                    style="font-size: 0.8rem;">รับงานโดย
+                                    DARANPHOP YIMYAM</span>
+                            </div>
+                            <div class="has-code mt-2">
+                                <!-- <div class="col-md-4 has-code d-none"> -->
+                                <div class="input-group">
+                                    <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
+                                    <input type="text" class="form-control" id="request-no" name="request-no" style="font-size: 0.8rem;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-stretch justify-content-end">
+                            <img src="https://nsmart.nhealth-asia.com/MTDPDB01/img.php?files=201910310958210.LIQUID%20TOC.jpg"
+                                alt="image" id="image" class="img-fluid rounded shadow shadow-sm border"
+                                style="max-width: 80px; height: auto;">
+
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row g-3 justify-content-center">
-                <div class="col-md-4 has-code d-none">
-                    <div class="form-floating">
-                        <input type="text" id="request-no" name="request-no" class="form-control" id="floatingInput"
-                            readonly>
-                        <label for="request-no">Request No.</label>
-                    </div>
-                </div>
-                <div class="col-md-4 has-code d-none">
-                    <div class="form-floating">
+                <div class="col-md-4 has-code">
+                    <!-- <div class="col-md-4 has-code d-none"> -->
+                    <!-- <div class="form-floating">
                         <input type="text" id="code" name="code" class="form-control" id="floatingInput" readonly>
                         <label for="code">Code</label>
+                    </div> -->
+                    <div class="input-group">
+                        <span class="input-group-text">Code</span>
+                        <input type="text" class="form-control" id="code" name="code" readonly>
                     </div>
                 </div>
                 <div class="col-12 mobile">
@@ -206,20 +226,20 @@
         </div>
     </main>
     <!-- vconsole -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
-    </script> -->
+    </script>
 
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(async () => {
             moment.locale('th')
-            liff.init({
-                liffId: liff_id,
-                withLoginOnExternalBrowser: true
-            })
+            // liff.init({
+            //     liffId: liff_id,
+            //     withLoginOnExternalBrowser: true
+            // })
 
             liff.ready.then(async () => {
                 if (liff.getContext().type != 'group') {
@@ -234,10 +254,10 @@
                     await getAuth(await liff.getDecodedIDToken().sub)
                 }
 
-            initialData();
+                initialData();
             })
         })
-        var jobid,wo
+        var jobid, wo
         async function initialData() {
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
@@ -251,11 +271,11 @@
                 return liff.closeWindow()
             }
             let user_site = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data()?.site)
-            if(!user_site || user_site == '' || user_site == undefined || user_site == null) {
+            if (!user_site || user_site == '' || user_site == undefined || user_site == null) {
                 let l = localStorage.getItem('name')
-                if(l != null){
+                if (l != null) {
                     let n = $('#name option').toArray().find(o => o.value == l)
-                    if(n) return firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
+                    if (n) return firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
                         site: n.parentElement.label
                     }, { merge: true }).then(() => {
                         $.LoadingOverlay("show");
@@ -408,6 +428,15 @@
                 let update = $("#update").val();
                 let name = $("#name").val();
                 let code = $("#code").val();
+                let update_data = {
+                    wo: wo,
+                    code: code,
+                    jobid: jobid,
+                    update: update,
+                    name: name,
+                    image: update_data.image? update_data.image: 'https://img.icons8.com/fluency/48/image--v1.png',
+                    date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })
+                }
                 if (update == "") {
                     Swal.fire({
                         icon: 'error',
@@ -421,7 +450,8 @@
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                     })
                 } else {
-                    let text = `UPDATE<br>${wo? ('WO.'+wo): ''}<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
+                    let text = `UPDATE<br>${wo ? ('WO.' + wo) : ''}<br>รหัส ${code}<br>วันที่ ${update_data.date} น.<br><br>${update}<br><br>#${name}`
+                    update_data.text = text.replace(/<br>/g, '\n')
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
                         html: text,
@@ -432,7 +462,7 @@
                         allowEscapeKey: false,
                     }).then(result => {
                         if (result.isConfirmed) {
-                            updateData(code, jobid, update, text.replace(/<br>/g, '\n'), name);
+                            updateData(update_data);
                         }
                     })
 
@@ -468,38 +498,13 @@
             localStorage.setItem('updateText' + jobid, update)
         }
 
-        async function updateData(code, jobid, update, text, name) {
-            // $.ajax({
-            //     url: scriptUrl,
-            //     method: 'POST',
-            //     data: {
-            //         code: code,
-            //         jobid: jobid,
-            //         update: update,
-            //         name: name,
-            //     },
-            //     success: (res) => {
-            //         if (res.status == 'success') {
-            //             Swal.fire({
-            //                 icon: 'success',
-            //                 title: 'อัพเดทข้อมูลสำเร็จ',
-            //                 text: 'อัพเดทข้อมูลสำเร็จ',
-            //             })
-            //         } else {
-            //             Swal.fire({
-            //                 icon: 'error',
-            //                 title: 'อัพเดทข้อมูลไม่สำเร็จ',
-            //                 text: 'อัพเดทข้อมูลไม่สำเร็จ',
-            //             })
-            //         }
-            //     },
-            // })
-            await firestore.collection('jobdata/').doc(jobid).collection('update').add({
-                update: update,
-                name: name,
+        async function updateData(update_data) {
+            await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
+                update: update_data.update,
+                name: update_data.name,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             })
-            localStorage.removeItem('updateText' + jobid)
+            localStorage.removeItem('updateText' + update_data.jobid)
             const colorArrays = [
                 ["#ffffff", "#1a237e"],
                 ["#000000", "#ffb74d"],
@@ -542,11 +547,11 @@
             liff.sendMessages([
                 {
                     type: 'text',
-                    text: text
+                    text: update_data.text
                 },
                 {
                     type: 'flex',
-                    altText: 'Update ' + code,
+                    altText: 'Update ' + update_data.code,
                     contents: {
                         "type": "bubble",
                         "size": "nano",
@@ -566,7 +571,7 @@
                             "action": {
                                 "type": "uri",
                                 "label": "action",
-                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + jobid + "&code=" + code
+                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
                             }
                         },
                         "styles": {
@@ -577,7 +582,221 @@
                     }
                 }
             ]).then(() => {
-                liff.closeWindow();
+                if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') {
+                    // let text = `UPDATE<br>${wo? ('WO.'+wo): ''}<br>รหัส ${code}<br>วันที่ ${new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })} น.<br><br>${update}<br><br>#${name}`
+                    let flex = {
+                        "type": "bubble",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "image",
+                                                    "url": update_data.image,
+                                                    "aspectMode": "cover",
+                                                    "size": "full"
+                                                }
+                                            ],
+                                            "width": "72px",
+                                            "height": "72px",
+                                            "cornerRadius": "md"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Update",
+                                                            "weight": "bold",
+                                                            "flex": 3,
+                                                            "color": "#000000",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": update_data.wo,
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "รหัส",
+                                                            "weight": "bold",
+                                                            "flex": 3,
+                                                            "color": "#000000",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": update_data.code,
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": update_data.date,
+                                                            "size": "sm",
+                                                            "color": "#bcbcbc"
+                                                        }
+                                                    ],
+                                                    "spacing": "sm"
+                                                }
+                                            ],
+                                            "justifyContent": "space-between"
+                                        }
+                                    ],
+                                    "spacing": "xl",
+                                    "paddingAll": "20px"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "ชื่อเครื่อง",
+                                            "weight": "bold",
+                                            "flex": 2,
+                                            "color": "#000000",
+                                            "adjustMode": "shrink-to-fit",
+                                            "scaling": true
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": update_data.name,
+                                            "flex": 5,
+                                            "adjustMode": "shrink-to-fit",
+                                            "scaling": true,
+                                            "wrap": true
+                                        }
+                                    ],
+                                    "paddingAll": "lg"
+                                },
+                                {
+                                    "type": "separator"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": update_data.update,
+                                            "wrap": true,
+                                            "scaling": true,
+                                            "adjustMode": "shrink-to-fit"
+                                        }
+                                    ],
+                                    "paddingAll": "lg"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "ดูสรุปงาน 👆",
+                                                "uri": "http://linecorp.com/"
+                                            },
+                                            "style": "link"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "separator"
+                                }
+                            ],
+                            "paddingAll": "0px"
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "#CHANCHAI SAE-LEE",
+                                            "size": "sm",
+                                            "color": "#bcbcbc",
+                                            "align": "start"
+                                        },
+                                        {
+                                            "type": "icon",
+                                            "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
+                                            "scaling": true,
+                                            "size": "xl",
+                                            "offsetTop": "sm"
+                                        }
+                                    ],
+                                    "spacing": "sm",
+                                    "justifyContent": "space-between",
+                                    "alignItems": "center"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "contents": [],
+                                    "position": "relative",
+                                    "paddingAll": "sm",
+                                    "offsetTop": "sm",
+                                    "alignItems": "center",
+                                    "justifyContent": "flex-end"
+                                }
+                            ]
+                        }
+                    }
+                    liff.sendMessages([
+                        {
+                            type: 'flex',
+                            altText: 'Update ' + update_data.code,
+                            contents: flex
+                        }
+                    ]).then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'อัพเดทสำเร็จ',
+                            text: 'อัพเดทสำเร็จ',
+                            timer: 1000,
+                        })
+                        liff.closeWindow();
+                    })
+                }else{
+                    liff.closeWindow();
+                }
             })
         }
 
