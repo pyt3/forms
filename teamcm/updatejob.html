@@ -236,6 +236,7 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(async () => {
+            $.LoadingOverlay("show");
             moment.locale('th')
             liff.init({
                 liffId: liff_id,
@@ -246,7 +247,6 @@
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
-                $.LoadingOverlay("show");
                 const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
@@ -434,7 +434,7 @@
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
-                    wo: wo,
+                    wo: 'WO.' + wo,
                     code: code,
                     jobid: jobid,
                     update: update,
@@ -656,7 +656,7 @@
                                                 },
                                                 {
                                                     "type": "text",
-                                                    "text": update_data.code == ''? '...': update_data.code,
+                                                    "text": update_data.code == ''? 'Component': update_data.code,
                                                     "flex": 5,
                                                     "adjustMode": "shrink-to-fit",
                                                     "scaling": true,
