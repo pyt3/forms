@@ -702,8 +702,9 @@
                                                 {
                                                     "type": "text",
                                                     "text": 'req no. '+update_data.jobid + ' ' + update_data.date,
-                                                    "size": "xxs",
+                                                    "size": "sm",
                                                     "color": "#bcbcbc",
+                                                    "adjustMode": "shrink-to-fit",
                                                     "scaling": true,
                                                     "align": "end"
                                                 }
@@ -842,7 +843,7 @@
             liff.sendMessages([
                 {
                     type: 'flex',
-                    altText: 'Update ' + update_data.code + ' ' + update_data.request_no + ' ' + update_data.wo,
+                    altText: 'Update ' + update_data.code + ' ' + update_data.jobid + ' ' + update_data.wo,
                     contents: flex
                 }
             ]).then(() => {
