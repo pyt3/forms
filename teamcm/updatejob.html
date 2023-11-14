@@ -140,9 +140,8 @@
                 </div>
 
                 <div class="col-4 ps-0 d-flex align-items-center justify-content-center">
-                    <img src="https://img.icons8.com/fluency/96/image--v1.png"
-                        alt="image" id="image" class="img-fluid rounded shadow shadow-sm border"
-                        style="object-fit: cover; opacity: 0.5;">
+                    <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
+                        class="img-fluid rounded shadow shadow-sm border" style="object-fit: cover; opacity: 0.5;">
 
                 </div>
             </div>
@@ -237,12 +236,12 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(async () => {
-            // $.LoadingOverlay("show");
-            // moment.locale('th')
-            // liff.init({
-            //     liffId: liff_id,
-            //     withLoginOnExternalBrowser: true
-            // })
+            $.LoadingOverlay("show");
+            moment.locale('th')
+            liff.init({
+                liffId: liff_id,
+                withLoginOnExternalBrowser: true
+            })
 
             liff.ready.then(async () => {
                 if (liff.getContext().type != 'group') {
@@ -379,9 +378,9 @@
                     $('#code').val(data.code)
                     wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
-                    if(data.image){
+                    if (data.image) {
                         $('#image').attr('src', data.image).css('opacity', 1)
-                    }else{
+                    } else {
                         $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
                     }
                 })
@@ -431,9 +430,9 @@
                     $('#code').val(data.code)
                     wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
-                    if(data.image){
+                    if (data.image) {
                         $('#image').attr('src', data.image).css('opacity', 1)
-                    }else{
+                    } else {
                         $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
                     }
                 })
@@ -627,7 +626,12 @@
                                             "type": "image",
                                             "url": update_data.image,
                                             "aspectMode": "fit",
-                                            "size": "full"
+                                            "size": "full",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "action",
+                                                "uri": update_data.image
+                                            }
                                         }
                                     ],
                                     "width": "72px",
