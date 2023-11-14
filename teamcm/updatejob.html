@@ -448,7 +448,7 @@
 
             let update_data
             $("#submit").click(() => {
-                let update = $("#update").val().match(/^-.*/gm)?.join('\n') || $("#update").val()
+                let update = $("#update").val().match(/^-.*/gm)?.join('\n\n') || $("#update").val()
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
@@ -720,6 +720,7 @@
                         {
                             "type": "box",
                             "layout": "vertical",
+                            "spacing": 'lg',
                             "contents": [
                                 {
                                     "type": "text",
