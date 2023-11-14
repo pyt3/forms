@@ -353,8 +353,8 @@
                 $('input').attr('readonly', true)
                 $('#summary').parent().removeClass('d-none')
                 $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
-                $('#summary').parents('.container').removeClass('d-none')
-                $('#request-no').parents('.container-fluid').removeClass('d-none')
+                $('#summary').parents('.container-fluid').removeClass('d-none')
+                $('#request-no').parents('.container').removeClass('d-none')
 
 
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
@@ -436,7 +436,7 @@
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-md-4').removeClass('d-none')
                     $('#image').attr('src', data.image || 'https://img.icons8.com/fluency/48/image--v1.png')
                 })
-                $('.container-fluid').removeClass('d-none')
+                $('.container-fluid, .container').removeClass('d-none')
                 $('#more-update-btn').addClass('d-none')
                 $.LoadingOverlay("hide");
             }
