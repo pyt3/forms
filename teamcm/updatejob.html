@@ -159,6 +159,10 @@
                         placeholder="กรอกข้อมูลอัพเดท"></textarea>
                 </div>
                 <div class="col-12 mobile">
+                    <label for="vendor_phone">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
+                    <textarea name="vendor_phone" id="vendor_phone" class="form-control" placeholder="กรอกข้อมูลอัพเดท">
+                </div>
+                <div class="col-12 mobile">
                     <label for="name">ชื่อผู้กรอก</label>
                     <select name="name" id="name" class="form-select">
                         <option value="" selected disabled>ชื่อผู้กรอก</option>
@@ -428,6 +432,7 @@
                         $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
                     }
                     $('#code').val(data.code)
+                    $('#vendor_phone').val(data.vendor_phone || '')
                     wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
                     if (data.image) {
@@ -443,7 +448,7 @@
 
             let update_data
             $("#submit").click(() => {
-                let update = $("#update").val();
+                let update = $("#update").val().match(/^-.*/gm)?.join('\n') || $("#update").val()
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
@@ -452,6 +457,7 @@
                     jobid: jobid,
                     update: update,
                     name: name,
+                    vendor_phone: data.vendor_phone || '',
                     image: $('#image').attr('src'),
                     date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })
                 }
@@ -521,6 +527,7 @@
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
                 name: update_data.name,
+                vendor_phone: update_data.vendor_phone,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then((docRef) => {
                 doc_ref = docRef
@@ -804,6 +811,31 @@
                         }
                     ]
                 }
+            }
+            if (update_data.vendor_phone && update_data) {
+                flex.body.contents[1].contents.push({
+                    "type": "text",
+                    "text": "📞ติดต่อ " + update_data.vendor_phone,
+                    "action": {
+                        "type": "uri",
+                        "label": "ติดต่อ " + update_data.vendor_phone,
+                        "uri": "tel:" + update_data.vendor_phone
+                    },
+                    "contents": [
+                        {
+                            "type": "span",
+                            "text": "📞ติดต่อ"
+                        },
+                        {
+                            "type": "span",
+                            "text": " " + update_data.vendor_phone,
+                            "color": "#006aff",
+                            "decoration": "underline"
+                        }
+                    ],
+                    "scaling": true,
+                    "wrap": true
+                })
             }
             liff.sendMessages([
                 {
