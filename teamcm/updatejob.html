@@ -99,7 +99,7 @@
             }
         }
 
-        .container{
+        .container {
             max-width: 500px;
         }
     </style>
@@ -115,41 +115,35 @@
     <main>
         <!-- <div class="container-fluid "> -->
         <div class="container d-none">
-            <div class="row mt-3">
-                <div class="col-12 d-none justify-content-between">
-                    <!-- <div class="col-md-4 d-none"> -->
-                    <div class="alert alert-success w-100 d-flex justify-content-between gap-2"
-                        style="font-size: 0.8rem;">
-                        <div class="w-75">
-                            WO. <span id="workorder"></span>
-                            <div class="mt-2">
-                                <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
-                                    style="font-size: 0.8rem;"></span>
-                            </div>
-                            <div class="has-code mt-2 d-none">
-                                <!-- <div class="col-md-4 has-code d-none"> -->
-                                <div class="input-group">
-                                    <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
-                                    <input type="text" class="form-control" id="request-no" name="request-no"
-                                        style="font-size: 0.8rem;">
-                                </div>
-                            </div>
-                            <div class="has-code mt-2 d-none">
-                                <!-- <div class="col-md-4 has-code d-none"> -->
-                                <div class="input-group">
-                                    <span class="input-group-text" style="font-size: 0.8rem;">Code</span>
-                                    <input type="text" class="form-control" id="code" name="code"
-                                        style="font-size: 0.8rem;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex flex-stretch justify-content-end w-25">
-                            <img src="https://img.icons8.com/fluency/48/image--v1.png" alt="image" id="image"
-                                class="img-fluid rounded shadow shadow-sm border" style="max-width: 80px; height: auto; object-fit: contain;">
-
+            <div class="row alert alert-success justify-content-between mx-1 p-1 py-2 mt-3" style="font-size: 0.8rem;">
+                <div class="col-8">
+                    WO. <span id="workorder"></span>
+                    <div class="mt-2">
+                        <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
+                            style="font-size: 0.8rem;"></span>
+                    </div>
+                    <div class="has-code mt-2 d-none">
+                        <!-- <div class="col-md-4 has-code d-none"> -->
+                        <div class="input-group">
+                            <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
+                            <input type="text" class="form-control" id="request-no" name="request-no"
+                                style="font-size: 0.8rem;">
                         </div>
                     </div>
+                    <div class="has-code mt-2 d-none">
+                        <!-- <div class="col-md-4 has-code d-none"> -->
+                        <div class="input-group">
+                            <span class="input-group-text" style="font-size: 0.8rem;">Code</span>
+                            <input type="text" class="form-control" id="code" name="code" style="font-size: 0.8rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4 ps-0 d-flex align-items-center justify-content-center">
+                    <img src="https://img.icons8.com/fluency/96/image--v1.png"
+                        alt="image" id="image" class="img-fluid rounded shadow shadow-sm border"
+                        style="object-fit: cover; opacity: 0.5;">
+
                 </div>
             </div>
             <div class="row g-3 justify-content-center">
@@ -243,12 +237,12 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(async () => {
-            $.LoadingOverlay("show");
-            moment.locale('th')
-            liff.init({
-                liffId: liff_id,
-                withLoginOnExternalBrowser: true
-            })
+            // $.LoadingOverlay("show");
+            // moment.locale('th')
+            // liff.init({
+            //     liffId: liff_id,
+            //     withLoginOnExternalBrowser: true
+            // })
 
             liff.ready.then(async () => {
                 if (liff.getContext().type != 'group') {
@@ -266,9 +260,9 @@
 
                 initialData();
             })
-            let alert_height = $('#image').parents('.alert').height()
-            console.log("🚀 !! alert_height:", alert_height)
-            $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
+            // let alert_height = $('#image').parents('.alert').height()
+            // console.log("🚀 !! alert_height:", alert_height)
+            // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
 
         })
         var jobid, wo
@@ -385,7 +379,11 @@
                     $('#code').val(data.code)
                     wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
-                    $('#image').attr('src', data.image || 'https://img.icons8.com/fluency/48/image--v1.png')
+                    if(data.image){
+                        $('#image').attr('src', data.image).css('opacity', 1)
+                    }else{
+                        $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
+                    }
                 })
                 // $.ajax({
                 //     url: scriptUrl,
@@ -426,7 +424,6 @@
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
                         $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
-
                     }
                     else {
                         $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
@@ -434,7 +431,11 @@
                     $('#code').val(data.code)
                     wo = data.wo || data.workorder
                     $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
-                    $('#image').attr('src', data.image || 'https://img.icons8.com/fluency/48/image--v1.png')
+                    if(data.image){
+                        $('#image').attr('src', data.image).css('opacity', 1)
+                    }else{
+                        $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
+                    }
                 })
                 $('.container-fluid, .container').removeClass('d-none')
                 $('#more-update-btn').addClass('d-none')
