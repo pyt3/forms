@@ -98,6 +98,10 @@
                 width: 100%;
             }
         }
+
+        .container{
+            max-width: 500px;
+        }
     </style>
     <title>อัพเดทงาน</title>
 </head>
@@ -110,13 +114,13 @@
     </div>
     <main>
         <!-- <div class="container-fluid "> -->
-        <div class="container-fluid d-none">
+        <div class="container d-none">
             <div class="row mt-3">
-                <div class="col-md-4 d-none justify-content-between">
+                <div class="col-12 d-none justify-content-between">
                     <!-- <div class="col-md-4 d-none"> -->
                     <div class="alert alert-success w-100 d-flex justify-content-between gap-2"
                         style="font-size: 0.8rem;">
-                        <div>
+                        <div class="w-75">
                             WO. <span id="workorder"></span>
                             <div class="mt-2">
                                 <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
@@ -130,12 +134,19 @@
                                         style="font-size: 0.8rem;">
                                 </div>
                             </div>
+                            <div class="has-code mt-2 d-none">
+                                <!-- <div class="col-md-4 has-code d-none"> -->
+                                <div class="input-group">
+                                    <span class="input-group-text" style="font-size: 0.8rem;">Code</span>
+                                    <input type="text" class="form-control" id="code" name="code"
+                                        style="font-size: 0.8rem;">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="d-flex flex-stretch justify-content-end">
+                        <div class="d-flex flex-stretch justify-content-end w-25">
                             <img src="https://img.icons8.com/fluency/48/image--v1.png" alt="image" id="image"
-                                class="img-fluid rounded shadow shadow-sm border"
-                                style="max-width: 80px; height: auto;">
+                                class="img-fluid rounded shadow shadow-sm border" style="max-width: 80px;">
 
                         </div>
                     </div>
@@ -143,22 +154,18 @@
             </div>
             <div class="row g-3 justify-content-center">
                 <!-- <div class="col-md-4 has-code"> -->
-                <div class="col-md-4 has-code d-none">
-                    <!-- <div class="form-floating">
-                        <input type="text" id="code" name="code" class="form-control" id="floatingInput" readonly>
-                        <label for="code">Code</label>
-                    </div> -->
+                <!-- <div class="col-md-4 has-code d-none">
                     <div class="input-group">
                         <span class="input-group-text">Code</span>
                         <input type="text" class="form-control" id="code" name="code" readonly>
                     </div>
-                </div>
+                </div> -->
                 <div class="col-12 mobile">
                     <label for="update">อัพเดท</label>
                     <textarea name="update" id="update" class="form-control" rows="5"
                         placeholder="กรอกข้อมูลอัพเดท"></textarea>
                 </div>
-                <div class="col-md-4 mobile">
+                <div class="col-12 mobile">
                     <label for="name">ชื่อผู้กรอก</label>
                     <select name="name" id="name" class="form-select">
                         <option value="" selected disabled>ชื่อผู้กรอก</option>
@@ -255,8 +262,14 @@
                     await getAuth(await liff.getDecodedIDToken().sub)
                 }
 
+
+
                 initialData();
             })
+            let alert_height = $('#image').parents('.alert').height()
+            console.log("🚀 !! alert_height:", alert_height)
+            $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
+
         })
         var jobid, wo
         async function initialData() {
@@ -434,7 +447,7 @@
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
-                    wo: 'WO.' + wo,
+                    wo: 'WO.' + (wo || ''),
                     code: code,
                     jobid: jobid,
                     update: update,
@@ -595,7 +608,7 @@
             // ]).then(() => {
 
             // })
-          let flex = {
+            let flex = {
                 "type": "bubble",
                 "body": {
                     "type": "box",
@@ -799,7 +812,7 @@
                     title: 'อัพเดทสำเร็จ',
                     text: 'อัพเดทสำเร็จ',
                     timer: 1500,
-                }).then(()=>{
+                }).then(() => {
                     liff.closeWindow();
                 })
             })
