@@ -316,10 +316,10 @@
                             }
                         })
                     }
-                }).then((result) => {
+                }).then(async (result) => {
                     console.log("🚀 !! result:", result)
                     if (result.isConfirmed) {
-                        let profile = liff.getProfile()
+                        let profile = await liff.getProfile()
                         firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
                             client: result.value,
                             line: profile.displayName
