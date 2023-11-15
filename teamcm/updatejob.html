@@ -231,10 +231,10 @@
         </div>
     </main>
     <!-- vconsole -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
-    </script>
+    </script> -->
 
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
@@ -452,7 +452,7 @@
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
-                    wo: 'WO.' + (wo || ''),
+                    wo: wo? ('WO.' + wo) : '------',
                     code: code,
                     jobid: jobid,
                     update: update,
@@ -701,15 +701,16 @@
                                             "contents": [
                                                 {
                                                     "type": "text",
-                                                    "text": update_data.date,
+                                                    "text": 'req no. '+update_data.jobid + ' ' + update_data.date,
                                                     "size": "sm",
                                                     "color": "#bcbcbc",
+                                                    "adjustMode": "shrink-to-fit",
                                                     "scaling": true,
                                                     "align": "end"
                                                 }
                                             ],
                                             "spacing": "sm"
-                                        }
+                                        },
                                     ],
                                     "justifyContent": "space-between"
                                 }
@@ -842,7 +843,7 @@
             liff.sendMessages([
                 {
                     type: 'flex',
-                    altText: 'Update ' + update_data.code,
+                    altText: 'Update ' + update_data.code + ' ' + update_data.jobid + ' ' + update_data.wo,
                     contents: flex
                 }
             ]).then(() => {
