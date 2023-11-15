@@ -48,6 +48,8 @@
             // }
 
             let params = (new URL(document.location)).searchParams;
+            let liff_state = params.get("liff.state");
+            console.log(decodeURIComponent(liff_state));
             let doc_path = params.get("doc_path");
             let doc = await firestore.doc(doc_path).get()
             $.LoadingOverlay("hide");
