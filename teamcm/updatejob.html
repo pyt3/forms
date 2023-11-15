@@ -367,8 +367,10 @@
                 $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
                 $('#summary').parents('.container-fluid').removeClass('d-none')
                 $('#request-no').parents('.container').removeClass('d-none')
-                $('#mobile-only-warning').parent().find('div').not('#mobile-only-warning').addClass('d-none')
-                $('#mobile-only-warning').removeClass('d-none')
+                if(!liff.isInClient()){
+                    $('#more-update-btn').addClass('d-none')
+                    $('#mobile-only-warning').removeClass('d-none')
+                }
 
 
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
