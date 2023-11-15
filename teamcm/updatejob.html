@@ -317,8 +317,10 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        let profile = liff.getProfile()
                         firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
-                            site: result.value
+                            site: result.value,
+                            line: profile.displayName
                         }, { merge: true }).then(() => {
                             $.LoadingOverlay("show");
                             initialData()
