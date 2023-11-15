@@ -227,6 +227,11 @@
                 <div class="col-md-4">
                     <button class="btn btn-warning w-100" id="more-update-btn">อัพเดทเพิ่ม</button>
                 </div>
+                <div class="col-md-6 d-none" id="mobile-only-warning">
+                    <div class="alert alert-secondary text-center">
+                        <i class="bi bi-exclamation-triangle-fill"></i>&nbsp;อัพเดทข้อมูลในแอพไลน์ ในโทรศัพท์มือถือเท่านั้น
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -362,6 +367,8 @@
                 $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
                 $('#summary').parents('.container-fluid').removeClass('d-none')
                 $('#request-no').parents('.container').removeClass('d-none')
+                $('#mobile-only-warning').parent().find('div').not('#mobile-only-warning').addClass('d-none')
+                $('#mobile-only-warning').removeClass('d-none')
 
 
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
