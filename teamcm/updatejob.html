@@ -270,15 +270,13 @@
         })
         var jobid, wo
         async function initialData() {
-            if(!liff.isInClient()) {
+            if (!liff.isInClient()) {
                 let url = new URL(window.location.href)
-                if(url.searchParams.get('action') != 'summary') {
-                    url.searchParams.set('action', 'update')
+                if (url.searchParams.get('action') != 'summary') {
+                    // add parameter
+                    url.searchParams.set('action', 'summary')
                     window.open(url, '_self')
                 }
-                // add parameter
-                url.searchParams.set('action', 'summary')
-                window.open(url, '_self')
             }
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
@@ -330,7 +328,7 @@
                         let profile = await liff.getProfile()
                         firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
                             site: result.value,
-                            line:   profile.userId,
+                            line: profile.userId,
                         }, { merge: true }).then(() => {
                             $.LoadingOverlay("show");
                             initialData()
@@ -464,7 +462,7 @@
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
-                    wo: wo? ('WO.' + wo) : '------',
+                    wo: wo ? ('WO.' + wo) : '------',
                     code: code,
                     jobid: jobid,
                     update: update,
@@ -713,7 +711,7 @@
                                             "contents": [
                                                 {
                                                     "type": "text",
-                                                    "text": 'req no. '+update_data.jobid + ' ' + update_data.date,
+                                                    "text": 'req no. ' + update_data.jobid + ' ' + update_data.date,
                                                     "size": "sm",
                                                     "color": "#bcbcbc",
                                                     "adjustMode": "shrink-to-fit",
