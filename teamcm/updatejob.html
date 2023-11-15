@@ -281,7 +281,8 @@
                 })
                 return liff.closeWindow()
             }
-            let user_site = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data()?.site)
+            let user_site = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data()?.client)
+            console.log("🚀 !! user_site:", user_site)
             if (!user_site || user_site == '' || user_site == undefined || user_site == null) {
                 let l = localStorage.getItem('name')
                 if (l != null) {
