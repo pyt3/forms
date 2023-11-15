@@ -317,7 +317,7 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
+                        firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
                             site: result.value
                         }, { merge: true }).then(() => {
                             $.LoadingOverlay("show");
