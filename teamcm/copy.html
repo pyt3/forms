@@ -39,68 +39,61 @@
         const liff_id = '1661543046-YWbxeK8Q'
         $(document).ready(async () => {
             $.LoadingOverlay("show");
-            liff.init({
-                liffId: liff_id,
-                // withLoginOnExternalBrowser: true
-            })
+            const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
+            firestore = defaultProject.firestore();
+            // auth = defaultProject.auth();
+            // if (!auth.currentUser) {
+            //     // await getAuth()
+            //     await getAuth(await liff.getDecodedIDToken().sub)
+            // }
 
-            liff.ready.then(async () => {
-                const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
-                firestore = defaultProject.firestore();
-                // auth = defaultProject.auth();
-                // if (!auth.currentUser) {
-                //     // await getAuth()
-                //     await getAuth(await liff.getDecodedIDToken().sub)
-                // }
+            let params = (new URL(document.location)).searchParams;
+            let doc_path = params.get("doc_path");
+            let doc = await firestore.doc(doc_path).get()
+            $.LoadingOverlay("hide");
+            console.log("🚀 !! doc:", doc)
+            if (doc.exists == false) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบข้อมูล',
+                    text: 'ไม่พบข้อมูลที่ต้องการคัดลอก',
+                    confirmButtonText: 'ตกลง'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        liff.closeWindow()
+                    }
+                })
+            } else {
+                $('body').addClass('d-flex justify-content-center align-items-center').css({
+                    'height': '100vh'
+                })
+                let row = $('<div class="row justify-content-center"></div>')
+                let col = $('<div class="col-auto"></div>')
+                let btn = $('<button class="btn btn-primary btn-lg btn-block"><i class="bi bi-clipboard"></i> คัดลอก</button>')
+                row.append(col.append(btn))
+                $('body').append(row)
+                btn.click(function () {
+                    let data = doc.data()
+                    let update = data.update
 
-                let params = (new URL(document.location)).searchParams;
-                let doc_path = params.get("doc_path");
-                let doc = await firestore.doc(doc_path).get()
-                $.LoadingOverlay("hide");
-                console.log("🚀 !! doc:", doc)
-                if (doc.exists == false) {
+                    var $temp = $("<textarea>");
+                    // var brRegex = /<br\s*[\/]?>/gi;
+                    $("body").append($temp);
+                    $temp.val(update).select();
+
+                    document.execCommand("copy");
+                    $temp.remove();
+
                     Swal.fire({
-                        icon: 'error',
-                        title: 'ไม่พบข้อมูล',
-                        text: 'ไม่พบข้อมูลที่ต้องการคัดลอก',
-                        confirmButtonText: 'ตกลง'
+                        icon: 'success',
+                        title: 'คัดลอกสำเร็จ',
+                        showConfirmButton: false,
+                        timer: 2000
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            liff.closeWindow()
-                        }
+                        liff.closeWindow()
                     })
-                } else {
-                    $('body').addClass('d-flex justify-content-center align-items-center').css({
-                        'height': '100vh'
-                    })
-                    let row = $('<div class="row justify-content-center"></div>')
-                    let col = $('<div class="col-auto"></div>')
-                    let btn = $('<button class="btn btn-primary btn-lg btn-block"><i class="bi bi-clipboard"></i> คัดลอก</button>')
-                    row.append(col.append(btn))
-                    $('body').append(row)
-                    btn.click(function () {
-                        let data = doc.data()
-                        let update = data.update
-
-                        var $temp = $("<textarea>");
-                        // var brRegex = /<br\s*[\/]?>/gi;
-                        $("body").append($temp);
-                        $temp.val(update).select();
-
-                        document.execCommand("copy");
-                        $temp.remove();
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'คัดลอกสำเร็จ',
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then((result) => {
-                            liff.closeWindow()
-                        })
-                    })
-                }
-            })
+                })
+            }
         })
     </script>
     <script>
