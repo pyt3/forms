@@ -310,13 +310,14 @@
                     inputValidator: (value) => {
                         return new Promise((resolve) => {
                             if (value) {
-                                resolve()
+                                resolve(value)
                             } else {
                                 resolve('กรุณาเลือก Site')
                             }
                         })
                     }
                 }).then((result) => {
+                    console.log("🚀 !! result:", result)
                     if (result.isConfirmed) {
                         let profile = liff.getProfile()
                         firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
