@@ -270,6 +270,12 @@
         })
         var jobid, wo
         async function initialData() {
+            if(!liff.isInClient()) {
+                let url = new URL(location.href)
+                // add parameter
+                url.searchParams.set('action', 'summary')
+                window.open(url, '_self')
+            }
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if (!jobid || jobid == '' || jobid == undefined || jobid == null) {
