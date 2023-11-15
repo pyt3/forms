@@ -284,16 +284,16 @@
             let user_site = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data()?.client)
             console.log("🚀 !! user_site:", user_site)
             if (!user_site || user_site == '' || user_site == undefined || user_site == null) {
-                let l = localStorage.getItem('name')
-                if (l != null) {
-                    let n = $('#name option').toArray().find(o => o.value == l)
-                    if (n) return firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
-                        site: n.parentElement.label
-                    }, { merge: true }).then(() => {
-                        $.LoadingOverlay("show");
-                        initialData()
-                    })
-                }
+                // let l = localStorage.getItem('name')
+                // if (l != null) {
+                //     let n = $('#name option').toArray().find(o => o.value == l)
+                //     if (n) return firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
+                //         site: n.parentElement.label
+                //     }, { merge: true }).then(() => {
+                //         $.LoadingOverlay("show");
+                //         initialData()
+                //     })
+                // }
                 $.LoadingOverlay("hide");
                 return Swal.fire({
                     title: 'กรุณาเลือก Site ของคุณ',
@@ -320,7 +320,7 @@
                     if (result.isConfirmed) {
                         let profile = liff.getProfile()
                         firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
-                            site: result.value,
+                            client: result.value,
                             line: profile.displayName
                         }, { merge: true }).then(() => {
                             $.LoadingOverlay("show");
