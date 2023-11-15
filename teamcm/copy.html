@@ -47,8 +47,11 @@
             //     await getAuth(await liff.getDecodedIDToken().sub)
             // }
 
-            let params = (new URL(document.location)).searchParams;
+            let params = (new URL(location.href)).searchParams;
             let liff_state = params.get("liff.state");
+            // if(liff_state != null || liff_state != undefined || liff_state != ''){
+            //     param = new URL(do)
+            // }
             console.log(decodeURIComponent(liff_state));
             let doc_path = params.get("doc_path");
             let doc = await firestore.doc(doc_path).get()
