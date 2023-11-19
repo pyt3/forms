@@ -874,6 +874,15 @@
                 }).then(() => {
                     liff.closeWindow();
                 })
+            }).catch(err => {
+                console.log(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'มีข้อผิดพลาด',
+                    html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small>',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                })
             })
         }
 
