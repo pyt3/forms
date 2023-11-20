@@ -79,7 +79,8 @@
                 $('body').append(row)
                 btn.click(function () {
                     let data = doc.data()
-                    let update = data.update
+                    let date = data.timestamp.toDate()
+                    let update = `${d.timestamp}\n${d.update.replace(/<enter>/g, '\n')}\n#${d.name}`
 
                     var $temp = $("<textarea>");
                     // var brRegex = /<br\s*[\/]?>/gi;
