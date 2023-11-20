@@ -249,7 +249,7 @@
             moment.locale('th')
             liff.init({
                 liffId: liff_id,
-                withLoginOnExternalBrowser: true
+                // withLoginOnExternalBrowser: true
             })
 
             liff.ready.then(async () => {
@@ -261,7 +261,11 @@
                 auth = defaultProject.auth();
                 if (!auth.currentUser) {
                     // await getAuth()
-                    await getAuth(await liff.getDecodedIDToken().sub)
+                    if(liff.isInClient()){
+                        await getAuth(await liff.getDecodedIDToken().sub)
+                    }else{
+                        await getAuth('pyt3bme')
+                    }
                 }
 
 
