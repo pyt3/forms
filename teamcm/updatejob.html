@@ -252,7 +252,7 @@
             })
 
             liff.ready.then(async () => {
-                if(!liff.isLoggedin()) return liff.login({ redirectUri: window.location.href })
+                if(!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
