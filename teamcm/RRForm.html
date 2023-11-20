@@ -1191,14 +1191,14 @@
                 form_obj[$(this).attr('name')] = $(this).val()
             })
             form_obj['pdfFile'] = pdfdatauri
-            // $.ajax({
-            //     url: scriptUrl,
-            //     type: 'POST',
-            //     data: {
-            //         opt: 'save',
-            //         form_obj: JSON.stringify(form_obj)
-            //     }
-            // })
+            $.ajax({
+                url: scriptUrl,
+                type: 'POST',
+                data: {
+                    opt: 'save',
+                    form_obj: JSON.stringify(form_obj)
+                }
+            })
             $.LoadingOverlay("hide");
             Swal.fire({
                 icon: 'success',
