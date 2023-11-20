@@ -56,7 +56,6 @@
             console.log("🚀 !! doc_path:", doc_path)
             let doc = await firestore.doc(doc_path).get()
             $.LoadingOverlay("hide");
-            console.log("🚀 !! doc:", doc)
             if (doc.exists == false) {
                 Swal.fire({
                     icon: 'error',
@@ -68,6 +67,7 @@
                         liff.closeWindow()
                     }
                 })
+                console.log("🚀 !! doc:", doc.data())
             } else {
                 $('body').addClass('d-flex justify-content-center align-items-center').css({
                     'height': '100vh'
