@@ -76,9 +76,9 @@
                 let btn = $('<button class="btn btn-primary btn-lg btn-block"><i class="bi bi-clipboard"></i> คัดลอก</button>')
                 row.append(col.append(btn))
                 $('body').append(row)
+                let data = doc.data()
+                console.log("🚀 !! data:", data)
                 btn.click(function () {
-                    let data = doc.data()
-                    console.log("🚀 !! data:", data)
                     let date = data.timestamp.toDate()
                     // let update = `${data.timestamp}\n${data.update.replace(/<enter>/g, '\n')}\n#${data.name}`
                     let update = `${moment(date).format('DD/MM/YYYY HH:mm:ss')}\n${data.update.replace(/<enter>/g, '\n')}\n#${data.name}`
