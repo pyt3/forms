@@ -381,7 +381,7 @@
                         r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
                         return r
                     }).map(d => {
-                        return `${d.timestamp}<br>${d.update.replace(/\\n/g, '<br>')}<br>#${d.name}`
+                        return `${d.timestamp}<br>${d.update.replace(/\n/g, '<br>')}<br>#${d.name}`
                     }).join('<br><br>-----------------------------------<br>')
                     $('#summary').html(msg)
                     $('#summary').parent().removeClass('d-none').focus()
