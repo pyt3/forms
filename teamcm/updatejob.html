@@ -229,7 +229,8 @@
                 </div>
                 <div class="col-12 d-none" id="mobile-only-warning">
                     <div class="alert alert-secondary text-center">
-                        <i class="bi bi-exclamation-triangle-fill"></i>&nbsp;อัพเดทข้อมูลในแอพไลน์ ในโทรศัพท์มือถือเท่านั้น
+                        <i class="bi bi-exclamation-triangle-fill"></i>&nbsp;อัพเดทข้อมูลในแอพไลน์
+                        ในโทรศัพท์มือถือเท่านั้น
                     </div>
                 </div>
             </div>
@@ -252,7 +253,7 @@
             })
 
             liff.ready.then(async () => {
-                if(!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
+                if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
@@ -367,7 +368,7 @@
                 $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
                 $('#summary').parents('.container').removeClass('d-none')
                 $('#request-no').parents('.container').removeClass('d-none')
-                if(!liff.isInClient()){
+                if (!liff.isInClient()) {
                     $('#more-update-btn').addClass('d-none')
                     $('#mobile-only-warning').removeClass('d-none')
                 }
@@ -381,7 +382,7 @@
                         r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
                         return r
                     }).map(d => {
-                        return `${d.timestamp}<br>${d.update.replace(/\n\n/g, '\n').replace('\n','<br>')}<br>#${d.name}`
+                        return `${d.timestamp}<br>${d.update.replace(/\n\n/g, '\n').replace(/\n/g, '<br>')}<br>#${d.name}`
                     }).join('<br><br>-----------------------------------<br>')
                     $('#summary').html(msg)
                     $('#summary').parent().removeClass('d-none').focus()
@@ -467,7 +468,10 @@
 
             let update_data
             $("#submit").click(() => {
-                let update = $("#update").val().match(/^-.*/gm)?.join('\n\n') || $("#update").val()
+                let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
+                    if (x[0] === '-') return "- " + x.slice(1).trim();
+                    return x;
+                }).join('\n').replace(/\n-/g, '\n\n-');
                 console.log("🚀 !! update001:", update)
                 let name = $("#name").val();
                 let code = $("#code").val();
