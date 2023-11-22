@@ -354,7 +354,7 @@
             let code = url.searchParams.get("code");
             let action = url.searchParams.get("action");
             let updateText = localStorage.getItem('updateText' + jobid)
-            if (updateText != null) $('#update').val(updateText)
+            if (updateText != null) $('#update').val(updateText).trigger('input')
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -531,7 +531,7 @@
             // listen on user finish typing on update field
             let typingTimer;
             let doneTypingInterval = 800;
-            $('#update').keyup(function () {
+            $('#update').on('input',function () {
                 clearTimeout(typingTimer);
 
                 if ($('#update').val()) {
