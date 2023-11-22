@@ -236,10 +236,10 @@
         </div>
     </main>
     <!-- vconsole -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
-    </script> -->
+    </script>
 
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
@@ -468,6 +468,7 @@
             let update_data
             $("#submit").click(() => {
                 let update = $("#update").val().match(/^-.*/gm)?.join('\n\n') || $("#update").val()
+                console.log("🚀 !! update001:", update)
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
@@ -542,6 +543,7 @@
         }
 
         async function updateData(update_data) {
+            console.log("🚀 !! update_data:", update_data)
             let doc_ref
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
@@ -872,7 +874,7 @@
                     text: 'อัพเดทสำเร็จ',
                     timer: 1500,
                 }).then(() => {
-                    liff.closeWindow();
+                    // liff.closeWindow();
                 })
             }).catch(err => {
                 console.log(err);
