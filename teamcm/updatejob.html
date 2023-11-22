@@ -354,7 +354,10 @@
             let code = url.searchParams.get("code");
             let action = url.searchParams.get("action");
             let updateText = localStorage.getItem('updateText' + jobid)
-            if (updateText != null) $('#update').val(updateText).trigger('input')
+            if (updateText != null) {
+                $('#update').val(updateText)
+                updateCount(updateText)
+            }
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -531,13 +534,11 @@
             // listen on user finish typing on update field
             let typingTimer;
             let doneTypingInterval = 800;
-            $('#update').on('input',function () {
+            $('#update').on('input', function () {
                 clearTimeout(typingTimer);
 
                 if ($('#update').val()) {
-                    $('#char-count').html($('#update').val().length + '/5000')
-                    if ($('#update').val().length > 5000) $('#char-count').css('color', 'red')
-                    else $('#char-count').css('color', '#7777')
+                   updateCount($('#update').val())
                     typingTimer = setTimeout(doneTyping, doneTypingInterval);
                 }
             });
@@ -551,6 +552,12 @@
             console.log(jobid);
             let update = $("#update").val();
             localStorage.setItem('updateText' + jobid, update)
+        }
+
+        function updateCount(updateText) {
+            $('#char-count').html(updateText.length + '/5000')
+            if (updateText.length > 5000) $('#char-count').css('color', 'red')
+            else $('#char-count').css('color', '#7777')
         }
 
         async function updateData(update_data) {
@@ -770,6 +777,7 @@
                         {
                             "type": "box",
                             "layout": "horizontal",
+                            "spacing": "md",
                             "contents": [
                                 {
                                     "type": "button",
@@ -781,7 +789,18 @@
                                     "style": "primary",
                                     "height": "sm",
                                     "scaling": true
-                                }
+                                },
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "อัพเดท 🔊",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?jobid=" + update_data.jobid
+                                    },
+                                    "style": "primary",
+                                    "height": "sm",
+                                    "scaling": true
+                                },
                             ],
                             "paddingAll": "lg",
                             "paddingEnd": "xxl",
