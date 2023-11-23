@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-control" content="no-cache , no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous"></script>
+    <!-- <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"> -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="icon" href="../icon.png" type="image/png">
+    <style>
+        body {
+            max-width: 100vw;
+            height: 100%;
+            /* overflow-x: hidden; */
+            font-family: 'Akshar', sans-serif;
+            font-family: 'Prompt', sans-serif;
+            background-color: #F8C8DC44;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #FAA0A0;
+            color: #673147;
+        }
+
+        .nav-tabs .nav-link {
+            color: #673147;
+            font-weight: bolder;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+        }
+
+        input::placeholder {
+            color: #00000033 !important;
+            opacity: 0.2;
+        }
+
+        main {
+            min-height: 100vh;
+        }
+
+        .custom-nav-pills .nav-link.active {
+            background-color: #cfe2ff;
+            color: #0d6efd;
+            font-weight: bolder;
+        }
+
+        .nav-item {
+            list-style-type: none;
+        }
+
+
+        .custom-nav-item ::before {
+            content: '\23F5' !important;
+            color: #0d6efd;
+            margin-right: 0.5em;
+        }
+
+
+
+        /* section{
+            background-color: #fff;
+        } */
+    </style>
+    <title>ART Medical Gas Daily Check</title>
+
+    <script>
+        // document.write('<script defer src="../js/../js/medicalGas-art.js?cache=' + new Date().getTime() + '"><\/script>')
+    </script>
+</head>
+
+<body class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-subtle px-2 fixed-top py-0">
+        <div class="container-fluid p-0">
+            <div class="navbar-brand d-flex w-100 align-items-center justify-content-between" href="#">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas-menu" aria-controls="offcanvasExample">
+                    <i class="bi bi-stack"></i> Select Form
+                </button>
+                <img src="../bmepyt3_icon-removebg-preview.png" alt="" height="20px" class="d-inline-block">
+            </div>
+            <img src="../bmepyt3.jpg" alt="display" width="25px" height="25px" class="rounded-circle img-fluid"
+                id="line-display" style="display: none;">
+        </div>
+    </nav>
+    <main style="margin-top: 50px;">
+        <div class="offcanvas offcanvas-start show active" tabindex="-1" id="offcanvas-menu"
+            aria-labelledby="offcanvas-menuLabel">
+            <div class="offcanvas-header text-bg-primary">
+                <h5 class="offcanvas-title" id="offcanvasLabel"><i class="bi bi-stack"></i> Select Form</h5>
+                <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="nav nav-pills custom-nav-pills flex-column" role="tablist">
+                    <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Room</div>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 active text-start" id="pills-tab-status-room"
+                            data-bs-toggle="pill" data-bs-target="#tab-status-room" type="button" role="tab"
+                            aria-selected="false">Status Room</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-med-gas" data-bs-toggle="pill"
+                            data-bs-target="#tab-med-gas" type="button" role="tab" aria-selected="true">Medcal Gas
+                            Medifold</button>
+                    </li>
+                    <!-- sepatator -->
+                    <hr>
+                    <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Medical Equipment
+                    </div>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-embryo" data-bs-toggle="pill"
+                            data-bs-target="#tab-embryo" type="button" role="tab" aria-selected="true">Embryo
+                            Culture</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-refrigerator" data-bs-toggle="pill"
+                            data-bs-target="#tab-refrigerator" type="button" role="tab"
+                            aria-selected="true">Refrigerator</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-incubator" data-bs-toggle="pill"
+                            data-bs-target="#tab-incubator" type="button" role="tab"
+                            aria-selected="true">Incubator</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        </div>
+        <div class="tab-content" id="tab-content">
+            <div class="tab-pane fade show active" id="tab-status-room">
+                status room
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-med-gas">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Medical Gas Daily Check <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link flex-fill active" id="nav-form-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form"
+                            aria-selected="true">Check List</button>
+                        <button class="nav-link flex-fill" id="nav-remark-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-remark" type="button" role="tab" aria-controls="nav-remark"
+                            aria-selected="false">หมายเหตุ</button>
+                    </div>
+                </nav>
+                <div class="container-fluid" id="main-div" style="display: none;">
+                    <div class="row justify-content-start align-items-center">
+                        <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
+                            <p class="h5 mt-2 fw-bold timenow">01 January 1984 00:00:00</p>
+                        </div>
+                        <div class="col text-start ms-1 mt-3 fs-5 lh-1 text-dark">
+                            <p>Daily Maintenance<br><small class="text-secondary fs-6">ตรวจเช็คทุกวัน</small></p>
+                        </div>
+                        <div class="col text-end">
+                            <button class="btn btn-sm btn-outline-light" id="clear-data-btn">ล้างข้อมูล</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade  show active" id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab"
+                        tabindex="0">
+
+                        <form id="med-gas-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                            <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            placeholder="กรอกชื่อผู้ตรวจสอบ">
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                                <div class="row">
+                                    <div class="col text-center d-flex flex-column">
+                                        <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                        <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                            <!-- รอบเช้า และเย็น -->
+                                            <!-- <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="morning"
+                                                    value="เช้า" name="shift">
+                                                <label class="form-check-label" for="morning"><i class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="evening"
+                                                    value="เย็น" name="shift">
+                                                <label class="form-check-label" for="evening"><i class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                            </div> -->
+                                            <div class="col-6 px-2">
+                                                <input type="radio" class="btn-check" name="shift" id="morning"
+                                                    value="เช้า" autocomplete="off">
+                                                <label class="btn btn-outline-primary  w-100" for="morning"><i
+                                                        class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                            </div>
+                                            <div class="col-6 px-2">
+                                                <input type="radio" class="btn-check" name="shift" id="evening"
+                                                    value="เย็น" autocomplete="off">
+                                                <label class="btn btn-outline-primary  w-100" for="evening"><i
+                                                        class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                                <div class="row justify-content-start g-3">
+                                    <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                        <div class="row justify-content-center mt-2 g-3">
+                                            <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                                <span
+                                                    class="fw-bold text-white bg-dark rounded-pill border px-4">Tri-Gas</span>
+                                                <div>Manifold</div>
+                                            </div>
+                                            <div class="col-6 mt-0 text-center">
+                                                <label for="trigas-mgd">แรงดันใช้งาน (MGD)</label>
+                                                <input type="number" step="0.1" inputmode="decimal" name="trigas-mgd"
+                                                    id="trigas-mgd" class="form-control text-center">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center g-3 mt-2">
+                                            <div class="col-6 text-center">
+                                                <label for="trigas-manifold-left">แรงดันฝั่งซ้าย</label>
+                                                <input type="number" step="0.1" inputmode="decimal"
+                                                    name="trigas-manifold-left" id="trigas-manifold-left"
+                                                    class="form-control text-center">
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <label for="trigas-manifold-right">แรงดันฝั่งขวา</label>
+                                                <input type="number" step="0.1" inputmode="decimal"
+                                                    name="trigas-manifold-right" id="c02-manifold-right"
+                                                    class="form-control text-center">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                        <div class="row justify-content-center mt-2 g-3">
+                                            <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                                <span
+                                                    class="fw-bold text-white bg-dark rounded-pill border px-4">Carbondioxide</span>
+                                                <div>Manifold</div>
+                                            </div>
+                                            <div class="col-6 mt-0 text-center">
+                                                <label for="c02-mgd">แรงดันใช้งาน (MGD)</label>
+                                                <input type="number" step="0.1" inputmode="decimal" name="c02-mgd"
+                                                    id="c02-mgd" class="form-control text-center">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center g-3 mt">
+                                            <div class="col-6 text-center">
+                                                <label for="c02-manifold-left">แรงดันฝั่งซ้าย</label>
+                                                <input type="number" step="0.1" inputmode="decimal"
+                                                    name="c02-manifold-left" id="c02-manifold-left"
+                                                    class="form-control text-center">
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <label for="c02-manifold-right">แรงดันฝั่งขวา</label>
+                                                <input type="number" step="0.1" inputmode="decimal"
+                                                    name="c02-manifold-right" id="c02-manifold-right"
+                                                    class="form-control text-center">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                                <div class="row justify-content-start g-3">
+                                    <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                        <div class="row justify-content-center mt-2">
+                                            <div class="col-12 text-center fw-light fs-2 text-secondary mt-2">
+                                                <span class="fw-bold text-white rounded-pill border px-3"
+                                                    style="background-color: #696969;">Nitrogen</span>
+                                                <p>Manifold</p>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <label for="n2-manifold-mgd">แรงดันใช้งาน (MGD)</label>
+                                                <input type="number" step="0.1" inputmode="decimal"
+                                                    name="n2-manifold-mgd" id="n2-manifold-mgd"
+                                                    class="form-control text-center">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center g-3 mt-2">
+                                            <div class="col-6 text-center">
+                                                <label for="n2-manifold-left">แรงดันฝั่งซ้าย</label>
+                                                <input type="number" step="0.1" inputmode="decimal"
+                                                    name="n2-manifold-left" id="n2-manifold-left"
+                                                    class="form-control text-center">
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <label for="n2-manifold-right">แรงดันฝั่งขวา</label>
+                                                <input type="number" step="0.1" inputmode="decimal"
+                                                    name="n2-manifold-right" id="n2-manifold-right"
+                                                    class="form-control text-center">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="row justify-content-center">
+                                <div class="col-md-4 mt-3 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="nav-remark" role="tabpanel" aria-labelledby="nav-remark-tab"
+                        tabindex="0">
+                        <form id="med-gas-remark" class="needs-validation" novalidate>
+                            <section class="row mt-3 rounded-2 p-2 m-2 bg-dark-subtle">
+                                <div class="col-12 text-start fw-light mb-1 py-2 fs-3 text-secondary">
+                                    <span class="fw-bold text-white bg-dark rounded-pill border px-4">Carbondioxide
+                                        1</span>
+                                    Manifold
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="co2-remark-1" id="co2-remark-1" rows="3"
+                                        class="form-control"></textarea>
+                                </div>
+                            </section>
+                            <section class="row mt-3 rounded-2 p-2 m-2 bg-dark-subtle">
+                                <div class="col-12 text-start fw-light mb-1 py-2 fs-3 text-secondary">
+                                    <span class="fw-bold text-white bg-dark rounded-pill border px-4">Carbondioxide
+                                        2</span>
+                                    Manifold
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="co2-remark-2" id="co2-remark-2" rows="3"
+                                        class="form-control"></textarea>
+                                </div>
+                            </section>
+                            <section class="row mt-3 rounded-2 p-2 m-2 bg-success-subtle">
+                                <div class="col-12 text-start fw-light mb-1 py-2 fs-2 text-secondary">
+                                    <span class="fw-bold text-white rounded-pill border px-3"
+                                        style="background-color: #696969;">Nitrogen</span>
+                                    Manifold
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="n2-remark" id="n2-remark" rows="3" class="form-control"></textarea>
+                                </div>
+                            </section>
+                            <div class="row mt-3 p-2 mb-5 justify-content-center">
+                                <div class="col-md-4">
+                                    <button class="btn btn-lg btn-warning w-100" type="submit"
+                                        id="remark-btn">บันทึกข้อมูล</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-med-equip">
+                med equip
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-embryo">
+                embryo
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-refrigerator">
+                refrigerator
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-incubator">
+                incubator
+            </div>
+        </div>
+
+        <!-- <div class="container-fluid m-0 p-0">
+            <iframe frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div> -->
+    </main>
+
+    <footer>
+        <!-- <div class="row justify-content-center align-items-center">
+            <div class="col-12 text-center">
+                <img src="../bmepyt3.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-12 text-center">
+                <img src="../bmeg5.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+        </div> -->
+        <div class="row justify-content-center align-items-center text-light">
+            <div class="col text-center text-end" style="font-size: 0.7rem;">
+                Developed by <span class="text-primary">Daranphop Yimyam (BME PYT3)</span>
+            </div>
+        </div>
+        <div class="copyright mb-3" align="center">
+            <script>
+                document.write('&copy;');
+                document.write(' 2022 ');
+                document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
+            </script>
+        </div>
+        <img src="" alt="" id="compressing" hidden>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/compress-js@2.0.2/dist/compressjs.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        // var vConsole = new window.VConsole();
+    </script>
+    <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbwew5SoKXY39vXShqtwgL7OAVJle0fLaE3vY6_T5R5pmHeK4fNo8Jjw8pJY2VPQiVLc/exec'
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500,
+        })
+
+        $(document).ready(() => {
+            $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/c4138b94-68e0-48e5-9021-57d76f7c9348/page/V9LZD").attr('width', '100%')
+            let width = $('iframe').width()
+            let height = width * 0.5833
+            $('iframe').height(height)
+            setInterval(function () {
+                let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
+                $('.timenow').html(timenow);
+            }, 1000);
+
+            $.when(getHistory()).done(function () {
+                $.LoadingOverlay("hide");
+                $('#header-text').addClass('animate__animated animate__rubberBand')
+                // $('#med-gas-checklist').addClass('animate__animated animate__backInUp').show()
+                $('#med-gas-remark').addClass('animate__animated animate__fadeInRight').show()
+                setTimeout(() => {
+                    $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
+
+                }, 1000);
+            })
+
+            // const tabEl = document.getElementById('tab-med-gas').querySelector('button[data-bs-toggle="tab"]')
+            // tabEl.addEventListener('shown.bs.tab', event => {
+            //     event.target // newly activated tab
+            //     event.relatedTarget // previous active tab
+            //     console.log(event.target)
+            //     console.log(event.relatedTarget)
+            //     $('#med-gas-checklist').removeClass('animate__backInUp').addClass('animate__fadeInLeft').show()
+            // })
+
+            $('#offcanvas-menu').find('.nav-link').on('shown.bs.tab', function (e) {
+                let target = $(this).attr('data-bs-target')
+                $(target).addClass('animate__slideInLeft')
+                setTimeout(() => {
+                    $(target).removeClass('animate__slideInLeft animate__faster')
+                }, 1000);
+                $('#offcanvas-menu').offcanvas('hide')
+            })
+
+            var typingTimer;
+            var doneTypingInterval = 700;
+            var $input = $('#med-gas-checklist input, #med-gas-checklist select, input[type="checkbox"]')
+            $input.on('input', function () {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(doneTyping, doneTypingInterval);
+            });
+            $input.on('keydown', function () {
+                clearTimeout(typingTimer);
+            });
+            function doneTyping() {
+                autoSave()
+            }
+            $('form').find('input, select, input[type="checkbox"], input[type="radio"]').attr('required', true).each(function () {
+                let parent = $(this).parent()
+                if ($(this).attr('type') == 'checkbox') parent = $(this).parent().parent()
+                else if ($(this).attr('type') == 'radio') parent = $(this).parent()
+                let invalid = $('<div>', { class: 'invalid-feedback' }).text('กรุณากรอก ' + $(parent.find('label')[0]).text())
+                parent.append(invalid)
+            })
+            // $('#med-gas-checklist input, #med-gas-checklist select, input[type="checkbox"], input[type="radio"]').attr('required', true).each(function () {
+            //     let parent = $(this).parent()
+            //     if ($(this).attr('type') == 'checkbox') parent = $(this).parent().parent()
+            //     else if ($(this).attr('type') == 'radio') parent = $(this).parent()
+            //     let invalid = $('<div>', { class: 'invalid-feedback' }).text('กรุณากรอก ' + $(parent.find('label')[0]).text())
+            //     parent.append(invalid)
+            // })
+            $('#clear-data-btn').click(() => {
+                localStorage.removeItem('history')
+                location.reload()
+            })
+            // liff.init({
+            //     liffId: "1657104960-bN4Om4yY",
+            //     withLoginOnExternalBrowser: true,
+            // })
+            liff.ready.then(async () => {
+                getLastSaved()
+                $.LoadingOverlay("show");
+                console.log('liff init success');
+                let profile = await liff.getProfile()
+                console.log("🚀 ~ profile:", profile)
+                console.log(liff.getDecodedIDToken().sub);
+                $('#line-display').attr('src', profile.pictureUrl).show(200)
+                $.LoadingOverlay("hide");
+                let now = new Date()
+                if (now.getHours() >= 6 && now.getHours() < 14) {
+                    $('label[for="morning"]').click()
+                } else {
+                    $('label[for="evening"]').click()
+                }
+            })
+                .catch((err) => {
+                    console.log(err.code, err.message);
+                });
+
+        })
+
+
+        function getLastSaved() {
+            let obj = {
+                opt: 'get_last'
+            }
+            return $.ajax({
+                url: script_url,
+                data: obj,
+                type: 'GET',
+                success: function (res) {
+                    console.log(res)
+                    if (res.status == 'success') {
+                        let data = res.data
+                        Object.keys(data).forEach(key => {
+                            if (key.length < 1) return
+                            if (!$('#' + key)) return
+                            // if ($('#' + key).is(':checkbox')) {
+                            //     if (data[key] == '✓') {
+                            //         $('#' + key).prop('checked', true).val('✓')
+                            //     } else {
+                            //         $('#' + key).prop('checked', false).val('')
+                            //     }
+                            //     return
+                            // } else if ($('#' + key).is(':radio')) {
+                            //     if (data[key] == '✓') {
+                            //         $('#' + key).prop('checked', true)
+                            //     } else {
+                            //         $('#' + key).prop('checked', false)
+                            //     }
+                            //     return
+                            // }
+                            $('#' + key).attr('placeholder', data[key])
+                        })
+                        console.log(localStorage.getItem('user'));
+                        if (localStorage.getItem('user') != null) {
+                            $('#name').val(localStorage.getItem('user') || "")
+                        } else {
+                            $('#name').val("")
+                        }
+                    } else {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'ไม่สามารถดึงข้อมูลล่าสุดได้'
+                        })
+                    }
+                },
+            })
+        }
+
+        function autoSave() {
+            let form = $('#med-gas-checklist')
+            let data = form.serializeArray()
+            let obj = {}
+            data.forEach(a => {
+                if ($('#' + a.name).is(':checkbox')) {
+                    if (a.value == '✓') {
+                        obj[a.name] = '✓'
+                    } else {
+                        obj[a.name] = '✗'
+                    }
+                    return
+                }
+                obj[a.name] = a.value
+            })
+            if ($('#name').val() != "") {
+                localStorage.setItem('user', $('#name').val())
+            }
+            localStorage.setItem('history', JSON.stringify(obj))
+            console.log(obj)
+        }
+        function getHistory() {
+            $('#name').val(localStorage.getItem('user'))
+            let history = localStorage.getItem('history')
+            if (history != null) {
+                let obj = JSON.parse(history)
+                console.log("🚀 ~ obj:", obj)
+                Object.keys(obj).forEach(key => {
+                    // if (key == 'vaccuum-pressure') {
+                    //     $(`[name="${key}"]`).prop('checked', true)
+                    //     return
+                    // }
+                    $(`[name="${key}"]`).val(obj[key])
+                })
+            }
+        }
+
+
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+
+        function sendLineNotify(obj) {
+
+            let message = `👉 Trigas Manifold
+Left  =  ${obj['trigas-manifold-left']} psi
+Right  =  ${obj['trigas-manifold-right']} psi
+-------------------------------
+
+👉 CO2 Manifold
+Left  =  ${obj['c02-manifold-left']} psi
+Right  =  ${obj['c02-manifold-right']} psi
+-------------------------------
+
+👉 N2 Manifold
+Left  =  ${obj['n2-manifold-left']} psi
+Right  =  ${obj['n2-manifold-right']} psi
+-------------------------------
+
+บันทึกโดย
+@${obj.name}
+
+🔊 Dashboard สรุปผลการตรวจเช็คแก็ส จะอัพเดทและส่งผลภายใน 15 นาที`
+            $.ajax({
+                url: script_url,
+                type: 'POST',
+                data: {
+                    opt: 'sendLineNotify',
+                    msg: message,
+                },
+                success: function (res) {
+                    console.log(res)
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        }
+
+        (() => {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault()
+                    if (!form.checkValidity()) {
+                        event.stopPropagation()
+                        form.classList.add('was-validated')
+                        $('#med-gas-checklist').find(':invalid').first().focus()
+                    } else {
+                        switch ($(form).attr('id')) {
+                            case 'med-gas-checklist':
+                                medGasChecklistForm()
+                                break
+                            case 'med-gas-remark':
+                                medGasRemarkForm()
+                                break
+                        }
+                    }
+                }, false)
+            })
+        })()
+
+    </script>
+    <script>
+        function medGasChecklistForm() {
+            // check if not attach image
+            if ($('#liquid-o2-volume-img').val() == '') {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาแนบรูปภาพก่อนกดบันทึก',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#liquid-o2-volume-img').focus()
+                })
+            }
+            let form = $('#med-gas-checklist')
+            let data = form.serializeArray()
+            let obj = {}
+            data.forEach(a => {
+                obj[a.name] = a.value.toString()
+            })
+            obj.opt = 'submit'
+            console.log(obj);
+            $.LoadingOverlay("show");
+            localStorage.setItem('user', obj.name)
+            // sendLineNotify(obj)
+            $.ajax({
+                url: script_url,
+                data: obj,
+                type: 'POST',
+                success: function (res) {
+                    console.log(res)
+                    $('html, body').animate({
+                        scrollTop: 0
+                    }, 500);
+                    $.LoadingOverlay("hide");
+                    if (res.status) {
+                        sendLineNotify(obj)
+                        setTimeout(() => {
+                            form[0].reset()
+                            form.removeClass('was-validated')
+                            // scroll to top
+                            localStorage.removeItem('history')
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลสำเร็จ',
+                                text: 'กรุณาปิดหน้าต่างนี้',
+                                confirmButtonText: 'ปิดหน้าต่าง',
+                            }).then(() => {
+                                liff.closeWindow()
+                            })
+                        }, 1000);
+                    } else {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'บันทึกข้อมูลไม่สำเร็จ'
+                        })
+                        $.LoadingOverlay("hide");
+                    }
+                },
+            })
+        }
+
+        function medGasRemarkForm() {
+            let trigas = $('#trigas-remark').val()
+            let co2 = $('#co2-remark').val()
+            let n2 = $('#n2-remark').val()
+            if (trigas == '' || co2 == '' || n2 == '') {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกข้อมูลก่อนกดบันทึก',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                html: 'กรุณารอสักครู่',
+                allowOutsideClick: false,
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+
+            $.ajax({
+                url: script_url,
+                method: 'POST',
+                data: {
+                    opt: 'save_remark',
+                    trigas: trigas,
+                    co2: co2,
+                    n2: n2,
+                },
+                success: function (res) {
+                    Swal.close()
+                    if (res.status == 'success') {
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'บันทึกข้อมูลไม่สำเร็จ',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                }
+
+            })
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกข้อมูลสำเร็จ',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#trigas-remark').val('')
+                    $('#co2-remark').val('')
+                    $('#n2-remark').val('')
+                })
+            }, 1500);
+        }
+
+        
+    </script>
+</body>
+
+</html>
