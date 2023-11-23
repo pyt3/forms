@@ -153,10 +153,13 @@
                         <input type="text" class="form-control" id="code" name="code" readonly>
                     </div>
                 </div> -->
-                <div class="col-12 mobile">
+                <div class="col-12 mobile" style="position: relative;">
                     <label for="update">อัพเดท</label>
-                    <textarea name="update" id="update" class="form-control" rows="5"
+                    <textarea name="update" id="update" class="form-control" rows="5" maxlength="5000"
                         placeholder="กรอกข้อมูลอัพเดท"></textarea>
+                    <span
+                        style="position: absolute;right: 20px;bottom: 5px;font-size: 0.7rem;color: #888;background-color: #33333333;border-radius: 5px;padding-left: 3px;padding-right: 3px;"
+                        id="char-count">0/5000</span>
                 </div>
                 <div class="col-12 mobile">
                     <label for="vendor_phone">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
@@ -229,7 +232,8 @@
                 </div>
                 <div class="col-12 d-none" id="mobile-only-warning">
                     <div class="alert alert-secondary text-center">
-                        <i class="bi bi-exclamation-triangle-fill"></i>&nbsp;อัพเดทข้อมูลในแอพไลน์ ในโทรศัพท์มือถือเท่านั้น
+                        <i class="bi bi-exclamation-triangle-fill"></i>&nbsp;อัพเดทข้อมูลในแอพไลน์
+                        ในโทรศัพท์มือถือเท่านั้น
                     </div>
                 </div>
             </div>
@@ -252,7 +256,7 @@
             })
 
             liff.ready.then(async () => {
-                if(!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
+                if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
@@ -350,7 +354,10 @@
             let code = url.searchParams.get("code");
             let action = url.searchParams.get("action");
             let updateText = localStorage.getItem('updateText' + jobid)
-            if (updateText != null) $('#update').val(updateText)
+            if (updateText != null) {
+                $('#update').val(updateText)
+                updateCount(updateText)
+            }
             $("#code").val(code);
             $("#request-no").val(jobid);
             $(".has-code").removeClass("d-none")
@@ -367,7 +374,7 @@
                 $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
                 $('#summary').parents('.container').removeClass('d-none')
                 $('#request-no').parents('.container').removeClass('d-none')
-                if(!liff.isInClient()){
+                if (!liff.isInClient()) {
                     $('#more-update-btn').addClass('d-none')
                     $('#mobile-only-warning').removeClass('d-none')
                 }
@@ -381,7 +388,7 @@
                         r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
                         return r
                     }).map(d => {
-                        return `${d.timestamp}<br>${d.update.replace(/\n\n/g, '\n').replace('\n','<br>')}<br>#${d.name}`
+                        return `${d.timestamp}<br>${d.update.replace(/\n\n/g, '\n').replace(/\n/g, '<br>')}<br>#${d.name}`
                     }).join('<br><br>-----------------------------------<br>')
                     $('#summary').html(msg)
                     $('#summary').parent().removeClass('d-none').focus()
@@ -467,7 +474,11 @@
 
             let update_data
             $("#submit").click(() => {
-                let update = $("#update").val().match(/^-.*/gm)?.join('\n\n') || $("#update").val()
+                let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
+                    if (x[0] === '-') return "- " + x.slice(1).trim();
+                    return x;
+                }).join('\n').replace(/\n-/g, '\n\n-');
+                console.log("🚀 !! update001:", update)
                 let name = $("#name").val();
                 let code = $("#code").val();
                 update_data = {
@@ -523,9 +534,11 @@
             // listen on user finish typing on update field
             let typingTimer;
             let doneTypingInterval = 800;
-            $('#update').keyup(function () {
+            $('#update').on('input', function () {
                 clearTimeout(typingTimer);
+
                 if ($('#update').val()) {
+                   updateCount($('#update').val())
                     typingTimer = setTimeout(doneTyping, doneTypingInterval);
                 }
             });
@@ -541,7 +554,14 @@
             localStorage.setItem('updateText' + jobid, update)
         }
 
+        function updateCount(updateText) {
+            $('#char-count').html(updateText.length + '/5000')
+            if (updateText.length > 5000) $('#char-count').css('color', 'red')
+            else $('#char-count').css('color', '#7777')
+        }
+
         async function updateData(update_data) {
+            console.log("🚀 !! update_data:", update_data)
             let doc_ref
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
@@ -757,6 +777,7 @@
                         {
                             "type": "box",
                             "layout": "horizontal",
+                            "spacing": "md",
                             "contents": [
                                 {
                                     "type": "button",
@@ -768,7 +789,18 @@
                                     "style": "primary",
                                     "height": "sm",
                                     "scaling": true
-                                }
+                                },
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "อัพเดท 🔊",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?jobid=" + update_data.jobid
+                                    },
+                                    "style": "primary",
+                                    "height": "sm",
+                                    "scaling": true
+                                },
                             ],
                             "paddingAll": "lg",
                             "paddingEnd": "xxl",
