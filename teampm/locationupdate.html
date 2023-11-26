@@ -319,7 +319,7 @@
                                 client: cl
                             }).then(() => {
                                 client = cl
-                                $('#dept option').not('.'+client).remove()
+                                $('#dept option').not('.'+client.toLowerCase()).remove()
                                 return Swal.fire({
                                     icon: 'success',
                                     title: 'สำเร็จ',
@@ -377,7 +377,7 @@
             let user = await firestore.collection('users').doc(auth.currentUser.uid).get()
             if (user.exists) {
                 client = user.data().client
-                $('#dept option').not('.'+client).remove()
+                $('#dept option').not('.'+client.toLowerCase()).remove()
                 return true
             } else {
                 return false
