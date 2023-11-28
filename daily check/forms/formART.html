@@ -101,8 +101,7 @@
         </div>
     </nav>
     <main style="margin-top: 50px;">
-        <div class="offcanvas offcanvas-start show active" tabindex="-1" id="offcanvas-menu"
-            aria-labelledby="offcanvas-menuLabel">
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-menu" aria-labelledby="offcanvas-menuLabel">
             <div class="offcanvas-header text-bg-primary">
                 <h5 class="offcanvas-title" id="offcanvasLabel"><i class="bi bi-stack"></i> Select Form</h5>
                 <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas"
@@ -146,8 +145,169 @@
         </div>
         </div>
         <div class="tab-content" id="tab-content">
-            <div class="tab-pane fade show active" id="tab-status-room">
-                status room
+            <div class="tab-pane fade animate__animated show active" id="tab-status-room">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Status Room <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link flex-fill active" id="nav-form-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form"
+                            aria-selected="true">Check List</button>
+                        <button class="nav-link flex-fill" id="nav-remark-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-remark" type="button" role="tab" aria-controls="nav-remark"
+                            aria-selected="false">หมายเหตุ</button>
+                    </div>
+                </nav> -->
+                <div class="container-fluid" id="main-div" style="display: none;">
+                    <div class="row justify-content-start align-items-center">
+                        <div class="col-auto mt-1 bg-warning rounded shadow shadow-sm mx-2">
+                            <p class="h5 mt-2 fw-bold timenow">01 January 1984 00:00:00</p>
+                        </div>
+                        <div class="col text-start ms-1 mt-3 fs-5 lh-1 text-dark">
+                            <p>Daily Maintenance<br><small class="text-secondary fs-6">ตรวจเช็คทุกวัน</small></p>
+                        </div>
+                        <div class="col text-end">
+                            <button class="btn btn-sm btn-outline-light" id="clear-data-btn">ล้างข้อมูล</button>
+                        </div>
+                    </div>
+                </div>
+                <form id="statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <!-- รอบเช้า และเย็น -->
+                                    <!-- <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="morning"
+                                            value="เช้า" name="shift">
+                                        <label class="form-check-label" for="morning"><i class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="evening"
+                                            value="เย็น" name="shift">
+                                        <label class="form-check-label" for="evening"><i class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div> -->
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="morning" value="เช้า"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="evening" value="เย็น"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">DR-Analyst</span>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="statusroom-dr-plessure">Pressure <span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.05" inputmode="decimal"
+                                            name="statusroom-dr-plessure" id="statusroom-dr-plessure"
+                                            class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-dr-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-temp"
+                                            id="statusroom-dr-temp" class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-dr-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-humid"
+                                            id="statusroom-dr-humid" class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="statusroom-dr-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Desktop
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-desktopmeter-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="statusroom-desktopmeter-temp" id="statusroom-desktopmeter-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-desktopmeter-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="statusroom-desktopmeter-humid" id="statusroom-desktopmeter-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="statusroom-desktopmeter-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Alarm
+                                            System</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <!-- radio with active and inactive status -->
+                                        <input type="radio" class="btn-check" name="statusroom-alarm"
+                                            id="statusroom-alarm-active" value="active" autocomplete="off" required>
+                                        <label class="btn btn-outline-primary  w-100" for="statusroom-alarm-active"><i
+                                                class="bi bi-check-circle-fill"></i> Active</label>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <input type="radio" class="btn-check" name="statusroom-alarm"
+                                            id="statusroom-alarm-inactive" value="inactive" autocomplete="off" required>
+                                        <label class="btn btn-outline-danger  w-100" for="statusroom-alarm-inactive"><i
+                                                class="bi bi-x-circle-fill"></i> Inactive</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="tab-pane fade animate__animated" id="tab-med-gas">
                 <div class="container mb-3 p-0">
@@ -183,7 +343,6 @@
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade  show active" id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab"
                         tabindex="0">
-
                         <form id="med-gas-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
                             <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                                 <div class="row">
@@ -466,7 +625,7 @@
 
             $('#offcanvas-menu').find('.nav-link').on('shown.bs.tab', function (e) {
                 let target = $(this).attr('data-bs-target')
-                $(target).addClass('animate__slideInLeft')
+                $(target).addClass('animate__slideInLeft animate__faster')
                 setTimeout(() => {
                     $(target).removeClass('animate__slideInLeft animate__faster')
                 }, 1000);
@@ -475,16 +634,19 @@
 
             var typingTimer;
             var doneTypingInterval = 700;
-            var $input = $('#med-gas-checklist input, #med-gas-checklist select, input[type="checkbox"]')
+            var $input = $('form input, form select, input[type="checkbox"]')
             $input.on('input', function () {
+                let form = $(this).closest('form')
                 clearTimeout(typingTimer);
-                typingTimer = setTimeout(doneTyping, doneTypingInterval);
+                typingTimer = setTimeout(function () {
+                    doneTyping($(form).attr('id'))
+                }, doneTypingInterval);
             });
             $input.on('keydown', function () {
                 clearTimeout(typingTimer);
             });
-            function doneTyping() {
-                autoSave()
+            function doneTyping(id) {
+                autoSave(id)
             }
             $('form').find('input, select, input[type="checkbox"], input[type="radio"]').attr('required', true).each(function () {
                 let parent = $(this).parent()
@@ -528,7 +690,79 @@
                     console.log(err.code, err.message);
                 });
 
+
+
         })
+
+        var section_alerts = {}
+        function setMinMaxListener() {
+            $('input[type="number"]').on('input', function () {
+                console.log('aaa', $(this).val());
+                let min = $(this).attr('min')
+                let max = $(this).attr('max')
+                let recheck = $(this).attr('data-recheck')
+                let sec_id = $(this).attr('id').split('-').slice(0, -1).join('-')
+                if (!min || !max || recheck) return
+                if (min != undefined && max != undefined) {
+                    let label = $(this).parent().find('label').text().split(' ')[0]
+                    let val = $(this).val()
+                    if (val != '' && val < min) {
+                        if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
+                        section_alerts[sec_id][$(this).attr('id')] = {
+                            label: label,
+                            min: min,
+                            max: max,
+                            val: val,
+                            html: `<span class="text-decoration-underline">ค่าต่ำกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
+                        }
+                        // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} ต่ำกว่า ${min} ไม่ปกติ</span>`)
+                    } else if (val != '' && val > max) {
+                        if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
+                        section_alerts[sec_id][$(this).attr('id')] = {
+                            label: label,
+                            min: min,
+                            max: max,
+                            val: val,
+                            html: `<span class="text-decoration-underline">ค่าสูงกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
+                        }
+                        // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} สูงกว่า ${max} ไม่ปกติ</span>`)
+                    } else {
+                        if (section_alerts[sec_id]) {
+                            delete section_alerts[sec_id][$(this).attr('id')]
+                        }
+                        $('#' + $(this).attr('id')).removeClass('border-danger border-2')
+                    }
+                    console.log(section_alerts);
+                }
+                Object.keys(section_alerts).forEach(sec_id => {
+                    let alert_text = ''
+                    Object.keys(section_alerts[sec_id]).forEach(id => {
+                        // alert_text += `<span class="alert alert-danger" style="font-size: 0.9rem">${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].text}</span>`
+                        alert_text += `<div class="col-12">
+                                        <div class="alert alert-danger p-1 py-2 ps-2 mb-1 d-flex align-items-center justify-content-between" role="alert" style="font-size: 0.8rem">
+                                            <div>
+                                                <i class="bi bi-exclamation-triangle-fill"></i> 
+                                                ${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].html}
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-danger py-0 px-1 me-2 section-alert-btn" style="font-size: 0.8rem" type="button" data-alert-id=${id}>ตรวจสอบแล้ว</button>    
+                                            </div>
+                                        </div>
+                                    </div>`
+                        $('#' + id).removeClass('border-danger border-2').addClass('border-danger border-2')
+
+                    })
+                    $('#' + sec_id + '-alert').html(alert_text)
+                    $('.section-alert-btn').click(function () {
+                        $('#' + $(this).data('alert-id')).removeClass('border-danger border-2')
+                        $(this).parent().parent().parent().remove()
+                        let sec_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
+                        delete section_alerts[sec_id][$(this).data('alert-id')]
+                        console.log(section_alerts);
+                    })
+                })
+            }).trigger('input')
+        }
 
 
         function getLastSaved() {
@@ -579,9 +813,12 @@
             })
         }
 
-        function autoSave() {
-            let form = $('#med-gas-checklist')
+        var atsave = {}
+        function autoSave(form) {
+            console.log("🚀 !! form:", form)
+            form = $('#' + form)
             let data = form.serializeArray()
+            console.log("🚀 !! data:", data)
             let obj = {}
             data.forEach(a => {
                 if ($('#' + a.name).is(':checkbox')) {
@@ -592,14 +829,17 @@
                     }
                     return
                 }
+
                 obj[a.name] = a.value
             })
             if ($('#name').val() != "") {
                 localStorage.setItem('user', $('#name').val())
             }
-            localStorage.setItem('history', JSON.stringify(obj))
-            console.log(obj)
+            atsave[form.attr('id')] = obj
+            localStorage.setItem('history', JSON.stringify(atsave))
+            console.log(atsave)
         }
+
         function getHistory() {
             $('#name').val(localStorage.getItem('user'))
             let history = localStorage.getItem('history')
@@ -607,13 +847,30 @@
                 let obj = JSON.parse(history)
                 console.log("🚀 ~ obj:", obj)
                 Object.keys(obj).forEach(key => {
-                    // if (key == 'vaccuum-pressure') {
-                    //     $(`[name="${key}"]`).prop('checked', true)
-                    //     return
-                    // }
-                    $(`[name="${key}"]`).val(obj[key])
+                    console.log("🚀 !! key:", key)
+                    Object.keys(obj[key]).forEach(k => {
+                        console.log("🚀 !! k:", k)
+                        if ($('[name="' + k+'"]').is(':checkbox')) {
+                            if (obj[key][k] == '✓') {
+                                $('#' + k).prop('checked', true).val('✓')
+                            } else {
+                                $('#' + k).prop('checked', false).val('')
+                            }
+                            return
+                        } else if ($('[name="' + k+'"]').is(':radio')) {
+                            console.log(`[name="${k}"][value="${obj[key][k]}"]`)
+                            if (obj[key][k] && obj[key][k] != '') {
+                                // find radio with value
+                                $(`[name="${k}"][value="${obj[key][k]}"]`).click()
+                            }
+                            return
+                        }else{
+                            $(`[name="${k}"]`).val(obj[key][k])
+                        }
+                    })
                 })
             }
+            setMinMaxListener()
         }
 
 
@@ -672,9 +929,13 @@ Right  =  ${obj['n2-manifold-right']} psi
                     if (!form.checkValidity()) {
                         event.stopPropagation()
                         form.classList.add('was-validated')
-                        $('#med-gas-checklist').find(':invalid').first().focus()
+                        $
+                        $(form).find(':invalid').first().focus()
                     } else {
                         switch ($(form).attr('id')) {
+                            case 'statusroom-checklist':
+                                statusRoomChecklistForm()
+                                break
                             case 'med-gas-checklist':
                                 medGasChecklistForm()
                                 break
@@ -807,7 +1068,32 @@ Right  =  ${obj['n2-manifold-right']} psi
             }, 1500);
         }
 
-        
+        function statusRoomChecklistForm() {
+            if (!checkMinMax('statusroom')) return
+            console.log('statusroom');
+        }
+
+    </script>
+    <script>
+        function checkMinMax(id) {
+            let focusEle = ''
+            Object.keys(section_alerts).forEach(key => {
+                if (key.indexOf(id) > -1) {
+                    Object.keys(section_alerts[key]).forEach(alert_id => {
+                        if (focusEle == '') {
+                            focusEle = alert_id
+                        }
+                    })
+                    return false
+                }
+            })
+            console.log(focusEle);
+            if (focusEle != '') {
+
+                $('#' + focusEle).remove.focus()
+                return false
+            }
+        }
     </script>
 </body>
 
