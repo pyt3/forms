@@ -254,7 +254,6 @@
             liff.init({
                 liffId: liff_id,
             })
-
             liff.ready.then(async () => {
                 if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
                 if (liff.getContext().type != 'group') {
@@ -275,7 +274,6 @@
             // let alert_height = $('#image').parents('.alert').height()
             // console.log("🚀 !! alert_height:", alert_height)
             // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
-
         })
         var jobid, wo
         async function initialData() {
@@ -538,7 +536,7 @@
                 clearTimeout(typingTimer);
 
                 if ($('#update').val()) {
-                   updateCount($('#update').val())
+                    updateCount($('#update').val())
                     typingTimer = setTimeout(doneTyping, doneTypingInterval);
                 }
             });
