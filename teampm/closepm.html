@@ -29,7 +29,7 @@
 
         body {
             font-family: 'Prompt', sans-serif;
-            min-height: 100vh;  
+            min-height: 100vh;
         }
     </style>
 </head>
@@ -288,8 +288,18 @@
                 $('#vender').select2({
                     theme: 'bootstrap-5',
                     width: '100%',
-                    closeOnSelect: true
-                })
+                    closeOnSelect: true,
+                    tags: true,
+                }).on('select2:selecting', function (e) {
+                    let inputValue = e.params.args.data.text;
+                    let optionValue = inputValue.toLowerCase().replace(/\s+/g, '-');
+    
+                    // Create a new option element
+                    let newOption = new Option(inputValue, optionValue, true, true);
+    
+                    // Append the new option to the select element
+                    $(this).append(newOption).trigger('change');
+                });
                 $(document).on('select2:open', () => {
                     document.querySelector('.select2-search__field').focus();
                 });
@@ -298,7 +308,7 @@
         $('#mainform').submit(async function (e) {
             e.preventDefault()
             let code = $('#code').val()
-            let vender = $('#vender').val()
+            let vender = $('#vender').val().split(',')[0]
             let date = $('#date').val()
             let safety = $('#safety').is(':checked') ? 'safety' : undefined
             let close_pm = $('#is_pm').is(':checked')
@@ -317,7 +327,7 @@
                     }, 1000);
                 })
             }
-            if(!close_pm && !close_cal){
+            if (!close_pm && !close_cal) {
                 return Swal.fire({
                     title: 'กรุณาเลือกประเภทการปิดงาน',
                     icon: 'error',
@@ -334,7 +344,7 @@
                     }
                 })
                 let mode = close_pm && close_cal ? 'closepmcal' : close_pm ? 'closepm' : 'closecal'
-                let msg = mode+'=' + c + ',' + vender  //+ ',' + date + ',' + safety
+                let msg = mode + '=' + c + ',' + vender  //+ ',' + date + ',' + safety
                 if (date != null && date != '') {
                     msg += ',' + date
                 }
