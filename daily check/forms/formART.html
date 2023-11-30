@@ -118,14 +118,19 @@
                     <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Room</div>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 active text-start" id="pills-tab-status-room"
+                        <button class="nav-link w-100 text-start active" id="pills-tab-status-room"
                             data-bs-toggle="pill" data-bs-target="#tab-status-room" type="button" role="tab"
                             aria-selected="false">Status Room</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link w-100 text-start" id="pills-tab-med-gas" data-bs-toggle="pill"
                             data-bs-target="#tab-med-gas" type="button" role="tab" aria-selected="true">Medcal Gas
-                            Medifold</button>
+                            Medifold Room</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-stock-room" data-bs-toggle="pill"
+                            data-bs-target="#tab-stock-room" type="button" role="tab" aria-selected="true">Stock
+                            Room</button>
                     </li>
                     <!-- sepatator -->
                     <hr>
@@ -151,7 +156,7 @@
         </div>
         </div>
         <div class="tab-content" id="tab-content">
-            <div class="tab-pane fade animate__animated" id="tab-status-room">
+            <div class="tab-pane fade animate__animated active show" id="tab-status-room">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
@@ -450,7 +455,84 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade animate__animated show active" id="tab-embryo">
+            <div class="tab-pane fade animate__animated" id="tab-stock-room">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Stock Room <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="morning" value="เช้า"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="evening" value="เย็น"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-success rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-thermo-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="statusroom-thermo-temp" id="statusroom-thermo-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-thermo-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="statusroom-thermo-humid" id="statusroom-thermo-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="statusroom-dr-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-embryo">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
@@ -588,9 +670,10 @@
                                             max="37.2">
                                     </div>
                                     <div class="col-12 text-start">
-                                        <label for="embryo-planer-a-pergedtime" class="ms-2">CO<sub>2</sub> Purged Time</label>
-                                        <input name="embryo-planer-a-pergedtime"
-                                            id="embryo-planer-a-pergedtime" class="form-control text-center no-required">
+                                        <label for="embryo-planer-a-pergedtime" class="ms-2">CO<sub>2</sub> Purged
+                                            Time</label>
+                                        <input name="embryo-planer-a-pergedtime" id="embryo-planer-a-pergedtime"
+                                            class="form-control text-center no-required">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-planer-a-alert">
@@ -617,9 +700,10 @@
                                             max="37.2">
                                     </div>
                                     <div class="col-12 text-start">
-                                        <label for="embryo-planer-b-pergedtime" class="ms-2">CO<sub>2</sub> Purged Time</label>
-                                        <input name="embryo-planer-b-pergedtime"
-                                            id="embryo-planer-b-pergedtime" class="form-control text-center no-required">
+                                        <label for="embryo-planer-b-pergedtime" class="ms-2">CO<sub>2</sub> Purged
+                                            Time</label>
+                                        <input name="embryo-planer-b-pergedtime" id="embryo-planer-b-pergedtime"
+                                            class="form-control text-center no-required">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-planer-b-alert">
@@ -646,9 +730,10 @@
                                             max="37.2">
                                     </div>
                                     <div class="col-12 text-start">
-                                        <label for="embryo-planer-c-pergedtime" class="ms-2">CO<sub>2</sub> Purged Time</label>
-                                        <input name="embryo-planer-c-pergedtime"
-                                            id="embryo-planer-c-pergedtime" class="form-control text-center no-required">
+                                        <label for="embryo-planer-c-pergedtime" class="ms-2">CO<sub>2</sub> Purged
+                                            Time</label>
+                                        <input name="embryo-planer-c-pergedtime" id="embryo-planer-c-pergedtime"
+                                            class="form-control text-center no-required">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-planer-c-alert">
@@ -675,9 +760,10 @@
                                             max="37.2">
                                     </div>
                                     <div class="col-12 text-start">
-                                        <label for="embryo-planer-d-pergedtime" class="ms-2">CO<sub>2</sub> Purged Time</label>
-                                        <input name="embryo-planer-d-pergedtime"
-                                            id="embryo-planer-d-pergedtime" class="form-control text-center no-required">
+                                        <label for="embryo-planer-d-pergedtime" class="ms-2">CO<sub>2</sub> Purged
+                                            Time</label>
+                                        <input name="embryo-planer-d-pergedtime" id="embryo-planer-d-pergedtime"
+                                            class="form-control text-center no-required">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-planer-d-alert">
@@ -704,9 +790,10 @@
                                             max="37.2">
                                     </div>
                                     <div class="col-12 text-start">
-                                        <label for="embryo-planer-e-pergedtime" class="ms-2">CO<sub>2</sub> Purged Time</label>
-                                        <input name="embryo-planer-e-pergedtime"
-                                            id="embryo-planer-e-pergedtime" class="form-control text-center no-required">
+                                        <label for="embryo-planer-e-pergedtime" class="ms-2">CO<sub>2</sub> Purged
+                                            Time</label>
+                                        <input name="embryo-planer-e-pergedtime" id="embryo-planer-e-pergedtime"
+                                            class="form-control text-center no-required">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-planer-e-alert">
@@ -719,7 +806,8 @@
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
                                     <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-white bg-primary rounded-pill border px-4">EmbryoPlus</span>
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">EmbryoPlus</span>
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
@@ -731,9 +819,9 @@
                                     </div>
                                     <div class="col-6 text-center">
                                         <label for="embryo-embryoplus-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-embryoplus-temp"
-                                            id="embryo-embryoplus-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryo-embryoplus-temp" id="embryo-embryoplus-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
                                     </div>
                                     <div class="col-6 text-center">
                                         <label for="embryo-embryoplus-co2">CO<sub>2</sub></label>
@@ -777,14 +865,12 @@
                                     <div class="col-6 text-center">
                                         <label for="embryo-ec6s-co2">CO<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-co2"
-                                            id="embryo-ec6s-co2" class="form-control text-center" min="5.7"
-                                            max="6.3">
+                                            id="embryo-ec6s-co2" class="form-control text-center" min="5.7" max="6.3">
                                     </div>
                                     <div class="col-6 text-center">
                                         <label for="embryo-ec6s-o2">O<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-o2"
-                                            id="embryo-ec6s-o2" class="form-control text-center" min="4.5"
-                                            max="5.5">
+                                            id="embryo-ec6s-o2" class="form-control text-center" min="4.5" max="5.5">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-ec6s-alert">
@@ -800,10 +886,202 @@
                 </form>
             </div>
             <div class="tab-pane fade animate__animated" id="tab-refrigerator">
-                refrigerator
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Refrigerator <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="morning" value="เช้า"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="evening" value="เย็น"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">Refrigerator</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="refrigerator-refrig-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="refrigerator-refrig-temp" id="refrigerator-refrig-temp"
+                                            class="form-control text-center" max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="refrigerator-refrig-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">ESCORT
+                                            (DataLogger)</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="refrigerator-escort-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="refrigerator-escort-temp" id="refrigerator-escort-temp"
+                                            class="form-control text-center" max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="refrigerator-escort-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-light bg-danger rounded-pill border px-4">Thermometer</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="refrigerator-thermo-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="refrigerator-thermo-temp" id="refrigerator-thermo-temp"
+                                            class="form-control text-center" max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="refrigerator-thermo-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="tab-pane fade animate__animated" id="tab-incubator">
-                incubator
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Incubator <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="morning" value="เช้า"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="evening" value="เย็น"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span
+                                            class="fw-bold text-white bg-danger rounded-pill border px-4">Memmert</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="incubator-memmert-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="incubator-memmert-temp" id="incubator-memmert-temp"
+                                            class="form-control text-center" min="36" max="38">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="incubator-memmert-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-primary rounded-pill border px-4">ASTEC SCA
+                                            165DS</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="incubator-astec-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="incubator-astec-temp"
+                                            id="incubator-astec-temp" class="form-control text-center" min="36"
+                                            max="38">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="incubator-astec-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="incubator-astec-co2"
+                                            id="incubator-astec-co2" class="form-control text-center" min="5" max="7">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="incubator-astec-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-danger btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -1193,8 +1471,17 @@ Right  =  ${obj['n2-manifold-right']} psi
                             case 'med-gas-checklist':
                                 medGasChecklistForm()
                                 break
+                            case 'stockroom-checklist':
+                                stockChecklistForm()
+                                break
                             case 'embryo-checklist':
                                 embryoChecklistForm()
+                                break
+                            case 'refrigerator-checklist':
+                                refrigeratorChecklistForm()
+                                break
+                            case 'incubator-checklist':
+                                incubatorChecklistForm()
                                 break
                         }
                     }
