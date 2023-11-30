@@ -463,7 +463,7 @@
                         </div>
                     </div>
                 </div>
-                <form id="statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                <form id="stockroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
                     <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
@@ -506,21 +506,21 @@
                                 </div>
                                 <div class="row justify-content-center g-3">
                                     <div class="col-6 text-center">
-                                        <label for="statusroom-thermo-temp">Temperature <span
+                                        <label for="stockroom-thermo-temp">Temperature <span
                                                 class="text-muted">(°C)</span></label>
                                         <input type="number" step="0.01" inputmode="decimal"
-                                            name="statusroom-thermo-temp" id="statusroom-thermo-temp"
+                                            name="stockroom-thermo-temp" id="stockroom-thermo-temp"
                                             class="form-control text-center" max="26" min="22">
                                     </div>
                                     <div class="col-6 text-center">
-                                        <label for="statusroom-thermo-humid">Humidity <span
+                                        <label for="stockroom-thermo-humid">Humidity <span
                                                 class="text-muted">(%rH)</span></label>
                                         <input type="number" step="0.01" inputmode="decimal"
-                                            name="statusroom-thermo-humid" id="statusroom-thermo-humid"
+                                            name="stockroom-thermo-humid" id="stockroom-thermo-humid"
                                             class="form-control text-center" max="55" min="45">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="statusroom-dr-alert">
+                                <div class="row mt-2" id="stockroom-thermo-alert">
                                 </div>
                             </div>
                         </div>
@@ -1463,27 +1463,7 @@ Right  =  ${obj['n2-manifold-right']} psi
                         $
                         $(form).find(':invalid').first().focus()
                     } else {
-                        console.log("🚀 !! $(form).attr('id'):", $(form).attr('id'))
-                        switch ($(form).attr('id')) {
-                            case 'statusroom-checklist':
-                                statusRoomChecklistForm()
-                                break
-                            case 'med-gas-checklist':
-                                medGasChecklistForm()
-                                break
-                            case 'stockroom-checklist':
-                                stockChecklistForm()
-                                break
-                            case 'embryo-checklist':
-                                embryoChecklistForm()
-                                break
-                            case 'refrigerator-checklist':
-                                refrigeratorChecklistForm()
-                                break
-                            case 'incubator-checklist':
-                                incubatorChecklistForm()
-                                break
-                        }
+                        ChecklistForm(form)
                     }
                 }, false)
             })
@@ -1491,10 +1471,9 @@ Right  =  ${obj['n2-manifold-right']} psi
 
     </script>
     <script>
-        function medGasChecklistForm() {
+        function ChecklistForm(form) {
             // check if not attach image
-            let form = $('#med-gas-checklist')
-            let data = form.serializeArray()
+            let data = $(form).serializeArray()
             let obj = {}
             data.forEach(a => {
                 obj[a.name] = a.value.toString()
@@ -1503,6 +1482,7 @@ Right  =  ${obj['n2-manifold-right']} psi
             return
 
             obj.opt = 'submit'
+            obj.form = $(form).attr('id')
             console.log(obj);
             $.LoadingOverlay("show");
             localStorage.setItem('user', obj.name)
@@ -1542,21 +1522,6 @@ Right  =  ${obj['n2-manifold-right']} psi
                     }
                 },
             })
-        }
-
-        function statusRoomChecklistForm() {
-            if (!checkMinMax('statusroom')) return
-            let form = $('#statusroom-checklist')
-            let data = form.serializeArray()
-            let obj = {}
-            data.forEach(a => {
-                obj[a.name] = a.value.toString()
-            })
-            console.log(obj);
-        }
-
-        function embryoChecklistForm() {
-            console.log('embryo');
         }
 
     </script>
