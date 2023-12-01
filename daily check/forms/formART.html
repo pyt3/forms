@@ -169,7 +169,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control" id="name" name="name"
+                                <input type="text" class="form-control name" id="statusroom-name" name="statusroom-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -299,7 +299,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control" id="name" name="name"
+                                <input type="text" class="form-control name" id="name" name="name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -468,7 +468,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control" id="name" name="name"
+                                <input type="text" class="form-control name" id="stockroom-name" name="stockroom-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -545,7 +545,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control" id="name" name="name"
+                                <input type="text" class="form-control name" id="embryo-name" name="embryo-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -898,7 +898,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control" id="name" name="name"
+                                <input type="text" class="form-control name" id="refrigerator-name" name="refrigerator-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -1005,7 +1005,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control" id="name" name="name"
+                                <input type="text" class="form-control name" id="incubator-name" name="incubator-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -1167,16 +1167,18 @@
             var doneTypingInterval = 700;
             var $input = $('form input, form select, input[type="checkbox"]')
             $input.on('input', function () {
+                let inp = this
                 let form = $(this).closest('form')
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(function () {
-                    doneTyping($(form).attr('id'))
+                    doneTyping($(form).attr('id'),inp)
                 }, doneTypingInterval);
             });
             $input.on('keydown', function () {
                 clearTimeout(typingTimer);
             });
-            function doneTyping(id) {
+            function doneTyping(id,inp) {
+                checkMinMaxLimit(inp)
                 autoSave(id)
             }
             $('form').find('input, select, input[type="checkbox"], input[type="radio"]').not('.no-required').attr('required', true).each(function () {
@@ -1197,10 +1199,11 @@
                 localStorage.removeItem('history')
                 location.reload()
             })
-            // liff.init({
-            //     liffId: "1657104960-bN4Om4yY",
-            //     withLoginOnExternalBrowser: true,
-            // })
+            liff.init({
+                // liffId: "1657104960-bN4Om4yY",
+                liffId: "1655873446-MpmBPPzl",
+                withLoginOnExternalBrowser: true,
+            })
             liff.ready.then(async () => {
                 getLastSaved()
                 $.LoadingOverlay("show");
@@ -1226,51 +1229,49 @@
         })
 
         var section_alerts = {}
-        function setMinMaxListener() {
-            $('input[type="number"]').on('input', function () {
-                let min = $(this).attr('min')
-                let max = $(this).attr('max')
-                let recheck = $(this).attr('data-recheck')
-                let sec_id = $(this).attr('id').split('-').slice(0, -1).join('-')
-                console.log("🚀 !! sec_id:", sec_id)
-                if (!min || !max || recheck) return
-                if (min != undefined && max != undefined) {
-                    let label = $(this).parent().find('label').text().split(' ')[0]
-                    let val = $(this).val()
-                    if (val != '' && val < min) {
-                        if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
-                        section_alerts[sec_id][$(this).attr('id')] = {
-                            label: label,
-                            min: min,
-                            max: max,
-                            val: val,
-                            html: `<span class="text-decoration-underline">ค่าต่ำกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
-                        }
-                        // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} ต่ำกว่า ${min} ไม่ปกติ</span>`)
-                    } else if (val != '' && val > max) {
-                        if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
-                        section_alerts[sec_id][$(this).attr('id')] = {
-                            label: label,
-                            min: min,
-                            max: max,
-                            val: val,
-                            html: `<span class="text-decoration-underline">ค่าสูงกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
-                        }
-                        // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} สูงกว่า ${max} ไม่ปกติ</span>`)
-                    } else {
-                        if (section_alerts[sec_id]) {
-                            delete section_alerts[sec_id][$(this).attr('id')]
-                        }
-                        $('#' + $(this).attr('id')).removeClass('border-danger border-2')
+        function checkMinMaxLimit(inp) {
+            let min = $(inp).attr('min')
+            let max = $(inp).attr('max')
+            let recheck = $(inp).attr('data-recheck')
+            let sec_id = $(inp).attr('id').split('-').slice(0, -1).join('-')
+            if (!min || !max || recheck) return
+            if (min != undefined && max != undefined) {
+                let label = $(inp).parent().find('label').text().split(' ')[0]
+                let val = $(inp).val()
+                if (val != '' && val < min) {
+                    if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
+                    section_alerts[sec_id][$(inp).attr('id')] = {
+                        label: label,
+                        min: min,
+                        max: max,
+                        val: val,
+                        html: `<span class="text-decoration-underline">ค่าต่ำกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
                     }
-                    console.log("🚀 !! section_alerts:", section_alerts)
+                    // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} ต่ำกว่า ${min} ไม่ปกติ</span>`)
+                } else if (val != '' && val > max) {
+                    if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
+                    section_alerts[sec_id][$(inp).attr('id')] = {
+                        label: label,
+                        min: min,
+                        max: max,
+                        val: val,
+                        html: `<span class="text-decoration-underline">ค่าสูงกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
+                    }
+                    // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} สูงกว่า ${max} ไม่ปกติ</span>`)
+                } else {
+                    if (section_alerts[sec_id]) {
+                        delete section_alerts[sec_id][$(inp).attr('id')]
+                    }
+                    $('#' + $(inp).attr('id')).removeClass('border-danger border-2')
                 }
-                Object.keys(section_alerts).forEach(sec_id => {
-                    let alert_text = ''
-                    Object.keys(section_alerts[sec_id]).forEach(id => {
-                        console.log("🚀 !! id:", id)
-                        // alert_text += `<span class="alert alert-danger" style="font-size: 0.9rem">${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].text}</span>`
-                        alert_text += `<div class="col-12">
+                console.log("🚀 !! section_alerts:", section_alerts)
+            }
+            Object.keys(section_alerts).forEach(sec_id => {
+                let alert_text = ''
+                Object.keys(section_alerts[sec_id]).forEach(id => {
+                    console.log("🚀 !! id:", id)
+                    // alert_text += `<span class="alert alert-danger" style="font-size: 0.9rem">${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].text}</span>`
+                    alert_text += `<div class="col-12">
                                         <div class="alert alert-danger p-1 py-2 ps-2 mb-1 d-flex align-items-center justify-content-between" role="alert" style="font-size: 0.8rem">
                                             <div class="col-md-9 col-8 text-start">
                                                 <i class="bi bi-exclamation-triangle-fill"></i> 
@@ -1281,69 +1282,113 @@
                                             </div>
                                         </div>
                                     </div>`
-                        $('#' + id).addClass('border-danger border-2')
+                    $('#' + id).addClass('border-danger border-2')
 
-                    })
-                    $('#' + sec_id + '-alert').html(alert_text)
-                    $('.section-alert-btn').click(function () {
-                        $('#' + $(this).data('alert-id')).removeClass('border-danger border-2').removeAttr('min max')
-                        $(this).parent().parent().parent().remove()
-
-                        let sec_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
-                        delete section_alerts[sec_id][$(this).data('alert-id')]
-                        console.log(section_alerts);
-                    })
                 })
-            }).trigger('input')
+                $('#' + sec_id + '-alert').html(alert_text)
+                $('.section-alert-btn').click(function () {
+                    $('#' + $(this).data('alert-id')).removeClass('border-danger border-2').removeAttr('min max')
+                    $(this).parent().parent().parent().remove()
+
+                    let sec_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
+                    delete section_alerts[sec_id][$(this).data('alert-id')]
+                    console.log(section_alerts);
+                })
+            })
         }
 
 
         function getLastSaved() {
-            let obj = {
-                opt: 'get_last'
-            }
-            return $.ajax({
-                url: script_url,
-                data: obj,
-                type: 'GET',
-                success: function (res) {
-                    console.log(res)
-                    if (res.status == 'success') {
-                        let data = res.data
-                        Object.keys(data).forEach(key => {
-                            if (key.length < 1) return
-                            if (!$('#' + key)) return
-                            // if ($('#' + key).is(':checkbox')) {
-                            //     if (data[key] == '✓') {
-                            //         $('#' + key).prop('checked', true).val('✓')
-                            //     } else {
-                            //         $('#' + key).prop('checked', false).val('')
-                            //     }
-                            //     return
-                            // } else if ($('#' + key).is(':radio')) {
-                            //     if (data[key] == '✓') {
-                            //         $('#' + key).prop('checked', true)
-                            //     } else {
-                            //         $('#' + key).prop('checked', false)
-                            //     }
-                            //     return
-                            // }
-                            $('#' + key).attr('placeholder', data[key])
-                        })
-                        console.log(localStorage.getItem('user'));
-                        if (localStorage.getItem('user') != null) {
-                            $('#name').val(localStorage.getItem('user') || "")
-                        } else {
-                            $('#name').val("")
-                        }
-                    } else {
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'ไม่สามารถดึงข้อมูลล่าสุดได้'
-                        })
-                    }
-                },
+            let forms = $('form').toArray().map(a => {
+                return {
+                    url: script_url + '?opt=get_last&form=' + $(a).attr('id'),
+                    form: $(a).attr('id')
+                }
             })
+            Promise.all(forms.map(a => {
+                $.ajax(a.url, {
+                    success: function (res) {
+                        console.log(res)
+                        if (res.status == 'success') {
+                            let data = res.data
+                            Object.keys(data).forEach(key => {
+                                if (key.length < 1) return
+                                if (!$('#' + key)) return
+                                // if ($('#' + key).is(':checkbox')) {
+                                //     if (data[key] == '✓') {
+                                //         $('#' + key).prop('checked', true).val('✓')
+                                //     } else {
+                                //         $('#' + key).prop('checked', false).val('')
+                                //     }
+                                //     return
+                                // } else if ($('#' + key).is(':radio')) {
+                                //     if (data[key] == '✓') {
+                                //         $('#' + key).prop('checked', true)
+                                //     } else {
+                                //         $('#' + key).prop('checked', false)
+                                //     }
+                                //     return
+                                // }
+                                $('#' + key).attr('placeholder', data[key])
+                            })
+                            console.log(localStorage.getItem('user'));
+                            if (localStorage.getItem('user') != null) {
+                                $('#name').val(localStorage.getItem('user') || "")
+                            } else {
+                                $('#name').val("")
+                            }
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'ไม่สามารถดึงข้อมูลล่าสุดของ ' + a.form + ' ได้'
+                            })
+                        }
+                    },
+                })
+            }))
+
+            // return $.ajax({
+            //     url: script_url,
+            //     data: obj,
+            //     type: 'GET',
+            //     success: function (res) {
+            //         console.log(res)
+            //         if (res.status == 'success') {
+            //             let data = res.data
+            //             Object.keys(data).forEach(key => {
+            //                 if (key.length < 1) return
+            //                 if (!$('#' + key)) return
+            //                 // if ($('#' + key).is(':checkbox')) {
+            //                 //     if (data[key] == '✓') {
+            //                 //         $('#' + key).prop('checked', true).val('✓')
+            //                 //     } else {
+            //                 //         $('#' + key).prop('checked', false).val('')
+            //                 //     }
+            //                 //     return
+            //                 // } else if ($('#' + key).is(':radio')) {
+            //                 //     if (data[key] == '✓') {
+            //                 //         $('#' + key).prop('checked', true)
+            //                 //     } else {
+            //                 //         $('#' + key).prop('checked', false)
+            //                 //     }
+            //                 //     return
+            //                 // }
+            //                 $('#' + key).attr('placeholder', data[key])
+            //             })
+            //             console.log(localStorage.getItem('user'));
+            //             if (localStorage.getItem('user') != null) {
+            //                 $('#name').val(localStorage.getItem('user') || "")
+            //             } else {
+            //                 $('#name').val("")
+            //             }
+            //         } else {
+            //             Toast.fire({
+            //                 icon: 'error',
+            //                 title: 'ไม่สามารถดึงข้อมูลล่าสุดได้'
+            //             })
+            //         }
+            //     },
+            // })
         }
 
         var atsave = {}
@@ -1363,8 +1408,8 @@
 
                 obj[a.name] = a.value
             })
-            if ($('#name').val() != "") {
-                localStorage.setItem('user', $('#name').val())
+            if ($('.name').toArray().map(a => a.value).filter(a => a != '').length > 0) {
+                localStorage.setItem('user', $('.name').toArray().map(a => a.value).filter(a => a != '')[0])
             }
             atsave[form.attr('id')] = obj
             localStorage.setItem('history', JSON.stringify(atsave))
@@ -1372,7 +1417,7 @@
         }
 
         function getHistory() {
-            $('#name').val(localStorage.getItem('user'))
+            $('.name').val(localStorage.getItem('user'))
             let history = localStorage.getItem('history')
             if (history != null) {
                 let obj = JSON.parse(history)
@@ -1401,7 +1446,6 @@
                     })
                 })
             }
-            setMinMaxListener()
         }
 
 
@@ -1479,14 +1523,11 @@ Right  =  ${obj['n2-manifold-right']} psi
                 obj[a.name] = a.value.toString()
             })
             console.log(obj);
-            return
-
-            obj.opt = 'submit'
+            obj.opt = 'submittest'
             obj.form = $(form).attr('id')
             console.log(obj);
             $.LoadingOverlay("show");
-            localStorage.setItem('user', obj.name)
-            // sendLineNotify(obj)
+            localStorage.setItem('user', $(form).find('.name')[0].value)
             $.ajax({
                 url: script_url,
                 data: obj,
@@ -1498,12 +1539,17 @@ Right  =  ${obj['n2-manifold-right']} psi
                     }, 500);
                     $.LoadingOverlay("hide");
                     if (res.status) {
-                        sendLineNotify(obj)
+                        // sendLineNotify(obj)
                         setTimeout(() => {
-                            form[0].reset()
-                            form.removeClass('was-validated')
+                            $(form).trigger('reset')
+                            $(form).removeClass('was-validated')
                             // scroll to top
-                            localStorage.removeItem('history')
+                            let history = localStorage.getItem('history')
+                            if (history != null) {
+                                let obj = JSON.parse(history)
+                                delete obj[$(form).attr('id')]
+                                localStorage.setItem('history', JSON.stringify(obj))
+                            }
                             Swal.fire({
                                 icon: 'success',
                                 title: 'บันทึกข้อมูลสำเร็จ',
