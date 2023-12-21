@@ -384,6 +384,7 @@
         })
         async function checkClient() {
             let user = await firestore.collection('users').doc(auth.currentUser.uid).get()
+            console.log("🚀 !! user:", user)
             if (user.exists) {
                 client = user.data().client
                 $('#dept option').not('.'+client.toLowerCase()).remove()
