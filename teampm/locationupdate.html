@@ -292,6 +292,17 @@
                     await getAuth(await liff.getDecodedIDToken().sub)
                 }
                 $.LoadingOverlay("hide", true)
+                var options = {
+                    onComplete: function (cep) {
+                        if (arr.includes(cep)) {
+                            return Toast.fire({
+                                icon: 'warning',
+                                title: 'เพิ่มรหัสนี้ไปแล้ว'
+                            })
+                        }
+                        appendPill(cep)
+                    },
+                };
                 if (!await checkClient()) {
                     Swal.fire({
                         icon: 'info',
@@ -319,6 +330,7 @@
                                 client: cl
                             }).then(() => {
                                 client = cl
+                                $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
                                 $('#dept option').not('.'+client.toLowerCase()).remove()
                                 return Swal.fire({
                                     icon: 'success',
@@ -343,17 +355,7 @@
                     timerProgressBar: true,
                 })
 
-                var options = {
-                    onComplete: function (cep) {
-                        if (arr.includes(cep)) {
-                            return Toast.fire({
-                                icon: 'warning',
-                                title: 'เพิ่มรหัสนี้ไปแล้ว'
-                            })
-                        }
-                        appendPill(cep)
-                    },
-                };
+               
                 $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
                 $('#isDemo').change(function () {
                     $('#add-id').unmask();
