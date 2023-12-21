@@ -332,12 +332,13 @@
                     }).then(res => {
                         if (res.isConfirmed) {
                             cl = res.value
-                            firestore.collection('users').doc(auth.currentUser.uid).set({
+                            firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
                                 client: cl
                             }).then(() => {
+                                if (client.toLowerCase() != 'PYT3') $('#ocr-btn').parent().remove()
                                 client = cl
-                                $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
-                                $('#dept option').not('.'+client.toLowerCase()).remove()
+                                $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000' : 'PYT2_00000', options);
+                                $('#dept option').not('.' + client.toLowerCase()).remove()
                                 return Swal.fire({
                                     icon: 'success',
                                     title: 'สำเร็จ',
@@ -361,9 +362,10 @@
                     timerProgressBar: true,
                 })
 
-               if(client){
-                   $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
-               }
+                if (client) {
+                    if (client.toLowerCase() != 'PYT3') $('#ocr-btn').parent().remove()
+                    $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000' : 'PYT2_00000', options);
+                }
                 $('#isDemo').change(function () {
                     $('#add-id').unmask();
                     $('#add-id').val('');
@@ -371,7 +373,7 @@
                     if ($(this).is(':checked')) {
                         $('#add-id').mask('DEMO_000000', options);
                     } else {
-                        $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
+                        $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000' : 'PYT2_00000', options);
                     }
 
                 })
@@ -383,11 +385,11 @@
 
         })
         async function checkClient() {
-            let user = await firestore.collection('users').doc(auth.currentUser.uid).get()
-            console.log("🚀 !! user:", user)
+            let user = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get()
+            console.log("🚀 !! user:", user.data())
             if (user.exists) {
                 client = user.data().client
-                $('#dept option').not('.'+client.toLowerCase()).remove()
+                $('#dept option').not('.' + client.toLowerCase()).remove()
                 return true
             } else {
                 return false
