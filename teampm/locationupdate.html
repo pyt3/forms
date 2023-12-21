@@ -320,12 +320,18 @@
                                         </div>
                                     </div>
                                 </div>`,
+                        preConfirm: () => {
+                            if ($('#client').val() == '' || !$('#client').val()) {
+                                Swal.showValidationMessage('กรุณาเลือก Site')
+                            }
+                            return $('#client').val()
+                        },
                         allowOutsideClick: false,
                         showCancelButton: false,
                         confirmButtonText: 'ตกลง',
                     }).then(res => {
                         if (res.isConfirmed) {
-                            cl = $('#client').val()
+                            cl = res.value
                             firestore.collection('users').doc(auth.currentUser.uid).set({
                                 client: cl
                             }).then(() => {
