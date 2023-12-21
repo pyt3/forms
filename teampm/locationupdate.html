@@ -354,7 +354,7 @@
                         appendPill(cep)
                     },
                 };
-                $('#add-id').mask(client.toLowerCase() = "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
+                $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
                 $('#isDemo').change(function () {
                     $('#add-id').unmask();
                     $('#add-id').val('');
@@ -362,7 +362,7 @@
                     if ($(this).is(':checked')) {
                         $('#add-id').mask('DEMO_000000', options);
                     } else {
-                        $('#add-id').mask(client.toLowerCase() = "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
+                        $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
                     }
 
                 })
