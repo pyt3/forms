@@ -361,8 +361,9 @@
                     timerProgressBar: true,
                 })
 
-               
-                $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
+               if(client){
+                   $('#add-id').mask(client.toLowerCase() == "pyt3" ? 'PYT3_00000': 'PYT2_00000', options);
+               }
                 $('#isDemo').change(function () {
                     $('#add-id').unmask();
                     $('#add-id').val('');
