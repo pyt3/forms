@@ -1538,7 +1538,7 @@ Desktop-Meter
 Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
 
 บันทึกโดย
-@${obj.name}`
+@${obj['statusroom-name']}`
                     break
                 case "stockroom-checklist":
                     message = `👉 ผลการตรวจเช็ค Stock Room
@@ -1550,7 +1550,7 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['stockroom-name']}`
                     break
                 case "embryo-checklist":
                     message = `👉 ผลการตรวจเช็ค Embryo Culture
@@ -1618,7 +1618,7 @@ temperature = ${obj['embryo-ec6s-a-temp']} ํC
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['embryo-name']}`
                     break
                 case "refrigerator-checklist":
                     message = `👉 ผลการตรวจเช็ค Refrigerator
@@ -1638,7 +1638,7 @@ ESCORT
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['refrigerator-name']}`
                     break
                 case "incubator-checklist":
                     message = `👉 ผลการตรวจเช็ค Incubator
@@ -1655,7 +1655,7 @@ MEMMERT
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['incubator-name']}`
                     break
 
                 default: return
