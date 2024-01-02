@@ -1364,6 +1364,7 @@
                                 //     return
                                 // }
                                 $('#' + key).attr('placeholder', data[key])
+                                if(key.indexOf('-lot') > -1) $('#' + key).val(data[key])
                             })
                             console.log(localStorage.getItem('user'));
                             if (localStorage.getItem('user') != null) {
