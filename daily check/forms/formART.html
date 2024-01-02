@@ -116,16 +116,15 @@
             <div class="offcanvas-body">
                 <ul class="nav nav-pills custom-nav-pills flex-column" role="tablist">
                     <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Room</div>
-
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start active" id="pills-tab-status-room"
-                            data-bs-toggle="pill" data-bs-target="#tab-status-room" type="button" role="tab"
-                            aria-selected="false">Status Room</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start" id="pills-tab-med-gas" data-bs-toggle="pill"
+                        <button class="nav-link w-100 text-start active" id="pills-tab-med-gas" data-bs-toggle="pill"
                             data-bs-target="#tab-med-gas" type="button" role="tab" aria-selected="true">Medcal Gas
                             Medifold Room</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-status-room" data-bs-toggle="pill"
+                            data-bs-target="#tab-status-room" type="button" role="tab" aria-selected="false">Status
+                            Room</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link w-100 text-start" id="pills-tab-stock-room" data-bs-toggle="pill"
@@ -156,137 +155,7 @@
         </div>
         </div>
         <div class="tab-content" id="tab-content">
-            <div class="tab-pane fade animate__animated active show" id="tab-status-room">
-                <div class="container mb-3 p-0">
-                    <div class="row">
-                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
-                            Status Room <span class="text-danger">ART</span>
-                        </div>
-                    </div>
-                </div>
-                <form id="statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
-                        <div class="row">
-                            <div class="col text-center">
-                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="statusroom-name" name="statusroom-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
-                        <div class="row">
-                            <div class="col text-center d-flex flex-column">
-                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
-                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
-                                    <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="morning" value="เช้า"
-                                            autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="morning"><i
-                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
-                                    </div>
-                                    <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="evening" value="เย็น"
-                                            autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="evening"><i
-                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
-                                        <span
-                                            class="fw-bold text-white bg-primary rounded-pill border px-4">DR-Analyst</span>
-                                    </div>
-                                    <div class="col-6 mt-0 text-center">
-                                        <label for="statusroom-dr-plessure">Pressure <span
-                                                class="text-muted">(Pa)</span></label>
-                                        <input type="number" step="0.05" inputmode="decimal"
-                                            name="statusroom-dr-plessure" id="statusroom-dr-plessure"
-                                            class="form-control text-center">
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-dr-temp">Temperature <span
-                                                class="text-muted">(°C)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-temp"
-                                            id="statusroom-dr-temp" class="form-control text-center" max="26" min="22">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-dr-humid">Humidity <span
-                                                class="text-muted">(%rH)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-humid"
-                                            id="statusroom-dr-humid" class="form-control text-center" max="55" min="45">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="statusroom-dr-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
-                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Desktop
-                                            Meter</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-desktopmeter-temp">Temperature <span
-                                                class="text-muted">(°C)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal"
-                                            name="statusroom-desktopmeter-temp" id="statusroom-desktopmeter-temp"
-                                            class="form-control text-center" max="26" min="22">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-desktopmeter-humid">Humidity <span
-                                                class="text-muted">(%rH)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal"
-                                            name="statusroom-desktopmeter-humid" id="statusroom-desktopmeter-humid"
-                                            class="form-control text-center" max="55" min="45">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="statusroom-desktopmeter-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
-                                        <span class="fw-bold text-light bg-info rounded-pill border px-4">
-                                            <i class="bi bi-bell-fill"></i> Alarm System</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-6 text-center">
-                                        <!-- radio with active and inactive status -->
-                                        <input type="radio" class="btn-check" name="statusroom-alarm"
-                                            id="statusroom-alarm-active" value="active" autocomplete="off" required>
-                                        <label class="btn btn-outline-primary  w-100" for="statusroom-alarm-active"><i
-                                                class="bi bi-check-circle-fill"></i> Active</label>
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <input type="radio" class="btn-check" name="statusroom-alarm"
-                                            id="statusroom-alarm-inactive" value="inactive" autocomplete="off" required>
-                                        <label class="btn btn-outline-danger w-100" for="statusroom-alarm-inactive"><i
-                                                class="bi bi-x-circle-fill"></i> Inactive</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 mt-3 text-center">
-                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="tab-pane fade animate__animated" id="tab-med-gas">
+            <div class="tab-pane fade animate__animated active show" id="tab-med-gas">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
@@ -451,6 +320,136 @@
                     <div class="row justify-content-center">
                         <div class="col-md-4 mt-3 text-center">
                             <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-status-room">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Status Room <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="statusroom-name" name="statusroom-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="morning" value="เช้า"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="evening" value="เย็น"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">DR-Analyst</span>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="statusroom-dr-plessure">Pressure <span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.05" inputmode="decimal"
+                                            name="statusroom-dr-plessure" id="statusroom-dr-plessure"
+                                            class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-dr-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-temp"
+                                            id="statusroom-dr-temp" class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-dr-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-humid"
+                                            id="statusroom-dr-humid" class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="statusroom-dr-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Desktop
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-desktopmeter-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="statusroom-desktopmeter-temp" id="statusroom-desktopmeter-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="statusroom-desktopmeter-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="statusroom-desktopmeter-humid" id="statusroom-desktopmeter-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="statusroom-desktopmeter-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-light bg-info rounded-pill border px-4">
+                                            <i class="bi bi-bell-fill"></i> Alarm System</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <!-- radio with active and inactive status -->
+                                        <input type="radio" class="btn-check" name="statusroom-alarm"
+                                            id="statusroom-alarm-active" value="active" autocomplete="off" required>
+                                        <label class="btn btn-outline-primary  w-100" for="statusroom-alarm-active"><i
+                                                class="bi bi-check-circle-fill"></i> Active</label>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <input type="radio" class="btn-check" name="statusroom-alarm"
+                                            id="statusroom-alarm-inactive" value="inactive" autocomplete="off" required>
+                                        <label class="btn btn-outline-danger w-100" for="statusroom-alarm-inactive"><i
+                                                class="bi bi-x-circle-fill"></i> Inactive</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
                         </div>
                     </div>
                 </form>
@@ -846,7 +845,8 @@
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
                                     <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span class="text-warning">A</span></span>
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">A</span></span>
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
@@ -879,7 +879,8 @@
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
                                     <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span class="text-warning">B</span></span>
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">B</span></span>
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
@@ -931,8 +932,8 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="refrigerator-name" name="refrigerator-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                                <input type="text" class="form-control name" id="refrigerator-name"
+                                    name="refrigerator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
                     </section>
@@ -1204,13 +1205,13 @@
                 let form = $(this).closest('form')
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(function () {
-                    doneTyping($(form).attr('id'),inp)
+                    doneTyping($(form).attr('id'), inp)
                 }, doneTypingInterval);
             });
             $input.on('keydown', function () {
                 clearTimeout(typingTimer);
             });
-            function doneTyping(id,inp) {
+            function doneTyping(id, inp) {
                 checkMinMaxLimit(inp)
                 autoSave(id)
             }
@@ -1233,8 +1234,8 @@
                 location.reload()
             })
             liff.init({
-                // liffId: "1657104960-bN4Om4yY",
-                liffId: "1655873446-MpmBPPzl",
+                liffId: "1655873446-gp23vvmV",
+                // liffId: "1655873446-MpmBPPzl",
                 withLoginOnExternalBrowser: true,
             })
             liff.ready.then(async () => {
@@ -1491,9 +1492,13 @@
             );
         }
 
-        function sendLineNotify(obj) {
-
-            let message = `👉 Trigas Manifold
+        function sendLineNotify(obj, form) {
+            let message
+            switch (form) {
+                case "med-gas-checklist":
+                    message = `👉 ผลการตรวจเช็คแก็สทางการแพทย์
+ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+👉 Trigas Manifold
 Left  =  ${obj['trigas-manifold-left']} psi
 Right  =  ${obj['trigas-manifold-right']} psi
 -------------------------------
@@ -1509,14 +1514,150 @@ Right  =  ${obj['n2-manifold-right']} psi
 -------------------------------
 
 บันทึกโดย
-@${obj.name}
+@${obj.name}`
+                    break
+                case "statusroom-checklist":
+                    message = `👉 ผลการตรวจเช็ค Status Room
+ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
 
-🔊 Dashboard สรุปผลการตรวจเช็คแก็ส จะอัพเดทและส่งผลภายใน 15 นาที`
+DR-Analyst
+👉temperature = ${obj['statusroom-dr-temp']} ํC
+👉humidity = ${obj['statusroom-dr-humid']} %RH
+👉pressure = ${obj['statusroom-dr-plessure']} Pa
+-------------------------------
+
+Desktop-Meter
+👉temperature = ${obj['statusroom-desktopmeter-temp']} ํC
+👉humidity = ${obj['statusroom-desktopmeter-humid']} %RH
+-------------------------------
+
+Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
+
+บันทึกโดย
+@${obj.name}`
+                    break
+                case "stockroom-checklist":
+                    message = `👉 ผลการตรวจเช็ค Stock Room
+ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+👉temperature = ${obj['stockroom-temp']} ํC
+👉humidity = ${obj['stockroom-humid']} %RH
+-------------------------------
+
+บันทึกโดย
+@${obj.name}`
+                    break
+                case "embryo-checklist":
+                    message = `👉 ผลการตรวจเช็ค Embryo Culture
+ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+MINC A
+control bar = ${obj['embryo-minc-a-controlbar']} bar
+temperature = ${obj['embryo-minc-a-temp']} ํC
+-------------------------------
+
+MINC B
+control bar = ${obj['embryo-minc-b-controlbar']} bar
+temperature = ${obj['embryo-minc-b-temp']} ํC
+-------------------------------
+
+MINC C
+control bar = ${obj['embryo-minc-c-controlbar']} bar
+temperature = ${obj['embryo-minc-c-temp']} ํC
+-------------------------------
+
+// PLANER A-E
+PLANER A
+control bar = ${obj['embryo-planer-a-controlbar']} bar
+temperature = ${obj['embryo-planer-a-temp']} ํC
+${obj['embryo-planer-a-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-a-pergedtime']}
+-------------------------------
+
+PLANER B
+control bar = ${obj['embryo-planer-b-controlbar']} bar
+temperature = ${obj['embryo-planer-b-temp']} ํC
+${obj['embryo-planer-b-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-b-pergedtime']}
+-------------------------------
+
+PLANER C
+control bar = ${obj['embryo-planer-c-controlbar']} bar
+temperature = ${obj['embryo-planer-c-temp']} ํC
+${obj['embryo-planer-c-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-c-pergedtime']}
+-------------------------------
+
+PLANER D
+control bar = ${obj['embryo-planer-d-controlbar']} bar
+temperature = ${obj['embryo-planer-d-temp']} ํC
+${obj['embryo-planer-d-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-d-pergedtime']}
+-------------------------------
+
+PLANER E
+control bar = ${obj['embryo-planer-e-controlbar']} bar
+temperature = ${obj['embryo-planer-e-temp']} ํC
+${obj['embryo-planer-e-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-e-pergedtime']}
+-------------------------------
+
+EMBRYO PLUS
+CO2 = ${obj['embryo-embryoplus-co2']} %
+O2 = ${obj['embryo-embryoplus-o2']} %
+control bar = ${obj['embryo-embryoplus-controlbar']} bar
+temperature = ${obj['embryo-embryoplus-temp']} ํC
+-------------------------------
+
+EC6S A
+CO2 = ${obj['embryo-ec6s-a-co2']} %
+O2 = ${obj['embryo-ec6s-a-o2']} %
+control bar = ${obj['embryo-ec6s-a-controlbar']} bar
+temperature = ${obj['embryo-ec6s-a-temp']} ํC
+-------------------------------
+
+บันทึกโดย
+@${obj.name}`
+                    break
+                case "refrigerator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Refrigerator
+ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+Refrigerator
+👉temperature = ${obj['refrigerator-refrig-temp']} ํC
+-------------------------------
+
+Thermometer
+👉temperature = ${obj['refrigerator-thermo-temp']} ํC
+-------------------------------
+
+ESCORT
+👉temperature = ${obj['refrigerator-escort-temp']} ํC
+-------------------------------
+
+บันทึกโดย
+@${obj.name}`
+                    break
+                case "incubator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Incubator
+ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+ASTEC
+👉CO2 = ${obj['incubator-astec-co2']}
+👉temperature = ${obj['incubator-astec-temp']} ํC
+-------------------------------
+
+MEMMERT
+👉temperature = ${obj['incubator-memmert-temp']} ํC
+-------------------------------
+
+บันทึกโดย
+@${obj.name}`
+                    break
+
+                default: return
+            }
+
             $.ajax({
                 url: script_url,
                 type: 'POST',
                 data: {
-                    opt: 'sendLineNotify',
+                    opt: 'sendLineNotifyTest',
                     msg: message,
                 },
                 success: function (res) {
@@ -1572,7 +1713,7 @@ Right  =  ${obj['n2-manifold-right']} psi
                     }, 500);
                     $.LoadingOverlay("hide");
                     if (res.status) {
-                        // sendLineNotify(obj)
+                        sendLineNotify(obj, form)
                         setTimeout(() => {
                             $(form).trigger('reset')
                             $(form).removeClass('was-validated')
