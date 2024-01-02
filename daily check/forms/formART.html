@@ -1492,9 +1492,9 @@
             );
         }
 
-        function sendLineNotify(obj, form) {
+        function sendLineNotify(obj) {
             let message
-            switch (form) {
+            switch (obj.form) {
                 case "med-gas-checklist":
                     message = `👉 ผลการตรวจเช็คแก็สทางการแพทย์
 ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
@@ -1713,7 +1713,7 @@ MEMMERT
                     }, 500);
                     $.LoadingOverlay("hide");
                     if (res.status) {
-                        sendLineNotify(obj, form)
+                        sendLineNotify(obj)
                         setTimeout(() => {
                             $(form).trigger('reset')
                             $(form).removeClass('was-validated')
