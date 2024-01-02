@@ -1272,7 +1272,7 @@
             if (min != undefined && max != undefined) {
                 let label = $(inp).parent().find('label').text().split(' ')[0]
                 let val = $(inp).val()
-                if (val != '' && val < min) {
+                if (val != '' && Number(val) < Number(min)) {
                     if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
                     section_alerts[sec_id][$(inp).attr('id')] = {
                         label: label,
@@ -1282,7 +1282,7 @@
                         html: `<span class="text-decoration-underline">ค่าต่ำกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
                     }
                     // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} ต่ำกว่า ${min} ไม่ปกติ</span>`)
-                } else if (val != '' && val > max) {
+                } else if (val != '' &&  Number(val) > Number(max)) {
                     if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
                     section_alerts[sec_id][$(inp).attr('id')] = {
                         label: label,
@@ -1545,8 +1545,8 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
-👉temperature = ${obj['stockroom-temp']} ํC
-👉humidity = ${obj['stockroom-humid']} %RH
+👉temperature = ${obj['stockroom-thermo-temp']} ํC
+👉humidity = ${obj['stockroom-thermo-humid']} %RH
 -------------------------------
 
 บันทึกโดย
@@ -1558,63 +1558,63 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 MINC A
-control bar = ${obj['embryo-minc-a-controlbar']} bar
-temperature = ${obj['embryo-minc-a-temp']} ํC
+👉control bar = ${obj['embryo-minc-a-controlbar']} bar
+👉temperature = ${obj['embryo-minc-a-temp']} ํC
 -------------------------------
 
 MINC B
-control bar = ${obj['embryo-minc-b-controlbar']} bar
-temperature = ${obj['embryo-minc-b-temp']} ํC
+👉control bar = ${obj['embryo-minc-b-controlbar']} bar
+👉temperature = ${obj['embryo-minc-b-temp']} ํC
 -------------------------------
 
 MINC C
-control bar = ${obj['embryo-minc-c-controlbar']} bar
-temperature = ${obj['embryo-minc-c-temp']} ํC
+👉control bar = ${obj['embryo-minc-c-controlbar']} bar
+👉temperature = ${obj['embryo-minc-c-temp']} ํC
 -------------------------------
 
 // PLANER A-E
 PLANER A
-control bar = ${obj['embryo-planer-a-controlbar']} bar
-temperature = ${obj['embryo-planer-a-temp']} ํC
-${obj['embryo-planer-a-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-a-pergedtime']}
+👉control bar = ${obj['embryo-planer-a-controlbar']} bar
+👉temperature = ${obj['embryo-planer-a-temp']} ํC
+${obj['embryo-planer-a-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-a-pergedtime']}
 -------------------------------
 
 PLANER B
-control bar = ${obj['embryo-planer-b-controlbar']} bar
-temperature = ${obj['embryo-planer-b-temp']} ํC
-${obj['embryo-planer-b-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-b-pergedtime']}
+👉control bar = ${obj['embryo-planer-b-controlbar']} bar
+👉temperature = ${obj['embryo-planer-b-temp']} ํC
+${obj['embryo-planer-b-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-b-pergedtime']}
 -------------------------------
 
 PLANER C
-control bar = ${obj['embryo-planer-c-controlbar']} bar
-temperature = ${obj['embryo-planer-c-temp']} ํC
-${obj['embryo-planer-c-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-c-pergedtime']}
+👉control bar = ${obj['embryo-planer-c-controlbar']} bar
+👉temperature = ${obj['embryo-planer-c-temp']} ํC
+${obj['embryo-planer-c-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-c-pergedtime']}
 -------------------------------
 
 PLANER D
-control bar = ${obj['embryo-planer-d-controlbar']} bar
-temperature = ${obj['embryo-planer-d-temp']} ํC
-${obj['embryo-planer-d-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-d-pergedtime']}
+👉control bar = ${obj['embryo-planer-d-controlbar']} bar
+👉temperature = ${obj['embryo-planer-d-temp']} ํC
+${obj['embryo-planer-d-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-d-pergedtime']}
 -------------------------------
 
 PLANER E
-control bar = ${obj['embryo-planer-e-controlbar']} bar
-temperature = ${obj['embryo-planer-e-temp']} ํC
-${obj['embryo-planer-e-pergedtime'] == '' ? '' : 'perged time = ' + obj['embryo-planer-e-pergedtime']}
+👉control bar = ${obj['embryo-planer-e-controlbar']} bar
+👉temperature = ${obj['embryo-planer-e-temp']} ํC
+${obj['embryo-planer-e-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-e-pergedtime']}
 -------------------------------
 
 EMBRYO PLUS
-CO2 = ${obj['embryo-embryoplus-co2']} %
-O2 = ${obj['embryo-embryoplus-o2']} %
-control bar = ${obj['embryo-embryoplus-controlbar']} bar
-temperature = ${obj['embryo-embryoplus-temp']} ํC
+👉CO2 = ${obj['embryo-embryoplus-co2']} %
+👉O2 = ${obj['embryo-embryoplus-o2']} %
+👉control bar = ${obj['embryo-embryoplus-controlbar']} bar
+👉temperature = ${obj['embryo-embryoplus-temp']} ํC
 -------------------------------
 
 EC6S A
-CO2 = ${obj['embryo-ec6s-a-co2']} %
-O2 = ${obj['embryo-ec6s-a-o2']} %
-control bar = ${obj['embryo-ec6s-a-controlbar']} bar
-temperature = ${obj['embryo-ec6s-a-temp']} ํC
+👉CO2 = ${obj['embryo-ec6s-a-co2']} %
+👉O2 = ${obj['embryo-ec6s-a-o2']} %
+👉control bar = ${obj['embryo-ec6s-a-controlbar']} bar
+👉temperature = ${obj['embryo-ec6s-a-temp']} ํC
 -------------------------------
 
 บันทึกโดย
