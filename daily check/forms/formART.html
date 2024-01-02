@@ -1497,7 +1497,9 @@
             switch (obj.form) {
                 case "med-gas-checklist":
                     message = `👉 ผลการตรวจเช็คแก็สทางการแพทย์
-ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
 👉 Trigas Manifold
 Left  =  ${obj['trigas-manifold-left']} psi
 Right  =  ${obj['trigas-manifold-right']} psi
@@ -1518,7 +1520,8 @@ Right  =  ${obj['n2-manifold-right']} psi
                     break
                 case "statusroom-checklist":
                     message = `👉 ผลการตรวจเช็ค Status Room
-ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 DR-Analyst
 👉temperature = ${obj['statusroom-dr-temp']} ํC
@@ -1538,7 +1541,8 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
                     break
                 case "stockroom-checklist":
                     message = `👉 ผลการตรวจเช็ค Stock Room
-ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 👉temperature = ${obj['stockroom-temp']} ํC
 👉humidity = ${obj['stockroom-humid']} %RH
@@ -1549,7 +1553,8 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
                     break
                 case "embryo-checklist":
                     message = `👉 ผลการตรวจเช็ค Embryo Culture
-ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 MINC A
 control bar = ${obj['embryo-minc-a-controlbar']} bar
@@ -1616,7 +1621,8 @@ temperature = ${obj['embryo-ec6s-a-temp']} ํC
                     break
                 case "refrigerator-checklist":
                     message = `👉 ผลการตรวจเช็ค Refrigerator
-ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 Refrigerator
 👉temperature = ${obj['refrigerator-refrig-temp']} ํC
@@ -1635,7 +1641,8 @@ ESCORT
                     break
                 case "incubator-checklist":
                     message = `👉 ผลการตรวจเช็ค Incubator
-ประจำวันที่ ${moment().format('DD MMM YY')} รอบ ${obj.shift}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 ASTEC
 👉CO2 = ${obj['incubator-astec-co2']}
