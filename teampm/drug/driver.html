@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-control" content="no-cache , no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Driver Booking</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+        integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.8/b-2.4.2/date-1.5.1/fh-3.4.0/r-2.5.0/datatables.min.css"
+        rel="stylesheet">
+    <script
+        src="https://cdn.datatables.net/v/bs5/dt-1.13.8/b-2.4.2/date-1.5.1/fh-3.4.0/r-2.5.0/datatables.min.js"></script>
+    <!-- set icon -->
+    <link rel="icon" href="./driver-icon.png" type="image/png" sizes="16x16">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            height: 100%;
+        }
+
+        .btn-check:checked+.btn,
+        .btn.active,
+        .btn.show,
+        .btn:first-child:active,
+        :not(.btn-check)+.btn:active {
+            color: #fff;
+            background-color: #0d6fff;
+            border-color: #0d6fff;
+        }
+
+        .alert-invalidate {
+            border-color: var(--bs-form-invalid-border-color);
+            padding-right: calc(1.5em + .75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) top calc(.375em + .1875rem);
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+
+        .alert-validated {
+            border-color: var(--bs-form-valid-border-color);
+            padding-right: calc(1.5em + .75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) top calc(.375em + .1875rem);
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+
+        .img-thumbnail {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: unset;
+            object-fit: cover;
+            min-height: 200px;
+        }
+
+        input[type="time"]:focus {
+            border-color: #d1e7dd;
+        }
+
+        .form-control-time {
+            display: block;
+            width: 100%;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--bs-body-color);
+            background-color: var(--bs-body-bg);
+            background-clip: padding-box;
+            border: var(--bs-border-width) solid var(--bs-border-color);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: var(--bs-border-radius);
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .form-control-time-sm {
+            min-height: calc(1.5em + .5rem + calc(var(--bs-border-width) * 2));
+            padding: .25rem .5rem;
+            font-size: .875rem;
+            border-radius: var(--bs-border-radius-sm);
+        }
+
+        @keyframes blink {
+            0% {
+                border-width: 0.125rem;
+                /* 2px / 16px */
+            }
+
+            33% {
+                border-width: 0.1875rem;
+                /* 3px / 16px */
+            }
+
+            66%,
+            100% {
+                border-width: 0.25rem;
+                /* 4px / 16px */
+            }
+        }
+
+        @media (max-width: 576px) {
+            .offcanvas {
+                width: 100% !important
+            }
+        }
+
+        @media (min-width: 577px) {
+            .offcanvas {
+                width: 50vw !important
+            }
+        }
+
+        .pac-container {
+            z-index: 999999;
+        }
+
+        /*  Toggle Switch  */
+        .toggleSwitch span span {
+            display: none;
+        }
+
+        .toggleSwitch {
+            display: inline-block;
+            height: 18px;
+            position: relative;
+            overflow: visible;
+            padding: 0;
+            cursor: pointer;
+            width: 200px;
+            background-color: #fafafa;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            height: 34px;
+        }
+
+        .toggleSwitch * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .toggleSwitch label,
+        .toggleSwitch>span {
+            line-height: 20px;
+            height: 20px;
+            vertical-align: middle;
+            border-radius: 50px
+        }
+
+        .toggleSwitch input:focus~a,
+        .toggleSwitch input:focus+label {
+            outline: none;
+        }
+
+        .toggleSwitch label {
+            position: relative;
+            z-index: 3;
+            display: block;
+            width: 100%;
+        }
+
+        .toggleSwitch input {
+            position: absolute;
+            opacity: 0;
+            z-index: 5;
+            border-radius: 50px
+        }
+
+        .toggleSwitch>span {
+            position: absolute;
+            left: 0;
+            width: calc(100% - 6px);
+            margin: 0;
+            text-align: left;
+            white-space: nowrap;
+            margin: 0 3px;
+        }
+
+        .toggleSwitch>span span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            display: block;
+            width: 50%;
+            margin-left: 50px;
+            text-align: left;
+            font-size: 0.9em;
+            width: auto;
+            left: 0;
+            top: -1px;
+            opacity: 1;
+            width: 40%;
+            text-align: center;
+            line-height: 34px;
+        }
+
+        .toggleSwitch a {
+            position: absolute;
+            right: 50%;
+            z-index: 4;
+            display: block;
+            top: 3px;
+            bottom: 3px;
+            padding: 0;
+            left: 3px;
+            width: 50%;
+            background-color: #666;
+            border-radius: 4px;
+            -webkit-transition: all 0.2s ease-out;
+            -moz-transition: all 0.2s ease-out;
+            transition: all 0.2s ease-out;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .toggleSwitch>span span:first-of-type {
+            color: #FFF;
+            opacity: 1;
+            left: 0;
+            margin: 0;
+            width: 50%;
+        }
+
+        a:not([href]):not([class]),
+        a:not([href]):not([class]):hover {
+            color: inherit;
+            text-decoration: none;
+            border-radius: 50px;
+            background: #dc3545;
+        }
+
+        .toggleSwitch>span span:last-of-type {
+            left: auto;
+            right: 0;
+            color: #999;
+            margin: 0;
+            width: 50%;
+        }
+
+        .toggleSwitch>span:before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: -2px;
+            /* background-color: #fafafa;
+      border: 1px solid #ccc; */
+            border-radius: 30px;
+            -webkit-transition: all 0.2s ease-out;
+            -moz-transition: all 0.2s ease-out;
+            transition: all 0.2s ease-out;
+        }
+
+        .toggleSwitch input:checked~a {
+            left: calc(50% - 3px);
+            border-radius: 50px;
+            background: #07c160;
+        }
+
+        .toggleSwitch input:checked~span:before {
+            /* border-color: #0097D1;
+      box-shadow: inset 0 0 0 30px #0097D1; */
+        }
+
+        .toggleSwitch input:checked~span span:first-of-type {
+            left: 0;
+            color: #999;
+        }
+
+        .toggleSwitch input:checked~span span:last-of-type {
+            /* opacity: 1;
+      color: #fff;	 */
+            color: #FFF;
+        }
+
+        /* Switch Sizes */
+        .toggleSwitch.large {
+            width: 60px;
+            height: 27px;
+        }
+
+        .toggleSwitch.large a {
+            width: 27px;
+        }
+
+        .toggleSwitch.large>span {
+            height: 29px;
+            line-height: 28px;
+        }
+
+        .toggleSwitch.large input:checked~a {
+            left: 41px;
+        }
+
+        .toggleSwitch.large>span span {
+            font-size: 1.1em;
+        }
+
+        .toggleSwitch.large>span span:first-of-type {
+            left: 50%;
+        }
+
+        .toggleSwitch.xlarge {
+            width: 80px;
+            height: 36px;
+        }
+
+        .toggleSwitch.xlarge a {
+            width: 36px;
+        }
+
+        .toggleSwitch.xlarge>span {
+            height: 38px;
+            line-height: 37px;
+        }
+
+        .toggleSwitch.xlarge input:checked~a {
+            left: 52px;
+        }
+
+        .toggleSwitch.xlarge>span span {
+            font-size: 1.4em;
+        }
+
+        .toggleSwitch.xlarge>span span:first-of-type {
+            left: 50%;
+        }
+
+        /*  End Toggle Switch  */
+    </style>
+</head>
+
+<body class="bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm">
+        <div class="container-fluid d-flex justify-content-between">
+            <a class="navbar-brand" href="#">
+                <img src="./driver-icon.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                Driver <span id="user-name"></span>
+            </a>
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#menu-modal"
+                id="check-status-btn" style="display: none;">
+                <i class="bi bi-list"></i>
+                ตรวจสอบสถานะการจอง
+        </div>
+    </nav>
+    <header class="mt-3 container-fluid">
+        <div class="row justify-content-center px-2">
+            <div class="col-auto rounded py-3 px-3 bg-white shadow border border-2 border-primary">
+                <span class="h3 fw-bold">
+                    <img width="50" height="50" src="./icons8-semi-truck.gif" />
+                    <span id="form-header">
+                        Driver Booking
+                    </span>
+                </span>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="container-fluid">
+            <div class="table-responsive mt-3 bg-primary-subtle p-4 rounded d-none">
+                <table id="booking-table" class="table table-light table-striped table-bordered table-hover"
+                    style="width: 100%;">
+                    <thead></thead>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        // var vConsole = new window.VConsole();
+    </script>
+    <script>
+        var profile, rate_data
+        var scriptUrl = 'https://script.google.com/macros/s/AKfycbwXB8uhOk1tAu-ZI5CwSwVg63pQ2BabN6IG4fb6Tg_00meCturU33zIs2LO9Wg36DhEAg/exec'
+        $(document).ready(() => {
+            initialLiffApp();
+        })
+        function initialLiffApp() {
+            liff.init({
+                // liffId: "1657301397-jKvYR8Wo",
+                liffId: "1655873446-MpmBPPzl",
+                withLoginOnExternalBrowser: true
+            })
+            liff.ready.then(async () => {
+                checkRegist()
+            })
+        }
+        function loginpass(data) {
+            $.LoadingOverlay("hide", true)
+            logindriver = {
+                name: data.name,
+                phone: data.phone,
+                email: data.email,
+                credit: data.credit,
+                uid: liff.getDecodedIDToken().sub,
+                status: data.status
+            }
+            localStorage.setItem('logindriver', JSON.stringify(logindriver))
+            $('#user-name').text(logindriver.name)
+            if (data.status != 'อนุมัติ') {
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ขออภัย',
+                        html: '<h4 class="text-danger">คุณยังไม่ได้รับการอนุมัติให้สามารถใช้งานได้<br>กรุณาลองใหม่อีกครั้งในภายหลัง</h4>',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                    })
+                }, 500)
+                return
+            }
+            getBookingData()
+            $('.main').removeClass('d-none').addClass('d-flex')
+        }
+        function checkRegist() {
+            $.LoadingOverlay("show")
+            let logindriver = localStorage.getItem('logindriver')
+            if (logindriver && logindriver != null) {
+                logindriver = JSON.parse(logindriver)
+                // logindriver
+                if (logindriver.name == undefined || logindriver.name == undefined || logindriver.email == undefined) {
+                    localStorage.removeItem('logindriver')
+                    return checkRegist()
+                }
+                if (logindriver.uid == liff.getDecodedIDToken().sub) {
+                    // logindriver
+                    if (logindriver.status != 'อนุมัติ') {
+                        logindriver
+                        localStorage.removeItem('logindriver')
+                        return checkRegist()
+                    }
+                    return loginpass(logindriver)
+                }
+                return true
+            }
+            $.post(scriptUrl, {
+                opt: 'checkregist',
+                sheet: 'users-driver',
+                uid: liff.getDecodedIDToken().sub
+            }, function (res) {
+                // logindriver
+                $.LoadingOverlay("hide", true)
+                if (!res.status) {
+                    $('.main').removeClass('d-flex').addClass('d-none')
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาลงทะเบียนก่อนใช้งาน',
+                        allowOutsideClick: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'ลงทะเบียน',
+                        cancelButtonText: 'ยกเลิก',
+                        allowOutsideClick: false,
+                        confirmButtonColor: '#0d6fff',
+                        cancelButtonColor: '#dc3545',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            login()
+                        }
+                    })
+                } else {
+                    loginpass(res)
+                    $.LoadingOverlay("hide", true)
+                    let today = new Date()
+                    let tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0)
+                    // tomorrow = tomorrow.getFullYear() + '-' + (tomorrow.getMonth() + 1) + '-' + tomorrow.getDate()
+                }
+            })
+        }
+        function login() {
+            Swal.fire({
+                title: 'กรุณากรอกข้อมูลเพื่อลงทะเบียน',
+                html: `<div class="container-fluid">
+                                <form class="row g-2 needs-validation" id="regist-form" novalidate>
+                                    <div class="col-12">
+                                        <label for="name" class="form-label">ชื่อ-สกุล</label>
+                                        <input type="text" class="form-control form-control-lg text-center bg-primary-subtle" id="name" name="name" placeholder="ชื่อ-สกุล" required>
+                                        <div class="invalid-feedback text-end name-invalid-feedback">
+                                            กรุณากรอกชื่อ-สกุล
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="phone" class="form-label">เบอร์โทรศัพท์</label>
+                                        <input type="tel" class="form-control form-control-lg text-center bg-primary-subtle" id="phone" name="phone" placeholder="เบอร์โทรศัพท์" required>
+                                        <div class="invalid-feedback text-end phone-invalid-feedback">
+                                            กรุณากรอกเบอร์โทรศัพท์
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="email" class="form-label">อีเมล <span class="text-muted">(ไม่บังคับ)</span></label>
+                                        <input type="email" class="form-control form-control-lg text-center bg-primary-subtle" id="email" name="email" placeholder="อีเมล">
+                                    </div>
+                                </form>
+                    </div>`,
+                preConfirm: () => {
+                    if (!validateRegistForm()) {
+                        return false
+                    }
+                    return {
+                        name: $('#name').val(),
+                        phone: $('#phone').val(),
+                        email: $('#email').val()
+                    }
+                },
+                showCancelButton: true,
+                confirmButtonText: 'ลงทะเบียน',
+                cancelButtonText: 'ยกเลิก',
+                allowOutsideClick: false,
+                confirmButtonColor: '#0d6fff',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'กำลังลงทะเบียน',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    $.post(scriptUrl, {
+                        opt: 'regist',
+                        sheet: 'users-driver',
+                        uid: liff.getDecodedIDToken().sub,
+                        phone: result.value.phone,
+                        name: result.value.name,
+                        email: result.value.email
+                    }, function (res) {
+                        // logindriver
+                        if (res.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'ลงทะเบียนสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                loginpass({
+                                    name: result.value.name,
+                                    phone: result.value.phone,
+                                    email: result.value.email,
+                                    uid: liff.getDecodedIDToken().sub,
+                                    status: 'รออนุมัติ'
+                                })
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ลงทะเบียนไม่สำเร็จ',
+                                confirmButtonText: 'ลองใหม่',
+                                allowOutsideClick: false
+                            }).then(() => {
+                                if (result.isConfirmed) {
+                                    login()
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        function validateRegistForm() {
+            let name = $('#name').val()
+            let phone = $('#phone').val()
+            let res = true
+            if (name == '') {
+                $('#name').addClass('is-invalid')
+                $('.name-invalid-feedback').show()
+                res = false
+            } else {
+                $('#name').removeClass('is-invalid')
+                $('.name-invalid-feedback').hide()
+            }
+            if (phone == '') {
+                $('#phone').addClass('is-invalid')
+                $('.phone-invalid-feedback').show()
+                res = false
+            } else {
+                $('#phone').removeClass('is-invalid')
+                $('.phone-invalid-feedback').hide()
+            }
+            return res
+        }
+        function saveData(data) {
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                text: 'กรุณาอย่าปิดหน้าต่างนี้ หรือออกจากหน้านี้',
+                allowOutsideClick: false,
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            data = {
+                opt: 'savedata',
+                data: JSON.stringify(data),
+            }
+            $.ajax({
+                url: scriptUrl,
+                type: 'POST',
+                data: data,
+                success: (res) => {
+                    // logindriver
+                    if (res.status) {
+                        $('#booking-id').html(res.data['booking-id'])
+                        $('section').hide()
+                        $('#response-sec').show()
+                        $.post(scriptUrl, {
+                            opt: 'sendline',
+                            data: JSON.stringify(res.data)
+                        })
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'บันทึกข้อมูลสำเร็จ',
+                            html: 'เจ้าหน้าที่จะติดต่อกลับภายใน 24 ชั่วโมง<br>ขอบคุณที่ใช้บริการ',
+                            allowOutsideClick: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#0d6fff',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'บันทึกข้อมูลไม่สำเร็จ',
+                            allowOutsideClick: false,
+                        })
+                    }
+                }
+            })
+        }
+    </script>
+    <script>
+        function getBookingData() {
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังโหลดข้อมูลการจอง',
+                text: 'กรุณาอย่าปิดหน้าต่างนี้ หรือออกจากหน้านี้',
+                allowOutsideClick: false,
+            })
+            Swal.showLoading(Swal.getConfirmButton())
+            let data = {
+                opt: 'getbookingdata',
+                type: 'waiting',
+                uid: liff.getDecodedIDToken().sub
+            }
+            $.post(scriptUrl, data, (res) => {
+                // logindriver
+                Swal.close()
+                if (res.openwork) {
+                    let html = getResultTable(res.data[0], true)
+                    $('main').html(html)
+                    $('main table').addClass('bg-light my-3')
+                    $('main .container-fluid').append(`<div class="row justify-content-center">
+                        <div class="col-auto col-md-6 mb-5 pb-5 text-center">
+                            <button class="btn btn-warning w-100" id="close-job" onclick="closeJob()" data-id="${res.data[0]['booking-id']}"><i class="bi bi-check-circle"></i> ปิดงาน</button>
+                        </div>
+                    </div>`)
+                    return false
+                }
+                $('.table-responsive').removeClass('d-none')
+                let { header, data } = res
+                let datatable = $('#booking-table').DataTable({
+                    data: data,
+                    destroy: true,
+                    columns: [
+                        {
+                            title: '#',
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return ''
+                            }
+                        },
+                        {
+                            title: 'ประทับเวลา',
+                            data: 'timestamp',
+                            render: function (data, type, row) {
+                                return moment(data).format('DD/MM/YYYY HH:mm:ss') + ' น.'
+                            }
+                        },
+                        {
+                            title: 'เลือกจองงาน',
+                            data: null,
+                            render: function (data, type, row) {
+                                let obj = $('#booking-table').DataTable().row(row).data()
+                                if (obj.booking && obj.booking == 'จองแล้ว') {
+                                    return `<button class="btn w-100 text-nowrap btn-success" disabled>จองแล้ว</button>`
+                                }
+                                return `<button class="btn w-100 text-nowrap btn-warning" onclick="event.stopPropagation();showBookingDetail(this);">จองงาน</button>`
+                            }
+                        },
+                        { title: 'uid', data: 'uid' },
+                        { title: 'รหัสจอง', data: 'booking-id' },
+                        { title: 'ชื่อ', data: 'name' },
+                        { title: 'เบอร์โทร', data: 'phone' },
+                        { title: 'อีเมล', data: 'email' },
+                        { title: 'ประเภทสินค้า', data: 'stuff-type' },
+                        {
+                            title: 'รูปสินค้า',
+                            data: 'stuff_img',
+                            render: function (data, type, row) {
+                                if (data) {
+                                    let url = 'https://lh3.googleusercontent.com/d/' + data.split('/')[5]
+                                    return `<img src="${url}" class="img-fluid rounded" style="max-height: 100px;">`
+                                }
+                                else return 'ไม่มีรูป'
+                            }
+                        },
+                        {
+                            title: 'วันที่จอง',
+                            data: 'order-date',
+                            render: function (data, type, row) {
+                                return moment(data).format('DD/MM/YYYY HH:mm:ss')
+                            }
+                        },
+                        { title: 'ประเภทรถ', data: 'truck-sub-type' },
+                        { title: 'จำนวนรถ', data: 'truck-num' },
+                        { title: 'จุดรับสินค้า', data: 'steps_name' },
+                        {
+                            title: 'ระยะทาง',
+                            data: 'distance',
+                            render: function (data, type, row) {
+                                return (data / 1000).toFixed(2) + ' กม.'
+                            }
+                        },
+                        {
+                            title: 'แผนที่',
+                            data: 'route_url',
+                            render: function (data, type, row) {
+                                return `<a href="${data}" target="_blank" class="btn btn-primary"><i class="bi bi-geo-alt"></i> ดูแผนที่</a>`
+                            }
+                        },
+                        {
+                            title: 'ระยะเวลา',
+                            data: 'time',
+                            render: function (data, type, row) {
+                                return convertTime(data)
+                            }
+                        },
+                        {
+                            title: 'ราคา',
+                            data: 'price',
+                            render: function (data, type, row) {
+                                return data.toLocaleString() + ' บาท'
+                            }
+                        },
+                        { title: 'แรงงาน', data: 'labor-need' },
+                        { title: 'จำนวนแรงงาน', data: 'labor-num' },
+                        {
+                            title: 'ราคาแรงงาน',
+                            data: 'labor_price',
+                            render: function (data, type, row) {
+                                return data.toLocaleString() + ' บาท'
+                            }
+                        },
+                        {
+                            title: 'ราคารวม',
+                            data: 'total_price',
+                            render: function (data, type, row) {
+                                return data.toLocaleString() + ' บาท'
+                            }
+                        }
+                    ],
+                    columnDefs: [
+                        { targets: [1, 3], visible: false },
+                    ],
+                    responsive: true,
+                    scrollX: false,
+                    dom: '<"d-flex justify-content-between"<"col-auto col-md-6 text-start"B><"col-auto col-md-6 flex-stretch test-end"f>>tip',
+                    order: [[2, 'asc']],
+                    language: {
+                        url: "//cdn.datatables.net/plug-ins/1.10.24/i18n/Thai.json"
+                    },
+                    buttons: {
+                        buttons: [
+                            {
+                                html: '<button class="btn btn-danger"><i class="bi bi-arrow-repeat"></i><span class="d-none d-md-inline" onclick="getBookingData()"> รีเฟรช</span></button>',
+                                action: function (e, dt, node, config) {
+                                    return
+                                }
+                            }
+                        ],
+                        dom: {
+                            button: {
+                                className: 'btn'
+                            }
+                        }
+                    },
+                    initComplete: function () {
+                        // set header center
+                        $('#booking-table').find('thead').find('th').addClass('text-center text-nowrap align-middle text-bg-primary')
+                    }
+                });
+            })
+        }
+        function convertTime(time_seconds) {
+            let hours = Math.floor(time_seconds / 3600);
+            let minutes = Math.ceil((time_seconds - (hours * 3600)) / 60);
+            if (hours <= 0) return minutes + ' นาที'
+            return hours + ' ชั่วโมง ' + minutes + ' นาที'
+        }
+        function showBookingDetail(ele) {
+            let index = $('#booking-table').DataTable().row(ele.closest('tr')).index()
+            // logindriver
+            let data = $('#booking-table').DataTable().row(index).data()
+            // logindriver
+            let html = getResultTable(data)
+            Swal.fire({
+                title: 'ยืนยันข้อมูลการจองงาน',
+                html: html,
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน จองงานเลย',
+                cancelButtonText: 'ยกเลิก',
+                allowOutsideClick: false,
+                confirmButtonColor: '#0d6fff',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true
+            }).then(res => {
+                if (res.isConfirmed) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'กำลังบันทึกข้อมูล',
+                        text: 'กรุณาอย่าปิดหน้าต่างนี้ หรือออกจากหน้านี้',
+                        allowOutsideClick: false,
+                    })
+                    Swal.showLoading(Swal.getConfirmButton())
+                    data['status'] = 'จองแล้ว'
+                    data['name'] = logindriver.name
+                    data['phone'] = logindriver.phone
+                    data['email'] = logindriver.email
+                    $.post(scriptUrl, {
+                        opt: 'driverbooking',
+                        data: JSON.stringify(data),
+                        uid: data.uid
+                    }, function (res) {
+                        if (res.status == 'success') {
+                            $.post(scriptUrl, {
+                                opt: 'sendline-driver',
+                                data: JSON.stringify(data)
+                            })
+                            data['booking'] = 'จองแล้ว'
+                            $(ele).closest('tr').find('td').eq(1).html(`<button class="btn w-100 text-nowrap btn-success" disabled>จองแล้ว</button>`)
+                            $(ele).closest('tr').find('td').addClass('text-muted')
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลสำเร็จ',
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                let html = getResultTable(data)
+                                $('main').html(html)
+                                $('main table').addClass('bg-light my-3')
+                                $('main .container-fluid').append(`<div class="row justify-content-center">
+                                    <div class="col-auto col-md-6 mb-5 pb-5 text-center">
+                                        <button class="btn btn-warning w-100" id="close-job" onclick="closeJob()" data-id="${data['booking-id']}"><i class="bi bi-check-circle"></i> ปิดงาน</button>
+                                    </div>
+                                </div>`)
+                            })
+                        } else if (res.status == 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'บันทึกข้อมูลไม่สำเร็จ',
+                                title: status.text,
+                                allowOutsideClick: false,
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        function getResultTable(data, isinit = false) {
+            return `<div class="container-fluid ${isinit ? 'p-4' : ''}">
+                        <table class="table table-bordered table-striped table-sm ${isinit ? 'bg-light' : ''}">
+                            <tbody>
+                                <tr>
+                                    <th class="p-3 text-start">ข้อมูลลูกค้า</th>
+                                    <td class='p-3'>
+                                        ชื่อ: ${data.name}<br>
+                                        เบอร์โทร: ${data.phone}<br>
+                                        ${data.email ? ('อีเมล: ' + data.email) : ''}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">ประเภทรถ</th>
+                                    <td class='p-3'>
+                                        ${data['truck-sub-type']} จำนวน ${data['truck-num']} คัน
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">แรงงาน</th>
+                                    <td class='p-3'>
+                                        ${data['labor-need']} ${data['labor-need'] == 'ต้องการแรงงาน' ? ('จำนวน ' + data['labor-num'] + ' คน') : ''}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">ประเภทสินค้า</th>
+                                    <td class='p-3'>${data['stuff-type']}</td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">รูปสินค้า</th>
+                                    <td class='p-3'>
+                                        <a href="https://lh3.googleusercontent.com/d/${data.stuff_img.split('/')[5]}" target="_blank">
+                                        <img src="https://lh3.googleusercontent.com/d/${data.stuff_img.split('/')[5]}" class="img-fluid rounded ${data.stuff_img && data.stuff_img != '' ? '' : 'd-none'}" style="max-height: 100px;">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">วันที่จอง</th>
+                                    <td class='p-3'>${moment(data['order-date']).format('DD/MM/YYYY HH:mm:ss')} น.</td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">จุดรับส่งสินค้า</th>
+                                    <td class='p-3'>${data.steps_name}</td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">ลิ้งค์แผนที่</th>
+                                    <td class='p-3'><a href="${data.route_url}" target="_blank" class="btn btn-sm btn-primary"><i class="bi bi-geo-alt"></i> ดูแผนที่</a></td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">ระยะทาง</th>
+                                    <td class='p-3'>${(data.distance / 1000).toFixed(2)} กม.</td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">ระยะเวลา</th>
+                                    <td class='p-3'>${convertTime(data.time)}</td>
+                                </tr>
+                                <tr>
+                                    <th class="p-3 text-start">ราคา</th>
+                                    <td class='p-3'>
+                                        ค่ารถขนส่ง: ${data.price.toLocaleString()} บาท<br>
+                                        ค่าแรงงาน: ${data.labor_price.toLocaleString()} บาท
+                                    </td>
+                                </tr>
+                                <tr class="bg-success">
+                                    <th class="p-3 text-start text-light">ราคารวม</th>
+                                    <td class="text-light">${data.total_price.toLocaleString()} บาท</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>`
+        }
+        function closeJob() {
+            Swal.fire({
+                title: 'กรุณาอัพโหลดรูปภาพ',
+                input: 'file',
+                customClass: {
+                    input: 'form-control text-center bg-primary-subtle',
+                    validationMessage: 'invalid-feedback'
+                },
+                inputAttributes: {
+                    accept: 'image/*',
+                    'aria-label': 'อัพโหลดภาพงาน'
+                },
+                html: `<img src="" id="preview-image" class="img-fluid rounded d-none" style="max-height: 200px;">`,
+                didOpen: () => {
+                    let input = Swal.getInput()
+                    $(input).change(function () {
+                        let file = $(input)[0].files[0]
+                        let reader = new FileReader()
+                        reader.readAsDataURL(file)
+                        reader.onload = () => {
+                            let base64 = reader.result
+                            logindriver
+                            $('#preview-image').attr('src', base64).removeClass('d-none')
+                        }
+                    })
+                },
+                confirmButtonText: 'ยืนยัน ปิดงาน',
+                preConfirm: value => {
+                    if (!value || value == null) {
+                        Swal.showValidationMessage(
+                            `กรุณาอัพโหลดรูปภาพ`
+                        )
+                        return false
+                    }
+                    return value
+                },
+                showCancelButton: true,
+                cancelButtonText: 'ยกเลิก',
+                allowOutsideClick: false,
+                confirmButtonColor: '#0d6fff',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true,
+            }).then(value => {
+                Swal.fire({
+                    title: 'กำลังบันทึกข้อมูล',
+                    text: 'กรุณาอย่าปิดหน้าต่างนี้ หรือออกจากหน้านี้',
+                    allowOutsideClick: false,
+                })
+                Swal.showLoading(Swal.getConfirmButton())
+                let reader = new FileReader()
+                reader.readAsDataURL(value.value)
+                reader.onload = () => {
+                    let base64 = reader.result
+                    logindriver
+                    let data = {
+                        opt: 'closejob',
+                        id: $('#close-job').data('id'),
+                        image: base64
+                    }
+                    $.post(scriptUrl, data, (res) => {
+                        logindriver
+                        if (res.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลสำเร็จ',
+                                allowOutsideClick: false,
+                                confirmButtonText: 'จองงานใหม่เลย',
+                            }).then(() => {
+                                location.reload()
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfOy3rLSyo58njOYwjcomjSRX8DC5DqI0&callback=initMap"></script> -->
+    <script>
+        (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
+            key: "AIzaSyDfOy3rLSyo58njOYwjcomjSRX8DC5DqI0",
+            // key: "AIzaSyC4k8VnNFIfIIGhFFVVlo5yvmzrhnblcuE",
+            v: "weekly",
+            language: "th",
+            libraries: "places"
+            // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
+            // Add other bootstrap parameters as needed, using camel case.
+        });
+    </script>
+</body>
+
+</html>
