@@ -74,7 +74,6 @@
         }
 
 
-
         /* section{
             background-color: #fff;
         } */
@@ -90,7 +89,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark-subtle px-2 fixed-top py-0">
         <div class="container-fluid p-0">
             <div class="navbar-brand d-flex w-100 align-items-center justify-content-between" href="#">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvas-menu" aria-controls="offcanvasExample">
                     <i class="bi bi-stack"></i> Select Form
                 </button>
@@ -348,14 +347,14 @@
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
                                 <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="status-room-shift-morning" value="เช้า"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="status-room-shift-morning" value="เช้า" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="status-room-shift-morning"><i
                                                 class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="status-room-shift-evening" value="เย็น"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="status-room-shift-evening" value="เย็น" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="status-room-shift-evening"><i
                                                 class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
                                     </div>
@@ -478,14 +477,14 @@
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
                                 <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="stockroom-shift-morning" value="เช้า"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift" id="stockroom-shift-morning"
+                                            value="เช้า" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="stockroom-shift-morning"><i
                                                 class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="stockroom-shift-evening" value="เย็น"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift" id="stockroom-shift-evening"
+                                            value="เย็น" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="stockroom-shift-evening"><i
                                                 class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
                                     </div>
@@ -555,14 +554,14 @@
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
                                 <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="embryo-shift-morning" value="เช้า"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift" id="embryo-shift-morning"
+                                            value="เช้า" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="embryo-shift-morning"><i
                                                 class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="embryo-shift-evening" value="เย็น"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift" id="embryo-shift-evening"
+                                            value="เย็น" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="embryo-shift-evening"><i
                                                 class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
                                     </div>
@@ -811,9 +810,27 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-controlbar">Control Bar</label>
+                                        <label for="embryo-embryoplus-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-embryoplus-co2"
+                                            id="embryo-embryoplus-co2" class="form-control text-center" min="5.7"
+                                            max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-embryoplus-controlbar-co2">C.Bar CO<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-embryoplus-controlbar" id="embryo-embryoplus-controlbar"
+                                            name="embryo-embryoplus-controlbar-co2"
+                                            id="embryo-embryoplus-controlbar-co2" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-embryoplus-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-embryoplus-o2"
+                                            id="embryo-embryoplus-o2" class="form-control text-center" min="4.5"
+                                            max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-embryoplus-controlbar-o2">C.Bar O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryo-embryoplus-controlbar-o2" id="embryo-embryoplus-controlbar-o2"
                                             class="form-control text-center">
                                     </div>
                                     <div class="col-6 text-center">
@@ -821,18 +838,6 @@
                                         <input type="number" step="0.1" inputmode="decimal"
                                             name="embryo-embryoplus-temp" id="embryo-embryoplus-temp"
                                             class="form-control text-center" min="36.8" max="37.2">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-co2">CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-embryoplus-co2"
-                                            id="embryo-embryoplus-co2" class="form-control text-center" min="5.7"
-                                            max="6.3">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-o2">O<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-embryoplus-o2"
-                                            id="embryo-embryoplus-o2" class="form-control text-center" min="4.5"
-                                            max="5.5">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-embryoplus-alert">
@@ -851,26 +856,34 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-a-controlbar">Control Bar</label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-ec6s-a-controlbar" id="embryo-ec6s-a-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-a-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-temp"
-                                            id="embryo-ec6s-a-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                    <div class="col-6 text-center">
                                         <label for="embryo-ec6s-a-co2">CO<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-co2"
                                             id="embryo-ec6s-a-co2" class="form-control text-center" min="5.7" max="6.3">
                                     </div>
                                     <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-a-controlbar-co2">C.Bar CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryo-ec6s-a-controlbar-co2" id="embryo-ec6s-a-controlbar-co2"
+                                            class="form-control text-center">
+                                    </div>
+
+                                    <div class="col-6 text-center">
                                         <label for="embryo-ec6s-a-o2">O<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-o2"
                                             id="embryo-ec6s-a-o2" class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-a-controlbar-o2">C.Bar O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryo-ec6s-a-controlbar-o2" id="embryo-ec6s-a-controlbar-o2"
+                                            class="form-control text-center">
+                                    </div>
+                                  
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-a-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-temp"
+                                            id="embryo-ec6s-a-temp" class="form-control text-center" min="36.8"
+                                            max="37.2">
                                     </div>
                                 </div>
                                 <div class="row mt-2" id="embryo-ec6s-a-alert">
@@ -885,9 +898,25 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-controlbar">Control Bar</label>
+                                        <label for="embryo-ec6s-b-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-b-co2"
+                                            id="embryo-ec6s-b-co2" class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-b-controlbar">C.Bar CO<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal"
                                             name="embryo-ec6s-b-controlbar" id="embryo-ec6s-b-controlbar"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-b-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-b-o2"
+                                            id="embryo-ec6s-b-o2" class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-b-controlbar">C.Bar O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryo-ec6s-b-controlbar-o2" id="embryo-ec6s-b-controlbar-o2"
                                             class="form-control text-center">
                                     </div>
                                     <div class="col-6 text-center">
@@ -896,16 +925,8 @@
                                             id="embryo-ec6s-b-temp" class="form-control text-center" min="36.8"
                                             max="37.2">
                                     </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-co2">CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-b-co2"
-                                            id="embryo-ec6s-b-co2" class="form-control text-center" min="5.7" max="6.3">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-o2">O<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-b-o2"
-                                            id="embryo-ec6s-b-o2" class="form-control text-center" min="4.5" max="5.5">
-                                    </div>
+                                   
+                                  
                                 </div>
                                 <div class="row mt-2" id="embryo-ec6s-b-alert">
                                 </div>
@@ -943,16 +964,18 @@
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
                                 <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="refrigerator-shift-morning" value="เช้า"
-                                            autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="refrigerator-shift-morning"><i
-                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="refrigerator-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="refrigerator-shift-morning"><i class="bi bi-cloud-sun-fill fs-4"></i>
+                                            รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="refrigerator-shift-evening" value="เย็น"
-                                            autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="refrigerator-shift-evening"><i
-                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="refrigerator-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="refrigerator-shift-evening"><i class="bi bi-cloud-moon-fill fs-4"></i>
+                                            รอบเย็น</label>
                                     </div>
                                 </div>
                             </div>
@@ -1050,14 +1073,14 @@
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
                                 <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="incubator-shift-morning" value="เช้า"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift" id="incubator-shift-morning"
+                                            value="เช้า" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="incubator-shift-morning"><i
                                                 class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="incubator-shift-evening" value="เย็น"
-                                            autocomplete="off">
+                                        <input type="radio" class="btn-check" name="shift" id="incubator-shift-evening"
+                                            value="เย็น" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100" for="incubator-shift-evening"><i
                                                 class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
                                     </div>
@@ -1282,7 +1305,7 @@
                         html: `<span class="text-decoration-underline">ค่าต่ำกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
                     }
                     // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} ต่ำกว่า ${min} ไม่ปกติ</span>`)
-                } else if (val != '' &&  Number(val) > Number(max)) {
+                } else if (val != '' && Number(val) > Number(max)) {
                     if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
                     section_alerts[sec_id][$(inp).attr('id')] = {
                         label: label,
@@ -1364,7 +1387,7 @@
                                 //     return
                                 // }
                                 $('#' + key).attr('placeholder', data[key])
-                                if(key.indexOf('-lot') > -1) $('#' + key).val(data[key])
+                                if (key.indexOf('-lot') > -1) $('#' + key).val(data[key])
                             })
                             console.log(localStorage.getItem('user'));
                             if (localStorage.getItem('user') != null) {
@@ -1525,14 +1548,14 @@ Right  =  ${obj['n2-manifold-right']} psi
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 DR-Analyst
-👉temperature = ${obj['statusroom-dr-temp']} ํC
-👉humidity = ${obj['statusroom-dr-humid']} %RH
-👉pressure = ${obj['statusroom-dr-plessure']} Pa
+👉 temperature = ${obj['statusroom-dr-temp']} ํC
+👉 humidity = ${obj['statusroom-dr-humid']} %RH
+👉 pressure = ${obj['statusroom-dr-plessure']} Pa
 -------------------------------
 
 Desktop-Meter
-👉temperature = ${obj['statusroom-desktopmeter-temp']} ํC
-👉humidity = ${obj['statusroom-desktopmeter-humid']} %RH
+👉 temperature = ${obj['statusroom-desktopmeter-temp']} ํC
+👉 humidity = ${obj['statusroom-desktopmeter-humid']} %RH
 -------------------------------
 
 Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
@@ -1558,63 +1581,63 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 MINC A
-👉control bar = ${obj['embryo-minc-a-controlbar']} bar
-👉temperature = ${obj['embryo-minc-a-temp']} ํC
+👉 control bar = ${obj['embryo-minc-a-controlbar']} bar
+👉 temperature = ${obj['embryo-minc-a-temp']} ํC
 -------------------------------
 
 MINC B
-👉control bar = ${obj['embryo-minc-b-controlbar']} bar
-👉temperature = ${obj['embryo-minc-b-temp']} ํC
+👉 control bar = ${obj['embryo-minc-b-controlbar']} bar
+👉 temperature = ${obj['embryo-minc-b-temp']} ํC
 -------------------------------
 
 MINC C
-👉control bar = ${obj['embryo-minc-c-controlbar']} bar
-👉temperature = ${obj['embryo-minc-c-temp']} ํC
+👉 control bar = ${obj['embryo-minc-c-controlbar']} bar
+👉 temperature = ${obj['embryo-minc-c-temp']} ํC
 -------------------------------
 
 // PLANER A-E
 PLANER A
-👉control bar = ${obj['embryo-planer-a-controlbar']} bar
-👉temperature = ${obj['embryo-planer-a-temp']} ํC
+👉 control bar = ${obj['embryo-planer-a-controlbar']} bar
+👉 temperature = ${obj['embryo-planer-a-temp']} ํC
 ${obj['embryo-planer-a-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-a-pergedtime']}
 -------------------------------
 
 PLANER B
-👉control bar = ${obj['embryo-planer-b-controlbar']} bar
-👉temperature = ${obj['embryo-planer-b-temp']} ํC
+👉 control bar = ${obj['embryo-planer-b-controlbar']} bar
+👉 temperature = ${obj['embryo-planer-b-temp']} ํC
 ${obj['embryo-planer-b-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-b-pergedtime']}
 -------------------------------
 
 PLANER C
-👉control bar = ${obj['embryo-planer-c-controlbar']} bar
-👉temperature = ${obj['embryo-planer-c-temp']} ํC
+👉 control bar = ${obj['embryo-planer-c-controlbar']} bar
+👉 temperature = ${obj['embryo-planer-c-temp']} ํC
 ${obj['embryo-planer-c-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-c-pergedtime']}
 -------------------------------
 
 PLANER D
-👉control bar = ${obj['embryo-planer-d-controlbar']} bar
-👉temperature = ${obj['embryo-planer-d-temp']} ํC
+👉 control bar = ${obj['embryo-planer-d-controlbar']} bar
+👉 temperature = ${obj['embryo-planer-d-temp']} ํC
 ${obj['embryo-planer-d-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-d-pergedtime']}
 -------------------------------
 
 PLANER E
-👉control bar = ${obj['embryo-planer-e-controlbar']} bar
-👉temperature = ${obj['embryo-planer-e-temp']} ํC
+👉 control bar = ${obj['embryo-planer-e-controlbar']} bar
+👉 temperature = ${obj['embryo-planer-e-temp']} ํC
 ${obj['embryo-planer-e-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-e-pergedtime']}
 -------------------------------
 
 EMBRYO PLUS
-👉CO2 = ${obj['embryo-embryoplus-co2']} %
-👉O2 = ${obj['embryo-embryoplus-o2']} %
-👉control bar = ${obj['embryo-embryoplus-controlbar']} bar
-👉temperature = ${obj['embryo-embryoplus-temp']} ํC
+👉 CO2 = ${obj['embryo-embryoplus-co2']} %
+👉 O2 = ${obj['embryo-embryoplus-o2']} %
+👉 control bar = ${obj['embryo-embryoplus-controlbar']} bar
+👉 temperature = ${obj['embryo-embryoplus-temp']} ํC
 -------------------------------
 
 EC6S A
-👉CO2 = ${obj['embryo-ec6s-a-co2']} %
-👉O2 = ${obj['embryo-ec6s-a-o2']} %
-👉control bar = ${obj['embryo-ec6s-a-controlbar']} bar
-👉temperature = ${obj['embryo-ec6s-a-temp']} ํC
+👉 CO2 = ${obj['embryo-ec6s-a-co2']} %
+👉 O2 = ${obj['embryo-ec6s-a-o2']} %
+👉 control bar = ${obj['embryo-ec6s-a-controlbar']} bar
+👉 temperature = ${obj['embryo-ec6s-a-temp']} ํC
 -------------------------------
 
 บันทึกโดย
@@ -1626,15 +1649,15 @@ EC6S A
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 Refrigerator
-👉temperature = ${obj['refrigerator-refrig-temp']} ํC
+👉 temperature = ${obj['refrigerator-refrig-temp']} ํC
 -------------------------------
 
 Thermometer
-👉temperature = ${obj['refrigerator-thermo-temp']} ํC
+👉 temperature = ${obj['refrigerator-thermo-temp']} ํC
 -------------------------------
 
 ESCORT
-👉temperature = ${obj['refrigerator-escort-temp']} ํC
+👉 temperature = ${obj['refrigerator-escort-temp']} ํC
 -------------------------------
 
 บันทึกโดย
@@ -1646,12 +1669,12 @@ ESCORT
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 ASTEC
-👉CO2 = ${obj['incubator-astec-co2']}
-👉temperature = ${obj['incubator-astec-temp']} ํC
+👉 CO2 = ${obj['incubator-astec-co2']}
+👉 temperature = ${obj['incubator-astec-temp']} ํC
 -------------------------------
 
 MEMMERT
-👉temperature = ${obj['incubator-memmert-temp']} ํC
+👉 temperature = ${obj['incubator-memmert-temp']} ํC
 -------------------------------
 
 บันทึกโดย
