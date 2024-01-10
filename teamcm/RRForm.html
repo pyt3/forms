@@ -474,6 +474,7 @@
             // read text from file
             let text = await fetch('./console.js').then(res => res.text())
             $('#console-code').val(text)
+            $('#rr_no').val('RR_'+new Date().getFullYear()+'_')
             // if no decimal mask input with localestring else mask with 2 decimal
             let mask_options = {
                 reverse: true,
