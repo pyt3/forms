@@ -321,6 +321,9 @@
             let close_cal = $('#is_cal').is(':checked')
             date = date.split('-').reverse().join('/')
             code = code.split(',').map(a => a.trim())
+            if(code.length == 0){
+                code = code.split(' ').map(a => a.trim())
+            }
             if ((vender == null || vender == '') && !$('#is_team_cal').is(':checked')) {
                 return Swal.fire({
                     title: 'กรุณาเลือก Vender',
