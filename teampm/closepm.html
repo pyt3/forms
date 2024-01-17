@@ -314,7 +314,7 @@
         $('#mainform').submit(async function (e) {
             e.preventDefault()
             let code = $('#code').val()
-            let vender = $('#vender').val().split(',')[0]
+            let vender = $('#vender').val()
             let date = $('#date').val()
             let safety = $('#safety').is(':checked') ? 'safety' : undefined
             let close_pm = $('#is_pm').is(':checked')
@@ -341,10 +341,12 @@
                     timer: 1500
                 })
             }
+            if ($('#is_team_cal').is(':checked')) {
+                vender = '[[CAL]]'+vender
+            }else{
+                vender = vender.split(',')[0]
+            }
             for (let c of code) {
-                if ($('#is_team_cal').is(':checked')) {
-                    c = '[[CAL]]' + c
-                }
                 Swal.fire({
                     title: c,
                     allowOutsideClick: false,
