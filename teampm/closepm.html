@@ -269,6 +269,12 @@
                             Close CAL
                         </label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="is_team_cal" name="is_team_cal">
+                        <label class="form-check-label" for="is_cal">
+                            Team CAL
+                        </label>
+                    </div>
                 </div>
                 <div class="col-md-4 text-center">
                     <button class="btn btn-primary w-100" type="submit">ตกลง</button>
@@ -293,10 +299,10 @@
                 }).on('select2:selecting', function (e) {
                     let inputValue = e.params.args.data.text;
                     let optionValue = inputValue.toLowerCase().replace(/\s+/g, '-');
-    
+
                     // Create a new option element
                     let newOption = new Option(inputValue, optionValue, true, true);
-    
+
                     // Append the new option to the select element
                     $(this).append(newOption).trigger('change');
                 });
@@ -336,6 +342,9 @@
                 })
             }
             for (let c of code) {
+                if ($('#is_team_cal').is(':checked')) {
+                    c = '[[CAL]]' + c
+                }
                 Swal.fire({
                     title: c,
                     allowOutsideClick: false,
