@@ -320,8 +320,9 @@
             let close_pm = $('#is_pm').is(':checked')
             let close_cal = $('#is_cal').is(':checked')
             date = date.split('-').reverse().join('/')
+            let tmp = code
             code = code.split(',').map(a => a.trim())
-            if(code.length == 0){
+            if(code == tmp || code[0] == tmp){
                 code = code.split(' ').map(a => a.trim())
             }
             if ((vender == null || vender == '') && !$('#is_team_cal').is(':checked')) {
