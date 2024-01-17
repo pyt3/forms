@@ -323,7 +323,7 @@
             let tmp = code
             code = code.split(',').map(a => a.trim())
             if(code == tmp || code[0] == tmp){
-                code = code.split(' ').map(a => a.trim())
+                code = tmp.split(' ').map(a => a.trim())
             }
             if ((vender == null || vender == '') && !$('#is_team_cal').is(':checked')) {
                 return Swal.fire({
