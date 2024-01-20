@@ -179,7 +179,7 @@
                 <input type="search" id="add-id" name="add-id"
                     class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
             </div>
-            <div class="col-auto text-center mb-2">
+            <div class="col-auto text-center mb-2 d-none">
                 <label for="site">แผนก</label>
                 <select class="form-select" id="site">
                     <option value="" selected disabled>เลือก Site</option>
@@ -297,13 +297,12 @@
                                 client: cl
                             }).then(() => {
                                 client = cl
-                                $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
                                 if (client.toLowerCase() == 'all') {
-                                    $('#dept option').each(function () {
-                                        $(this).text($(this).attr('class').toUpperCase() + ' - ' + $(this).text())
+                                    $('#site').parent().removeClass('d-none').on('change', () => {
+                                        client = $('#site option:selected').attr('class')
+                                        console.log("🚀 !! client:", client)
                                     })
-                                } else {
-                                    $('#dept option').not('.' + client.toLowerCase()).remove()
+
                                 }
                                 return Swal.fire({
                                     icon: 'success',
@@ -346,11 +345,11 @@
             if (user.exists) {
                 client = user.data().client
                 if (client.toLowerCase() == 'all') {
-                    $('#dept option').each(function () {
-                        $(this).text($(this).attr('class').toUpperCase() + ' - ' + $(this).text())
+                    $('#site').parent().removeClass('d-none').on('change', () => {
+                        client = $('#site option:selected').attr('class')
+                        console.log("🚀 !! client:", client)
                     })
-                } else {
-                    $('#dept option').not('.' + client.toLowerCase()).remove()
+
                 }
                 return true
             } else {
