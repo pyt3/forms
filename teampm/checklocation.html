@@ -179,7 +179,7 @@
                 <input type="search" id="add-id" name="add-id"
                     class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
             </div>
-            <div class="col-auto flex-fill text-center mb-2">
+            <div class="col-auto flex-fill text-center mb-2 d-none">
                 <label for="site">แผนก</label>
                 <select class="form-select" id="site">
                     <option value="" selected disabled>เลือก Site</option>
@@ -302,7 +302,7 @@
                             }).then(() => {
                                 client = cl
                                 if (client.toLowerCase() == 'all') {
-                                    $('#add-id').parent().removeClass(col - md - 4).addClass('col-auto')
+                                    $('#add-id').parent().removeClass('col-md-4').addClass('col-auto')
                                     $('#site').parent().removeClass('d-none')
                                 }
                                 return Swal.fire({
