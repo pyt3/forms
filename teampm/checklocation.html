@@ -230,21 +230,52 @@
                                                 <option value="PYT1">PHYATHAI 1</option>
                                                 <option value="PYT2">PHYATHAI 2</option>
                                                 <option value="PYT3">PHYATHAI 3</option>    
-                                                <option value="PTN">PHYATHAI NAWAMIN</option>   
+                                                <option value="PTP">PHYATHAI PHAHOLYOTHIN</option>    
+                                                <option value="PTN">PHYATHAI NAWAMIN</option>    
                                             </select>    
                                         </div>
                                     </div>
                                 </div>`,
+                        didOpen: () => {
+                            $('#client').select2({
+                                theme: 'bootstrap-5',
+                                templateResult: (opt) => {
+                                    console.log("🚀 !! opt:", opt)
+                                    if (!opt.id) {
+                                        return opt.text
+                                    }
+                                    var $opt = $(
+                                        '<span class="d-flex align-items-center p-2"><img src="./' + opt.id.toLowerCase() + '-logo.jpg" height="40px" class="img-flag" /><span class="text-center w-100">' + opt.text + '</span></span>'
+                                    );
+                                    return $opt;
+                                }
+                            });
+                            $(".select2-results").css("max-height", "600px");
+                        },
+                        preConfirm: () => {
+                            if ($('#client').val() == '' || !$('#client').val()) {
+                                Swal.showValidationMessage('กรุณาเลือก Site')
+                            }
+                            return $('#client').val()
+                        },
                         allowOutsideClick: false,
                         showCancelButton: false,
                         confirmButtonText: 'ตกลง',
                     }).then(res => {
                         if (res.isConfirmed) {
-                            cl = $('#client').val()
-                            firestore.collection('users').doc(auth.currentUser.uid).set({
+                            cl = res.value
+                            firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
                                 client: cl
                             }).then(() => {
                                 client = cl
+                                $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
+                                if (client.toLowerCase() == 'all') {
+                                    $('#dept option').each(function () {
+                                        $(this).text($(this).attr('class').toUpperCase() + ' - ' + $(this).text())
+                                    })
+                                } else {
+                                    $('#dept option').not('.' + client.toLowerCase()).remove()
+                                }
                                 return Swal.fire({
                                     icon: 'success',
                                     title: 'สำเร็จ',
@@ -281,9 +312,17 @@
         // }
 
         async function checkClient() {
-            let user = await firestore.collection('users').doc(auth.currentUser.uid).get()
+            let user = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get()
+            console.log("🚀 !! user:", user.data())
             if (user.exists) {
                 client = user.data().client
+                if (client.toLowerCase() == 'all') {
+                    $('#dept option').each(function () {
+                        $(this).text($(this).attr('class').toUpperCase() + ' - ' + $(this).text())
+                    })
+                } else {
+                    $('#dept option').not('.' + client.toLowerCase()).remove()
+                }
                 return true
             } else {
                 return false
@@ -312,10 +351,22 @@
             }
             // replace not number character
             id = id.replace(/\D/g, '')
-            let query_id1 = client + '_' + (('00000' + id).slice(-5))
-            let query_id2 = client + 'D_' + (('00000' + id).slice(-5))
-            let query_id3 = 'DEMO_' + (('000000' + id).slice(-6))
-            firestore.collectionGroup('location').where("code", 'in', [query_id1, query_id2, query_id3]).limit(100).get().then(doc => {
+            let branches = ['PYT1', 'PYT2', 'PYT3', 'PTP', 'PTN']
+            let queryArr = []
+            if(client.toLowerCase() == 'all'){
+                branches.forEach(b => {
+                    queryArr.push(b + '_' + (('00000' + id).slice(-5)))
+                    queryArr.push(b + 'D_' + (('00000' + id).slice(-5)))
+                    queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
+                    queryArr.push(b + (('00000' + id).slice(-5)))
+                })
+            }else{
+                queryArr.push(client + '_' + (('00000' + id).slice(-5)))
+                queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
+                queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
+                queryArr.push(client + (('00000' + id).slice(-5)))
+            }
+            firestore.collectionGroup('location').where("code", 'in', queryArr).limit(100).get().then(doc => {
                 console.log("🚀 !! doc:", doc)
                 if (doc.empty) {
                     $.LoadingOverlay("hide", true)
