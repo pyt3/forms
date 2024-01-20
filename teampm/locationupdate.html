@@ -544,14 +544,14 @@
                             firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
                                 client: cl
                             }).then(() => {
-                                if (client.toLowerCase() != 'PYT3') $('#ocr-btn').parent().remove()
                                 client = cl
+                                if (client.toLowerCase() != 'PYT3') $('#ocr-btn').parent().remove()
                                 $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
-                                if(client.toLowerCase() == 'all'){
-                                    $('#dept option').each(function(){
-                                        $(this).text($(this).attr('class') + ' '+$(this).text())
+                                if (client.toLowerCase() == 'all') {
+                                    $('#dept option').each(function () {
+                                        $(this).text($(this).attr('class') + ' ' + $(this).text())
                                     })
-                                }else{
+                                } else {
                                     $('#dept option').not('.' + client.toLowerCase()).remove()
                                 }
                                 return Swal.fire({
@@ -679,7 +679,7 @@
                     line: profile.displayName,
                     remark: $('#remark').val()
                 }
-                if(client == 'all'){
+                if (client == 'all') {
                     obj.client = $('#dept option:selected').attr('class').toLowerCase()
                 }
                 await firestore.collection(`${client}/${id}/location`).add(obj).then(res => {
