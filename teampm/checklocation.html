@@ -219,10 +219,8 @@
                     );
                     return $opt;
                 }, templateSelection: function (data) {
-                    // Here, data.element refers to the original option element
-                    let originalOptionClass = $(data.element).attr('class');
-                    console.log("Original option class: ", originalOptionClass);
-                    return data.text;
+                   client = data.id
+                   console.log("🚀 !! client:", client)
                 }
             });
             $("#site .select2-results").css("max-height", "600px");
@@ -304,11 +302,7 @@
                                 client = cl
                                 if (client.toLowerCase() == 'all') {
                                     $('#add-id').parent().removeClass(col - md - 4).addClass('col-auto')
-                                    $('#site').parent().removeClass('d-none').on('change', () => {
-                                        client = $('#site option:selected').attr('class')
-                                        console.log("🚀 !! client:", client)
-                                    })
-
+                                    $('#site').parent().removeClass('d-none')
                                 }
                                 return Swal.fire({
                                     icon: 'success',
@@ -352,11 +346,7 @@
                 client = user.data().client
                 if (client.toLowerCase() == 'all') {
                     $('#add-id').parent().removeClass('col-md-4').addClass('col-auto')
-                    $('#site').parent().removeClass('d-none').on('change', () => {
-                        client = $('#site option:selected').attr('class')
-                        console.log("🚀 !! client:", client)
-                    })
-
+                    $('#site').parent().removeClass('d-none')
                 }
                 return true
             } else {
