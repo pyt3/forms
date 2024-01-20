@@ -302,7 +302,7 @@
                             }).then(() => {
                                 client = cl
                                 if (client.toLowerCase() == 'all') {
-                                    $('#add-id').parent().removeClass('col-md-4').addClass('col-auto')
+                                    $('#add-id').parent().removeClass('col-auto').addClass('col-md-4')
                                     $('#site').parent().removeClass('d-none')
                                 }
                                 return Swal.fire({
@@ -346,7 +346,7 @@
             if (user.exists) {
                 client = user.data().client
                 if (client.toLowerCase() == 'all') {
-                    $('#add-id').parent().removeClass('col-md-4').addClass('col-auto')
+                    $('#add-id').parent().removeClass('col-auto').addClass('col-md-4')
                     $('#site').parent().removeClass('d-none')
                 }
                 return true
