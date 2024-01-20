@@ -174,12 +174,12 @@
     </div> -->
     <div class="container">
         <div class="row justify-content-center align-items-end mt-3">
-            <div class="col-auto flex-fill mb-2 text-center me-0 pe-0">
+            <div class="col-md-4 flex-fill mb-2 text-center">
                 <label for="add-id">รหัสเครื่อง</label>
                 <input type="search" id="add-id" name="add-id"
                     class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
             </div>
-            <div class="col-auto text-center mb-2 d-none">
+            <div class="col-auto flex-fill text-center mb-2">
                 <label for="site">แผนก</label>
                 <select class="form-select" id="site">
                     <option value="" selected disabled>เลือก Site</option>
@@ -218,6 +218,11 @@
                         '<span class="d-flex align-items-center p-2"><img src="./' + opt.id.toLowerCase() + '-logo.jpg" height="40px" class="img-flag" /><span class="text-center w-100">' + opt.text + '</span></span>'
                     );
                     return $opt;
+                }, templateSelection: function (data) {
+                    // Here, data.element refers to the original option element
+                    let originalOptionClass = $(data.element).attr('class');
+                    console.log("Original option class: ", originalOptionClass);
+                    return data.text;
                 }
             });
             $("#site .select2-results").css("max-height", "600px");
@@ -298,6 +303,7 @@
                             }).then(() => {
                                 client = cl
                                 if (client.toLowerCase() == 'all') {
+                                    $('#add-id').parent().removeClass(col - md - 4).addClass('col-auto')
                                     $('#site').parent().removeClass('d-none').on('change', () => {
                                         client = $('#site option:selected').attr('class')
                                         console.log("🚀 !! client:", client)
@@ -345,6 +351,7 @@
             if (user.exists) {
                 client = user.data().client
                 if (client.toLowerCase() == 'all') {
+                    $('#add-id').parent().removeClass(col - md - 4).addClass('col-auto')
                     $('#site').parent().removeClass('d-none').on('change', () => {
                         client = $('#site option:selected').attr('class')
                         console.log("🚀 !! client:", client)
