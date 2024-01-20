@@ -545,7 +545,6 @@
                                 client: cl
                             }).then(() => {
                                 client = cl
-                                if (client.toLowerCase() != 'PYT3') $('#ocr-btn').parent().remove()
                                 $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
                                 if (client.toLowerCase() == 'all') {
                                     $('#dept option').each(function () {
@@ -604,7 +603,13 @@
             console.log("🚀 !! user:", user.data())
             if (user.exists) {
                 client = user.data().client
-                $('#dept option').not('.' + client.toLowerCase()).remove()
+                if (client.toLowerCase() == 'all') {
+                    $('#dept option').each(function () {
+                        $(this).text($(this).attr('class') + ' ' + $(this).text())
+                    })
+                } else {
+                    $('#dept option').not('.' + client.toLowerCase()).remove()
+                }
                 return true
             } else {
                 return false
