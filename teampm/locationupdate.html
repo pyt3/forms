@@ -473,12 +473,15 @@
                         didOpen: () => {
                             $('#client').select2({
                                 theme: 'bootstrap-5',
-                                templateResult: (opt) =>{
+                                templateResult: (opt) => {
+                                    console.log("🚀 !! opt:", opt)
+                                    return {
+                                }
                                     if (!opt.id) {
                                         return opt.text
                                     }
                                         var $opt = $(
-                                            '<span><img src="./' + opt.val() + '-logo" width="40px" height="40px" class="img-flag" /> ' + opt.text + '</span>'
+                                            '<span><img src="./' + opt.value.toLowerCase() + '-logo" width="40px" height="40px" class="img-flag" /> ' + opt.text + '</span>'
                                         );
                                         return $opt;
                                 }
