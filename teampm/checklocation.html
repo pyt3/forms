@@ -357,7 +357,6 @@
 
         function searchLocationData() {
             $('#dept_table').slideUp(200)
-            $.LoadingOverlay("show")
             let id = $('#add-id').val()
             if (id.length == 0) {
                 return Swal.fire({
@@ -375,9 +374,17 @@
                     timer: 1500
                 })
             }
+            if(client.toLowerCase() == 'all' && $('#site').val() == null) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือก Site',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            $.LoadingOverlay("show")
             // replace not number character
             id = id.replace(/\D/g, '')
-            let branches = ['PYT1', 'PYT2', 'PYT3', 'PTP', 'PTN']
             let queryArr = []
 
             queryArr.push(client + '_' + (('00000' + id).slice(-5)))
