@@ -527,7 +527,7 @@
                                     return $opt;
                                 }
                             });
-                            $(".select2-results").css("max-height","600px");
+                            $(".select2-results").css("max-height", "600px");
                         },
                         preConfirm: () => {
                             if ($('#client').val() == '' || !$('#client').val()) {
@@ -547,7 +547,13 @@
                                 if (client.toLowerCase() != 'PYT3') $('#ocr-btn').parent().remove()
                                 client = cl
                                 $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
-                                $('#dept option').not('.' + client.toLowerCase()).remove()
+                                if(client.toLowerCase() == 'all'){
+                                    $('#dept option').each(function(){
+                                        $(this).text($(this).attr('class') + ' '+$(this).text())
+                                    })
+                                }else{
+                                    $('#dept option').not('.' + client.toLowerCase()).remove()
+                                }
                                 return Swal.fire({
                                     icon: 'success',
                                     title: 'สำเร็จ',
@@ -672,6 +678,9 @@
                     uid: profile.userId,
                     line: profile.displayName,
                     remark: $('#remark').val()
+                }
+                if(client == 'all'){
+                    obj.client = $('#dept option:selected').attr('class').toLowerCase()
                 }
                 await firestore.collection(`${client}/${id}/location`).add(obj).then(res => {
                     console.log("🚀 ~ res", res)
