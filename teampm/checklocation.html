@@ -351,7 +351,7 @@
             if (user.exists) {
                 client = user.data().client
                 if (client.toLowerCase() == 'all') {
-                    $('#add-id').parent().removeClass(col - md - 4).addClass('col-auto')
+                    $('#add-id').parent().removeClass('col-md-4').addClass('col-auto')
                     $('#site').parent().removeClass('d-none').on('change', () => {
                         client = $('#site option:selected').attr('class')
                         console.log("🚀 !! client:", client)
