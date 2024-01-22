@@ -57,6 +57,10 @@
                 color: #ffffff;
             }
         }
+
+        .select2-container--open {
+            z-index: 99999999999999;
+        }
     </style>
 </head>
 
@@ -170,10 +174,21 @@
     </div> -->
     <div class="container">
         <div class="row justify-content-center align-items-end mt-3">
-            <div class="col-auto flex-fill mb-2 text-center me-0 pe-0">
+            <div class="col-auto flex-fill mb-2 text-center">
                 <label for="add-id">รหัสเครื่อง</label>
                 <input type="search" id="add-id" name="add-id"
                     class="form-control text-center text-bg-warning shadow-none" placeholder="กรอกรหัส">
+            </div>
+            <div class="col-auto flex-fill text-center mb-2 d-none">
+                <label for="site">แผนก</label>
+                <select class="form-select" id="site">
+                    <option value="" selected disabled>เลือก Site</option>
+                    <option value="PYT1">PHYATHAI 1</option>
+                    <option value="PYT2">PHYATHAI 2</option>
+                    <option value="PYT3">PHYATHAI 3</option>
+                    <option value="PTP">PHYATHAI PHAHOLYOTHIN</option>
+                    <option value="PTN">PHYATHAI NAWAMIN</option>
+                </select>
             </div>
             <div class="col-auto text-center mb-2">
                 <button class="btn btn-success" id="add-btn">ค้นหา</button>
@@ -192,6 +207,24 @@
     <script>
         var client
         $(document).ready(() => {
+            $('#site').select2({
+                theme: 'bootstrap-5',
+                templateResult: (opt) => {
+                    console.log("🚀 !! opt:", opt)
+                    if (!opt.id) {
+                        return opt.text
+                    }
+                    var $opt = $(
+                        '<span class="d-flex align-items-center p-2"><img src="./' + opt.id.toLowerCase() + '-logo.jpg" height="40px" class="img-flag" /><span class="text-center w-100">' + opt.text + '</span></span>'
+                    );
+                    return $opt;
+                }, templateSelection: function (data) {
+                   client = data.id
+                   console.log("🚀 !! client:", client)
+                    return data.text;
+                }
+            });
+            $("#site .select2-results").css("max-height", "600px");
             $.LoadingOverlay("show")
             $('#add-id').on('keyup', (e) => {
                 if (e.keyCode == 13) {
@@ -230,21 +263,48 @@
                                                 <option value="PYT1">PHYATHAI 1</option>
                                                 <option value="PYT2">PHYATHAI 2</option>
                                                 <option value="PYT3">PHYATHAI 3</option>    
-                                                <option value="PTN">PHYATHAI NAWAMIN</option>   
+                                                <option value="PTP">PHYATHAI PHAHOLYOTHIN</option>    
+                                                <option value="PTN">PHYATHAI NAWAMIN</option>    
                                             </select>    
                                         </div>
                                     </div>
                                 </div>`,
+                        didOpen: () => {
+                            $('#client').select2({
+                                theme: 'bootstrap-5',
+                                templateResult: (opt) => {
+                                    console.log("🚀 !! opt:", opt)
+                                    if (!opt.id) {
+                                        return opt.text
+                                    }
+                                    var $opt = $(
+                                        '<span class="d-flex align-items-center p-2"><img src="./' + opt.id.toLowerCase() + '-logo.jpg" height="40px" class="img-flag" /><span class="text-center w-100">' + opt.text + '</span></span>'
+                                    );
+                                    return $opt;
+                                }
+                            });
+                            $("#client .select2-results").css("max-height", "600px");
+                        },
+                        preConfirm: () => {
+                            if ($('#client').val() == '' || !$('#client').val()) {
+                                Swal.showValidationMessage('กรุณาเลือก Site')
+                            }
+                            return $('#client').val()
+                        },
                         allowOutsideClick: false,
                         showCancelButton: false,
                         confirmButtonText: 'ตกลง',
                     }).then(res => {
                         if (res.isConfirmed) {
-                            cl = $('#client').val()
-                            firestore.collection('users').doc(auth.currentUser.uid).set({
+                            cl = res.value
+                            firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
                                 client: cl
                             }).then(() => {
                                 client = cl
+                                if (client.toLowerCase() == 'all') {
+                                    $('#add-id').parent().removeClass('col-auto').addClass('col-md-4')
+                                    $('#site').parent().removeClass('d-none')
+                                }
                                 return Swal.fire({
                                     icon: 'success',
                                     title: 'สำเร็จ',
@@ -281,9 +341,14 @@
         // }
 
         async function checkClient() {
-            let user = await firestore.collection('users').doc(auth.currentUser.uid).get()
+            let user = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get()
+            console.log("🚀 !! user:", user.data())
             if (user.exists) {
                 client = user.data().client
+                if (client.toLowerCase() == 'all') {
+                    $('#add-id').parent().removeClass('col-auto').addClass('col-md-4')
+                    $('#site').parent().removeClass('d-none')
+                }
                 return true
             } else {
                 return false
@@ -292,7 +357,6 @@
 
         function searchLocationData() {
             $('#dept_table').slideUp(200)
-            $.LoadingOverlay("show")
             let id = $('#add-id').val()
             if (id.length == 0) {
                 return Swal.fire({
@@ -310,12 +374,24 @@
                     timer: 1500
                 })
             }
+            if(client.toLowerCase() == 'all' && $('#site').val() == null) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือก Site',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            $.LoadingOverlay("show")
             // replace not number character
             id = id.replace(/\D/g, '')
-            let query_id1 = client + '_' + (('00000' + id).slice(-5))
-            let query_id2 = client + 'D_' + (('00000' + id).slice(-5))
-            let query_id3 = 'DEMO_' + (('000000' + id).slice(-6))
-            firestore.collectionGroup('location').where("code", 'in', [query_id1, query_id2, query_id3]).limit(100).get().then(doc => {
+            let queryArr = []
+
+            queryArr.push(client + '_' + (('00000' + id).slice(-5)))
+            queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
+            queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
+            queryArr.push(client + (('00000' + id).slice(-5)))
+            firestore.collectionGroup('location').where("code", 'in', queryArr).limit(100).get().then(doc => {
                 console.log("🚀 !! doc:", doc)
                 if (doc.empty) {
                     $.LoadingOverlay("hide", true)
@@ -503,6 +579,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"
         integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
