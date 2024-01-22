@@ -867,7 +867,7 @@
                 // load pdf
                 let pdf = await PDFDocument.load(e.target.result)
                 let pages = pdf.getPages().length
-                for (var i = pages; i <= 0; i--) {
+                for (var i = 0; i < pages; i++) {
                     let [page] = await pdfDoc.copyPages(pdf, [i])
                     pdfDoc.insertPage(1, page)
                 }
