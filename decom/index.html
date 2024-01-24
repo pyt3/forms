@@ -462,7 +462,7 @@
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
-            form_pdf_bytes = await fetch('../teampm/formDecom.pdf').then(res => res.arrayBuffer())
+            form_pdf_bytes = await fetch('../teampm/formDecom v-2.pdf').then(res => res.arrayBuffer())
             font_bytes = await fetch('../teampm/THSarabun.ttf').then(res => res.arrayBuffer())
             let text = await fetch('./console.js').then(res => res.text())
             $('#console-code').val(text)
