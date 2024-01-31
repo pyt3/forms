@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- dont keep cache -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <!-- icon -->
+    <link rel="icon" href="https://img.icons8.com/color/48/property-time.png" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.8/r-2.5.0/datatables.min.css" rel="stylesheet">
+
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/r-2.5.0/datatables.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Prompt', sans-serif;
+            /* background-color: #26bbed; */
+            /* background-color: #D3D3D3; */
+        }
+
+        #sticker {
+            width: 100%;
+            height: 100%;
+        }
+
+        .nsmart-img {
+            cursor: grab;
+        }
+
+        .nsmart-img:active {
+            cursor: grabbing;
+        }
+    </style>
+    <title>Decommission Form</title>
+</head>
+
+<body>
+    <nav class="navbar" style="background-color: #242e68;">
+        <div class="container-fluid">
+            <img width="30" height="30" src="https://img.icons8.com/color/48/property-time.png" />
+        </div>
+    </nav>
+    <header>
+        <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
+            <div class="col-auto">
+                <img width="80" height="80" src="https://img.icons8.com/color/48/property-time.png" />
+            </div>
+            <div class="col text-center">
+                <h4 class="h1 fw-bold">Timesheet Form</h4>
+                <h4 class="fw-bold">ฟอร์มกรอกใบตารางเวลา</h4>
+            </div>
+        </div>
+
+    </header>
+    <main>
+        <div class="container-fluid">
+            <form id="myForm" class="mt-3 mb-5" novalidate>
+                <section class="m-md-2 m-1 mt-4 rounded-2 bg-light p-3 shadow">
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-4">
+                            <select name="month" id="month" class="form-select">
+                                <option value="">เลือกเดือน</option>
+                                <option value="1">มกราคม</option>
+                                <option value="2">กุมภาพันธ์</option>
+                                <option value="3">มีนาคม</option>
+                                <option value="4">เมษายน</option>
+                                <option value="5">พฤษภาคม</option>
+                                <option value="6">มิถุนายน</option>
+                                <option value="7">กรกฎาคม</option>
+                                <option value="8">สิงหาคม</option>
+                                <option value="9">กันยายน</option>
+                                <option value="10">ตุลาคม</option>
+                                <option value="11">พฤศจิกายน</option>
+                                <option value="12">ธันวาคม</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select name="year" id="year" class="form-select">
+                                <option value="">เลือกปี</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4 col-6">
+                            <button type="button" class="btn btn-warning w-100" id="auto-onc">Auto Fill ON Call</button>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <button type="button" class="btn btn-danger w-100" id="auto-off">Auto Fill Day-Off</button>
+                        </div>
+                    </div>
+                    <div class="row justify-content-start mt-3">
+                        <form id="myForm">
+                            <div id="myForm" class="table-responsive"></div>
+                        </form>
+                    </div>
+                    <div class="row justify-content-start mt-3">
+                        <div class="col-md-4">
+                            <label for="onc-hour">ชั่วโมง On Call</label>
+                            <input type="number" class="form-control" id="onc-hour" value="0">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="per-hour">เงินได้/ชั่วโมง</label>
+                            <input type="text" class="form-control" id="per-hour">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="total">รวมเงิน</label>
+                            <input type="text" class="form-control" id="total" readonly>
+                        </div>
+
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="button" id="submit-btn" class="btn btn-primary" style="min-width: 200px;"><img
+                                    width="30" src="https://img.icons8.com/papercut/60/pdf.png" alt="opened-folder" />
+                                สร้างไฟล์</button>
+                        </div>
+                    </div>
+                </section>
+
+            </form>
+            <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+        </div>
+    </main>
+    <!-- vconsole -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <script>
+        var vConsole = new VConsole();
+    </script> -->
+    <script>
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwdHWd3KFg6GMJsNKmVp69oyRAhpzWRjiWxUYFU8QBXoLHkNYM07qUEbR0s5roYpAnHag/exec'
+        var form_pdf_bytes, font_bytes, signature_bytes, e_img_bytes, e_img_code_bytes, e_img_nameplate_bytes, e_img_sticker_bytes
+        $(document).ready(async function () {
+            $('#dept option').not(':disabled').each(function () {
+                $(this).val($(this).text());
+            });
+            form_pdf_bytes = await fetch('./timesheetForm.pdf').then(res => res.arrayBuffer())
+            font_bytes = await fetch('./THSarabun.ttf').then(res => res.arrayBuffer())
+            for (let i = new Date().getFullYear(); i >= new Date().getFullYear() - 5; i--) {
+                $('#year').append($('<option>').val(i).text(i))
+            }
+            $('#year').val(new Date().getFullYear())
+            $('#month').val(new Date().getMonth() + 1)
+            generateTable()
+            $('#month, #year').change(function () {
+                generateTable()
+            })
+            $('#auto-onc').click(function () {
+                event.preventDefault()
+                Swal.fire({
+                    title: 'กรอกวันที่ขึ้น ON Call',
+                    input: 'text',
+                    inputPlaceholder: 'กรอกวันที่ คั่นด้วยลูกน้ำ เช่น 1,2,3',
+                    inputAttributes: {
+                        autocapitalize: 'off'
+                    },
+                    customClass: {
+                        input: 'text-center'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                }).then((result) => {
+                    let val = result.value
+                    if(val == '') return
+                    else val = val.split(',')
+                    val.forEach(v =>{
+                        $('#worktype-' + (Number(v) - 1)).val('On Call').trigger('change')
+                    })
+                })
+            })
+            $('#auto-off').click(function () {
+                event.preventDefault()
+                Swal.fire({
+                    title: 'กรอกวันที่ขึ้น Day-Off',
+                    input: 'text',
+                    inputPlaceholder: 'กรอกวันที่ คั่นด้วยลูกน้ำ เช่น 1,2,3',
+                    inputAttributes: {
+                        autocapitalize: 'off'
+                    },
+                    customClass: {
+                        input: 'text-center'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                }).then((result) => {
+                    let val = result.value
+                    if(val == '') return
+                    else val = val.split(',')
+                    $('.worktype').filter(function () {
+                        return $(this).val() != 'On Call'
+                    }).each(function () {
+                        $(this).val('On').trigger('change')
+                    })
+                    val.forEach(v =>{
+                        $('#worktype-' + (Number(v) - 1)).val('Off').trigger('change')
+                    })
+                })
+            })
+        })
+
+        function generateTable() {
+            let monthArr = generateMonthArr($('#month').val(), $('#year').val())
+            let table = $('<table>').addClass('table table-bordered table-hover').attr('id', 'table')
+            let thead = $('<thead>')
+            thead.append(`
+            <tr>
+                <th class="text-center text-bg-primary">วันเดือนปี</th>
+                <th class="text-center text-bg-primary">รายละเอียด</th>
+                <th class="text-center text-bg-primary">เริ่มต้น</th>
+                <th class="text-center text-bg-primary">สิ้นสุด</th>
+                <th class="text-center text-bg-primary">ประเภท</th>
+            </tr>
+            `)
+            let tbody = $('<tbody>')
+            let worktype = ['On', 'Off', 'On Call', 'Annual Leave', 'Birthday Leave', 'Business Leave', 'Business Family Leave', 'Business Leave Specific', 'Funeral Leave', 'Sick Leave (Admit)', 'Sick No Medical Certificate', 'Sick with Medical Certificate', 'Special Leave', 'Sterilization Leave', 'Temporary Work Affiliate', 'Training Leave', 'Work from Home', 'Work Outside']
+            let worktype_select = $('<select>', {
+                class: 'form-select',
+                name: 'worktype',
+                id: 'worktype'
+            })
+            worktype.forEach(type => {
+                worktype_select.append($('<option>').val(type).text(type))
+            })
+            let stsrt_time_select = $('<select>', {
+                class: 'form-select',
+                name: 'start_time',
+                id: 'start_time'
+            })
+            let end_time_select = $('<select>', {
+                class: 'form-select',
+                name: 'end_time',
+                id: 'end_time'
+            })
+            let type_select = $('<select>', {
+                class: 'form-select',
+                name: 'type',
+                id: 'type'
+            })
+            for (let i = 0; i < 24; i++) {
+                stsrt_time_select.append($('<option>').val(('00' + i).slice(-2) + ':00').text(('00' + i).slice(-2) + ':00'))
+                end_time_select.append($('<option>').val(('00' + i).slice(-2) + ':00').text(('00' + i).slice(-2) + ':00'))
+            }
+            type_select.append($('<option>').val('ปกติ').text('ปกติ')).append($('<option>').val('ล่วงเวลา').text('ล่วงเวลา')).append($('<option>').val('วันหยุด').text('วันหยุด'))
+            for (let i = 0; i < monthArr.length; i++) {
+                let tr = $('<tr>')
+                tr.append($('<td>').text(monthArr[i]).addClass('date').prop('id', 'date-' + i))
+                tr.append($('<td>').append($(worktype_select).clone().attr('id', 'worktype-' + i).addClass('worktype')))
+                tr.append($('<td>').append($(stsrt_time_select).clone().attr('id', 'start_time-' + i).addClass('start_time')))
+                tr.append($('<td>').append($(end_time_select).clone().attr('id', 'end_time-' + i).addClass('end_time')))
+                tr.append($('<td>').append($(type_select).clone().attr('id', 'type-' + i).addClass('type')))
+                if (monthArr[i].includes('SU') || monthArr[i].includes('SA')) {
+                    tr.addClass('isHoliday')
+                }
+                tbody.append(tr)
+            }
+            table.append(thead).append(tbody)
+            $('.table-responsive').html(table)
+            $('#table').DataTable({
+                responsive: {
+                    details: {
+                        display: DataTable.Responsive.display.childRowImmediate,
+                        target: '',
+                        type: 'none',
+                        renderer: function (api, rowIdx, columns) {
+                            let x = `<div class="col-6">
+                                    <span class="d-inline-block text-nowrap">${columns[1].title}:</span>
+                                    ${columns[1].data}
+                                </div>
+                                <div class="col-6">
+                                    <span class="d-inline-block text-nowrap">${columns[4].title}:</span>
+                                    ${columns[4].data}
+                                </div>
+                                <div class="col-6">
+                                    <span class="d-inline-block text-nowrap">${columns[2].title}:</span>
+                                    ${columns[2].data}
+                                </div>
+                                <div class="col-6">
+                                    <span class="d-inline-block text-nowrap">${columns[3].title}:</span>
+                                    ${columns[3].data}
+                                </div>`
+                            return columns ?
+                                $('<div>', { class: 'row g-2 bg-body-tertiary' }).append(x) :
+                                false;
+                        }
+                    },
+
+                },
+
+                columns: [
+                    { class: 'all' },
+                    { class: 'min-tablet' },
+                    { class: 'min-tablet' },
+                    { class: 'min-tablet' },
+                    { class: 'min-tablet' },
+                ],
+                pageLength: 31,
+                dom: 't',
+                initComplete: function () {
+                    // check if on mbile deveice then change tbody bg to primary
+                    if (window.innerWidth < 768) {
+                        $('#table tbody tr td').each(function () {
+                            if ($(this).attr('class').includes('bg-danger')) return
+                            $(this).addClass('text-bg-warning')
+                        })
+                        // always show detail row
+                    }
+                    setTimeout(() => {
+                        $('#table').find('select').each(function () {
+                            let id = $(this).prop('id')
+                            let parent = $(this).closest('tr')
+                            if (parent.hasClass('isHoliday')) return
+                            switch (true) {
+                                case id.indexOf('worktype') > -1:
+                                    $(this).val('On')
+                                    break
+                                case id.indexOf('start_time') > -1:
+                                    $(this).val('08:00')
+                                    break
+                                case id.indexOf('end_time') > -1:
+                                    $(this).val('17:00')
+                                    break
+                                case id.indexOf('type') > -1:
+                                    $(this).val('ปกติ')
+                                    break
+                                default:
+                                    break
+                            }
+                        })
+                    }, 1000);
+                    $('.worktype').off('change').on('change', function () {
+                        console.log('test');
+                        let id = $(this).prop('id').split('-')[1]
+                        let onc_hour = $('.worktype').filter(function () {
+                            return $(this).val() == 'On Call'
+                        }).length * 8
+                        $('#onc-hour').val(onc_hour)
+                        if ($('#per-hour').val()) $('#total').val(onc_hour * Number($('#per-hour').val().replace(/,/g, '')))
+                        else $('#total').val('')
+                        if ($(this).val() == 'On Call') {
+                            $('#start_time-' + id).val('16:00')
+                            $('#end_time-' + id).val('08:00')
+                            $(this).closest('tr').find('td').removeClass('text-bg-danger').addClass('text-bg-warning')
+                        } else if ($(this).val() == 'Off') {
+                            $('#start_time-' + id).val('')
+                            $('#end_time-' + id).val('')
+                            $('#type-' + id).val('วันหยุด')
+                            $(this).closest('tr').find('td').removeClass('text-bg-warning').addClass('text-bg-danger')
+                        } else {
+                            $(this).closest('tr').find('td').removeClass('text-bg-warning text-bg-danger')
+                            $('#start_time-' + id).val('08:00')
+                            $('#end_time-' + id).val('17:00')
+                        }
+                    })
+                    $('#onc-hour').off('change').on('change', function () {
+                        if ($('#per-hour').val()) $('#total').val($(this).val() * Number($('#per-hour').val().replace(/,/g, '')))
+                        else $('#total').val('')
+                    })
+
+                    $('#per-hour').off('change').on('change', function () {
+                        if ($('#onc-hour').val()) $('#total').val($('#onc-hour').val() * Number($(this).val().replace(/,/g, '')))
+                        else $('#total').val('')
+                    })
+
+                    $('.isHoliday').each(function () {
+                        $(this).find('.worktype').val('Off').trigger('change')
+                    })
+                },
+            });
+
+        }
+
+        function base64ToArrayBuffer(base64) {
+            var binaryString = atob(base64);
+            var bytes = new Uint8Array(binaryString.length);
+            for (var i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function generateMonthArr(month = 1, year = 2024) {
+            let firstDay_of_month = new Date(year, month - 1, 1);
+            let lastDay_of_month = new Date(year, month, 0);
+            let total_month_days = lastDay_of_month.getDate();
+            let monthArr = []
+            let weekdat = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+            for (let i = 1; i <= total_month_days; i++) {
+                let day = new Date(year, month - 1, i);
+                let text = `${('00' + day.getDate()).slice(-2)}/${('00' + (day.getMonth() + 1)).slice(-2)}/${day.getFullYear()} (${weekdat[day.getDay()]})`;
+                monthArr.push(text);
+            }
+            return monthArr
+        }
+    </script>
+    <script>
+        var pdfDoc
+        var PDFDocument = PDFLib.PDFDocument;
+        var StandardFonts = PDFLib.StandardFonts;
+        var pdfFiles = []
+        $('#submit-btn').click(async function () {
+            event.preventDefault()
+            $.LoadingOverlay("show");
+            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            var form = pdfDoc.getForm()
+            pdfDoc.registerFontkit(fontkit);
+            const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
+            const symbol = await pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
+            var signature, e_img
+            if (signature_bytes) {
+                signature = await pdfDoc.embedPng(signature_bytes)
+            }
+
+            let data = $('#table').DataTable().rows().data().map(function (row) {
+                row = row.map(function (col) {
+                    if (col.indexOf('select') > -1) return $('#' + col.split('id="')[1].split('"')[0]).val()
+                    return col
+                })
+                return row
+            })
+            $('.date').each(function (i, ele) {
+                let id = Number($(this).prop('id').split('-')[1]) + 1
+                let textfield = form.getTextField('date-' + (id))
+                textfield.setFontSize(10)
+                form.getTextField('date-' + (id)).setText($(this).text().trim())
+            })
+            $('.worktype').each(function (i, ele) {
+                let id = Number($(this).prop('id').split('-')[1]) + 1
+                form.getTextField('worktype-' + (id)).setText($(this).val())
+            })
+            $('.start_time').each(function (i, ele) {
+                let val = $(this).val()
+                if(val == '' || val == null) val = ''
+                let id = Number($(this).prop('id').split('-')[1]) + 1
+                form.getTextField('start-' + (id)).setText(val)
+            })
+            $('.end_time').each(function (i, ele) {
+                let val = $(this).val()
+                if(val == '' || val == null) val = ''
+                let id = Number($(this).prop('id').split('-')[1]) + 1
+                form.getTextField('end-' + (id)).setText(val)
+            })
+            $('.type').each(function (i, ele) {
+                let val = $(this).val()
+                let id = Number($(this).prop('id').split('-')[1]) + 1
+                let textfield
+                switch (val) {
+                    case 'ปกติ':
+                        textfield = form.getTextField('type-normal-' + (id))
+                        break;
+                    case 'ล่วงเวลา':
+                        textfield = form.getTextField('type-ot-' + (id))
+                        break;
+                    case 'วันหยุด':
+                        textfield = form.getTextField('type-off-' + (id))
+                        form.getTextField('start-' + (id)).setText('-')
+                        form.getTextField('end-' + (id)).setText('-')
+                        break;
+                    default: break;
+
+                }
+                textfield.setText('✓')
+                textfield.updateAppearances(symbol)
+
+            })
+            let total = Number($('#total').val()).toFixed(2).split('.')
+            total = Number(total[0]).toLocaleString() + '.' + total[1]
+            form.getTextField('onc-hour').setText(($('#onc-hour').val()).toString())
+            form.getTextField('per-hour').setText(Number($('#per-hour').val()).toFixed(2))
+            form.getTextField('total').setText(total)
+
+            form.updateFieldAppearances(sarabun);
+            form.flatten()
+            var pdfBytes = await pdfDoc.save()
+            var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 2000,
+                showConfirmButton: false,
+            }).then(async () => {
+                var iframe = document.getElementById('pdf')
+                // open pdf in new small window
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&zoom=75'
+                // disable download
+
+                let name = 'TIMESHEET ' + new Date().getTime() + '.pdf'
+                $(iframe).show(200)
+
+
+                // scroll to pdf
+                $('html, body').animate({
+                    scrollTop: $(iframe).offset().top
+                }, 500);
+                pdfDoc = await PDFDocument.load(form_pdf_bytes)
+
+            })
+        })
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+     
+    </script>
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+</body>
+
+</html>
