@@ -139,7 +139,13 @@
                                     width="30" src="https://img.icons8.com/papercut/60/pdf.png" alt="opened-folder" />
                                 สร้างไฟล์</button>
                         </div>
-                    </div>
+                        <!-- print -->
+                        <div class="col-md-4 mt-3 text-center d-none">
+                            <button type="button" id="print-btn" class="btn btn-outline-primary" style="min-width: 200px;"><img
+                                    width="30" src="https://img.icons8.com/color/48/print.png"
+                                    alt="opened-folder" />
+                                พิมพ์</button>
+                        </div>
                 </section>
 
             </form>
@@ -186,9 +192,14 @@
                     cancelButtonText: 'ยกเลิก',
                 }).then((result) => {
                     let val = result.value
-                    if(val == '') return
+                    if (val == '') return
                     else val = val.split(',')
-                    val.forEach(v =>{
+                    let windowWidth = window.innerWidth
+                    val.forEach(v => {
+                        if(windowWidth < 768){
+                            $('td.child [name="worktype-' + (Number(v) - 1) + '"]').val('On Call').trigger('change')
+                            return
+                        }
                         $('#worktype-' + (Number(v) - 1)).val('On Call').trigger('change')
                     })
                 })
@@ -210,21 +221,36 @@
                     cancelButtonText: 'ยกเลิก',
                 }).then((result) => {
                     let val = result.value
-                    if(val == '') return
+                    if (val == '') return
                     else val = val.split(',')
+                    if(window.innerWidth < 768){
+                        $('td.child .worktype').filter(function () {
+                            return $(this).val() != 'On Call'
+                        }).each(function () {
+                            $(this).val('On').trigger('change')
+                        })
+                        val.forEach(v => {
+                            $('td.child #worktype-' + (Number(v) - 1)).val('Off').trigger('change')
+                        })
+                        return
+                    }
                     $('.worktype').filter(function () {
                         return $(this).val() != 'On Call'
                     }).each(function () {
                         $(this).val('On').trigger('change')
                     })
-                    val.forEach(v =>{
+                    val.forEach(v => {
                         $('#worktype-' + (Number(v) - 1)).val('Off').trigger('change')
                     })
                 })
             })
+            $('window').resize(function () {
+                $('#table').DataTable().draw()
+            })
         })
 
         function generateTable() {
+
             let monthArr = generateMonthArr($('#month').val(), $('#year').val())
             let table = $('<table>').addClass('table table-bordered table-hover').attr('id', 'table')
             let thead = $('<thead>')
@@ -270,10 +296,10 @@
             for (let i = 0; i < monthArr.length; i++) {
                 let tr = $('<tr>')
                 tr.append($('<td>').text(monthArr[i]).addClass('date').prop('id', 'date-' + i))
-                tr.append($('<td>').append($(worktype_select).clone().attr('id', 'worktype-' + i).addClass('worktype')))
-                tr.append($('<td>').append($(stsrt_time_select).clone().attr('id', 'start_time-' + i).addClass('start_time')))
-                tr.append($('<td>').append($(end_time_select).clone().attr('id', 'end_time-' + i).addClass('end_time')))
-                tr.append($('<td>').append($(type_select).clone().attr('id', 'type-' + i).addClass('type')))
+                tr.append($('<td>').append($(worktype_select).clone().attr('id', 'worktype-' + i).attr('name', 'worktype-' + i).addClass('worktype')))
+                tr.append($('<td>').append($(stsrt_time_select).clone().attr('id', 'start_time-' + i).attr('name', 'start_time-' + i).addClass('start_time')))
+                tr.append($('<td>').append($(end_time_select).clone().attr('id', 'end_time-' + i).attr('name', 'end_time-' + i).addClass('end_time')))
+                tr.append($('<td>').append($(type_select).clone().attr('id', 'type-' + i).attr('name', 'type-' + i).addClass('type')))
                 if (monthArr[i].includes('SU') || monthArr[i].includes('SA')) {
                     tr.addClass('isHoliday')
                 }
@@ -307,7 +333,7 @@
                             return columns ?
                                 $('<div>', { class: 'row g-2 bg-body-tertiary' }).append(x) :
                                 false;
-                        }
+                        },
                     },
 
                 },
@@ -325,12 +351,72 @@
                     // check if on mbile deveice then change tbody bg to primary
                     if (window.innerWidth < 768) {
                         $('#table tbody tr td').each(function () {
-                            if ($(this).attr('class').includes('bg-danger')) return
-                            $(this).addClass('text-bg-warning')
+                            if ($(this).html().includes('SA') || $(this).html().includes('SU')) return
+                            $(this).addClass('bg-primary-subtle fw-bold')
                         })
                         // always show detail row
                     }
                     setTimeout(() => {
+                        let windowWidth = window.innerWidth
+                        if (windowWidth < 768) {
+                            $('td.child .worktype').off('change').on('change', function () {
+                                let id = $(this).prop('id').split('-')[1]
+                                let onc_hour = $('td.child .worktype').filter(function () {
+                                    return $(this).val() == 'On Call'
+                                }).length * 8
+                                $('#onc-hour').val(onc_hour)
+                                if ($('#per-hour').val()) $('#total').val(onc_hour * Number($('#per-hour').val().replace(/,/g, '')))
+                                else $('#total').val('')
+                                let tr = $(this).closest('tr')
+                                console.log("🚀 !! tr:", tr)
+                                if ($(this).val() == 'On Call') {
+                                    $('[name="start_time-' + id + '"]').val('16:00')
+                                    $('[name="end_time-' + id + '"]').val('08:00')
+                                    $('[name="type-' + id + '"]').val('ปกติ')
+                                    tr.prev().find('td').first().removeClass('bg-primary-subtle text-bg-danger').addClass('text-bg-warning')
+                                } else if ($(this).val() == 'Off') {
+                                    $('[name="start_time-' + id + '"]').val('')
+                                    $('[name="end_time-' + id + '"]').val('')
+                                    $('[name="type-' + id + '"]').val('วันหยุด')
+                                    console.log(tr.prev());
+                                    tr.prev().find('td').first().removeClass('bg-primary-subtle text-bg-warning').addClass('text-bg-danger')
+                                } else {
+                                    tr.prev().find('td').first().removeClass('text-bg-warning text-bg-danger').addClass('bg-primary-subtle')
+                                    $('[name="start_time-' + id + '"]').val('08:00')
+                                    $('[name="end_time-' + id + '"]').val('17:00')
+                                    $('[name="type-' + id + '"]').val('ปกติ')
+                                }
+                            })
+                        } else {
+                            $('.worktype').off('change').on('change', function () {
+                                let id = $(this).prop('id').split('-')[1]
+                                let onc_hour = $('.worktype').filter(function () {
+                                    return $(this).val() == 'On Call'
+                                }).length * 8
+                                $('#onc-hour').val(onc_hour)
+                                if ($('#per-hour').val()) $('#total').val(onc_hour * Number($('#per-hour').val().replace(/,/g, '')))
+                                else $('#total').val('')
+                                let tr = $(this).closest('tr')
+                                console.log("🚀 !! tr:", tr)
+                                if ($(this).val() == 'On Call') {
+                                    $('[name="start_time-' + id + '"]').val('16:00')
+                                    $('[name="end_time-' + id + '"]').val('08:00')
+                                    $('[name="type-' + id + '"]').val('ปกติ')
+                                    tr.find('td').removeClass('bg-primary-subtle text-bg-danger').addClass('text-bg-warning')
+                                } else if ($(this).val() == 'Off') {
+                                    $('[name="start_time-' + id + '"]').val('')
+                                    $('[name="end_time-' + id + '"]').val('')
+                                    $('[name="type-' + id + '"]').val('วันหยุด')
+                                    console.log(tr.prev());
+                                    tr.find('td').removeClass('bg-primary-subtle text-bg-warning').addClass('text-bg-danger')
+                                } else {
+                                    tr.find('td').removeClass('text-bg-warning text-bg-danger').addClass('bg-primary-subtle')
+                                    $('[name="start_time-' + id + '"]').val('08:00')
+                                    $('[name="end_time-' + id + '"]').val('17:00')
+                                    $('[name="type-' + id + '"]').val('ปกติ')
+                                }
+                            })
+                        }
                         $('#table').find('select').each(function () {
                             let id = $(this).prop('id')
                             let parent = $(this).closest('tr')
@@ -352,44 +438,28 @@
                                     break
                             }
                         })
+                        $('.isHoliday').each(function () {
+                            let id = $(this).find('td').first().prop('id').split('-')[1]
+                            if (windowWidth < 768) {
+                                $('td.child [name="worktype-' + id + '"]').val('Off').trigger('change')
+                                return
+                            }
+                            $('[name="worktype-' + id + '"]').val('Off').trigger('change')
+                        })
+                        $('#onc-hour').off('change').on('change', function () {
+                            if ($('#per-hour').val()) $('#total').val($(this).val() * Number($('#per-hour').val().replace(/,/g, '')))
+                            else $('#total').val('')
+                        })
+
+                        $('#per-hour').off('change').on('change', function () {
+                            if ($('#onc-hour').val()) $('#total').val($('#onc-hour').val() * Number($(this).val().replace(/,/g, '')))
+                            else $('#total').val('')
+                        })
                     }, 1000);
-                    $('.worktype').off('change').on('change', function () {
-                        console.log('test');
-                        let id = $(this).prop('id').split('-')[1]
-                        let onc_hour = $('.worktype').filter(function () {
-                            return $(this).val() == 'On Call'
-                        }).length * 8
-                        $('#onc-hour').val(onc_hour)
-                        if ($('#per-hour').val()) $('#total').val(onc_hour * Number($('#per-hour').val().replace(/,/g, '')))
-                        else $('#total').val('')
-                        if ($(this).val() == 'On Call') {
-                            $('#start_time-' + id).val('16:00')
-                            $('#end_time-' + id).val('08:00')
-                            $(this).closest('tr').find('td').removeClass('text-bg-danger').addClass('text-bg-warning')
-                        } else if ($(this).val() == 'Off') {
-                            $('#start_time-' + id).val('')
-                            $('#end_time-' + id).val('')
-                            $('#type-' + id).val('วันหยุด')
-                            $(this).closest('tr').find('td').removeClass('text-bg-warning').addClass('text-bg-danger')
-                        } else {
-                            $(this).closest('tr').find('td').removeClass('text-bg-warning text-bg-danger')
-                            $('#start_time-' + id).val('08:00')
-                            $('#end_time-' + id).val('17:00')
-                        }
-                    })
-                    $('#onc-hour').off('change').on('change', function () {
-                        if ($('#per-hour').val()) $('#total').val($(this).val() * Number($('#per-hour').val().replace(/,/g, '')))
-                        else $('#total').val('')
-                    })
 
-                    $('#per-hour').off('change').on('change', function () {
-                        if ($('#onc-hour').val()) $('#total').val($('#onc-hour').val() * Number($(this).val().replace(/,/g, '')))
-                        else $('#total').val('')
-                    })
 
-                    $('.isHoliday').each(function () {
-                        $(this).find('.worktype').val('Off').trigger('change')
-                    })
+
+
                 },
             });
 
@@ -455,13 +525,13 @@
             })
             $('.start_time').each(function (i, ele) {
                 let val = $(this).val()
-                if(val == '' || val == null) val = ''
+                if (val == '' || val == null) val = ''
                 let id = Number($(this).prop('id').split('-')[1]) + 1
                 form.getTextField('start-' + (id)).setText(val)
             })
             $('.end_time').each(function (i, ele) {
                 let val = $(this).val()
-                if(val == '' || val == null) val = ''
+                if (val == '' || val == null) val = ''
                 let id = Number($(this).prop('id').split('-')[1]) + 1
                 form.getTextField('end-' + (id)).setText(val)
             })
@@ -509,11 +579,21 @@
                 // open pdf in new small window
                 var blob = new Blob([pdfBytes], { type: 'application/pdf' })
                 var url = URL.createObjectURL(blob)
+                if(window.innerWidth < 768){
+                    window.open(url+'#toolbar=1', '_blank')
+                    return
+                }
                 iframe.src = url + '#toolbar=1&zoom=75'
                 // disable download
 
                 let name = 'TIMESHEET ' + new Date().getTime() + '.pdf'
                 $(iframe).show(200)
+                $(iframe).attr('download', name)
+                $(iframe).attr('title', name)
+                $('#print-btn').parent().removeClass('d-none')
+                $('#print-btn').click(function () {
+                    iframe.contentWindow.print()
+                })
 
 
                 // scroll to pdf
@@ -532,9 +612,9 @@
                 }
             );
         }
-     
+
     </script>
-   
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
