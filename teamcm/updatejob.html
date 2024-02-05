@@ -850,11 +850,11 @@
                                         }
                                     ],
                                     "justifyContent": "flex-end",
-                                    "action": {
-                                        "type": "uri",
-                                        "label": "copy",
-                                        "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
-                                    }
+                                    // "action": {
+                                    //     "type": "uri",
+                                    //     "label": "copy",
+                                    //     "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
+                                    // }
                                 }
                             ],
                             "spacing": "sm",
@@ -862,6 +862,19 @@
                             "alignItems": "center"
                         }
                     ]
+                }
+            }
+            if (update_data.update.length <= 995) {
+                flex.footer.contents[0].contents[1].action = {
+                    "type": "clipboard",
+                    "label": "copy",
+                    "clipboardText": update_data.update
+                }
+            } else {
+                flex.footer.contents[0].contents[1].action = {
+                    "type": "uri",
+                    "label": "copy",
+                    "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
                 }
             }
             if (update_data.vendor_phone && update_data) {
