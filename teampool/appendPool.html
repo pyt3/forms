@@ -69,6 +69,13 @@
                     <label for="code">รหัสเครื่อง</label>
                     <input type="text" class="form-control text-center" id="code" name="code">
                 </div>
+                <div class="col-md-12">
+                    <div class="d-flex gap-2">
+                        <span class="badge text-bg-primary btn" id="scope">Scope</span>
+                        <span class="badge text-bg-primary btn" id="ups">UPS</span>
+                        
+                    </div>
+                </div>
                 <div class="col-md-6" id="div-start">
                     <label for="start">แผนกต้นทาง</label>
                     <select name="start" id="start" class="form-select">
@@ -158,15 +165,40 @@
         });
         $(document).ready(function () {
             $('#end').append($('#start option').not(':first-child').clone())
-            $.LoadingOverlay('show')
+            $('#ups').click(function(){
+                Swal.fire({
+                    input: 'number',
+                    title: 'หมายเลข UPS',
+                    inputPlaceholder: 'กรุณาระบุหมายเลข UPS',
+                    customClass: {
+                        input: 'text-center'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                    preConfirm: (ups) => {
+                        return ups
+                    }
+                }).then(res =>{
+                    if (res.isConfirmed) {
+                        if(res.value == '' || res.value == null) $('#code').val('UPS')
+                        else $('#code').val('UPS '+('00'+res.value).slice(-2))
+                    }
+                })
+            })
+
+            $('#scope').click(function(){
+                $('#code').val('SCOPE')
+            })
+            // $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
             })
-            liff.init({
-                liffId: '1660749495-G5e9Av6r',
-                withLoginOnExternalBrowser: true
-            })
+            // liff.init({
+            //     liffId: '1660749495-G5e9Av6r',
+            //     withLoginOnExternalBrowser: true
+            // })
             liff.ready.then(async () => {
                 checkRegist()
                 profile = await liff.getProfile()
