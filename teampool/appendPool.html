@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -31,6 +32,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             background-color: #FF8604;
             width: 100vw;
@@ -38,6 +40,7 @@
             font-family: 'Cedarville Cursive', cursive;
             font-family: 'Mitr', sans-serif;
         }
+
         img#profile {
             width: 30px;
             height: 30px;
@@ -45,6 +48,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
@@ -73,7 +77,7 @@
                     <div class="d-flex gap-2">
                         <span class="badge text-bg-primary btn" id="scope">Scope</span>
                         <span class="badge text-bg-primary btn" id="ups">UPS</span>
-                        
+
                     </div>
                 </div>
                 <div class="col-md-6" id="div-start">
@@ -165,7 +169,7 @@
         });
         $(document).ready(function () {
             $('#end').append($('#start option').not(':first-child').clone())
-            $('#ups').click(function(){
+            $('#ups').click(function () {
                 Swal.fire({
                     input: 'number',
                     title: 'หมายเลข UPS',
@@ -179,26 +183,26 @@
                     preConfirm: (ups) => {
                         return ups
                     }
-                }).then(res =>{
+                }).then(res => {
                     if (res.isConfirmed) {
-                        if(res.value == '' || res.value == null) $('#code').val('UPS')
-                        else $('#code').val('UPS '+('00'+res.value).slice(-2))
+                        if (res.value == '' || res.value == null) $('#code').val('UPS')
+                        else $('#code').val('UPS ' + ('00' + res.value).slice(-2))
                     }
                 })
             })
 
-            $('#scope').click(function(){
+            $('#scope').click(function () {
                 $('#code').val('SCOPE')
             })
-            // $.LoadingOverlay('show')
+            $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
             })
-            // liff.init({
-            //     liffId: '1660749495-G5e9Av6r',
-            //     withLoginOnExternalBrowser: true
-            // })
+            liff.init({
+                liffId: '1660749495-G5e9Av6r',
+                withLoginOnExternalBrowser: true
+            })
             liff.ready.then(async () => {
                 checkRegist()
                 profile = await liff.getProfile()
@@ -501,4 +505,5 @@
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 </body>
+
 </html>
