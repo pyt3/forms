@@ -74,7 +74,7 @@ if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_re
     }).then(async () => {
         let tag_a = newwindow.document.querySelectorAll('.footer')[0].getElementsByTagName('a')
         if (tag_a.length > 0) {
-            let lastpage_url = tag_a[tag_a.length - 1].href
+            let lastpage_url = tag_a[tag_a.length - 1].href;
             let newwindow3 = window.open(lastpage_url, "_blank", "width=400,height=400, top=0, left=0");
             new Promise((resolve, reject) => {
                 newwindow3.onload = () => {
