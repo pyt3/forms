@@ -878,7 +878,7 @@
                 let hasMoreThan10 = data.length - 1 > 10
                 if (data.length > 2) {
                     data = data.slice(1, 11)
-                    data = data.map(r => {
+                    data.forEach(r => {
                         r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
                         let his_flex = {
                             "type": "bubble",
@@ -889,13 +889,13 @@
                                 "contents": [
                                     {
                                         "type": "text",
-                                        "text": "📅 "+ r.timestamp,
+                                        "text": "📅 " + r.timestamp,
                                         "weight": "bold",
                                         "color": "#ffffff"
                                     },
                                     {
                                         "type": "text",
-                                        "text": "# "+ r.name,
+                                        "text": "# " + r.name,
                                         "color": "#ffffff",
                                         "size": "sm"
                                     }
@@ -912,7 +912,7 @@
                                         "contents": [
                                             {
                                                 "type": "text",
-                                                "text": r.update.replace(/\n\n/g, '\n'),
+                                                "text": r.update,
                                                 "wrap": true,
                                                 "scaling": true
                                             }
@@ -933,7 +933,7 @@
                             }
                         }
                         console.log(r)
-                        if(r.vendor_phone && r.vendor_phone != '') {
+                        if (r.vendor_phone && r.vendor_phone != '') {
                             his_flex.body.contents[0].contents.push({
                                 "type": "text",
                                 "text": "📞ติดต่อ " + r.vendor_phone,
@@ -960,8 +960,6 @@
                         }
                         carousel.contents.push(his_flex)
                     })
-
-
                 }
                 if (hasMoreThan10) {
                     let all_flex = {
@@ -989,7 +987,7 @@
                     }
                     carousel.contents.push(all_flex)
                 }
-                console.log(JSON.stringify(flex));
+                console.log(JSON.stringify(carousel));
                 liff.sendMessages([
                     {
                         type: 'flex',
