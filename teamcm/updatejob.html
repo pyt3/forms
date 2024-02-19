@@ -932,6 +932,31 @@
                                 }
                             }
                         }
+                        if(r.vendor_phone) {
+                            his_flex.body.[0].contents.push({
+                                "type": "text",
+                                "text": "📞ติดต่อ " + r.vendor_phone,
+                                "action": {
+                                    "type": "uri",
+                                    "label": "ติดต่อ " + r.vendor_phone,
+                                    "uri": "tel:" + r.vendor_phone
+                                },
+                                "contents": [
+                                    {
+                                        "type": "span",
+                                        "text": "📞ติดต่อ"
+                                    },
+                                    {
+                                        "type": "span",
+                                        "text": " " + r.vendor_phone,
+                                        "color": "#006aff",
+                                        "decoration": "underline"
+                                    }
+                                ],
+                                "scaling": true,
+                                "wrap": true
+                            })
+                        }
                         carousel.contents.push(his_flex)
                     })
 
