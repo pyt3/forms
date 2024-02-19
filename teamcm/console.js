@@ -21,61 +21,7 @@ if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_re
     window.name = "main";
     let newwindow = window.open("//nsmart.nhealth-asia.com/MTDPDB01/asset_jobs_hist.php?" + parameter, "_blank", "width=400,height=400, top=0, left=0");
     let newwindow2 = window.open("//nsmart.nhealth-asia.com/MTDPDB01/asset_picture.php?" + parameter, "_blank", "width=400,height=400, top=0, left=400");
-    new Promise((resolve, reject) => {
-        newwindow.onload = () => {
-            resolve();
-        }
-    }).then(async () => {
-        let total = newwindow.document.querySelectorAll(".Total")[0].querySelectorAll("td")[5].innerText.replace(/,/g, '');
-        if (isNaN(total)) total = '-';
-        else total = Number(total);
-        t = {
-            page: "addupdate",
-            e_code: document.getElementsByName("sap_code")[0].value,
-            e_name: (e = document.getElementsByName("catagory")[0]).options[e.selectedIndex].innerText,
-            e_brand: document.getElementsByName("brand")[0].value,
-            e_model: document.getElementsByName("model")[0].value,
-            e_sn: document.getElementsByName("serial_no")[0].value,
-            e_dept: (e = document.getElementsByName("sub_dept")[0]).options[e.selectedIndex].innerText,
-            e_date: document.getElementsByName("receive_date")[0].value,
-            warranty_end: document.getElementsByName("w_finish_date_repair_part")[0].value,
-            e_price: document.getElementsByName("price")[0].value,
-            hos_id: document.getElementsByName("code_equip")[0].value,
-            sup_sale: (e = document.getElementsByName("sup_sale")[0]).options[e.selectedIndex].innerText,
-            pr_vender: (e = document.getElementsByName("sup_serv")[0]).options[e.selectedIndex].innerText,
-            e_repair_price: total,
-            e_repair_percent: '-',
-        };
-        if (t.e_price == '' || t.e_price == 0) t.e_repair_percent = '-';
-        else {
-            t.e_price = Number(t.e_price.replace(/,/g, ''));
-            t.e_repair_percent = ((t.e_repair_price / t.e_price) * 100).toFixed(2);
-        }
-        t.e_price = t.e_price.toLocaleString();
-        t.e_repair_price = t.e_repair_price.toLocaleString();
-        t.e_age = getAge(t.e_date);
-        isfinish++;
-        if (isfinish == 2) {
-            let copy = newwindow.document.createElement("input");
-            newwindow.document.body.appendChild(copy);
-            copy.value = JSON.stringify(t);
-            copy.setSelectionRange(0, 99999);
-            copy.select();
-            newwindow.document.execCommand("copy");
-            await newwindow.navigator.clipboard.writeText(JSON.stringify(t));
-            console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
-            console.groupEnd();
-            setTimeout(() => {
-                newwindow.close();
-                newwindow2.close();
-            }, 200)
-        }
-        else {
-            setTimeout(() => {
-                newwindow.close();
-            }, 200)
-        }
-    });
+   
     new Promise((resolve, reject) => {
         newwindow2.onload = () => {
             resolve();
@@ -83,6 +29,7 @@ if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_re
     }).then(async () => {
         let table = newwindow2.document.querySelectorAll("table.Grid")[0];
         let imgs = table.querySelectorAll("img");
+        if (!t) t = {}
         t.imgs = [];
         for (let i = 0; i < imgs.length; i++) {
             console.log("🚀 !! Getting image", i + 1, "of", imgs.length);
@@ -120,6 +67,128 @@ if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_re
             }, 200)
         }
     })
+    new Promise((resolve, reject) => {
+        newwindow.onload = () => {
+            resolve();
+        }
+    }).then(async () => {
+        let tag_a = newwindow.document.querySelectorAll('.footer')[0].getElementsByTagName('a')
+        if (tag_a.length > 0) {
+            let lastpage_url = tag_a[tag_a.length - 1].href
+            let newwindow3 = window.open(lastpage_url, "_blank", "width=400,height=400, top=0, left=0");
+            new Promise((resolve, reject) => {
+                newwindow3.onload = () => {
+                    resolve();
+                }
+            }).then(async () => {
+               
+                let total = newwindow3.document.querySelectorAll(".Total")[0].querySelectorAll("td")[5].innerText.replace(/,/g, '');
+                if (isNaN(total)) total = '-';
+                else total = Number(total);
+                if (!t) t = {}
+                let t2 = {
+                    page: "addupdate",
+                    e_code: document.getElementsByName("sap_code")[0].value,
+                    e_name: (e = document.getElementsByName("catagory")[0]).options[e.selectedIndex].innerText,
+                    e_brand: document.getElementsByName("brand")[0].value,
+                    e_model: document.getElementsByName("model")[0].value,
+                    e_sn: document.getElementsByName("serial_no")[0].value,
+                    e_dept: (e = document.getElementsByName("sub_dept")[0]).options[e.selectedIndex].innerText,
+                    e_date: document.getElementsByName("receive_date")[0].value,
+                    warranty_end: document.getElementsByName("w_finish_date_repair_part")[0].value,
+                    e_price: document.getElementsByName("price")[0].value,
+                    hos_id: document.getElementsByName("code_equip")[0].value,
+                    sup_sale: (e = document.getElementsByName("sup_sale")[0]).options[e.selectedIndex].innerText,
+                    pr_vender: (e = document.getElementsByName("sup_serv")[0]).options[e.selectedIndex].innerText,
+                    e_repair_price: total,
+                    e_repair_percent: '-',
+                };
+                t = Object.assign(t, t2);
+                if (t.e_price == '' || t.e_price == 0) t.e_repair_percent = '-';
+                else {
+                    t.e_price = Number(t.e_price.replace(/,/g, ''));
+                    t.e_repair_percent = ((t.e_repair_price / t.e_price) * 100).toFixed(2);
+                }
+                t.e_price = t.e_price.toLocaleString();
+                t.e_repair_price = t.e_repair_price.toLocaleString();
+                t.e_age = getAge(t.e_date);
+                isfinish++;
+                if (isfinish == 2) {
+                    let copy = newwindow3.document.createElement("input");
+                    newwindow3.document.body.appendChild(copy);
+                    copy.value = JSON.stringify(t);
+                    copy.setSelectionRange(0, 99999);
+                    copy.select();
+                    newwindow3.document.execCommand("copy");
+                    await newwindow3.navigator.clipboard.writeText(JSON.stringify(t));
+                    console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
+                    console.groupEnd();
+                    setTimeout(() => {
+                        newwindow.close();
+                        newwindow2.close();
+                        newwindow3.close();
+                    }, 200)
+                }
+                else {
+                    setTimeout(() => {
+                        newwindow3.close();
+                    }, 200)
+                }
+            });
+            return
+        }
+        let total = newwindow.document.querySelectorAll(".Total")[0].querySelectorAll("td")[5].innerText.replace(/,/g, '');
+        if (isNaN(total)) total = '-';
+        else total = Number(total);
+        if (!t) t = {}
+        let t2 = {
+            page: "addupdate",
+            e_code: document.getElementsByName("sap_code")[0].value,
+            e_name: (e = document.getElementsByName("catagory")[0]).options[e.selectedIndex].innerText,
+            e_brand: document.getElementsByName("brand")[0].value,
+            e_model: document.getElementsByName("model")[0].value,
+            e_sn: document.getElementsByName("serial_no")[0].value,
+            e_dept: (e = document.getElementsByName("sub_dept")[0]).options[e.selectedIndex].innerText,
+            e_date: document.getElementsByName("receive_date")[0].value,
+            warranty_end: document.getElementsByName("w_finish_date_repair_part")[0].value,
+            e_price: document.getElementsByName("price")[0].value,
+            hos_id: document.getElementsByName("code_equip")[0].value,
+            sup_sale: (e = document.getElementsByName("sup_sale")[0]).options[e.selectedIndex].innerText,
+            pr_vender: (e = document.getElementsByName("sup_serv")[0]).options[e.selectedIndex].innerText,
+            e_repair_price: total,
+            e_repair_percent: '-',
+        };
+        t = Object.assign(t, t2);
+        if (t.e_price == '' || t.e_price == 0) t.e_repair_percent = '-';
+        else {
+            t.e_price = Number(t.e_price.replace(/,/g, ''));
+            t.e_repair_percent = ((t.e_repair_price / t.e_price) * 100).toFixed(2);
+        }
+        t.e_price = t.e_price.toLocaleString();
+        t.e_repair_price = t.e_repair_price.toLocaleString();
+        t.e_age = getAge(t.e_date);
+        isfinish++;
+        if (isfinish == 2) {
+            let copy = newwindow.document.createElement("input");
+            newwindow.document.body.appendChild(copy);
+            copy.value = JSON.stringify(t);
+            copy.setSelectionRange(0, 99999);
+            copy.select();
+            newwindow.document.execCommand("copy");
+            await newwindow.navigator.clipboard.writeText(JSON.stringify(t));
+            console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
+            console.groupEnd();
+            setTimeout(() => {
+                newwindow.close();
+                newwindow2.close();
+            }, 200)
+        }
+        else {
+            setTimeout(() => {
+                newwindow.close();
+            }, 200)
+        }
+    });
 }
 else if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/jobs/BJOBA_05.php") > -1) {
     let e = document.getElementsByName("job_status")[0].value;

@@ -573,44 +573,7 @@
                 console.log(err);
             })
             localStorage.removeItem('updateText' + update_data.jobid)
-            const colorArrays = [
-                ["#ffffff", "#1a237e"],
-                ["#000000", "#ffb74d"],
-                ["#800080", "#00e676"],
-                ["#FF4500", "#80d8ff"],
-                ["#8A2BE2", "#ffd600"],
-                ["#2E8B57", "#d50000"],
-                ["#FF1493", "#00c853"],
-                ["#4169E1", "#e91e63"],
-                ["#DAA520", "#4a148c"],
-                ["#228B22", "#ff6d00"],
-                ["#FFD700", "#263238"],
-                ["#8B4513", "#01579b"],
-                ["#800000", "#4caf50"],
-                ["#9932CC", "#ff5722"],
-                ["#A0522D", "#00b0ff"],
-                ["#8B0000", "#00695c"],
-                ["#6A5ACD", "#d32f2f"],
-                ["#BDB76B", "#1b5e20"],
-                ["#FF6347", "#6200ea"],
-                ["#DC143C", "#00796b"],
-                ["#87CEEB", "#ff3d00"],
-                ["#8B4513", "#ffab00"],
-                ["#1E90FF", "#7b1fa2"],
-                ["#006400", "#ff6f00"],
-                ["#7B68EE", "#64dd17"],
-                ["#FF69B4", "#2962ff"],
-                ["#556B2F", "#c51162"],
-                ["#2F4F4F", "#f50057"],
-                ["#800080", "#009688"],
-                ["#9932CC", "#1a237e"],
-                ["#D2691E", "#0288d1"]
-            ];
 
-            console.log(colorArrays);
-
-            let random = Math.floor(Math.random() * colorArrays.length);
-            let color = colorArrays[random];
 
             // liff.sendMessages([
             //     {
@@ -652,6 +615,8 @@
             // ]).then(() => {
 
             // })
+
+
             let flex = {
                 "type": "bubble",
                 "size": "giga",
@@ -902,12 +867,91 @@
                     "wrap": true
                 })
             }
+            firestore.collection('jobdata/').doc(update_data.jobid).collection('update').get().then(data => {
+                data = data.docs.map(doc => doc.data()).sort((a, b) => b.timestamp - a.timestamp)
+                let carousel = {
+                    type: 'carousel',
+                    contents: [flex]
+                }
+                if (data.length > 2) {
+                    let hasMoreThan10 = data.length - 1 > 10
+                    data = data.slice(1, 11)
+                    data = data.map(r => {
+                        r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                        let his_flex = {
+                            "type": "bubble",
+                            "size": "giga",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "📅 " + r.timestamp,
+                                        "weight": "bold",
+                                        "color": "#ffffff"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "# " + r.name,
+                                        "color": "#ffffff",
+                                        "size": "sm"
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "vertical",
+                                        "spacing": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": r.update.replace(/\n\n/g, '\n'),
+                                                "wrap": true,
+                                                "scaling": true
+                                            }
+                                        ],
+                                        "paddingAll": "lg",
+                                        "borderColor": "#bcbcbc",
+                                        "borderWidth": "light",
+                                        "maxHeight": "500px",
+                                        "backgroundColor": "#ffffff",
+                                        "cornerRadius": "md"
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "header": {
+                                    "backgroundColor": "#0367d3"
+                                }
+                            }
+                        }
+                        carousel.contents.push(his_flex)
+                    })
+
+                }
+                else msg = data.map(r => {
+                    r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                    return r
+                }).map(d => {
+                    return `${d.timestamp}<br>${d.update.replace(/\n\n/g, '\n').replace(/\n/g, '<br>')}<br>#${d.name}`
+                }).join('<br><br>-----------------------------------<br>')
+                $('#summary').html(msg)
+                $('#summary').parent().removeClass('d-none').focus()
+                $.LoadingOverlay("hide");
+                $('.load-bar').addClass('d-none')
+            })
+
             console.log(JSON.stringify(flex));
             liff.sendMessages([
                 {
                     type: 'flex',
                     altText: 'Update ' + update_data.code + ' ' + update_data.jobid + ' ' + update_data.wo,
-                    contents: flex
+                    contents: carousel
                 }
             ]).then(() => {
                 Swal.fire({
