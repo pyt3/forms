@@ -55,11 +55,17 @@
     <nav class="navbar" style="background-color: #db8114;">
         <div class="container-fluid">
             <img width="30" height="30" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" alt="trash" />
-            <form class="d-flex" role="search" id="search-form">
-                <input class="form-control form-control-sm me-2" type="search" placeholder="กรอกรหัสเพื่อค้นหา"
-                    aria-label="Search" id="search-input">
-                <button class="btn btn-sm btn-light" type="submit">Search</button>
-            </form>
+            <div class="d-flex flex-column">
+                <form class="d-flex" role="search" id="search-form">
+                    <input class="form-control form-control-sm me-2" type="search" placeholder="กรอกรหัสเพื่อค้นหา"
+                        aria-label="Search" id="search-input">
+                    <button class="btn btn-sm btn-light" type="submit">Search</button>
+                </form>
+                <div class="d-none" id="extra-menu-btn">
+                    <button class="btn btn-sm btn-danger mt-2 w-100" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#extraOffCanvas" aria-controls="extraOffCanvas">Extra Menu</button>
+                </div>
+            </div>
         </div>
     </nav>
     <header>
@@ -439,6 +445,33 @@
             </div>
         </div>
     </div>
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="extraOffCanvas"
+        aria-labelledby="extraOffCanvasLabel">
+        <div class="offcanvas-body container-fluid text-bg-dark">
+            <form id="merge-prmemo-pdf" class="row rounded border border-light m-1 p-1 py-3 g-3 needs-validation"
+                novalidate>
+                <div class="div-12 text-center">
+                    <h5>รวมไฟล์ MEMO + PR</h5>
+                </div>
+                <div class="col-12">
+                    <label for="prmemo">เลือกไฟล์ PR</label>
+                    <input type="file" name="pr" id="pr" class="form-control form-control-sm" accept="application/pdf"
+                        required>
+                    <div class="invalid-feedback">กรุณาเลือกไฟล์ PR</div>
+                </div>
+                <div class="col-12">
+                    <label for="memo">เลือกไฟล์ Memo</label>
+                    <input type="file" name="memo" id="memo" class="form-control form-control-sm"
+                        accept="application/pdf" required>
+                    <div class="invalid-feedback">กรุณาเลือกไฟล์ Memo</div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-warning btn-sm w-100"><img width="30"
+                            src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" /> สร้างไฟล์</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbwnb57VU-CveziAzWMWtFfbnXiX_mZIWJERI_XLLnNEILEgapodymzeFcWcxMry86EA5Q/exec'
         var form_pdf_bytes, font_bytes, signature_bytes, e_img_bytes, e_img_code_bytes, e_img_nameplate_bytes
@@ -453,6 +486,10 @@
             event.preventDefault()
             let search = $('#search-input').val()
             if (search == '') {
+                return
+            } else if (search == 'mdrp') {
+                $('#extra-menu-btn').removeClass('d-none')
+                $('#search-input').val('')
                 return
             }
             Swal.fire({
@@ -505,14 +542,16 @@
 
         })
 
-        function base64ToBlob(base64, type){{
-            let binary = atob(base64)
-            let array = []
-            for (let i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i))
+        function base64ToBlob(base64, type) {
+            {
+                let binary = atob(base64)
+                let array = []
+                for (let i = 0; i < binary.length; i++) {
+                    array.push(binary.charCodeAt(i))
+                }
+                return new Blob([new Uint8Array(array)], { type: type })
             }
-            return new Blob([new Uint8Array(array)], {type: type})
-        }}
+        }
 
 
         $('#dept option').not(':disabled').each(function () {
@@ -1175,8 +1214,34 @@
             if (!value || value == '') value = 'N/A'
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
         }
-    </script>
 
+        $('#merge-prmemo-pdf').submit(function () {
+
+        })
+    </script>
+    <script>
+            (() => {
+                'use strict'
+
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                const forms = document.querySelectorAll('.needs-validation')
+
+                // Loop over them and prevent submission
+                Array.from(forms).forEach(form => {
+                    form.addEventListener('submit', event => {
+                        event.preventDefault()
+                        if (!form.checkValidity()) {
+                            event.stopPropagation()
+                            form.classList.add('was-validated')
+                            $(form).find(":invalid").first().focus();
+                        }else{
+                            $(form).submit()
+                        }
+
+                    }, false)
+                })
+            })()
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
