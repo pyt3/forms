@@ -61,7 +61,7 @@
                         aria-label="Search" id="search-input">
                     <button class="btn btn-sm btn-light" type="submit">Search</button>
                 </form>
-                <div class="d-none" id="extra-menu-btn">
+                <div class="" id="extra-menu-btn">
                     <button class="btn btn-sm btn-danger mt-2 w-100" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#extraOffCanvas" aria-controls="extraOffCanvas">Extra Menu</button>
                 </div>
@@ -466,8 +466,9 @@
                     <div class="invalid-feedback">กรุณาเลือกไฟล์ Memo</div>
                 </div>
                 <div class="col-12">
-                    <button type="submit" class="btn btn-warning btn-sm w-100"><img width="30"
+                    <button type="submit" class="btn btn-warning btn-sm w-100"><img height="20"
                             src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" /> สร้างไฟล์</button>
+                    <div id="merge-download" class="my-3"></div>
                 </div>
             </form>
         </div>
@@ -1215,7 +1216,44 @@
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
         }
 
-        $('#merge-prmemo-pdf').submit(function () {
+        $('#merge-prmemo-pdf').submit(async function () {
+            let pr, memo
+            event.preventDefault()
+            let pr_file = await new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                reader.onload = () => {
+                    pr = $('#pr').prop('files')[0].name
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer($('#pr').prop('files')[0])
+            })
+            let memo_file = await new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                reader.onload = () => {
+                    memo = $('#memo').prop('files')[0].name
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer($('#memo').prop('files')[0])
+            })
+
+            // merge pdf
+            let PDFDocument = PDFLib.PDFDocument;
+
+            const pdf1 = await PDFDocument.load(memo_file);
+            const pdf2 = await PDFDocument.load(pr_file);
+            const pdfDoc = await PDFDocument.create();
+            const copiedPagesA = await pdfDoc.copyPages(pdf1, pdf1.getPageIndices());
+            copiedPagesA.forEach((page) => pdfDoc.addPage(page));
+            const copiedPagesB = await pdfDoc.copyPages(pdf2, pdf2.getPageIndices());
+            copiedPagesB.forEach((page) => pdfDoc.addPage(page));
+
+            const mergedPdfFile = await pdfDoc.save();
+            var blob = new Blob([mergedPdfFile], { type: 'application/pdf' })
+            var url = URL.createObjectURL(blob)
+            let a = $('<a>', { href: url, download: `[อนุมัติ PR][${memo.split('_').slice(-1).join('_').split('.')[0]}] ${pr.split('.')[0]}.pdf`, class: 'btn btn-success btn-sm w-100', text: 'ดาวน์โหลดไฟล์' })
+            $('#merge-download').html('').append(a)
 
         })
     </script>
@@ -1234,7 +1272,7 @@
                             event.stopPropagation()
                             form.classList.add('was-validated')
                             $(form).find(":invalid").first().focus();
-                        }else{
+                        } else {
                             $(form).submit()
                         }
 
