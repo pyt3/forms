@@ -559,6 +559,15 @@
         }
 
         async function updateData(update_data) {
+            Swal.fire({
+                title: 'กำลังอัพเดทข้อมูล',
+                html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
             console.log("🚀 !! update_data:", update_data)
             let doc_ref
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
