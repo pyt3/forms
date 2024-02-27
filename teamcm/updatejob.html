@@ -103,7 +103,7 @@
             max-width: 500px;
         }
     </style>
-    <title>อัพเดทงาน</title> 
+    <title>อัพเดทงาน</title>
 </head>
 
 <body class="bg-body-tertiary">
@@ -142,7 +142,7 @@
                 <div class="col-4 ps-0 d-flex align-items-center justify-content-center flex-column">
                     <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
                         class="img-fluid rounded shadow shadow-sm border" style="object-fit: cover; opacity: 0.5;">
-                    <a class="btn btn-sm btn-primary" style="font-size: .7rem;"><i class="bi bi-clock-history"
+                    <a class="btn btn-sm btn-primary d-none" style="font-size: .7rem;"><i class="bi bi-clock-history"
                             id="history-btn"></i>&nbsp;ประวัติซ่อม</a>
 
                 </div>
@@ -366,7 +366,12 @@
                 console.log($(this).val());
                 localStorage.setItem('name', $(this).val())
             })
-            $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
+            if (code) {
+                $('#history-btn').removeClass('d-none')
+                $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
+            }else{
+                $('#history-btn').addClass('d-none')
+            }
 
 
             if (action == 'summary') {
@@ -467,6 +472,12 @@
                         $('#image').attr('src', data.image).css('opacity', 1)
                     } else {
                         $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
+                    }
+                    if (data.code) {
+                        $('#history-btn').removeClass('d-none')
+                        $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + data.code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
+                    }else{
+                        $('#history-btn').addClass('d-none')
                     }
                 })
                 $('.container-fluid, .container').removeClass('d-none')
