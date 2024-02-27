@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
         integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="../teampm/main const.js"></script>
     <style>
         * {
             margin: 0;
@@ -84,61 +85,6 @@
                     <label for="start">แผนกต้นทาง</label>
                     <select name="start" id="start" class="form-select">
                         <option value="" selected disabled>เลือกแผนกต้นทาง</option>
-                        <option>ANESTHESIA (วิสัญญี)</option>
-                        <option>ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
-                        <option>BME-PYT3</option>
-                        <option>CATH-LAB</option>
-                        <option>CHECK-UP (ตรวจสุขภาพ)</option>
-                        <option>CORPORATE CUSTOMER SERVICE</option>
-                        <option>CSSD (จ่ายกลาง)</option>
-                        <option>DENTAL (ทันตกรรม)</option>
-                        <option>DIABETIC&amp;METABOLIC(เบาหวาน)</option>
-                        <option>EENT( หูตาคอจมูก)</option>
-                        <option>EMERGENCY( ฉุกเฉิน)</option>
-                        <option>GASTROINTESTINAL LABORATORY(GI)</option>
-                        <option>HEMODIALYSIS (ไตเทียม)</option>
-                        <option>HOPD CENTER (ศุนย์มะเร็ง)</option>
-                        <option>INFECTION CONTROL ( IC)</option>
-                        <option>INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
-                        <option>LABOR ROOM(ห้องคลอด)</option>
-                        <option>LABORATORY</option>
-                        <option>MAID</option>
-                        <option>MARKETING</option>
-                        <option>NURSERY(เด็กอ่อน) FL.6</option>
-                        <option>NURSERY(เด็กอ่อน) FL.7</option>
-                        <option>NURSING DEPARTMENT</option>
-                        <option>OBSERVE(สังเกตอาการ)</option>
-                        <option>OPD CARDIO(ศูนย์หัวใจ)</option>
-                        <option>OPD COUNTER NURSE (CN คัดกรอง)</option>
-                        <option>OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
-                        <option>OPD Lasik (ศูนย์เลสิก)</option>
-                        <option>OPD MEDICINE(อายุกรรม)</option>
-                        <option>OPD NEURO (ศูนย์สมอง)</option>
-                        <option>OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
-                        <option>OPD PEDIATRIC( แผนกเด็ก)</option>
-                        <option>OPD SURGERY(ศัลยกรรม)</option>
-                        <option>OPD UROLOGY (ทางเดินปัสสาวะ)</option>
-                        <option>OPERATING ROOM(ห้องผ่าตัด)</option>
-                        <option>PHARMARCY(เภสัชกรรม ห้องยา)</option>
-                        <option>PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
-                        <option>PHYSICAL THERAPY( กายภาพ)</option>
-                        <option>PICU</option>
-                        <option>PWA LIFE CENTER</option>
-                        <option>PWA ชะลอวัย</option>
-                        <option>VEHICLE</option>
-                        <option>WARD 7</option>
-                        <option>WARD 8</option>
-                        <option>WARD 9</option>
-                        <option>WARD 10</option>
-                        <option>WARD 11</option>
-                        <option>WARD 12</option>
-                        <option>WARD 14</option>
-                        <option>WARD 15</option>
-                        <option>WARD 17</option>
-                        <option>ชั้น 20</option>
-                        <option>WAREHOUSE</option>
-                        <option>X-RAY</option>
-                        <option>รับส่ง</option>
                     </select>
                 </div>
                 <div class="col-12 text-center mt-3" style="display:none"><i
@@ -194,6 +140,7 @@
             $('#scope').click(function () {
                 $('#code').val('SCOPE')
             })
+
             $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
@@ -250,6 +197,10 @@
                 theme: 'bootstrap-5'
             })
             initHistory_code()
+            $('#start, #end').append(depts_array.sort().map(dept => {
+                return `<option value="${dept}">${dept}</option>`
+            }).join(''))
+
         })
         function initHistory_code() {
             //setup before functions

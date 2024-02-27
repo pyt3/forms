@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="-1">
-    
+
     <base target="_top">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,6 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <!-- icon -->
     <link rel="icon" href="https://img.icons8.com/3d-fluency/94/maintenance.png" type="image/x-icon" />
+    <script src="../teampm/main const.js"></script>
     <style>
         * {
             margin: 0;
@@ -142,58 +143,6 @@
                             <label for="e_dept">แผนก</label>
                             <select name="e_dept" id="e_dept" class="form-select">
                                 <option value="" disabled="" selected="">Select value</option>
-                                <option data-dept-id="244">ANESTHESIA (วิสัญญี)</option>
-                                <option data-dept-id="162">ART-LAB (ศูนย์ผู้มีบุตรยาก)</option>
-                                <option>Biomolecular Laboratory</option>
-                                <option>BME-PYT3</option>
-                                <option data-dept-id="232">CATH-LAB</option>
-                                <option data-dept-id="151">CHECK-UP (ตรวจสุขภาพ)</option>
-                                <option data-dept-id="551">CORPORATE CUSTOMER SERVICE</option>
-                                <option data-dept-id="245">CSSD (จ่ายกลาง)</option>
-                                <option data-dept-id="291">DENTAL (ทันตกรรม)</option>
-                                <option data-dept-id="411">DIABETIC&amp;METABOLIC(เบาหวาน)</option>
-                                <option data-dept-id="271">EENT( หูตาคอจมูก)</option>
-                                <option data-dept-id="101">EMERGENCY( ฉุกเฉิน)</option>
-                                <option data-dept-id="351">GASTROINTESTINAL LABORATORY(GI)</option>
-                                <option data-dept-id="212">HEMODIALYSIS (ไตเทียม)</option>
-                                <option data-dept-id="211">HOPD CENTER (ศุนย์มะเร็ง)</option>
-                                <option data-dept-id="123">INFECTION CONTROL ( IC)</option>
-                                <option data-dept-id="241">INTENSIVE CARE UNIT(ผู้ป่วยหนัก)</option>
-                                <option data-dept-id="163">LABOR ROOM(ห้องคลอด)</option>
-                                <option data-dept-id="311">LABORATORY</option>
-                                <option>MAID</option>
-                                <option data-dept-id="571">MARKETING</option>
-                                <option data-dept-id="167">NURSERY(เด็กอ่อน)</option>
-                                <option data-dept-id="671">NURSING DEPARTMENT</option>
-                                <option>OBSERVE(สังเกตอาการ)</option>
-                                <option data-dept-id="231">OPD CARDIO(ศูนย์หัวใจ)</option>
-                                <option data-dept-id="381">OPD COUNTER NURSE (CN คัดกรอง)</option>
-                                <option data-dept-id="134">OPD HEAD NECK BREAST(ศุนย์เต้านม)</option>
-                                <option data-dept-id="111">OPD MEDICINE(อายุกรรม)</option>
-                                <option data-dept-id="181">OPD NEURO (ศูนย์สมอง)</option>
-                                <option data-dept-id="161">OPD OB/GYN(ศุนย์สุขภาพหญิง)</option>
-                                <option data-dept-id="171">OPD PEDIATRIC( แผนกเด็ก)</option>
-                                <option data-dept-id="131">OPD SURGERY(ศัลยกรรม)</option>
-                                <option data-dept-id="133">OPD UROLOGY (ทางเดินปัสสาวะ)</option>
-                                <option data-dept-id="243">OPERATING ROOM(ห้องผ่าตัด)</option>
-                                <option data-dept-id="321">PHARMARCY(เภสัชกรรม ห้องยา)</option>
-                                <option data-dept-id="191">PHYATHAI BEAUTY CENTER (PBC ความงาม)</option>
-                                <option data-dept-id="331">PHYSICAL THERAPY( กายภาพ)</option>
-                                <option data-dept-id="179">PICU</option>
-                                <option data-dept-id="193">PWA LIFE CENTER</option>
-                                <option data-dept-id="193">PWA ชะลอวัย</option>
-                                <option data-dept-id="254">WARD 10</option>
-                                <option data-dept-id="174">WARD 11</option>
-                                <option data-dept-id="175">WARD 12</option>
-                                <option>WARD 14</option>
-                                <option data-dept-id="255">WARD 15</option>
-                                <option data-dept-id="246">WARD 17</option>
-                                <option data-dept-id="164">WARD 7</option>
-                                <option data-dept-id="238">WARD 8</option>
-                                <option data-dept-id="185">WARD 9</option>
-                                <option data-dept-id="301">X-RAY</option>
-                                <option data-dept-id="653">รับส่ง</option>
-                                <option>ห้องเก็บของชั้น 19</option>
                             </select>
                         </div>
                         <div class="col-md-4 mt-3">
@@ -474,7 +423,7 @@
             // read text from file
             let text = await fetch('./console.js').then(res => res.text())
             $('#console-code').val(text)
-            $('#rr_no').val('RR_'+new Date().getFullYear()+'_')
+            $('#rr_no').val('RR_' + new Date().getFullYear() + '_')
             // if no decimal mask input with localestring else mask with 2 decimal
             let mask_options = {
                 reverse: true,
@@ -499,6 +448,13 @@
             $('#e_price, #e_repair_price').mask('#,##0.00', mask_options)
             $('#consumable').mask('#,##0.00', mask_options2)
             $('#rr_price, #rr_vat, #rr_grand_price').mask('#,##0.00', mask_options3)
+            $('#e_dept').append(depts_array.sort().map(dept => {
+                let opt = $('<option>', { text: dept, value: dept })
+                if (depts_id[dept] != undefined) {
+                    $(opt).attr('data-dept-id', depts_id[dept])
+                }
+                return $(opt).prop('outerHTML')
+            }).join(' '))
 
         })
         $('#search-form').submit(function () {
