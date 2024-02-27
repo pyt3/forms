@@ -430,7 +430,7 @@
             font_bytes = await fetch('./THSarabun.ttf').then(res => res.arrayBuffer())
             let text = await fetch('./console.js').then(res => res.text())
             $('#console-code').val(text)
-           
+
             $('#dept').append(depts_array.sort().map(dept => {
                 return `<option value="${dept}">${dept}</option>`
             }).join())
@@ -1169,7 +1169,7 @@
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
         }
 
-        $('#merge-prmemo-pdf').submit(async function () {
+        async function mergePRMrmo() {
             let pr, memo
             event.preventDefault()
             let pr_file = await new Promise((resolve, reject) => {
@@ -1208,30 +1208,34 @@
             let a = $('<a>', { href: url, download: `[อนุมัติ PR][${memo.split('_').slice(-1).join('_').split('.')[0]}] ${pr.split('.')[0]}.pdf`, class: 'btn btn-success btn-sm w-100', text: 'ดาวน์โหลดไฟล์' })
             $('#merge-download').html('').append(a)
 
-        })
+        }
     </script>
     <script>
-            (() => {
-                'use strict'
+        (() => {
+            'use strict'
 
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                const forms = document.querySelectorAll('.needs-validation')
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
 
-                // Loop over them and prevent submission
-                Array.from(forms).forEach(form => {
-                    form.addEventListener('submit', event => {
-                        event.preventDefault()
-                        if (!form.checkValidity()) {
-                            event.stopPropagation()
-                            form.classList.add('was-validated')
-                            $(form).find(":invalid").first().focus();
-                        } else {
-                            $(form).submit()
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault()
+                    if (!form.checkValidity()) {
+                        event.stopPropagation()
+                        form.classList.add('was-validated')
+                        $(form).find(":invalid").first().focus();
+                    } else {
+                        if($(form).attr('id') == 'merge-prmemo-pdf') {
+                            mergePRMrmo()
+                            return
                         }
+                        $(form).submit()
+                    }
 
-                    }, false)
-                })
-            })()
+                }, false)
+            })
+        })()
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
