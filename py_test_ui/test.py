@@ -175,6 +175,37 @@ def get_emp_list(page='1'):
     emp_list = temp_emp_list
     save_empList(emp_list)
 
+def getTeam(row, self_call=False):
+    global emp_list
+    if cookies['PHPSESSID'] is None:
+        set_login()
+        return getTeam(row, self_call)
+    response = False
+    code = id
+    try:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
+            row['START-PLAN'].split('/')[2] + '&s_jobdate=' + row['START-PLAN'] +
+            '&s_to_date=' + row['END-PLAN'] + '&s_sap_code=' + row['CODE'],
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        time.sleep(5)
+        return getTeam(row, self_call)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    # print(soup)
+    table = soup.find("table", {"class", "Grid"})
+    if table == None:
+        print("No table found, re-login...")
+        set_login()
+        return closePM(row, self_call)
+    tr = table.find('tr', {"class", "Row"})
+
 
 def getFirstAndLastDay(date):
     if date is None or date == '':
@@ -241,6 +272,7 @@ def get_screen_shot(soup, css_file, text):
 
 
 def closePM(row,self_call=False):
+    global emp_list
     if cookies['PHPSESSID'] is None:
         set_login()
         return closePM(row, self_call)
@@ -276,12 +308,11 @@ def closePM(row,self_call=False):
         print('PM Work not found')
         return
     a_href = tr.find('a')['href'].split('?')[1]
-    dept_tech = ''
-    # check if vender start with [[CAL]]
-    if vender.startswith('[[CAL]]'):
-        dept_tech = 'M02'
+    if emp_list[row['TEAM']] is None:
+        print('Team not found')
+        dept_tech = getTeam(row)
     else:
-        dept_tech = 'M09'
+        dept_tech = emp_list[row['TEAM']]
     selects = [
         {'name': 'job_result',  'value': '1', 'text_contain': False},
         {'name': 'dept_tech',  'value': dept_tech, 'text_contain': False},
@@ -398,7 +429,7 @@ def read_file():
                         issave = False
                         if row['PM-RESULT'] != 'nan' and row['PM-CLOSED'] == 'nan':
                             # process_result = closePM(id, vender, date, safety, self_call=False)
-                            process_result = closePM(row['CODE'], row['VENDER'], row['DATE-PM'], row['SAFETY'])
+                            process_result = closePM(row)
                             master_df.at[index, 'PM-CLOSED'] = 'success'
                             issave = True
                             # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
