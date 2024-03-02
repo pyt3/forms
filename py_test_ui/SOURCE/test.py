@@ -31,8 +31,8 @@ import sys
 import pyautogui
 from html2image import Html2Image
 import calendar
-# from closePM import closePM
-# from closeCAL import closeCAL
+from closePM import closePM
+from closeCAL import closeCAL
 
 from openpyxl import load_workbook
 logging.basicConfig(filename='log.txt', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s',
@@ -51,7 +51,8 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 # check if using pyinstaller
 if getattr(sys, 'frozen', False):
     root_dir = os.path.dirname(sys.executable)
-config = open(os.path.join(root_dir, "CONFIG/config.json"), "r")
+print(root_dir)
+config = open(os.path.join(root_dir, "config.json"), "r")
 confdata = json.load(config)
 
 lock = threading.Lock()
@@ -80,13 +81,11 @@ headers = {
 }
 emp_list = {}
 tools_list = {}
-calibrator_list = {}
 temp_emp_list = {}
 
 file_name = 'recordCal_PM.xlsx'
-excel_folder = os.path.join(root_dir, 'EXCEL FILE')
 master_df = (pd.read_excel(
-    os.path.join(excel_folder, file_name).replace('//', '/'), sheet_name="Sheet1", engine='openpyxl')).dropna(subset=["CODE"])
+    os.path.join(root_dir, file_name), sheet_name='Sheet1')).dropna(subset=["CODE"])
 df = master_df.map(str)
 
 
@@ -110,7 +109,7 @@ def set_login():
             confdata["SESSION_ID"] = s.cookies['PHPSESSID']
             cookies['PHPSESSID'] = s.cookies['PHPSESSID']
             # write over file to clear old data
-            with open(os.path.join(root_dir, "CONFIG/config.json"), "w") as json_file:
+            with open(os.path.join(root_dir, "config.json"), "w") as json_file:
                 json.dump(confdata, json_file)
             print(confdata)
 
@@ -135,22 +134,15 @@ def save_empList(emp_list=None):
     # write over file to clear old data
     if emp_list is None:
         return
-    with open(os.path.join(root_dir, 'CONFIG/emp_list.json'), 'w') as json_file:
+    with open(os.path.join(root_dir, 'emp_list.json'), 'w') as json_file:
         json.dump(emp_list, json_file)
-
-def save_calibrator_list(calibrator_list=None):
-    # write over file to clear old data
-    if calibrator_list is None:
-        return
-    with open(os.path.join(root_dir, 'CONFIG/calibrator_list.json'), 'w') as json_file:
-        json.dump(calibrator_list, json_file)
 
 
 def load_empList():
     global emp_list
     # handle if file not found
     try:
-        with open(os.path.join(root_dir, 'CONFIG/emp_list.json'), 'r') as json_file:
+        with open(os.path.join(root_dir, 'emp_list.json'), 'r') as json_file:
             emp_list = json.load(json_file)
         if emp_list is None or len(emp_list) == 0:
             get_emp_list()
@@ -162,7 +154,7 @@ def load_tool_list():
     global tools_list
     # handle if file not found
     try:
-        with open(os.path.join(root_dir, 'CONFIG/tools_list.json'), 'r') as json_file:
+        with open(os.path.join(root_dir, 'tools_list.json'), 'r') as json_file:
             tools_list = json.load(json_file)
         if tools_list is None or len(tools_list) == 0:
             print('No tools list found')
@@ -171,19 +163,6 @@ def load_tool_list():
         print(e)
         print('No tools list found')
         exit()
-
-def load_calibrator_list():
-    global calibrator_list
-    # handle if file not found
-    try:
-        with open(os.path.join(root_dir, 'CONFIG/calibrator_list.json'), 'r') as json_file:
-            calibrator_list = json.load(json_file)
-        if calibrator_list is None or len(calibrator_list) == 0:
-            print('No calibrator list found')
-            exit()
-    except Exception as e:
-        print(e)
-        get_emp_list()
 
 temp_team_list = {}
 def get_team_list(url, page='1'):
@@ -225,7 +204,7 @@ def get_team_list(url, page='1'):
             if input[0]['value'] == '' or input[1]['value'] == '':
                 continue
             # temp_emp_list.append([input[0]['value'], input[1]['value']])
-            temp_team_list[input[1]['value'].lower().replace('  ', ' ')] = input[0]['value']
+            temp_team_list[input[1]['value'].lower()] = input[0]['value']
         # get next page
         page = int(page) + 1
         return get_team_list(url, str(page))
@@ -259,13 +238,11 @@ def get_emp_list():
     tr.pop(0)
     for row in tr:
         td = row.find_all('td')
-        calibrator_list[td[1].text.strip().lower()] = td[0].text.strip()
         print('[yellow]กำลังดึงข้อมูลรายชื่อในทีม[/yellow] [blue]{}[/blue]' .format(td[1].text.strip()))
         url = "https://nsmart.nhealth-asia.com/MTDPDB01/reftable/employee_branch.php?dept_control=1&dept_tech={}".format(
             td[0].text.strip())
         team_list = get_team_list(url)
         emp_list[td[1].text.strip().lower()] = team_list
-    save_calibrator_list(calibrator_list)
     save_empList(emp_list)
 
 
@@ -340,11 +317,13 @@ def closePM(row, self_call=False):
         set_login()
         return closePM(row, self_call)
     response = False
+    start_date, end_date, now_year = getFirstAndLastDay(row['DATE-PM'])
+    code = id
     try:
         response = requests.get(
             "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
-            row['YEAR'] + '&s_jobdate=' + row['START-PLAN'] +
-            '&s_to_date=' + row['END-PLAN'] + '&s_sap_code=' + row['CODE'],
+            str(now_year) + '&s_jobdate=' + start_date +
+            '&s_to_date=' + end_date + '&s_sap_code=' + code,
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -366,13 +345,13 @@ def closePM(row, self_call=False):
     if tr == None:
         return 'PM Work not found'
     a_href = tr.find('a')['href'].split('?')[1]
-    if emp_list[row['TEAM'].lower()] is None or emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()] is None:
+    if emp_list[row['TEAM'].lower()] is None:
         print('Team not found')
         get_emp_list()
-        dept_tech = emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()]
     else:
-        dept_tech = emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()]
+        dept_tech = emp_list[row['TEAM'].lower()]
     tool = tools_list[row['TESTER'].lower()]
+
     selects = [
         {'name': 'job_result',  'value': '1', 'text_contain': False},
         {'name': 'dept_tech',  'value': dept_tech, 'text_contain': False},
@@ -421,108 +400,35 @@ def closePM(row, self_call=False):
         form_data['pass_status'] = '1'
     else:
         form_data['pass_status'] = '0'
-    # return form_data
+    print(form_data)
     response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?' + a_href +
                              '&ccsForm=main_jobs%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     result_table = soup.find('table', {'class': 'Record'})
     if result_table == None:
-        return 'Fail'
+        result_json = get_screen_shot(
+            soup, 'close_pm_css.css', 'Fail to Close PM job')
+        print('Fail to Close PM job')
+        return
     result_tr = result_table.find('tr', {'class': 'Total'})
     result_td = result_tr.find('td')
     if result_td.text.strip() == 'PM status : Completed-send equipment back':
-        return_json = 'SUCCESS'
-        # if self_call:
-        #     return return_json
-        print('[green]{}[/green]'.format(result_td.text.strip()))
-        return return_json
-
-def closeCAL(row,self_call=False):
-    if cookies['PHPSESSID'] is None:
-        set_login()
-        return closeCAL(row,self_call)
-    response = False
-    try:
-        response = requests.get(
-            "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
-            row['YEAR'] + '&s_jobdate=' + row['START-PLAN'] +
-            '&s_to_date=' + row['END-PLAN'] + '&s_sap_code=' + row['CODE'],
-            headers=headers,
-            cookies=cookies,
-            verify=False,
-        )
-    except requests.exceptions.RequestException as e:
-        print(e)
-        # wait 5 sec
-        time.sleep(5)
-        return closeCAL(row,self_call)
-    response.encoding = "tis-620"
-    soup = BeautifulSoup(response.text, "lxml")
-    # print(soup)
-    table = soup.find("table", {"class", "Grid"})
-    if table == None:
-        print("No table found, re-login...")
-        set_login()
-        return closeCAL(row,self_call)
-    tr = table.find('tr', {"class", "Row"})
-    if tr == None:
-        return 'CAL Work not found'
-    a_href = tr.find('a')['href'].split('?')[1]
-    dept_caliber = calibrator_list[row['TEAM'].lower()]
-    selects = [
-        {'name': 'tech_idea_stat',  'value': '4', 'text_contain': False},
-        {'name': 'dept_caliber',  'value': dept_caliber, 'text_contain': False},
-    ]
-    date = row['DATE-CAL']
-    if date is not None and date != 'nan' and date != 'Invalid date' and date != '':
-        inputs = [
-            {'name': 'assign_date', 'value': date},
-            {'name': 'act_dstart', 'value': date},
-            {'name': 'act_dfin', 'value': date},
-        ]
-    else:
-        today = time.strftime("%d/%m/%Y")
-        inputs = [
-            {'name': 'assign_date', 'value': today},
-            {'name': 'act_dstart', 'value': today},
-            {'name': 'act_dfin', 'value': today},
-        ]
-
-    form_data = {}
-    emp_id = ''
-    form_data['emp_id'] = emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()]
-    form_data['inspec_app_name'] = confdata['APPROVE_NAME']
-    if row['CAL-STATUS'].lower() == 'pass':
-        form_data['CheckBox2'] = '1'
-    else:
-        form_data['CheckBox2'] = '0'
-    for input in inputs:
-        form_data[input['name']] = input['value']
-    for select in selects:
-        form_data[select['name']] = select['value']
-    response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_1.php?' + a_href +
-                             '&ccsForm=caliber_jobs_tech%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
-    response.encoding = "tis-620"
-    soup = BeautifulSoup(response.text, "lxml")
-    result_td = list(filter(lambda x: 'Completed-send equipment back' in x.text.strip(), soup.find_all(
-        'table', {'class': 'Record'})[1].find_all('tr', {'class': 'Controls'})[0].find_all('td')))
-
-    if result_td == None or len(result_td) == 0:
-       return 'Fail'
-    result_td = result_td[0]
-    print('[green]CAL status : {}[/green]'.format(result_td.text.strip()))
-    return 'SUCCESS'
+        return_json = get_screen_shot(
+            soup, 'close_pm_css.css', result_td.text.strip())
+        if self_call:
+            return return_json
+        print(result_td.text.strip())
 
 
 def read_file():
     try:
         # read file
 
-        with pd.ExcelWriter(os.path.join(excel_folder, file_name).replace('//', '/'),
+        with pd.ExcelWriter(os.path.join(root_dir, file_name).replace('//', '/'),
                             mode='a', engine='openpyxl', if_sheet_exists='replace') as writer:
-            shutil.copy(os.path.join(excel_folder, file_name).replace('//', '/'),
-                        os.path.join(excel_folder, 'backup' + file_name).replace('//', '/'))
+            shutil.copy(os.path.join(root_dir, file_name).replace('//', '/'),
+                        os.path.join(root_dir, 'backup' + file_name).replace('//', '/'))
             # count row['PM-STATUS] to lower case = 'pass'
             pass_pm = 0
             pass_cal = 0
@@ -555,31 +461,23 @@ def read_file():
                 print(init_text)
                 for index, row in df.iterrows():
                     # print(row['CODE']+' '+str(index)+'/'+str(len(df)))
-                    row['CODE'] =  str(row['CODE']).replace('.0', '')
-                    if len(row['CODE']) == 6:
-                        row['CODE'] = "DEMO_" + row['CODE']
-                    else:
-                        row['CODE'] = ("00000" + row['CODE'])[-5:]
-                    print('[green]{}[/green] / [blue]{}[/blue] [yellow]Close PM[/yellow] [light blue]{}[/light blue]'.format(
-                        str(index+1),str(len(df)),row['CODE'])
+                    print('[green]{}[/green] / [blue]{}[/blue]'.format(
+                        str(index+1),str(len(df)))
                     )
                     if row['CODE'] != 'nan' and row['STATUS'] != 'Decommission':
                         issave = False
                         if row['PM-RESULT'] != 'nan' and row['PM-CLOSED'] == 'nan':
+                            print('[yellow]Close PM[/yellow] [blue]{}[/blue]'.format(row['CODE']))
                             # process_result = closePM(id, vender, date, safety, self_call=False)
                             process_result = closePM(row)
-                            # continue
-                            # master_df.at[index, 'PM-CLOSED'] = process_result
-                            master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(str)
-                            master_df.at[index, 'PM-CLOSED'] = process_result
+                            master_df.at[index, 'PM-CLOSED'] = 'success'
                             issave = True
                             # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
                             # writer.save()
 
                         if row['CAL-RESULT'] != 'nan' and row['CAL-CLOSED'] == 'nan':
                             process_result = closeCAL(row)
-                            master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(str)
-                            master_df.at[index, 'CAL-CLOSED'] = process_result
+                            master_df.at[index, 'CAL-CLOSED'] = 'success'
                             issave = True
 
                         if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
@@ -598,5 +496,4 @@ def read_file():
 
 load_empList()
 load_tool_list()
-load_calibrator_list()
 read_file()
