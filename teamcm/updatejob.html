@@ -868,7 +868,7 @@
             //         "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
             //     }
             // }
-            if (update_data.vendor_phone && update_data) {
+            if (update_data.vendor_phone && update_data && update_data.vendor_phone.replace(/\s/g, '') != '') {
                 flex.body.contents[1].contents.push({
                     "type": "text",
                     "text": "📞ติดต่อ " + update_data.vendor_phone,
@@ -956,7 +956,7 @@
                             }
                         }
                         console.log(r)
-                        if (r.vendor_phone && r.vendor_phone != '') {
+                        if (r.vendor_phone && r.vendor_phone != '' && r.vendor_phone.replace(/\s/g, '') != '') {
                             his_flex.body.contents[0].contents.push({
                                 "type": "text",
                                 "text": "📞ติดต่อ " + r.vendor_phone,
