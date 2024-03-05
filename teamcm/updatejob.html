@@ -1018,12 +1018,14 @@
                         contents: carousel
                     }
                 ]).then(() => {
+                    
                     Swal.fire({
                         icon: 'success',
                         title: 'อัพเดทสำเร็จ',
                         text: 'อัพเดทสำเร็จ',
                         timer: 1500,
                     }).then(() => {
+                        if(liff.getDecodedIDToken().sub != 'Ua5445b23f13ae232bcfaab18d42a2956') return
                         liff.closeWindow();
                     })
                 }).catch(err => {
