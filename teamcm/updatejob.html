@@ -595,7 +595,7 @@
                 }
             })
             console.log("🚀 !! update_data:", update_data)
-            let doc_ref, detail
+            let doc_ref
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
                 name: update_data.name,
@@ -603,12 +603,12 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then(async (docRef) => {
                 doc_ref = docRef
-                detail = await firestore.collection('jobdata/').doc(update_data.jobid).get().then(doc => doc.data().detail)
                 console.log("🚀 !! detail:", detail)
                 console.log('update success');
             }).catch(err => {
                 console.log(err);
             })
+            let detail = await firestore.collection('jobdata/').doc(update_data.jobid).get().then(doc => doc.data().detail)
             localStorage.removeItem('updateText' + update_data.jobid)
 
 
