@@ -595,7 +595,7 @@
                 }
             })
             console.log("🚀 !! update_data:", update_data)
-            let doc_ref,detail
+            let doc_ref, detail
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
                 name: update_data.name,
@@ -759,41 +759,6 @@
                             "spacing": "xl",
                             "paddingAll": "20px"
                         },
-                        // {
-                        //     "type": "box",
-                        //     "layout": "vertical",
-                        //     "flex": 10,
-                        //     "contents": [
-                        //         {
-                        //             "type": "text",
-                        //             "text": "อาการเสีย",
-                        //             "wrap": true,
-                        //             "scaling": true,
-                        //             "color": "#777777",
-                        //             "size": "xs"
-                        //         },
-                        //         {
-                        //             "type": "box",
-                        //             "layout": "vertical",
-                        //             "contents": [
-                        //                 {
-                        //                     "type": "text",
-                        //                     "text": detail,
-                        //                     "color": "#052c65",
-                        //                     "wrap": true,
-                        //                     "scaling": true,
-                        //                     "maxLines": 3
-                        //                 }
-                        //             ],
-                        //             "spacing": "xl"
-                        //         }
-                        //     ],
-                        //     "paddingAll": "lg",
-                        //     "borderColor": "#9ec5fe",
-                        //     "borderWidth": "normal",
-                        //     "cornerRadius": "md",
-                        //     "backgroundColor": "#cfe2ff"
-                        // },
                         {
                             "type": "box",
                             "layout": "vertical",
@@ -902,6 +867,43 @@
                         }
                     ]
                 }
+            }
+            if (datail && detail != '') {
+                flex.body.contents[0].splice(1, 0, {
+                    "type": "box",
+                    "layout": "vertical",
+                    "flex": 10,
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": "อาการเสีย",
+                            "wrap": true,
+                            "scaling": true,
+                            "color": "#777777",
+                            "size": "xs"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": detail,
+                                    "color": "#052c65",
+                                    "wrap": true,
+                                    "scaling": true,
+                                    "maxLines": 3
+                                }
+                            ],
+                            "spacing": "xl"
+                        }
+                    ],
+                    "paddingAll": "lg",
+                    "borderColor": "#9ec5fe",
+                    "borderWidth": "normal",
+                    "cornerRadius": "md",
+                    "backgroundColor": "#cfe2ff"
+                })
             }
             // if (update_data.update.length <= 995) {
             //     flex.footer.contents[0].contents[1].actions = [{
