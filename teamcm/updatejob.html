@@ -246,10 +246,10 @@
             </div>
         </div>
     </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
-    </script>
+    </script> -->
 
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
@@ -873,6 +873,7 @@
                     "type": "box",
                     "layout": "vertical",
                     "flex": 10,
+                    "spacing": "md",
                     "contents": [
                         {
                             "type": "text",
@@ -1075,7 +1076,7 @@
                         text: 'อัพเดทสำเร็จ',
                         timer: 1500,
                     }).then(() => {
-                        if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
+                        // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
                         liff.closeWindow();
                     })
                 }).catch(err => {
