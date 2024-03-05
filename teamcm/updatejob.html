@@ -147,8 +147,8 @@
                 <div class="col-4 ps-0 d-flex align-items-center justify-content-center flex-column">
                     <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
                         class="img-fluid rounded shadow shadow-sm border" style="object-fit: cover; opacity: 0.5;">
-                    <a class="btn btn-sm btn-primary w-100 mt-2 d-none" style="font-size: .7rem;" id="history-btn"><i class="bi bi-clock-history"
-                           ></i>&nbsp;ประวัติซ่อม</a>
+                    <a class="btn btn-sm btn-primary w-100 mt-2 d-none" style="font-size: .7rem;" id="history-btn"><i
+                            class="bi bi-clock-history"></i>&nbsp;ประวัติซ่อม</a>
 
                 </div>
             </div>
@@ -265,9 +265,9 @@
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
-                if(liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a'){
+                if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') {
                     $('#developer').removeClass('d-none')
-                }else{
+                } else {
                     $('#developer').addClass('d-none')
                 }
                 const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
@@ -379,7 +379,7 @@
             if (code) {
                 $('#history-btn').removeClass('d-none')
                 $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
-            }else{
+            } else {
                 $('#history-btn').addClass('d-none')
             }
 
@@ -487,7 +487,7 @@
                     if (data.code) {
                         $('#history-btn').removeClass('d-none')
                         $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + data.code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
-                    }else{
+                    } else {
                         $('#history-btn').addClass('d-none')
                     }
                 })
@@ -595,14 +595,16 @@
                 }
             })
             console.log("🚀 !! update_data:", update_data)
-            let doc_ref
+            let doc_ref,detail
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
                 name: update_data.name,
                 vendor_phone: update_data.vendor_phone,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then((docRef) => {
+            }).then(async (docRef) => {
                 doc_ref = docRef
+                detail = await firestore.collection('jobdata/').doc(update_data.jobid).get().then(doc => doc.data().detail)
+                console.log("🚀 !! detail:", detail)
                 console.log('update success');
             }).catch(err => {
                 console.log(err);
@@ -657,6 +659,7 @@
                 "size": "giga",
                 "body": {
                     "type": "box",
+                    "spacing": "md",
                     "layout": "vertical",
                     "contents": [
                         {
@@ -756,6 +759,41 @@
                             "spacing": "xl",
                             "paddingAll": "20px"
                         },
+                        // {
+                        //     "type": "box",
+                        //     "layout": "vertical",
+                        //     "flex": 10,
+                        //     "contents": [
+                        //         {
+                        //             "type": "text",
+                        //             "text": "อาการเสีย",
+                        //             "wrap": true,
+                        //             "scaling": true,
+                        //             "color": "#777777",
+                        //             "size": "xs"
+                        //         },
+                        //         {
+                        //             "type": "box",
+                        //             "layout": "vertical",
+                        //             "contents": [
+                        //                 {
+                        //                     "type": "text",
+                        //                     "text": detail,
+                        //                     "color": "#052c65",
+                        //                     "wrap": true,
+                        //                     "scaling": true,
+                        //                     "maxLines": 3
+                        //                 }
+                        //             ],
+                        //             "spacing": "xl"
+                        //         }
+                        //     ],
+                        //     "paddingAll": "lg",
+                        //     "borderColor": "#9ec5fe",
+                        //     "borderWidth": "normal",
+                        //     "cornerRadius": "md",
+                        //     "backgroundColor": "#cfe2ff"
+                        // },
                         {
                             "type": "box",
                             "layout": "vertical",
@@ -1028,14 +1066,14 @@
                         contents: carousel
                     }
                 ]).then(() => {
-                    
+
                     Swal.fire({
                         icon: 'success',
                         title: 'อัพเดทสำเร็จ',
                         text: 'อัพเดทสำเร็จ',
                         timer: 1500,
                     }).then(() => {
-                        if(liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
+                        if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
                         liff.closeWindow();
                     })
                 }).catch(err => {
