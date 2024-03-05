@@ -115,6 +115,11 @@
     <main>
         <!-- <div class="container-fluid "> -->
         <div class="container d-none">
+            <div class="row d-none" id="developer">
+                <div class="col-12">
+                    developer <i class="bi bi-person-fill"></i>
+                </div>
+            </div>
             <div class="row alert alert-success justify-content-between mx-1 p-1 py-2 mt-3" style="font-size: 0.8rem;">
                 <div class="col-8">
                     WO. <span id="workorder"></span>
@@ -259,6 +264,11 @@
                 if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
+                }
+                if(liff.getDecodedIDToken().sub == 'Ua5445b23f13ae232bcfaab18d42a2956'){
+                    $('#developer').removeClass('d-none')
+                }else{
+                    $('#developer').addClass('d-none')
                 }
                 const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
                 firestore = defaultProject.firestore();
