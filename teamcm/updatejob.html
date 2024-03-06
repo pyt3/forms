@@ -753,8 +753,8 @@
                         type: 'carousel',
                         contents: [flex]
                     }
-                    if (data.length > 1) {
-                        data = data.slice(1, 11)
+                    if (data.length >= 1) {
+                        data = data.slice(0, 10)
                         data.forEach(r => {
                             r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
                             let his_flex = {
