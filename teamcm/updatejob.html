@@ -839,7 +839,17 @@
                         })
                     }
 
-                    console.log("🚀 !! flex:", JSON.stringify(carousel));
+                    liff.sharedTargetPicker([{
+                        type: 'flex',
+                        altText: 'สรุปงาน ' + job_data.workorde + ' ' + job_data.code,
+                        contents: carousel
+                    }]).then(() => {
+                        $.LoadingOverlay("hide");
+                        liff.closeWindow()
+                    }).catch((err) => {
+                        console.log(err)
+                        $.LoadingOverlay("hide");
+                    })
                 })
             }
             else {
