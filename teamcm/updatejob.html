@@ -556,13 +556,7 @@
                                                     "contents": [
                                                         {
                                                             "type": "text",
-                                                            "text": 'req no. ' + job_data.job_no + ' ' + new Date(job_data.timestamp).toLocaleString('th-TH', {
-                                                                year: 'numeric',
-                                                                month: 'long',
-                                                                day: 'numeric',
-                                                                hour: '2-digit',
-                                                                minute: '2-digit'
-                                                            }),
+                                                            "text": 'req no. ' + job_data.job_no + ' ' + moment(update_data.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)'),
                                                             "size": "sm",
                                                             "color": "#bcbcbc",
                                                             "adjustMode": "shrink-to-fit",
@@ -730,7 +724,122 @@
                             "backgroundColor": "#cfe2ff"
                         })
                     }
-                    console.log("🚀 !! flex:", JSON.stringify(flex));
+                    if (update_data.vendor_phone && update_data && update_data.vendor_phone.replace(/\s/g, '') != '') {
+                        flex.body.contents[1].contents.push({
+                            "type": "text",
+                            "text": "📞ติดต่อ " + update_data.vendor_phone,
+                            "action": {
+                                "type": "uri",
+                                "label": "ติดต่อ " + update_data.vendor_phone,
+                                "uri": "tel:" + update_data.vendor_phone
+                            },
+                            "contents": [
+                                {
+                                    "type": "span",
+                                    "text": "📞ติดต่อ"
+                                },
+                                {
+                                    "type": "span",
+                                    "text": " " + update_data.vendor_phone,
+                                    "color": "#006aff",
+                                    "decoration": "underline"
+                                }
+                            ],
+                            "scaling": true,
+                            "wrap": true
+                        })
+                    }
+                    let carousel = {
+                        type: 'carousel',
+                        contents: [flex]
+                    }
+                    if (data.length > 1) {
+                        data = data.slice(1, 11)
+                        data.forEach(r => {
+                            r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                            let his_flex = {
+                                "type": "bubble",
+                                "size": "giga",
+                                "header": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "📅 " + r.timestamp,
+                                            "weight": "bold",
+                                            "color": "#ffffff"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "# " + r.name,
+                                            "color": "#ffffff",
+                                            "size": "sm"
+                                        }
+                                    ]
+                                },
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "spacing": "lg",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": r.update,
+                                                    "wrap": true,
+                                                    "scaling": true
+                                                }
+                                            ],
+                                            "paddingAll": "lg",
+                                            "borderColor": "#bcbcbc",
+                                            "borderWidth": "light",
+                                            "cornerRadius": "md",
+                                            "backgroundColor": "#f4f6f9",
+                                            "flex": 10,
+                                        }
+                                    ]
+                                },
+                                "styles": {
+                                    "header": {
+                                        "backgroundColor": "#0367d3"
+                                    }
+                                }
+                            }
+                            console.log(r)
+                            if (r.vendor_phone && r.vendor_phone != '' && r.vendor_phone.replace(/\s/g, '') != '') {
+                                his_flex.body.contents[0].contents.push({
+                                    "type": "text",
+                                    "text": "📞ติดต่อ " + r.vendor_phone,
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "ติดต่อ " + r.vendor_phone,
+                                        "uri": "tel:" + r.vendor_phone
+                                    },
+                                    "contents": [
+                                        {
+                                            "type": "span",
+                                            "text": "📞ติดต่อ"
+                                        },
+                                        {
+                                            "type": "span",
+                                            "text": " " + r.vendor_phone,
+                                            "color": "#006aff",
+                                            "decoration": "underline"
+                                        }
+                                    ],
+                                    "scaling": true,
+                                    "wrap": true
+                                })
+                            }
+                            carousel.contents.push(his_flex)
+                        })
+                    }
+
+                    console.log("🚀 !! flex:", JSON.stringify(carousel));
                 })
             }
             else {
