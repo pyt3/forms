@@ -115,6 +115,11 @@
     <main>
         <!-- <div class="container-fluid "> -->
         <div class="container d-none">
+            <div class="row d-none" id="developer">
+                <div class="col-12">
+                    developer <i class="bi bi-person-fill"></i>
+                </div>
+            </div>
             <div class="row alert alert-success justify-content-between mx-1 p-1 py-2 mt-3" style="font-size: 0.8rem;">
                 <div class="col-8">
                     WO. <span id="workorder"></span>
@@ -142,8 +147,8 @@
                 <div class="col-4 ps-0 d-flex align-items-center justify-content-center flex-column">
                     <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
                         class="img-fluid rounded shadow shadow-sm border" style="object-fit: cover; opacity: 0.5;">
-                    <a class="btn btn-sm btn-primary w-100 mt-2 d-none" style="font-size: .7rem;" id="history-btn"><i class="bi bi-clock-history"
-                           ></i>&nbsp;ประวัติซ่อม</a>
+                    <a class="btn btn-sm btn-primary w-100 mt-2 d-none" style="font-size: .7rem;" id="history-btn"><i
+                            class="bi bi-clock-history"></i>&nbsp;ประวัติซ่อม</a>
 
                 </div>
             </div>
@@ -260,6 +265,11 @@
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
+                if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') {
+                    $('#developer').removeClass('d-none')
+                } else {
+                    $('#developer').addClass('d-none')
+                }
                 const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
                 firestore = defaultProject.firestore();
                 auth = defaultProject.auth();
@@ -369,7 +379,7 @@
             if (code) {
                 $('#history-btn').removeClass('d-none')
                 $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
-            }else{
+            } else {
                 $('#history-btn').addClass('d-none')
             }
 
@@ -477,7 +487,7 @@
                     if (data.code) {
                         $('#history-btn').removeClass('d-none')
                         $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + data.code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
-                    }else{
+                    } else {
                         $('#history-btn').addClass('d-none')
                     }
                 })
@@ -591,12 +601,14 @@
                 name: update_data.name,
                 vendor_phone: update_data.vendor_phone,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then((docRef) => {
+            }).then(async (docRef) => {
                 doc_ref = docRef
+                console.log("🚀 !! detail:", detail)
                 console.log('update success');
             }).catch(err => {
                 console.log(err);
             })
+            let detail = await firestore.collection('jobdata/').doc(update_data.jobid).get().then(doc => doc.data().detail)
             localStorage.removeItem('updateText' + update_data.jobid)
 
 
@@ -647,6 +659,7 @@
                 "size": "giga",
                 "body": {
                     "type": "box",
+                    "spacing": "md",
                     "layout": "vertical",
                     "contents": [
                         {
@@ -855,6 +868,44 @@
                     ]
                 }
             }
+            if (detail && detail != '') {
+                flex.body.contents.splice(1, 0, {
+                    "type": "box",
+                    "layout": "vertical",
+                    "flex": 10,
+                    "spacing": "md",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": "อาการเสีย",
+                            "wrap": true,
+                            "scaling": true,
+                            "color": "#777777",
+                            "size": "xs"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": detail,
+                                    "color": "#052c65",
+                                    "wrap": true,
+                                    "scaling": true,
+                                    "maxLines": 3
+                                }
+                            ],
+                            "spacing": "xl"
+                        }
+                    ],
+                    "paddingAll": "lg",
+                    "borderColor": "#9ec5fe",
+                    "borderWidth": "normal",
+                    "cornerRadius": "md",
+                    "backgroundColor": "#cfe2ff"
+                })
+            }
             // if (update_data.update.length <= 995) {
             //     flex.footer.contents[0].contents[1].actions = [{
             //         "type": "clipboard",
@@ -868,7 +919,7 @@
             //         "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
             //     }
             // }
-            if (update_data.vendor_phone && update_data) {
+            if (update_data.vendor_phone && update_data && update_data.vendor_phone.replace(/\s/g, '') != '') {
                 flex.body.contents[1].contents.push({
                     "type": "text",
                     "text": "📞ติดต่อ " + update_data.vendor_phone,
@@ -956,7 +1007,7 @@
                             }
                         }
                         console.log(r)
-                        if (r.vendor_phone && r.vendor_phone != '') {
+                        if (r.vendor_phone && r.vendor_phone != '' && r.vendor_phone.replace(/\s/g, '') != '') {
                             his_flex.body.contents[0].contents.push({
                                 "type": "text",
                                 "text": "📞ติดต่อ " + r.vendor_phone,
@@ -1018,12 +1069,14 @@
                         contents: carousel
                     }
                 ]).then(() => {
+
                     Swal.fire({
                         icon: 'success',
                         title: 'อัพเดทสำเร็จ',
                         text: 'อัพเดทสำเร็จ',
                         timer: 1500,
                     }).then(() => {
+                        // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
                         liff.closeWindow();
                     })
                 }).catch(err => {
@@ -1033,7 +1086,7 @@
                         title: 'มีข้อผิดพลาด',
                         html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small>',
                         allowOutsideClick: false,
-                        showConfirmButton: false,
+                        //showConfirmButton: false,
                     })
                 })
             })
