@@ -465,9 +465,16 @@
             } else if (action == 'shared') {
                 let job_data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
-                    let doc_ref = data.docs[0].ref
-                    data = data.docs.map(doc => doc.data()).sort((a, b) => b.timestamp - a.timestamp)
+                    // get doc_ref of last update
+
+                    let doc_ref
+                    data = data.docs.map(doc => {
+                        let d = doc.data()
+                        d.doc_ref = doc.ref
+                        return d
+                    }).sort((a, b) => b.timestamp - a.timestamp)
                     let update_data = data.shift()
+                    doc_ref = update_data.doc_ref
                     let flex = {
                         "type": "bubble",
                         "size": "giga",
