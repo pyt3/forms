@@ -232,7 +232,6 @@ def get_team_list(url, page='1'):
     else:
         return temp_team_list
 
-
 def get_emp_list():
     global emp_list
     try:
