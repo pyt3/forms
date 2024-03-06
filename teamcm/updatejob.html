@@ -464,7 +464,7 @@
                 $.LoadingOverlay("hide");
             } else if (action == 'shared') {
                 let job_data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
-                firestore.collection('jobdata/').doc(update_data.jobid).collection('update').get().then(data => {
+                firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
                     let doc_ref = data.docs[0].ref
                     data = data.docs.map(doc => doc.data()).sort((a, b) => b.timestamp - a.timestamp)
                     let update_data = data.shift()
