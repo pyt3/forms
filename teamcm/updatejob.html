@@ -462,7 +462,235 @@
                     window.open(url, '_self')
                 })
                 $.LoadingOverlay("hide");
-            } else {
+            } else if (action == 'shared') {
+                let job_data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
+                firestore.collection('jobdata/').doc(update_data.jobid).collection('update').get().then(data => {
+                    let doc_ref = data.docs[0].ref
+                    data = data.docs.map(doc => doc.data()).sort((a, b) => b.timestamp - a.timestamp)
+                    let update_data = data.shift()
+                    let flex = {
+                        "type": "bubble",
+                        "size": "giga",
+                        "body": {
+                            "type": "box",
+                            "spacing": "md",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "image",
+                                                    "url": job_data.image,
+                                                    "aspectMode": "fit",
+                                                    "size": "full",
+                                                    "action": {
+                                                        "type": "uri",
+                                                        "label": "action",
+                                                        "uri": job_data.image
+                                                    }
+                                                }
+                                            ],
+                                            "width": "72px",
+                                            "height": "72px",
+                                            "cornerRadius": "md"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Update",
+                                                            "weight": "bold",
+                                                            "flex": 3,
+                                                            "color": "#000000",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": job_data.workorder || '---',
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "รหัส",
+                                                            "weight": "bold",
+                                                            "flex": 3,
+                                                            "color": "#000000",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": job_data.code == '' ? 'Component' : job_data.code,
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": 'req no. ' + job_data.job_no + ' ' + new Date(job_data.timestamp).toLocaleString('th-TH', {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit'
+                                                            }),
+                                                            "size": "sm",
+                                                            "color": "#bcbcbc",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end"
+                                                        }
+                                                    ],
+                                                    "spacing": "sm"
+                                                },
+                                            ],
+                                            "justifyContent": "space-between"
+                                        }
+                                    ],
+                                    "spacing": "xl",
+                                    "paddingAll": "20px"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "spacing": 'lg',
+                                    "flex": 10,
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": update_data.update,
+                                            "wrap": true,
+                                            "scaling": true,
+                                        }
+                                    ],
+                                    "paddingAll": "lg",
+                                    "borderColor": "#bcbcbc",
+                                    "borderWidth": "light",
+                                    "cornerRadius": "md"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "spacing": "md",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "image",
+                                                    "url": "https://img.icons8.com/fluency-systems-filled/48/share-3.png",
+                                                    "size": "xxs",
+                                                    "aspectMode": "fit"
+                                                }
+                                            ],
+                                            "width": "20px",
+                                            "justifyContent": "center",
+                                            "alignItems": "center",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "action",
+                                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=shared&jobid=" + job_data.job_no
+                                            }
+                                        }
+                                    ],
+                                    "paddingAll": "lg",
+                                    "paddingEnd": "xxl",
+                                    "paddingStart": "xxl"
+                                },
+                                {
+                                    "type": "separator"
+                                }
+                            ],
+                            "paddingTop": "none",
+                            "paddingBottom": "none",
+                            "paddingStart": "md",
+                            "paddingEnd": "md"
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": update_data.name,
+                                            "size": "xs",
+                                            "color": "#bcbcbc",
+                                            "align": "start",
+                                            "scaling": true,
+                                            "adjustMode": "shrink-to-fit"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "copy",
+                                                    "size": "xs",
+                                                    "flex": 5,
+                                                    "align": "end",
+                                                    "color": "#bcbcbc",
+                                                },
+                                                {
+                                                    "type": "image",
+                                                    "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
+                                                    "size": "20px",
+                                                    "flex": 1
+                                                }
+                                            ],
+                                            "justifyContent": "flex-end",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "copy",
+                                                "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
+                                            }
+                                        }
+                                    ],
+                                    "spacing": "sm",
+                                    "justifyContent": "space-between",
+                                    "alignItems": "center"
+                                }
+                            ]
+                        }
+                    }
+                })
+                console.log("🚀 !! flex:", JSON.stringify(flex));
+            }
+            else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     $('.load-bar').addClass('d-none')
                     data = data.data()
@@ -791,7 +1019,9 @@
                                     },
                                     "style": "primary",
                                     "height": "sm",
-                                    "scaling": true
+                                    "scaling": true,
+                                    "adjustMode": "shrink-to-fit",
+                                    "flex": 4
                                 },
                                 {
                                     "type": "button",
@@ -802,8 +1032,30 @@
                                     },
                                     "style": "primary",
                                     "height": "sm",
-                                    "scaling": true
+                                    "scaling": true,
+                                    "adjustMode": "shrink-to-fit",
+                                    "flex": 4
                                 },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "image",
+                                            "url": "https://img.icons8.com/fluency-systems-filled/48/share-3.png",
+                                            "size": "xxs",
+                                            "aspectMode": "fit"
+                                        }
+                                    ],
+                                    "width": "20px",
+                                    "justifyContent": "center",
+                                    "alignItems": "center",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "action",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=shared&jobid=" + update_data.jobid
+                                    }
+                                }
                             ],
                             "paddingAll": "lg",
                             "paddingEnd": "xxl",
@@ -832,7 +1084,8 @@
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "align": "start",
-                                    "scaling": true
+                                    "scaling": true,
+                                    "adjustMode": "shrink-to-fit"
                                 },
                                 {
                                     "type": "box",
