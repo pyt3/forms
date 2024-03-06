@@ -463,6 +463,15 @@
                 })
                 $.LoadingOverlay("hide");
             } else if (action == 'shared') {
+                Swal.fire({
+                    title: 'Share งาน',
+                    text: 'กำลังดึงข้อมูลรายชื่อห้องแชท',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
                 let job_data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
                 firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
                     // get doc_ref of last update
