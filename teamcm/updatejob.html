@@ -594,6 +594,7 @@
                                     ],
                                     "paddingAll": "lg",
                                     "borderColor": "#bcbcbc",
+                                    "backgroundColor": "#f4f6f9",
                                     "borderWidth": "light",
                                     "cornerRadius": "md"
                                 },
@@ -688,6 +689,46 @@
                                 }
                             ]
                         }
+                    }
+
+                    let detail = job_data.detail
+                    if (detail && detail != '') {
+                        flex.body.contents.splice(1, 0, {
+                            "type": "box",
+                            "layout": "vertical",
+                            "flex": 10,
+                            "spacing": "md",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "อาการเสีย",
+                                    "wrap": true,
+                                    "scaling": true,
+                                    "color": "#777777",
+                                    "size": "xs"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": detail,
+                                            "color": "#052c65",
+                                            "wrap": true,
+                                            "scaling": true,
+                                            "maxLines": 3
+                                        }
+                                    ],
+                                    "spacing": "xl"
+                                }
+                            ],
+                            "paddingAll": "lg",
+                            "borderColor": "#9ec5fe",
+                            "borderWidth": "normal",
+                            "cornerRadius": "md",
+                            "backgroundColor": "#cfe2ff"
+                        })
                     }
                     console.log("🚀 !! flex:", JSON.stringify(flex));
                 })
@@ -1005,7 +1046,8 @@
                             "paddingAll": "lg",
                             "borderColor": "#bcbcbc",
                             "borderWidth": "light",
-                            "cornerRadius": "md"
+                            "cornerRadius": "md",
+                            "backgroundColor": "#f4f6f9"
                         },
                         {
                             "type": "box",
@@ -1251,6 +1293,7 @@
                                         "borderColor": "#bcbcbc",
                                         "borderWidth": "light",
                                         "cornerRadius": "md",
+                                        "backgroundColor": "#f4f6f9",
                                         "flex": 10,
                                     }
                                 ]
