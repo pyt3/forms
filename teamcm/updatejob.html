@@ -871,8 +871,12 @@
                         })
                         liff.closeWindow()
                     }).catch((err) => {
-                        console.log(err)
                         $.LoadingOverlay("hide");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'แชร์สรุปงานไม่สำเร็จ',
+                            text: 'ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+                        })
                     })
                 })
             }
@@ -1202,7 +1206,7 @@
                                     "action": {
                                         "type": "uri",
                                         "label": "ดูสรุปงาน 👆",
-                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid
                                     },
                                     "style": "primary",
                                     "height": "sm",
@@ -1489,7 +1493,7 @@
                                     "action": {
                                         "type": "uri",
                                         "label": "ดูอัพเดททั้งหมด",
-                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid
                                     },
                                     "style": "link"
                                 }
@@ -1517,8 +1521,8 @@
                         text: 'อัพเดทสำเร็จ',
                         timer: 1500,
                     }).then(() => {
-                        // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
-                        liff.closeWindow();
+                        if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
+                        // liff.closeWindow();
                     })
                 }).catch(err => {
                     console.log(err);
@@ -1526,7 +1530,7 @@
                         icon: 'error',
                         title: 'มีข้อผิดพลาด',
                         html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small>',
-                        allowOutsideClick: false,
+                        confirmButtonText: "ตกลง"
                         //showConfirmButton: false,
                     })
                 })
