@@ -5,7 +5,8 @@ import csv
 import os
 from pprint import pprint
 import datetime
-# import html2image
+from html2image import Html2Image
+from PIL import Image
 import requests
 from bs4 import BeautifulSoup
 import threading
@@ -307,8 +308,11 @@ def get_screen_shot(soup, css_file, text):
         pass
     return_json = {'status': 'ok',
                    'status_text': text, 'screenshot': file_name}
-    removeTempFile()
+    # move file to image folder
+    shutil.move(file_name+'.png', os.path.join(
+        __location__, 'image', file_name+'.png'))
     return return_json
+
 
 
 def closePM(row, self_call=False):
