@@ -737,6 +737,13 @@ def attachFileCAL(id, team, engineer, date):
 
 
 def read_file():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'REPORTS')
+    dir_list = os.listdir(path)
+    file_name_list = []
+    for file in dir_list:
+        if file.endswith('.pdf'):
+            file_name_list.append(file.replace('.pdf', ''))
     try:
         # read file
         print('[red]กำลังอ่านไฟล์...[/red]')
@@ -794,7 +801,7 @@ def read_file():
                             process_result = closePM(row)
                             process_attach = ''
                             if process_result == "SUCCESS":
-                                if row['ATTACH-FILE-PM'].lower() == 'yes':
+                                if row['ATTACH-FILE-PM'].lower() == 'yes' and file_name_list.count(row['CODE']+ '_pm') > 0:
                                     process_attach = attachFilePM(
                                         row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'])
                                     master_df['ATTACH-FILE-PM'] = master_df['ATTACH-FILE-PM'].astype(
@@ -803,6 +810,10 @@ def read_file():
                                         master_df.at[index,
                                                      'ATTACH-FILE-PM'] = "SUCCESS"
                                         issave = True
+                                else:
+                                    print('[red]ไม่พบไฟล์ PM[/red]')
+                                    master_df['ATTACH-FILE-PM'] = master_df['ATTACH-FILE-PM'].astype(str)
+                                    master_df.at[index, 'ATTACH-FILE-PM'] = 'No File To Attach'
                             # continue
                             # master_df.at[index, 'PM-CLOSED'] = process_result
                             master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
@@ -816,7 +827,7 @@ def read_file():
                             process_result = closeCAL(row)
                             process_attach = ''
                             if process_result == "SUCCESS":
-                                if row['ATTACH-FILE-CAL'].lower() == 'yes':
+                                if row['ATTACH-FILE-CAL'].lower() == 'yes' and file_name_list.count(row['CODE']+ '_cal') > 0:
                                     process_attach = attachFileCAL(
                                         row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'])
                                     master_df['ATTACH-FILE-CAL'] = master_df['ATTACH-FILE-CAL'].astype(
@@ -825,6 +836,10 @@ def read_file():
                                         master_df.at[index,
                                                      'ATTACH-FILE-CAL'] = 'SUCCESS'
                                         issave = True
+                                else:
+                                    print('[red]ไม่พบไฟล์ CAL[/red]')
+                                    master_df['ATTACH-FILE-CAL'] = master_df['ATTACH-FILE-CAL'].astype(str)
+                                    master_df.at[index, 'ATTACH-FILE-CAL'] = 'No File To Attach'
                             # continue
                             master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
                                 str)
@@ -854,60 +869,58 @@ def change_file_name():
     with alive_bar(len(dir_list)) as bar:
         for file_name in dir_list:
             source = os.path.join(path, file_name)
-            
-            if file_name.find('_') == -1:
-                file = fitz.open(source)
-                page = file[0]
-                text = page.get_text().split('\n')
-                t_arr = []
-                for t in text:
-                    t = t.split(' ')
-                    for tt in t:
-                        t_arr.append(tt)
-                # text = page.get_text().split('\n')
-                code = [t for t in t_arr if t.find(login_site.upper()) == 0]
-                cal = [t for t in t_arr if t.find('Certificate') == 0]
 
-                if len(code) > 0:
-                    name_arr.append(code[0])
-                    if len(cal) > 0:
-                        name = code[0].split('_')[1]+ '_cal.pdf'
-                    else:
-                        name = code[0].split('_')[1]+ '_pm.pdf'
-                    fitz.open(source).save(os.path.join(path, name))
-                    file.close()
-                    print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
-                            file_name, name))
-                    
-                    os.remove(source)
+            # if file_name.find('_') == -1:
+            file = fitz.open(source)
+            page = file[0]
+            # find text with regex /ID CODE.*\n.*$/gm
+            page = page.get_text()
+            text = re.findall(r'ID CODE.*\n.*$', page, re.MULTILINE)
+            if len(text) == 0:
+                print(
+                    '[red]ไม่พบข้อมูลรหัสเครื่องมือใน PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
+                continue
+            code = text[0].split('\n')[1].replace(':', '').strip()
+            name_arr.append(code)
+            cal = re.findall(r'Certificate', page, re.MULTILINE)
+            if len(cal) > 0:
+                name = code + '_cal.pdf'
             else:
-                filename = file_name.split('_')
-                if len(filename) > 1 and len(filename[1]) > 10:
-                    filename = "_".join(filename[1:])
-                    filename = re.sub(r'\s\(\d{1,}\)', '', filename)
-                    name = filename.split('(')[0]
-                    if(filename.split('(')[-1] != '1).pdf' and filename.split('(')[-1] != '2).pdf'):
-                        name_arr.append(name)
-                        if filename.split('(')[1].find('PM') > -1:
-                            name = name + '_pm.pdf'
-                        else:
-                            name = name + '_cal.pdf'
-                        print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
-                            file_name, name))
-                        dest = os.path.join(path, name);
-                        os.rename(source, dest)
-            
+                name = code + '_pm.pdf'
+            print(name)
+            # file.save(os.path.join(path, name))
+            file.close()
+            os.rename(source, os.path.join(path, name))
+            print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [green]{}[/green]'.format(
+                file_name, name))
+
+
+            # else:
+            #     filename = file_name.split('_')
+            #     if len(filename) > 1 and len(filename[1]) > 10:
+            #         filename = "_".join(filename[1:])
+            #         filename = re.sub(r'\s\(\d{1,}\)', '', filename)
+            #         name = filename.split('(')[0]
+            #         if (filename.split('(')[-1] != '1).pdf' and filename.split('(')[-1] != '2).pdf'):
+            #             name_arr.append(name)
+            #             if filename.split('(')[1].find('PM') > -1:
+            #                 name = name + '_pm.pdf'
+            #             else:
+            #                 name = name + '_cal.pdf'
+            #             print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
+            #                 file_name, name))
+            #             dest = os.path.join(path, name)
+            #             os.rename(source, dest)
 
             # append name_arr to clipboard
             unique_arr = []
             for name in name_arr:
                 if name not in unique_arr:
                     unique_arr.append(name)
-        
+
             pyperclip.copy('\n'.join(unique_arr))
             bar()
     print('[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
-
 
 
 def showmenu():
@@ -931,3 +944,4 @@ load_empList()
 load_tool_list()
 load_calibrator_list()
 showmenu()
+# change_file_name()
