@@ -806,7 +806,10 @@ def read_file():
                                 process_result = row['PM-CLOSED']
                             process_attach = ''
                             if process_result == "SUCCESS":
-                                if row['ATTACH-FILE-PM'].lower() == 'yes':
+                                print(row['CODE'] + '_pm')
+                                if row['ATTACH-FILE-PM'].lower() == 'success':
+                                    process_attach = 'SUCCESS'
+                                elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
                                     process_attach = attachFilePM(
                                         row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'])
                                     master_df['ATTACH-FILE-PM'] = master_df['ATTACH-FILE-PM'].astype(
@@ -836,7 +839,9 @@ def read_file():
                                 process_result = row['CAL-CLOSED']
                             process_attach = ''
                             if process_result == "SUCCESS":
-                                if row['ATTACH-FILE-CAL'].lower() == 'yes':
+                                if row['ATTACH-FILE-CAL'].lower() == 'success':
+                                    process_attach = 'SUCCESS'
+                                elif row['ATTACH-FILE-CAL'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
                                     process_attach = attachFileCAL(
                                         row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'])
                                     master_df['ATTACH-FILE-CAL'] = master_df['ATTACH-FILE-CAL'].astype(
