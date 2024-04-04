@@ -1,6 +1,11 @@
+#!/usr/bin/env python
+# -- coding: utf-8 --
+
+
 import base64
 from io import BytesIO
 import re
+import winreg
 import pandas as pd
 import os
 from pprint import pprint
@@ -25,10 +30,13 @@ import traceback
 import sys
 import logging
 import shutil
-import sys
 import calendar
 import pyperclip
-from fitz_new import fitz
+import fitz
+
+# set cmd to support utf-8
+os.system('chcp 65001')
+
 # from closePM import closePM
 # from closeCAL import closeCAL
 
@@ -49,7 +57,7 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 # check if using pyinstaller
 if getattr(sys, 'frozen', False):
     root_dir = os.path.dirname(sys.executable)
-config = open(os.path.join(root_dir, "CONFIG","config.json"), "r")
+config = open(os.path.join(root_dir, "CONFIG", "config.json"), "r")
 confdata = json.load(config)
 login_site = confdata["SITE"]
 
@@ -84,12 +92,13 @@ temp_emp_list = {}
 
 excel_file_name = 'recordCal_PM.xlsx'
 excel_folder = os.path.join(root_dir, 'EXCEL FILE')
+
+
 def read_excel_file():
     global master_df
     master_df = (pd.read_excel(
         os.path.join(excel_folder, excel_file_name).replace('//', '/'), sheet_name="Sheet1", engine='openpyxl')).dropna(subset=["CODE"])
-    return master_df.applymap(str)
-
+    return master_df.map(str)
 
 
 def internet_connection():
@@ -114,7 +123,6 @@ def set_login():
             # write over file to clear old data
             with open(os.path.join(root_dir, "CONFIG/config.json"), "w") as json_file:
                 json.dump(confdata, json_file)
-            print(confdata)
 
     except Exception as e:
         print(e)
@@ -538,11 +546,11 @@ def closeCAL(row, self_call=False):
     return 'SUCCESS'
 
 
-def attachFilePM(id, team, engineer, date):
+def attachFilePM(id, team, engineer, date, report_name):
     # print type of dataurl
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFilePM(id, team, engineer, date)
+        attachFilePM(id, team, engineer, date, report_name)
     response = False
     start_date, end_date, now_year = getFirstAndLastDay(date)
     code = id
@@ -559,7 +567,7 @@ def attachFilePM(id, team, engineer, date):
         print(e)
         # wait 5 sec
         time.sleep(5)
-        return attachFilePM(id, team, engineer, date)
+        return attachFilePM(id, team, engineer, date, report_name)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -567,7 +575,7 @@ def attachFilePM(id, team, engineer, date):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFilePM(id, team, engineer, date)
+        return attachFilePM(id, team, engineer, date, report_name)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return 'PM Work not found'
@@ -609,7 +617,8 @@ def attachFilePM(id, team, engineer, date):
         form_data[input['name']] = input['value']
 
     # get file base64 from report folder
-    file = open(os.path.join(root_dir, 'REPORTS', id+'_pm.pdf'), 'rb').read()
+    file = open(os.path.join(root_dir, 'REPORTS',
+                report_name + '.pdf'), 'rb').read()
     files = {'document_File': ('report.pdf', file, 'application/pdf')}
 
     # dataurl = json.loads(dataurl)
@@ -645,10 +654,10 @@ def attachFilePM(id, team, engineer, date):
         return file_name
 
 
-def attachFileCAL(id, team, engineer, date):
+def attachFileCAL(id, team, engineer, date, report_name):
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFileCAL(id, team, engineer, date)
+        attachFileCAL(id, team, engineer, date, report_name)
     response = False
     start_date, end_date, now_year = getFirstAndLastDay(date)
     code = id
@@ -665,7 +674,7 @@ def attachFileCAL(id, team, engineer, date):
         print(e)
         # wait 5 sec
         time.sleep(5)
-        return attachFileCAL(id, team, engineer, date)
+        return attachFileCAL(id, team, engineer, date, report_name)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -673,7 +682,7 @@ def attachFileCAL(id, team, engineer, date):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFileCAL(id, team, engineer, date)
+        return attachFileCAL(id, team, engineer, date, report_name)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return 'CAL Work not found'
@@ -706,7 +715,8 @@ def attachFileCAL(id, team, engineer, date):
     for input in inputs:
         form_data[input['name']] = input['value']
 
-    file = open(os.path.join(root_dir, 'REPORTS', id+'_cal.pdf'), 'rb').read()
+    file = open(os.path.join(root_dir, 'REPORTS',
+                report_name+'.pdf'), 'rb').read()
     files = {'document_File': ('report.pdf', file, 'application/pdf')}
     # copy headers
     use_headers = headers.copy()
@@ -795,7 +805,7 @@ def read_file():
                     print('[green]{}[/green] / [blue]{}[/blue] [yellow]Close PM JOB[/yellow] [light blue]{}[/light blue]'.format(
                         str(index+1), str(len(df)), row['CODE'])
                     )
-                    if row['CODE'] != 'nan' and row['STATUS'] != 'Decommission':
+                    if row['CODE'] != 'nan':
                         issave = False
                         if row['PM-RESULT'] != 'nan':
                             # process_result = closePM(id, vender, date, safety, self_call=False)
@@ -810,18 +820,21 @@ def read_file():
                                 if row['ATTACH-FILE-PM'].lower() == 'success':
                                     process_attach = 'SUCCESS'
                                 elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
+
                                     process_attach = attachFilePM(
-                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'])
-                                    master_df['ATTACH-FILE-PM'] = master_df['ATTACH-FILE-PM'].astype(
+                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0])
+                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
                                         str)
                                     if process_attach != 'Fail to Attach PM file':
                                         master_df.at[index,
-                                                     'ATTACH-FILE-PM'] = "SUCCESS"
+                                                     'PM-ATTACH-STATUS'] = "SUCCESS"
                                         issave = True
                                 else:
                                     print('[red]ไม่พบไฟล์ PM[/red]')
-                                    master_df['ATTACH-FILE-PM'] = master_df['ATTACH-FILE-PM'].astype(str)
-                                    master_df.at[index, 'ATTACH-FILE-PM'] = 'No File To Attach'
+                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                        str)
+                                    master_df.at[index,
+                                                 'PM-ATTACH-STATUS'] = 'No File To Attach'
                             # continue
                             # master_df.at[index, 'PM-CLOSED'] = process_result
                             master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
@@ -843,17 +856,19 @@ def read_file():
                                     process_attach = 'SUCCESS'
                                 elif row['ATTACH-FILE-CAL'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
                                     process_attach = attachFileCAL(
-                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'])
-                                    master_df['ATTACH-FILE-CAL'] = master_df['ATTACH-FILE-CAL'].astype(
+                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], [ele for ele in file_name_list if row['CODE']+'_cal' in ele][0])
+                                    master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
                                         str)
                                     if process_attach != 'Fail to Attach PM file':
                                         master_df.at[index,
-                                                     'ATTACH-FILE-CAL'] = 'SUCCESS'
+                                                     'CAL-ATTACH-STATUS'] = 'SUCCESS'
                                         issave = True
                                 else:
                                     print('[red]ไม่พบไฟล์ CAL[/red]')
-                                    master_df['ATTACH-FILE-CAL'] = master_df['ATTACH-FILE-CAL'].astype(str)
-                                    master_df.at[index, 'ATTACH-FILE-CAL'] = 'No File To Attach'
+                                    master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
+                                        str)
+                                    master_df.at[index,
+                                                 'CAL-ATTACH-STATUS'] = 'No File To Attach'
                             # continue
                             master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
                                 str)
@@ -871,7 +886,8 @@ def read_file():
                 print("[red]Cancel[/red]")
                 # clear console
                 os.system('cls' if os.name == 'nt' else 'clear')
-                init_text = pyfiglet.figlet_format("BME Assistant", font="slant")
+                init_text = pyfiglet.figlet_format(
+                    "BME Assistant", font="slant")
                 print(init_text)
                 showmenu()
     except Exception as e:
@@ -888,61 +904,60 @@ def change_file_name():
     path = os.path.join(dir_path, 'REPORTS')
     dir_list = os.listdir(path)
     name_arr = []
-    with alive_bar(len(dir_list)) as bar:
-        for file_name in dir_list:
-            source = os.path.join(path, file_name)
+    for file_name in dir_list:
+        source = os.path.join(path, file_name)
 
-            # if file_name.find('_') == -1:
-            file = fitz.open(source)
-            page = file[0]
-            # find text with regex /ID CODE.*\n.*$/gm
-            page = page.get_text()
-            text = re.findall(r'ID CODE.*\n.*$', page, re.MULTILINE)
-            if len(text) == 0:
-                print(
-                    '[red]ไม่พบข้อมูลรหัสเครื่องมือใน PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
-                continue
-            code = text[0].split('\n')[1].replace(':', '').strip()
-            name_arr.append(code)
-            cal = re.findall(r'Certificate', page, re.MULTILINE)
-            if len(cal) > 0:
-                name = code + '_cal.pdf'
-            else:
-                name = code + '_pm.pdf'
-            # file.save(os.path.join(path, name))
-            file.close()
-            os.rename(source, os.path.join(path, name))
-            print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [green]{}[/green]'.format(
-                file_name, name))
+        # if file_name.find('_') == -1:
+        file = fitz.open(source)
+        page = file[0]
+        # find text with regex /ID CODE.*\n.*$/gm
+        page = page.get_text()
+        text = re.findall(r'ID CODE.*\n.*$', page, re.MULTILINE)
+        if len(text) == 0:
+            print(
+                '[red]ไม่พบข้อมูลรหัสเครื่องมือใน PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
+            continue
+        code = text[0].split('\n')[1].replace(':', '').strip()
+        name_arr.append(code)
+        cal = re.findall(r'Certificate', page, re.MULTILINE)
+        if len(cal) > 0:
+            name = code + '_cal.pdf'
+        else:
+            name = code + '_pm.pdf'
+        # file.save(os.path.join(path, name))
+        file.close()
+        os.rename(source, os.path.join(path, name))
+        print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [green]{}[/green]'.format(
+            file_name, name))
 
+        # else:
+        #     filename = file_name.split('_')
+        #     if len(filename) > 1 and len(filename[1]) > 10:
+        #         filename = "_".join(filename[1:])
+        #         filename = re.sub(r'\s\(\d{1,}\)', '', filename)
+        #         name = filename.split('(')[0]
+        #         if (filename.split('(')[-1] != '1).pdf' and filename.split('(')[-1] != '2).pdf'):
+        #             name_arr.append(name)
+        #             if filename.split('(')[1].find('PM') > -1:
+        #                 name = name + '_pm.pdf'
+        #             else:
+        #                 name = name + '_cal.pdf'
+        #             print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
+        #                 file_name, name))
+        #             dest = os.path.join(path, name)
+        #             os.rename(source, dest)
 
-            # else:
-            #     filename = file_name.split('_')
-            #     if len(filename) > 1 and len(filename[1]) > 10:
-            #         filename = "_".join(filename[1:])
-            #         filename = re.sub(r'\s\(\d{1,}\)', '', filename)
-            #         name = filename.split('(')[0]
-            #         if (filename.split('(')[-1] != '1).pdf' and filename.split('(')[-1] != '2).pdf'):
-            #             name_arr.append(name)
-            #             if filename.split('(')[1].find('PM') > -1:
-            #                 name = name + '_pm.pdf'
-            #             else:
-            #                 name = name + '_cal.pdf'
-            #             print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
-            #                 file_name, name))
-            #             dest = os.path.join(path, name)
-            #             os.rename(source, dest)
+        # append name_arr to clipboard
+        
+    unique_arr = []
+    for name in name_arr:
+        if name not in unique_arr:
+            unique_arr.append(name)
 
-            # append name_arr to clipboard
-            unique_arr = []
-            for name in name_arr:
-                if name not in unique_arr:
-                    unique_arr.append(name)
-
-            pyperclip.copy('\n'.join(unique_arr))
-            bar()
+    pyperclip.copy('\n'.join(unique_arr))
     print('[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
-    option = input('\033[1;35;40mกดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : \033[1;35;40m')
+    print(f'[purple]กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : [/purple]', end='')
+    option = input()
     if option != '':
         # clear console
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -954,13 +969,26 @@ def showmenu():
     # menu
     print('[light blue]ยินดีต้อนรับสู่โปรแกรมปิดงาน[/light blue]')
     print('[light blue]โปรดเลือกเมนูที่ต้องการ[/light blue]')
-    print('[yellow][1] เปลี่ยนชื่อไฟล์ใบงาน[/yellow]')
-    print('[yellow][2] ปิดงาน และแนบไฟล์[/yellow]')
-    menu = input('\033[1;35;40mกดเลขเพื่อเลือกเมนูที่ต้องการ : \033[1;35;40m')
-    if menu == '1':
-        change_file_name()
+    print('[yellow][1] เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/yellow]')
+    print('[yellow][2] เปลี่ยนชื่อไฟล์ใบงาน[/yellow]')
+    print('[yellow][3] ปิดงาน และแนบไฟล์[/yellow]')
+    # set input color to blue
+    print(f'[purple]กดเลขเพื่อเลือกเมนูที่ต้องการ : [/purple]', end='')
+    menu = input()
+    if menu =='1':
+        dir_path = ''
+        if getattr(sys, 'frozen', False):
+            dir_path = os.path.dirname(sys.executable)
+        else:
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+        # open file "download cert.txt" at SOURCE folder in notepad
+        os.system('notepad.exe "' + os.path.join(dir_path, 'SOURCE', 'download cert.txt') + '"')
+        print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
         showmenu()
     elif menu == '2':
+        change_file_name()
+        showmenu()
+    elif menu == '3':
         threading.Thread(target=load_empList).start()
         threading.Thread(target=load_tool_list).start()
         threading.Thread(target=load_calibrator_list).start()
@@ -970,5 +998,54 @@ def showmenu():
         showmenu()
 
 
+import matplotlib.font_manager as fm
 
-showmenu()
+def is_font_installed(font_name):
+    """
+    Check if a specific font is installed on the system.
+    
+    Args:
+        font_name (str): The name of the font to check.
+    
+    Returns:
+        bool: True if the font is installed, False otherwise.
+    """
+    font_manager = fm.FontManager()
+    font_names = [f.name for f in font_manager.ttflist]
+    return font_name in font_names
+
+
+def set_console_font(font_name):
+    """
+    Set the default console font in Windows Registry.
+    
+    Args:
+        font_name (str): The name of the font to set as default for the console.
+    """
+    try:
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                             "Console",
+                             0,
+                             winreg.KEY_WRITE)
+        winreg.SetValueEx(key, "FaceName", 0, winreg.REG_SZ, font_name)
+        winreg.CloseKey(key)
+        print('[green]Console font set successfully[/green]')
+    except Exception as e:
+        print("An error occurred:", e)
+
+
+if is_font_installed('Thaimono'):
+    showmenu()
+else:
+    # install font from SOURCE folder
+    dir_path = ''
+    if getattr(sys, 'frozen', False):
+        dir_path = os.path.dirname(sys.executable)
+    else:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+    font_path = os.path.join(dir_path, 'SOURCE', 'Thaimono.ttf')
+    font_manager = fm.FontManager()
+    font_manager.addfont(font_path)
+    print('Install font Thaimono')
+    set_console_font('Thaimono')
+    showmenu()
