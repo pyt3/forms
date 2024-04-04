@@ -2,10 +2,8 @@ import base64
 from io import BytesIO
 import re
 import pandas as pd
-import csv
 import os
 from pprint import pprint
-import datetime
 from PIL import Image
 from html2image import Html2Image
 import requests
@@ -26,15 +24,11 @@ from rich.progress import track
 import traceback
 import sys
 import logging
-import pandas as pd
 import shutil
-import os
 import sys
-import pyautogui
-from html2image import Html2Image
 import calendar
-import fitz
 import pyperclip
+from fitz_new import fitz
 # from closePM import closePM
 # from closeCAL import closeCAL
 
@@ -50,13 +44,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 init_text = pyfiglet.figlet_format("BME Assistant", font="slant")
 print(init_text)
-
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # check if using pyinstaller
 if getattr(sys, 'frozen', False):
     root_dir = os.path.dirname(sys.executable)
-config = open(os.path.join(root_dir, "CONFIG/config.json"), "r")
+config = open(os.path.join(root_dir, "CONFIG","config.json"), "r")
 confdata = json.load(config)
 login_site = confdata["SITE"]
 
@@ -89,11 +82,14 @@ tools_list = {}
 calibrator_list = {}
 temp_emp_list = {}
 
-file_name = 'recordCal_PM.xlsx'
+excel_file_name = 'recordCal_PM.xlsx'
 excel_folder = os.path.join(root_dir, 'EXCEL FILE')
-master_df = (pd.read_excel(
-    os.path.join(excel_folder, file_name).replace('//', '/'), sheet_name="Sheet1", engine='openpyxl')).dropna(subset=["CODE"])
-df = master_df.map(str)
+def read_excel_file():
+    global master_df
+    master_df = (pd.read_excel(
+        os.path.join(excel_folder, excel_file_name).replace('//', '/'), sheet_name="Sheet1", engine='openpyxl')).dropna(subset=["CODE"])
+    return master_df.applymap(str)
+
 
 
 def internet_connection():
@@ -327,7 +323,7 @@ def base64_image_to_base64_pdf(base64_image_string):
 
 def get_screen_shot(soup, css_file, text):
     # open css file from css folder
-    css_file = open(os.path.join(root_dir, 'css/'+css_file), 'r')
+    css_file = open(os.path.join(root_dir, 'SOURCE/'+css_file), 'r')
     css = css_file.read()
 
     # get file path
@@ -737,7 +733,12 @@ def attachFileCAL(id, team, engineer, date):
 
 
 def read_file():
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+    df = read_excel_file()
+    dir_path = ''
+    if getattr(sys, 'frozen', False):
+        dir_path = os.path.dirname(sys.executable)
+    else:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'REPORTS')
     dir_list = os.listdir(path)
     file_name_list = []
@@ -748,10 +749,10 @@ def read_file():
         # read file
         print('[red]กำลังอ่านไฟล์...[/red]')
 
-        with pd.ExcelWriter(os.path.join(excel_folder, file_name).replace('//', '/'),
+        with pd.ExcelWriter(os.path.join(excel_folder, excel_file_name).replace('//', '/'),
                             mode='a', engine='openpyxl', if_sheet_exists='replace') as writer:
-            shutil.copy(os.path.join(excel_folder, file_name).replace('//', '/'),
-                        os.path.join(excel_folder, 'backup' + file_name).replace('//', '/'))
+            shutil.copy(os.path.join(excel_folder, excel_file_name).replace('//', '/'),
+                        os.path.join(excel_folder, 'backup' + excel_file_name).replace('//', '/'))
             # count row['PM-STATUS] to lower case = 'pass'
             pass_pm = 0
             pass_cal = 0
@@ -796,12 +797,16 @@ def read_file():
                     )
                     if row['CODE'] != 'nan' and row['STATUS'] != 'Decommission':
                         issave = False
-                        if row['PM-RESULT'] != 'nan' and row['PM-CLOSED'] == 'nan':
+                        if row['PM-RESULT'] != 'nan':
                             # process_result = closePM(id, vender, date, safety, self_call=False)
-                            process_result = closePM(row)
+                            process_result = ''
+                            if row['PM-CLOSED'] == 'nan':
+                                process_result = closePM(row)
+                            else:
+                                process_result = row['PM-CLOSED']
                             process_attach = ''
                             if process_result == "SUCCESS":
-                                if row['ATTACH-FILE-PM'].lower() == 'yes' and file_name_list.count(row['CODE']+ '_pm') > 0:
+                                if row['ATTACH-FILE-PM'].lower() == 'yes':
                                     process_attach = attachFilePM(
                                         row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'])
                                     master_df['ATTACH-FILE-PM'] = master_df['ATTACH-FILE-PM'].astype(
@@ -823,11 +828,15 @@ def read_file():
                             # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
                             # writer.save()
 
-                        if row['CAL-RESULT'] != 'nan' and row['CAL-CLOSED'] == 'nan':
-                            process_result = closeCAL(row)
+                        if row['CAL-RESULT'] != 'nan':
+                            process_result = ''
+                            if row['CAL-CLOSED'] == 'nan':
+                                process_result = closeCAL(row)
+                            else:
+                                process_result = row['CAL-CLOSED']
                             process_attach = ''
                             if process_result == "SUCCESS":
-                                if row['ATTACH-FILE-CAL'].lower() == 'yes' and file_name_list.count(row['CODE']+ '_cal') > 0:
+                                if row['ATTACH-FILE-CAL'].lower() == 'yes':
                                     process_attach = attachFileCAL(
                                         row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'])
                                     master_df['ATTACH-FILE-CAL'] = master_df['ATTACH-FILE-CAL'].astype(
@@ -855,14 +864,22 @@ def read_file():
                             # pyautogui.alert('Close Jobs '+str(index)+' records')
             else:
                 print("[red]Cancel[/red]")
-                exit()
+                # clear console
+                os.system('cls' if os.name == 'nt' else 'clear')
+                init_text = pyfiglet.figlet_format("BME Assistant", font="slant")
+                print(init_text)
+                showmenu()
     except Exception as e:
         print(e)
 
 
 def change_file_name():
     print('[red]เปลี่ยนชื่อไฟล์[/red]')
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = ''
+    if getattr(sys, 'frozen', False):
+        dir_path = os.path.dirname(sys.executable)
+    else:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'REPORTS')
     dir_list = os.listdir(path)
     name_arr = []
@@ -887,7 +904,6 @@ def change_file_name():
                 name = code + '_cal.pdf'
             else:
                 name = code + '_pm.pdf'
-            print(name)
             # file.save(os.path.join(path, name))
             file.close()
             os.rename(source, os.path.join(path, name))
@@ -921,6 +937,12 @@ def change_file_name():
             pyperclip.copy('\n'.join(unique_arr))
             bar()
     print('[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
+    option = input('\033[1;35;40mกดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : \033[1;35;40m')
+    if option != '':
+        # clear console
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(init_text)
+        showmenu()
 
 
 def showmenu():
@@ -934,14 +956,14 @@ def showmenu():
         change_file_name()
         showmenu()
     elif menu == '2':
+        threading.Thread(target=load_empList).start()
+        threading.Thread(target=load_tool_list).start()
+        threading.Thread(target=load_calibrator_list).start()
         read_file()
     else:
         print('ไม่พบเมนูที่เลือก')
-        exit()
+        showmenu()
 
 
-load_empList()
-load_tool_list()
-load_calibrator_list()
+
 showmenu()
-# change_file_name()
