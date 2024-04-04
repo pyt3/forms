@@ -5,7 +5,6 @@
 import base64
 from io import BytesIO
 import re
-import winreg
 import pandas as pd
 import os
 from pprint import pprint
@@ -16,17 +15,14 @@ from bs4 import BeautifulSoup
 import threading
 from datetime import datetime
 import json
-import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 import pyfiglet
 import urllib3
-import emoji
 from queue import Queue
 from alive_progress import alive_bar
 import time
 from rich import print, pretty
 from rich.progress import track
-import traceback
 import sys
 import logging
 import shutil
@@ -35,7 +31,7 @@ import pyperclip
 import fitz
 
 # set cmd to support utf-8
-os.system('chcp 65001')
+# os.system('chcp 874')
 
 # from closePM import closePM
 # from closeCAL import closeCAL
@@ -98,6 +94,9 @@ def read_excel_file():
     global master_df
     master_df = (pd.read_excel(
         os.path.join(excel_folder, excel_file_name).replace('//', '/'), sheet_name="Sheet1", engine='openpyxl')).dropna(subset=["CODE"])
+    # check if dataframe gasattr map
+    if not hasattr(master_df, 'map'):
+        master_df.map = master_df.applymap
     return master_df.map(str)
 
 
@@ -816,7 +815,6 @@ def read_file():
                                 process_result = row['PM-CLOSED']
                             process_attach = ''
                             if process_result == "SUCCESS":
-                                print(row['CODE'] + '_pm')
                                 if row['ATTACH-FILE-PM'].lower() == 'success':
                                     process_attach = 'SUCCESS'
                                 elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
@@ -997,55 +995,4 @@ def showmenu():
         print('ไม่พบเมนูที่เลือก')
         showmenu()
 
-
-import matplotlib.font_manager as fm
-
-def is_font_installed(font_name):
-    """
-    Check if a specific font is installed on the system.
-    
-    Args:
-        font_name (str): The name of the font to check.
-    
-    Returns:
-        bool: True if the font is installed, False otherwise.
-    """
-    font_manager = fm.FontManager()
-    font_names = [f.name for f in font_manager.ttflist]
-    return font_name in font_names
-
-
-def set_console_font(font_name):
-    """
-    Set the default console font in Windows Registry.
-    
-    Args:
-        font_name (str): The name of the font to set as default for the console.
-    """
-    try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                             "Console",
-                             0,
-                             winreg.KEY_WRITE)
-        winreg.SetValueEx(key, "FaceName", 0, winreg.REG_SZ, font_name)
-        winreg.CloseKey(key)
-        print('[green]Console font set successfully[/green]')
-    except Exception as e:
-        print("An error occurred:", e)
-
-
-if is_font_installed('Thaimono'):
-    showmenu()
-else:
-    # install font from SOURCE folder
-    dir_path = ''
-    if getattr(sys, 'frozen', False):
-        dir_path = os.path.dirname(sys.executable)
-    else:
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-    font_path = os.path.join(dir_path, 'SOURCE', 'Thaimono.ttf')
-    font_manager = fm.FontManager()
-    font_manager.addfont(font_path)
-    print('Install font Thaimono')
-    set_console_font('Thaimono')
-    showmenu()
+showmenu()
