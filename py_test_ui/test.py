@@ -24,6 +24,7 @@ import shutil
 import calendar
 import pyperclip
 import fitz
+import keyboard
 
 # # set cmd to support utf-8
 # os.system('chcp 65001')
@@ -39,8 +40,8 @@ logging.basicConfig(filename='log.txt', filemode='a', format='%(asctime)s - %(le
 # logging.basicConfig(level=logging.ERROR)
 
 
-pretty.install()
-pretty.pretty_print = True
+# pretty.install()
+# pretty.pretty_print = True
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -882,7 +883,9 @@ def read_file(option=None):
                             master_df.to_excel(
                                 writer, sheet_name='Sheet1', index=False)
                             writer._save()
-                            print('[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
+                            print('\n[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
+                            print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
+                            input()
                             # pyautogui.alert('Close Jobs '+str(index)+' records')
             else:
                 print("[red]Cancel[/red]")
@@ -951,20 +954,19 @@ def change_file_name():
 
         # append name_arr to clipboard
 
-    unique_arr = []
-    for name in name_arr:
-        if name not in unique_arr:
-            unique_arr.append(name)
+    # unique_arr = []
+    # for name in name_arr:
+    #     if name not in unique_arr:
+    #         unique_arr.append(name)
 
-    pyperclip.copy('\n'.join(unique_arr))
-    print('[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
-    print(f'[purple]กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : [/purple]', end='')
-    option = input()
-    if option != '':
-        # clear console
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print(init_text)
-        showmenu()
+    # pyperclip.copy('\n'.join(unique_arr))
+    print('\n[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
+    print('[purple]กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : [/purple]', end='')
+    input()
+    # clear console
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(init_text)
+    showmenu()
 
 
 def showmenu():
@@ -986,10 +988,18 @@ def showmenu():
         else:
             dir_path = os.path.dirname(os.path.realpath(__file__))
         # open file "download cert.txt" at SOURCE folder in notepad
-        os.system('notepad.exe "' + os.path.join(dir_path,
-                  'SOURCE', 'download cert.txt') + '"')
-        print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
-        showmenu()
+        # os.system('notepad.exe "' + os.path.join(dir_path,
+        #           'SOURCE', 'download cert.txt') + '"')
+        # print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
+        script_text = open(os.path.join(dir_path, 'SOURCE', 'download cert.txt'),encoding='utf-8').read()
+        # copy to clipboard
+        pyperclip.copy(script_text)
+        print('\n[green]คัดลอกสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT เรียบร้อย[/green]')
+        print('\nกดปุ่มใดๆเพื่อกลับสู่เมนูหลัก : ', end='')
+        input()
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(init_text)
+        showmenu()  
     elif menu == '2':
         change_file_name()
         showmenu()
