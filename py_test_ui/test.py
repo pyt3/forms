@@ -1,13 +1,8 @@
-#!/usr/bin/env python
-# -- coding: utf-8 --
-
-
 import base64
 from io import BytesIO
 import re
 import pandas as pd
 import os
-from pprint import pprint
 from PIL import Image
 from html2image import Html2Image
 import requests
@@ -30,8 +25,10 @@ import calendar
 import pyperclip
 import fitz
 
-# set cmd to support utf-8
-# os.system('chcp 874')
+# # set cmd to support utf-8
+# os.system('chcp 65001')
+# os.system('$LANG="th_TH.UTF-8"')
+# os.system('cls')
 
 # from closePM import closePM
 # from closeCAL import closeCAL
@@ -43,6 +40,7 @@ logging.basicConfig(filename='log.txt', filemode='a', format='%(asctime)s - %(le
 
 
 pretty.install()
+pretty.pretty_print = True
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -741,7 +739,7 @@ def attachFileCAL(id, team, engineer, date, report_name):
         return file_name
 
 
-def read_file():
+def read_file(option=None):
     df = read_excel_file()
     dir_path = ''
     if getattr(sys, 'frozen', False):
@@ -777,17 +775,18 @@ def read_file():
                     attach_pm += 1
                 if row['ATTACH-FILE-CAL'].lower() == 'yes':
                     attach_cal += 1
-            # row_summary_label.config(text="ตรวจพบเครื่องมือแพทย์ทั้งหมด: " + str(len(df)) + " เครื่อง\n"+ "ตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: " + str(pass_pm) + " เครื่อง\n" + "ตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: " + str(pass_cal) + " เครื่อง\n" + "ตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: " + str(attach_pm) + " เครื่อง\n" + "ตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: " + str(attach_cal) + " เครื่อง\n", font=("Arial", 12), bg="#1f1f1f", fg="white")
-            text = f'''ตรวจพบเครื่องมือแพทย์ทั้งหมด: {len(df)} เครื่อง
-
-ตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: {pass_pm} เครื่อง
-
-ตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: {pass_cal} เครื่อง
-
-ตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: {attach_pm} เครื่อง
-
-ตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: {attach_cal} เครื่อง
-'''
+            text = 'ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(len(df))
+            if (option == 'close_pm_cal'):
+                text = text + \
+                    '\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: {} เครื่อง'.format(
+                        pass_pm, pass_cal)
+            elif (option == 'attach_pm_cal'):
+                text = text + \
+                    '\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: {} เครื่อง'.format(
+                        attach_pm, attach_cal)
+            else:
+                text = text + '\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: {} เครื่อง'.format(
+                    pass_pm, pass_cal, attach_pm, attach_cal)
             print(text)
             start = input(
                 "\033[1;35;40mเริ่มการแนบไฟล์: \033[1;33;40mใช่(Y) ไม่ใช่(N) : \033[1;36;40m")
@@ -806,50 +805,59 @@ def read_file():
                     )
                     if row['CODE'] != 'nan':
                         issave = False
-                        if row['PM-RESULT'] != 'nan':
-                            # process_result = closePM(id, vender, date, safety, self_call=False)
-                            process_result = ''
-                            if row['PM-CLOSED'] == 'nan':
-                                process_result = closePM(row)
-                            else:
-                                process_result = row['PM-CLOSED']
-                            process_attach = ''
-                            if process_result == "SUCCESS":
-                                if row['ATTACH-FILE-PM'].lower() == 'success':
-                                    process_attach = 'SUCCESS'
-                                elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
-
-                                    process_attach = attachFilePM(
-                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0])
-                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-                                        str)
-                                    if process_attach != 'Fail to Attach PM file':
-                                        master_df.at[index,
-                                                     'PM-ATTACH-STATUS'] = "SUCCESS"
-                                        issave = True
+                        process_result = ''
+                        if option == 'close_pm_cal' or option == None:
+                            if row['PM-RESULT'] != 'nan':
+                                # process_result = closePM(id, vender, date, safety, self_call=False)
+                                if row['PM-CLOSED'] == 'nan':
+                                    process_result = closePM(row)
                                 else:
-                                    print('[red]ไม่พบไฟล์ PM[/red]')
-                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                    process_result = row['PM-CLOSED']
+                                if process_result == "SUCCESS":
+                                    
+                                    # continue
+                                    # master_df.at[index, 'PM-CLOSED'] = process_result
+                                    master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
                                         str)
+                                    master_df.at[index, 'PM-CLOSED'] = process_result
+                                    issave = True
+                                    # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
+                                    # writer.save()
+                        elif option == 'attach_pm_cal' or option == None:
+                            process_attach = ''
+                            if row['ATTACH-FILE-PM'].lower() == 'success':
+                                    process_attach = 'SUCCESS'
+                            elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
+
+                                process_attach = attachFilePM(
+                                    row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0])
+                                master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                    str)
+                                if process_attach != 'Fail to Attach PM file':
                                     master_df.at[index,
-                                                 'PM-ATTACH-STATUS'] = 'No File To Attach'
-                            # continue
-                            # master_df.at[index, 'PM-CLOSED'] = process_result
-                            master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
-                                str)
-                            master_df.at[index, 'PM-CLOSED'] = process_result
-                            issave = True
-                            # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
-                            # writer.save()
+                                                    'PM-ATTACH-STATUS'] = "SUCCESS"
+                                    issave = True
+                            else:
+                                print('[red]ไม่พบไฟล์ PM[/red]')
+                                master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                    str)
+                                master_df.at[index,
+                                                'PM-ATTACH-STATUS'] = 'No File To Attach'
 
                         if row['CAL-RESULT'] != 'nan':
+                            issave = False
                             process_result = ''
-                            if row['CAL-CLOSED'] == 'nan':
-                                process_result = closeCAL(row)
-                            else:
-                                process_result = row['CAL-CLOSED']
-                            process_attach = ''
-                            if process_result == "SUCCESS":
+                            if option == 'close_pm_cal' or option == None:
+                                if row['CAL-CLOSED'] == 'nan':
+                                    process_result = closeCAL(row)
+                                else:
+                                    process_result = row['CAL-CLOSED']
+                                master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
+                                    str)
+                                master_df.at[index, 'CAL-CLOSED'] = process_result
+                                issave = True
+                            elif option == 'attach_pm_cal' or option == None:
+                                process_attach = ''
                                 if row['ATTACH-FILE-CAL'].lower() == 'success':
                                     process_attach = 'SUCCESS'
                                 elif row['ATTACH-FILE-CAL'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
@@ -859,19 +867,15 @@ def read_file():
                                         str)
                                     if process_attach != 'Fail to Attach PM file':
                                         master_df.at[index,
-                                                     'CAL-ATTACH-STATUS'] = 'SUCCESS'
+                                                    'CAL-ATTACH-STATUS'] = 'SUCCESS'
                                         issave = True
                                 else:
                                     print('[red]ไม่พบไฟล์ CAL[/red]')
                                     master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
                                         str)
                                     master_df.at[index,
-                                                 'CAL-ATTACH-STATUS'] = 'No File To Attach'
-                            # continue
-                            master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
-                                str)
-                            master_df.at[index, 'CAL-CLOSED'] = process_result
-                            issave = True
+                                                'CAL-ATTACH-STATUS'] = 'No File To Attach'
+                                # continue
 
                         if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
                             # if issave:
@@ -946,7 +950,7 @@ def change_file_name():
         #             os.rename(source, dest)
 
         # append name_arr to clipboard
-        
+
     unique_arr = []
     for name in name_arr:
         if name not in unique_arr:
@@ -969,30 +973,40 @@ def showmenu():
     print('[light blue]โปรดเลือกเมนูที่ต้องการ[/light blue]')
     print('[yellow][1] เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/yellow]')
     print('[yellow][2] เปลี่ยนชื่อไฟล์ใบงาน[/yellow]')
-    print('[yellow][3] ปิดงาน และแนบไฟล์[/yellow]')
+    print('[yellow][3] ปิดงาน PM และ CAL[/yellow]')
+    print('[yellow][4] แนบไฟล์ PM และ CAL[/yellow]')
+    print('[yellow][5] ปิดงาน และแนบไฟล์ PM และ CAL[/yellow]')
     # set input color to blue
     print(f'[purple]กดเลขเพื่อเลือกเมนูที่ต้องการ : [/purple]', end='')
     menu = input()
-    if menu =='1':
+    if menu == '1':
         dir_path = ''
         if getattr(sys, 'frozen', False):
             dir_path = os.path.dirname(sys.executable)
         else:
             dir_path = os.path.dirname(os.path.realpath(__file__))
         # open file "download cert.txt" at SOURCE folder in notepad
-        os.system('notepad.exe "' + os.path.join(dir_path, 'SOURCE', 'download cert.txt') + '"')
+        os.system('notepad.exe "' + os.path.join(dir_path,
+                  'SOURCE', 'download cert.txt') + '"')
         print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
         showmenu()
     elif menu == '2':
         change_file_name()
         showmenu()
-    elif menu == '3':
+    else:
         threading.Thread(target=load_empList).start()
         threading.Thread(target=load_tool_list).start()
         threading.Thread(target=load_calibrator_list).start()
-        read_file()
-    else:
-        print('ไม่พบเมนูที่เลือก')
-        showmenu()
+        if menu == '3':
+            read_file('close_pm_cal')
+        elif menu == '4':
+            read_file('attach_pm_cal')
+        elif menu == '5':
+            read_file()
+
+        else:
+            print('ไม่พบเมนูที่เลือก')
+            showmenu()
+
 
 showmenu()
