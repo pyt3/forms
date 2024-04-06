@@ -25,9 +25,9 @@ import pyperclip
 import fitz
 
 # # set cmd to support utf-8
-os.system('chcp 874')
-os.system('$LANG="th_TH.UTF-8"')
-os.system('cls')
+# os.system('chcp 874')
+# os.system('$LANG="th_TH.UTF-8"')
+# os.system('cls')
 
 # from closePM import closePM
 # from closeCAL import closeCAL
@@ -920,7 +920,7 @@ def change_file_name():
             if len(text) == 0:
                 print(
                     '[red]ไม่พบข้อมูลรหัสเครื่องมือใน PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
-                progress.advance(task)
+                progress.update(task, advance=1)
                 continue
             code = text[0].split('\n')[1].replace(':', '').strip()
             name_arr.append(code)
@@ -934,7 +934,7 @@ def change_file_name():
             os.rename(source, os.path.join(path, name))
             print('[grey42]{}[/grey42] [yellow]>>>>[/yellow] [green]{}[/green]'.format(
                 file_name, name))
-            progress.advance(task)
+            progress.update(task, advance=1)
             # else:
             #     filename = file_name.split('_')
             #     if len(filename) > 1 and len(filename[1]) > 10:
