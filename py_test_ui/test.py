@@ -14,22 +14,20 @@ from concurrent.futures import ThreadPoolExecutor
 import pyfiglet
 import urllib3
 from queue import Queue
-from alive_progress import alive_bar
 import time
 from rich import print, pretty
-from rich.progress import track
+from rich.progress import track, Progress
 import sys
 import logging
 import shutil
 import calendar
 import pyperclip
 import fitz
-import keyboard
 
 # # set cmd to support utf-8
-# os.system('chcp 65001')
-# os.system('$LANG="th_TH.UTF-8"')
-# os.system('cls')
+os.system('chcp 874')
+os.system('$LANG="th_TH.UTF-8"')
+os.system('cls')
 
 # from closePM import closePM
 # from closeCAL import closeCAL
@@ -900,7 +898,6 @@ def read_file(option=None):
 
 
 def change_file_name():
-    print('[red]เปลี่ยนชื่อไฟล์[/red]')
     dir_path = ''
     if getattr(sys, 'frozen', False):
         dir_path = os.path.dirname(sys.executable)
@@ -909,59 +906,62 @@ def change_file_name():
     path = os.path.join(dir_path, 'REPORTS')
     dir_list = os.listdir(path)
     name_arr = []
-    for file_name in dir_list:
-        source = os.path.join(path, file_name)
+    with Progress() as progress:
+        task = progress.add_task("[cyan]เปลี่ยนชื่อไฟล์[/cyan]", total=len(dir_list))
+        for file_name in dir_list:
+            source = os.path.join(path, file_name)
 
-        # if file_name.find('_') == -1:
-        file = fitz.open(source)
-        page = file[0]
-        # find text with regex /ID CODE.*\n.*$/gm
-        page = page.get_text()
-        text = re.findall(r'ID CODE.*\n.*$', page, re.MULTILINE)
-        if len(text) == 0:
-            print(
-                '[red]ไม่พบข้อมูลรหัสเครื่องมือใน PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
-            continue
-        code = text[0].split('\n')[1].replace(':', '').strip()
-        name_arr.append(code)
-        cal = re.findall(r'Certificate', page, re.MULTILINE)
-        if len(cal) > 0:
-            name = code + '_cal.pdf'
-        else:
-            name = code + '_pm.pdf'
-        # file.save(os.path.join(path, name))
-        file.close()
-        os.rename(source, os.path.join(path, name))
-        print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [green]{}[/green]'.format(
-            file_name, name))
+            # if file_name.find('_') == -1:
+            file = fitz.open(source)
+            page = file[0]
+            # find text with regex /ID CODE.*\n.*$/gm
+            page = page.get_text()
+            text = re.findall(r'ID CODE.*\n.*$', page, re.MULTILINE)
+            if len(text) == 0:
+                print(
+                    '[red]ไม่พบข้อมูลรหัสเครื่องมือใน PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
+                progress.advance(task)
+                continue
+            code = text[0].split('\n')[1].replace(':', '').strip()
+            name_arr.append(code)
+            cal = re.findall(r'Certificate', page, re.MULTILINE)
+            if len(cal) > 0:
+                name = code + '_cal.pdf'
+            else:
+                name = code + '_pm.pdf'
+            # file.save(os.path.join(path, name))
+            file.close()
+            os.rename(source, os.path.join(path, name))
+            print('[grey42]{}[/grey42] [yellow]>>>>[/yellow] [green]{}[/green]'.format(
+                file_name, name))
+            progress.advance(task)
+            # else:
+            #     filename = file_name.split('_')
+            #     if len(filename) > 1 and len(filename[1]) > 10:
+            #         filename = "_".join(filename[1:])
+            #         filename = re.sub(r'\s\(\d{1,}\)', '', filename)
+            #         name = filename.split('(')[0]
+            #         if (filename.split('(')[-1] != '1).pdf' and filename.split('(')[-1] != '2).pdf'):
+            #             name_arr.append(name)
+            #             if filename.split('(')[1].find('PM') > -1:
+            #                 name = name + '_pm.pdf'
+            #             else:
+            #                 name = name + '_cal.pdf'
+            #             print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
+            #                 file_name, name))
+            #             dest = os.path.join(path, name)
+            #             os.rename(source, dest)
 
-        # else:
-        #     filename = file_name.split('_')
-        #     if len(filename) > 1 and len(filename[1]) > 10:
-        #         filename = "_".join(filename[1:])
-        #         filename = re.sub(r'\s\(\d{1,}\)', '', filename)
-        #         name = filename.split('(')[0]
-        #         if (filename.split('(')[-1] != '1).pdf' and filename.split('(')[-1] != '2).pdf'):
-        #             name_arr.append(name)
-        #             if filename.split('(')[1].find('PM') > -1:
-        #                 name = name + '_pm.pdf'
-        #             else:
-        #                 name = name + '_cal.pdf'
-        #             print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
-        #                 file_name, name))
-        #             dest = os.path.join(path, name)
-        #             os.rename(source, dest)
+            # append name_arr to clipboard
 
-        # append name_arr to clipboard
+        # unique_arr = []
+        # for name in name_arr:
+        #     if name not in unique_arr:
+        #         unique_arr.append(name)
 
-    # unique_arr = []
-    # for name in name_arr:
-    #     if name not in unique_arr:
-    #         unique_arr.append(name)
-
-    # pyperclip.copy('\n'.join(unique_arr))
+        # pyperclip.copy('\n'.join(unique_arr))
     print('\n[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
-    print('[purple]กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : [/purple]', end='')
+    print('\n[purple]กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : [/purple]', end='')
     input()
     # clear console
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -971,15 +971,15 @@ def change_file_name():
 
 def showmenu():
     # menu
-    print('[light blue]ยินดีต้อนรับสู่โปรแกรมปิดงาน[/light blue]')
+    print('[light blue]ยินดีต้อนรับสู่โปรแกรมปิดงาน[/light blue]'.encode('utf-8').decode('utf-8'))
     print('[light blue]โปรดเลือกเมนูที่ต้องการ[/light blue]')
     print('[yellow][1] เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/yellow]')
     print('[yellow][2] เปลี่ยนชื่อไฟล์ใบงาน[/yellow]')
-    print('[yellow][3] ปิดงาน PM และ CAL[/yellow]')
-    print('[yellow][4] แนบไฟล์ PM และ CAL[/yellow]')
-    print('[yellow][5] ปิดงาน และแนบไฟล์ PM และ CAL[/yellow]')
+    print('[yellow][3][/yellow]  [red]ปิดงาน[/red] [yellow]PM และ CAL[/yellow]')
+    print('[yellow][4][/yellow]  [red]แนบไฟล์[/red] [yellow]PM และ CAL[/yellow]')
+    print('[yellow][5][/yellow]  [red]ปิดงาน[/red] [yellow]และ[/yellow] [red]แนบไฟล์[/red] [yellow]PM และ CAL[/yellow]')
     # set input color to blue
-    print(f'[purple]กดเลขเพื่อเลือกเมนูที่ต้องการ : [/purple]', end='')
+    print(f'\n[purple]กดเลขเพื่อเลือกเมนูที่ต้องการ : [/purple]', end='')
     menu = input()
     if menu == '1':
         dir_path = ''
