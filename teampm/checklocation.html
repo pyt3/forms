@@ -445,6 +445,7 @@
                     confirmButtonText: 'ตกลง',
                 })
             }
+            data = data.sort((a, b) => b.timestamp - a.timestamp)
             let table = $(`<table class="table table-bordered table-striped table-hover"></table>`)
             table.attr('id', 'data_table')
             let thead = $(`<thead></thead>`).addClass('text-bg-primary')
