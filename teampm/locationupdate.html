@@ -607,7 +607,7 @@
                 })
 
                 if (client) {
-                    if(clien.toLowerCase() != 'pyt3'){
+                    if(client.toLowerCase() != 'pyt3'){
                         $('.form-check-input').not('#isDemo, #isCodeC, #isCodeLAB').parent().remove()
                     }
                     $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
