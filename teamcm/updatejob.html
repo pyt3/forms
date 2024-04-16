@@ -127,19 +127,20 @@
                         <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
                             style="font-size: 0.8rem;"></span>
                     </div>
-                    <div class="has-code mt-2 d-none">
+                    <div class="has-code mt-2">
                         <!-- <div class="col-md-4 has-code d-none"> -->
                         <div class="input-group">
                             <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
                             <input type="text" class="form-control" id="request-no" name="request-no"
-                                style="font-size: 0.8rem;">
+                                style="font-size: 0.8rem;" readonly>
+                            <span class="input-group-text bg-warning" id="edit-request"><i class="bi bi-pencil-square"></i></span>
                         </div>
                     </div>
                     <div class="has-code mt-2 d-none">
                         <!-- <div class="col-md-4 has-code d-none"> -->
                         <div class="input-group">
                             <span class="input-group-text" style="font-size: 0.8rem;">Code</span>
-                            <input type="text" class="form-control" id="code" name="code" style="font-size: 0.8rem;">
+                            <input type="text" class="form-control" id="code" name="code" style="font-size: 0.8rem;" readonly>
                         </div>
                     </div>
                 </div>
@@ -386,6 +387,7 @@
 
             if (action == 'summary') {
                 $('.mobile').addClass('d-none')
+                $('#edit-request').hide()
                 $('input').attr('readonly', true)
                 $('#summary').parent().removeClass('d-none')
                 $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
@@ -463,6 +465,7 @@
                 })
                 $.LoadingOverlay("hide");
             } else if (action == 'shared') {
+                $('#edit-request').hide()
                 Swal.fire({
                     title: 'Share งาน',
                     text: 'กำลังดึงข้อมูลรายชื่อห้องแชท',
@@ -883,6 +886,15 @@
             else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     $('.load-bar').addClass('d-none')
+                    if(!data.exists) {
+                        $.LoadingOverlay("hide");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ไม่พบข้อมูล',
+                            text: 'ไม่พบข้อมูล',
+                        })
+                        return liff.closeWindow()
+                    }
                     data = data.data()
                     if (!data.name && !data.reciever) {
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
@@ -990,6 +1002,26 @@
 
         }
 
+        $('#edit-request').click(() => {
+            Swal.fire({
+                input: 'text',
+                inputLabel: 'request no.',
+                inputPlaceholder: 'request no.',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+            }).then(result =>{
+                if(result.isConfirmed){
+                    let url = new URL(window.location.href)
+                    url.searchParams.set('jobid', result.value)
+                    window.open(url, '_self')
+                }
+            })
+        })
         function doneTyping() {
             console.log(jobid);
             let update = $("#update").val();
