@@ -409,11 +409,35 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-12 flex-fill mb-2">
-                <div class="form-check">
+            <div class="col-12 row mb-2">
+                <div class="form-check col-4 col-md-auto">
                     <input class="form-check-input" type="checkbox" value="" id="isDemo">
                     <label class="form-check-label" for="isDemo">
                         Demo
+                    </label>
+                </div>
+                <div class="form-check col-4 col-md-auto">
+                    <input class="form-check-input" type="checkbox" value="" id="isCodeD">
+                    <label class="form-check-label" for="isDemo">
+                        Code D
+                    </label>
+                </div>
+                <div class="form-check col-4 col-md-auto">
+                    <input class="form-check-input" type="checkbox" value="" id="isCodeT">
+                    <label class="form-check-label" for="isDemo">
+                        Code T
+                    </label>
+                </div>
+                <div class="form-check col-4 col-md-auto">
+                    <input class="form-check-input" type="checkbox" value="" id="isCodeC">
+                    <label class="form-check-label" for="isDemo">
+                        Code C
+                    </label>
+                </div>
+                <div class="form-check col-4 col-md-auto">
+                    <input class="form-check-input" type="checkbox" value="" id="isCodeLAB">
+                    <label class="form-check-label" for="isDemo">
+                        Code LAB
                     </label>
                 </div>
             </div>
@@ -466,12 +490,12 @@
         var arr = []
         var Toast, profile, client
         $(document).ready(() => {
-            $.LoadingOverlay("show")
-            liff.init({
-                // liffId: '1655873446-3xe866Ql', // test id
-                liffId: '1657539607-EPzqza2K', // prod id
-                withLoginOnExternalBrowser: true
-            })
+            // $.LoadingOverlay("show")
+            // liff.init({
+            //     // liffId: '1655873446-3xe866Ql', // test id
+            //     liffId: '1657539607-EPzqza2K', // prod id
+            //     withLoginOnExternalBrowser: true
+            // })
             liff.ready.then(async () => {
                 $('#dept').select2({
                     theme: 'bootstrap-5'
@@ -494,6 +518,12 @@
                         }
                         appendPill(cep)
                     },
+                    translation: {
+                        '*': {
+                            pattern: /[A]/,
+                            fallback: 'A',
+                        },
+                    }
                 };
                 if (!await checkClient()) {
                     Swal.fire({
@@ -577,26 +607,48 @@
                 })
 
                 if (client) {
-                    if (client.toLowerCase() != 'PYT3') $('#ocr-btn').parent().remove()
+                    if(clien.toLowerCase() != 'pyt3'){
+                        $('.form-check-input').not('#isDemo, #isCodeC, #isCodeLAB').parent().remove()
+                    }
                     $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
                 }
-                $('#isDemo').change(function () {
+            })
+            
+            $('#ocr-btn').parent().remove()
+            // $('#ocr-btn').click(function () {
+            //     $('#staticBackdrop').modal('show')
+            // })
+
+
+            $('.form-check-input').click(function () {
+                if ($(this).is(':checked')) {
                     $('#add-id').unmask();
                     $('#add-id').val('');
                     $('#add-id').focus();
-                    if ($(this).is(':checked')) {
-                        $('#add-id').mask('DEMO_000000', options);
-                    } else {
-                        $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
+                    $('.form-check-input').not(this).prop('checked', false).parent().find('label').removeClass('text-primary fw-bold')
+                    $(this).parent().find('label').addClass('text-primary fw-bold')
+                    switch ($(this).attr('id')) {
+                        case 'isDemo':
+                            $('#add-id').mask('DEMO_000000', options);
+                            break;
+                        case 'isCodeD':
+                            $('#add-id').mask('PYT3D_00000', options);
+                            break;
+                        case 'isCodeT':
+                            $('#add-id').mask('PYT3T_00000', options);
+                            break;
+                        case 'isCodeC':
+                            $('#add-id').mask('C-PYT3-000', options);
+                            break;
+                        case 'isCodeLAB':
+                            $('#add-id').mask('L*B-PYT3-000', options);
+                            break;
                     }
-
-                })
+                } else {
+                    $(this).parent().find('label').removeClass('text-primary fw-bold')
+                    $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
+                }
             })
-
-            $('#ocr-btn').click(function () {
-                $('#staticBackdrop').modal('show')
-            })
-
         })
         async function checkClient() {
             let user = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get()
