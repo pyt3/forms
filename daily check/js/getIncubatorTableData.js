@@ -84,6 +84,13 @@ async function getIncubatorTableData(session) {
     $('#admin-div').show()
     // }
 }
+
+function get_id(url) {
+    let regex1 = /https:\/\/drive.google.com|\/open|\/uc|\/file|\/d|export|download|\?id|\/view|usp|=sharing/g
+    let regex2 = /([\w-]){33}|([\w-]){19}/g
+    let url_id = url.replace(regex1, "").match(regex2)[0]
+    return url_id
+}
 var table
 function createIncubatorTable(data) {
     console.log("🚀 ~ data", data)
@@ -188,7 +195,7 @@ function createIncubatorTable(data) {
                 render: function (data, type) {
                     if (!data) return ''
                     if (typeof data == 'string' && data.indexOf('https') > -1)
-                        return `<img src="${data}" height="25px">`
+                        return `<img src="https://lh3.googleusercontent.com/d/${get_id(data)}" height="25px">`
                     return data;
                 }
             },
@@ -216,7 +223,7 @@ function createIncubatorTable(data) {
                 render: function (data, type) {
                     if (!data) return ''
                     if (typeof data == 'string' && data.indexOf('https') > -1)
-                        return `<img src="${data}" height="25px">`
+                        return `<img src="https://lh3.googleusercontent.com/d/${get_id(data)}" height="25px">`
                     return data;
                 }
             },
@@ -242,7 +249,7 @@ function createIncubatorTable(data) {
                 render: function (data, type) {
                     if (!data) return ''
                     if (typeof data == 'string' && data.indexOf('https') > -1)
-                        return `<img src="${data}" height="25px">`
+                        return `<img src="https://lh3.googleusercontent.com/d/${get_id(data)}" height="25px">`
                     return data;
                 }
             },
@@ -270,7 +277,7 @@ function createIncubatorTable(data) {
                 render: function (data, type) {
                     if (!data) return ''
                     if (typeof data == 'string' && data.indexOf('https') > -1)
-                        return `<img src="${data}" height="25px">`
+                        return `<img src="https://lh3.googleusercontent.com/d/${get_id(data)}" height="25px">`
                     return data;
                 }
             },
@@ -337,14 +344,14 @@ function getIncubatorDetail(row, index) {
                 <p>ผู้ตรวจเช็ค: <span class="text-primary">${obj.rec_name}</span></p>
             </div>
             <div class="col-md-6">
-                <p>ลายเซ็นผู้ตรวจเช็ค: <span><img src="${obj.signature_staff}" height="30px"></span></p>
+                <p>ลายเซ็นผู้ตรวจเช็ค: <span><img src="https://lh3.googleusercontent.com/d/${get_id(obj.signature_staff)}" height="30px"></span></p>
             </div>`
         if (obj.approve_name) {
             detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ: <span class="text-primary">${obj.approve_name}</span></p>
             </div>
             <div class="col-md-6">
-                <p>ลายเซ็นผู้อนุมัติ: <span><img src="${obj.signature_manager}" height="30px"></span></p>
+                <p>ลายเซ็นผู้อนุมัติ: <span><img src="https://lh3.googleusercontent.com/d/${get_id(obj.signature_manager)}" height="30px"></span></p>
             </div>`
         } else {
             detailHtml += `  <div class="col-md-12"><input id="approve_name" placeholder="ชื่อผู้อนุมัติ" class="form-control"></div>
@@ -374,14 +381,14 @@ function getIncubatorDetail(row, index) {
                 <p>ผู้ตรวจเช็ค หลังใช้: <span class="text-primary">${obj.afteruse_rec_name}</span></p>
             </div>
             <div class="col-md-6">
-                <p>ลายเซ็นผู้ตรวจเช็ค หลังใช้: <span><img src="${obj.signature_staff_afteruse || ''}" height="30px"></span></p>
+                <p>ลายเซ็นผู้ตรวจเช็ค หลังใช้: <span><img src="${obj.signature_staff_afteruse ? `https://lh3.googleusercontent.com/d/${get_id(obj.signature_staff_afteruse)}` : ''}" height="30px"></span></p>
             </div>`
         if (obj.afteruse_approve_name) {
             detailHtml += `<div class="col-md-6">
                 <p>ผู้อนุมัติ หลังใช้: <span class="text-primary">${obj.afteruse_approve_name || ''}</span></p>
             </div>
             <div class="col-md-6">
-                <p>ลายเซ็นผู้อนุมัติ หลังใช้: <span ><img src="${obj.signature_manager_afteruse || ''}" height="30px"></span></p>
+                <p>ลายเซ็นผู้อนุมัติ หลังใช้: <span ><img src="${obj.signature_manager_afteruse ? `https://lh3.googleusercontent.com/d/${get_id(obj.signature_manager_afteruse)}` : ''}" height="30px"></span></p>
             </div>`
         } else {
             detailHtml += `  <div class="col-md-12"><input id="afteruse_approve_name" placeholder="ชื่อผู้อนุมัติ หลังใช้" class="form-control"></div>

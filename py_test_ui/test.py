@@ -17,6 +17,8 @@ from queue import Queue
 import time
 from rich import print, pretty
 from rich.progress import track, Progress
+from rich.table import Table
+from rich.console import Console
 import sys
 import logging
 import shutil
@@ -776,27 +778,26 @@ def read_file(option=None):
             attach_cal = 0
 
             for index, row in df.iterrows():
-                if row['PM-STATUS'].lower() == 'pass':
+                if row['PM-CLOSED'].lower() == 'nan':
                     pass_pm += 1
-                if row['CAL-STATUS'].lower() == 'pass':
+                if row['CAL-CLOSED'].lower() == 'nan':
                     pass_cal += 1
-                if row['ATTACH-FILE-PM'].lower() == 'yes':
+                if row['PM-ATTACH-STATUS'].lower() == 'nan':
                     attach_pm += 1
-                if row['ATTACH-FILE-CAL'].lower() == 'yes':
+                if row['CAL-ATTACH-STATUS'].lower() == 'nan':
                     attach_cal += 1
-            text = 'ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(len(df))
-            if (option == 'close_pm_cal'):
-                text = text + \
-                    '\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: {} เครื่อง'.format(
-                        pass_pm, pass_cal)
-            elif (option == 'attach_pm_cal'):
-                text = text + \
-                    '\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: {} เครื่อง'.format(
-                        attach_pm, attach_cal)
-            else:
-                text = text + '\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: {} เครื่อง'.format(
-                    pass_pm, pass_cal, attach_pm, attach_cal)
-            print(text)
+            table = Table(title='ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(len(df)),title_justify='center', title_style='bold magenta')
+            table.add_column('#', justify='left', style='cyan', no_wrap=True)
+            table.add_column('จำนวนเครื่อง', justify='right', style='green', no_wrap=True)
+            if (option == 'close_pm_cal' or option == None):
+                table.add_row('PM ที่ยังไม่ปิดงาน', str(pass_pm))
+                table.add_row('CAL ที่ยังไม่ปิดงาน', str(pass_cal))
+
+            if (option == 'attach_pm_cal' or option == None):
+                table.add_row('PM ที่ยังไม่แนบไฟล์', str(attach_pm))
+                table.add_row('CAL ที่ยังไม่แนบไฟล์', str(attach_cal))
+            
+            Console().print(table)
             print(f'\n[red]ต้องการเริ่มต้นการทำงานหรือไม่? (Y/N): [/red]', end='')
             start = input()
             if start.lower() == 'y':
@@ -805,6 +806,7 @@ def read_file(option=None):
                 screenshot = input().lower() == 'y'
                 init_text = pyfiglet.figlet_format("Start Process...")
                 print(init_text)
+                start_time = time.time()
                 for index, row in df.iterrows():
                     # print(row['CODE']+' '+str(index)+'/'+str(len(df)))
                     row['CODE'] = str(row['CODE']).replace('.0', '')
@@ -894,7 +896,11 @@ def read_file(option=None):
                         master_df.to_excel(
                             writer, sheet_name='Sheet1', index=False)
                         writer._save()
+                end_time = time.time()
+
                 print('\n[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
+                print('[green]เสร็จสิ้นในเวลา[/green] : [yellow]{}[/yellow] วินาที'.format(
+                    str(round(end_time-start_time, 2))))
                 print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
                 input()
                 # clear console
