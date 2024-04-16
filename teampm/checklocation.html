@@ -219,8 +219,8 @@
                     );
                     return $opt;
                 }, templateSelection: function (data) {
-                   client = data.id
-                   console.log("🚀 !! client:", client)
+                    client = data.id
+                    console.log("🚀 !! client:", client)
                     return data.text;
                 }
             });
@@ -374,7 +374,7 @@
                     timer: 1500
                 })
             }
-            if(client.toLowerCase() == 'all' && $('#site').val() == null) {
+            if (client.toLowerCase() == 'all' && $('#site').val() == null) {
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณาเลือก Site',
@@ -461,14 +461,14 @@
                 if (i == 0) {
                     row.dept = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row.dept
 
-                    let date = new Date(row.timestamp.toMillis())
-                    let tr = $(`<tr></tr>`).html(`<td>${date.toLocaleDateString('th-TH', {
-                        year: 'numeric',
-                        month: 'numeric',
-                        day: 'numeric',
-                    })}</td><td>${row.dept}</td><td>${row.remark == "" ? '---' : row.remark}</td><td>${row.line}</td>`)
-                    $(tbody).append(tr)
                 }
+                let date = new Date(row.timestamp.toMillis())
+                let tr = $(`<tr></tr>`).html(`<td>${date.toLocaleDateString('th-TH', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                })}</td><td>${row.dept}</td><td>${row.remark == "" ? '---' : row.remark}</td><td>${row.line}</td>`)
+                $(tbody).append(tr)
             })
             // format first row of tbody
 
