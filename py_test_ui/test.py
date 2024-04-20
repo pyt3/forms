@@ -17,6 +17,8 @@ from queue import Queue
 import time
 from rich import print, pretty
 from rich.progress import track, Progress
+from rich.table import Table
+from rich.console import Console
 import sys
 import logging
 import shutil
@@ -131,8 +133,10 @@ def set_login():
 def formatDate(date):
     if date != 'nan':
         # date is dd/mm/yyyy
-        date = date.split(' ')[0].split('-')[2]+'/'+date.split(
-            ' ')[0].split('-')[1]+'/'+date.split(' ')[0].split('-')[0]
+        date = date.split('/')
+        date[0] = '0' + date[0] if len(date[0]) == 1 else date[0]
+        date[1] = '0' + date[1] if len(date[1]) == 1 else date[1]
+        date = '/'.join(date)
     return date
 
 
@@ -356,8 +360,8 @@ def closePM(row, self_call=False):
     try:
         response = requests.get(
             "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
-            row['YEAR'] + '&s_jobdate=' + row['START-PLAN'] +
-            '&s_to_date=' + row['END-PLAN'] + '&s_sap_code=' + row['CODE'],
+            row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
+            '&s_to_date=' + formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -391,9 +395,9 @@ def closePM(row, self_call=False):
         {'name': 'job_result',  'value': '1', 'text_contain': False},
         {'name': 'dept_tech',  'value': dept_tech, 'text_contain': False},
         {'name': 'toolid', 'value': tool, 'text_contain': False},
-        {'name': 'app_issue_name', 'value': '566152', 'text_contain': False},
+        {'name': 'app_issue_name', 'value': row['INSPECTOR ID'], 'text_contain': False},
     ]
-    date = row['DATE-PM']
+    date = formatDate(row['DATE-PM'])
     if date is not None and date != 'nan' and date != 'Invalid date' and date != '':
         inputs = [
             {'name': 'assign_date', 'value': date},
@@ -447,11 +451,13 @@ def closePM(row, self_call=False):
     result_td = result_tr.find('td')
     if result_td.text.strip() == 'PM status : Completed-send equipment back':
         return_json = 'SUCCESS'
-        file_name = get_screen_shot(
-            soup, 'close_pm_css.css', result_td.text.strip())
-        # move file to folder
-        shutil.move(file_name+'.png', os.path.join(
-            root_dir, "SCREENSHOT", "PM", row['CODE']+"_"+job_no+".png"))
+        global screenshot
+        if screenshot:
+            file_name = get_screen_shot(
+                soup, 'close_pm_css.css', result_td.text.strip())
+            # move file to folder
+            shutil.move(file_name+'.png', os.path.join(
+                root_dir, "SCREENSHOT", "PM", row['CODE']+"_"+job_no+".png"))
         # if self_call:
         #     return return_json
         print('[green]{}[/green]'.format(result_td.text.strip()))
@@ -466,8 +472,8 @@ def closeCAL(row, self_call=False):
     try:
         response = requests.get(
             "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
-            row['YEAR'] + '&s_jobdate=' + row['START-PLAN'] +
-            '&s_to_date=' + row['END-PLAN'] + '&s_sap_code=' + row['CODE'],
+            row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
+            '&s_to_date=' + formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -496,7 +502,7 @@ def closeCAL(row, self_call=False):
         {'name': 'tech_idea_stat',  'value': '4', 'text_contain': False},
         {'name': 'dept_caliber',  'value': dept_caliber, 'text_contain': False},
     ]
-    date = row['DATE-CAL']
+    date = formatDate(row['DATE-CAL'])
     if date is not None and date != 'nan' and date != 'Invalid date' and date != '':
         inputs = [
             {'name': 'assign_date', 'value': date},
@@ -514,7 +520,7 @@ def closeCAL(row, self_call=False):
     form_data = {}
     emp_id = ''
     form_data['emp_id'] = emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()]
-    form_data['inspec_app_name'] = confdata['APPROVE_NAME']
+    form_data['inspec_app_name'] = row['INSPECTOR NAME']
     if row['CAL-STATUS'].lower() == 'pass':
         form_data['CheckBox2'] = '1'
     else:
@@ -533,11 +539,13 @@ def closeCAL(row, self_call=False):
     if result_td == None or len(result_td) == 0:
         return 'Fail'
     result_td = result_td[0]
-    file_name = get_screen_shot(
-        soup, 'close_cal_css.css', result_td.text.strip())
-    # move file to folder
-    shutil.move(file_name+'.png', os.path.join(
-        root_dir, "SCREENSHOT", "CAL", row['CODE']+"_"+job_no+'.png'))
+    global screenshot
+    if screenshot:
+        file_name = get_screen_shot(
+            soup, 'close_cal_css.css', result_td.text.strip())
+        # move file to folder
+        shutil.move(file_name+'.png', os.path.join(
+            root_dir, "SCREENSHOT", "CAL", row['CODE']+"_"+job_no+'.png'))
     print('[green]CAL status : {}[/green]'.format(result_td.text.strip()))
     return 'SUCCESS'
 
@@ -641,11 +649,13 @@ def attachFilePM(id, team, engineer, date, report_name):
         return 'Fail to Attach PM file'
     result_th = result_table.find('th')
     if result_th.text.strip() != 'Total : 0 records':
-        file_name = get_screen_shot(
-            soup, 'close_pm_css.css', result_th.text.strip())
-        # move file to folder
-        shutil.move(file_name+'.png', os.path.join(
-            root_dir, "SCREENSHOT", "PM", "Attach_PM_" + id+"_"+job_no+".png"))
+        global screenshot
+        if screenshot:
+            file_name = get_screen_shot(
+                soup, 'close_pm_css.css', result_th.text.strip())
+            # move file to folder
+            shutil.move(file_name+'.png', os.path.join(
+                root_dir, "SCREENSHOT", "PM", "Attach_PM_" + id+"_"+job_no+".png"))
         print('[green]Attach PM file : {}[/green]'.format(result_th.text.strip()))
         return file_name
 
@@ -729,15 +739,17 @@ def attachFileCAL(id, team, engineer, date, report_name):
         return 'Fail to Attach CAL file'
     result_th = result_table.find('th')
     if result_th.text.strip() != 'Total : 0 records':
-        file_name = get_screen_shot(
-            soup, 'close_cal_css.css', result_th.text.strip())
-        # move file to folder
-        shutil.move(file_name+'.png', os.path.join(
-            root_dir, "SCREENSHOT", "CAL", "Attach_CAL_" + id+"_"+job_no+".png"))
+        global screenshot
+        if screenshot:
+            file_name = get_screen_shot(
+                soup, 'close_cal_css.css', result_th.text.strip())
+            # move file to folder
+            shutil.move(file_name+'.png', os.path.join(
+                root_dir, "SCREENSHOT", "CAL", "Attach_CAL_" + id+"_"+job_no+".png"))
         print('[green]Attach CAL file : {}[/green]'.format(result_th.text.strip()))
         return file_name
 
-
+screenshot = False
 def read_file(option=None):
     df = read_excel_file()
     dir_path = ''
@@ -766,32 +778,35 @@ def read_file(option=None):
             attach_cal = 0
 
             for index, row in df.iterrows():
-                if row['PM-STATUS'].lower() == 'pass':
+                if row['PM-CLOSED'].lower() == 'nan':
                     pass_pm += 1
-                if row['CAL-STATUS'].lower() == 'pass':
+                if row['CAL-CLOSED'].lower() == 'nan':
                     pass_cal += 1
-                if row['ATTACH-FILE-PM'].lower() == 'yes':
+                if row['PM-ATTACH-STATUS'].lower() == 'nan':
                     attach_pm += 1
-                if row['ATTACH-FILE-CAL'].lower() == 'yes':
+                if row['CAL-ATTACH-STATUS'].lower() == 'nan':
                     attach_cal += 1
-            text = 'ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(len(df))
-            if (option == 'close_pm_cal'):
-                text = text + \
-                    '\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: {} เครื่อง'.format(
-                        pass_pm, pass_cal)
-            elif (option == 'attach_pm_cal'):
-                text = text + \
-                    '\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: {} เครื่อง'.format(
-                        attach_pm, attach_cal)
-            else:
-                text = text + '\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ผ่าน CAL: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ PM: {} เครื่อง\n\nตรวจพบเครื่องมือแพทย์ที่ต้องแนบไฟล์ CAL: {} เครื่อง'.format(
-                    pass_pm, pass_cal, attach_pm, attach_cal)
-            print(text)
-            start = input(
-                "\033[1;35;40mเริ่มการแนบไฟล์: \033[1;33;40mใช่(Y) ไม่ใช่(N) : \033[1;36;40m")
-            if (start == 'Y' or start == 'y'):
-                init_text = pyfiglet.figlet_format("Start Attach File")
+            table = Table(title='ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(len(df)),title_justify='center', title_style='bold magenta')
+            table.add_column('#', justify='left', style='cyan', no_wrap=True)
+            table.add_column('จำนวนเครื่อง', justify='right', style='green', no_wrap=True)
+            if (option == 'close_pm_cal' or option == None):
+                table.add_row('PM ที่ยังไม่ปิดงาน', str(pass_pm))
+                table.add_row('CAL ที่ยังไม่ปิดงาน', str(pass_cal))
+
+            if (option == 'attach_pm_cal' or option == None):
+                table.add_row('PM ที่ยังไม่แนบไฟล์', str(attach_pm))
+                table.add_row('CAL ที่ยังไม่แนบไฟล์', str(attach_cal))
+            
+            Console().print(table)
+            print(f'\n[red]ต้องการเริ่มต้นการทำงานหรือไม่? (Y/N): [/red]', end='')
+            start = input()
+            if start.lower() == 'y':
+                print(f'\n[red]ต้องการบันทึกภาพ Screenshot ด้วยหรือไม่? (Y/N): [/red]', end='')
+                global screenshot
+                screenshot = input().lower() == 'y'
+                init_text = pyfiglet.figlet_format("Start Process...")
                 print(init_text)
+                start_time = time.time()
                 for index, row in df.iterrows():
                     # print(row['CODE']+' '+str(index)+'/'+str(len(df)))
                     row['CODE'] = str(row['CODE']).replace('.0', '')
@@ -805,8 +820,8 @@ def read_file(option=None):
                     if row['CODE'] != 'nan':
                         issave = False
                         process_result = ''
-                        if option == 'close_pm_cal' or option == None:
-                            if row['PM-RESULT'] != 'nan':
+                        if row['PM-RESULT'] != 'nan':
+                            if option == 'close_pm_cal' or option == None:
                                 # process_result = closePM(id, vender, date, safety, self_call=False)
                                 if row['PM-CLOSED'] == 'nan':
                                     process_result = closePM(row)
@@ -822,26 +837,26 @@ def read_file(option=None):
                                     issave = True
                                     # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
                                     # writer.save()
-                        elif option == 'attach_pm_cal' or option == None:
-                            process_attach = ''
-                            if row['ATTACH-FILE-PM'].lower() == 'success':
-                                    process_attach = 'SUCCESS'
-                            elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
+                            if option == 'attach_pm_cal' or option == None:
+                                process_attach = ''
+                                if row['ATTACH-FILE-PM'].lower() == 'success':
+                                        process_attach = 'SUCCESS'
+                                elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
 
-                                process_attach = attachFilePM(
-                                    row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0])
-                                master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-                                    str)
-                                if process_attach != 'Fail to Attach PM file':
+                                    process_attach = attachFilePM(
+                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0])
+                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                        str)
+                                    if process_attach != 'Fail to Attach PM file':
+                                        master_df.at[index,
+                                                        'PM-ATTACH-STATUS'] = "SUCCESS"
+                                        issave = True
+                                else:
+                                    print('[red]ไม่พบไฟล์ PM[/red]')
+                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                        str)
                                     master_df.at[index,
-                                                    'PM-ATTACH-STATUS'] = "SUCCESS"
-                                    issave = True
-                            else:
-                                print('[red]ไม่พบไฟล์ PM[/red]')
-                                master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-                                    str)
-                                master_df.at[index,
-                                                'PM-ATTACH-STATUS'] = 'No File To Attach'
+                                                    'PM-ATTACH-STATUS'] = 'No File To Attach'
 
                         if row['CAL-RESULT'] != 'nan':
                             issave = False
@@ -855,7 +870,7 @@ def read_file(option=None):
                                     str)
                                 master_df.at[index, 'CAL-CLOSED'] = process_result
                                 issave = True
-                            elif option == 'attach_pm_cal' or option == None:
+                            if option == 'attach_pm_cal' or option == None:
                                 process_attach = ''
                                 if row['ATTACH-FILE-CAL'].lower() == 'success':
                                     process_attach = 'SUCCESS'
@@ -876,15 +891,25 @@ def read_file(option=None):
                                                 'CAL-ATTACH-STATUS'] = 'No File To Attach'
                                 # continue
 
-                        if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
-                            # if issave:
-                            master_df.to_excel(
-                                writer, sheet_name='Sheet1', index=False)
-                            writer._save()
-                            print('\n[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
-                            print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
-                            input()
-                            # pyautogui.alert('Close Jobs '+str(index)+' records')
+                    if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
+                        # if issave:
+                        master_df.to_excel(
+                            writer, sheet_name='Sheet1', index=False)
+                        writer._save()
+                end_time = time.time()
+
+                print('\n[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
+                print('[green]เสร็จสิ้นในเวลา[/green] : [yellow]{}[/yellow] วินาที'.format(
+                    str(round(end_time-start_time, 2))))
+                print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
+                input()
+                # clear console
+                os.system('cls' if os.name == 'nt' else 'clear')
+                init_text = pyfiglet.figlet_format(
+                    "BME Assistant", font="slant")
+                print(init_text)
+                showmenu()
+                        # pyautogui.alert('Close Jobs '+str(index)+' records')
             else:
                 print("[red]Cancel[/red]")
                 # clear console
@@ -893,6 +918,7 @@ def read_file(option=None):
                     "BME Assistant", font="slant")
                 print(init_text)
                 showmenu()
+            writer.close()
     except Exception as e:
         print(e)
 
