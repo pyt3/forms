@@ -904,7 +904,7 @@
                     else {
                         $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
                     }
-                    if(!data.code) $('#code').removeAttr('readonly')
+                    if(!data.code) $('#code').removeAttr('readonly').attr('placeholder', 'ระบุรหัส').attr('required', true)
                     else $('#code').val(data.code)
                     console.log("🚀 !! data.code:", data.code)
                     $('#vendor_phone').val(data.vendor_phone || '')
