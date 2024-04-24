@@ -896,7 +896,6 @@
                     //        liff.closeWindow()
                     //     })
                     // }
-                    data = data.data()
                     if(!data.exists){
                         Swal.fire({
                             icon: 'error',
@@ -929,6 +928,7 @@
                             }
                         })
                     }
+                    data = data.data()
                     if (!data.name && !data.reciever) {
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
