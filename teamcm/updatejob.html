@@ -904,7 +904,8 @@
                     else {
                         $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
                     }
-                    $('#code').val(data.code)
+                    if(!data.code) $('#code').removeAttr('readonly')
+                    else $('#code').val(data.code)
                     console.log("🚀 !! data.code:", data.code)
                     $('#vendor_phone').val(data.vendor_phone || '')
                     wo = data.wo || data.workorder
@@ -1050,7 +1051,8 @@
                 update: update_data.update,
                 name: update_data.name,
                 vendor_phone: update_data.vendor_phone,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                code: update_data.code,
             }).then(async (docRef) => {
                 doc_ref = docRef
                 console.log("🚀 !! detail:", detail)
