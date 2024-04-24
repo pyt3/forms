@@ -885,6 +885,7 @@
             }
             else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
+                    console.log(data.exists);
                     $('.load-bar').addClass('d-none')
                     // if(!data.exists) {
                     //     $.LoadingOverlay("hide");
