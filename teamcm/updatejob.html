@@ -919,12 +919,31 @@
                             },
                         }).then(async (result) => {
                             if (result.isConfirmed) {
-                                firestore.collection('jobdata/').doc(jobid).set({
-                                    reciever: result.value,
-                                    timestamp: new Date()
-                                }, { merge: true }).then(() => {
-                                    $.LoadingOverlay("show");
-                                    initialData()
+                                let reciever = result.value
+                                Swal.fire({
+                                    title: 'หากมี WO กรุณากรอก',
+                                    input: 'text',
+                                    inputLabel: 'ระบุ WO',
+                                    inputPlaceholder: 'ระบุ WO',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'ยืนยัน',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    inputValidator: (value) => {
+                                       resolve()
+                                    },
+                                }).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        let wo = result.value
+                                        firestore.collection('jobdata/').doc(jobid).set({
+                                            reciever: reciever,
+                                            timestamp: new Date(),
+                                            wo: wo
+                                        }, { merge: true }).then(() => {
+                                            $.LoadingOverlay("show");
+                                            initialData()
+                                        })
+                                    }
                                 })
                             }
                         })
