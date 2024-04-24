@@ -247,10 +247,10 @@
             </div>
         </div>
     </main>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
-    </script> -->
+    </script>
 
     <script>
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
@@ -886,16 +886,49 @@
             else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     $('.load-bar').addClass('d-none')
-                    if(!data.exists) {
-                        $.LoadingOverlay("hide");
+                    // if(!data.exists) {
+                    //     $.LoadingOverlay("hide");
+                    //     Swal.fire({
+                    //         icon: 'error',
+                    //         title: 'ไม่พบข้อมูล',
+                    //         text: 'ไม่พบข้อมูล',
+                    //     }).then(() => {
+                    //        liff.closeWindow()
+                    //     })
+                    // }
+                    data = data.data()
+                    if(!data.exists){
                         Swal.fire({
                             icon: 'error',
                             title: 'ไม่พบข้อมูล',
-                            text: 'ไม่พบข้อมูล',
+                            input: 'text',
+                            inputLabel: 'ระบุชื่อคนรับงาน',
+                            inputPlaceholder: 'ระบุชื่อคนรับงาน',
+                            showCancelButton: true,
+                            confirmButtonText: 'ยืนยัน',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            inputValidator: (value) => {
+                                return new Promise((resolve) => {
+                                    if (value) {
+                                        resolve()
+                                    } else {
+                                        resolve('กรุณาระบุชื่อคนรับงาน')
+                                    }
+                                })
+                            },
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                firestore.collection('jobdata/').doc(jobid).set({
+                                    reciever: result.value,
+                                    timestamp: new Date()
+                                }, { merge: true }).then(() => {
+                                    $.LoadingOverlay("show");
+                                    initialData()
+                                })
+                            }
                         })
-                        return liff.closeWindow()
                     }
-                    data = data.data()
                     if (!data.name && !data.reciever) {
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
