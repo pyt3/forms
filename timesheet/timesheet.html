@@ -136,7 +136,7 @@
                             <div id="myForm" class="table-responsive"></div>
                         </form>
                     </div>
-                    <div class="row mt-4">
+                    <div class="row mt-4 d-none">
                         <div class="col-12">
                             <div class="alert alert-primary">
                                 <div class="form-check form-check-inline">
@@ -235,7 +235,8 @@
                 $('.alert .row').slideUp(100)
                 form_pdf_bytes = await fetch('./timesheetForm no-sum.pdf').then(res => res.arrayBuffer())
                 pdfDoc = await PDFDocument.load(form_pdf_bytes)
-            }).change()
+            })
+
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
