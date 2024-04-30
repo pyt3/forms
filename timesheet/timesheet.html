@@ -5,6 +5,8 @@
     <!-- dont keep cache -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <base target="_top">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -223,19 +225,8 @@
                 })
 
             })
-            $('#show-summary').change(async function () {
-                console.log('change');
-                if ($(this).is(':checked')) {
-                    console.log('checked');
-                    $('.alert .row').slideDown(100)
-                    form_pdf_bytes = await fetch('./timesheetForm.pdf').then(res => res.arrayBuffer())
-                    pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                    return
-                }
-                $('.alert .row').slideUp(100)
-                form_pdf_bytes = await fetch('./timesheetForm no-sum.pdf').then(res => res.arrayBuffer())
-                pdfDoc = await PDFDocument.load(form_pdf_bytes)
-            })
+            form_pdf_bytes = await fetch('./timesheetForm.pdf').then(res => res.arrayBuffer())
+            pdfDoc = await PDFDocument.load(form_pdf_bytes)
 
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
@@ -383,7 +374,6 @@
                 tbody.append(tr)
             }
             table.append(thead).append(tbody)
-            console.log(table.prop('outerHTML'));
             $('.table-responsive').html(table)
             $('#table').DataTable({
                 responsive: {
@@ -605,7 +595,6 @@
             for (let i = 0; i < monthArr.length; i++) {
                 let day = new Date($('#year').val(), $('#month').val() - 1, i + 1)
                 let dayOfWeek = day.getDay()
-                console.log("🚀 ~ getCalendar ~ dayOfWeek:", dayOfWeek)
                 tbody.find('tr').eq(count).find('td').eq(dayOfWeek).text(i + 1).addClass('text-center').css('cursor', 'pointer')
                 if (dayOfWeek == 6) count++
             }
