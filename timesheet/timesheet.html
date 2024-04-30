@@ -689,14 +689,14 @@
                 textfield.updateAppearances(symbol)
 
             })
-            if ($('#show-summary').is(':checked')) {
-                let onc_hour = Number($('#onc-hour').val())
-                let per_hour = Number($('#per-hour').val())
-                let total = onc_hour * per_hour
-                form.getTextField('onc-hour').setText(onc_hour.toString())
-                form.getTextField('per-hour').setText(per_hour.toFixed(2))
-                form.getTextField('total').setText(total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
-            }
+            // if ($('#show-summary').is(':checked')) {
+            //     let onc_hour = Number($('#onc-hour').val())
+            //     let per_hour = Number($('#per-hour').val())
+            //     let total = onc_hour * per_hour
+            //     form.getTextField('onc-hour').setText(onc_hour.toString())
+            //     form.getTextField('per-hour').setText(per_hour.toFixed(2))
+            //     form.getTextField('total').setText(total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+            // }
 
             form.updateFieldAppearances(sarabun);
             form.flatten()
