@@ -4,6 +4,7 @@
 <head>
     <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <base target="_top">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -886,14 +887,63 @@
             else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     $('.load-bar').addClass('d-none')
-                    if(!data.exists) {
-                        $.LoadingOverlay("hide");
+                    // if(!data.exists) {
+                    //     $.LoadingOverlay("hide");
+                    //     Swal.fire({
+                    //         icon: 'error',
+                    //         title: 'ไม่พบข้อมูล',
+                    //         text: 'ไม่พบข้อมูล',
+                    //     }).then(() => {
+                    //        liff.closeWindow()
+                    //     })
+                    // }
+                    if(!data.exists){
                         Swal.fire({
                             icon: 'error',
                             title: 'ไม่พบข้อมูล',
-                            text: 'ไม่พบข้อมูล',
+                            input: 'text',
+                            inputLabel: 'ระบุชื่อคนรับงาน',
+                            inputPlaceholder: 'ระบุชื่อคนรับงาน',
+                            showCancelButton: true,
+                            confirmButtonText: 'ยืนยัน',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            inputValidator: (value) => {
+                                return new Promise((resolve) => {
+                                    if (value) {
+                                        resolve()
+                                    } else {
+                                        resolve('กรุณาระบุชื่อคนรับงาน')
+                                    }
+                                })
+                            },
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                let reciever = result.value
+                                Swal.fire({
+                                    title: 'หากมี WO กรุณากรอก',
+                                    input: 'text',
+                                    inputLabel: 'ระบุ WO',
+                                    inputPlaceholder: 'ระบุ WO',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'ยืนยัน',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                }).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        let wo = result.value
+                                        firestore.collection('jobdata/').doc(jobid).set({
+                                            reciever: reciever,
+                                            timestamp: new Date(),
+                                            wo: wo
+                                        }, { merge: true }).then(() => {
+                                            $.LoadingOverlay("show");
+                                            initialData()
+                                        })
+                                    }
+                                })
+                            }
                         })
-                        return liff.closeWindow()
                     }
                     data = data.data()
                     if (!data.name && !data.reciever) {
@@ -904,7 +954,8 @@
                     else {
                         $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
                     }
-                    $('#code').val(data.code)
+                    if(!data.code) $('#code').removeAttr('readonly').attr('placeholder', 'ระบุรหัส').attr('required', true)
+                    else $('#code').val(data.code)
                     console.log("🚀 !! data.code:", data.code)
                     $('#vendor_phone').val(data.vendor_phone || '')
                     wo = data.wo || data.workorder
@@ -1050,7 +1101,8 @@
                 update: update_data.update,
                 name: update_data.name,
                 vendor_phone: update_data.vendor_phone,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                code: update_data.code,
             }).then(async (docRef) => {
                 doc_ref = docRef
                 console.log("🚀 !! detail:", detail)

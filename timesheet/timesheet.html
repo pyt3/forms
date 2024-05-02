@@ -5,6 +5,8 @@
     <!-- dont keep cache -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <base target="_top">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -136,7 +138,7 @@
                             <div id="myForm" class="table-responsive"></div>
                         </form>
                     </div>
-                    <div class="row mt-4">
+                    <div class="row mt-4 d-none">
                         <div class="col-12">
                             <div class="alert alert-primary">
                                 <div class="form-check form-check-inline">
@@ -223,19 +225,9 @@
                 })
 
             })
-            $('#show-summary').change(async function () {
-                console.log('change');
-                if ($(this).is(':checked')) {
-                    console.log('checked');
-                    $('.alert .row').slideDown(100)
-                    form_pdf_bytes = await fetch('./timesheetForm.pdf').then(res => res.arrayBuffer())
-                    pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                    return
-                }
-                $('.alert .row').slideUp(100)
-                form_pdf_bytes = await fetch('./timesheetForm no-sum.pdf').then(res => res.arrayBuffer())
-                pdfDoc = await PDFDocument.load(form_pdf_bytes)
-            }).change()
+            form_pdf_bytes = await fetch('./timesheetForm no-sum.pdf').then(res => res.arrayBuffer())
+            pdfDoc = await PDFDocument.load(form_pdf_bytes)
+
             $('#dept option').not(':disabled').each(function () {
                 $(this).val($(this).text());
             });
@@ -252,20 +244,23 @@
             $('#auto-onc').click(function () {
                 event.preventDefault()
                 Swal.fire({
-                    title: 'กรอกวันที่ขึ้น ON Call',
-                    input: 'text',
-                    inputPlaceholder: 'กรอกวันที่ คั่นด้วยลูกน้ำ เช่น 1,2,3',
-                    inputAttributes: {
-                        autocapitalize: 'off'
-                    },
-                    customClass: {
-                        input: 'text-center'
+                    title: 'เลือกวันที่ขึ้น ON Call',
+                    // calendar table
+                    html: getCalendar(),
+                    didOpen: function () {
+                        $('#calendar tbody tr td').each(function () {
+                            $(this).click(function () {
+                                $(this).toggleClass('bg-warning text-white')
+                            })
+                        })
                     },
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
                     cancelButtonText: 'ยกเลิก',
                 }).then((result) => {
-                    let val = result.value
+                    let val = $('#calendar td.bg-warning').map(function () {
+                        return $(this).text()
+                    }).get().join(',')
                     if (val == '') return
                     else val = val.split(',')
                     let windowWidth = window.innerWidth
@@ -281,20 +276,22 @@
             $('#auto-off').click(function () {
                 event.preventDefault()
                 Swal.fire({
-                    title: 'กรอกวันที่ขึ้น Day-Off',
-                    input: 'text',
-                    inputPlaceholder: 'กรอกวันที่ คั่นด้วยลูกน้ำ เช่น 1,2,3',
-                    inputAttributes: {
-                        autocapitalize: 'off'
-                    },
-                    customClass: {
-                        input: 'text-center'
+                    title: 'เลือกวันที่ขึ้น Day-Off',
+                    html: getCalendar(),
+                    didOpen: function () {
+                        $('#calendar tbody tr td').each(function () {
+                            $(this).click(function () {
+                                $(this).toggleClass('bg-danger text-white')
+                            })
+                        })
                     },
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
                     cancelButtonText: 'ยกเลิก',
                 }).then((result) => {
-                    let val = result.value
+                    let val = $('#calendar td.bg-danger').map(function () {
+                        return $(this).text()
+                    }).get().join(',')
                     if (val == '') return
                     else val = val.split(',')
                     if (window.innerWidth < 768) {
@@ -573,6 +570,58 @@
             }
             return monthArr
         }
+
+        function getCalendar() {
+            let monthArr = generateMonthArr($('#month').val(), $('#year').val())
+            let table = $('<table>').addClass('table table-bordered').attr('id', 'calendar')
+            let thead = $('<thead>')
+            thead.append(`<tr>
+                <th>SU</th>
+                <th>MO</th>
+                <th>TU</th>
+                <th>WE</th>
+                <th>TH</th>
+                <th>FR</th>
+                <th>SA</th>
+            </tr>`)
+            let tbody = $('<tbody>')
+            for (let i = 0; i < 5; i++) {
+                let tr = $('<tr>')
+                for (let j = 0; j < 7; j++) {
+                    tr.append($('<td>'))
+                }
+                tbody.append(tr)
+            }
+            let count = 0
+            for (let i = 0; i < monthArr.length; i++) {
+                let day = new Date($('#year').val(), $('#month').val() - 1, i + 1)
+                let dayOfWeek = day.getDay()
+                console.log("🚀 ~ getCalendar ~ dayOfWeek:", dayOfWeek)
+                tbody.find('tr').eq(count).find('td').eq(dayOfWeek).text(i + 1).addClass('text-center').css('cursor', 'pointer')
+                if (dayOfWeek == 6) count++
+            }
+            table.append(thead).append(tbody)
+            return table.prop('outerHTML')
+            // let count = 0
+            // let tr = $('<tr>')
+            // for (let i = 0; i < monthArr.length; i++) {
+            //     let day = new Date($('#year').val(), $('#month').val() - 1, i + 1)
+            //     let dayOfWeek = day.getDay()
+            //     console.log("🚀 ~ getCalendar ~ dayOfWeek:", dayOfWeek)
+            //     if (dayOfWeek == 0) {
+            //         tbody.append(tr)
+            //         tr = $('<tr>')
+            //     }
+            //     tr.append($('<td>').text(i + 1).addClass('text-center').css('cursor', 'pointer').click(function () {
+            //         $(this).toggleClass('bg-primary text-white')
+            //     }))
+            //     tbody.append(tr)
+            // }
+            // table.append(thead).append(tbody)
+            // return table.prop('outerHTML')
+
+
+        }
     </script>
     <script>
         var pdfDoc
@@ -640,14 +689,14 @@
                 textfield.updateAppearances(symbol)
 
             })
-            if ($('#show-summary').is(':checked')) {
-                let onc_hour = Number($('#onc-hour').val())
-                let per_hour = Number($('#per-hour').val())
-                let total = onc_hour * per_hour
-                form.getTextField('onc-hour').setText(onc_hour.toString())
-                form.getTextField('per-hour').setText(per_hour.toFixed(2))
-                form.getTextField('total').setText(total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
-            }
+            // if ($('#show-summary').is(':checked')) {
+            //     let onc_hour = Number($('#onc-hour').val())
+            //     let per_hour = Number($('#per-hour').val())
+            //     let total = onc_hour * per_hour
+            //     form.getTextField('onc-hour').setText(onc_hour.toString())
+            //     form.getTextField('per-hour').setText(per_hour.toFixed(2))
+            //     form.getTextField('total').setText(total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+            // }
 
             form.updateFieldAppearances(sarabun);
             form.flatten()
