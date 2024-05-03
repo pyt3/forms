@@ -387,9 +387,9 @@ def closePM(row, self_call=False):
     if emp_list[row['TEAM'].lower()] is None or emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()] is None:
         print('Team not found')
         get_emp_list()
-        dept_tech = emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()]
+        dept_tech = calibrator_list[row['TEAM'].lower()]
     else:
-        dept_tech = emp_list[row['TEAM'].lower()][row['ENGINEER'].lower()]
+        dept_tech = calibrator_list[row['TEAM'].lower()]
     tool = tools_list[row['TESTER'].lower()]
     selects = [
         {'name': 'job_result',  'value': '1', 'text_contain': False},
