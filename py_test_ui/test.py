@@ -12,6 +12,7 @@ from datetime import datetime
 import json
 from concurrent.futures import ThreadPoolExecutor
 import pyfiglet
+import tabulate
 import urllib3
 from queue import Queue
 import time
@@ -68,7 +69,7 @@ data = {
 cookies = {
     "_ga": "GA1.1.409909798.1624509466",
     "_ga_L9CPT990SV": "GS1.1.1629863162.2.0.1629863162.0",
-    "PHPSESSID": confdata["SESSION_ID"],
+    "PHPSESSID": None
 }
 
 
@@ -361,7 +362,8 @@ def closePM(row, self_call=False):
         response = requests.get(
             "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
-            '&s_to_date=' + formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
+            '&s_to_date=' +
+            formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -395,7 +397,8 @@ def closePM(row, self_call=False):
         {'name': 'job_result',  'value': '1', 'text_contain': False},
         {'name': 'dept_tech',  'value': dept_tech, 'text_contain': False},
         {'name': 'toolid', 'value': tool, 'text_contain': False},
-        {'name': 'app_issue_name', 'value': row['INSPECTOR ID'], 'text_contain': False},
+        {'name': 'app_issue_name',
+            'value': row['INSPECTOR ID'], 'text_contain': False},
     ]
     date = formatDate(row['DATE-PM'])
     if date is not None and date != 'nan' and date != 'Invalid date' and date != '':
@@ -473,7 +476,8 @@ def closeCAL(row, self_call=False):
         response = requests.get(
             "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
-            '&s_to_date=' + formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
+            '&s_to_date=' +
+            formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -613,7 +617,7 @@ def attachFilePM(id, team, engineer, date, report_name):
 
     inputs = [
         {'name': 'docno', 'value': file_count+1},
-        {'name': 'description_doc', 'value': 'Report PM ' + emp_name},
+        {'name': 'description_doc', 'value': 'Report PM ' + engineer.upper()},
         {'name': 'jobno', 'value': a_href.split('jobno=')[1].split('&')[0]}
     ]
     #  create formdata foor post request
@@ -657,7 +661,9 @@ def attachFilePM(id, team, engineer, date, report_name):
             shutil.move(file_name+'.png', os.path.join(
                 root_dir, "SCREENSHOT", "PM", "Attach_PM_" + id+"_"+job_no+".png"))
         print('[green]Attach PM file : {}[/green]'.format(result_th.text.strip()))
-        return file_name
+        return 'SUCCESS'
+    else:
+        return 'Fail to Attach PM file'
 
 
 def attachFileCAL(id, team, engineer, date, report_name):
@@ -714,7 +720,7 @@ def attachFileCAL(id, team, engineer, date, report_name):
 
     inputs = [
         {'name': 'docno', 'value': file_count+1},
-        {'name': 'description_doc', 'value': 'Report CAL ' + team.upper()},
+        {'name': 'description_doc', 'value': 'Report CAL ' + engineer.upper()},
         {'name': 'jobno', 'value': a_href.split('jobno=')[1].split('&')[0]}
     ]
     #  create formdata foor post request
@@ -747,9 +753,12 @@ def attachFileCAL(id, team, engineer, date, report_name):
             shutil.move(file_name+'.png', os.path.join(
                 root_dir, "SCREENSHOT", "CAL", "Attach_CAL_" + id+"_"+job_no+".png"))
         print('[green]Attach CAL file : {}[/green]'.format(result_th.text.strip()))
-        return file_name
+        return 'SUCCESS'
+
 
 screenshot = False
+
+
 def read_file(option=None):
     df = read_excel_file()
     dir_path = ''
@@ -786,9 +795,11 @@ def read_file(option=None):
                     attach_pm += 1
                 if row['CAL-ATTACH-STATUS'].lower() == 'nan':
                     attach_cal += 1
-            table = Table(title='ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(len(df)),title_justify='center', title_style='bold magenta')
+            table = Table(title='ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(
+                len(df)), title_justify='center', title_style='bold magenta')
             table.add_column('#', justify='left', style='cyan', no_wrap=True)
-            table.add_column('จำนวนเครื่อง', justify='right', style='green', no_wrap=True)
+            table.add_column('จำนวนเครื่อง', justify='right',
+                             style='green', no_wrap=True)
             if (option == 'close_pm_cal' or option == None):
                 table.add_row('PM ที่ยังไม่ปิดงาน', str(pass_pm))
                 table.add_row('CAL ที่ยังไม่ปิดงาน', str(pass_cal))
@@ -796,12 +807,13 @@ def read_file(option=None):
             if (option == 'attach_pm_cal' or option == None):
                 table.add_row('PM ที่ยังไม่แนบไฟล์', str(attach_pm))
                 table.add_row('CAL ที่ยังไม่แนบไฟล์', str(attach_cal))
-            
+
             Console().print(table)
             print(f'\n[red]ต้องการเริ่มต้นการทำงานหรือไม่? (Y/N): [/red]', end='')
             start = input()
             if start.lower() == 'y':
-                print(f'\n[red]ต้องการบันทึกภาพ Screenshot ด้วยหรือไม่? (Y/N): [/red]', end='')
+                print(
+                    f'\n[red]ต้องการบันทึกภาพ Screenshot ด้วยหรือไม่? (Y/N): [/red]', end='')
                 global screenshot
                 screenshot = input().lower() == 'y'
                 init_text = pyfiglet.figlet_format("Start Process...")
@@ -828,19 +840,20 @@ def read_file(option=None):
                                 else:
                                     process_result = row['PM-CLOSED']
                                 if process_result == "SUCCESS":
-                                    
+
                                     # continue
                                     # master_df.at[index, 'PM-CLOSED'] = process_result
                                     master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
                                         str)
-                                    master_df.at[index, 'PM-CLOSED'] = process_result
+                                    master_df.at[index,
+                                                 'PM-CLOSED'] = process_result
                                     issave = True
                                     # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
                                     # writer.save()
                             if option == 'attach_pm_cal' or option == None:
                                 process_attach = ''
-                                if row['ATTACH-FILE-PM'].lower() == 'success':
-                                        process_attach = 'SUCCESS'
+                                if row['PM-ATTACH-STATUS'].lower() == 'success':
+                                    process_attach = 'SUCCESS'
                                 elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
 
                                     process_attach = attachFilePM(
@@ -849,14 +862,14 @@ def read_file(option=None):
                                         str)
                                     if process_attach != 'Fail to Attach PM file':
                                         master_df.at[index,
-                                                        'PM-ATTACH-STATUS'] = "SUCCESS"
+                                                     'PM-ATTACH-STATUS'] = "SUCCESS"
                                         issave = True
                                 else:
                                     print('[red]ไม่พบไฟล์ PM[/red]')
                                     master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
                                         str)
                                     master_df.at[index,
-                                                    'PM-ATTACH-STATUS'] = 'No File To Attach'
+                                                 'PM-ATTACH-STATUS'] = 'No File To Attach'
 
                         if row['CAL-RESULT'] != 'nan':
                             issave = False
@@ -868,27 +881,28 @@ def read_file(option=None):
                                     process_result = row['CAL-CLOSED']
                                 master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
                                     str)
-                                master_df.at[index, 'CAL-CLOSED'] = process_result
+                                master_df.at[index,
+                                             'CAL-CLOSED'] = process_result
                                 issave = True
                             if option == 'attach_pm_cal' or option == None:
                                 process_attach = ''
-                                if row['ATTACH-FILE-CAL'].lower() == 'success':
+                                if row['CAL-ATTACH-STATUS'].lower() == 'success':
                                     process_attach = 'SUCCESS'
-                                elif row['ATTACH-FILE-CAL'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
+                                elif row['ATTACH-FILE-CAL'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_cal' in ele]) > 0:
                                     process_attach = attachFileCAL(
                                         row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], [ele for ele in file_name_list if row['CODE']+'_cal' in ele][0])
                                     master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
                                         str)
                                     if process_attach != 'Fail to Attach PM file':
                                         master_df.at[index,
-                                                    'CAL-ATTACH-STATUS'] = 'SUCCESS'
+                                                     'CAL-ATTACH-STATUS'] = 'SUCCESS'
                                         issave = True
                                 else:
                                     print('[red]ไม่พบไฟล์ CAL[/red]')
                                     master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
                                         str)
                                     master_df.at[index,
-                                                'CAL-ATTACH-STATUS'] = 'No File To Attach'
+                                                 'CAL-ATTACH-STATUS'] = 'No File To Attach'
                                 # continue
 
                     if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
@@ -909,7 +923,7 @@ def read_file(option=None):
                     "BME Assistant", font="slant")
                 print(init_text)
                 showmenu()
-                        # pyautogui.alert('Close Jobs '+str(index)+' records')
+                # pyautogui.alert('Close Jobs '+str(index)+' records')
             else:
                 print("[red]Cancel[/red]")
                 # clear console
@@ -930,10 +944,21 @@ def change_file_name():
     else:
         dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'REPORTS')
+    # check if path has subfolder
+    subfolder = os.listdir(path)
+    if len(subfolder) > 0:
+        # move file to root folder
+        for file in subfolder:
+            if os.path.isdir(os.path.join(path, file)):
+                for f in os.listdir(os.path.join(path, file)):
+                    shutil.move(os.path.join(path, file, f), path)
+                os.rmdir(os.path.join(path, file))
+
     dir_list = os.listdir(path)
-    name_arr = []
+    name_arr = {}
     with Progress() as progress:
-        task = progress.add_task("[cyan]เปลี่ยนชื่อไฟล์[/cyan]", total=len(dir_list))
+        task = progress.add_task(
+            "[cyan]เปลี่ยนชื่อไฟล์[/cyan]", total=len(dir_list))
         for file_name in dir_list:
             source = os.path.join(path, file_name)
 
@@ -949,15 +974,33 @@ def change_file_name():
                 progress.update(task, advance=1)
                 continue
             code = text[0].split('\n')[1].replace(':', '').strip()
-            name_arr.append(code)
+            if code.find('(') > -1:
+                code = code.split('(')[0].strip()
+            if name_arr.get(code) is None:
+                name_arr[code] = {}
             cal = re.findall(r'Certificate', page, re.MULTILINE)
             if len(cal) > 0:
+                caldate = re.findall(
+                    r'CALIBRATED DATE.*\n.*$', page, re.MULTILINE)
+                name_arr[code]['cal'] = caldate
                 name = code + '_cal.pdf'
             else:
+                pmdate = re.findall(r'PM. DATE.*\n.*$', page, re.MULTILINE)
+                name_arr[code]['pm'] = pmdate
                 name = code + '_pm.pdf'
+            safety = re.findall(r'Electrical Safety.*\n.*$', page, re.MULTILINE)
+            if safety is not None and len(safety) > 0:
+                name_arr[code]['safety'] = safety[0].replace('\n', ' ').strip()
+            else:
+                name_arr[code]['safety'] = '-'
             # file.save(os.path.join(path, name))
             file.close()
-            os.rename(source, os.path.join(path, name))
+            try:
+                os.rename(source, os.path.join(path, name))
+            except Exception as e:
+                # if already exist
+                os.remove(os.path.join(path, name))
+                os.rename(source, os.path.join(path, name))
             print('[grey42]{}[/grey42] [yellow]>>>>[/yellow] [green]{}[/green]'.format(
                 file_name, name))
             progress.update(task, advance=1)
@@ -980,12 +1023,62 @@ def change_file_name():
 
             # append name_arr to clipboard
 
-        # unique_arr = []
-        # for name in name_arr:
-        #     if name not in unique_arr:
-        #         unique_arr.append(name)
+            # convert name_arr to table
+        # create array with length is 20 and fill with ''
+        unique_arr = []
 
-        # pyperclip.copy('\n'.join(unique_arr))
+        def convertDate(date):
+            if date is None or len(date) == 0 or date[0] == '':
+                return ""
+            date = date[0].split(':')[1].strip()
+            months_str = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
+                          'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
+            date = date.split(' ')
+            if len(date) == 3:
+                month = months_str.index(date[1].upper()) + 1
+                return date[0] + '/' + str(month) + '/' + date[2]
+            return date
+        for id, value in name_arr.items():
+            if value.get('cal') is None:
+                value['cal'] = ['']
+            if value.get('pm') is None:
+                value['pm'] = ['']
+            tmp_arr = [''] * 25
+            tmp_arr[1] = id.split('_')[1]
+            tmp_arr[8] = convertDate(value['pm'])
+            if tmp_arr[8] == '':
+                tmp_arr[12] = ''
+                tmp_arr[14] = ''
+                tmp_arr[17] = ''
+            else:
+                tmp_arr[12] = 'PM doable'
+                tmp_arr[14] = 'pass'
+                tmp_arr[17] = 'yes'
+            tmp_arr[9] = convertDate(value['cal'])
+            if tmp_arr[9] == '':
+                tmp_arr[13] = ''
+                tmp_arr[15] = ''
+                tmp_arr[18] = ''
+            else:
+                tmp_arr[13] = 'Perform CAL'
+                tmp_arr[15] = 'pass'
+                tmp_arr[18] = 'yes'
+            tmp_arr[16] = value['safety']
+            unique_arr.append(tmp_arr)
+
+            # if value.get('cal') is not None and value.get('pm') is not None:
+            #     cal = value.get('cal')[0].split('\n')[1].replace(':', '').strip()
+            #     pm = value.get('pm')[0].split('\n')[1].replace(':', '').strip()
+            #     name_arr[id] = {'cal': cal, 'pm': pm}
+            # else:
+            #     name_arr[id] = {'cal': 'nan', 'pm': 'nan'}
+        # copy to cilpboard to paste in excel
+        line_strings = []
+        for line in unique_arr:
+            line_strings.append('\t'.join(line).replace('\n', ''))
+        arr_string = '\r\n'.join(line_strings)
+        pyperclip.copy(arr_string)
+        print('\n[green]คัดลอกชื่อรหัสเครื่องเรียบร้อย[/green]')
     print('\n[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
     print('\n[purple]กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : [/purple]', end='')
     input()
@@ -1017,7 +1110,8 @@ def showmenu():
         # os.system('notepad.exe "' + os.path.join(dir_path,
         #           'SOURCE', 'download cert.txt') + '"')
         # print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
-        script_text = open(os.path.join(dir_path, 'SOURCE', 'download cert.txt'),encoding='utf-8').read()
+        script_text = open(os.path.join(dir_path, 'SOURCE',
+                           'download cert.txt'), encoding='utf-8').read()
         # copy to clipboard
         pyperclip.copy(script_text)
         print('\n[green]คัดลอกสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT เรียบร้อย[/green]')
@@ -1025,7 +1119,7 @@ def showmenu():
         input()
         os.system('cls' if os.name == 'nt' else 'clear')
         print(init_text)
-        showmenu()  
+        showmenu()
     elif menu == '2':
         change_file_name()
         showmenu()
