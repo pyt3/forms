@@ -169,6 +169,7 @@
                     <span
                         style="position: absolute;right: 20px;bottom: 5px;font-size: 0.7rem;color: #888;background-color: #33333333;border-radius: 5px;padding-left: 3px;padding-right: 3px;"
                         id="char-count">0/5000</span>
+                    <button class="btn btn-light mt-2 unicode-charactor" id="submit">🞂</button>
                 </div>
                 <div class="col-12 mobile">
                     <label for="vendor_phone">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
@@ -283,6 +284,11 @@
 
 
                 initialData();
+            })
+
+            $('.unicode-charactor').click(function(){
+                $('#update').val($('#update').val() +" "+ $(this).text() + " ")
+                updateCount($('#update').val())
             })
             // let alert_height = $('#image').parents('.alert').height()
             // console.log("🚀 !! alert_height:", alert_height)
