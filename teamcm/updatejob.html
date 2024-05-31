@@ -287,7 +287,10 @@
             })
 
             $('.unicode-charactor').click(function(){
-                $('#update').val($('#update').val() +" 🞂 ")
+                let div = document.createElement('div')
+                div.innerHTML = '&#11208;'
+                let unicode = div.innerHTML
+                $('#update').val($('#update').val() + unicode)
                 updateCount($('#update').val())
             })
             // let alert_height = $('#image').parents('.alert').height()
