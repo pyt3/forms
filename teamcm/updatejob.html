@@ -290,13 +290,12 @@
 
             $('.unicode-charactor').click(function () {
                 console.log('click');
-                let id = $(this).attr('id');
-                let msg = document.getElementById(id).value;
+                let msg = document.getElementById('update').value;
                 let g = document.createElement('div');
                 g.innerHTML = '\u25B6';
                 let z = g.innerHTML;
 
-                document.getElementById(id).value = msg + '' + z;
+                document.getElementById('update').value = msg + z;
             })
             // let alert_height = $('#image').parents('.alert').height()
             // console.log("🚀 !! alert_height:", alert_height)
