@@ -134,14 +134,16 @@
                             <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
                             <input type="text" class="form-control" id="request-no" name="request-no"
                                 style="font-size: 0.8rem;" readonly>
-                            <span class="input-group-text bg-warning" id="edit-request"><i class="bi bi-pencil-square"></i></span>
+                            <span class="input-group-text bg-warning" id="edit-request"><i
+                                    class="bi bi-pencil-square"></i></span>
                         </div>
                     </div>
                     <div class="has-code mt-2 d-none">
                         <!-- <div class="col-md-4 has-code d-none"> -->
                         <div class="input-group">
                             <span class="input-group-text" style="font-size: 0.8rem;">Code</span>
-                            <input type="text" class="form-control" id="code" name="code" style="font-size: 0.8rem;" readonly>
+                            <input type="text" class="form-control" id="code" name="code" style="font-size: 0.8rem;"
+                                readonly>
                         </div>
                     </div>
                 </div>
@@ -169,7 +171,8 @@
                     <span
                         style="position: absolute;right: 20px;bottom: 5px;font-size: 0.7rem;color: #888;background-color: #33333333;border-radius: 5px;padding-left: 3px;padding-right: 3px;"
                         id="char-count">0/5000</span>
-                    <button type="button" class="btn btn-light mt-2 unicode-charactor"><i class="bi bi-caret-right-fill"></i></button>
+                    <button type="button" class="btn btn-light mt-2 unicode-charactor"><i
+                            class="bi bi-caret-right-fill"></i></button>
                 </div>
                 <div class="col-12 mobile">
                     <label for="vendor_phone">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
@@ -286,11 +289,11 @@
                 initialData();
             })
 
-            $('.unicode-charactor').click(function(){
+            $('.unicode-charactor').click(function () {
                 let div = document.createElement('div')
-                div.innerHTML = '\u11208;'
+                div.innerHTML = '\u1F782;'
                 let unicode = div.innerHTML
-                $('#update').val($('#update').val() + unicode)
+                $('#update').val($('#update').val() + " " + unicode + " ")
                 updateCount($('#update').val())
             })
             // let alert_height = $('#image').parents('.alert').height()
@@ -906,7 +909,7 @@
                     //        liff.closeWindow()
                     //     })
                     // }
-                    if(!data.exists){
+                    if (!data.exists) {
                         Swal.fire({
                             icon: 'error',
                             title: 'ไม่พบข้อมูล',
@@ -963,7 +966,7 @@
                     else {
                         $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
                     }
-                    if(!data.code) $('#code').removeAttr('readonly').attr('placeholder', 'ระบุรหัส').attr('required', true)
+                    if (!data.code) $('#code').removeAttr('readonly').attr('placeholder', 'ระบุรหัส').attr('required', true)
                     else $('#code').val(data.code)
                     console.log("🚀 !! data.code:", data.code)
                     $('#vendor_phone').val(data.vendor_phone || '')
@@ -1074,8 +1077,8 @@
                 allowEscapeKey: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-            }).then(result =>{
-                if(result.isConfirmed){
+            }).then(result => {
+                if (result.isConfirmed) {
                     let url = new URL(window.location.href)
                     url.searchParams.set('jobid', result.value)
                     window.open(url, '_self')
@@ -1405,7 +1408,7 @@
                     ]
                 }
             }
-            if(!detail || detail == '') detail = '-'
+            if (!detail || detail == '') detail = '-'
             if (detail && detail != '') {
                 flex.body.contents.splice(1, 0, {
                     "type": "box",
