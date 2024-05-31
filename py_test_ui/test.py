@@ -383,6 +383,7 @@ def closePM(row, self_call=False):
         return closePM(row, self_call)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
+        print('[red]PM Work not found[/red]')
         return 'PM Work not found'
     a_href = tr.find('a')['href'].split('?')[1]
     job_no = a_href.split('jobno=')[1].split('&')[0]
@@ -943,24 +944,31 @@ def change_file_name():
         dir_path = os.path.dirname(sys.executable)
     else:
         dir_path = os.path.dirname(os.path.realpath(__file__))
-    path = os.path.join(dir_path, 'REPORTS')
+    report_path = os.path.join(dir_path, 'REPORTS')
     # check if path has subfolder
-    subfolder = os.listdir(path)
+    subfolder = os.listdir(report_path)
+    def move_file_to_root(folder):
+        subfolder = os.listdir(folder)
+        for file in subfolder:
+            if os.path.isdir(os.path.join(folder, file)):
+                move_file_to_root(os.path.join(folder, file))
+            else:
+                # move file to root folder
+                shutil.move(os.path.join(folder, file), os.path.join(report_path, file))
+        os.rmdir(folder)
+
     if len(subfolder) > 0:
         # move file to root folder
         for file in subfolder:
-            if os.path.isdir(os.path.join(path, file)):
-                for f in os.listdir(os.path.join(path, file)):
-                    shutil.move(os.path.join(path, file, f), path)
-                os.rmdir(os.path.join(path, file))
-
-    dir_list = os.listdir(path)
+            if os.path.isdir(os.path.join(report_path, file)):
+                move_file_to_root(os.path.join(report_path, file))
+    dir_list = os.listdir(report_path)
     name_arr = {}
     with Progress() as progress:
         task = progress.add_task(
             "[cyan]เปลี่ยนชื่อไฟล์[/cyan]", total=len(dir_list))
         for file_name in dir_list:
-            source = os.path.join(path, file_name)
+            source = os.path.join(report_path, file_name)
 
             # if file_name.find('_') == -1:
             file = fitz.open(source)
@@ -993,14 +1001,19 @@ def change_file_name():
                 name_arr[code]['safety'] = safety[0].replace('\n', ' ').strip()
             else:
                 name_arr[code]['safety'] = '-'
+            engineer = re.findall(r'Approved by.*\n.*$', page, re.MULTILINE)
+            if engineer is not None and len(engineer) > 0:
+                name_arr[code]['engineer'] = engineer[0].replace('\n', '').split(':')[1].strip()
+            else:
+                name_arr[code]['engineer'] = None
             # file.save(os.path.join(path, name))
             file.close()
             try:
-                os.rename(source, os.path.join(path, name))
+                os.rename(source, os.path.join(report_path, name))
             except Exception as e:
                 # if already exist
-                os.remove(os.path.join(path, name))
-                os.rename(source, os.path.join(path, name))
+                os.remove(os.path.join(report_path, name))
+                os.rename(source, os.path.join(report_path, name))
             print('[grey42]{}[/grey42] [yellow]>>>>[/yellow] [green]{}[/green]'.format(
                 file_name, name))
             progress.update(task, advance=1)
@@ -1044,7 +1057,7 @@ def change_file_name():
             if value.get('pm') is None:
                 value['pm'] = ['']
             tmp_arr = [''] * 25
-            tmp_arr[1] = id.split('_')[1]
+            tmp_arr[1] = id
             tmp_arr[8] = convertDate(value['pm'])
             if tmp_arr[8] == '':
                 tmp_arr[12] = ''
@@ -1064,6 +1077,7 @@ def change_file_name():
                 tmp_arr[15] = 'pass'
                 tmp_arr[18] = 'yes'
             tmp_arr[16] = value['safety']
+            tmp_arr[3] = value['engineer']
             unique_arr.append(tmp_arr)
 
             # if value.get('cal') is not None and value.get('pm') is not None:
@@ -1139,4 +1153,5 @@ def showmenu():
             showmenu()
 
 
-showmenu()
+# showmenu()
+change_file_name()
