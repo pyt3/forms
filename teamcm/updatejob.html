@@ -172,8 +172,8 @@
                         style="position: absolute;right: 20px;bottom: 5px;font-size: 0.7rem;color: #888;background-color: #33333333;border-radius: 5px;padding-left: 3px;padding-right: 3px;"
                         id="char-count">0/5000</span>
                         <!-- unicode U+25B6 -->
-                    <p class="mt-1">
-                        &#025B6
+                    <p class="mt-1" class="unicode-charactor" style="font-size: 1.5rem;cursor: pointer;"
+                        &#9654;
                     </p>
                 </div>
                 <div class="col-12 mobile">
@@ -291,13 +291,10 @@
                 initialData();
             })
 
-            // $('.unicode-charactor').click(function () {
-            //     let div = document.createElement('div')
-            //     div.innerHTML = '\u1F782;'
-            //     let unicode = div.innerHTML
-            //     $('#update').val($('#update').val() + " " + unicode + " ")
-            //     updateCount($('#update').val())
-            // })
+            $('.unicode-charactor').click(function () {
+                $('#update').val($('#update').val() + " " + $(this).text()+" ")
+                updateCount($('#update').val())
+            })
             // let alert_height = $('#image').parents('.alert').height()
             // console.log("🚀 !! alert_height:", alert_height)
             // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
