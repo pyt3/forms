@@ -26,6 +26,7 @@ import shutil
 import calendar
 import pyperclip
 import fitz
+from pypdf import PdfReader, PdfWriter
 
 # # set cmd to support utf-8
 # os.system('chcp 874')
@@ -55,6 +56,7 @@ if getattr(sys, 'frozen', False):
     root_dir = os.path.dirname(sys.executable)
 config = open(os.path.join(root_dir, "CONFIG", "config.json"), "r")
 confdata = json.load(config)
+
 login_site = confdata["SITE"]
 
 lock = threading.Lock()
@@ -166,7 +168,6 @@ def load_empList():
         if emp_list is None or len(emp_list) == 0:
             get_emp_list()
     except Exception as e:
-        print(e)
         get_emp_list()
 
 
@@ -177,7 +178,8 @@ def load_tool_list(href):
         print('Load tools list')
         try:
             response = requests.get(
-                "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?" + href + "&ccsForm=main_jobs%3AEdit",
+                "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?" +
+                href + "&ccsForm=main_jobs%3AEdit",
                 headers=headers,
                 cookies=cookies,
                 verify=False,
@@ -196,7 +198,8 @@ def load_tool_list(href):
         tools_list[confdata['SITE'].lower()] = {}
         options = select.findAll('option')
         for option in options:
-            tools_list[confdata['SITE'].lower()][option.text.strip().lower()] = option['value']
+            tools_list[confdata['SITE'].lower(
+            )][option.text.strip().lower()] = option['value']
         save_tool_list(tools_list)
     try:
         with open(os.path.join(root_dir, 'CONFIG/tools_list.json'), 'r') as json_file:
@@ -207,6 +210,7 @@ def load_tool_list(href):
     except Exception as e:
         tools_list = {}
         save_tool_list(tools_list)
+
 
 def save_tool_list(tools_list=None):
     # write over file to clear old data
@@ -313,7 +317,6 @@ def get_emp_list():
         url = "https://nsmart.nhealth-asia.com/MTDPDB01/reftable/employee_branch.php?dept_control=1&dept_tech={}".format(
             td[0].text.strip())
         team_list = get_team_list(url)
-        print(team_list)
         emp_list[td[1].text.strip().lower()] = team_list
         emp_list[td[1].text.strip().lower()]["option_name"] = td[1].text.strip()
     save_calibrator_list(calibrator_list)
@@ -386,6 +389,8 @@ def get_screen_shot(soup, css_file, text):
 
 
 def closePM(row, self_call=False):
+    if row['PM-CLOSED'] != 'nan':
+        return row['PM-CLOSED']
     global emp_list
     if cookies['PHPSESSID'] is None:
         set_login()
@@ -507,6 +512,8 @@ def closePM(row, self_call=False):
 
 
 def closeCAL(row, self_call=False):
+    if row['CAL-CLOSED'] != 'nan':
+        return row['CAL-CLOSED']
     if cookies['PHPSESSID'] is None:
         set_login()
         return closeCAL(row, self_call)
@@ -593,11 +600,17 @@ def closeCAL(row, self_call=False):
     return 'SUCCESS'
 
 
-def attachFilePM(id, team, engineer, date, report_name):
+def attachFilePM(id, team, engineer, date, file_name_list, status):
+    if status.lower() == 'success':
+        print('[green]Already attached PM file[/green]')
+        return 'SUCCESS'
+    if len([ele for ele in file_name_list if id+'_pm' in ele]) == 0:
+        return 'PM Work not found'
+    report_name = [ele for ele in file_name_list if id+'_pm' in ele][0]
     # print type of dataurl
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFilePM(id, team, engineer, date, report_name)
+        attachFilePM(id, team, engineer, date, file_name_list, status)
     response = False
     start_date, end_date, now_year = getFirstAndLastDay(date)
     code = id
@@ -614,7 +627,7 @@ def attachFilePM(id, team, engineer, date, report_name):
         print(e)
         # wait 5 sec
         time.sleep(5)
-        return attachFilePM(id, team, engineer, date, report_name)
+        return attachFilePM(id, team, engineer, date, file_name_list, status)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -622,7 +635,7 @@ def attachFilePM(id, team, engineer, date, report_name):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFilePM(id, team, engineer, date, report_name)
+        return attachFilePM(id, team, engineer, date, file_name_list, status)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return 'PM Work not found'
@@ -705,10 +718,16 @@ def attachFilePM(id, team, engineer, date, report_name):
         return 'Fail to Attach PM file'
 
 
-def attachFileCAL(id, team, engineer, date, report_name):
+def attachFileCAL(id, team, engineer, date, file_name_list, status):
+    if status.lower() == 'success':
+        print('[green]Already attached CAL file[/green]')
+        return 'SUCCESS'
+    if len([ele for ele in file_name_list if id+'_cal' in ele]) == 0:
+        return 'CAL Work not found'
+    report_name = [ele for ele in file_name_list if id+'_cal' in ele][0]
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFileCAL(id, team, engineer, date, report_name)
+        attachFileCAL(id, team, engineer, date, file_name_list, status)
     response = False
     start_date, end_date, now_year = getFirstAndLastDay(date)
     code = id
@@ -725,7 +744,7 @@ def attachFileCAL(id, team, engineer, date, report_name):
         print(e)
         # wait 5 sec
         time.sleep(5)
-        return attachFileCAL(id, team, engineer, date, report_name)
+        return attachFileCAL(id, team, engineer, date, file_name_list, status)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -733,7 +752,7 @@ def attachFileCAL(id, team, engineer, date, report_name):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFileCAL(id, team, engineer, date, report_name)
+        return attachFileCAL(id, team, engineer, date, file_name_list, status)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return 'CAL Work not found'
@@ -807,7 +826,7 @@ def read_file(option=None):
         dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'REPORTS')
     dir_list = os.listdir(path)
-    file_name_list = []
+    file_name_list = ['xx']
     for file in dir_list:
         if file.endswith('.pdf'):
             file_name_list.append(file.replace('.pdf', ''))
@@ -870,79 +889,88 @@ def read_file(option=None):
                     )
                     if row['CODE'] != 'nan':
                         issave = False
-                        process_result = ''
+                        # future = executor.submit(foo, 'world!')
                         if row['PM-RESULT'] != 'nan':
-                            if option == 'close_pm_cal' or option == None:
-                                # process_result = closePM(id, vender, date, safety, self_call=False)
-                                if row['PM-CLOSED'] == 'nan':
-                                    process_result = closePM(row)
-                                else:
-                                    process_result = row['PM-CLOSED']
-                                if process_result == "SUCCESS":
-
-                                    # continue
-                                    # master_df.at[index, 'PM-CLOSED'] = process_result
-                                    master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
-                                        str)
-                                    master_df.at[index,
-                                                 'PM-CLOSED'] = process_result
-                                    issave = True
-                                    # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
-                                    # writer.save()
-                            if option == 'attach_pm_cal' or option == None:
-                                process_attach = ''
-                                if row['PM-ATTACH-STATUS'].lower() == 'success':
-                                    process_attach = 'SUCCESS'
-                                elif row['ATTACH-FILE-PM'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_pm' in ele]) > 0:
-
-                                    process_attach = attachFilePM(
-                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0])
-                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-                                        str)
-                                    if process_attach != 'Fail to Attach PM file':
-                                        master_df.at[index,
-                                                     'PM-ATTACH-STATUS'] = "SUCCESS"
-                                        issave = True
-                                else:
-                                    print('[red]ไม่พบไฟล์ PM[/red]')
-                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-                                        str)
-                                    master_df.at[index,
-                                                 'PM-ATTACH-STATUS'] = 'No File To Attach'
-
-                        if row['CAL-RESULT'] != 'nan':
-                            issave = False
                             process_result = ''
-                            if option == 'close_pm_cal' or option == None:
-                                if row['CAL-CLOSED'] == 'nan':
-                                    process_result = closeCAL(row)
-                                else:
-                                    process_result = row['CAL-CLOSED']
-                                master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
-                                    str)
+                            process_attach = ''
+                            with ThreadPoolExecutor() as executor:
+                                if option == 'close_pm_cal' or option == None:
+                                    # process_result = closePM(id, vender, date, safety, self_call=False)
+                                    process_result = executor.submit(
+                                        closePM, row).result()
+
+                                if option == 'attach_pm_cal' or option == None:
+                                    # process_attach = attachFilePM(
+                                    #     row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0], row['PM-ATTACH-STATUS'])
+                                    process_attach = executor.submit(
+                                        attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS']).result()
+
+                            master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
+                                str)
+                            if process_result == "SUCCESS":
+
+                                # continue
+                                # master_df.at[index, 'PM-CLOSED'] = process_result
                                 master_df.at[index,
-                                             'CAL-CLOSED'] = process_result
+                                             'PM-CLOSED'] = process_result
                                 issave = True
-                            if option == 'attach_pm_cal' or option == None:
+                                # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
+                                # writer.save()
+                            else:
+                                print('[red]Fail to Close PM[/red]')
+                                master_df.at[index,
+                                             'PM-CLOSED'] = 'Fail to Close PM'
+                                # continue
+
+                            master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                str)
+                            if process_attach != 'Fail to Attach PM file':
+                                master_df.at[index,
+                                             'PM-ATTACH-STATUS'] = "SUCCESS"
+                                issave = True
+                            else:
+                                print('[red]ไม่พบไฟล์ PM[/red]')
+                                master_df.at[index,
+                                             'PM-ATTACH-STATUS'] = 'No File To Attach'
+
+                            if row['CAL-RESULT'] != 'nan':
+                                issave = False
+                                process_result = ''
                                 process_attach = ''
-                                if row['CAL-ATTACH-STATUS'].lower() == 'success':
-                                    process_attach = 'SUCCESS'
-                                elif row['ATTACH-FILE-CAL'].lower() == 'yes' and len([ele for ele in file_name_list if row['CODE']+'_cal' in ele]) > 0:
-                                    process_attach = attachFileCAL(
-                                        row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], [ele for ele in file_name_list if row['CODE']+'_cal' in ele][0])
+                                with ThreadPoolExecutor() as executor:
+                                    if option == 'close_pm_cal' or option == None:
+                                        process_result = executor.submit(
+                                            closeCAL, row).result()
+
+                                    if option == 'attach_pm_cal' or option == None:
+                                        # process_attach = attachFileCAL(
+                                        #     row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], [ele for ele in file_name_list if row['CODE']+'_cal' in ele][0], row['CAL-ATTACH-STATUS'])
+                                        process_attach = executor.submit(
+                                            attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS']).result()
+                                       
+                                    master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
+                                        str)
+                                    if process_result == "SUCCESS":
+                                        master_df.at[index,
+                                                     'CAL-CLOSED'] = process_result
+                                        issave = True
+                                    else:
+                                        print('[red]Fail to Close CAL[/red]')
+                                        master_df.at[index,
+                                                     'CAL-CLOSED'] = 'Fail to Close CAL'
                                     master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
                                         str)
                                     if process_attach != 'Fail to Attach PM file':
                                         master_df.at[index,
-                                                     'CAL-ATTACH-STATUS'] = 'SUCCESS'
+                                                        'CAL-ATTACH-STATUS'] = 'SUCCESS'
                                         issave = True
-                                else:
-                                    print('[red]ไม่พบไฟล์ CAL[/red]')
-                                    master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
-                                        str)
-                                    master_df.at[index,
-                                                 'CAL-ATTACH-STATUS'] = 'No File To Attach'
-                                # continue
+                                    else:
+                                        print('[red]ไม่พบไฟล์ CAL[/red]')
+                                        master_df.at[index,
+                                                        'CAL-ATTACH-STATUS'] = 'No File To Attach'
+                                    # continue
+                            # return_value = future.result()
+                            # print(return_value)
 
                     if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
                         # if issave:
@@ -985,6 +1013,7 @@ def change_file_name():
     report_path = os.path.join(dir_path, 'REPORTS')
     # check if path has subfolder
     subfolder = os.listdir(report_path)
+
     def move_file_to_root(folder):
         subfolder = os.listdir(folder)
         for file in subfolder:
@@ -992,7 +1021,8 @@ def change_file_name():
                 move_file_to_root(os.path.join(folder, file))
             else:
                 # move file to root folder
-                shutil.move(os.path.join(folder, file), os.path.join(report_path, file))
+                shutil.move(os.path.join(folder, file),
+                            os.path.join(report_path, file))
         os.rmdir(folder)
 
     if len(subfolder) > 0:
@@ -1034,14 +1064,16 @@ def change_file_name():
                 pmdate = re.findall(r'PM. DATE.*\n.*$', page, re.MULTILINE)
                 name_arr[code]['pm'] = pmdate
                 name = code + '_pm.pdf'
-            safety = re.findall(r'Electrical Safety.*\n.*$', page, re.MULTILINE)
+            safety = re.findall(
+                r'Electrical Safety.*\n.*$', page, re.MULTILINE)
             if safety is not None and len(safety) > 0:
                 name_arr[code]['safety'] = safety[0].replace('\n', ' ').strip()
             else:
                 name_arr[code]['safety'] = '-'
             engineer = re.findall(r'Approved by.*\n.*$', page, re.MULTILINE)
             if engineer is not None and len(engineer) > 0:
-                engineer = engineer[0].replace('\n', '').split(':')[1].strip().replace('  ', ' ')
+                engineer = engineer[0].replace('\n', '').split(':')[
+                    1].strip().replace('  ', ' ')
                 name_arr[code]['engineer'] = engineer
 
             else:
@@ -1054,6 +1086,13 @@ def change_file_name():
                 # if already exist
                 os.remove(os.path.join(report_path, name))
                 os.rename(source, os.path.join(report_path, name))
+            # writer = PdfWriter(clone_from=os.path.join(report_path, name))
+            # for page in writer.pages:
+            #     page.compress_content_streams(level=9)
+            # with open(os.path.join(report_path, name), 'wb') as f:
+            #     writer.write(f)
+            
+
             print('[grey42]{}[/grey42] [yellow]>>>>[/yellow] [green]{}[/green]'.format(
                 file_name, name))
             progress.update(task, advance=1)
@@ -1091,6 +1130,7 @@ def change_file_name():
                 month = months_str.index(date[1].upper()) + 1
                 return date[0] + '/' + str(month) + '/' + date[2]
             return date
+
         def getYear(date1, date2):
             if date1 == '' and date2 == '':
                 return ''
@@ -1103,6 +1143,7 @@ def change_file_name():
                 date = date1
             date = date.split('/')
             return date[2]
+
         def getStartMonth(date1, date2):
             # convert date string to date object
             if date1 == '' and date2 == '':
@@ -1119,6 +1160,7 @@ def change_file_name():
             date[0] = '1'
             date_object = datetime.strptime('/'.join(date), '%d/%m/%Y')
             return date_object.strftime('%d/%m/%Y')
+
         def getEndMonth(date1, date2):
             # convert date string to date object
             if date1 == '' and date2 == '':
@@ -1135,7 +1177,7 @@ def change_file_name():
             date[0] = str(calendar.monthrange(int(date[2]), int(date[1]))[1])
             date_object = datetime.strptime('/'.join(date), '%d/%m/%Y')
             return date_object.strftime('%d/%m/%Y')
-        
+
         def getTeamName(engineer):
             global emp_list
             engineer = engineer.lower()
@@ -1155,11 +1197,11 @@ def change_file_name():
             if value.get('pm') is None:
                 value['pm'] = ['']
             tmp_arr = [''] * 25
-            tmp_arr[0]  = str(i+1)
+            tmp_arr[0] = str(i+1)
             tmp_arr[1] = id
             tmp_arr[2] = getTeamName(value['engineer'])
             tmp_arr[7] = convertDate(value['pm'])
-         
+
             if tmp_arr[7] == '':
                 tmp_arr[11] = ''
                 tmp_arr[13] = ''
@@ -1209,6 +1251,22 @@ def change_file_name():
 
 
 def showmenu():
+    last_run_date = confdata.get('Last run')
+    today = datetime.now()
+    if (last_run_date != today.strftime('%d/%m/%Y')):
+        confdata['Last run'] = today.strftime('%d/%m/%Y')
+        with open('config.json', 'w') as f:
+            json.dump(confdata, f)
+        # delete file calibarator_list.json
+        for file in ['calibrator_list.json', 'tool_list.json', 'emp_list.json']:
+            if os.path.exists(os.path.join(os.path.dirname(__file__), 'CONFIG', file)):
+                os.remove(os.path.join(
+                    os.path.dirname(__file__), 'CONFIG', file))
+        load_empList()
+        load_calibrator_list()
+        load_tool_list('none')
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(init_text)
     # menu
     print('[light blue]ยินดีต้อนรับสู่โปรแกรมปิดงาน[/light blue]'.encode('utf-8').decode('utf-8'))
     print('[light blue]โปรดเลือกเมนูที่ต้องการ[/light blue]')
@@ -1247,7 +1305,7 @@ def showmenu():
         load_empList()
         load_calibrator_list()
         load_tool_list('none')
-        
+
         if menu == '3':
             read_file('close_pm_cal')
         elif menu == '4':
