@@ -49,9 +49,10 @@ async function download_cert(btn) {
       for (td of [td8, td9]) {
         if (option == 'approved' && !td.innerText.toLowerCase().includes('approved')) continue
         let code = tr.getElementsByTagName('td')[1].innerText
-        let a = td.getElementsByTagName('a')[0]
-        let href = a.getAttribute('href')
-        let name = code + '(' + a.innerText + ')'
+        let a = td.getElementsByTagName('a')
+        if(a.length == 0) continue
+        let href = a[0].getAttribute('href')
+        let name = code + '(' + a[0].innerText + ')'
         let id = href.split('id=')[1].split('&')[0]
         let pdf_link
         if (href.includes('page=pm-cert')) {
