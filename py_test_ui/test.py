@@ -170,19 +170,50 @@ def load_empList():
         get_emp_list()
 
 
-def load_tool_list():
+def load_tool_list(href):
     global tools_list
     # handle if file not found
+    if href is not None and href != 'none':
+        print('Load tools list')
+        try:
+            response = requests.get(
+                "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?" + href + "&ccsForm=main_jobs%3AEdit",
+                headers=headers,
+                cookies=cookies,
+                verify=False,
+            )
+        except requests.exceptions.RequestException as e:
+            print(e)
+            # wait 5 sec
+            time.sleep(5)
+            return load_tool_list(href)
+        response.encoding = "tis-620"
+        soup = BeautifulSoup(response.text, "lxml")
+        select = soup.find('select', {'name': 'toolid'})
+        if len(select) == 0:
+            print('No tools list found')
+            exit()
+        tools_list[confdata['SITE'].lower()] = {}
+        options = select.findAll('option')
+        for option in options:
+            tools_list[confdata['SITE'].lower()][option.text.strip().lower()] = option['value']
+        save_tool_list(tools_list)
     try:
         with open(os.path.join(root_dir, 'CONFIG/tools_list.json'), 'r') as json_file:
             tools_list = json.load(json_file)
         if tools_list is None or len(tools_list) == 0:
-            print('No tools list found')
-            exit()
+            tools_list = {}
+            save_tool_list(tools_list)
     except Exception as e:
-        print(e)
-        print('No tools list found')
-        exit()
+        tools_list = {}
+        save_tool_list(tools_list)
+
+def save_tool_list(tools_list=None):
+    # write over file to clear old data
+    if tools_list is None:
+        return
+    with open(os.path.join(root_dir, 'CONFIG/tools_list.json'), 'w') as json_file:
+        json.dump(tools_list, json_file)
 
 
 def load_calibrator_list():
@@ -282,7 +313,9 @@ def get_emp_list():
         url = "https://nsmart.nhealth-asia.com/MTDPDB01/reftable/employee_branch.php?dept_control=1&dept_tech={}".format(
             td[0].text.strip())
         team_list = get_team_list(url)
+        print(team_list)
         emp_list[td[1].text.strip().lower()] = team_list
+        emp_list[td[1].text.strip().lower()]["option_name"] = td[1].text.strip()
     save_calibrator_list(calibrator_list)
     save_empList(emp_list)
 
@@ -393,7 +426,12 @@ def closePM(row, self_call=False):
         dept_tech = calibrator_list[row['TEAM'].lower()]
     else:
         dept_tech = calibrator_list[row['TEAM'].lower()]
-    tool = tools_list[row['TESTER'].lower()]
+    tool = ""
+    if tools_list.get(confdata['SITE'].lower()) is None or tools_list.get(confdata['SITE'].lower()) == {}:
+        load_tool_list(a_href)
+        tool = tools_list[confdata['SITE'].lower()][row['TESTER'].lower()]
+    else:
+        tool = tools_list[confdata['SITE'].lower()][row['TESTER'].lower()]
     selects = [
         {'name': 'job_result',  'value': '1', 'text_contain': False},
         {'name': 'dept_tech',  'value': dept_tech, 'text_contain': False},
@@ -1003,7 +1041,9 @@ def change_file_name():
                 name_arr[code]['safety'] = '-'
             engineer = re.findall(r'Approved by.*\n.*$', page, re.MULTILINE)
             if engineer is not None and len(engineer) > 0:
-                name_arr[code]['engineer'] = engineer[0].replace('\n', '').split(':')[1].strip()
+                engineer = engineer[0].replace('\n', '').split(':')[1].strip().replace('  ', ' ')
+                name_arr[code]['engineer'] = engineer
+
             else:
                 name_arr[code]['engineer'] = None
             # file.save(os.path.join(path, name))
@@ -1051,32 +1091,98 @@ def change_file_name():
                 month = months_str.index(date[1].upper()) + 1
                 return date[0] + '/' + str(month) + '/' + date[2]
             return date
-        for id, value in name_arr.items():
+        def getYear(date1, date2):
+            if date1 == '' and date2 == '':
+                return ''
+            date = ''
+            if date1 == '':
+                date = date2
+            elif date2 == '':
+                date = date1
+            else:
+                date = date1
+            date = date.split('/')
+            return date[2]
+        def getStartMonth(date1, date2):
+            # convert date string to date object
+            if date1 == '' and date2 == '':
+                return ''
+            date = ''
+            if date1 == '':
+                date = date2
+            elif date2 == '':
+                date = date1
+            else:
+                date = date1
+            # get first day of month
+            date = date.split('/')
+            date[0] = '1'
+            date_object = datetime.strptime('/'.join(date), '%d/%m/%Y')
+            return date_object.strftime('%d/%m/%Y')
+        def getEndMonth(date1, date2):
+            # convert date string to date object
+            if date1 == '' and date2 == '':
+                return ''
+            date = ''
+            if date1 == '':
+                date = date2
+            elif date2 == '':
+                date = date1
+            else:
+                date = date1
+            # get last day of month
+            date = date.split('/')
+            date[0] = str(calendar.monthrange(int(date[2]), int(date[1]))[1])
+            date_object = datetime.strptime('/'.join(date), '%d/%m/%Y')
+            return date_object.strftime('%d/%m/%Y')
+        
+        def getTeamName(engineer):
+            global emp_list
+            engineer = engineer.lower()
+            if emp_list is None or len(emp_list) == 0:
+                load_empList()
+            # find team name in emp_list
+            for team in emp_list:
+                if engineer in emp_list[team]:
+                    return emp_list[team]['option_name']
+            return ''
+
+        for i, x in enumerate(name_arr):
+            id = x
+            value = name_arr[x]
             if value.get('cal') is None:
                 value['cal'] = ['']
             if value.get('pm') is None:
                 value['pm'] = ['']
             tmp_arr = [''] * 25
+            tmp_arr[0]  = str(i+1)
             tmp_arr[1] = id
-            tmp_arr[8] = convertDate(value['pm'])
+            tmp_arr[2] = getTeamName(value['engineer'])
+            tmp_arr[7] = convertDate(value['pm'])
+         
+            if tmp_arr[7] == '':
+                tmp_arr[11] = ''
+                tmp_arr[13] = ''
+                tmp_arr[16] = ''
+            else:
+                tmp_arr[11] = 'PM doable'
+                tmp_arr[13] = 'pass'
+                tmp_arr[16] = 'yes'
+            tmp_arr[8] = convertDate(value['cal'])
             if tmp_arr[8] == '':
                 tmp_arr[12] = ''
                 tmp_arr[14] = ''
                 tmp_arr[17] = ''
             else:
-                tmp_arr[12] = 'PM doable'
+                tmp_arr[12] = 'Perform CAL'
                 tmp_arr[14] = 'pass'
                 tmp_arr[17] = 'yes'
-            tmp_arr[9] = convertDate(value['cal'])
-            if tmp_arr[9] == '':
-                tmp_arr[13] = ''
-                tmp_arr[15] = ''
-                tmp_arr[18] = ''
-            else:
-                tmp_arr[13] = 'Perform CAL'
-                tmp_arr[15] = 'pass'
-                tmp_arr[18] = 'yes'
-            tmp_arr[16] = value['safety']
+            tmp_arr[4] = getYear(tmp_arr[7], tmp_arr[8])
+            tmp_arr[5] = getStartMonth(tmp_arr[7], tmp_arr[8])
+            tmp_arr[6] = getEndMonth(tmp_arr[7], tmp_arr[8])
+            tmp_arr[9] = confdata["SUP_ID"]
+            tmp_arr[10] = confdata["SUP_NAME"]
+            tmp_arr[15] = value['safety']
             tmp_arr[3] = value['engineer']
             unique_arr.append(tmp_arr)
 
@@ -1138,9 +1244,10 @@ def showmenu():
         change_file_name()
         showmenu()
     else:
-        threading.Thread(target=load_empList).start()
-        threading.Thread(target=load_tool_list).start()
-        threading.Thread(target=load_calibrator_list).start()
+        load_empList()
+        load_calibrator_list()
+        load_tool_list('none')
+        
         if menu == '3':
             read_file('close_pm_cal')
         elif menu == '4':
@@ -1153,5 +1260,6 @@ def showmenu():
             showmenu()
 
 
-# showmenu()
-change_file_name()
+showmenu()
+# change_file_name()
+# get_emp_list()
