@@ -13,7 +13,6 @@ from datetime import datetime
 import json
 from concurrent.futures import ThreadPoolExecutor
 import pyfiglet
-import tabulate
 import urllib3
 from queue import Queue
 import time
@@ -72,7 +71,7 @@ data = {
 cookies = {
     "_ga": "GA1.1.409909798.1624509466",
     "_ga_L9CPT990SV": "GS1.1.1629863162.2.0.1629863162.0",
-    "PHPSESSID": None
+    "PHPSESSID": confdata["SESSION_ID"],
 }
 
 
@@ -127,7 +126,7 @@ def set_login():
                 json.dump(confdata, json_file)
 
     except Exception as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         print("[red]No Internet Connection[/red]")
         # wait 5 sec
         time.sleep(5)
@@ -186,7 +185,7 @@ def load_tool_list(href):
                 verify=False,
             )
         except requests.exceptions.RequestException as e:
-            print(e)
+            print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
             # wait 5 sec
             time.sleep(5)
             return load_tool_list(href)
@@ -231,7 +230,7 @@ def load_calibrator_list():
             print('No calibrator list found')
             exit()
     except Exception as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         get_emp_list()
 
 
@@ -251,7 +250,7 @@ def get_team_list(url, page='1'):
             verify=False,
         )
     except requests.exceptions.RequestException as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         # wait 5 sec
         time.sleep(5)
         return get_team_list(url, page)
@@ -297,7 +296,7 @@ def get_emp_list():
             verify=False,
         )
     except requests.exceptions.RequestException as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         # wait 5 sec
         time.sleep(5)
         return get_emp_list()
@@ -363,7 +362,8 @@ def base64_image_to_base64_pdf(base64_image_string):
         return pdf_base64
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        # print error with line number
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         return None
 
 
@@ -381,7 +381,7 @@ def get_screen_shot(soup, css_file, text):
         hti.screenshot(html_str=str(soup), css_str=css,
                        save_as=file_name+'.png')
     except Exception as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         pass
     return_json = {'status': 'ok',
                    'status_text': text, 'screenshot': file_name}
@@ -390,6 +390,8 @@ def get_screen_shot(soup, css_file, text):
 
 
 def closePM(row, self_call=False):
+    if row['DATE-PM'] == 'nan' or row['DATE-PM'] == '':
+        return ''
     if row['PM-CLOSED'] != 'nan':
         return row['PM-CLOSED']
     global emp_list
@@ -408,7 +410,7 @@ def closePM(row, self_call=False):
             verify=False,
         )
     except requests.exceptions.RequestException as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         # wait 5 sec
         time.sleep(5)
         return closePM(row, self_call)
@@ -513,6 +515,8 @@ def closePM(row, self_call=False):
 
 
 def closeCAL(row, self_call=False):
+    if row['DATE-CAL'] == 'nan' or row['DATE-CAL'] == '':
+        return ''
     if row['CAL-CLOSED'] != 'nan':
         return row['CAL-CLOSED']
     if cookies['PHPSESSID'] is None:
@@ -530,7 +534,7 @@ def closeCAL(row, self_call=False):
             verify=False,
         )
     except requests.exceptions.RequestException as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         # wait 5 sec
         time.sleep(5)
         return closeCAL(row, self_call)
@@ -601,7 +605,9 @@ def closeCAL(row, self_call=False):
     return 'SUCCESS'
 
 
-def attachFilePM(id, team, engineer, date, file_name_list, status):
+def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
+    if attach != 'yes':
+        return ''
     if status.lower() == 'success':
         print('[green]Already attached PM file[/green]')
         return 'SUCCESS'
@@ -611,7 +617,7 @@ def attachFilePM(id, team, engineer, date, file_name_list, status):
     # print type of dataurl
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFilePM(id, team, engineer, date, file_name_list, status)
+        attachFilePM(id, team, engineer, date, file_name_list, status, attach)
     response = False
     start_date, end_date, now_year = getFirstAndLastDay(date)
     code = id
@@ -625,10 +631,10 @@ def attachFilePM(id, team, engineer, date, file_name_list, status):
             verify=False,
         )
     except requests.exceptions.RequestException as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         # wait 5 sec
         time.sleep(5)
-        return attachFilePM(id, team, engineer, date, file_name_list, status)
+        return attachFilePM(id, team, engineer, date, file_name_list, status, attach)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -636,7 +642,7 @@ def attachFilePM(id, team, engineer, date, file_name_list, status):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFilePM(id, team, engineer, date, file_name_list, status)
+        return attachFilePM(id, team, engineer, date, file_name_list, status, attach)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return 'PM Work not found'
@@ -657,6 +663,9 @@ def attachFilePM(id, team, engineer, date, file_name_list, status):
     if find_count_Header is not None and len(find_count_Header) > 0:
         file_th = find_count_Header.find('th').text.strip().split(' ')[2]
         file_count = int(file_th)
+    if file_count > 0:
+        print('[green]Already attached PM file[/green]')
+        return 'SUCCESS'
     form_data = {}
     inputs = form.findAll('input')
     emp_name = ''
@@ -719,7 +728,9 @@ def attachFilePM(id, team, engineer, date, file_name_list, status):
         return 'Fail to Attach PM file'
 
 
-def attachFileCAL(id, team, engineer, date, file_name_list, status):
+def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
+    if attach != 'yes':
+        return ''
     if status.lower() == 'success':
         print('[green]Already attached CAL file[/green]')
         return 'SUCCESS'
@@ -728,7 +739,7 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status):
     report_name = [ele for ele in file_name_list if id+'_cal' in ele][0]
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFileCAL(id, team, engineer, date, file_name_list, status)
+        attachFileCAL(id, team, engineer, date, file_name_list, status, attach)
     response = False
     start_date, end_date, now_year = getFirstAndLastDay(date)
     code = id
@@ -742,10 +753,10 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status):
             verify=False,
         )
     except requests.exceptions.RequestException as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         # wait 5 sec
         time.sleep(5)
-        return attachFileCAL(id, team, engineer, date, file_name_list, status)
+        return attachFileCAL(id, team, engineer, date, file_name_list, status, attach)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -753,7 +764,7 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFileCAL(id, team, engineer, date, file_name_list, status)
+        return attachFileCAL(id, team, engineer, date, file_name_list, status, attach)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return 'CAL Work not found'
@@ -774,6 +785,9 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status):
     if find_count_Header is not None and len(find_count_Header) > 0:
         file_th = find_count_Header.find('th').text.strip().split(' ')[2]
         file_count = int(file_th)
+    if file_count > 0:
+        print('[green]Already attached CAL file[/green]')
+        return 'SUCCESS'
     form_data = {}
     inputs = form.findAll('input')
 
@@ -878,130 +892,143 @@ def read_file(option=None):
                 init_text = pyfiglet.figlet_format("Start Process...")
                 print(init_text)
                 start_time = time.time()
-                for index, row in df.iterrows():
-                    # print(row['CODE']+' '+str(index)+'/'+str(len(df)))
-                    row['CODE'] = str(row['CODE']).replace('.0', '')
-                    row['YEAR'] = str(row['YEAR']).replace('.0', '')
-                    print('[green]{}[/green] / [blue]{}[/blue] [yellow]Close PM JOB[/yellow] [light blue]{}[/light blue]'.format(
-                        str(index+1), str(len(df)), row['CODE'])
-                    )
-                    if row['CODE'] != 'nan':
-                        issave = False
-                        process_result_pm = ''
-                        process_result_cal = ''
-                        process_result_pm_attach = ''
-                        process_result_cal_attach = ''
-                        # future = executor.submit(foo, 'world!')
-                        if option == 'close_pm_cal':
-                            with ThreadPoolExecutor() as executor:
-                                process_result_pm = executor.submit(
-                                    closePM, row)
-                                process_result_cal = executor.submit(
-                                    closeCAL, row)
-                            master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
-                                str)
-                            master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
-                                str)
-                            process_result_pm = process_result_pm.result()
-                            process_result_cal = process_result_cal.result()
-                            if process_result_pm == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'PM-CLOSED'] = process_result_pm
-                            else:
-                                print('[red]Fail to Close PM[/red]')
-                                df.at[index, 'PM-CLOSED'] = 'Fail to Close PM'
-                            if process_result_cal == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'CAL-CLOSED'] = process_result_cal
-                            else:
-                                print('[red]Fail to Close CAL[/red]')
-                                df.at[index, 'CAL-CLOSED'] = 'Fail to Close CAL'
-                            master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(str)
-                            master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(str)
-                            df.at[index, 'PM-ATTACH-STATUS'] = row['PM-ATTACH-STATUS'] if row['PM-ATTACH-STATUS'] != 'nan' else ''
-                            df.at[index, 'CAL-ATTACH-STATUS'] = row['CAL-ATTACH-STATUS'] if row['CAL-ATTACH-STATUS'] != 'nan' else ''
+                try:
+                    for index, row in df.iterrows():
+                            row['CODE'] = str(row['CODE']).replace('.0', '')
+                            row['YEAR'] = str(row['YEAR']).replace('.0', '')
+                            print('[green]{}[/green] / [blue]{}[/blue] [yellow]Close PM JOB[/yellow] [light blue]{}[/light blue]'.format(
+                                str(index+1), str(len(df)), row['CODE'])
+                            )
+                            if row['CODE'] != 'nan':
+                                issave = False
+                                process_result_pm = ''
+                                process_result_cal = ''
+                                process_result_pm_attach = ''
+                                process_result_cal_attach = ''
+                                # future = executor.submit(foo, 'world!')
+                                if option == 'close_pm_cal':
+                                    with ThreadPoolExecutor() as executor:
+                                        process_result_pm = executor.submit(
+                                            closePM, row)
+                                        process_result_cal = executor.submit(
+                                            closeCAL, row)
+                                    master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
+                                        str)
+                                    master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
+                                        str)
+                                    process_result_pm = process_result_pm.result()
+                                    process_result_cal = process_result_cal.result()
+                                    if process_result_pm == 'SUCCESS' or process_result_pm == '':
+                                        issave = True
+                                        df.at[index, 'PM-CLOSED'] = process_result_pm
+                                    else:
+                                        print('[red]Fail to Close PM[/red]')
+                                        df.at[index, 'PM-CLOSED'] = 'Fail to Close PM'
+                                    if process_result_cal == 'SUCCESS' or process_result_cal == '':
+                                        issave = True
+                                        df.at[index, 'CAL-CLOSED'] = process_result_cal
+                                    else:
+                                        print('[red]Fail to Close CAL[/red]')
+                                        df.at[index, 'CAL-CLOSED'] = 'Fail to Close CAL'
+                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(str)
+                                    master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(str)
+                                    df.at[index, 'PM-ATTACH-STATUS'] = row['PM-ATTACH-STATUS'] if row['PM-ATTACH-STATUS'] != 'nan' else ''
+                                    df.at[index, 'CAL-ATTACH-STATUS'] = row['CAL-ATTACH-STATUS'] if row['CAL-ATTACH-STATUS'] != 'nan' else ''
 
-                        elif option == 'attach_pm_cal':
-                            with ThreadPoolExecutor() as executor:
-                                process_result_pm = executor.submit(
-                                    attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS'])
-                                process_result_cal = executor.submit(
-                                    attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS'])
-                            master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-                                str)
-                            master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
-                                str)
-                            process_result_pm = process_result_pm.result()
-                            process_result_cal = process_result_cal.result()
-                            if process_result_pm == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm
-                            else:
-                                print('[red]Fail to Attach PM file[/red]')
-                                df.at[index, 'PM-ATTACH-STATUS'] = 'Fail to Attach PM file'
-                            if process_result_cal == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal
-                            else:
-                                print('[red]Fail to Attach CAL file[/red]')
-                                df.at[index, 'CAL-ATTACH-STATUS'] = 'Fail to Attach CAL file'
-                            master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(str)
-                            master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(str)
-                            df.at[index, 'PM-CLOSED'] = row['PM-CLOSED'] if row['PM-CLOSED'] != 'nan' else ''
-                            df.at[index, 'CAL-CLOSED'] = row['CAL-CLOSED'] if row['CAL-CLOSED'] != 'nan' else ''
-                        elif option == None:
-                            process_result_pm = ''
-                            process_result_cal = ''
-                            with ThreadPoolExecutor() as executor:
-                                process_result_pm = executor.submit(
-                                    closePM, row)
-                                process_result_cal = executor.submit(
-                                    closeCAL, row)
-                                process_result_pm_attach = executor.submit(
-                                    attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS'])
-                                process_result_cal_attach = executor.submit(
-                                    attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS'])
-                            master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
-                                str)
-                            master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
-                                str)
-                            master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-                                str)
-                            master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
-                                str)
-                            process_result_pm = process_result_pm.result()
-                            process_result_cal = process_result_cal.result()
-                            process_result_pm_attach = process_result_pm_attach.result()
-                            process_result_cal_attach = process_result_cal_attach.result()
-                            if process_result_pm == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'PM-CLOSED'] = process_result_pm
-                            else:
-                                print('[red]Fail to Close PM[/red]')
-                                df.at[index, 'PM-CLOSED'] = 'Fail to Close PM'
-                            if process_result_cal == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'CAL-CLOSED'] = process_result_cal
-                            else:
-                                print('[red]Fail to Close CAL[/red]')
-                                df.at[index, 'CAL-CLOSED'] = 'Fail to Close CAL'
-                            if process_result_pm_attach == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm_attach
-                            else:
-                                print('[red]Fail to Attach PM file[/red]')
-                                df.at[index, 'PM-ATTACH-STATUS'] = 'Fail to Attach PM file'
-                            if process_result_cal_attach == 'SUCCESS':
-                                issave = True
-                                df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal_attach
-                            else:
-                                print('[red]Fail to Attach CAL file[/red]')
-                                df.at[index, 'CAL-ATTACH-STATUS'] = 'Fail to Attach CAL file'
-                    if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
-                        # convert nan to empty string
-                        df = df.replace(np.nan, '', regex=True)
-                        df.to_excel(
-                            writer, sheet_name='Sheet1', index=False)
+                                elif option == 'attach_pm_cal':
+                                    with ThreadPoolExecutor() as executor:
+                                        process_result_pm = executor.submit(
+                                            attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS'],row['ATTACH-FILE-PM'])
+                                        process_result_cal = executor.submit(
+                                            attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS'],row['ATTACH-FILE-CAL'])
+                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                        str)
+                                    master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
+                                        str)
+                                    process_result_pm = process_result_pm.result()
+                                    process_result_cal = process_result_cal.result()
+                                    if process_result_pm == 'SUCCESS' or process_result_pm == '':
+                                        issave = True
+                                        df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm
+                                    else:
+                                        print('[red]Fail to Attach PM file[/red]')
+                                        df.at[index, 'PM-ATTACH-STATUS'] = 'Fail to Attach PM file'
+                                    if process_result_cal == 'SUCCESS' or process_result_cal == '':
+                                        issave = True
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal
+                                    else:
+                                        print('[red]Fail to Attach CAL file[/red]')
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = 'Fail to Attach CAL file'
+                                    master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(str)
+                                    master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(str)
+                                    df.at[index, 'PM-CLOSED'] = row['PM-CLOSED'] if row['PM-CLOSED'] != 'nan' else ''
+                                    df.at[index, 'CAL-CLOSED'] = row['CAL-CLOSED'] if row['CAL-CLOSED'] != 'nan' else ''
+                                elif option == None:
+                                    process_result_pm = ''
+                                    process_result_cal = ''
+                                    with ThreadPoolExecutor() as executor:
+                                        process_result_pm = executor.submit(
+                                            closePM, row)
+                                        process_result_cal = executor.submit(
+                                            closeCAL, row)
+                                        process_result_pm_attach = executor.submit(
+                                            attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS'], row['ATTACH-FILE-PM'])
+                                        process_result_cal_attach = executor.submit(
+                                            attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS'], row['ATTACH-FILE-CAL'])
+                                    master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
+                                        str)
+                                    master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
+                                        str)
+                                    master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
+                                        str)
+                                    master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
+                                        str)
+                                    process_result_pm = process_result_pm.result()
+                                    process_result_cal = process_result_cal.result()
+                                    process_result_pm_attach = process_result_pm_attach.result()
+                                    process_result_cal_attach = process_result_cal_attach.result()
+                                    if process_result_pm == 'SUCCESS' or process_result_pm == '':
+                                        issave = True
+                                        df.at[index, 'PM-CLOSED'] = process_result_pm
+                                    else:
+                                        print('[red]Fail to Close PM[/red]')
+                                        df.at[index, 'PM-CLOSED'] = 'Fail to Close PM'
+                                    if process_result_cal == 'SUCCESS' or process_result_cal == '':
+                                        issave = True
+                                        df.at[index, 'CAL-CLOSED'] = process_result_cal
+                                    else:
+                                        print('[red]Fail to Close CAL[/red]')
+                                        df.at[index, 'CAL-CLOSED'] = 'Fail to Close CAL'
+                                    if process_result_pm_attach == 'SUCCESS' or process_result_pm_attach == '':
+                                        issave = True
+                                        df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm_attach
+                                    else:
+                                        print('[red]Fail to Attach PM file[/red]')
+                                        df.at[index, 'PM-ATTACH-STATUS'] = 'Fail to Attach PM file'
+                                    if process_result_cal_attach == 'SUCCESS' or process_result_cal_attach == '':
+                                        issave = True
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal_attach
+                                    else:
+                                        print('[red]Fail to Attach CAL file[/red]')
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = 'Fail to Attach CAL file'
+                            if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
+                                # convert 'nan' to empty string with match entire cell
+                                print('[green]===========Auto Saved=============[/green]')
+                                df.style.applymap(lambda v: "number-format: @").to_excel(
+                                    writer, sheet_name='Sheet1', index=False)
+                                issave = False
+                except Exception as e:
+                    print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+                finally:
+                    print('[green]=============Save Result to Excel==============[/green]')
+                    # convert 'nan' to empty string with match entire cell
+                    df = df.replace('^nan$', '', regex=True)
+                    # format excel to string
+                    df.style.applymap(lambda v: "number-format: @").to_excel(
+                        writer, sheet_name='Sheet1', index=False)
+                    # save df to excel
+                    writer.close()
+                    
 
                 end_time = time.time()
                 print('\n[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
@@ -1024,9 +1051,9 @@ def read_file(option=None):
                 print(init_text)
                 showmenu()
                 # pyautogui.alert('Close Jobs '+str(index)+' records')
-            writer.save()
+            writer.close()
     except Exception as e:
-        print(e)
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         print('[red]Error[/red]')
         print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
         input()
@@ -1035,119 +1062,6 @@ def read_file(option=None):
         init_text = pyfiglet.figlet_format("BME Assistant", font="slant")
         print(init_text)
         showmenu()
-
-    #                     if row['PM-RESULT'] != 'nan':
-    #                         process_result = ''
-    #                         process_attach = ''
-    #                         with ThreadPoolExecutor() as executor:
-    #                             if option == 'close_pm_cal' or option == None:
-    #                                 # process_result = closePM(id, vender, date, safety, self_call=False)
-    #                                 process_result = executor.submit(
-    #                                     closePM, row).result()
-
-    #                             if option == 'attach_pm_cal' or option == None:
-    #                                 # process_attach = attachFilePM(
-    #                                 #     row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], [ele for ele in file_name_list if row['CODE']+'_pm' in ele][0], row['PM-ATTACH-STATUS'])
-    #                                 process_attach = executor.submit(
-    #                                     attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS']).result()
-
-    #                         master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
-    #                             str)
-    #                         if process_result == "SUCCESS":
-
-    #                             # continue
-    #                             # master_df.at[index, 'PM-CLOSED'] = process_result
-    #                             master_df.at[index,
-    #                                          'PM-CLOSED'] = process_result
-    #                             issave = True
-    #                             # master_df.to_excel(writer, sheet_name=sheet_name, 2022    index=False)
-    #                             # writer.save()
-    #                         else:
-    #                             print('[red]Fail to Close PM[/red]')
-    #                             master_df.at[index,
-    #                                          'PM-CLOSED'] = 'Fail to Close PM'
-    #                             # continue
-
-    #                         master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
-    #                             str)
-    #                         if process_attach != 'Fail to Attach PM file':
-    #                             master_df.at[index,
-    #                                          'PM-ATTACH-STATUS'] = "SUCCESS"
-    #                             issave = True
-    #                         else:
-    #                             print('[red]ไม่พบไฟล์ PM[/red]')
-    #                             master_df.at[index,
-    #                                          'PM-ATTACH-STATUS'] = 'No File To Attach'
-
-    #                         if row['CAL-RESULT'] != 'nan':
-    #                             issave = False
-    #                             process_result = ''
-    #                             process_attach = ''
-    #                             with ThreadPoolExecutor() as executor:
-    #                                 if option == 'close_pm_cal' or option == None:
-    #                                     process_result = executor.submit(
-    #                                         closeCAL, row).result()
-
-    #                                 if option == 'attach_pm_cal' or option == None:
-    #                                     # process_attach = attachFileCAL(
-    #                                     #     row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], [ele for ele in file_name_list if row['CODE']+'_cal' in ele][0], row['CAL-ATTACH-STATUS'])
-    #                                     process_attach = executor.submit(
-    #                                         attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS']).result()
-
-    #                                 master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
-    #                                     str)
-    #                                 if process_result == "SUCCESS":
-    #                                     master_df.at[index,
-    #                                                  'CAL-CLOSED'] = process_result
-    #                                     issave = True
-    #                                 else:
-    #                                     print('[red]Fail to Close CAL[/red]')
-    #                                     master_df.at[index,
-    #                                                  'CAL-CLOSED'] = 'Fail to Close CAL'
-    #                                 master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
-    #                                     str)
-    #                                 if process_attach != 'Fail to Attach PM file':
-    #                                     master_df.at[index,
-    #                                                     'CAL-ATTACH-STATUS'] = 'SUCCESS'
-    #                                     issave = True
-    #                                 else:
-    #                                     print('[red]ไม่พบไฟล์ CAL[/red]')
-    #                                     master_df.at[index,
-    #                                                     'CAL-ATTACH-STATUS'] = 'No File To Attach'
-    #                                 # continue
-    #                         # return_value = future.result()
-    #                         # print(return_value)
-
-    #                 if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
-    #                     # if issave:
-    #                     master_df.to_excel(
-    #                         writer, sheet_name='Sheet1', index=False)
-    #                     writer._save()
-    #             end_time = time.time()
-
-    #             print('\n[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
-    #             print('[green]เสร็จสิ้นในเวลา[/green] : [yellow]{}[/yellow] วินาที'.format(
-    #                 str(round(end_time-start_time, 2))))
-    #             print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
-    #             input()
-    #             # clear console
-    #             os.system('cls' if os.name == 'nt' else 'clear')
-    #             init_text = pyfiglet.figlet_format(
-    #                 "BME Assistant", font="slant")
-    #             print(init_text)
-    #             showmenu()
-    #             # pyautogui.alert('Close Jobs '+str(index)+' records')
-    #         else:
-    #             print("[red]Cancel[/red]")
-    #             # clear console
-    #             os.system('cls' if os.name == 'nt' else 'clear')
-    #             init_text = pyfiglet.figlet_format(
-    #                 "BME Assistant", font="slant")
-    #             print(init_text)
-    #             showmenu()
-    #         writer.close()
-    # except Exception as e:
-    #     print(e)
 
 
 def change_file_name():
@@ -1409,8 +1323,9 @@ def showmenu():
     last_run_date = confdata.get('Last run')
     today = datetime.now()
     if (last_run_date != today.strftime('%d/%m/%Y')):
+        cookies['PHPSESSID'] = None
         confdata['Last run'] = today.strftime('%d/%m/%Y')
-        with open('config.json', 'w') as f:
+        with open(os.path.join(os.path.dirname(__file__), 'CONFIG', 'config.json'), 'w') as f:
             json.dump(confdata, f)
         # delete file calibarator_list.json
         for file in ['calibrator_list.json', 'tool_list.json', 'emp_list.json']:
@@ -1473,6 +1388,9 @@ def showmenu():
             showmenu()
 
 
-showmenu()
+try:
+    showmenu()
+except Exception as e:
+    print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
 # change_file_name()
 # get_emp_list()
