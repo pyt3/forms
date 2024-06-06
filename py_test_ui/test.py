@@ -659,10 +659,12 @@ def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
     soup = BeautifulSoup(response.text, "lxml")
     form = soup.find('form', {'name': 'Post'})
     file_count = 0
-    find_count_Header = soup.find_all('table', {'class': 'Header'})[1]
-    if find_count_Header is not None and len(find_count_Header) > 0:
-        file_th = find_count_Header.find('th').text.strip().split(' ')[2]
-        file_count = int(file_th)
+    file_tr = soup.find_all('table', {'class': 'Grid'})[1].find_all('tr', {'class': 'Row'})
+    for tr in file_tr:
+        if tr.find_all('td')[2].text.strip()  == 'Report PM ' + engineer.upper():
+            file_count += 1
+            print(tr.find_all('td')[2].text.strip())
+
     if file_count > 0:
         print('[green]Already attached PM file[/green]')
         return 'SUCCESS'
@@ -781,10 +783,10 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
     soup = BeautifulSoup(response.text, "lxml")
     form = soup.find('form', {'name': 'Post'})
     file_count = 0
-    find_count_Header = soup.find_all('table', {'class': 'Header'})[1]
-    if find_count_Header is not None and len(find_count_Header) > 0:
-        file_th = find_count_Header.find('th').text.strip().split(' ')[2]
-        file_count = int(file_th)
+    file_tr = soup.find_all('table', {'class': 'Grid'})[1].find_all('tr', {'class': 'Row'})   
+    for tr in file_tr:
+        if tr.find_all('td')[2].text.strip()  == 'Report CAL ' + engineer.upper():
+            file_count += 1
     if file_count > 0:
         print('[green]Already attached CAL file[/green]')
         return 'SUCCESS'
@@ -1194,7 +1196,7 @@ def change_file_name():
             if len(date) == 3:
                 month = months_str.index(date[1].upper()) + 1
                 return date[0] + '/' + str(month) + '/' + date[2]
-            return date
+            return ' '.join(date)
 
         def getYear(date1, date2):
             if date1 == '' and date2 == '':
