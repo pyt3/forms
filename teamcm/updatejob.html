@@ -339,10 +339,10 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(async () => {
-            $('.load-bar').removeClass('d-none')
+            $('.load-bar').fadeOut(1500)
             moment.locale('th')
             liff.init({
-                
+
                 liffId: liff_id,
             })
             liff.ready.then(async () => {
@@ -393,7 +393,7 @@
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if (!jobid || jobid == '' || jobid == undefined || jobid == null) {
-                $('.load-bar').addClass('d-none')
+                $('.load-bar').fadeOut(1500)
                 Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูล',
@@ -413,7 +413,7 @@
                         initialData()
                     })
                 }
-                $('.load-bar').addClass('d-none')
+                $('.load-bar').fadeOut(1500)
                 $.LoadingOverlay("hide");
                 return Swal.fire({
                     title: 'กรุณาเลือก Site ของคุณ',
@@ -449,7 +449,7 @@
                     }
                 })
             }
-            $('.load-bar').addClass('d-none')
+            $('.load-bar').fadeOut(1500)
             $.LoadingOverlay("hide");
             $('#name optgroup').not('[label="' + user_site + '"]').remove()
             $('#name').select2({
@@ -507,7 +507,7 @@
                     $('#summary').html(msg)
                     $('#summary').parent().removeClass('d-none').focus()
                     $.LoadingOverlay("hide");
-                    $('.load-bar').addClass('d-none')
+                    $('.load-bar').fadeOut(1500
                 })
 
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
@@ -959,7 +959,7 @@
                         contents: carousel
                     }]).then(() => {
                         $.LoadingOverlay("hide");
-                        $('.load-bar').addClass('d-none')
+                        $('.load-bar').fadeOut(1500)
                         Swal.fire({
                             icon: 'success',
                             title: 'แชร์สรุปงานสำเร็จ',
@@ -981,7 +981,7 @@
             }
             else {
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
-                    $('.load-bar').addClass('d-none')
+                    $('.load-bar').fadeOut(1500)
                     // if(!data.exists) {
                     //     $.LoadingOverlay("hide");
                     //     Swal.fire({
