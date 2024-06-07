@@ -48,60 +48,136 @@
             height: 100%;
         }
 
-        .load-bar {
-            position: relative;
-            margin-top: 0px;
-            width: 100%;
-            height: 6px;
-            background-color: #fdba2c;
-        }
-
-        .bar {
-            content: "";
-            display: inline;
-            position: absolute;
-            width: 0;
-            height: 100%;
-            left: 50%;
-            text-align: center;
-        }
-
-        .bar:nth-child(1) {
-            background-color: #da4733;
-            animation: loading 3s linear infinite;
-        }
-
-        .bar:nth-child(2) {
-            background-color: #3b78e7;
-            animation: loading 3s linear 1s infinite;
-        }
-
-        .bar:nth-child(3) {
-            background-color: #fdba2c;
-            animation: loading 3s linear 2s infinite;
-        }
-
-        @keyframes loading {
-            from {
-                left: 0;
-                width: 0;
-                z-index: 100;
-            }
-
-            33.3333% {
-                left: 0;
-                width: 100%;
-                z-index: 10;
-            }
-
-            to {
-                left: 0;
-                width: 100%;
-            }
-        }
-
         .container {
             max-width: 500px;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 10;
+            width: 160px;
+            height: 100px;
+            margin-left: -80px;
+            margin-top: -50px;
+            border-radius: 5px;
+            background: #1e3f57;
+            animation: dot1_ 3s cubic-bezier(0.55, 0.3, 0.24, 0.99) infinite;
+        }
+
+        .loader:nth-child(2) {
+            z-index: 11;
+            width: 150px;
+            height: 90px;
+            margin-top: -45px;
+            margin-left: -75px;
+            border-radius: 3px;
+            background: #3c517d;
+            animation-name: dot2_;
+        }
+
+        .loader:nth-child(3) {
+            z-index: 12;
+            width: 40px;
+            height: 20px;
+            margin-top: 50px;
+            margin-left: -20px;
+            border-radius: 0 0 5px 5px;
+            background: #6bb2cd;
+            animation-name: dot3_;
+        }
+
+        @keyframes dot1_ {
+
+            3%,
+            97% {
+                width: 160px;
+                height: 100px;
+                margin-top: -50px;
+                margin-left: -80px;
+            }
+
+            30%,
+            36% {
+                width: 80px;
+                height: 120px;
+                margin-top: -60px;
+                margin-left: -40px;
+            }
+
+            63%,
+            69% {
+                width: 40px;
+                height: 80px;
+                margin-top: -40px;
+                margin-left: -20px;
+            }
+        }
+
+        @keyframes dot2_ {
+
+            3%,
+            97% {
+                height: 90px;
+                width: 150px;
+                margin-left: -75px;
+                margin-top: -45px;
+            }
+
+            30%,
+            36% {
+                width: 70px;
+                height: 96px;
+                margin-left: -35px;
+                margin-top: -48px;
+            }
+
+            63%,
+            69% {
+                width: 32px;
+                height: 60px;
+                margin-left: -16px;
+                margin-top: -30px;
+            }
+        }
+
+        @keyframes dot3_ {
+
+            3%,
+            97% {
+                height: 20px;
+                width: 40px;
+                margin-left: -20px;
+                margin-top: 50px;
+            }
+
+            30%,
+            36% {
+                width: 8px;
+                height: 8px;
+                margin-left: -5px;
+                margin-top: 49px;
+                border-radius: 8px;
+            }
+
+            63%,
+            69% {
+                width: 16px;
+                height: 4px;
+                margin-left: -8px;
+                margin-top: -37px;
+                border-radius: 10px;
+            }
+        }
+
+
+        .load-bar {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
     <title>อัพเดทงาน</title>
@@ -109,9 +185,11 @@
 
 <body class="bg-body-tertiary">
     <div class="load-bar">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+        <div class="container">
+            <div class="loader"></div>
+            <div class="loader"></div>
+            <div class="loader"></div>
+        </div>
     </div>
     <main>
         <!-- <div class="container-fluid "> -->
@@ -171,7 +249,8 @@
                     <span
                         style="position: absolute;right: 20px;bottom: 5px;font-size: 0.7rem;color: #888;background-color: #33333333;border-radius: 5px;padding-left: 3px;padding-right: 3px;"
                         id="char-count">0/5000</span>
-                    <button class="btn bg-secondary-subtle mt-2 btn-sm unicode-charactor" id="caret-right-fill"><i class="bi bi-caret-right-fill"></i></button>
+                    <button class="btn bg-secondary-subtle mt-2 btn-sm unicode-charactor" id="caret-right-fill"><i
+                            class="bi bi-caret-right-fill"></i></button>
                 </div>
                 <div class="col-12 mobile">
                     <label for="vendor_phone">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
@@ -260,11 +339,11 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
         const liff_id = '1661543046-a1pJexbX'
         $(document).ready(async () => {
-            $.LoadingOverlay("show");
+            $('.load-bar').removeClass('d-none')
             moment.locale('th')
-            liff.init({
-                liffId: liff_id,
-            })
+            // liff.init({
+            //     liffId: liff_id,
+            // })
             liff.ready.then(async () => {
                 if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
                 if (liff.getContext().type != 'group') {
@@ -313,7 +392,7 @@
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if (!jobid || jobid == '' || jobid == undefined || jobid == null) {
-                $.LoadingOverlay("hide");
+                $('.load-bar').addClass('d-none')
                 Swal.fire({
                     icon: 'error',
                     title: 'ไม่พบข้อมูล',
@@ -333,6 +412,7 @@
                         initialData()
                     })
                 }
+                $('.load-bar').addClass('d-none')
                 $.LoadingOverlay("hide");
                 return Swal.fire({
                     title: 'กรุณาเลือก Site ของคุณ',
@@ -368,6 +448,7 @@
                     }
                 })
             }
+            $('.load-bar').addClass('d-none')
             $.LoadingOverlay("hide");
             $('#name optgroup').not('[label="' + user_site + '"]').remove()
             $('#name').select2({
@@ -877,6 +958,7 @@
                         contents: carousel
                     }]).then(() => {
                         $.LoadingOverlay("hide");
+                        $('.load-bar').addClass('d-none')
                         Swal.fire({
                             icon: 'success',
                             title: 'แชร์สรุปงานสำเร็จ',
