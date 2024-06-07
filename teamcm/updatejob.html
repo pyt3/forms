@@ -341,9 +341,10 @@
         $(document).ready(async () => {
             $('.load-bar').removeClass('d-none')
             moment.locale('th')
-            // liff.init({
-            //     liffId: liff_id,
-            // })
+            liff.init({
+                
+                liffId: liff_id,
+            })
             liff.ready.then(async () => {
                 if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
                 if (liff.getContext().type != 'group') {
