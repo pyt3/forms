@@ -344,7 +344,7 @@
             console.log("🚀 ~ regist:", regist)
             if (regist == uid) {
                 // $.LoadingOverlay('hide')
-                $('.loader').hide(500)
+                $('.loader').fadeOut(500)
                 return
             }
             $.ajax({
@@ -357,7 +357,7 @@
                 success: function (res) {
                     console.log("🚀 ~ res:", res)
                     // $.LoadingOverlay('hide')
-                    $('.loader').hide(500)
+                    $('.loader').fadeOut(500)
                     if (!res) {
                         Swal.fire({
                             icon: 'error',
