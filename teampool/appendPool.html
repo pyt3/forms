@@ -47,10 +47,89 @@
             height: 30px;
             object-fit: cover;
         }
+
+        .loader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .wrapper {
+            width: 180px;
+            height: 50px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .text {
+            z-index: 3;
+            font-family: Whitney, -apple-system, Helvetica;
+            letter-spacing: 1px;
+            font-weight: 700;
+            font-size: 20px;
+            color: white;
+            filter: drop-shadow(2px 2px 0px #ff9e02);
+        }
+
+        .box {
+            width: 100%;
+            height: 100%;
+            background-color: #ef5d2e;
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: loading ease-in-out 0.9s infinite alternate-reverse;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: translateX(-20px);
+            }
+
+            100% {
+                transform: translateX(20px);
+            }
+        }
+
+        .box::before {
+            content: "";
+            width: 20px;
+            height: 170%;
+            background-color: #ff9d0089;
+            position: absolute;
+            z-index: 1;
+            animation: loading2 ease-in-out 0.9s infinite alternate-reverse;
+        }
+
+        @keyframes loading2 {
+            0% {
+                transform: translateX(-50px);
+            }
+
+            100% {
+                transform: translateX(50px);
+            }
+        }
     </style>
 </head>
 
 <body>
+    <div class="fixed-top">
+        <div class="loader bg-light">
+            <div class="wrapper">
+                <div class="text">LOADING</div>
+                <div class="box"></div>
+            </div>
+        </div>
+
+    </div>
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
             <a class="navbar-brand d-flex align-items-center" href="#">
@@ -141,7 +220,7 @@
                 $('#code').val('SCOPE')
             })
 
-            $.LoadingOverlay('show')
+            // $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
@@ -264,7 +343,8 @@
             let regist = localStorage.getItem('regist')
             console.log("🚀 ~ regist:", regist)
             if (regist == uid) {
-                $.LoadingOverlay('hide')
+                // $.LoadingOverlay('hide')
+                $('.loader').hide(500)
                 return
             }
             $.ajax({
@@ -276,7 +356,8 @@
                 },
                 success: function (res) {
                     console.log("🚀 ~ res:", res)
-                    $.LoadingOverlay('hide')
+                    // $.LoadingOverlay('hide')
+                    $('.loader').hide(500)
                     if (!res) {
                         Swal.fire({
                             icon: 'error',
