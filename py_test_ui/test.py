@@ -393,9 +393,9 @@ def get_screen_shot(soup, css_file, text):
 
 def closePM(row, self_call=False):
     if row['DATE-PM'] == 'nan' or row['DATE-PM'] == '':
-        return {"status": 'ok', 'text': 'No PM Work'}
+        return {"status": 'ok', 'text': 'No PM Work', 'nosave': True}
     if row['PM-CLOSED'] != 'nan':
-        return {"status": 'ok', 'text': row['PM-CLOSED']}
+        return {"status": 'ok', 'text': row['PM-CLOSED'], 'nosave': True}
     global emp_list
     if cookies['PHPSESSID'] is None:
         set_login()
@@ -516,9 +516,9 @@ def closePM(row, self_call=False):
 
 def closeCAL(row, self_call=False):
     if row['DATE-CAL'] == 'nan' or row['DATE-CAL'] == '':
-        return {"status": 'ok', 'text': 'No CAL Work'}
+        return {"status": 'ok', 'text': 'No CAL Work', 'nosave': True}
     if row['CAL-CLOSED'] != 'nan':
-        return {"status": 'ok', 'text': row['CAL-CLOSED']}
+        return {"status": 'ok', 'text': row['CAL-CLOSED'], 'nosave': True}
     if cookies['PHPSESSID'] is None:
         set_login()
         return closeCAL(row, self_call)
@@ -601,14 +601,14 @@ def closeCAL(row, self_call=False):
         # move file to folder
         shutil.move(file_name+'.png', os.path.join(
             root_dir, "SCREENSHOT", "CAL", row['CODE']+"_"+job_no+'.png'))
-    return {"status": 'ok', 'text': result_td.text.strip()}
+    return {"status": 'ok', 'text': "CAL status : "+result_td.text.strip()}
 
 
 def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
     if attach != 'yes':
-        return {"status": 'ok', 'text': 'No need to attach PM file'}
+        return {"status": 'ok', 'text': 'No need to attach PM file', 'nosave': True}
     if status.lower() == 'success':
-        return {"status": 'ok', 'text': 'Already attached PM file'}
+        return {"status": 'ok', 'text': 'Already attached PM file', 'nosave': True}
     start_date, end_date, now_year = getFirstAndLastDay(date)
     findname = [ele for ele in file_name_list if id+'_'+now_year+'_pm' in ele]
     if len(findname) == 0:
@@ -729,9 +729,9 @@ def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
 
 def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
     if attach != 'yes':
-        return {"status": 'ok', 'text': 'No need to attach CAL file'}
+        return {"status": 'ok', 'text': 'No need to attach CAL file', 'nosave': True}
     if status.lower() == 'success':
-        return {"status": 'ok', 'text': 'Already attached CAL file'}
+        return {"status": 'ok', 'text': 'Already attached CAL file', 'nosave': True}
     start_date, end_date, now_year = getFirstAndLastDay(date)
     findname = [ele for ele in file_name_list if id+"_"+now_year+"_cal" in ele]
     if len(findname) == 0:
@@ -925,15 +925,15 @@ def read_file(option=None):
                                     process_result_cal = process_result_cal.result()
                                     # if process_result_pm == 'SUCCESS' or process_result_pm == '':
                                     if process_result_pm.get('status') == 'ok':
-                                        issave = True
-                                        df.at[index, 'PM-CLOSED'] = 'SUCCESS'
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        df.at[index, 'PM-CLOSED'] = "SUCCESS" if "Completed" in process_result_pm.get('text') else process_result_pm.get('text')
                                         print('[green]{}[/green]'.format(process_result_pm.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_pm.get('text')))
                                         df.at[index, 'PM-CLOSED'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok':
-                                        issave = True
-                                        df.at[index, 'CAL-CLOSED'] = 'SUCCESS'
+                                        issave = False if issave == False and process_result_cal.get('nosave') == True else True
+                                        df.at[index, 'CAL-CLOSED'] = "SUCCESS" if "Completed" in process_result_cal.get('text') else process_result_cal.get('text')
                                         print('[green]{}[/green]'.format(process_result_cal.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_cal.get('text')))
@@ -958,16 +958,15 @@ def read_file(option=None):
                                     process_result_pm = process_result_pm.result()
                                     process_result_cal = process_result_cal.result()
                                     if process_result_pm.get('status') == 'ok': 
-                                        issave = True
-                                        df.at[index,
-                                            'PM-ATTACH-STATUS'] = 'SUCCESS'
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        df.at[index, 'PM-ATTACH-STATUS'] = 'SUCCESS' if process_result_pm.get('text').startswith('Attach') else process_result_pm.get('text')
                                         print('[green]{}[/green]'.format(process_result_pm.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_pm.get('text')))
                                         df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok':
-                                        issave = True
-                                        df.at[index, 'CAL-ATTACH-STATUS'] = 'SUCCESS'
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = 'SUCCESS' if process_result_cal.get('text').startswith('Attach') else process_result_cal.get('text')
                                         print('[green]{}[/green]'.format(process_result_cal.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_cal.get('text')))
@@ -1003,30 +1002,30 @@ def read_file(option=None):
                                     process_result_pm_attach = process_result_pm_attach.result()
                                     process_result_cal_attach = process_result_cal_attach.result()
                                     if process_result_pm.get('status') == 'ok':
-                                        issave = True
-                                        df.at[index, 'PM-CLOSED'] = 'SUCCESS'
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        df.at[index, 'PM-CLOSED'] = "SUCCESS" if "Completed" in process_result_pm.get('text') else process_result_pm.get('text')
                                         print('[green]{}[/green]'.format(process_result_pm.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_pm.get('text')))
                                         df.at[index, 'PM-CLOSED'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok':
-                                        issave = True
-                                        df.at[index, 'CAL-CLOSED'] = 'SUCCESS'
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        df.at[index, 'CAL-CLOSED'] = "SUCCESS" if "Completed" in process_result_cal.get('text') else process_result_cal.get('text')
                                         print('[green]{}[/green]'.format(process_result_cal.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_cal.get('text')))
                                         df.at[index, 'CAL-CLOSED'] = process_result_cal.get('text')
                                     if process_result_pm_attach.get('status') == 'ok':
-                                        issave = True
-                                        df.at[index, 'PM-ATTACH-STATUS'] = "SUCCESS"
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        df.at[index, 'PM-ATTACH-STATUS'] = "SUCCESS" if process_result_pm_attach.get('text').startswith('Attach') else process_result_pm_attach.get('text')
                                         print('[green]{}[/green]'.format(process_result_pm_attach.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_pm_attach.get('text')))
                                         df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm_attach.get('text')
-                                        issave = True
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
                                     if process_result_cal_attach.get('status') == 'ok':
-                                        issave = True
-                                        df.at[index, 'CAL-ATTACH-STATUS'] = "SUCCESS"
+                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = "SUCCESS" if process_result_cal_attach.get('text').startswith('Attach') else process_result_cal_attach.get('text')
                                         print('[green]{}[/green]'.format(process_result_cal_attach.get('text')))
                                     else:
                                         print('[red]{}[/red]'.format(process_result_cal_attach.get('text')))
