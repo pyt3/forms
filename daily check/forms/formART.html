@@ -130,9 +130,16 @@
                             data-bs-target="#tab-stock-room" type="button" role="tab" aria-selected="true">Stock
                             Room</button>
                     </li>
+                    <!-- liquid nitrogen storage room -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-liquid-nitrogen" data-bs-toggle="pill"
+                            data-bs-target="#tab-liquid-nitrogen" type="button" role="tab" aria-selected="false">Liquid
+                            Nitrogen Storage Room</button>
+                    </li>
                     <!-- sepatator -->
                     <hr>
-                    <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Medical Equipment
+                    <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Medical
+                        Equipment
                     </div>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link w-100 text-start" id="pills-tab-embryo" data-bs-toggle="pill"
@@ -530,6 +537,83 @@
                     </div>
                 </form>
             </div>
+            <div class="tab-pane fade animate__animated" id="tab-liquid-nitrogen">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Liquid Nitrogen Storage Room <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="liquid-nitrogen-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="liquid-nitrogen-name" name="liquid-nitrogen-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="liquid-nitrogen-shift-morning"
+                                            value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="liquid-nitrogen-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="liquid-nitrogen-shift-evening"
+                                            value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="liquid-nitrogen-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-success rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="liquid-nitrogen-thermo-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="liquid-nitrogen-thermo-temp" id="liquid-nitrogen-thermo-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="liquid-nitrogen-thermo-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="liquid-nitrogen-thermo-humid" id="liquid-nitrogen-thermo-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="liquid-nitrogen-thermo-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <div class="tab-pane fade animate__animated" id="tab-embryo">
                 <div class="container mb-3 p-0">
                     <div class="row">
@@ -877,7 +961,7 @@
                                             name="embryo-ec6s-a-controlbar-n2" id="embryo-ec6s-a-controlbar-n2"
                                             class="form-control text-center">
                                     </div>
-                                  
+
                                     <div class="col-6 text-center">
                                         <label for="embryo-ec6s-a-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-temp"
@@ -924,8 +1008,8 @@
                                             id="embryo-ec6s-b-temp" class="form-control text-center" min="36.8"
                                             max="37.2">
                                     </div>
-                                   
-                                  
+
+
                                 </div>
                                 <div class="row mt-2" id="embryo-ec6s-b-alert">
                                 </div>
@@ -1573,6 +1657,18 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
 
 บันทึกโดย
 @${obj['stockroom-name']}`
+                    break
+                case "liquid-nitrogen-checklist":
+                    message = `👉 ผลการตรวจเช็ค Liquid Nitrogen Stock Room
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+👉temperature = ${obj['liquid-nitrogen-thermo-temp']} ํC
+👉humidity = ${obj['liquid-nitrogen-humid']} %RH
+-------------------------------
+
+บันทึกโดย
+@${obj['liquid-nitrogen-name']}`
                     break
                 case "embryo-checklist":
                     message = `👉 ผลการตรวจเช็ค Embryo Culture
