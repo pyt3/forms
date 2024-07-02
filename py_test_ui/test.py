@@ -169,6 +169,8 @@ def load_empList():
             get_emp_list()
     except Exception as e:
         get_emp_list()
+        
+
 
 
 def load_tool_list(href):
@@ -234,10 +236,68 @@ def load_calibrator_list():
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         get_emp_list()
 
+equipments_arr = []
+def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?asset_masterPageSize=100', page='1'):
+    global equipments_arr
+    if page == '1':
+        equipments_arr = []
+    page_url = url + "&asset_masterPage=" + str(page)
+    try:
+        # wait until page loaded
+        response = requests.get(
+            page_url,
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        # wait 5 sec
+        time.sleep(5)
+        return get_equipment_file(url, page)
+    response.encoding = "tis-620"
+    # find table with regex    
+    res = re.findall(r'<table\s+[^>]*class=["\']Grid["\'][^>]*>', response.text, re.DOTALL)
+    if len(res) == 0:
+        print("No table found, re-login...")
+        set_login()
+        return get_equipment_file(url, page)
+    # print attr class of each table
+      # find index of '<table class="Grid" cellspacing="0" cellpadding="0">'
+    # index = response.text.find('<table class="Grid" cellspacing="0" cellpadding="0">')
+    tmp = response.text.split('<table class="Grid" cellspacing="0" cellpadding="0">')
+    tmp2 = tmp[1].split('</table>')
+    table = '<table class="Grid" cellspacing="0" cellpadding="0">' + tmp2[0] + '</table>'
+    soup = BeautifulSoup(table, "lxml")
+    max_page = soup.find_all('tr', {'class': 'Footer'})[0].text.split('of')[1].strip().split(' ')[0]
+    print('[yellow]กำลังดึงข้อมูล หน้าที่[/yellow] [blue]{}[/blue] [yellow]จากทั้งหมด[/yellow] [blue]{}[/blue]' .format(page, max_page))
+    rows = soup.find_all('tr')
+    if page == 1:
+        rows = rows[1:-1]
+    else:
+        rows = rows[2:-1]
+    for row in rows:
+        cols = row.find_all('td')
+        img = ('https://nsmart.nhealth-asia.com/MTDPDB01/' + cols[1].find('a').get('href')) if cols[1].find('a') is not None else ''
+        cols = [ele.text.strip() if ele.text.strip() != 'Click' else '' for ele in cols]
+        cols[1] = img
+        equipments_arr.append(cols)
+    if int(page) >= 2:
+        df = pd.DataFrame(equipments_arr)
+        df.to_excel(os.path.join(root_dir,'EXCEL FILE', 'equipment_list.xlsx'), index=False, header=False)
+        # print file path to let user to click
+        print('[yellow]ไฟล์รายการอุปกรณ์ได้ถูกบันทึกไว้ที่[/yellow] [blue]{}[/blue]' .format(os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')))
+        # open file
+        file_path = os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')
+        os.system('start excel.exe "' + file_path+ '"')
+        
+        return equipments_arr
+    else:
+        
+        page = int(page) + 1
+        return get_equipment_file(url, str(page))
 
 temp_team_list = {}
-
-
 def get_team_list(url, page='1'):
     global temp_team_list
     if page == '1':
@@ -406,7 +466,8 @@ def closePM(row, self_call=False):
             "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
             '&s_to_date=' +
-            formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
+            formatDate(row['END-PLAN']) + '&s_code=' + row['CODE'],
+            # formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -528,7 +589,8 @@ def closeCAL(row, self_call=False):
             "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
             '&s_to_date=' +
-            formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
+            formatDate(row['END-PLAN']) + '&s_code=' + row['CODE'],
+            # formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -1389,6 +1451,9 @@ def showmenu():
     print('[yellow][3][/yellow]  [red]ปิดงาน[/red] [yellow]PM และ CAL[/yellow]')
     print('[yellow][4][/yellow]  [red]แนบไฟล์[/red] [yellow]PM และ CAL[/yellow]')
     print('[yellow][5][/yellow]  [red]ปิดงาน[/red] [yellow]และ[/yellow] [red]แนบไฟล์[/red] [yellow]PM และ CAL[/yellow]')
+    print('[white]----------------------------------------[/white]'.encode('utf-8').decode('utf-8'))
+    print('[red]โปรแกรมเพิ่มเติม[/red]')
+    print('[yellow][6]ดึงข้อมูลเครื่องมือทั้งหมด[/yellow]')
     # set input color to blue
     print(f'\n[purple]กดเลขเพื่อเลือกเมนูที่ต้องการ : [/purple]', end='')
     menu = input()
@@ -1415,6 +1480,8 @@ def showmenu():
     elif menu == '2':
         change_file_name()
         showmenu()
+    elif menu == '6':
+        get_equipment_file()
     else:
         load_empList()
         load_calibrator_list()
@@ -1438,3 +1505,4 @@ except Exception as e:
     print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
 # change_file_name()
 # get_emp_list()
+# get_equipment_file()
