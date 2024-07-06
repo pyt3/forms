@@ -11,6 +11,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -22,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <!-- icon -->
-    <link rel="icon" href="https://img.icons8.com/color/48/property-time.png" type="image/x-icon" />
+    <link rel="icon" href="./icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
         integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -30,6 +31,7 @@
     <link href="https://cdn.datatables.net/v/bs5/dt-1.13.8/r-2.5.0/datatables.min.css" rel="stylesheet">
 
     <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/r-2.5.0/datatables.min.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -64,13 +66,13 @@
 <body>
     <nav class="navbar" style="background-color: #242e68;">
         <div class="container-fluid">
-            <img width="30" height="30" src="https://img.icons8.com/color/48/property-time.png" />
+            <img width="30" height="30" src="./icon.png" />
         </div>
     </nav>
     <header>
         <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
             <div class="col-auto">
-                <img width="80" height="80" src="https://img.icons8.com/color/48/property-time.png" />
+                <img width="80" height="80" src="./icon.png" />
             </div>
             <div class="col text-center">
                 <h4 class="h1 fw-bold">Timesheet Form</h4>
@@ -745,6 +747,88 @@
                     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                 }
             );
+        }
+
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+
+            // check if the app is already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('display-mode is standalone');
+                return false;
+            }
+
+            // if page is open on mobile, show the install promotion
+            if (window.innerWidth < 768) {
+                showInstallPromotion();
+                // Optionally, send analytics event that PWA install promo was shown.
+                console.log('beforeinstallprompt fired');
+            }
+            else{
+                return false;
+            }
+
+        });
+
+        function showInstallPromotion() {
+            // const addBtn = document.querySelector('.add-button');
+            // addBtn.style.display = 'block';
+
+            // addBtn.addEventListener('click', () => {
+            //     // Hide the app provided install promotion
+            //     addBtn.style.display = 'none';
+            //     // Show the install prompt
+            //     deferredPrompt.prompt();
+            //     // Wait for the user to respond to the prompt
+            //     deferredPrompt.userChoice.then((choiceResult) => {
+            //         if (choiceResult.outcome === 'accepted') {
+            //             console.log('User accepted the A2HS prompt');
+            //         } else {
+            //             console.log('User dismissed the A2HS prompt');
+            //         }
+            //         deferredPrompt = null;
+            //     });
+            // });
+
+            Swal.fire({
+                title: 'ติดตั้งแอพลิเคชั่น',
+                text: 'คุณสามารถติดตั้งแอพบนมือถือของคุณเพื่อใช้งานได้ดีขึ้น',
+                showCancelButton: true,
+                confirmButtonText: 'ติดตั้ง',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the A2HS prompt');
+                        } else {
+                            console.log('User dismissed the A2HS prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            })
         }
 
     </script>
