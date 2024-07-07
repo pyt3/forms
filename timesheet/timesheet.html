@@ -376,7 +376,6 @@
                 tbody.append(tr)
             }
             table.append(thead).append(tbody)
-            console.log(table.prop('outerHTML'));
             $('.table-responsive').html(table)
             $('#table').DataTable({
                 responsive: {
@@ -598,7 +597,6 @@
             for (let i = 0; i < monthArr.length; i++) {
                 let day = new Date($('#year').val(), $('#month').val() - 1, i + 1)
                 let dayOfWeek = day.getDay()
-                console.log("🚀 ~ getCalendar ~ dayOfWeek:", dayOfWeek)
                 tbody.find('tr').eq(count).find('td').eq(dayOfWeek).text(i + 1).addClass('text-center').css('cursor', 'pointer')
                 if (dayOfWeek == 6) count++
             }
