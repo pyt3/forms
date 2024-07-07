@@ -66,7 +66,11 @@
 <body>
     <nav class="navbar" style="background-color: #242e68;">
         <div class="container-fluid">
-            <img width="30" height="30" src="./icon.png" />
+            <div class="d-flex justify-content-between w-100">
+                <img width="30" height="30" src="./icon.png" />
+                <button class="btn btn-sm btn-primary d-none" id="install-btn"><i class="bi bi-file-arrow-down"></i>
+                    Install</button>
+            </div>
         </div>
     </nav>
     <header>
@@ -771,29 +775,36 @@
         });
 
         function showInstallPromotion() {
+            $('#install-btn').removeClass('d-none').on('click', () => {
+                Swal.fire({
+                    title: 'ติดตั้งแอพลิเคชั่น',
+                    iconHtml: '<img src="https://img.icons8.com/external-sbts2018-outline-color-sbts2018/58/external-install-basic-ui-elements-2.3-sbts2018-outline-color-sbts2018.png" width="58" />',
+                    customClass: {
+                        icon: 'border-0'
+                    },
+                    text: 'คุณสามารถติดตั้งแอพบนมือถือของคุณเพื่อใช้งานได้ดีขึ้น',
+                    showCancelButton: true,
+                    confirmButtonText: 'ติดตั้ง',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deferredPrompt.prompt();
+                        // Wait for the user to respond to the prompt
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('User accepted the A2HS prompt');
+                            } else {
+                                console.log('User dismissed the A2HS prompt');
+                            }
+                            deferredPrompt = null;
+                        });
+                    }
+                })
+            });
 
-            Swal.fire({
-                title: 'ติดตั้งแอพลิเคชั่น',
-                text: 'คุณสามารถติดตั้งแอพบนมือถือของคุณเพื่อใช้งานได้ดีขึ้น',
-                showCancelButton: true,
-                confirmButtonText: 'ติดตั้ง',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    deferredPrompt.prompt();
-                    // Wait for the user to respond to the prompt
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted the A2HS prompt');
-                        } else {
-                            console.log('User dismissed the A2HS prompt');
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            })
+
         }
 
     </script>
