@@ -766,23 +766,8 @@
             e.preventDefault();
             // Stash the event so it can be triggered later.
             deferredPrompt = e;
-
-            // check if the app is already installed
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                console.log('display-mode is standalone');
-                return false;
-            }
-
-            // if page is open on mobile, show the install promotion
-            // if (window.innerWidth < 768) {
-                showInstallPromotion();
-                // Optionally, send analytics event that PWA install promo was shown.
-                console.log('beforeinstallprompt fired');
-            // }
-            // else{
-            //     return false;
-            // }
-
+            showInstallPromotion();
+            console.log('beforeinstallprompt fired');
         });
 
         function showInstallPromotion() {
