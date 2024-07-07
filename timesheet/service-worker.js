@@ -5,7 +5,7 @@ self.addEventListener('install', event => {
           '/forms/timesheet/',
           '/forms/timesheet/timesheet.html',
           '/forms/timesheet/THSarabun.ttf',
-          '/forms/timesheet/timesheetForm no-sum.pdf',
+          '/forms/timesheet/timesheetForm-no-sum.pdf',
           '/forms/timesheet/timesheetForm.pdf',
           '/forms/timesheet/icon.png',
         ]);
