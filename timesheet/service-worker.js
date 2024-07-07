@@ -2,7 +2,6 @@ self.addEventListener('install', event => {
     event.waitUntil(
       caches.open('timesheet-cache').then(cache => {
         return cache.addAll([
-          './',
           './timesheet.html',
           './THSarabun.ttf',
           './timesheetForm-no-sum.pdf',
