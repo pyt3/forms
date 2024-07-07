@@ -227,7 +227,7 @@
                 })
 
             })
-            form_pdf_bytes = await fetch('./timesheetForm no-sum.pdf').then(res => res.arrayBuffer())
+            form_pdf_bytes = await fetch('./timesheetForm-no-sum.pdf').then(res => res.arrayBuffer())
             pdfDoc = await PDFDocument.load(form_pdf_bytes)
 
             $('#dept option').not(':disabled').each(function () {
