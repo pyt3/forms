@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- dont keep cache -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest/manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <!-- icon -->
+    <link rel="icon" href="./icons/outsource-icon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.8/b-3.0.2/r-3.0.2/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.8/b-3.0.2/r-3.0.2/datatables.min.js"></script>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Prompt', sans-serif;
+            background-color: #d8c2ff;
+            /* background-color: #D3D3D3; */
+        }
+
+        #sticker {
+            width: 100%;
+            height: 100%;
+        }
+
+        .nsmart-img {
+            cursor: grab;
+        }
+
+        .nsmart-img:active {
+            cursor: grabbing;
+        }
+    </style>
+    <title>RR Form</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar" style="background-color: #8165b2;">
+            <div class="container-fluid">
+                <img width="30" height="30" src="./icons/outsource-icon.png" alt="trash" />
+                <button class="btn btn-sm btn-warning d-none" id="install-btn"><i
+                        class="bi bi-file-arrow-down-fill"></i>
+                    Install</button>
+            </div>
+        </nav>
+        <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
+            <div class="col-auto">
+                <img width="80" src="./icons/outsource-icon.png" alt="repair" />
+            </div>
+
+            <div class="col text-center">
+                <h4 class="h1 fw-bold text-dark">บันทึกรายการส่งซ่อมภายนอก</h4>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="container-fluid">
+            <form id="myForm" class="mt-3 mb-5">
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                    <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/retro/32/user.png" alt="icon" width="32">
+                            <h4 class="fw-bold">&nbsp;รายละเอียดบริษัท</h4>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="vender-name">ชื่อบริษัท</label>
+                            <input type="text" name="vender-name" id="vender-name" class="form-control">
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="sender-name">ชื่อผู้ส่ง</label>
+                            <select name="sender-name" id="sender-name" class="form-select">
+                                <option value="" selected disabled>เลือกชื่อ</option>
+                                <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                                <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                                <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                                <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                                <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                                <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                                <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                                <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                                <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                                <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                                <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                                <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                                <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
+                                <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                                <option value="SOM KONKAEW">SOM KONKAEW</option>
+                                <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
+                                <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
+                                <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
+                                <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </section>
+                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                    <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <img src="https://img.icons8.com/fluency/48/list.png" alt="icon" width="32">
+                            <h4 class="fw-bold">&nbsp;รายละเอียดเครื่องมือ</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 table-responsive">
+                            <table id="table-equipment" class="table table-sm table-striped table-bordered table-hover">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ชื่อ</th>
+                                        <th>รหัส</th>
+                                        <th>S/N</th>
+                                        <th>สาเหตุ</th>
+                                        <th>จำนวน</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-3">
+                            <button class="btn w-100 btn-dark btn-sm mt-3" id="add-more-btn" type="button">
+                                <i class="bi bi-plus-circle"></i> เพิ่มรายการ</button>
+                        </div>
+                    </div>
+
+
+                </section>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mt-3 text-center">
+                        <button type="submit" class="btn btn-warning shadow d-none" style="min-width: 200px;"><img
+                                height="24" src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" />
+                            สร้างไฟล์</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mt-3 mb-4 text-center">
+                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
+                    </div>
+                </div>
+            </form>
+            <div class="container-fluid">
+                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+            </div>
+        </div>
+
+    </main>
+
+
+    <div class="offcanvas offcanvas-end" data-bs-backdrop="static" tabindex="-1" id="offcanvasForm"
+        aria-labelledby="offcanvasFormLabel">
+        <div class="offcanvas-header text-bg-primary">
+            <h5 class="offcanvas-title" id="offcanvasFormLabel">รายการเครื่องมือ</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body bg-body-tertiary">
+            <div class="row gap-2">
+                <div class="col-12">
+                    <label for="e_name">ชื่อเครื่องมือ</label>
+                    <textarea type="text" id="e_name" class="form-control" rows="3"></textarea>
+                </div>
+                <!-- code -->
+                <div class="col-12">
+                    <label for="e_code">รหัสเครื่องมือ</label>
+                    <input type="text" id="e_code" class="form-control">
+                </div>
+                <!-- sn -->
+                <div class="col-12">
+                    <label for="e_sn">Serial Number</label>
+                    <input type="text" id="e_sn" class="form-control">
+                </div>
+                <!-- cause of failure -->
+                <div class="col-12">
+                    <label for="e_cause">สาเหตุที่เสีย</label>
+                    <textarea type="text" id="e_cause" class="form-control" rows="3"></textarea>
+                </div>
+                <!-- จำนวน -->
+                <div class="col-12">
+                    <label for="e_qty">จำนวน</label>
+                    <input type="number" id="e_qty" class="form-control" inputmode="numeric" value="1" min="1">
+                </div>
+                <!-- add -->
+                <div class="col-12">
+                    <button class="btn btn-dark w-100 mt-3" id="save-equipment-btn" type="button">
+                        <i class="bi bi-plus-circle"></i> เพิ่ม</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var form_pdf_bytes, font_bytes
+        var pdfDoc
+        var PDFDocument = PDFLib.PDFDocument;
+        var StandardFonts = PDFLib.StandardFonts;
+        var pdfFiles = []
+        var equipments = []
+        var time_in = 817
+        $('#offcanvasForm').on('hidden.bs.offcanvas', function () {
+            $('#e_name, #e_code, #e_sn, #e_cause, #e_qty').val('')
+        }).on('shown.bs.offcanvas', function () {
+
+            if (equipments.length >= 7) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'สามารถเพิ่มได้สูงสุด 7 รายการ',
+                    text: 'เครื่องมือเกินจำนวนที่สามารถเพิ่มได้',
+                    confirmButtonText: 'ตกลง'
+                }), then(() => {
+                    $('#offcanvasForm').offcanvas('hide')
+                })
+            }
+            $('#e_name').focus()
+
+        })
+        $(document).ready(async function () {
+            form_pdf_bytes = await fetch('./outsourceForm.pdf').then(res => res.arrayBuffer())
+            pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            font_bytes = await fetch('../teampm/THSarabun.ttf').then(res => res.arrayBuffer())
+            renderTable()
+            $('#sender-name').select2({
+                theme: 'bootstrap-5',
+                width: '100%'
+            })
+            $('#sender-name').val(localStorage.getItem('sender-name')).trigger('change')
+            $('#vender-name').val(localStorage.getItem('vender-name'))
+            $('#sender-name, #vender-name').on('input', function () {
+                localStorage.setItem('sender-name', $('#sender-name').val())
+                localStorage.setItem('vender-name', $('#vender-name').val())
+            })
+        })
+
+        $('#add-more-btn').click(function () {
+            $('#offcanvasForm').offcanvas('show')
+        })
+
+        $('#save-equipment-btn').click(function () {
+            let e_name = $('#e_name').val()
+            let e_code = $('#e_code').val()
+            let e_sn = $('#e_sn').val()
+            let e_cause = $('#e_cause').val()
+            let e_qty = $('#e_qty').val()
+            equipments.push({
+                e_name,
+                e_code,
+                e_sn,
+                e_cause,
+                e_qty
+            })
+            localStorage.setItem('equipments', JSON.stringify(equipments))
+            renderTable()
+            $('#offcanvasForm').offcanvas('hide')
+        })
+
+        function renderTable() {
+            let data = localStorage.getItem('equipments')
+            if (data) {
+                equipments = JSON.parse(data)
+            } else {
+                equipments = []
+            }
+            if (equipments.length > 0) {
+                $('form button[type="submit"]').removeClass('d-none')
+            } else {
+                $('#form button[type="submit"]').addClass('d-none')
+            }
+            $('#table-equipment').DataTable({
+                destroy: true,
+                data: equipments,
+                dom: '<"row"<"col-12"B>><"row"<"col-12"t>>',
+                ordering: false,
+                columns: [
+                    {
+                        data: null,
+                        title: '#',
+                        render: function (data, type, row, meta) {
+                            return meta.row + 1
+                        }
+                    },
+                    { data: 'e_name' },
+                    { data: 'e_code' },
+                    { data: 'e_sn' },
+                    { data: 'e_cause' },
+                    { data: 'e_qty' },
+                    {
+                        data: null,
+                        title: '#',
+                        render: function (data, type, row, meta) {
+                            return `<button class="btn btn-danger btn-sm" style="font-size: .7rem" onclick="removeEquipment(${meta.row})"><i class="bi bi-trash"></i></button>`
+                        }
+                    }
+                ],
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        className: 'dt-head-center'
+                    },
+                    {
+                        targets: [0, 5],
+                        className: 'dt-body-center'
+                    }
+                ],
+                language: {
+                    search: 'ค้นหา',
+                    searchPlaceholder: 'ค้นหา',
+                    info: 'แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ',
+                    infoEmpty: 'แสดง 0 ถึง 0 จาก 0 รายการ',
+                    infoFiltered: '(กรองจาก _MAX_ รายการทั้งหมด)',
+                    zeroRecords: 'ไม่พบข้อมูล',
+                    emptyTable: 'ไม่มีข้อมูล',
+                    paginate: {
+                        first: 'หน้าแรก',
+                        previous: 'ก่อนหน้า',
+                        next: 'ถัดไป',
+                        last: 'หน้าสุดท้าย'
+                    }
+                }
+            })
+        }
+
+        function removeEquipment(index) {
+            equipments.splice(index, 1)
+            localStorage.setItem('equipments', JSON.stringify(equipments))
+            renderTable()
+        }
+
+        $('#myForm').submit(async function (e) {
+            event.preventDefault()
+            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            var form = pdfDoc.getForm()
+            pdfDoc.registerFontkit(fontkit);
+            const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
+            const symbol = await pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
+            var signature, e_img
+            let vender_name = $('#vender-name').val()
+            let sender_name = $('#sender-name').val()
+            let [date, month, year] = new Date().toLocaleString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }).split(' ')
+            console.log(date, month, year);
+
+            form.getTextField('vender_name').setText(toTitleCase(vender_name))
+            form.getTextField('sender_name').setText(toTitleCase(sender_name))
+            form.getTextField('date').setText(date)
+            form.getTextField('month').setText(month)
+            form.getTextField('year').setText(year)
+            console.log(equipments);
+            equipments.forEach((e, i) => {
+                form.getTextField(`num${i}`).setText(toTitleCase((i + 1).toString()))
+                form.getTextField(`e_${i}`).setText(toTitleCase(e.e_name))
+                form.getTextField(`q_${i}`).setText(e.e_qty)
+                form.getTextField(`ME CodeRow${i}`).setText(e.e_code)
+                form.getTextField(`SNRow${i}`).setText(e.e_sn)
+                form.getTextField(`cause_${i}`).setText(e.e_cause)
+            })
+            form.updateFieldAppearances(sarabun);
+            form.flatten()
+            var pdfBytes = await pdfDoc.save()
+            var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 2000,
+                showConfirmButton: false,
+            }).then(async () => {
+                localStorage.removeItem('equipments')
+                localStorage.removeItem('vender-name')
+                localStorage.removeItem('sender-name')
+                var iframe = document.getElementById('pdf')
+                // open pdf in new small window
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
+                var url = URL.createObjectURL(blob)
+                if (window.innerWidth < 768) {
+                    window.open(url + '#toolbar=1', '_blank')
+                    return
+                }
+                iframe.src = url + '#toolbar=1&zoom=75'
+                // disable download
+
+                let name = 'TIMESHEET ' + new Date().getTime() + '.pdf'
+                $(iframe).show(200)
+                $(iframe).attr('download', name)
+                $(iframe).attr('title', name)
+                $('#print-btn').parent().removeClass('d-none')
+                $('#print-btn').click(function () {
+                    iframe.contentWindow.print()
+                })
+
+
+                // scroll to pdf
+                $('html, body').animate({
+                    scrollTop: $(iframe).offset().top
+                }, 500);
+                pdfDoc = await PDFDocument.load(form_pdf_bytes)
+
+            })
+
+        })
+
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            showInstallPromotion();
+            console.log('beforeinstallprompt fired');
+        });
+
+        function showInstallPromotion() {
+            $('#install-btn').removeClass('d-none').on('click', () => {
+                Swal.fire({
+                    title: 'ติดตั้งแอพลิเคชั่น',
+                    iconHtml: '<img src="https://img.icons8.com/external-sbts2018-outline-color-sbts2018/58/external-install-basic-ui-elements-2.3-sbts2018-outline-color-sbts2018.png" width="58" />',
+                    customClass: {
+                        icon: 'border-0'
+                    },
+                    text: 'คุณสามารถติดตั้งแอพบนมือถือของคุณเพื่อใช้งานได้ดีขึ้น',
+                    showCancelButton: true,
+                    confirmButtonText: 'ติดตั้ง',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deferredPrompt.prompt();
+                        // Wait for the user to respond to the prompt
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('User accepted the A2HS prompt');
+                            } else {
+                                console.log('User dismissed the A2HS prompt');
+                            }
+                            deferredPrompt = null;
+                        });
+                    }
+                })
+            });
+
+
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+</body>
+
+</html>
