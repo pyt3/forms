@@ -1886,65 +1886,53 @@
                 })
                 let endpoint = ngrok_url + '?mode=receivejob&name=' + encodeURIComponent(current_user.name.toUpperCase()) + '&jobid=' + jobid
                 console.log("🚀 !! endpoint:", endpoint);
-                $.get(endpoint)
-                    .done(function (res) {
-                        console.log("🚀 !! res:", res)
-                        if (res.status == 'ok') {
-                            if(res.status_text == 'success') {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'รับงานสำเร็จ',
-                                    showConfirmButton: false,
-                                    timer: 1000
-                                })
-                                firestore.collection('jobdata/').doc(jobid).set({
-                                    reciever: current_user.name.toUpperCase(),
-                                    workorder: res.wo
-                                })
-                                $('#reciever').html("&nbsp;รับงานโดย:<br> " + cred.name.toUpperCase())
-                                $('#workorder').html('WO.' + res.wo).parents('.col-12').removeClass('d-none')
-                            }
-                            else if (res.status_text == 'already received') {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'รับงานสำเร็จ',
-                                    showConfirmButton: false,
-                                    timer: 1000
-                                })
-                                // listen for data change on firebase
-                                firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
-                                    let data = doc.data()
-                                    if (data.reciever == current_user.name.toUpperCase()) {
-                                        $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
-                                        $('#workorder').html('WO.' + data.wo).parents('.col-12').removeClass('d-none')
-                                        // end snapshot
-                                        return
-                                    }
-                                })
-
-                            }
-                        }
-                        else {
+                $.getJSON(endpoint, function (res) {
+                    console.log("🚀 !! res:", res)
+                    if (res.status == 'ok') {
+                        if (res.status_text == 'success') {
                             Swal.fire({
-                                icon: 'error',
-                                title: 'รับงานไม่สำเร็จ',
-                                text: 'รับงานไม่สำเร็จ',
-                                confirmButtonText: 'ตกลง',
-                                allowOutsideClick: false,
+                                icon: 'success',
+                                title: 'รับงานสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 1000
                             })
+                            firestore.collection('jobdata/').doc(jobid).set({
+                                reciever: current_user.name.toUpperCase(),
+                                workorder: res.wo
+                            })
+                            $('#reciever').html("&nbsp;รับงานโดย:<br> " + cred.name.toUpperCase())
+                            $('#workorder').html('WO.' + res.wo).parents('.col-12').removeClass('d-none')
                         }
-                    })
-                    .fail(function (err) {
-                        console.log("🚀 !! err:", err)
+                        else if (res.status_text == 'already received') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'รับงานสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 1000
+                            })
+                            // listen for data change on firebase
+                            firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
+                                let data = doc.data()
+                                if (data.reciever == current_user.name.toUpperCase()) {
+                                    $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
+                                    $('#workorder').html('WO.' + data.wo).parents('.col-12').removeClass('d-none')
+                                    // end snapshot
+                                    return
+                                }
+                            })
+
+                        }
+                    }
+                    else {
                         Swal.fire({
                             icon: 'error',
                             title: 'รับงานไม่สำเร็จ',
-                            text: 'รับงานไม่สำเร็จ',
+                            html: 'รับงานไม่สำเร็จ<br>' + res.status_text,
                             confirmButtonText: 'ตกลง',
                             allowOutsideClick: false,
                         })
-                    })
-
+                    }
+                })
 
             } catch (err) {
                 Swal.fire({
