@@ -338,7 +338,7 @@
     <script>
         // const liff_id = '1655873446-3xe866Ql'
         const liff_id = '1661543046-a1pJexbX'
-        const ngrok_url = 'https://glad-hare-slightly.ngrok-free.app/'
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
         $(document).ready(async () => {
             // $('.load-bar').fadeOut(500)
             moment.locale('th')
@@ -1884,10 +1884,11 @@
                         Swal.showLoading()
                     }
                 })
-                let endpoint = ngrok_url + '?mode=receivejob&name=' + encodeURIComponent(current_user.name.toUpperCase()) + '&jobid=' + jobid
+                let endpoint = scriptUrl + '?mode=receivejob&name=' + encodeURIComponent(current_user.name.toUpperCase()) + '&jobid=' + jobid
                 console.log("🚀 !! endpoint:", endpoint);
                 $.getJSON(endpoint, function (res) {
                     console.log("🚀 !! res:", res)
+                    return
                     if (res.status == 'ok') {
                         if (res.status_text == 'success') {
                             Swal.fire({
