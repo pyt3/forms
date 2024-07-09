@@ -282,7 +282,7 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         cols = [ele.text.strip() if ele.text.strip() != 'Click' else '' for ele in cols]
         cols[1] = img
         equipments_arr.append(cols)
-    if int(page) >= 2:
+    if int(page) >= int(max_page):
         df = pd.DataFrame(equipments_arr)
         df.to_excel(os.path.join(root_dir,'EXCEL FILE', 'equipment_list.xlsx'), index=False, header=False)
         # print file path to let user to click
