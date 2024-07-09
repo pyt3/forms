@@ -330,16 +330,17 @@
             </div>
         </div>
     </main>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-      //  var vConsole = new VConsole();
-    </script> 
+        var vConsole = new VConsole();
+    </script>
 
     <script>
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbyGpvPo7JHYeCr9z3IIT_Sek1xbazhaDeBKXeHnTjdQWyNK8qitAq8G_ibfTW1ThLB5/exec'
+        // const liff_id = '1655873446-3xe866Ql'
         const liff_id = '1661543046-a1pJexbX'
+        const ngrok_url = 'https://glad-hare-slightly.ngrok-free.app/'
         $(document).ready(async () => {
-           // $('.load-bar').fadeOut(500)
+            // $('.load-bar').fadeOut(500)
             moment.locale('th')
             liff.init({
 
@@ -380,7 +381,7 @@
             // console.log("🚀 !! alert_height:", alert_height)
             // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
         })
-        var jobid, wo
+        var jobid, wo, current_user
         async function initialData() {
             if (!liff.isInClient()) {
                 let url = new URL(window.location.href)
@@ -401,7 +402,8 @@
                 })
                 return liff.closeWindow()
             }
-            let user_site = await firestore.collection('user').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data()?.site)
+            current_user = await firestore.collection('user').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data())
+            let user_site = current_user?.site
             if (!user_site || user_site == '' || user_site == undefined || user_site == null) {
                 let l = localStorage.getItem('name')
                 if (l != null) {
@@ -412,6 +414,7 @@
                         $.LoadingOverlay("show");
                         initialData()
                     })
+                    current_user = { site: n.parentElement.label }
                 }
                 $('.load-bar').fadeOut(500)
                 $.LoadingOverlay("hide");
@@ -559,7 +562,8 @@
                     window.open(url, '_self')
                 })
                 $.LoadingOverlay("hide");
-            } else if (action == 'shared') {
+            }
+            else if (action == 'shared') {
                 $('#edit-request').hide()
                 Swal.fire({
                     title: 'Share งาน',
@@ -980,7 +984,7 @@
                 })
             }
             else {
-                firestore.collection('jobdata/').doc(jobid).get().then(data => {
+                firestore.collection('jobdata/').doc(jobid).get().then(async data => {
                     $('.load-bar').fadeOut(500)
                     // if(!data.exists) {
                     //     $.LoadingOverlay("hide");
@@ -993,7 +997,7 @@
                     //     })
                     // }
                     if (!data.exists) {
-                        Swal.fire({
+                        return Swal.fire({
                             icon: 'error',
                             title: 'ไม่พบข้อมูล',
                             input: 'text',
@@ -1045,6 +1049,69 @@
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
                         $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
+                        if (current_user.site == 'PYT3') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: "กรุณารับงานก่อน",
+                                html: !current_user.isAuthen ? (`
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="alert alert-warning">
+                                                กรุณาระบุชื่อ และกดปุ่มยืนยันตัวตน
+                                                <small class="text-danger fw-bold">สามารถยืนยันตัวตนได้เพียง 1 คน/บัญชีไลน์</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <select name="receive-name" id="receive-name" class="form-select">
+                                                <option value="" selected disabled>เลือกชื่อ</option>
+                                                <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                                                <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                                                <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                                                <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                                                <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                                                <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                                                <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                                                <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                                                <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                                                <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                                                <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                                                <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                                                <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
+                                                <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                                                <option value="SOM KONKAEW">SOM KONKAEW</option>
+                                                <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
+                                                <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
+                                                <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
+                                                <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
+                                            </select>
+                                        </div>
+                                    </div>    
+                                </div>
+                                `) : "",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonText: 'ยืนยันตัวตน',
+                                denyButtonText: 'รับงาน',
+                                cancelButtonText: 'ยกเลิก',
+                                confirmButtonColor: '#3085d6',
+                                denyButtonColor: '#d33',
+                                cancelButtonColor: "#777",
+                                showCancelButton: true,
+                                showDenyButton: current_user.isAuthen ? true : false,
+                                showConfirmButton: current_user.isAuthen ? false : true,
+                                preConfirm: async (result) => {
+                                    return current_user.isAuthen ? "" : $('#receive-name').val()
+                                }
+                            }).then(async res => {
+                                if (res.isConfirmed) {
+                                    register(res.value)
+                                } else if (res.isDenied) {
+                                    receivejob()
+                                }
+                            })
+                        }
+
                     }
                     else {
                         $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
@@ -1747,6 +1814,7 @@
             let email = uid + '@jobdata.com'
             let password = 'jobdata'
             await auth.signInWithEmailAndPassword(email, password).then(function (user) {
+                console.log("🚀 !! user:", user)
                 console.log('sign in successful')
             }).catch(async function (error) {
                 var errorCode = error.code;
@@ -1772,6 +1840,120 @@
                     console.log(credential)
                 });
             });
+        }
+    </script>
+    <script>
+        let publicKey;
+        function generateRandomBuffer(length) {
+            const buffer = new Uint8Array(length);
+            window.crypto.getRandomValues(buffer);
+            return buffer;
+        }
+        async function register(name) {
+            try {
+                firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
+                    name: name,
+                    isAuthen: true
+                }, { merge: true }).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ยืนยันตัวตนสำเร็จ',
+                        text: 'คุณสามารถรับงานได้แล้ว',
+                        confirmButtonText: 'รับงาน',
+                        allowOutsideClick: false,
+                    }).then(res => {
+                        if (res.isConfirmed) {
+                            receivejob()
+                        }
+                    })
+                });
+            } catch (err) {
+                console.error('Error during registration:', err);
+                alert('Registration failed.');
+            }
+        }
+
+        async function receivejob() {
+            try {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'กำลังรับงาน...',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
+                let endpoint = ngrok_url + '?mode=receivejob&name=' + encodeURIComponent(current_user.name.toUpperCase()) + '&jobid=' + jobid
+                console.log("🚀 !! endpoint:", endpoint);
+                $.get(endpoint)
+                    .done(function (res) {
+                        console.log("🚀 !! res:", res)
+                        if (res.status == 'ok') {
+                            if(res.status_text == 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'รับงานสำเร็จ',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                })
+                                firestore.collection('jobdata/').doc(jobid).set({
+                                    reciever: current_user.name.toUpperCase(),
+                                    workorder: res.wo
+                                })
+                                $('#reciever').html("&nbsp;รับงานโดย:<br> " + cred.name.toUpperCase())
+                                $('#workorder').html('WO.' + res.wo).parents('.col-12').removeClass('d-none')
+                            }
+                            else if (res.status_text == 'already received') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'รับงานสำเร็จ',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                })
+                                // listen for data change on firebase
+                                firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
+                                    let data = doc.data()
+                                    if (data.reciever == current_user.name.toUpperCase()) {
+                                        $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
+                                        $('#workorder').html('WO.' + data.wo).parents('.col-12').removeClass('d-none')
+                                        // end snapshot
+                                        return
+                                    }
+                                })
+
+                            }
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'รับงานไม่สำเร็จ',
+                                text: 'รับงานไม่สำเร็จ',
+                                confirmButtonText: 'ตกลง',
+                                allowOutsideClick: false,
+                            })
+                        }
+                    })
+                    .fail(function (err) {
+                        console.log("🚀 !! err:", err)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'รับงานไม่สำเร็จ',
+                            text: 'รับงานไม่สำเร็จ',
+                            confirmButtonText: 'ตกลง',
+                            allowOutsideClick: false,
+                        })
+                    })
+
+
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    text: err,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                })
+            }
         }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
