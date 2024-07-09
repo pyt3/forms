@@ -1900,7 +1900,7 @@
                                 reciever: current_user.name.toUpperCase(),
                                 workorder: res.wo
                             })
-                            $('#reciever').html("&nbsp;รับงานโดย:<br> " + cred.name.toUpperCase())
+                            $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
                             $('#workorder').html('WO.' + res.wo).parents('.col-12').removeClass('d-none')
                         }
                         else if (res.status_text == 'already received') {
