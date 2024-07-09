@@ -1106,10 +1106,8 @@
                             }).then(async res => {
                                 if (res.isConfirmed) {
                                     await register(res.value)
-                                    data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
                                 } else if (res.isDenied) {
                                     await receivejob()
-                                    data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
                                 }
                             })
                         }
@@ -1876,55 +1874,47 @@
         }
 
         async function receivejob() {
+            let toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+            })
             try {
-                Swal.fire({
+                toast.fire({
                     icon: 'info',
-                    title: 'กำลังรับงาน...',
-                    showConfirmButton: false,
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading()
-                    }
+                    title: 'กำลังรับงาน'
                 })
                 let endpoint = scriptUrl + '?mode=receivejob&name=' + encodeURIComponent(current_user.name.toUpperCase()) + '&jobid=' + jobid
                 console.log("🚀 !! endpoint:", endpoint);
-                $.getJSON(endpoint,async function (res) {
+                $.getJSON(endpoint, function (res) {
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
+                        toast.fire({
+                            icon: 'success',
+                            title: 'รับงานสำเร็จ',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
                         if (res.status_text == 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'รับงานสำเร็จ',
-                                showConfirmButton: false,
-                                timer: 1000
-                            })
-                            await firestore.collection('jobdata/').doc(jobid).set({
+
+                            firestore.collection('jobdata/').doc(jobid).set({
                                 reciever: current_user.name.toUpperCase(),
                                 workorder: res.wo
                             }, { merge: true }).then(() => {
-                                $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
-                                $('#workorder').html('WO.' + res.wo).parents('.col-12').removeClass('d-none')
+                                initialData()
                             })
                         }
                         else if (res.status_text == 'already received') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'รับงานสำเร็จ',
-                                showConfirmButton: false,
-                                timer: 1000
-                            })
                             // listen for data change on firebase
-                            await firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
+                            firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
                                 let data = doc.data()
                                 if (data.reciever == current_user.name.toUpperCase()) {
                                     $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
                                     $('#workorder').html('WO.' + data.wo).parents('.col-12').removeClass('d-none')
-                                    // end snapshot
                                     return
                                 }
                             })
                         }
-                        return true
                     }
                     else {
                         Swal.fire({
