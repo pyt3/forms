@@ -1105,9 +1105,11 @@
                                 }
                             }).then(async res => {
                                 if (res.isConfirmed) {
-                                    register(res.value)
+                                    await register(res.value)
+                                    data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
                                 } else if (res.isDenied) {
-                                    receivejob()
+                                    await receivejob()
+                                    data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
                                 }
                             })
                         }
@@ -1861,9 +1863,9 @@
                         text: 'คุณสามารถรับงานได้แล้ว',
                         confirmButtonText: 'รับงาน',
                         allowOutsideClick: false,
-                    }).then(res => {
+                    }).then(async res => {
                         if (res.isConfirmed) {
-                            receivejob()
+                            await receivejob()
                         }
                     })
                 });
@@ -1886,7 +1888,7 @@
                 })
                 let endpoint = scriptUrl + '?mode=receivejob&name=' + encodeURIComponent(current_user.name.toUpperCase()) + '&jobid=' + jobid
                 console.log("🚀 !! endpoint:", endpoint);
-                $.getJSON(endpoint, function (res) {
+                $.getJSON(endpoint,async function (res) {
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
                         if (res.status_text == 'success') {
@@ -1896,12 +1898,13 @@
                                 showConfirmButton: false,
                                 timer: 1000
                             })
-                            firestore.collection('jobdata/').doc(jobid).set({
+                            await firestore.collection('jobdata/').doc(jobid).set({
                                 reciever: current_user.name.toUpperCase(),
                                 workorder: res.wo
+                            }, { merge: true }).then(() => {
+                                $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
+                                $('#workorder').html('WO.' + res.wo).parents('.col-12').removeClass('d-none')
                             })
-                            $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
-                            $('#workorder').html('WO.' + res.wo).parents('.col-12').removeClass('d-none')
                         }
                         else if (res.status_text == 'already received') {
                             Swal.fire({
@@ -1911,7 +1914,7 @@
                                 timer: 1000
                             })
                             // listen for data change on firebase
-                            firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
+                            await firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
                                 let data = doc.data()
                                 if (data.reciever == current_user.name.toUpperCase()) {
                                     $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
@@ -1920,8 +1923,8 @@
                                     return
                                 }
                             })
-
                         }
+                        return true
                     }
                     else {
                         Swal.fire({
