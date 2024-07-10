@@ -1891,7 +1891,7 @@
                 $.getJSON(endpoint, {
                     name: encodeURIComponent(current_user.name.toUpperCase()),
                     jobid: jobid,
-                    detail: job_detail
+                    detail: encodeURIComponent(job_detail)
                 }, function (res) {
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
