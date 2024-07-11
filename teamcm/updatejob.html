@@ -332,13 +332,14 @@
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-        var vConsole = new VConsole();
+         var vConsole = new VConsole();
     </script>
 
     <script>
         // const liff_id = '1655873446-3xe866Ql'
         const liff_id = '1661543046-a1pJexbX'
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
+        var job_detail
         $(document).ready(async () => {
             // $('.load-bar').fadeOut(500)
             moment.locale('th')
@@ -1045,6 +1046,7 @@
                         })
                     }
                     data = data.data()
+                    job_detail = data.detail
                     if (!data.name && !data.reciever) {
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
@@ -1884,9 +1886,13 @@
                     icon: 'info',
                     title: 'กำลังรับงาน'
                 })
-                let endpoint = scriptUrl + '?mode=receivejob&name=' + encodeURIComponent(current_user.name.toUpperCase()) + '&jobid=' + jobid
+                let endpoint = scriptUrl + '?mode=receivejob'
                 console.log("🚀 !! endpoint:", endpoint);
-                $.getJSON(endpoint, function (res) {
+                $.getJSON(endpoint, {
+                    name: encodeURIComponent(current_user.name.toUpperCase()),
+                    jobid: jobid,
+                    detail: encodeURIComponent(job_detail)
+                }, function (res) {
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
                         toast.fire({
