@@ -339,6 +339,7 @@
         // const liff_id = '1655873446-3xe866Ql'
         const liff_id = '1661543046-a1pJexbX'
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
+        const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
         var job_detail
         $(document).ready(async () => {
             // $('.load-bar').fadeOut(500)
@@ -1887,7 +1888,7 @@
                     allowOutsideClick: false,
                     showConfirmButton: false,
                 })
-                let endpoint = scriptUrl + '?mode=receivejob'
+                let endpoint = ngrok_url + '?mode=receivejob'
                 console.log("🚀 !! endpoint:", endpoint);
                 $.getJSON(endpoint, {
                     name: encodeURIComponent(current_user.name.toUpperCase()),
