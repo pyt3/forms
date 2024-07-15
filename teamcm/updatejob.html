@@ -1942,6 +1942,16 @@
                                 allowOutsideClick: false,
                             })
                         }
+                    },
+                    error: function (err) {
+                        console.log("🚀 !! err:", err)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'รับงานไม่สำเร็จ',
+                            html: 'รับงานไม่สำเร็จ<br>' + JSON.stringify(err),
+                            confirmButtonText: 'ตกลง',
+                            allowOutsideClick: false,
+                        })
                     }
                 })
 
