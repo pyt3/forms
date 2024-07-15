@@ -332,7 +332,7 @@
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-       var vConsole = new VConsole();
+        //  var vConsole = new VConsole();
     </script>
 
     <script>
@@ -1890,9 +1890,12 @@
                 })
                 let endpoint = ngrok_url + '?mode=receivejob'
                 console.log("🚀 !! endpoint:", endpoint);
+                // headers: {
+                //     'ngrok-skip-browser-warning': true
+                // }
                 $.ajax({
                     url: endpoint,
-                    type: 'POST',
+                    type: 'GET',
                     headers: {
                         'ngrok-skip-browser-warning': true
                     },
@@ -1902,7 +1905,7 @@
                         detail: encodeURIComponent(job_detail)
                     },
                     dataType: 'json',
-                    success: function (res) {
+                }).done(function (res) {
                         console.log("🚀 !! res:", res)
                         if (res.status == 'ok') {
                             Swal.fire({
@@ -1942,8 +1945,8 @@
                                 allowOutsideClick: false,
                             })
                         }
-                    },
-                    error: function (err) {
+                    })
+                    .fail(function (err) {
                         console.log("🚀 !! err:", err)
                         Swal.fire({
                             icon: 'error',
@@ -1952,9 +1955,8 @@
                             confirmButtonText: 'ตกลง',
                             allowOutsideClick: false,
                         })
-                    }
-                })
-
+                    })
+                   
             } catch (err) {
                 Swal.fire({
                     icon: 'error',
