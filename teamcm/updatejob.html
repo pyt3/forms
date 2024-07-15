@@ -332,7 +332,7 @@
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-         var vConsole = new VConsole();
+        //  var vConsole = new VConsole();
     </script>
 
     <script>
@@ -1083,7 +1083,7 @@
                                                 <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
                                                 <option value="SOM KONKAEW">SOM KONKAEW</option>
                                                 <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
-                                                <option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
+                                                <option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITAKUL</option>
                                                 <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
                                                 <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
                                             </select>
@@ -1876,15 +1876,16 @@
         }
 
         async function receivejob() {
-            let toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-            })
             try {
-                toast.fire({
-                    icon: 'info',
-                    title: 'กำลังรับงาน'
+                Swal.fire({
+                    iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
+                    customClass:{
+                        icon: 'border-0'
+                    },
+                    title: 'กำลังรับงานในระบบ',
+                    html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
                 })
                 let endpoint = scriptUrl + '?mode=receivejob'
                 console.log("🚀 !! endpoint:", endpoint);
@@ -1895,11 +1896,12 @@
                 }, function (res) {
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
-                        toast.fire({
+                        Swal.fire({
                             icon: 'success',
                             title: 'รับงานสำเร็จ',
-                            showConfirmButton: false,
-                            timer: 1000
+                            html: 'รับงานสำเร็จ<br>รับงานโดย:<br> ' + current_user.name.toUpperCase(),
+                            confirmButtonText: 'ตกลง',
+                            timer: 2000,
                         })
                         if (res.status_text == 'success') {
 
