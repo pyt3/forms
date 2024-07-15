@@ -332,7 +332,7 @@
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-        //  var vConsole = new VConsole();
+         var vConsole = new VConsole();
     </script>
 
     <script>
@@ -1899,11 +1899,11 @@
                     headers: {
                         'ngrok-skip-browser-warning': true
                     },
-                    data: JSON.stringify({
+                    data: {
                         name: encodeURIComponent(current_user.name.toUpperCase()),
                         jobid: jobid,
                         detail: encodeURIComponent(job_detail)
-                    }),
+                    },
                     dataType: 'json',
                 }).done(function (res) {
                     console.log("🚀 !! res:", res)
