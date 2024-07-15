@@ -332,7 +332,7 @@
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-         var vConsole = new VConsole();
+        //  var vConsole = new VConsole();
     </script>
 
     <script>
@@ -1880,7 +1880,7 @@
             try {
                 Swal.fire({
                     iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
-                    customClass: {
+                    customClass:{
                         icon: 'border-0'
                     },
                     title: 'กำลังรับงานในระบบ',
@@ -1888,23 +1888,13 @@
                     allowOutsideClick: false,
                     showConfirmButton: false,
                 })
-                let endpoint = ngrok_url + '?mode=receivejob'
+                let endpoint = scriptUrl + '?mode=receivejob'
                 console.log("🚀 !! endpoint:", endpoint);
-                // headers: {
-                //     'ngrok-skip-browser-warning': true
-                // }
-                $.ajax({
-                    url: endpoint,
-                    method: 'POST',
-                    headers: {
-                        'ngrok-skip-browser-warning': true
-                    },
-                    data: {
-                        name: encodeURIComponent(current_user.name.toUpperCase()),
-                        jobid: jobid,
-                        detail: encodeURIComponent(job_detail)
-                    },
-                }).done(function (res) {
+                $.getJSON(endpoint, {
+                    name: encodeURIComponent(current_user.name.toUpperCase()),
+                    jobid: jobid,
+                    detail: encodeURIComponent(job_detail)
+                }, function (res) {
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
                         Swal.fire({
@@ -1936,9 +1926,6 @@
                         }
                     }
                     else {
-                        console.error("Request failed: " + textStatus);
-                        console.error("Error thrown: " + errorThrown);
-                        console.error("Server response: ", jqXHR);
                         Swal.fire({
                             icon: 'error',
                             title: 'รับงานไม่สำเร็จ',
@@ -1948,16 +1935,6 @@
                         })
                     }
                 })
-                    .fail(function (err) {
-                        console.log("🚀 !! err:", err)
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'รับงานไม่สำเร็จ',
-                            html: 'รับงานไม่สำเร็จ<br>' + JSON.stringify(err),
-                            confirmButtonText: 'ตกลง',
-                            allowOutsideClick: false,
-                        })
-                    })
 
             } catch (err) {
                 Swal.fire({
