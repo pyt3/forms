@@ -1895,6 +1895,7 @@
                 // }
                 $.ajax({
                     url: endpoint,
+                    method: 'POST',
                     headers: {
                         'ngrok-skip-browser-warning': true
                     },
@@ -1903,7 +1904,6 @@
                         jobid: jobid,
                         detail: encodeURIComponent(job_detail)
                     },
-                    dataType: 'json',
                 }).done(function (res) {
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
