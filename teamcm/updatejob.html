@@ -505,10 +505,10 @@
                 return Swal.fire({
                     title: 'กรุณาเลือก Site ของคุณ',
                     input: 'select',
-                    inputOptions: {
-                        'PYT2': 'PYT2',
-                        'PYT3': 'PYT3'
-                    },
+                    inputOptions: $('#name optgroup').toArray().reduce((a, c) => {
+                        a[c.label] = c.children.map(o => o.value)
+                        return a
+                    }, {}),
                     inputPlaceholder: 'เลือก Site',
                     showCancelButton: false,
                     allowOutsideClick: false,
