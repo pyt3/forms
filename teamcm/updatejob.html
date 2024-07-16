@@ -506,7 +506,7 @@
                     title: 'กรุณาเลือก Site ของคุณ',
                     input: 'select',
                     inputOptions: $('#name optgroup').toArray().reduce((a, c) => {
-                        a[c.label] = c.children.map(o => o.value)
+                        a[c.label] = c.label
                         return a
                     }, {}),
                     inputPlaceholder: 'เลือก Site',
