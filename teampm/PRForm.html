@@ -519,11 +519,8 @@
         })
         $('#name').change(async function () {
             let name = $(this).val()
-            if (!name.toLowerCase().includes('daranphop')) {
-                signature_bytes = false
-            } else {
-                signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
-            }
+            signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
+
 
         })
 
@@ -986,7 +983,8 @@
                 textField.setText('✓')
                 textField.updateAppearances(symbol)
             })
-            if (signature && $('#name').val() == 'DARANPHOP YIMYAM') form.getTextField('bme_sign').setImage(signature)
+            // if (signature && $('#name').val() == 'DARANPHOP YIMYAM') form.getTextField('bme_sign').setImage(signature)
+            if (signature) form.getTextField('bme_sign').setImage(signature)
             if (imgs_obj['e_img']) form.getTextField('e_img').setImage(imgs_obj['e_img'])
             if (imgs_obj['e_img_code']) form.getTextField('e_img_code').setImage(imgs_obj['e_img_code'])
             if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
@@ -1207,8 +1205,8 @@
             const mergedPdfFile = await pdfDoc.save();
             var blob = new Blob([mergedPdfFile], { type: 'application/pdf' })
             var url = URL.createObjectURL(blob)
-            console.log(memo.split('_').slice(0,-1).join('_'));
-            let a = $('<a>', { href: url, download: `[อนุมัติ PR][${memo.split('_').slice(0,-1).join('_')}] ${pr.split('.')[0]}.pdf`, class: 'btn btn-success btn-sm w-100', text: 'ดาวน์โหลดไฟล์' })
+            console.log(memo.split('_').slice(0, -1).join('_'));
+            let a = $('<a>', { href: url, download: `[อนุมัติ PR][${memo.split('_').slice(0, -1).join('_')}] ${pr.split('.')[0]}.pdf`, class: 'btn btn-success btn-sm w-100', text: 'ดาวน์โหลดไฟล์' })
             $('#merge-download').html('').append(a)
 
         }
@@ -1222,14 +1220,14 @@
 
             // Loop over them and prevent submission
             Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                form.addEventListener('submit', event => {
                     event.preventDefault()
                     if (!form.checkValidity()) {
                         event.stopPropagation()
                         form.classList.add('was-validated')
                         $(form).find(":invalid").first().focus();
                     } else {
-                        if($(form).attr('id') == 'merge-prmemo-pdf') {
+                        if ($(form).attr('id') == 'merge-prmemo-pdf') {
                             mergePRMrmo()
                             return
                         }
