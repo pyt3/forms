@@ -126,22 +126,26 @@ if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_re
         let clicked = false;
         let a = newwindow3.document.querySelectorAll("a");
         let update_btn = [...a].find(e => e.innerText == "Reprocess");
-
-        while (no_recored_tr) {
+        const MAX_RETRY = 10;
+        let retry = 0;
+        while (no_recored_tr && retry < MAX_RETRY) {
             if(!clicked) update_btn.click();
             clicked = true;
             await new Promise((resolve, reject) => {
                 console.log("🚀 !! Waiting for update button to finish");
                 setTimeout(() => {
                     no_recored_tr = newwindow3.document?.querySelectorAll("tr.NoRecords")[0];
+                    retry++;
                     resolve();
                 }, 1000);
             });
         }
 
-
-        let depricated = newwindow3.document.querySelectorAll("table.Record tbody")[0].querySelectorAll("tr")[11].querySelectorAll("td")[0].innerText;
-        t.e_deprication = depricated;
+        if(no_recored_tr) {
+            t.e_deprication = newwindow3.document.querySelectorAll("table.Record tbody")[0].querySelectorAll("tr")[11].querySelectorAll("td")[0].innerText;
+        }else{
+            t.e_deprication = ""
+        }
         isfinish++;
         if (isfinish == 3) {
             let copy = newwindow3.document.createElement("input");
