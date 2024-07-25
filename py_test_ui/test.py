@@ -53,8 +53,8 @@ print(init_text)
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # check if using pyinstaller
-if getattr(sys, 'frozen', False):
-    root_dir = os.path.dirname(sys.executable)
+# if getattr(sys, 'frozen', False):
+#     root_dir = os.path.dirname(sys.executable)
 config = open(os.path.join(root_dir, "CONFIG", "config.json"), "r")
 confdata = json.load(config)
 
@@ -117,9 +117,9 @@ def set_login():
     try:
         with requests.Session() as s:
             r = s.post("https://nsmart.nhealth-asia.com/MTDPDB01/index.php",
-                       data=data,
-                       headers=headers,
-                       verify=False)
+                    data=data,
+                    headers=headers,
+                    verify=False)
             confdata["SESSION_ID"] = s.cookies['PHPSESSID']
             cookies['PHPSESSID'] = s.cookies['PHPSESSID']
             # write over file to clear old data
@@ -129,7 +129,6 @@ def set_login():
     except Exception as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         print("[red]No Internet Connection[/red]")
-        # wait 5 sec
         time.sleep(5)
         set_login()
 
@@ -190,7 +189,6 @@ def load_tool_list(href):
         except requests.exceptions.RequestException as e:
             print(
                 f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-            # wait 5 sec
             time.sleep(5)
             return load_tool_list(href)
         response.encoding = "tis-620"
@@ -244,7 +242,6 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         equipments_arr = []
     page_url = url + "&asset_masterPage=" + str(page)
     try:
-        # wait until page loaded
         response = requests.get(
             page_url,
             headers=headers,
@@ -253,7 +250,6 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        # wait 5 sec
         time.sleep(5)
         return get_equipment_file(url, page)
     response.encoding = "tis-620"
@@ -264,7 +260,7 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         set_login()
         return get_equipment_file(url, page)
     # print attr class of each table
-      # find index of '<table class="Grid" cellspacing="0" cellpadding="0">'
+    # find index of '<table class="Grid" cellspacing="0" cellpadding="0">'
     # index = response.text.find('<table class="Grid" cellspacing="0" cellpadding="0">')
     tmp = response.text.split('<table class="Grid" cellspacing="0" cellpadding="0">')
     tmp2 = tmp[1].split('</table>')
@@ -284,8 +280,8 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         cols = [ele.text.strip() if ele.text.strip() != 'Click' else '' for ele in cols]
         cols[1] = img
         equipments_arr.append(cols)
-    # if int(page) >= int(max_page):
-    if int(page) == 2:
+    if int(page) >= int(max_page):
+    # if int(page) == 2:
         df = pd.DataFrame(equipments_arr, columns=header)
         df.to_excel(os.path.join(root_dir,'EXCEL FILE', 'equipment_list.xlsx'), index=False)
         # print file path to let user to click
@@ -338,7 +334,6 @@ def get_team_list(url, page='1'):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        # wait 5 sec
         time.sleep(5)
         return get_team_list(url, page)
     response.encoding = "tis-620"
@@ -384,7 +379,6 @@ def get_emp_list():
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        # wait 5 sec
         time.sleep(5)
         return get_emp_list()
     response.encoding = "tis-620"
@@ -466,12 +460,12 @@ def get_screen_shot(soup, css_file, text):
     file_name = str(datetime.timestamp(datetime.now())*1000)
     try:
         hti.screenshot(html_str=str(soup), css_str=css,
-                       save_as=file_name+'.png')
+                    save_as=file_name+'.png')
     except Exception as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         pass
     return_json = {'status': 'ok',
-                   'status_text': text, 'screenshot': file_name}
+                'status_text': text, 'screenshot': file_name}
 
     return file_name
 
@@ -500,7 +494,6 @@ def closePM(row, self_call=False):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        # wait 5 sec
         time.sleep(5)
         return closePM(row, self_call)
     response.encoding = "tis-620"
@@ -579,7 +572,7 @@ def closePM(row, self_call=False):
         form_data['pass_status'] = '0'
     # return form_data
     response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?' + a_href +
-                             '&ccsForm=main_jobs%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
+                            '&ccsForm=main_jobs%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     result_table = soup.find('table', {'class': 'Record'})
@@ -623,7 +616,6 @@ def closeCAL(row, self_call=False):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        # wait 5 sec
         time.sleep(5)
         return closeCAL(row, self_call)
     response.encoding = "tis-620"
@@ -673,7 +665,7 @@ def closeCAL(row, self_call=False):
     for select in selects:
         form_data[select['name']] = select['value']
     response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_1.php?' + a_href +
-                             '&ccsForm=caliber_jobs_tech%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
+                            '&ccsForm=caliber_jobs_tech%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     result_td = list(filter(lambda x: 'Completed-send equipment back' in x.text.strip(), soup.find_all(
@@ -719,7 +711,6 @@ def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        # wait 5 sec
         time.sleep(5)
         return attachFilePM(id, team, engineer, date, file_name_list, status, attach)
     response.encoding = "tis-620"
@@ -795,7 +786,7 @@ def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
     # maintain08.php?s_byear=2023&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code=1235&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=&s_sup_serv=&s_jobno=&s_docok=&code=36565&deptco=&jobno=1278631&ccsForm=Maindocattache1
 
     response2 = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain08.php?' + a_href +
-                              '&ccsForm=Maindocattache1', headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+                            '&ccsForm=Maindocattache1', headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
     response2.encoding = "tis-620"
     soup = BeautifulSoup(response2.text, "lxml")
     result_table = soup.find_all('table', {'class': 'Header'})[1]
@@ -841,7 +832,6 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        # wait 5 sec
         time.sleep(5)
         return attachFileCAL(id, team, engineer, date, file_name_list, status, attach)
     response.encoding = "tis-620"
@@ -897,7 +887,7 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
     # maintain08.php?s_byear=2023&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code=1235&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=&s_sup_serv=&s_jobno=&s_docok=&code=36565&deptco=&jobno=1278631&ccsForm=Maindocattache1
 
     response2 = requests.post("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_5.php?" + a_href +
-                              "&ccsForm=Caliberdocattache1", headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+                            "&ccsForm=Caliberdocattache1", headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
     response2.encoding = "tis-620"
     soup = BeautifulSoup(response2.text, "lxml")
     result_table = soup.find_all('table', {'class': 'Header'})[1]
@@ -960,7 +950,7 @@ def read_file(option=None):
                 len(df)), title_justify='center', title_style='bold magenta')
             table.add_column('#', justify='left', style='cyan', no_wrap=True)
             table.add_column('จำนวนเครื่อง', justify='right',
-                             style='green', no_wrap=True)
+                            style='green', no_wrap=True)
             if (option == 'close_pm_cal' or option == None):
                 table.add_row('PM ที่ยังไม่ปิดงาน', str(pass_pm))
                 table.add_row('CAL ที่ยังไม่ปิดงาน', str(pass_cal))
@@ -1352,6 +1342,11 @@ def change_file_name():
             else:
                 name_arr[code + '#'+year]['engineer'] = '-'
             # file.save(os.path.join(path, name))
+            department = re.findall(r'LOCATION.*\n.*$', page, re.MULTILINE)
+            if department is not None and len(department) > 0:
+                department = department[0].replace('\n', '').split(':')[
+                    1].strip().replace('  ', ' ')
+                name_arr[code + '#'+year]['department'] = department
             file.close()
             try:
                 os.rename(source, os.path.join(report_path, name))
@@ -1397,7 +1392,7 @@ def change_file_name():
                 value['cal'] = ['']
             if value.get('pm') is None:
                 value['pm'] = ['']
-            tmp_arr = [''] * 25
+            tmp_arr = [''] * 26
             tmp_arr[0] = str(i+1)
             tmp_arr[1] = id.split('#')[0]
             tmp_arr[2] = getTeamName(value['engineer'])
@@ -1435,6 +1430,7 @@ def change_file_name():
             tmp_arr[12] = confdata["SUP_NAME"]
             tmp_arr[17] = value['safety']
             tmp_arr[3] = value['engineer']
+            tmp_arr[25] = value['department']
             unique_arr.append(tmp_arr)
 
             # if value.get('cal') is not None and value.get('pm') is not None:
@@ -1466,13 +1462,13 @@ def showmenu():
     if (last_run_date != today.strftime('%d/%m/%Y')):
         cookies['PHPSESSID'] = None
         confdata['Last run'] = today.strftime('%d/%m/%Y')
-        with open(os.path.join(os.path.dirname(__file__), 'CONFIG', 'config.json'), 'w') as f:
+        with open(os.path.join(root_dir, 'CONFIG', 'config.json'), 'w') as f:
             json.dump(confdata, f)
         # delete file calibarator_list.json
         for file in ['calibrator_list.json', 'tool_list.json', 'emp_list.json']:
-            if os.path.exists(os.path.join(os.path.dirname(__file__), 'CONFIG', file)):
+            if os.path.exists(os.path.join(root_dir, 'CONFIG', file)):
                 os.remove(os.path.join(
-                    os.path.dirname(__file__), 'CONFIG', file))
+                    root_dir, 'CONFIG', file))
         load_empList()
         load_calibrator_list()
         load_tool_list('none')
@@ -1503,7 +1499,7 @@ def showmenu():
         #           'SOURCE', 'download cert.txt') + '"')
         # print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
         script_text = open(os.path.join(dir_path, 'SOURCE',
-                           'download cert.txt'), encoding='utf-8').read()
+                        'download cert.txt'), encoding='utf-8').read()
         # copy to clipboard
         pyperclip.copy(script_text)
         print('\n[green]คัดลอกสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT เรียบร้อย[/green]')
