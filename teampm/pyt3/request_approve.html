@@ -1,0 +1,24 @@
+function isPwaInstalled() {
+    // Check for iOS
+    const isStandalone = window.navigator.standalone;
+
+    // Check for other browsers
+    const isPwa = window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: minimal-ui)').matches;
+
+    return isStandalone || isPwa;
+}
+
+// Function to open the installed app or fallback to URL
+function openAppOrUrl(url) {
+    if (isPwaInstalled()) {
+        // Logic to handle navigation within the installed PWA
+        // For example, use your app's routing mechanism
+        window.location.href = '/forms/timesheet/timesheet.html'; // Change to your app's home route or desired route
+    } else {
+        // If not installed, open the URL in the browser
+        window.location.href = url;
+    }
+}
+
+const url = 'https://pyt3.github.io/forms/timesheet/timesheet.html'; // Your specific URL
+openAppOrUrl(url);
