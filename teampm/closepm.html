@@ -366,7 +366,7 @@
                 if (safety != null && safety != '') {
                     msg += ',' + safety
                 }
-                await new Promise((resolve, reject) => setTimeout(() => resolve(), 1500)).then(() => {
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 200)).then(() => {
                     liff.sendMessages([{
                         'type': 'text',
                         'text': msg

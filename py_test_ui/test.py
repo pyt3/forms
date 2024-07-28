@@ -53,8 +53,8 @@ print(init_text)
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # check if using pyinstaller
-# if getattr(sys, 'frozen', False):
-#     root_dir = os.path.dirname(sys.executable)
+if getattr(sys, 'frozen', False):
+    root_dir = os.path.dirname(sys.executable)
 config = open(os.path.join(root_dir, "CONFIG", "config.json"), "r")
 confdata = json.load(config)
 
@@ -88,6 +88,7 @@ emp_list = {}
 tools_list = {}
 calibrator_list = {}
 temp_emp_list = {}
+SEARCH_KEY = 's_code'
 
 excel_file_name = 'recordCal_PM.xlsx'
 excel_folder = os.path.join(root_dir, 'EXCEL FILE')
@@ -95,8 +96,9 @@ excel_folder = os.path.join(root_dir, 'EXCEL FILE')
 
 def read_excel_file():
     global master_df
+    global SEARCH_KEY
     master_df = (pd.read_excel(
-        os.path.join(excel_folder, excel_file_name).replace('//', '/'), sheet_name="Sheet1", engine='openpyxl')).dropna(subset=["CODE"])
+        os.path.join(excel_folder, excel_file_name).replace('//', '/'), sheet_name="Sheet1", engine='openpyxl')).dropna(subset=[SEARCH_KEY[0]])
     # check if dataframe gasattr map
     if not hasattr(master_df, 'map'):
         master_df.map = master_df.applymap
@@ -142,7 +144,16 @@ def formatDate(date):
         date = '/'.join(date)
     return date
 
+def convertTime(time):
+    if time != 'nan':
+        # convert time is second to text format
+        hours = time / 3600
+        minutes = (time % 3600) / 60
+        seconds = time % 60
+        time = f'{int(hours)} hours {int(minutes)} minutes {int(seconds)} seconds'
+        return time
 
+    return time
 def save_empList(emp_list=None):
     # write over file to clear old data
     if emp_list is None:
@@ -267,7 +278,7 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
     table = '<table class="Grid" cellspacing="0" cellpadding="0">' + tmp2[0] + '</table>'
     soup = BeautifulSoup(table, "lxml")
     max_page = soup.find_all('tr', {'class': 'Footer'})[0].text.split('of')[1].strip().split(' ')[0]
-    print('[yellow]กำลังดึงข้อมูล หน้าที่[/yellow] [blue]{}[/blue] [yellow]จากทั้งหมด[/yellow] [blue]{}[/blue]' .format(page, max_page))
+    print('[yellow]Fetching page[/yellow] [blue]{}[/blue] [yellow]out of[/yellow] [blue]{}[/blue]' .format(page, max_page))
     rows = soup.find_all('tr')
     header = [ele.text.strip() for ele in rows[1].find_all('th')]
     if page == 1:
@@ -285,7 +296,7 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         df = pd.DataFrame(equipments_arr, columns=header)
         df.to_excel(os.path.join(root_dir,'EXCEL FILE', 'equipment_list.xlsx'), index=False)
         # print file path to let user to click
-        print('[yellow]ไฟล์รายการอุปกรณ์ได้ถูกบันทึกไว้ที่[/yellow] [blue]{}[/blue]' .format(os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')))
+        print('[yellow]The equipment list file has been saved at[/yellow] [blue]{}[/blue]' .format(os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')))
         # open file
         file_path = os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')
         auto_adjust_column_width_from_df(file_path, 'Sheet1')
@@ -394,7 +405,7 @@ def get_emp_list():
     for row in tr:
         td = row.find_all('td')
         calibrator_list[td[1].text.strip().lower()] = td[0].text.strip()
-        print('[yellow]กำลังดึงข้อมูลรายชื่อในทีม[/yellow] [blue]{}[/blue]' .format(td[1].text.strip()))
+        print('[yellow]Fetching members of team[/yellow] [blue]{}[/blue]' .format(td[1].text.strip()))
         url = "https://nsmart.nhealth-asia.com/MTDPDB01/reftable/employee_branch.php?dept_control=1&dept_tech={}".format(
             td[0].text.strip())
         team_list = get_team_list(url)
@@ -472,6 +483,7 @@ def get_screen_shot(soup, css_file, text):
 
 
 def closePM(row, self_call=False):
+    global SEARCH_KEY
     if row['DATE-PM'] == 'nan' or row['DATE-PM'] == '':
         return {"status": 'ok', 'text': 'No PM Work', 'nosave': True}
     if row['PM-CLOSED'] != 'nan':
@@ -486,8 +498,7 @@ def closePM(row, self_call=False):
             "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
             '&s_to_date=' +
-            formatDate(row['END-PLAN']) + '&s_code=' + row['CODE'],
-            # formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
+            formatDate(row['END-PLAN']) + '&' + SEARCH_KEY[1] + '=' + row[SEARCH_KEY[0]],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -588,13 +599,14 @@ def closePM(row, self_call=False):
                 soup, 'close_pm_css.css', result_td.text.strip())
             # move file to folder
             shutil.move(file_name+'.png', os.path.join(
-                root_dir, "SCREENSHOT", "PM", row['CODE']+"_"+job_no+".png"))
+                root_dir, "SCREENSHOT", "PM", row[SEARCH_KEY[0]]+"_"+job_no+".png"))
         # if self_call:
         #     return return_json
         return {"status": 'ok', 'text': result_td.text.strip()}
 
 
 def closeCAL(row, self_call=False):
+    global SEARCH_KEY
     if row['DATE-CAL'] == 'nan' or row['DATE-CAL'] == '':
         return {"status": 'ok', 'text': 'No CAL Work', 'nosave': True}
     if row['CAL-CLOSED'] != 'nan':
@@ -608,8 +620,7 @@ def closeCAL(row, self_call=False):
             "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
             '&s_to_date=' +
-            formatDate(row['END-PLAN']) + '&s_code=' + row['CODE'],
-            # formatDate(row['END-PLAN']) + '&s_sap_code=' + row['CODE'],
+            formatDate(row['END-PLAN']) + '&' + SEARCH_KEY[1] + '=' + row[SEARCH_KEY[0]],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -680,31 +691,39 @@ def closeCAL(row, self_call=False):
             soup, 'close_cal_css.css', result_td.text.strip())
         # move file to folder
         shutil.move(file_name+'.png', os.path.join(
-            root_dir, "SCREENSHOT", "CAL", row['CODE']+"_"+job_no+'.png'))
+            root_dir, "SCREENSHOT", "CAL", row[SEARCH_KEY[0]]+"_"+job_no+'.png'))
     return {"status": 'ok', 'text': "CAL status : "+result_td.text.strip()}
 
 
-def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
+def attachFilePM(file_name_list, row):
+# def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
+    global SEARCH_KEY
+    id = row[SEARCH_KEY[0]]
+    team = row['TEAM']
+    engineer = row['ENGINEER']
+    date = row['DATE-PM']
+    status = row['PM-STATUS']
+    attach = row['ATTACH-FILE-PM']
     if attach != 'yes':
         return {"status": 'ok', 'text': 'No need to attach PM file', 'nosave': True}
     if status.lower() == 'success':
         return {"status": 'done', 'text': 'Already attached PM file', 'nosave': True}
     start_date, end_date, now_year = getFirstAndLastDay(date)
-    findname = [ele for ele in file_name_list if id+'_'+now_year+'_pm' in ele]
+    findname = [ele for ele in file_name_list if row['ID CODE']+'_'+now_year+'_pm' in ele]
     if len(findname) == 0:
         return {"status": 'fail', 'text': 'PM Work not found'}
     report_name = findname[0]
     # print type of dataurl
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFilePM(id, team, engineer, date, file_name_list, status, attach)
+        attachFilePM(file_name_list, row)
     response = False
     code = id
     try:
         response = requests.get(
             "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
             str(now_year) + '&s_jobdate=' + start_date +
-            '&s_to_date=' + end_date + '&s_sap_code=' + code,
+            '&s_to_date=' + end_date + '&' + SEARCH_KEY[1] + '=' + code,
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -712,7 +731,7 @@ def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
-        return attachFilePM(id, team, engineer, date, file_name_list, status, attach)
+        return attachFilePM(file_name_list, row)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -720,7 +739,7 @@ def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFilePM(id, team, engineer, date, file_name_list, status, attach)
+        return attachFilePM(file_name_list, row)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return {"status": 'fail', 'text': 'PM Work not found'}
@@ -806,26 +825,33 @@ def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
         return {"status": 'fail', 'text': 'Fail to Attach PM file'}
 
 
-def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
+def attachFileCAL(file_name_list, row):
+    global SEARCH_KEY
+    id = row[SEARCH_KEY[0]]
+    team = row['TEAM']
+    engineer = row['ENGINEER']
+    date = row['DATE-CAL']
+    status = row['CAL-STATUS']
+    attach = row['ATTACH-FILE-CAL']
     if attach != 'yes':
         return {"status": 'ok', 'text': 'No need to attach CAL file', 'nosave': True}
     if status.lower() == 'success':
         return {"status": 'done', 'text': 'Already attached CAL file', 'nosave': True}
     start_date, end_date, now_year = getFirstAndLastDay(date)
-    findname = [ele for ele in file_name_list if id+"_"+now_year+"_cal" in ele]
+    findname = [ele for ele in file_name_list if row['ID CODE']+"_"+now_year+"_cal" in ele]
     if len(findname) == 0:
         return {"status": 'fail', 'text': 'CAL Work not found'}
     report_name = findname[0]
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFileCAL(id, team, engineer, date, file_name_list, status, attach)
+        attachFileCAL(file_name_list, row)
     response = False
     code = id
     try:
         response = requests.get(
             "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
             str(now_year) + '&s_jobdate=' + start_date +
-            '&s_to_date=' + end_date + '&s_sap_code=' + code,
+            '&s_to_date=' + end_date + '&' + SEARCH_KEY[1] + '=' + code,
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -833,7 +859,7 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
-        return attachFileCAL(id, team, engineer, date, file_name_list, status, attach)
+        return attachFileCAL(file_name_list, row)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -841,7 +867,7 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
     if table == None:
         print("No table found, re-login...")
         set_login()
-        return attachFileCAL(id, team, engineer, date, file_name_list, status, attach)
+        return attachFileCAL(file_name_list, row)
     tr = table.find('tr', {"class", "Row"})
     if tr == None:
         return {"status": 'fail', 'text': 'CAL Work not found'}
@@ -910,7 +936,16 @@ def attachFileCAL(id, team, engineer, date, file_name_list, status, attach):
 screenshot = False
 
 
+
+
 def read_file(option=None):
+    global SEARCH_KEY
+    print('[yellow]Select the SEARCH field[/yellow] [light blue][1]ID CODE[/light blue] [light blue][2]Item no.[/light blue] : ',end='')
+    SEARCH_KEY = input()
+    if SEARCH_KEY == '1':
+        SEARCH_KEY = ['ID CODE', 's_sap_code']
+    elif SEARCH_KEY == '2':
+        SEARCH_KEY = ['ITEM NO', 's_code']
     df = read_excel_file()
     dir_path = ''
     if getattr(sys, 'frozen', False):
@@ -946,25 +981,25 @@ def read_file(option=None):
                     attach_pm += 1
                 if row['CAL-ATTACH-STATUS'].lower() == 'nan':
                     attach_cal += 1
-            table = Table(title='ตรวจพบเครื่องมือแพทย์ทั้งหมด: {} เครื่อง'.format(
+            table = Table(title='Total Medical Devices Found: {} devices'.format(
                 len(df)), title_justify='center', title_style='bold magenta')
             table.add_column('#', justify='left', style='cyan', no_wrap=True)
-            table.add_column('จำนวนเครื่อง', justify='right',
+            table.add_column('Number of Devices', justify='right',
                             style='green', no_wrap=True)
             if (option == 'close_pm_cal' or option == None):
-                table.add_row('PM ที่ยังไม่ปิดงาน', str(pass_pm))
-                table.add_row('CAL ที่ยังไม่ปิดงาน', str(pass_cal))
+                table.add_row('PM Jobs Not Closed', str(pass_pm))
+                table.add_row('CAL Jobs Not Closed', str(pass_cal))
 
             if (option == 'attach_pm_cal' or option == None):
-                table.add_row('PM ที่ยังไม่แนบไฟล์', str(attach_pm))
-                table.add_row('CAL ที่ยังไม่แนบไฟล์', str(attach_cal))
+                table.add_row('PM Jobs Not Attached', str(attach_pm))
+                table.add_row('CAL Jobs Not Attached', str(attach_cal))
 
             Console().print(table)
-            print(f'\n[red]ต้องการเริ่มต้นการทำงานหรือไม่? (Y/N): [/red]', end='')
+            print(f'\n[red]Do you want to start the process? (Y/N): [/red]', end='')
             start = input()
             if start.lower() == 'y':
                 print(
-                    f'\n[red]ต้องการบันทึกภาพ Screenshot ด้วยหรือไม่? (Y/N): [/red]', end='')
+                    f'\n[red]Do you want to save screenshots? (Y/N): [/red]', end='')
                 global screenshot
                 screenshot = input().lower() == 'y'
                 init_text = pyfiglet.figlet_format("Start Process...")
@@ -977,12 +1012,12 @@ def read_file(option=None):
                     with Progress() as progress:
                         task = progress.add_task("[red]Processing...[/red]", total=len(df))
                         for index, row in df.iterrows():
-                            row['CODE'] = str(row['CODE']).replace('.0', '')
+                            row[SEARCH_KEY[0]] = str(row[SEARCH_KEY[0]]).replace('.0', '')
                             row['YEAR'] = str(row['YEAR']).replace('.0', '')
                             print('[green]{}[/green] / [blue]{}[/blue] [yellow]Close PM JOB[/yellow] [light blue]{}[/light blue]'.format(
-                                str(index+1), str(len(df)), row['CODE'])
+                                str(index+1), str(len(df)), row[SEARCH_KEY[0]])
                             )
-                            if row['CODE'] != 'nan':
+                            if row[SEARCH_KEY[0]] != 'nan':
                                 issave = False
                                 process_result_pm = ''
                                 process_result_cal = ''
@@ -1029,9 +1064,9 @@ def read_file(option=None):
                                 elif option == 'attach_pm_cal':
                                     with ThreadPoolExecutor() as executor:
                                         process_result_pm = executor.submit(
-                                            attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS'], row['ATTACH-FILE-PM'])
+                                            attachFilePM, file_name_list, row)
                                         process_result_cal = executor.submit(
-                                            attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS'], row['ATTACH-FILE-CAL'])
+                                            attachFileCAL, file_name_list, row)
                                     master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
                                         str)
                                     master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
@@ -1069,9 +1104,9 @@ def read_file(option=None):
                                         process_result_cal = executor.submit(
                                             closeCAL, row)
                                         process_result_pm_attach = executor.submit(
-                                            attachFilePM, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-PM'], file_name_list, row['PM-ATTACH-STATUS'], row['ATTACH-FILE-PM'])
+                                            attachFilePM, file_name_list, row)
                                         process_result_cal_attach = executor.submit(
-                                            attachFileCAL, row['CODE'], row['TEAM'], row['ENGINEER'], row['DATE-CAL'], file_name_list, row['CAL-ATTACH-STATUS'], row['ATTACH-FILE-CAL'])
+                                            attachFileCAL, file_name_list, row)
                                     master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
                                         str)
                                     master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
@@ -1142,10 +1177,10 @@ def read_file(option=None):
                     writer.close()
 
                 end_time = time.time()
-                print('\n[green]ปิดงานและแนบไฟล์สำเร็จ[/green]')
-                print('[green]เสร็จสิ้นในเวลา[/green] : [yellow]{}[/yellow] วินาที'.format(
-                    str(round(end_time-start_time, 2))))
-                print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
+                print('\n[green]Closed jobs and attached files successfully[/green]')
+                print('[green]Completed in[/green]: [yellow]{}[/yellow] seconds'.format(
+                    convertTime(end_time - start_time)))
+                print('Press any button to return to the main menu: ', end='')
                 input()
                 # clear console
                 os.system('cls' if os.name == 'nt' else 'clear')
@@ -1166,7 +1201,7 @@ def read_file(option=None):
     except Exception as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         print('[red]Error[/red]')
-        print('กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : ', end='')
+        print('Press any button to return to the main menu: ', end='')
         input()
         # clear console
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -1276,13 +1311,13 @@ def change_file_name():
     name_arr = {}
     with Progress() as progress:
         task = progress.add_task(
-            "[cyan]เปลี่ยนชื่อไฟล์[/cyan]", total=len(dir_list))
+            "[cyan]Renaming files[/cyan]", total=len(dir_list))
         for file_name in dir_list:
             source = os.path.join(report_path, file_name)
             # if file is not pdf
             if not file_name.endswith('.pdf'):
                 print(
-                    '[red]ไม่ใช่ไฟล์ PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
+                    '[red]Not a PDF file[/red] : [yellow]{}[/yellow]'.format(file_name))
                 progress.update(task, advance=1)
                 continue
 
@@ -1296,7 +1331,7 @@ def change_file_name():
             text = re.findall(r'ID CODE.*\n.*$', page, re.MULTILINE)
             if len(text) == 0:
                 print(
-                    '[red]ไม่พบข้อมูลรหัสเครื่องมือใน PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
+                    '[red]No equipment code found in PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
                 progress.update(task, advance=1)
                 continue
             code = text[0].split('\n')[1].replace(':', '').strip()
@@ -1430,7 +1465,7 @@ def change_file_name():
             tmp_arr[12] = confdata["SUP_NAME"]
             tmp_arr[17] = value['safety']
             tmp_arr[3] = value['engineer']
-            tmp_arr[25] = value['department']
+            tmp_arr[24] = value['department']
             unique_arr.append(tmp_arr)
 
             # if value.get('cal') is not None and value.get('pm') is not None:
@@ -1446,10 +1481,10 @@ def change_file_name():
             line_strings.append('\t'.join(line).replace('\n', ''))
         arr_string = '\r\n'.join(line_strings)
         pyperclip.copy(arr_string)
-        print('\n[green]คัดลอกชื่อรหัสเครื่องเรียบร้อย[/green]')
-    print('\n[green]เปลี่ยนชื่อไฟล์เสร็จสิ้น[/green]')
-    print('\n[purple]กดปุ่มใดก็ได้เพื่อกลับสู่เมนูหลัก : [/purple]', end='')
-    input()
+        print('\n[green]Successfully copied equipment codes[/green]')
+        print('\n[green]File name change completed[/green]')
+        print('\n[purple]Press any key to return to the main menu: [/purple]', end='')
+        input()
     # clear console
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
@@ -1475,18 +1510,18 @@ def showmenu():
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
     # menu
-    print('[light blue]ยินดีต้อนรับสู่โปรแกรมปิดงาน[/light blue]'.encode('utf-8').decode('utf-8'))
-    print('[light blue]โปรดเลือกเมนูที่ต้องการ[/light blue]')
-    print('[yellow][1] เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/yellow]')
-    print('[yellow][2] เปลี่ยนชื่อไฟล์ใบงาน[/yellow]')
-    print('[yellow][3][/yellow]  [red]ปิดงาน[/red] [yellow]PM และ CAL[/yellow]')
-    print('[yellow][4][/yellow]  [red]แนบไฟล์[/red] [yellow]PM และ CAL[/yellow]')
-    print('[yellow][5][/yellow]  [red]ปิดงาน[/red] [yellow]และ[/yellow] [red]แนบไฟล์[/red] [yellow]PM และ CAL[/yellow]')
-    print('[white]----------------------------------------[/white]'.encode('utf-8').decode('utf-8'))
-    print('[red]โปรแกรมเพิ่มเติม[/red]')
-    print('[yellow][6]ดึงข้อมูลเครื่องมือทั้งหมด[/yellow]')
+    Console().print('[light blue]Welcome to the job closing program[/light blue]')
+    print('[light blue]Please select a menu[/light blue]')
+    print('[yellow][1] Open script for downloading ECERT files[/yellow]')
+    print('[yellow][2] Change file name[/yellow]')
+    print('[yellow][3][/yellow] [red]Close[/red] [yellow]PM and CAL[/yellow]')
+    print('[yellow][4][/yellow] [red]Attach[/red] [yellow]PM and CAL files[/yellow]')
+    print('[yellow][5][/yellow] [red]Close[/red] [yellow]and[/yellow] [red]Attach[/red] [yellow]PM and CAL files[/yellow]')
+    print('[white]----------------------------------------[/white]')
+    print('[red]Additional Programs[/red]')
+    print('[yellow][6] Get all equipment data[/yellow]')
     # set input color to blue
-    print(f'\n[purple]กดเลขเพื่อเลือกเมนูที่ต้องการ : [/purple]', end='')
+    print(f'\n[purple]Press a number to select the menu: [/purple]', end='')
     menu = input()
     if menu == '1':
         dir_path = ''
@@ -1502,8 +1537,8 @@ def showmenu():
                         'download cert.txt'), encoding='utf-8').read()
         # copy to clipboard
         pyperclip.copy(script_text)
-        print('\n[green]คัดลอกสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT เรียบร้อย[/green]')
-        print('\nกดปุ่มใดๆเพื่อกลับสู่เมนูหลัก : ', end='')
+        print('\n[green]Script for downloading ECERT files copied successfully[/green]')
+        print('\nPress any key to return to the main menu: ', end='')
         input()
         os.system('cls' if os.name == 'nt' else 'clear')
         print(init_text)
@@ -1526,7 +1561,7 @@ def showmenu():
             read_file()
 
         else:
-            print('ไม่พบเมนูที่เลือก')
+            print('Menu not found')
             showmenu()
 
 
