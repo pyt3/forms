@@ -90,10 +90,10 @@ $(document).ready(() => {
         localStorage.removeItem('history')
         location.reload()
     })
-    liff.init({
-        liffId: "1657104960-Rn9Z79Ag",
-        withLoginOnExternalBrowser: true,
-    })
+    // liff.init({
+    //     liffId: "1657104960-Rn9Z79Ag",
+    //     withLoginOnExternalBrowser: true,
+    // })
     liff.ready.then(async () => {
         $.LoadingOverlay("show");
         console.log('liff init success');
@@ -266,7 +266,16 @@ function getHistory() {
             //     $(`[name="${key}"]`).prop('checked', true)
             //     return
             // }
-            $(`[name="${key}"]`).val(obj[key])
+            if ($(`[name="${key}"]`).is(':checkbox')) {
+                if (obj[key] == '✓') {
+                    $(`[name="${key}"]`).prop('checked', true)
+                } else {
+                    $(`[name="${key}"]`).prop('checked', false)
+                }
+                return
+            } else {
+                $(`[name="${key}"]`).val(obj[key])
+            }
         })
     }
 }
@@ -413,3 +422,5 @@ function convertBase64ToBlob(base64) {
         }, false)
     })
 })()
+
+
