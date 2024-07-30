@@ -422,49 +422,136 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <!-- <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center g-3 my-2">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary">
-                                        <span class="fw-bold text-bg-primary rounded-pill border px-2">Gas Alarm
-                                            System</span>
-                                        <p>Status</p>
-                                    </div>
-                                    <div class="col-12 mt-0 text-center">
-                                        <label for="vaccuum-1" class="bg-success-subtle rounded rounded-pill px-2">BME Room</label>
-                                        <div class="d-flex justify-content-evenly w-100 mt-2">
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="alarm-status-bme"
-                                                    id="inlineradio1" value="option1">
-                                                <label class="form-check-label" for="inlineradio1">ปกติ</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="alarm-status-bme"
-                                                    id="inlineradio2" value="option2">
-                                                <label class="form-check-label" for="inlineradio2">ผิดปกติ</label>
-                                            </div>
+                            <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                <span
+                                    class="fw-bold text-white bg-dark rounded-pill border px-2">BME Alarm</span>
+                                <div>System</div>
+                            </div>
+                            <div class="col-6 p-0 pe-2">
+                                
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    
+                                    <span class="fw-bold text-white bg-success rounded-pill border px-2 fs-5">
+                                        <i class="bi bi-exclamation-triangle-fill text-warning"></i> O<sub>2</sub> Alarm</span>
+                                    <div class="d-flex flex-column gap-2 mt-3">
+                                        <div class="col-12">
+                                            <label for="bme-alarm-o2-leak-test">Leak Test</label>
+                                            <select type="number" name="bme-alarm-o2-leak-test"
+                                                id="bme-alarm-o2-leak-test" class="form-select text-center alarm-leak-test">
+                                                <option value="" selected disabled>เลือก</option>
+                                                <option value="✓">ผ่าน</option>
+                                                <option value="✗">ไม่ผ่าน</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="bme-alarm-o2-pressure">แรงดัน</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="bme-alarm-o2-pressure"
+                                                id="bme-alarm-o2-pressure" class="form-control text-center">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="bme-alarm-o2-volume">ปริมาตร</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="bme-alarm-o2-volumn"
+                                                id="bme-alarm-o2-volumn" class="form-control text-center">
                                         </div>
                                     </div>
-                                    <div class="col-12 text-center">
-                                        <label for="vaccuum-2" class="bg-success-subtle rounded rounded-pill px-2">Pump Room</label>
-                                        <div class="d-flex justify-content-evenly w-100 mt-2">
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="alarm-status-pump"
-                                                    id="inlineradio1" value="option1">
-                                                <label class="form-check-label" for="inlineradio1">ปกติ</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="alarm-status-pump"
-                                                    id="inlineradio2" value="option2">
-                                                <label class="form-check-label" for="inlineradio2">ผิดปกติ</label>
-                                            </div>
+                                </div>
+                            </div>
+                            <div class="col-6 p-0 pe-2">
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    <span class="fw-bold text-dark bg-warning rounded-pill border px-2 fs-5">
+                                        <i class="bi bi-exclamation-triangle-fill text-danger"></i> Air Alarm</span>
+                                    <div class="d-flex flex-column gap-2 mt-3">
+                                        <div class="col-12">
+                                            <label for="bme-alarm-air-leak-test">Leak Test</label>
+                                            <select type="number" name="bme-alarm-air-leak-test"
+                                                id="bme-alarm-air-leak-test" class="form-select text-center alarm-leak-test">
+                                                <option value="" selected disabled>เลือก</option>
+                                                <option value="✓">ผ่าน</option>
+                                                <option value="✗">ไม่ผ่าน</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="bme-alarm-air-pressure">แรงดัน</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="bme-alarm-air-pressure"
+                                                id="bme-alarm-air-pressure" class="form-control text-center">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="bme-alarm-air-volume">ปริมาตร</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="bme-alarm-air-volumn"
+                                                id="bme-alarm-air-volumn" class="form-control text-center">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                <span
+                                    class="fw-bold text-white bg-secondary rounded-pill border px-2">Pump room Alarm</span>
+                                <div>System</div>
+                            </div>
+                            <div class="col-6 p-0 pe-2">
+                                
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    
+                                    <span class="fw-bold text-white bg-success rounded-pill border px-2 fs-5">
+                                        <i class="bi bi-exclamation-triangle-fill text-warning"></i> O<sub>2</sub> Alarm</span>
+                                    <div class="d-flex flex-column gap-2 mt-3">
+                                        <div class="col-12">
+                                            <label for="pump-room-alarm-o2-leak-test">Leak Test</label>
+                                            <select type="number" name="pump-room-alarm-o2-leak-test"
+                                                id="pump-room-alarm-o2-leak-test" class="form-select text-center alarm-leak-test">
+                                                <option value="" selected disabled>เลือก</option>
+                                                <option value="✓">ผ่าน</option>
+                                                <option value="✗">ไม่ผ่าน</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="pump-room-alarm-o2-pressure">แรงดัน</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="pump-room-alarm-o2-pressure"
+                                                id="pump-room-alarm-o2-pressure" class="form-control text-center">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="pump-room-alarm-o2-volume">ปริมาตร</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="pump-room-alarm-o2-volumn"
+                                                id="pump-room-alarm-o2-volumn" class="form-control text-center">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 p-0 pe-2">
+                                <div class="border border-dark rounded p-3 bg-light text-center shadow">
+                                    <span class="fw-bold text-dark bg-warning rounded-pill border px-2 fs-5">
+                                        <i class="bi bi-exclamation-triangle-fill text-danger"></i> Air Alarm</span>
+                                    <div class="d-flex flex-column gap-2 mt-3">
+                                        <div class="col-12">
+                                            <label for="pump-room-alarm-air-leak-test">Leak Test</label>
+                                            <select type="number" name="pump-room-alarm-air-leak-test"
+                                                id="pump-room-alarm-air-leak-test" class="form-select text-center alarm-leak-test">
+                                                <option value="" selected disabled>เลือก</option>
+                                                <option value="✓">ผ่าน</option>
+                                                <option value="✗">ไม่ผ่าน</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="pump-room-alarm-air-pressure">แรงดัน</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="pump-room-alarm-air-pressure"
+                                                id="pump-room-alarm-air-pressure" class="form-control text-center">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="pump-room-alarm-air-volume">ปริมาตร</label>
+                                            <input type="number" step="0.1" inputmode="decimal" name="pump-room-alarm-air-volumn"
+                                                id="pump-room-alarm-air-volumn" class="form-control text-center">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section> -->
                     <div class="row justify-content-center">
                         <div class="col-md-4 mt-3 text-center">
                             <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
