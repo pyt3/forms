@@ -1363,9 +1363,9 @@ def change_file_name():
                 name_arr[code+'#'+year]['issue-pm'] = issuedate
                 name = code + "_"+year+'_pm.pdf'
             safety = re.findall(
-                r'Electrical Safety.*\n.*$', page, re.MULTILINE)
+                r'electricalsafetyanalyzer', page.lower().replace('\n', '').replace(' ',''), re.MULTILINE)
             if safety is not None and len(safety) > 0:
-                name_arr[code+'#'+year]['safety'] = safety[0].replace('\n', ' ').strip()
+                name_arr[code+'#'+year]['safety'] = 'Electrical Safety Analyzer'
             else:
                 name_arr[code+'#'+year]['safety'] = '-'
             engineer = re.findall(r'Approved by.*\n.*$', page, re.MULTILINE)
