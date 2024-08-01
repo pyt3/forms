@@ -1490,25 +1490,30 @@ def change_file_name():
     print(init_text)
     showmenu()
 
+def re_init_app():
+    today = datetime.now()
+    confdata['Last run'] = today.strftime('%d/%m/%Y')
+    with open(os.path.join(root_dir, 'CONFIG', 'config.json'), 'w') as f:
+        json.dump(confdata, f)
+    # delete file calibarator_list.json
+    for file in ['calibrator_list.json', 'tool_list.json', 'emp_list.json']:
+        if os.path.exists(os.path.join(root_dir, 'CONFIG', file)):
+            os.remove(os.path.join(
+                root_dir, 'CONFIG', file))
+    load_empList()
+    load_calibrator_list()
+    load_tool_list('none')
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(init_text)
+   
+        
+
 
 def showmenu():
     last_run_date = confdata.get('Last run')
     today = datetime.now()
     if (last_run_date != today.strftime('%d/%m/%Y')):
-        cookies['PHPSESSID'] = None
-        confdata['Last run'] = today.strftime('%d/%m/%Y')
-        with open(os.path.join(root_dir, 'CONFIG', 'config.json'), 'w') as f:
-            json.dump(confdata, f)
-        # delete file calibarator_list.json
-        for file in ['calibrator_list.json', 'tool_list.json', 'emp_list.json']:
-            if os.path.exists(os.path.join(root_dir, 'CONFIG', file)):
-                os.remove(os.path.join(
-                    root_dir, 'CONFIG', file))
-        load_empList()
-        load_calibrator_list()
-        load_tool_list('none')
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print(init_text)
+        re_init_app()
     # menu
     Console().print('[light blue]Welcome to the job closing program[/light blue]')
     print('[light blue]Please select a menu[/light blue]')
@@ -1520,6 +1525,7 @@ def showmenu():
     print('[white]----------------------------------------[/white]')
     print('[red]Additional Programs[/red]')
     print('[yellow][6] Get all equipment data[/yellow]')
+    print('[yellow][7] Reinitialize Application[/yellow]')
     # set input color to blue
     print(f'\n[purple]Press a number to select the menu: [/purple]', end='')
     menu = input()
@@ -1548,6 +1554,11 @@ def showmenu():
         showmenu()
     elif menu == '6':
         get_equipment_file()
+        showmenu()
+    
+    elif menu == '7':
+        re_init_app()
+        showmenu()
     else:
         load_empList()
         load_calibrator_list()
