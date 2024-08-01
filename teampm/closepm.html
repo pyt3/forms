@@ -366,17 +366,22 @@
                 if (safety != null && safety != '') {
                     msg += ',' + safety
                 }
-                await new Promise((resolve, reject) => setTimeout(() => resolve(), 200)).then(() => {
-                    liff.sendMessages([{
-                        'type': 'text',
-                        'text': msg
-                    }]).then(() => {
-                        console.log('message sent')
-                    }).catch((err) => {
-                        console.log('error', err)
-                    })
-                    // $('body').append(msg + '<br>')
-                })
+                // await new Promise((resolve, reject) => setTimeout(() => resolve(), 200)).then(() => {
+                //     liff.sendMessages([{
+                //         'type': 'text',
+                //         'text': msg
+                //     }]).then(() => {
+                //         console.log('message sent')
+                //     }).catch((err) => {
+                //         console.log('error', err)
+                //     })
+                //     // $('body').append(msg + '<br>')
+                // })
+                await liff.sendMessages([{
+                    'type': 'text',
+                    'text': msg
+                }])
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 200))
                 if (c == code[code.length - 1]) {
                     Swal.fire({
                         title: 'เสร็จสิ้น',
