@@ -963,7 +963,7 @@ def read_file(option=None):
             file_name_list.append(file.replace('.pdf', ''))
     try:
         # read file
-        print('[red]กำลังอ่านไฟล์...[/red]')
+        print('[red]Reading file...[/red]')
 
         with pd.ExcelWriter(os.path.join(excel_folder, excel_file_name).replace('//', '/'),
                             mode='a', engine='openpyxl', if_sheet_exists='replace') as writer:
@@ -1505,7 +1505,7 @@ def re_init_app():
                 root_dir, 'CONFIG', file))
     load_empList()
     load_calibrator_list()
-    load_tool_list('none')
+    os.remove(os.path.join(root_dir, 'CONFIG', 'tools_list.json'))
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
    
