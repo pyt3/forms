@@ -466,6 +466,9 @@ def get_screen_shot(soup, css_file, text):
 
     # get file path
     __location__ = os.path.join(root_dir, 'SCREENSHOT')
+    # if folder not exist, create folder
+    if not os.path.exists(__location__):
+        os.makedirs(__location__)
     hti = Html2Image(temp_path=__location__, size=(
         800, 800), disable_logging=True)
     file_name = str(datetime.timestamp(datetime.now())*1000)
