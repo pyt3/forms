@@ -55,6 +55,11 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 # check if using pyinstaller
 if getattr(sys, 'frozen', False):
     root_dir = os.path.dirname(sys.executable)
+global config
+global confdata
+global login_site
+global data
+global cookies
 config = open(os.path.join(root_dir, "CONFIG", "config.json"), "r")
 confdata = json.load(config)
 
@@ -459,22 +464,25 @@ def base64_image_to_base64_pdf(base64_image_string):
         return None
 
 
-def get_screen_shot(soup, css_file, text):
+def get_screen_shot(soup, css_file, text, type, code=""):
     # open css file from css folder
     css_file = open(os.path.join(root_dir, 'SOURCE/'+css_file), 'r')
     css = css_file.read()
 
     # get file path
-    __location__ = os.path.join(root_dir, 'SCREENSHOT')
+    __location__ = os.path.join(root_dir, 'SCREENSHOT', type)
     # if folder not exist, create folder
-    if not os.path.exists(__location__):
-        os.makedirs(__location__)
-    hti = Html2Image(temp_path=__location__, size=(
+    print(os.path.exists(__location__))
+    if os.path.exists(__location__) == False:
+        # create folder
+        os.makedirs(__location__)  
+        
+    hti = Html2Image(output_path=__location__, size=(
         800, 800), disable_logging=True)
     file_name = str(datetime.timestamp(datetime.now())*1000)
     try:
         hti.screenshot(html_str=str(soup), css_str=css,
-                    save_as=file_name+'.png')
+                    save_as=str(code)+"-"+file_name+'.png')
     except Exception as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         pass
@@ -599,10 +607,8 @@ def closePM(row, self_call=False):
         global screenshot
         if screenshot:
             file_name = get_screen_shot(
-                soup, 'close_pm_css.css', result_td.text.strip())
-            # move file to folder
-            shutil.move(file_name+'.png', os.path.join(
-                root_dir, "SCREENSHOT", "PM", row[SEARCH_KEY[0]]+"_"+job_no+".png"))
+                soup, 'close_pm_css.css', result_td.text.strip(), "PM", row['ID CODE'])
+            
         # if self_call:
         #     return return_json
         return {"status": 'ok', 'text': result_td.text.strip()}
@@ -691,10 +697,7 @@ def closeCAL(row, self_call=False):
     global screenshot
     if screenshot:
         file_name = get_screen_shot(
-            soup, 'close_cal_css.css', result_td.text.strip())
-        # move file to folder
-        shutil.move(file_name+'.png', os.path.join(
-            root_dir, "SCREENSHOT", "CAL", row[SEARCH_KEY[0]]+"_"+job_no+'.png'))
+            soup, 'close_cal_css.css', result_td.text.strip(),"CAL")
     return {"status": 'ok', 'text': "CAL status : "+result_td.text.strip()}
 
 
@@ -819,10 +822,8 @@ def attachFilePM(file_name_list, row):
         global screenshot
         if screenshot:
             file_name = get_screen_shot(
-                soup, 'close_pm_css.css', result_th.text.strip())
+                soup, 'close_pm_css.css', result_th.text.strip(), "PM")
             # move file to folder
-            shutil.move(file_name+'.png', os.path.join(
-                root_dir, "SCREENSHOT", "PM", "Attach_PM_" + id+"_"+job_no+".png"))
         return {"status": 'ok', 'text': 'Attach PM file : '+result_th.text.strip()}
     else:
         return {"status": 'fail', 'text': 'Fail to Attach PM file'}
@@ -927,10 +928,8 @@ def attachFileCAL(file_name_list, row):
         global screenshot
         if screenshot:
             file_name = get_screen_shot(
-                soup, 'close_cal_css.css', result_th.text.strip())
+                soup, 'close_cal_css.css', result_th.text.strip(), "CAL")
             # move file to folder
-            shutil.move(file_name+'.png', os.path.join(
-                root_dir, "SCREENSHOT", "CAL", "Attach_CAL_" + id+"_"+job_no+".png"))
         return {"status": 'ok', 'text': 'Attach CAL file : '+result_th.text.strip()}
     else:
         return {"status": 'fail', 'text': 'Fail to Attach CAL file'}
@@ -1432,43 +1431,44 @@ def change_file_name():
                 value['pm'] = ['']
             tmp_arr = [''] * 26
             tmp_arr[0] = str(i+1)
-            tmp_arr[1] = id.split('#')[0]
-            tmp_arr[2] = getTeamName(value['engineer'])
-            tmp_arr[7] = convertDate(value['pm'])
+            tmp_arr[1] = ""
+            tmp_arr[2] = id.split('#')[0]
+            tmp_arr[3] = getTeamName(value['engineer'])
+            tmp_arr[8] = convertDate(value['pm'])
 
-            if tmp_arr[7] == '':
-                tmp_arr[8] = ''
-                tmp_arr[13] = ''
-                tmp_arr[15] = ''
-                tmp_arr[18] = ''
-            else:
-                tmp_arr[8] = convertDate(value['issue-pm'])
-                if tmp_arr[8] == '' or tmp_arr[8] == '-':
-                    tmp_arr[8] = convertDate(value['pm'])
-                tmp_arr[13] = 'PM doable'
-                tmp_arr[15] = 'pass'
-                tmp_arr[18] = 'yes'
-            tmp_arr[9] = convertDate(value['cal'])
-            if tmp_arr[9] == '':
-                tmp_arr[10] = ''
+            if tmp_arr[8] == '':
+                tmp_arr[9] = ''
                 tmp_arr[14] = ''
                 tmp_arr[16] = ''
                 tmp_arr[19] = ''
             else:
-                tmp_arr[10] = convertDate(value['issue-cal'])
-                if tmp_arr[10] == '' or tmp_arr[10] == '-':
-                    tmp_arr[10] = convertDate(value['cal'])
-                tmp_arr[14] = 'Perform CAL'
+                tmp_arr[9] = convertDate(value['issue-pm'])
+                if tmp_arr[9] == '' or tmp_arr[8] == '-':
+                    tmp_arr[9] = convertDate(value['pm'])
+                tmp_arr[14] = 'PM doable'
                 tmp_arr[16] = 'pass'
                 tmp_arr[19] = 'yes'
-            tmp_arr[4] = id.split('#')[1]
-            tmp_arr[5] = getStartMonth(tmp_arr[7], tmp_arr[9])
-            tmp_arr[6] = getEndMonth(tmp_arr[7], tmp_arr[9])
-            tmp_arr[11] = confdata["SUP_ID"]
-            tmp_arr[12] = confdata["SUP_NAME"]
-            tmp_arr[17] = value['safety']
-            tmp_arr[3] = value['engineer']
-            tmp_arr[24] = value['department']
+            tmp_arr[10] = convertDate(value['cal'])
+            if tmp_arr[10] == '':
+                tmp_arr[11] = ''
+                tmp_arr[15] = ''
+                tmp_arr[17] = ''
+                tmp_arr[20] = ''
+            else:
+                tmp_arr[11] = convertDate(value['issue-cal'])
+                if tmp_arr[11] == '' or tmp_arr[11] == '-':
+                    tmp_arr[11] = convertDate(value['cal'])
+                tmp_arr[15] = 'Perform CAL'
+                tmp_arr[17] = 'pass'
+                tmp_arr[20] = 'yes'
+            tmp_arr[5] = id.split('#')[1]
+            tmp_arr[6] = getStartMonth(tmp_arr[8], tmp_arr[10])
+            tmp_arr[7] = getEndMonth(tmp_arr[8], tmp_arr[10])
+            tmp_arr[12] = confdata["SUP_ID"]
+            tmp_arr[13] = confdata["SUP_NAME"]
+            tmp_arr[18] = value['safety']
+            tmp_arr[4] = value['engineer']
+            tmp_arr[25] = value['department']
             unique_arr.append(tmp_arr)
 
             # if value.get('cal') is not None and value.get('pm') is not None:
@@ -1494,18 +1494,30 @@ def change_file_name():
     showmenu()
 
 def re_init_app():
+    global config
+    global confdata
+    global login_site
+    global data
+    config = open(os.path.join(root_dir, "CONFIG", "config.json"), "r")
+    confdata = json.load(config)
+
+    login_site = confdata["SITE"]
+    print(login_site)
+    data['user'] = confdata["USERNAME"]
+    data['pass'] = confdata["PASSWORD"]
+    cookies['PHPSESSID'] = None
+
     today = datetime.now()
     confdata['Last run'] = today.strftime('%d/%m/%Y')
     with open(os.path.join(root_dir, 'CONFIG', 'config.json'), 'w') as f:
         json.dump(confdata, f)
     # delete file calibarator_list.json
-    for file in ['calibrator_list.json', 'tool_list.json', 'emp_list.json']:
+    for file in ['calibrator_list.json', 'tools_list.json', 'emp_list.json']:
         if os.path.exists(os.path.join(root_dir, 'CONFIG', file)):
             os.remove(os.path.join(
                 root_dir, 'CONFIG', file))
     load_empList()
     load_calibrator_list()
-    os.remove(os.path.join(root_dir, 'CONFIG', 'tools_list.json'))
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
    
