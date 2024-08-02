@@ -41,11 +41,11 @@
             $.LoadingOverlay("show");
             const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
             firestore = defaultProject.firestore();
-            auth = defaultProject.auth();
-            if (!auth.currentUser) {
-                // await getAuth()
-                await getAuth(await liff.getDecodedIDToken().sub)
-            }
+            // auth = defaultProject.auth();
+            // if (!auth.currentUser) {
+            //     // await getAuth()
+            //     await getAuth(await liff.getDecodedIDToken().sub)
+            // }
 
             let params = (new URL(location.href)).searchParams;
             let liff_state = params.get("liff.state");
