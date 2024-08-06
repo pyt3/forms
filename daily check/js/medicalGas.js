@@ -290,7 +290,7 @@ function toTitleCase(str) {
     );
 }
 
-function formSubmit() {
+async function formSubmit() {
     // check if not attach image
     if ($('#liquid-o2-volume-img').val() == '') {
         return Swal.fire({
@@ -303,15 +303,12 @@ function formSubmit() {
         })
     }
     if (Number($('#pump-room-temp').val()) < 30) {
-        return Swal.fire({
+        await Swal.fire({
             icon: 'warning',
             title: 'อุณหภูมิห้องปั๊มต่ำกว่า 30 องศา',
             html: '<span class="fw-bold text-danger">ปั๊ม dissicant air dryer อาจะหยุดทำงาน</span><br>กรุณาตรวจสอบ<br><img src="https://nsmart.nhealth-asia.com/MTDPDB01/img.php?files=202005260826590.friulair.jpg" class="img-fluid" style="max-height: 400px">',
             confirmButtonText: 'ตกลง',
-        }).then(() => {
-            $('#pump-room-temp').focus()
         })
-
     }
     let form = $('#main-form')
     let data = form.serializeArray()
