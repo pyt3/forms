@@ -985,15 +985,15 @@
                                         <input type="radio" class="btn-check" name="shift"
                                             id="gas-detector-shift-morning" value="เช้า" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100"
-                                            for="gas-detector-shift-morning"><i
-                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                            for="gas-detector-shift-morning"><i class="bi bi-cloud-sun-fill fs-4"></i>
+                                            รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
                                         <input type="radio" class="btn-check" name="shift"
                                             id="gas-detector-shift-evening" value="เย็น" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100"
-                                            for="gas-detector-shift-evening"><i
-                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                            for="gas-detector-shift-evening"><i class="bi bi-cloud-moon-fill fs-4"></i>
+                                            รอบเย็น</label>
                                     </div>
                                 </div>
                             </div>
@@ -1113,8 +1113,8 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="air-compressor-name" name="air-compressor-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                                <input type="text" class="form-control name" id="air-compressor-name"
+                                    name="air-compressor-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
                     </section>
@@ -1290,7 +1290,7 @@
         <img src="" alt="" id="compressing" hidden>
     </footer>
     <script>
-        var script_url = 'https://script.google.com/macros/s/AKfycbzsI-BsQAgYeGmBElhemW_gvcIf8MHulsANpVVPjdDlNOpJvXVNkjqz8SJeLfCs0OWrnA/exec'
+        var script_url = 'https://script.google.com/macros/s/AKfycbxs0HBnBJPh1rFf6dVP0Vd3VQthFUTI74hwln7Wp94xdDRzgPyfPHzIh9O5lLA2EhhTEg/exec'
         var Toast
         $(document).ready(() => {
             Toast = Swal.mixin({
@@ -1368,13 +1368,12 @@
                 localStorage.removeItem('history')
                 location.reload()
             })
-            // liff.init({
-            //     liffId: "1657104960-bN4Om4yY",
-            //     // liffId: "1655873446-MpmBPPzl",
-            //     withLoginOnExternalBrowser: true,
-            // })
+            liff.init({
+                liffId: "1657104960-eLkEQkw9",
+                withLoginOnExternalBrowser: true,
+            })
+            getLastSaved()
             liff.ready.then(async () => {
-                getLastSaved()
                 $.LoadingOverlay("show");
                 console.log('liff init success');
                 let profile = await liff.getProfile()
@@ -1495,27 +1494,11 @@
                             Object.keys(data).forEach(key => {
                                 if (key.length < 1) return
                                 if (!$('#' + key)) return
-                                // if ($('#' + key).is(':checkbox')) {
-                                //     if (data[key] == '✓') {
-                                //         $('#' + key).prop('checked', true).val('✓')
-                                //     } else {
-                                //         $('#' + key).prop('checked', false).val('')
-                                //     }
-                                //     return
-                                // } else if ($('#' + key).is(':radio')) {
-                                //     if (data[key] == '✓') {
-                                //         $('#' + key).prop('checked', true)
-                                //     } else {
-                                //         $('#' + key).prop('checked', false)
-                                //     }
-                                //     return
-                                // }
                                 $('#' + key).attr('placeholder', data[key])
-                                if (key.indexOf('-lot') > -1) $('#' + key).val(data[key])
                             })
                             console.log(localStorage.getItem('user'));
                             if (localStorage.getItem('user') != null) {
-                                $('#name').val(localStorage.getItem('user') || "")
+                                $('#' + a.form + ' .name').val(localStorage.getItem('user') || "")
                             } else {
                                 $('#name').val("")
                             }
@@ -1660,15 +1643,15 @@ EC = ${obj['ro-1-ec']} µS/cm
 -------------------------------
 
 ⚡ ระบบไฟฟ้า
-ตู้ระบบไฟฟ้า ${obj['ro-1-circuit-box'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+ตู้ระบบไฟฟ้า = ${obj['ro-1-circuit-box'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 👉 Pressure Gauge
-P1 = ${obj['ro-1-pressure-guage-p1']} == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'
+P1 = ${obj['ro-1-pressure-guage-p1'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['ro-1-name']}`
                     break
                 case "ro-2-checklist":
                     message = `👉 ผลการตรวจเช็คระบบน้ำ RO #2
@@ -1683,15 +1666,15 @@ EC = ${obj['ro-2-ec']} µS/cm
 -------------------------------
 
 ⚡ ระบบไฟฟ้า
-ตู้ระบบไฟฟ้า ${obj['ro-2-circuit-box'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+ตู้ระบบไฟฟ้า = ${obj['ro-2-circuit-box'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 👉 Pressure Gauge
-P1 = ${obj['ro-2-pressure-guage-p1'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+P1 = ${obj['ro-2-pressure-guage-p1'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['ro-2-name']}`
                     break
                 case "ro-stream-checklist":
                     message = `👉 ผลการตรวจเช็คระบบน้ำ RO ตู้นึ่ง
@@ -1703,39 +1686,39 @@ PH (A) = ${obj['ro-stream-ph']}
 Water Hardness (B) = ${obj['ro-stream-water-hardness']} ppm
 TDS = ${obj['ro-stream-tds']} ppm
 EC = ${obj['ro-stream-ec']} µS/cm
-ปริมาณเกลือในถัง = ${obj['ro-stream-salt-level'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+ปริมาณเกลือในถัง = ${obj['ro-stream-salt-level'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 ⚡ ระบบไฟฟ้า
-ตู้ระบบไฟฟ้า (C) ${obj['ro-stream-circuit-box'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-Auto Valve Resin (D) ${obj['ro-stream-valve-resin'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-Auto Valve Carbon (E) ${obj['ro-stream-valve-carbon'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-Auto Valve Anthracite (F) ${obj['ro-stream-valve-anthracite'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+ตู้ระบบไฟฟ้า (C) = ${obj['ro-stream-circuit-box'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+Auto Valve Resin (D) = ${obj['ro-stream-valve-resin'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+Auto Valve Carbon (E) = ${obj['ro-stream-valve-carbon'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+Auto Valve Anthracite (F) = ${obj['ro-stream-valve-anthracite'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 👉 Pressure Gauge
-P1 (ก่อนเข้าถังสารกรอง) (G) ${obj['ro-stream-pressure-guage-p1'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-P2 (Resin Tank) (H) ${obj['ro-stream-pressure-guage-p2'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-P3 (Carbon Tank) (I) ${obj['ro-stream-pressure-guage-p3'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-P4 (Anthracite Tank) (J) ${obj['ro-stream-pressure-guage-p4'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+P1 (ก่อนเข้าถังสารกรอง) (G) = ${obj['ro-stream-pressure-guage-p1'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+P2 (Resin Tank) (H) = ${obj['ro-stream-pressure-guage-p2'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+P3 (Carbon Tank) (I) = ${obj['ro-stream-pressure-guage-p3'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+P4 (Anthracite Tank) (J) = ${obj['ro-stream-pressure-guage-p4'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['ro-stream-name']}`
                     break
                 case "gas-detector-checklist":
-                    message = `👉 ผลการตรวจเช็ค Gas cDetector
+                    message = `👉 ผลการตรวจเช็ค Gas Detector
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 เช็คสถานะการทำงาน
-👉 หน้าจอ ${obj['gas-detector-display'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-👉 ระบบ Alarm ${obj['gas-detector-alarm'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-👉 ค่าความเข้ม EO ${obj['gas-detector-eo'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+👉 หน้าจอ = ${obj['gas-detector-display'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+👉 ระบบ Alarm = ${obj['gas-detector-alarm'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+👉 ค่าความเข้ม EO = ${obj['gas-detector-eo'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['gas-detector-name']}`
                     break
                 case "air-compressor-checklist":
                     message = `👉 ผลการตรวจเช็ค Air Compressor
@@ -1743,17 +1726,17 @@ P4 (Anthracite Tank) (J) ${obj['ro-stream-pressure-guage-p4'] == '✓' ? '☑️
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
 
 👉Air Compressor #1 
-ระบบไฟฟ้า ${obj['air-compressor-1-circuit'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-Drain น้ำออกจากถังเก็บลม 10 นาที ${obj['air-compressor-1-water-drain'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+ระบบไฟฟ้า = ${obj['air-compressor-1-circuit'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+Drain น้ำออกจากถังเก็บลม 10 นาที = ${obj['air-compressor-1-water-drain'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 👉Air Compressor #2
-ระบบไฟฟ้า ${obj['air-compressor-2-circuit'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
-Drain น้ำออกจากถังเก็บลม 10 นาที ${obj['air-compressor-2-water-drain'] == '✓' ? '☑️ปกติ' : '❌ผิดปกติ'}
+ระบบไฟฟ้า = ${obj['air-compressor-2-circuit'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
+Drain น้ำออกจากถังเก็บลม 10 นาที = ${obj['air-compressor-2-water-drain'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
 -------------------------------
 
 บันทึกโดย
-@${obj.name}`
+@${obj['air-compressor-name']}`
                     break
                 default: return
             }
@@ -1805,7 +1788,9 @@ Drain น้ำออกจากถังเก็บลม 10 นาที ${o
             console.log(obj);
             obj.opt = 'submit'
             obj.form = $(form).attr('id')
-            if ($('#' + form).find('[type="file"]').length > 0 && $('#' + form).find('[type="file"]').val() == '') {
+            obj.uid = liff.getDecodedIDToken().sub
+            obj.displayname = liff.getProfile().displayName
+            if ($(form).find('[type="file"]').length > 0 && $(form).find('[type="file"]').val() == '') {
                 return Swal.fire({
                     icon: 'error',
                     title: 'กรุณาแนบรูปภาพก่อนกดบันทึก',
@@ -1817,7 +1802,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที ${o
             }
             console.log(obj);
             $.LoadingOverlay("show");
-            // localStorage.setItem('user', $(form).find('.name')[0].value)
+            localStorage.setItem('user', $(form).find('.name')[0].value)
             $.ajax({
                 url: script_url,
                 data: obj,
@@ -1833,6 +1818,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที ${o
                         setTimeout(() => {
                             $(form).trigger('reset')
                             $(form).removeClass('was-validated')
+                            $('.ro-img-preview').removeClass('active').attr('src', '')
                             // scroll to top
                             let history = localStorage.getItem('history')
                             if (history != null) {
@@ -1846,7 +1832,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที ${o
                                 text: 'กรุณาปิดหน้าต่างนี้',
                                 confirmButtonText: 'ปิดหน้าต่าง',
                             }).then(() => {
-                                liff.closeWindow()
+                                // liff.closeWindow()
                             })
                         }, 1000);
                     } else {
