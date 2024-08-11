@@ -1324,7 +1324,7 @@
                 $('input[type="file"]').val('')
                 $('.ro-img-preview').removeClass('active').attr('src', '')
                 $(target).find('.ro-img-preview').addClass('active')
-                console.log("🚀 !! target:", target)
+                
                 $(target).addClass('animate__slideInLeft animate__faster')
                 setTimeout(() => {
                     $(target).removeClass('animate__slideInLeft animate__faster')
@@ -1378,7 +1378,7 @@
                 console.log('liff init success');
                 let profile = await liff.getProfile()
                 console.log("🚀 ~ profile:", profile)
-                console.log(liff.getDecodedIDToken().sub);
+                
                 $('#line-display').attr('src', profile.pictureUrl).show(200)
                 $.LoadingOverlay("hide");
                 let now = new Date()
@@ -1447,7 +1447,6 @@
                     $('#' + $(inp).attr('id')).removeClass('border-danger border-2')
                     $('#' + alert_id).html('')
                 }
-                console.log("🚀 !! section_alerts:", section_alerts)
             }
             Object.keys(section_alerts).forEach(alert_id => {
                 let alert_text = ''
@@ -1472,7 +1471,7 @@
 
                     let alert_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
                     delete section_alerts[alert_id][$(this).data('alert-id')]
-                    console.log(section_alerts);
+                    
                 })
             })
         }
@@ -1488,7 +1487,7 @@
             Promise.all(forms.map(a => {
                 $.ajax(a.url, {
                     success: function (res) {
-                        console.log(res)
+                        
                         if (res.status == 'success') {
                             let data = res.data
                             Object.keys(data).forEach(key => {
@@ -1496,8 +1495,8 @@
                                 if (!$('#' + key)) return
                                 $('#' + key).attr('placeholder', data[key])
                             })
-                            console.log(localStorage.getItem('user'));
-                            if (localStorage.getItem('user') != null) {
+                            
+                            if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
                                 $('#' + a.form + ' .name').val(localStorage.getItem('user') || "")
                             } else {
                                 $('#name').val("")
@@ -1586,11 +1585,11 @@
             let history = localStorage.getItem('history')
             if (history != null) {
                 let obj = JSON.parse(history)
-                console.log("🚀 ~ obj:", obj)
+                
                 Object.keys(obj).forEach(key => {
-                    console.log("🚀 !! key:", key)
+                    
                     Object.keys(obj[key]).forEach(k => {
-                        console.log("🚀 !! k:", k)
+                        
                         let ele = $('#' + key + ' [name="' + k + '"]')
                         if (ele.is(':checkbox')) {
                             if (obj[key][k] == '✓') {
@@ -1600,7 +1599,7 @@
                             }
                             return
                         } else if (ele.is(':radio')) {
-                            console.log(ele.attr('name'));
+                            
                             if (obj[key][k] && obj[key][k] != '') {
                                 if (obj[key][k] == '✓') {
                                     $('#' + ele.attr('name') + '-normal').prop('checked', true)
@@ -1800,7 +1799,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
                     $('#' + form).find('[type="file"]').focus()
                 })
             }
-            console.log(obj);
+            
             $.LoadingOverlay("show");
             localStorage.setItem('user', $(form).find('.name')[0].value)
             $.ajax({
@@ -1897,7 +1896,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
                     preview.addClass('animate__animated animate__flipInY')
 
                     img_file = files[0]
-                    console.log("🚀 ~ img_file:", img_file)
+                    
                 });
 
                 comp.on('compressing', () => console.log('compressing'))
