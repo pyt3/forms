@@ -168,7 +168,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="name" name="name"
+                                <input type="text" class="form-control name" id="ro-1-name" name="ro-1-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -367,7 +367,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="name" name="name"
+                                <input type="text" class="form-control name" id="ro-2-name" name="ro-2-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -569,7 +569,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="name" name="name"
+                                <input type="text" class="form-control name" id="ro-stream-name" name="ro-stream-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -983,16 +983,16 @@
                                 <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
                                     <div class="col-6 px-2">
                                         <input type="radio" class="btn-check" name="shift"
-                                            id="liquid-nitrogen-shift-morning" value="เช้า" autocomplete="off">
+                                            id="gas-detector-shift-morning" value="เช้า" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100"
-                                            for="liquid-nitrogen-shift-morning"><i
+                                            for="gas-detector-shift-morning"><i
                                                 class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
                                         <input type="radio" class="btn-check" name="shift"
-                                            id="liquid-nitrogen-shift-evening" value="เย็น" autocomplete="off">
+                                            id="gas-detector-shift-evening" value="เย็น" autocomplete="off">
                                         <label class="btn btn-outline-primary  w-100"
-                                            for="liquid-nitrogen-shift-evening"><i
+                                            for="gas-detector-shift-evening"><i
                                                 class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
                                     </div>
                                 </div>
@@ -1108,12 +1108,12 @@
                         </div>
                     </div>
                 </div>
-                <form id="ro-stream-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                <form id="air-compressor-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
                     <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="name" name="name"
+                                <input type="text" class="form-control name" id="air-compressor-name" name="air-compressor-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
@@ -1290,7 +1290,7 @@
         <img src="" alt="" id="compressing" hidden>
     </footer>
     <script>
-        var script_url = 'https://script.google.com/macros/s/AKfycbwew5SoKXY39vXShqtwgL7OAVJle0fLaE3vY6_T5R5pmHeK4fNo8Jjw8pJY2VPQiVLc/exec'
+        var script_url = 'https://script.google.com/macros/s/AKfycbzsI-BsQAgYeGmBElhemW_gvcIf8MHulsANpVVPjdDlNOpJvXVNkjqz8SJeLfCs0OWrnA/exec'
         var Toast
         $(document).ready(() => {
             Toast = Swal.mixin({
@@ -1299,7 +1299,7 @@
                 showConfirmButton: false,
                 timer: 1500,
             })
-            $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/c4138b94-68e0-48e5-9021-57d76f7c9348/page/V9LZD").attr('width', '100%')
+            // $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/c4138b94-68e0-48e5-9021-57d76f7c9348/page/V9LZD").attr('width', '100%')
             let width = $('iframe').width()
             let height = width * 0.5833
             $('iframe').height(height)
