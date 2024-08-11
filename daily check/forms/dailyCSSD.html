@@ -1379,7 +1379,7 @@
                 let profile = await liff.getProfile()
                 console.log("🚀 ~ profile:", profile)
                 
-                $('#line-display').attr('src', profile.pictureUrl).show(200)
+                $('#line-display').attr('src', profile.pictureUrl).attr('alt', profile.displayName)
                 $.LoadingOverlay("hide");
                 let now = new Date()
                 if (now.getHours() >= 6 && now.getHours() < 14) {
@@ -1788,7 +1788,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
             obj.opt = 'submit'
             obj.form = $(form).attr('id')
             obj.uid = liff.getDecodedIDToken().sub
-            obj.displayname =await liff.getProfile().displayName
+            obj.displayname =$('#line-display').attr('alt')
             if ($(form).find('[type="file"]').length > 0 && $(form).find('[type="file"]').val() == '') {
                 return Swal.fire({
                     icon: 'error',
