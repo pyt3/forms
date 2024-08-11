@@ -1777,7 +1777,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
 
     </script>
     <script>
-        function ChecklistForm(form) {
+        async function ChecklistForm(form) {
             // check if not attach image
             let data = $(form).serializeArray()
             let obj = {}
@@ -1788,7 +1788,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
             obj.opt = 'submit'
             obj.form = $(form).attr('id')
             obj.uid = liff.getDecodedIDToken().sub
-            obj.displayname = liff.getProfile().displayName
+            obj.displayname =await liff.getProfile().displayName
             if ($(form).find('[type="file"]').length > 0 && $(form).find('[type="file"]').val() == '') {
                 return Swal.fire({
                     icon: 'error',
