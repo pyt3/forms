@@ -31,14 +31,14 @@
 </head>
 
 <body class="bg-body-tertiary">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
-    </script>
+    </script> -->
     <script>
         const liff_id = '1661543046-YWbxeK8Q'
         $(document).ready(async () => {
-            // $.LoadingOverlay("show");
+            $.LoadingOverlay("show");
             const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
             firestore = defaultProject.firestore();
             auth = defaultProject.auth();

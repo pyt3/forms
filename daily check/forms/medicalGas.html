@@ -420,7 +420,7 @@
                                         id="pump-room-rh" class="form-control text-center">
                                 </div>
                             </div>
-                            <!-- <div class="col-12 p-0 pe-2">
+                            <div class="col-12 p-0 pe-2">
                                 <div class="border border-dark rounded p-3 py-2 bg-light text-center shadow">
 
                                     <div class="d-flex flex-column gap-2 mt-3">
@@ -438,7 +438,8 @@
                                                         Lamp Test</label>
                                                 </div>
                                                 <div class="col-7">
-                                                    <select name="pump-room-alarm-lamp-test" id="pump-room-alarm-lamp-test"
+                                                    <select name="pump-room-alarm-lamp-test"
+                                                        id="pump-room-alarm-lamp-test"
                                                         class="form-select text-center alarm-leak-test">
                                                         <option value="" selected disabled>เลือก</option>
                                                         <option value="ไฟติดทุกหลอด">ไฟติดทุกหลอด</option>
@@ -454,7 +455,8 @@
                                                             class="bi bi-bell-fill text-danger"></i> Buzzer</label>
                                                 </div>
                                                 <div class="col-7">
-                                                    <select name="pump-room-alarm-buzzer-test" id="pump-room-alarm-buzzer-test"
+                                                    <select name="pump-room-alarm-buzzer-test"
+                                                        id="pump-room-alarm-buzzer-test"
                                                         class="form-select text-center alarm-leak-test">
                                                         <option value="" selected disabled>เลือก</option>
                                                         <option value="มีเสียงดัง">มีเสียงดัง</option>
@@ -465,10 +467,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </section>
-                    <!-- <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 p-0 pe-2">
                                 <div class="border border-dark rounded p-3 bg-light text-center shadow">
@@ -514,7 +516,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6 p-0 pe-2">
+                            <div class="col-12 p-0 pe-2">
 
                                 <div class="border border-dark rounded p-3 bg-light text-center shadow">
 
@@ -533,21 +535,43 @@
                                             </select>
                                         </div>
                                         <div class="col-12">
-                                            <label for="bme-alarm-o2-pressure">แรงดัน</label>
-                                            <input type="number" step="0.1" inputmode="decimal"
-                                                name="bme-alarm-o2-pressure" id="bme-alarm-o2-pressure"
-                                                class="form-control text-center">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-o2-pressure-left">แรงดัน (ซ้าย)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-o2-pressure-left"
+                                                        id="bme-alarm-o2-pressure-left"
+                                                        class="form-control text-center">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-o2-pressure-right">แรงดัน (ขวา)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-o2-pressure-right"
+                                                        id="bme-alarm-o2-pressure-right"
+                                                        class="form-control text-center">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-12">
-                                            <label for="bme-alarm-o2-volume">ปริมาตร</label>
-                                            <input type="number" step="0.1" inputmode="decimal"
-                                                name="bme-alarm-o2-volumn" id="bme-alarm-o2-volumn"
-                                                class="form-control text-center">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-o2-volume-left">ปริมาตร (ซ้าย)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-o2-volume-left" id="bme-alarm-o2-volume-left"
+                                                        class="form-control text-center">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-o2-volume-right">ปริมาตร (ขวา)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-o2-volume-right" id="bme-alarm-o2-volume-right"
+                                                        class="form-control text-center">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6 p-0 pe-2">
+                            <div class="col-12 p-0 pe-2">
                                 <div class="border border-dark rounded p-3 bg-light text-center shadow">
                                     <span class="fw-bold text-dark bg-warning rounded-pill border px-2 fs-6">
                                         <i class="bi bi-exclamation-triangle-fill text-danger"></i> Air Supply</span>
@@ -563,22 +587,45 @@
                                             </select>
                                         </div>
                                         <div class="col-12">
-                                            <label for="bme-alarm-air-pressure">แรงดัน</label>
-                                            <input type="number" step="0.1" inputmode="decimal"
-                                                name="bme-alarm-air-pressure" id="bme-alarm-air-pressure"
-                                                class="form-control text-center">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-air-pressure-left">แรงดัน (ซ้าย)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-air-pressure-left"
+                                                        id="bme-alarm-air-pressure-left"
+                                                        class="form-control text-center">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-air-pressure-right">แรงดัน (ขวา)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-air-pressure-right"
+                                                        id="bme-alarm-air-pressure-right"
+                                                        class="form-control text-center">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-12">
-                                            <label for="bme-alarm-air-volume">ปริมาตร</label>
-                                            <input type="number" step="0.1" inputmode="decimal"
-                                                name="bme-alarm-air-volumn" id="bme-alarm-air-volumn"
-                                                class="form-control text-center">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-air-volume-left">ปริมาตร (ซ้าย)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-air-volume-left" id="bme-alarm-air-volume-left"
+                                                        class="form-control text-center">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="bme-alarm-air-volume-right">ปริมาตร (ขวา)</label>
+                                                    <input type="number" step="0.1" inputmode="decimal"
+                                                        name="bme-alarm-air-volume-right"
+                                                        id="bme-alarm-air-volume-right"
+                                                        class="form-control text-center">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </section> -->
+                    </section>
 
                     <div class="row justify-content-center">
                         <div class="col-md-4 mt-3 text-center">
