@@ -489,6 +489,24 @@
     <script>
         var arr = []
         var Toast, profile, client
+        var options = {
+            onComplete: function (cep) {
+                if (arr.includes(cep)) {
+                    return Toast.fire({
+                        icon: 'warning',
+                        title: 'เพิ่มรหัสนี้ไปแล้ว'
+                    })
+                }
+                appendPill(cep)
+                $('#add-id').val('')
+            },
+            translation: {
+                '*': {
+                    pattern: /[A]/,
+                    fallback: 'A',
+                },
+            }
+        };
         $(document).ready(() => {
             $.LoadingOverlay("show")
             liff.init({
@@ -508,24 +526,7 @@
                     await getAuth(await liff.getDecodedIDToken().sub)
                 }
                 $.LoadingOverlay("hide", true)
-                var options = {
-                    onComplete: function (cep) {
-                        if (arr.includes(cep)) {
-                            return Toast.fire({
-                                icon: 'warning',
-                                title: 'เพิ่มรหัสนี้ไปแล้ว'
-                            })
-                        }
-                        appendPill(cep)
-                        $('#add-id').val('')
-                    },
-                    translation: {
-                        '*': {
-                            pattern: /[A]/,
-                            fallback: 'A',
-                        },
-                    }
-                };
+
                 if (!await checkClient()) {
                     Swal.fire({
                         icon: 'info',
@@ -608,13 +609,13 @@
                 })
 
                 if (client) {
-                    if(client.toLowerCase() != 'pyt3'){
+                    if (client.toLowerCase() != 'pyt3') {
                         $('.form-check-input').not('#isDemo, #isCodeC, #isCodeLAB').parent().remove()
                     }
                     $('#add-id').mask(client.toLowerCase() == "pyt1" ? 'PYT1_00000' : client.toLowerCase() == "pyt2" ? 'PYT2_00000' : client.toLowerCase() == "pyt3" ? 'PYT3_00000' : client.toLowerCase() == "ptp" ? 'PTP00000' : 'PTN00000', options);
                 }
             })
-            
+
             $('#ocr-btn').parent().remove()
             // $('#ocr-btn').click(function () {
             //     $('#staticBackdrop').modal('show')
