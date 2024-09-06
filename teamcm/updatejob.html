@@ -1907,16 +1907,27 @@
             }
         }
         async function receivejob() {
+            const toast = Swal.mixin({
+                toast: true,
+                iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
+                position: 'top',
+                showConfirmButton: false,
+                timer: 1000
+            })
+            $('#submit').prop('disabled', true)
             try {
-                Swal.fire({
-                    iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
-                    customClass: {
-                        icon: 'border-0'
-                    },
+                // Swal.fire({
+                //     iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
+                //     customClass: {
+                //         icon: 'border-0'
+                //     },
+                //     title: 'กำลังรับงานในระบบ',
+                //     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                //     allowOutsideClick: false,
+                //     showConfirmButton: false,
+                // })
+                toast.fire({
                     title: 'กำลังรับงานในระบบ',
-                    html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
                 })
                 let endpoint = scriptUrl + '?mode=receivejob'
                 console.log("🚀 !! endpoint:", endpoint);
