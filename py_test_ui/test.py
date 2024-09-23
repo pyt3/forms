@@ -1493,6 +1493,220 @@ def change_file_name():
     print(init_text)
     showmenu()
 
+def change_file_name_MICal():
+    dir_path = ''
+    if getattr(sys, 'frozen', False):
+        dir_path = os.path.dirname(sys.executable)
+    else:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+    report_path = os.path.join(dir_path, 'REPORTS')
+    # check if path has subfolder
+    subfolder = os.listdir(report_path)
+
+    def move_file_to_root(folder):
+        subfolder = os.listdir(folder)
+        for file in subfolder:
+            if os.path.isdir(os.path.join(folder, file)):
+                move_file_to_root(os.path.join(folder, file))
+            else:
+                # move file to root folder
+                shutil.move(os.path.join(folder, file),
+                            os.path.join(report_path, file))
+        os.rmdir(folder)
+
+    if len(subfolder) > 0:
+        # move file to root folder
+        for file in subfolder:
+            if os.path.isdir(os.path.join(report_path, file)):
+                move_file_to_root(os.path.join(report_path, file))
+    dir_list = os.listdir(report_path)
+    name_arr = {}
+    with Progress() as progress:
+        task = progress.add_task(
+            "[cyan]Renaming files[/cyan]", total=len(dir_list))
+        for file_name in dir_list:
+            source = os.path.join(report_path, file_name)
+            print(source)
+            # if file is not pdf
+            if not file_name.endswith('.pdf'):
+                print(
+                    '[red]Not a PDF file[/red] : [yellow]{}[/yellow]'.format(file_name))
+                progress.update(task, advance=1)
+                continue
+
+            # if file_name.find('_') == -1:
+            file = fitz.open(source, filetype='pdf')    
+            page = file[0]
+            print(page)
+            # find text with regex /ID CODE.*\n.*$/gm
+            page = page.get_text()
+            print(page)
+            # replace text in page with regex /^-\n/gm
+            page = re.sub(r'^-\n', '', page, flags=re.MULTILINE)
+            text = re.findall(r'ID No\.\/Tag No\.*\n.*$', page, re.MULTILINE)
+            input()
+            if len(text) == 0:
+                print(
+                    '[red]No equipment code found in PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
+                progress.update(task, advance=1)
+                continue
+            code = text[0].split('\n')[1].replace(':', '').strip()
+            if code.find('(') > -1:
+                code = code.split('(')[0].strip()
+            cal = re.findall(r'Certificate', page, re.MULTILINE)
+            year = None
+            if len(cal) > 0:
+                caldate = re.findall(
+                    r'CALIBRATED DATE.*\n.*$', page, re.MULTILINE)
+                issuedate = re.findall(
+                    r'ISSUE DATE.*\n.*$', page, re.MULTILINE)
+                
+                year = getYear(convertDate(caldate), convertDate(issuedate))
+                if name_arr.get(code+'#'+year) is None:
+                    name_arr[code+'#'+year] = {}
+                name_arr[code+'#'+year]['cal'] = caldate
+                name_arr[code+'#'+year]['issue-cal'] = issuedate
+                name = code + "_"+year + '_cal.pdf'
+            else:
+                pmdate = re.findall(r'PM. DATE.*\n.*$', page, re.MULTILINE)
+                issuedate = re.findall(
+                    r'ISSUE DATE.*\n.*$', page, re.MULTILINE)
+                
+                year = getYear(convertDate(pmdate), convertDate(issuedate))
+                if name_arr.get(code+'#'+year) is None:
+                    name_arr[code+'#'+year] = {}
+                name_arr[code+'#'+year]['pm'] = pmdate
+                name_arr[code+'#'+year]['issue-pm'] = issuedate
+                name = code + "_"+year+'_pm.pdf'
+            safety = re.findall(
+                r'electricalsafetyanalyzer', page.lower().replace('\n', '').replace(' ',''), re.MULTILINE)
+            if safety is not None and len(safety) > 0:
+                name_arr[code+'#'+year]['safety'] = 'Electrical Safety Analyzer'
+            else:
+                name_arr[code+'#'+year]['safety'] = '-'
+            engineer = re.findall(r'Approved by.*\n.*$', page, re.MULTILINE)
+            if engineer is not None and len(engineer) > 0:
+                engineer = engineer[0].replace('\n', '').split(':')[
+                    1].strip().replace('  ', ' ')
+                name_arr[code+'#'+year]['engineer'] = engineer
+
+            else:
+                name_arr[code + '#'+year]['engineer'] = '-'
+            # file.save(os.path.join(path, name))
+            department = re.findall(r'LOCATION.*\n.*$', page, re.MULTILINE)
+            if department is not None and len(department) > 0:
+                department = department[0].replace('\n', '').split(':')[
+                    1].strip().replace('  ', ' ')
+                name_arr[code + '#'+year]['department'] = department
+            file.close()
+            try:
+                os.rename(source, os.path.join(report_path, name))
+            except Exception as e:
+                # if already exist
+                os.remove(os.path.join(report_path, name))
+                os.rename(source, os.path.join(report_path, name))
+            # writer = PdfWriter(clone_from=os.path.join(report_path, name))
+            # for page in writer.pages:
+            #     page.compress_content_streams(level=9)
+            # with open(os.path.join(report_path, name), 'wb') as f:
+            #     writer.write(f)
+
+            print('[grey42]{}[/grey42] [yellow]>>>>[/yellow] [green]{}[/green]'.format(
+                file_name, name))
+            progress.update(task, advance=1)
+            # else:
+            #     filename = file_name.split('_')
+            #     if len(filename) > 1 and len(filename[1]) > 10:
+            #         filename = "_".join(filename[1:])
+            #         filename = re.sub(r'\s\(\d{1,}\)', '', filename)
+            #         name = filename.split('(')[0]
+            #         if (filename.split('(')[-1] != '1).pdf' and filename.split('(')[-1] != '2).pdf'):
+            #             name_arr.append(name)
+            #             if filename.split('(')[1].find('PM') > -1:
+            #                 name = name + '_pm.pdf'
+            #             else:
+            #                 name = name + '_cal.pdf'
+            #             print('เปลี่ยนชื่อไฟล์ [yellow]{}[/yellow] เป็น [yellow]{}[/yellow]'.format(
+            #                 file_name, name))
+            #             dest = os.path.join(path, name)
+            #             os.rename(source, dest)
+
+            # append name_arr to clipboard
+
+            # convert name_arr to table
+        # create array with length is 20 and fill with ''
+        unique_arr = []
+        for i, x in enumerate(name_arr):
+            id = x
+            value = name_arr[x]
+            if value.get('cal') is None:
+                value['cal'] = ['']
+            if value.get('pm') is None:
+                value['pm'] = ['']
+            tmp_arr = [''] * 26
+            tmp_arr[0] = str(i+1)
+            tmp_arr[1] = ""
+            tmp_arr[2] = id.split('#')[0]
+            tmp_arr[3] = getTeamName(value['engineer'])
+            tmp_arr[8] = convertDate(value['pm'])
+
+            if tmp_arr[8] == '':
+                tmp_arr[9] = ''
+                tmp_arr[14] = ''
+                tmp_arr[16] = ''
+                tmp_arr[19] = ''
+            else:
+                tmp_arr[9] = convertDate(value['issue-pm'])
+                if tmp_arr[9] == '' or tmp_arr[8] == '-':
+                    tmp_arr[9] = convertDate(value['pm'])
+                tmp_arr[14] = 'PM doable'
+                tmp_arr[16] = 'pass'
+                tmp_arr[19] = 'yes'
+            tmp_arr[10] = convertDate(value['cal'])
+            if tmp_arr[10] == '':
+                tmp_arr[11] = ''
+                tmp_arr[15] = ''
+                tmp_arr[17] = ''
+                tmp_arr[20] = ''
+            else:
+                tmp_arr[11] = convertDate(value['issue-cal'])
+                if tmp_arr[11] == '' or tmp_arr[11] == '-':
+                    tmp_arr[11] = convertDate(value['cal'])
+                tmp_arr[15] = 'Perform CAL'
+                tmp_arr[17] = 'pass'
+                tmp_arr[20] = 'yes'
+            tmp_arr[5] = id.split('#')[1]
+            tmp_arr[6] = getStartMonth(tmp_arr[8], tmp_arr[10])
+            tmp_arr[7] = getEndMonth(tmp_arr[8], tmp_arr[10])
+            tmp_arr[12] = confdata["SUP_ID"]
+            tmp_arr[13] = confdata["SUP_NAME"]
+            tmp_arr[18] = value['safety']
+            tmp_arr[4] = value['engineer']
+            tmp_arr[25] = value['department']
+            unique_arr.append(tmp_arr)
+
+            # if value.get('cal') is not None and value.get('pm') is not None:
+            #     cal = value.get('cal')[0].split('\n')[1].replace(':', '').strip()
+            #     pm = value.get('pm')[0].split('\n')[1].replace(':', '').strip()
+            #     name_arr[id] = {'cal': cal, 'pm': pm}
+            # else:
+            #     name_arr[id] = {'cal': 'nan', 'pm': 'nan'}
+        # copy to cilpboard to paste in excel
+
+        line_strings = []
+        for line in unique_arr:
+            line_strings.append('\t'.join(line).replace('\n', ''))
+        arr_string = '\r\n'.join(line_strings)
+        pyperclip.copy(arr_string)
+        print('\n[green]Successfully copied equipment codes[/green]')
+        print('\n[green]File name change completed[/green]')
+        print('\n[purple]Press any key to return to the main menu: [/purple]', end='')
+        input()
+    # clear console
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(init_text)
+    showmenu()
+
 def re_init_app():
     global config
     global confdata
@@ -1592,7 +1806,8 @@ def showmenu():
 
 
 try:
-    showmenu()
+    # showmenu()
+    change_file_name_MICal()
 except Exception as e:
     print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
 # change_file_name()

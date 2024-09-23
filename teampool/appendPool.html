@@ -476,36 +476,66 @@
                 sendPost(data)
             }
         })
-        function sendPost(data) {
+        async function sendPost(data) {
             $.LoadingOverlay('show')
-            $.ajax({
-                url: script_url,
-                type: 'POST',
-                data: data,
-                success: function (res) {
-                    $.LoadingOverlay('hide')
-                    if (res.status == 'success') {
-                        liff.sendMessages([{
-                            type: 'text',
-                            text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                        }])
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'บันทึกข้อมูลสำเร็จ',
-                            confirmButtonText: 'ตกลง',
-                        }).then(() => {
-                            history_code[data.code] = {
-                                start: data.start,
-                                end: data.end
-                            }
-                            localStorage.setItem('history_code', JSON.stringify(history_code))
-                            liff.closeWindow()
-                        })
-                    } else {
-                        console.log(res);
-                    }
+            Promise.all([
+                $.post(script_url, data),
+                liff.sendMessages([{
+                    type: 'text',
+                    text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                }]),
+                $.post(script_url, { opt: 'setHistory', data: JSON.stringify({
+                    code: data.code,
+                    start: data.start,
+                    end: data.end
+                }) })
+            ]).then((res) => {
+                $.LoadingOverlay('hide')
+                if (res[0].status == 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                    }).then(() => {
+                        history_code[data.code] = {
+                            start: data.start,
+                            end: data.end
+                        }
+                        localStorage.setItem('history_code', JSON.stringify(history_code))
+                        liff.closeWindow()
+                    })
+                } else {
+                    console.log(res);
                 }
             })
+            // $.ajax({
+            //     url: script_url,
+            //     type: 'POST',
+            //     data: data,
+            //     success: function (res) {
+            //         $.LoadingOverlay('hide')
+            //         if (res.status == 'success') {
+            //             liff.sendMessages([{
+            //                 type: 'text',
+            //                 text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+            //             }])
+            //             Swal.fire({
+            //                 icon: 'success',
+            //                 title: 'บันทึกข้อมูลสำเร็จ',
+            //                 confirmButtonText: 'ตกลง',
+            //             }).then(() => {
+            //                 history_code[data.code] = {
+            //                     start: data.start,
+            //                     end: data.end
+            //                 }
+            //                 localStorage.setItem('history_code', JSON.stringify(history_code))
+            //                 liff.closeWindow()
+            //             })
+            //         } else {
+            //             console.log(res);
+            //         }
+            //     }
+            // })
         }
         function checkcode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
