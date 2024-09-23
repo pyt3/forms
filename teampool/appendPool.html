@@ -478,8 +478,12 @@
         })
         async function sendPost(data) {
             $.LoadingOverlay('show')
-            Promise.all([
-                $.post(script_url, data),
+            $.when(
+                $.ajax({
+                    url: script_url,
+                    type: 'POST',
+                    data: data,
+                }),
                 $.post(script_url, {
                     opt: 'setHistory', data: JSON.stringify({
                         code: data.code,
@@ -487,9 +491,9 @@
                         end: data.end
                     })
                 })
-            ]).then((res) => {
+            ).done((res1,res2) => {
                 $.LoadingOverlay('hide', true)
-                if (res[0].status == 'success') {
+                if (res1[0].status == 'success') {
                     liff.sendMessages([{
                         type: 'text',
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
@@ -510,6 +514,38 @@
                     console.log(res);
                 }
             })
+            // Promise.all([
+            //     $.post(script_url, data),
+            //     $.post(script_url, {
+            //         opt: 'setHistory', data: JSON.stringify({
+            //             code: data.code,
+            //             start: data.start,
+            //             end: data.end
+            //         })
+            //     })
+            // ]).then((res) => {
+            //     $.LoadingOverlay('hide', true)
+            //     if (res[0].status == 'success') {
+            //         liff.sendMessages([{
+            //             type: 'text',
+            //             text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+            //         }])
+            //         Swal.fire({
+            //             icon: 'success',
+            //             title: 'บันทึกข้อมูลสำเร็จ',
+            //             confirmButtonText: 'ตกลง',
+            //         }).then(() => {
+            //             history_code[data.code] = {
+            //                 start: data.start,
+            //                 end: data.end
+            //             }
+            //             localStorage.setItem('history_code', JSON.stringify(history_code))
+            //             liff.closeWindow()
+            //         })
+            //     } else {
+            //         console.log(res);
+            //     }
+            // })
             // $.ajax({
             //     url: script_url,
             //     type: 'POST',
