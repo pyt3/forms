@@ -251,7 +251,7 @@
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            profile.displayName = result.value + ' ('+profile.displayName+')'
+                            profile.displayName = result.value + ' (' + profile.displayName + ')'
                             $('#profile').attr('src', profile.pictureUrl)
                             $('#displayName').text(profile.displayName)
                             $('.navbar .container-fluid').show(400)
@@ -480,18 +480,20 @@
             $.LoadingOverlay('show')
             Promise.all([
                 $.post(script_url, data),
-                liff.sendMessages([{
-                    type: 'text',
-                    text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                }]),
-                $.post(script_url, { opt: 'setHistory', data: JSON.stringify({
-                    code: data.code,
-                    start: data.start,
-                    end: data.end
-                }) })
+                $.post(script_url, {
+                    opt: 'setHistory', data: JSON.stringify({
+                        code: data.code,
+                        start: data.start,
+                        end: data.end
+                    })
+                })
             ]).then((res) => {
-                $.LoadingOverlay('hide')
+                $.LoadingOverlay('hide', true)
                 if (res[0].status == 'success') {
+                    liff.sendMessages([{
+                        type: 'text',
+                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                    }])
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกข้อมูลสำเร็จ',
