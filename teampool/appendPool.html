@@ -180,11 +180,11 @@
             </div>
         </div>
     </div>
-    <!--     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+        <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script> -->
+    </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
@@ -484,14 +484,20 @@
                     type: 'POST',
                     data: data,
                 }),
-                $.post(script_url, {
-                    opt: 'setHistory', data: JSON.stringify({
-                        code: data.code,
-                        start: data.start,
-                        end: data.end
-                    })
+                $.ajax({
+                    url: script_url,
+                    type: 'POST',
+                    data: {
+                        opt: 'setHistory', data: JSON.stringify({
+                            code: data.code,
+                            start: data.start,
+                            end: data.end
+                        })
+                    }
                 })
             ).done((res1,res2) => {
+                console.log("🚀 ~ ).done ~ res2:", res2)
+                console.log("🚀 ~ ).done ~ res1:", res1)
                 $.LoadingOverlay('hide', true)
                 if (res1[0].status == 'success') {
                     liff.sendMessages([{
