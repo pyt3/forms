@@ -48,7 +48,7 @@ logging.basicConfig(filename='log.txt', filemode='a', format='%(asctime)s - %(le
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-init_text = pyfiglet.figlet_format("BME Assistant", font="slant")
+init_text = pyfiglet.figlet_format("CES Assistant", font="slant")
 print(init_text)
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -124,9 +124,9 @@ def set_login():
     try:
         with requests.Session() as s:
             r = s.post("https://nsmart.nhealth-asia.com/MTDPDB01/index.php",
-                    data=data,
-                    headers=headers,
-                    verify=False)
+                       data=data,
+                       headers=headers,
+                       verify=False)
             confdata["SESSION_ID"] = s.cookies['PHPSESSID']
             cookies['PHPSESSID'] = s.cookies['PHPSESSID']
             # write over file to clear old data
@@ -149,6 +149,7 @@ def formatDate(date):
         date = '/'.join(date)
     return date
 
+
 def convertTime(time):
     if time != 'nan':
         # convert time is second to text format
@@ -159,6 +160,8 @@ def convertTime(time):
         return time
 
     return time
+
+
 def save_empList(emp_list=None):
     # write over file to clear old data
     if emp_list is None:
@@ -185,8 +188,6 @@ def load_empList():
             get_emp_list()
     except Exception as e:
         get_emp_list()
-        
-
 
 
 def load_tool_list(href):
@@ -251,7 +252,10 @@ def load_calibrator_list():
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         get_emp_list()
 
+
 equipments_arr = []
+
+
 def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?asset_masterPageSize=100', page='1'):
     global equipments_arr
     if page == '1':
@@ -269,8 +273,9 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         time.sleep(5)
         return get_equipment_file(url, page)
     response.encoding = "tis-620"
-    # find table with regex    
-    res = re.findall(r'<table\s+[^>]*class=["\']Grid["\'][^>]*>', response.text, re.DOTALL)
+    # find table with regex
+    res = re.findall(
+        r'<table\s+[^>]*class=["\']Grid["\'][^>]*>', response.text, re.DOTALL)
     if len(res) == 0:
         print("No table found, re-login...")
         set_login()
@@ -278,11 +283,14 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
     # print attr class of each table
     # find index of '<table class="Grid" cellspacing="0" cellpadding="0">'
     # index = response.text.find('<table class="Grid" cellspacing="0" cellpadding="0">')
-    tmp = response.text.split('<table class="Grid" cellspacing="0" cellpadding="0">')
+    tmp = response.text.split(
+        '<table class="Grid" cellspacing="0" cellpadding="0">')
     tmp2 = tmp[1].split('</table>')
-    table = '<table class="Grid" cellspacing="0" cellpadding="0">' + tmp2[0] + '</table>'
+    table = '<table class="Grid" cellspacing="0" cellpadding="0">' + \
+        tmp2[0] + '</table>'
     soup = BeautifulSoup(table, "lxml")
-    max_page = soup.find_all('tr', {'class': 'Footer'})[0].text.split('of')[1].strip().split(' ')[0]
+    max_page = soup.find_all('tr', {'class': 'Footer'})[
+        0].text.split('of')[1].strip().split(' ')[0]
     print('[yellow]Fetching page[/yellow] [blue]{}[/blue] [yellow]out of[/yellow] [blue]{}[/blue]' .format(page, max_page))
     rows = soup.find_all('tr')
     header = [ele.text.strip() for ele in rows[1].find_all('th')]
@@ -292,27 +300,32 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
         rows = rows[2:-1]
     for row in rows:
         cols = row.find_all('td')
-        img = ('https://nsmart.nhealth-asia.com/MTDPDB01/' + cols[1].find('a').get('href')) if cols[1].find('a') is not None else ''
-        cols = [ele.text.strip() if ele.text.strip() != 'Click' else '' for ele in cols]
+        img = ('https://nsmart.nhealth-asia.com/MTDPDB01/' +
+               cols[1].find('a').get('href')) if cols[1].find('a') is not None else ''
+        cols = [ele.text.strip() if ele.text.strip() !=
+                'Click' else '' for ele in cols]
         cols[1] = img
         equipments_arr.append(cols)
     if int(page) >= int(max_page):
-    # if int(page) == 2:
+        # if int(page) == 2:
         df = pd.DataFrame(equipments_arr, columns=header)
-        df.to_excel(os.path.join(root_dir,'EXCEL FILE', 'equipment_list.xlsx'), index=False)
+        df.to_excel(os.path.join(root_dir, 'EXCEL FILE',
+                    'equipment_list.xlsx'), index=False)
         # print file path to let user to click
-        print('[yellow]The equipment list file has been saved at[/yellow] [blue]{}[/blue]' .format(os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')))
+        print('[yellow]The equipment list file has been saved at[/yellow] [blue]{}[/blue]' .format(
+            os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')))
         # open file
         file_path = os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')
         auto_adjust_column_width_from_df(file_path, 'Sheet1')
-        os.system('start excel.exe "' + file_path+ '"')
-        
+        os.system('start excel.exe "' + file_path + '"')
+
         return equipments_arr
     else:
-        
+
         page = int(page) + 1
         return get_equipment_file(url, str(page))
-    
+
+
 def auto_adjust_column_width_from_df(file_path, sheet_name):
     # Load the workbook and select the specified sheet
     workbook = load_workbook(file_path)
@@ -329,13 +342,16 @@ def auto_adjust_column_width_from_df(file_path, sheet_name):
                 pass
         # Adjust the column width; add a little extra space
         adjusted_width = (max_length + 2)
-        worksheet.column_dimensions[openpyxl.utils.get_column_letter(column[0].column)].width = adjusted_width
+        worksheet.column_dimensions[openpyxl.utils.get_column_letter(
+            column[0].column)].width = adjusted_width
 
     # Save the workbook
     workbook.save(file_path)
 
 
 temp_team_list = {}
+
+
 def get_team_list(url, page='1'):
     global temp_team_list
     if page == '1':
@@ -410,7 +426,8 @@ def get_emp_list():
     for row in tr:
         td = row.find_all('td')
         calibrator_list[td[1].text.strip().lower()] = td[0].text.strip()
-        print('[yellow]Fetching members of team[/yellow] [blue]{}[/blue]' .format(td[1].text.strip()))
+        print(
+            '[yellow]Fetching members of team[/yellow] [blue]{}[/blue]' .format(td[1].text.strip()))
         url = "https://nsmart.nhealth-asia.com/MTDPDB01/reftable/employee_branch.php?dept_control=1&dept_tech={}".format(
             td[0].text.strip())
         team_list = get_team_list(url)
@@ -472,25 +489,38 @@ def get_screen_shot(soup, css_file, text, type, code=""):
     # get file path
     __location__ = os.path.join(root_dir, 'SCREENSHOT', type)
     # if folder not exist, create folder
-    print(os.path.exists(__location__))
     if os.path.exists(__location__) == False:
         # create folder
-        os.makedirs(__location__)  
-        
-    hti = Html2Image(output_path=__location__, size=(
-        800, 800), disable_logging=True)
-    file_name = str(datetime.timestamp(datetime.now())*1000)
+        os.makedirs(__location__)
+
+    hti = Html2Image(output_path=__location__, size=(978, 675) if type == 'CAL' else (978, 475), disable_logging=True,
+                     temp_path=__location__, custom_flags=['--default-background-color=ffffff', '--hide-scrollbars'])
+    # filename is time in format 20240506
+    file_name = datetime.now().strftime("%Y%m%d")
+    html_str = str(soup).replace('src="../images/',
+                   'src="https://nsmart.nhealth-asia.com/MTDPDB01/images/')
+    html_str = html_str.replace(
+        'src="../Styles/', 'src="https://nsmart.nhealth-asia.com/MTDPDB01/Styles/')
+    html_str = html_str.replace(
+        'src="../img.php', 'src="https://nsmart.nhealth-asia.com/MTDPDB01/img.php')
+    html_str = html_str.replace(
+        'src="../files', 'src="https://nsmart.nhealth-asia.com/MTDPDB01/files')
     try:
-        hti.screenshot(html_str=str(soup), css_str=css,
-                    save_as=str(code)+"-"+file_name+'.png')
+        hti.screenshot(html_str=html_str, css_str=css,
+                       save_as=str(code)+"-"+file_name+'.png')
+        # convert to webp
+        # im = Image.open(os.path.join(__location__, str(code)+"-"+file_name+'.png'))
+        # im.save(os.path.join(__location__, str(code)+"-"+file_name+'.webp'), 'webp')
+
+        # # remove png file
+        # os.remove(os.path.join(__location__, str(code)+"-"+file_name+'.png'))
     except Exception as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         pass
     return_json = {'status': 'ok',
-                'status_text': text, 'screenshot': file_name}
+                   'status_text': text, 'screenshot': file_name}
 
     return file_name
-
 
 
 def closePM(row, self_call=False):
@@ -509,7 +539,8 @@ def closePM(row, self_call=False):
             "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
             '&s_to_date=' +
-            formatDate(row['END-PLAN']) + '&' + SEARCH_KEY[1] + '=' + row[SEARCH_KEY[0]],
+            formatDate(row['END-PLAN']) + '&' +
+            SEARCH_KEY[1] + '=' + row[SEARCH_KEY[0]],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -594,7 +625,7 @@ def closePM(row, self_call=False):
         form_data['pass_status'] = '0'
     # return form_data
     response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?' + a_href +
-                            '&ccsForm=main_jobs%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
+                             '&ccsForm=main_jobs%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     result_table = soup.find('table', {'class': 'Record'})
@@ -605,10 +636,10 @@ def closePM(row, self_call=False):
     if result_td.text.strip() == 'PM status : Completed-send equipment back':
         return_json = 'SUCCESS'
         global screenshot
-        if screenshot:
+        if screenshot is True:
             file_name = get_screen_shot(
-                soup, 'close_pm_css.css', result_td.text.strip(), "PM", row['ID CODE'])
-            
+                soup, 'close_pm_css.css', result_td.text.strip(), "PM", row[SEARCH_KEY[0]])
+
         # if self_call:
         #     return return_json
         return {"status": 'ok', 'text': result_td.text.strip()}
@@ -629,7 +660,8 @@ def closeCAL(row, self_call=False):
             "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
             row['YEAR'] + '&s_jobdate=' + formatDate(row['START-PLAN']) +
             '&s_to_date=' +
-            formatDate(row['END-PLAN']) + '&' + SEARCH_KEY[1] + '=' + row[SEARCH_KEY[0]],
+            formatDate(row['END-PLAN']) + '&' +
+            SEARCH_KEY[1] + '=' + row[SEARCH_KEY[0]],
             headers=headers,
             cookies=cookies,
             verify=False,
@@ -685,7 +717,7 @@ def closeCAL(row, self_call=False):
     for select in selects:
         form_data[select['name']] = select['value']
     response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_1.php?' + a_href +
-                            '&ccsForm=caliber_jobs_tech%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
+                             '&ccsForm=caliber_jobs_tech%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     result_td = list(filter(lambda x: 'Completed-send equipment back' in x.text.strip(), soup.find_all(
@@ -695,14 +727,14 @@ def closeCAL(row, self_call=False):
         return {"status": 'fail', 'text': 'Fail to close CAL'}
     result_td = result_td[0]
     global screenshot
-    if screenshot:
+    if screenshot is True:
         file_name = get_screen_shot(
-            soup, 'close_cal_css.css', result_td.text.strip(),"CAL")
+            soup, 'close_cal_css.css', result_td.text.strip(), "CAL", row[SEARCH_KEY[0]])
     return {"status": 'ok', 'text': "CAL status : "+result_td.text.strip()}
 
 
 def attachFilePM(file_name_list, row):
-# def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
+    # def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
     global SEARCH_KEY
     id = row[SEARCH_KEY[0]]
     team = row['TEAM']
@@ -714,8 +746,11 @@ def attachFilePM(file_name_list, row):
         return {"status": 'ok', 'text': 'No need to attach PM file', 'nosave': True}
     if status.lower() == 'success':
         return {"status": 'done', 'text': 'Already attached PM file', 'nosave': True}
-    start_date, end_date, now_year = getFirstAndLastDay(date)
-    findname = [ele for ele in file_name_list if row['ID CODE']+'_'+now_year+'_pm' in ele]
+    start_date = row['START-PLAN']
+    end_date = row['END-PLAN']
+    now_year = row['YEAR']
+    findname = [ele for ele in file_name_list if row['ID CODE'] +
+                '_'+now_year+'_pm' in ele]
     if len(findname) == 0:
         return {"status": 'fail', 'text': 'PM Work not found'}
     report_name = findname[0]
@@ -811,7 +846,7 @@ def attachFilePM(file_name_list, row):
     # maintain08.php?s_byear=2023&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code=1235&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=&s_sup_serv=&s_jobno=&s_docok=&code=36565&deptco=&jobno=1278631&ccsForm=Maindocattache1
 
     response2 = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain08.php?' + a_href +
-                            '&ccsForm=Maindocattache1', headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+                              '&ccsForm=Maindocattache1', headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
     response2.encoding = "tis-620"
     soup = BeautifulSoup(response2.text, "lxml")
     result_table = soup.find_all('table', {'class': 'Header'})[1]
@@ -820,9 +855,9 @@ def attachFilePM(file_name_list, row):
     result_th = result_table.find('th')
     if result_th.text.strip() != 'Total : 0 records':
         global screenshot
-        if screenshot:
+        if screenshot is True:
             file_name = get_screen_shot(
-                soup, 'close_pm_css.css', result_th.text.strip(), "PM")
+                soup, 'close_pm_css.css', result_th.text.strip(), "PM", code)
             # move file to folder
         return {"status": 'ok', 'text': 'Attach PM file : '+result_th.text.strip()}
     else:
@@ -841,8 +876,11 @@ def attachFileCAL(file_name_list, row):
         return {"status": 'ok', 'text': 'No need to attach CAL file', 'nosave': True}
     if status.lower() == 'success':
         return {"status": 'done', 'text': 'Already attached CAL file', 'nosave': True}
-    start_date, end_date, now_year = getFirstAndLastDay(date)
-    findname = [ele for ele in file_name_list if row['ID CODE']+"_"+now_year+"_cal" in ele]
+    start_date = row['START-PLAN']
+    end_date = row['END-PLAN']
+    now_year = row['YEAR']
+    findname = [ele for ele in file_name_list if row['ID CODE'] +
+                "_"+now_year+"_cal" in ele]
     if len(findname) == 0:
         return {"status": 'fail', 'text': 'CAL Work not found'}
     report_name = findname[0]
@@ -917,7 +955,7 @@ def attachFileCAL(file_name_list, row):
     # maintain08.php?s_byear=2023&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code=1235&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=&s_sup_serv=&s_jobno=&s_docok=&code=36565&deptco=&jobno=1278631&ccsForm=Maindocattache1
 
     response2 = requests.post("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_5.php?" + a_href +
-                            "&ccsForm=Caliberdocattache1", headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+                              "&ccsForm=Caliberdocattache1", headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
     response2.encoding = "tis-620"
     soup = BeautifulSoup(response2.text, "lxml")
     result_table = soup.find_all('table', {'class': 'Header'})[1]
@@ -926,9 +964,9 @@ def attachFileCAL(file_name_list, row):
     result_th = result_table.find('th')
     if result_th.text.strip() != 'Total : 0 records':
         global screenshot
-        if screenshot:
+        if screenshot is True:
             file_name = get_screen_shot(
-                soup, 'close_cal_css.css', result_th.text.strip(), "CAL")
+                soup, 'close_cal_css.css', result_th.text.strip(), "CAL", code)
             # move file to folder
         return {"status": 'ok', 'text': 'Attach CAL file : '+result_th.text.strip()}
     else:
@@ -938,11 +976,9 @@ def attachFileCAL(file_name_list, row):
 screenshot = False
 
 
-
-
 def read_file(option=None):
     global SEARCH_KEY
-    print('[yellow]Select the SEARCH field[/yellow] [light blue][1]ID CODE[/light blue] [light blue][2]Item no.[/light blue] : ',end='')
+    print('[yellow]Select the SEARCH field[/yellow] [light blue][1]ID CODE[/light blue] [light blue][2]Item no.[/light blue] : ', end='')
     SEARCH_KEY = input()
     if SEARCH_KEY == '1':
         SEARCH_KEY = ['ID CODE', 's_sap_code']
@@ -987,7 +1023,7 @@ def read_file(option=None):
                 len(df)), title_justify='center', title_style='bold magenta')
             table.add_column('#', justify='left', style='cyan', no_wrap=True)
             table.add_column('Number of Devices', justify='right',
-                            style='green', no_wrap=True)
+                             style='green', no_wrap=True)
             if (option == 'close_pm_cal' or option == None):
                 table.add_row('PM Jobs Not Closed', str(pass_pm))
                 table.add_row('CAL Jobs Not Closed', str(pass_cal))
@@ -1004,6 +1040,12 @@ def read_file(option=None):
                     f'\n[red]Do you want to save screenshots? (Y/N): [/red]', end='')
                 global screenshot
                 screenshot = input().lower() == 'y'
+                if screenshot is True:
+                    __location__ = os.path.join(root_dir, 'SCREENSHOT')
+                    # if folder not exist, create folder
+                    if os.path.exists(__location__) == False:
+                        # create folder
+                        os.makedirs(__location__)
                 init_text = pyfiglet.figlet_format("Start Process...")
                 print(init_text)
                 start_time = time.time()
@@ -1012,9 +1054,11 @@ def read_file(option=None):
                 estimated_end_time = 0
                 try:
                     with Progress() as progress:
-                        task = progress.add_task("[red]Processing...[/red]", total=len(df))
+                        task = progress.add_task(
+                            "[red]Processing...[/red]", total=len(df))
                         for index, row in df.iterrows():
-                            row[SEARCH_KEY[0]] = str(row[SEARCH_KEY[0]]).replace('.0', '')
+                            row[SEARCH_KEY[0]] = str(
+                                row[SEARCH_KEY[0]]).replace('.0', '')
                             row['YEAR'] = str(row['YEAR']).replace('.0', '')
                             print('[green]{}[/green] / [blue]{}[/blue] [yellow]Close PM JOB[/yellow] [light blue]{}[/light blue]'.format(
                                 str(index+1), str(len(df)), row[SEARCH_KEY[0]])
@@ -1039,23 +1083,33 @@ def read_file(option=None):
                                     process_result_pm = process_result_pm.result()
                                     process_result_cal = process_result_cal.result()
                                     # if process_result_pm == 'SUCCESS' or process_result_pm == '':
-                                    
+
                                     if process_result_pm.get('status') == 'ok' or process_result_pm.get('status') == 'done':
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
-                                        df.at[index, 'PM-CLOSED'] = "SUCCESS" if "Completed" in process_result_pm.get('text') else process_result_pm.get('text')
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
+                                        df.at[index, 'PM-CLOSED'] = "SUCCESS" if "Completed" in process_result_pm.get(
+                                            'text') else process_result_pm.get('text')
                                         if process_result_pm.get('status') == 'ok':
-                                            print('[green]{}[/green]'.format(process_result_pm.get('text')))
+                                            print(
+                                                '[green]{}[/green]'.format(process_result_pm.get('text')))
                                     else:
-                                        print('[red]{}[/red]'.format(process_result_pm.get('text')))
-                                        df.at[index, 'PM-CLOSED'] = process_result_pm.get('text')
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_pm.get('text')))
+                                        df.at[index,
+                                              'PM-CLOSED'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok' or process_result_cal.get('status') == 'done':
-                                        issave = False if issave == False and process_result_cal.get('nosave') == True else True
-                                        df.at[index, 'CAL-CLOSED'] = "SUCCESS" if "Completed" in process_result_cal.get('text') else process_result_cal.get('text')
+                                        issave = False if issave == False and process_result_cal.get(
+                                            'nosave') == True else True
+                                        df.at[index, 'CAL-CLOSED'] = "SUCCESS" if "Completed" in process_result_cal.get(
+                                            'text') else process_result_cal.get('text')
                                         if process_result_cal.get('status') == 'ok':
-                                            print('[green]{}[/green]'.format(process_result_cal.get('text')))
+                                            print(
+                                                '[green]{}[/green]'.format(process_result_cal.get('text')))
                                     elif process_result_cal.get('status') != 'done':
-                                        print('[red]{}[/red]'.format(process_result_cal.get('text')))
-                                        df.at[index, 'CAL-CLOSED'] = process_result_cal.get('text')
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_cal.get('text')))
+                                        df.at[index,
+                                              'CAL-CLOSED'] = process_result_cal.get('text')
                                     master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
                                         str)
                                     master_df['CAL-ATTACH-STATUS'] = master_df['CAL-ATTACH-STATUS'].astype(
@@ -1076,21 +1130,31 @@ def read_file(option=None):
                                     process_result_pm = process_result_pm.result()
                                     process_result_cal = process_result_cal.result()
                                     if process_result_pm.get('status') == 'ok' or process_result_pm.get('status') == 'done':
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
-                                        df.at[index, 'PM-ATTACH-STATUS'] = 'SUCCESS' if process_result_pm.get('text').startswith('Attach') else process_result_pm.get('text')
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
+                                        df.at[index, 'PM-ATTACH-STATUS'] = 'SUCCESS' if process_result_pm.get(
+                                            'text').startswith('Attach') else process_result_pm.get('text')
                                         if process_result_pm.get('status') == 'ok':
-                                            print('[green]{}[/green]'.format(process_result_pm.get('text')))
+                                            print(
+                                                '[green]{}[/green]'.format(process_result_pm.get('text')))
                                     else:
-                                        print('[red]{}[/red]'.format(process_result_pm.get('text')))
-                                        df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm.get('text')
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_pm.get('text')))
+                                        df.at[index,
+                                              'PM-ATTACH-STATUS'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok' or process_result_cal.get('status') == 'done':
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
                                         if process_result_cal.get('status') == 'ok':
-                                            df.at[index, 'CAL-ATTACH-STATUS'] = 'SUCCESS' if process_result_cal.get('text').startswith('Attach') else process_result_cal.get('text')
-                                        print('[green]{}[/green]'.format(process_result_cal.get('text')))
+                                            df.at[index, 'CAL-ATTACH-STATUS'] = 'SUCCESS' if process_result_cal.get(
+                                                'text').startswith('Attach') else process_result_cal.get('text')
+                                        print(
+                                            '[green]{}[/green]'.format(process_result_cal.get('text')))
                                     else:
-                                        print('[red]{}[/red]'.format(process_result_cal.get('text')))
-                                        df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal.get('text')
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_cal.get('text')))
+                                        df.at[index,
+                                              'CAL-ATTACH-STATUS'] = process_result_cal.get('text')
                                     master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
                                         str)
                                     master_df['CAL-CLOSED'] = master_df['CAL-CLOSED'].astype(
@@ -1122,38 +1186,59 @@ def read_file(option=None):
                                     process_result_pm_attach = process_result_pm_attach.result()
                                     process_result_cal_attach = process_result_cal_attach.result()
                                     if process_result_pm.get('status') == 'ok' or process_result_pm.get('status') == 'done':
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
-                                        df.at[index, 'PM-CLOSED'] = "SUCCESS" if "Completed" in process_result_pm.get('text') else process_result_pm.get('text')
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
+                                        df.at[index, 'PM-CLOSED'] = "SUCCESS" if "Completed" in process_result_pm.get(
+                                            'text') else process_result_pm.get('text')
                                         if process_result_pm.get('status') == 'ok':
-                                            print('[green]{}[/green]'.format(process_result_pm.get('text')))
+                                            print(
+                                                '[green]{}[/green]'.format(process_result_pm.get('text')))
                                     else:
-                                        print('[red]{}[/red]'.format(process_result_pm.get('text')))
-                                        df.at[index, 'PM-CLOSED'] = process_result_pm.get('text')
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_pm.get('text')))
+                                        df.at[index,
+                                              'PM-CLOSED'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok' or process_result_cal.get('status') == 'done':
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
-                                        df.at[index, 'CAL-CLOSED'] = "SUCCESS" if "Completed" in process_result_cal.get('text') else process_result_cal.get('text')
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
+                                        df.at[index, 'CAL-CLOSED'] = "SUCCESS" if "Completed" in process_result_cal.get(
+                                            'text') else process_result_cal.get('text')
                                         if process_result_cal.get('status') == 'ok':
-                                            print('[green]{}[/green]'.format(process_result_cal.get('text')))
+                                            print(
+                                                '[green]{}[/green]'.format(process_result_cal.get('text')))
                                     else:
-                                        print('[red]{}[/red]'.format(process_result_cal.get('text')))
-                                        df.at[index, 'CAL-CLOSED'] = process_result_cal.get('text')
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_cal.get('text')))
+                                        df.at[index,
+                                              'CAL-CLOSED'] = process_result_cal.get('text')
                                     if process_result_pm_attach.get('status') == 'ok' or process_result_pm_attach.get('status') == 'done':
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
-                                        df.at[index, 'PM-ATTACH-STATUS'] = "SUCCESS" if process_result_pm_attach.get('text').startswith('Attach') else process_result_pm_attach.get('text')
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
+                                        df.at[index, 'PM-ATTACH-STATUS'] = "SUCCESS" if process_result_pm_attach.get(
+                                            'text').startswith('Attach') else process_result_pm_attach.get('text')
                                         if process_result_pm_attach.get('status') == 'ok':
-                                            print('[green]{}[/green]'.format(process_result_pm_attach.get('text')))
+                                            print(
+                                                '[green]{}[/green]'.format(process_result_pm_attach.get('text')))
                                     else:
-                                        print('[red]{}[/red]'.format(process_result_pm_attach.get('text')))
-                                        df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm_attach.get('text')
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_pm_attach.get('text')))
+                                        df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm_attach.get(
+                                            'text')
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
                                     if process_result_cal_attach.get('status') == 'ok' or process_result_cal_attach.get('status') == 'done':
-                                        issave = False if issave == False and process_result_pm.get('nosave') == True else True
-                                        df.at[index, 'CAL-ATTACH-STATUS'] = "SUCCESS" if process_result_cal_attach.get('text').startswith('Attach') else process_result_cal_attach.get('text')
+                                        issave = False if issave == False and process_result_pm.get(
+                                            'nosave') == True else True
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = "SUCCESS" if process_result_cal_attach.get(
+                                            'text').startswith('Attach') else process_result_cal_attach.get('text')
                                         if process_result_cal_attach.get('status') == 'ok':
-                                            print('[green]{}[/green]'.format(process_result_cal_attach.get('text')))
+                                            print(
+                                                '[green]{}[/green]'.format(process_result_cal_attach.get('text')))
                                     else:
-                                        print('[red]{}[/red]'.format(process_result_cal_attach.get('text')))
-                                        df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal_attach.get('text')
+                                        print(
+                                            '[red]{}[/red]'.format(process_result_cal_attach.get('text')))
+                                        df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal_attach.get(
+                                            'text')
 
                                 if (issave and index != 0 and index % 20 == 0) or index == len(df)-1:
                                     # convert 'nan' to empty string with match entire cell
@@ -1163,7 +1248,7 @@ def read_file(option=None):
                                         writer, sheet_name='Sheet1', index=False)
                                     issave = False
                             progress.update(task, advance=1)
-                    
+
                 except Exception as e:
                     print(
                         f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
@@ -1179,7 +1264,8 @@ def read_file(option=None):
                     writer.close()
 
                 end_time = time.time()
-                print('\n[green]Closed jobs and attached files successfully[/green]')
+                print(
+                    '\n[green]Closed jobs and attached files successfully[/green]')
                 print('[green]Completed in[/green]: [yellow]{}[/yellow] seconds'.format(
                     convertTime(end_time - start_time)))
                 print('Press any button to return to the main menu: ', end='')
@@ -1187,7 +1273,7 @@ def read_file(option=None):
                 # clear console
                 os.system('cls' if os.name == 'nt' else 'clear')
                 init_text = pyfiglet.figlet_format(
-                    "BME Assistant", font="slant")
+                    "CES Assistant", font="slant")
                 print(init_text)
                 showmenu()
             else:
@@ -1195,7 +1281,7 @@ def read_file(option=None):
                 # clear console
                 os.system('cls' if os.name == 'nt' else 'clear')
                 init_text = pyfiglet.figlet_format(
-                    "BME Assistant", font="slant")
+                    "CES Assistant", font="slant")
                 print(init_text)
                 showmenu()
                 # pyautogui.alert('Close Jobs '+str(index)+' records')
@@ -1207,23 +1293,39 @@ def read_file(option=None):
         input()
         # clear console
         os.system('cls' if os.name == 'nt' else 'clear')
-        init_text = pyfiglet.figlet_format("BME Assistant", font="slant")
+        init_text = pyfiglet.figlet_format("CES Assistant", font="slant")
         print(init_text)
         showmenu()
+
 
 def convertDate(date):
     if date is None or len(date) == 0 or date == '-' or date[0] == '':
         return ""
     date = date[0].split(':')[1].strip()
     months_str = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-                    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
-    date = date.split(' ')
-    if len(date) == 1:
-        return ""
-    if len(date) == 3:
-        month = months_str.index(date[1].upper()) + 1
-        return date[0] + '/' + str(month) + '/' + date[2]
+                  'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
+    months_str_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    if date.find(' ') > -1:
+        date = date.split(' ')
+        if len(date) == 1:
+            return ""
+        if len(date) == 3:
+            month = months_str.index(date[1].upper()) + 1
+            return date[0] + '/' + str(month) + '/' + date[2]
+    elif date.find('-') > -1:
+        date = date.split('-')
+        if len(date) == 1:
+            return ""
+        if len(date) == 3:
+            month = months_str_short.index(date[1].capitalize()) + 1
+            date[0] = '0' + date[0] if len(date[0]) == 1 else date[0]
+            date[1] = '0' + date[1] if len(date[1]) == 1 else date[1]
+            date[2] = '20' + date[2] if len(date[2]) == 2 else date[2]
+            return date[0] + '/' + str(month) + '/' + date[2]
+
     return ' '.join(date)
+
 
 def getYear(date1, date2):
     if date1 == '' and date2 == '':
@@ -1237,6 +1339,7 @@ def getYear(date1, date2):
         date = date1
     date = date.split('/')
     return date[2]
+
 
 def getStartMonth(date1, date2):
     # convert date string to date object
@@ -1255,6 +1358,7 @@ def getStartMonth(date1, date2):
     date_object = datetime.strptime('/'.join(date), '%d/%m/%Y')
     return date_object.strftime('%d/%m/%Y')
 
+
 def getEndMonth(date1, date2):
     # convert date string to date object
     if date1 == '' and date2 == '':
@@ -1272,6 +1376,7 @@ def getEndMonth(date1, date2):
     date_object = datetime.strptime('/'.join(date), '%d/%m/%Y')
     return date_object.strftime('%d/%m/%Y')
 
+
 def getTeamName(engineer):
     global emp_list
     engineer = engineer.lower()
@@ -1282,6 +1387,7 @@ def getTeamName(engineer):
         if engineer in emp_list[team]:
             return emp_list[team]['option_name']
     return ''
+
 
 def change_file_name():
     dir_path = ''
@@ -1346,7 +1452,7 @@ def change_file_name():
                     r'CALIBRATED DATE.*\n.*$', page, re.MULTILINE)
                 issuedate = re.findall(
                     r'ISSUE DATE.*\n.*$', page, re.MULTILINE)
-                
+
                 year = getYear(convertDate(caldate), convertDate(issuedate))
                 if name_arr.get(code+'#'+year) is None:
                     name_arr[code+'#'+year] = {}
@@ -1357,7 +1463,7 @@ def change_file_name():
                 pmdate = re.findall(r'PM. DATE.*\n.*$', page, re.MULTILINE)
                 issuedate = re.findall(
                     r'ISSUE DATE.*\n.*$', page, re.MULTILINE)
-                
+
                 year = getYear(convertDate(pmdate), convertDate(issuedate))
                 if name_arr.get(code+'#'+year) is None:
                     name_arr[code+'#'+year] = {}
@@ -1365,7 +1471,7 @@ def change_file_name():
                 name_arr[code+'#'+year]['issue-pm'] = issuedate
                 name = code + "_"+year+'_pm.pdf'
             safety = re.findall(
-                r'electricalsafetyanalyzer', page.lower().replace('\n', '').replace(' ',''), re.MULTILINE)
+                r'electricalsafetyanalyzer', page.lower().replace('\n', '').replace(' ', ''), re.MULTILINE)
             if safety is not None and len(safety) > 0:
                 name_arr[code+'#'+year]['safety'] = 'Electrical Safety Analyzer'
             else:
@@ -1492,6 +1598,7 @@ def change_file_name():
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
     showmenu()
+
 
 def change_file_name_MICal():
     dir_path = ''
@@ -1526,7 +1633,6 @@ def change_file_name_MICal():
             "[cyan]Renaming files[/cyan]", total=len(dir_list))
         for file_name in dir_list:
             source = os.path.join(report_path, file_name)
-            print(source)
             # if file is not pdf
             if not file_name.endswith('.pdf'):
                 print(
@@ -1535,76 +1641,48 @@ def change_file_name_MICal():
                 continue
 
             # if file_name.find('_') == -1:
-            file = fitz.open(source, filetype='pdf')    
+            file = fitz.open(source, filetype='pdf')
             page = file[0]
-            print(page)
             # find text with regex /ID CODE.*\n.*$/gm
             page = page.get_text()
-            print(page)
             # replace text in page with regex /^-\n/gm
             page = re.sub(r'^-\n', '', page, flags=re.MULTILINE)
-            text = re.findall(r'ID No\.\/Tag No\.*\n.*$', page, re.MULTILINE)
-            input()
+            text = re.findall(r'ID No.\/Tag No.*\n.*$', page, re.MULTILINE)
             if len(text) == 0:
                 print(
                     '[red]No equipment code found in PDF[/red] : [yellow]{}[/yellow]'.format(file_name))
                 progress.update(task, advance=1)
                 continue
             code = text[0].split('\n')[1].replace(':', '').strip()
-            if code.find('(') > -1:
-                code = code.split('(')[0].strip()
-            cal = re.findall(r'Certificate', page, re.MULTILINE)
             year = None
-            if len(cal) > 0:
-                caldate = re.findall(
-                    r'CALIBRATED DATE.*\n.*$', page, re.MULTILINE)
-                issuedate = re.findall(
-                    r'ISSUE DATE.*\n.*$', page, re.MULTILINE)
-                
-                year = getYear(convertDate(caldate), convertDate(issuedate))
-                if name_arr.get(code+'#'+year) is None:
-                    name_arr[code+'#'+year] = {}
-                name_arr[code+'#'+year]['cal'] = caldate
-                name_arr[code+'#'+year]['issue-cal'] = issuedate
-                name = code + "_"+year + '_cal.pdf'
-            else:
-                pmdate = re.findall(r'PM. DATE.*\n.*$', page, re.MULTILINE)
-                issuedate = re.findall(
-                    r'ISSUE DATE.*\n.*$', page, re.MULTILINE)
-                
-                year = getYear(convertDate(pmdate), convertDate(issuedate))
-                if name_arr.get(code+'#'+year) is None:
-                    name_arr[code+'#'+year] = {}
-                name_arr[code+'#'+year]['pm'] = pmdate
-                name_arr[code+'#'+year]['issue-pm'] = issuedate
-                name = code + "_"+year+'_pm.pdf'
-            safety = re.findall(
-                r'electricalsafetyanalyzer', page.lower().replace('\n', '').replace(' ',''), re.MULTILINE)
-            if safety is not None and len(safety) > 0:
-                name_arr[code+'#'+year]['safety'] = 'Electrical Safety Analyzer'
-            else:
-                name_arr[code+'#'+year]['safety'] = '-'
-            engineer = re.findall(r'Approved by.*\n.*$', page, re.MULTILINE)
-            if engineer is not None and len(engineer) > 0:
-                engineer = engineer[0].replace('\n', '').split(':')[
-                    1].strip().replace('  ', ' ')
-                name_arr[code+'#'+year]['engineer'] = engineer
+            caldate = re.findall(
+                r'Date Calibrated*\n.*$', page, re.MULTILINE)
+            issuedate = re.findall(
+                r'Date Issued*\n.*$', page, re.MULTILINE)
 
-            else:
-                name_arr[code + '#'+year]['engineer'] = '-'
-            # file.save(os.path.join(path, name))
-            department = re.findall(r'LOCATION.*\n.*$', page, re.MULTILINE)
-            if department is not None and len(department) > 0:
-                department = department[0].replace('\n', '').split(':')[
-                    1].strip().replace('  ', ' ')
-                name_arr[code + '#'+year]['department'] = department
+            year = getYear(convertDate(caldate), convertDate(issuedate))
+            if name_arr.get(code+'#'+year) is None:
+                name_arr[code+'#'+year] = {}
+            name_arr[code+'#'+year]['cal'] = caldate
+            name_arr[code+'#'+year]['issue-cal'] = issuedate
+            name = code + "_"+year
+            name_arr[code+'#'+year]['pm'] = caldate
+            name_arr[code+'#'+year]['issue-pm'] = issuedate
+            name_arr[code+'#'+year]['safety'] = '-'
+            name_arr[code + '#'+year]['engineer'] = '-'
+            name_arr[code + '#'+year]['department'] = '-'
             file.close()
             try:
-                os.rename(source, os.path.join(report_path, name))
+                os.rename(source, os.path.join(report_path, name+'_pm.pdf'))
             except Exception as e:
                 # if already exist
-                os.remove(os.path.join(report_path, name))
-                os.rename(source, os.path.join(report_path, name))
+                os.remove(os.path.join(report_path, name+'_pm.pdf'))
+                os.rename(source, os.path.join(report_path, name+'_pm.pdf'))
+
+            # copy file and rename to _cal.pdf
+            shutil.copy(os.path.join(report_path, name+'_pm.pdf'),
+                        os.path.join(report_path, name+'_cal.pdf'))
+            
             # writer = PdfWriter(clone_from=os.path.join(report_path, name))
             # for page in writer.pages:
             #     page.compress_content_streams(level=9)
@@ -1707,6 +1785,7 @@ def change_file_name_MICal():
     print(init_text)
     showmenu()
 
+
 def re_init_app():
     global config
     global confdata
@@ -1734,8 +1813,6 @@ def re_init_app():
     load_calibrator_list()
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
-   
-        
 
 
 def showmenu():
@@ -1744,7 +1821,8 @@ def showmenu():
     if (last_run_date != today.strftime('%d/%m/%Y')):
         re_init_app()
     # menu
-    Console().print('[light blue]Welcome to the job closing program[/light blue]')
+    Console().print(
+        '[light blue]Welcome to the job closing program[/light blue]')
     print('[light blue]Please select a menu[/light blue]')
     print('[yellow][1] Open script for downloading ECERT files[/yellow]')
     print('[yellow][2] Change file name[/yellow]')
@@ -1769,10 +1847,11 @@ def showmenu():
         #           'SOURCE', 'download cert.txt') + '"')
         # print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
         script_text = open(os.path.join(dir_path, 'SOURCE',
-                        'download cert.txt'), encoding='utf-8').read()
+                                        'download cert.txt'), encoding='utf-8').read()
         # copy to clipboard
         pyperclip.copy(script_text)
-        print('\n[green]Script for downloading ECERT files copied successfully[/green]')
+        print(
+            '\n[green]Script for downloading ECERT files copied successfully[/green]')
         print('\nPress any key to return to the main menu: ', end='')
         input()
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -1784,7 +1863,7 @@ def showmenu():
     elif menu == '6':
         get_equipment_file()
         showmenu()
-    
+
     elif menu == '7':
         re_init_app()
         showmenu()
@@ -1806,8 +1885,8 @@ def showmenu():
 
 
 try:
-    # showmenu()
-    change_file_name_MICal()
+    showmenu()
+    # change_file_name_MICal()
 except Exception as e:
     print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
 # change_file_name()

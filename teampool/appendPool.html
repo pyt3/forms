@@ -180,11 +180,11 @@
             </div>
         </div>
     </div>
-        <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script>
+    </script> -->
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
@@ -226,7 +226,8 @@
                 console.log("🚀 ~ history_code:", history_code)
             })
             liff.init({
-                liffId: '1660749495-G5e9Av6r',
+                // liffId: '1660749495-G5e9Av6r',
+                liffId: '1660749495-A2gmPQNb',
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
@@ -235,14 +236,36 @@
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
                         title: 'เนื่องจากเป็น Line ' + profile.displayName + ' กรุณาระบุชื่อของคุณ',
-                        input: 'text',
-                        inputAttributes: {
-                            autocapitalize: 'off'
+                        html: '<div container-fluid><div class="row"><div class="col-12"><select id="name-onc" class="form-select">' +
+                            '<option value="" selected disabled>เลือกชื่อของคุณ</option>' +
+                            '<option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>' +
+                            '<option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>' +
+                            '<option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>' +
+                            '<option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>' +
+                            '<option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>' +
+                            '<option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>' +
+                            '<option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>' +
+                            '<option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>' +
+                            '<option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>' +
+                            '<option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>' +
+                            '<option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>' +
+                            '<option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>' +
+                            '<option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>' +
+                            '<option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>' +
+                            '<option value="SOM KONKAEW">SOM KONKAEW</option>' +
+                            '<option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>' +
+                            '<option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>' +
+                            '<option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>' +
+                            '<option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>' +
+                            +'</div></div></div>',
+                        customClass: {
+                            input: 'form-select'
                         },
                         confirmButtonText: 'ยืนยัน',
                         allowOutsideClick: false,
-                        preConfirm: (name) => {
-                            if (name == '') {
+                        preConfirm: () => {
+                            let name = $('#name-onc').val()
+                            if (name == '' || name == null) {
                                 Swal.showValidationMessage(
                                     `กรุณาระบุชื่อของคุณ`
                                 )
@@ -253,7 +276,7 @@
                         if (result.isConfirmed) {
                             profile.displayName = result.value + ' (' + profile.displayName + ')'
                             $('#profile').attr('src', profile.pictureUrl)
-                            $('#displayName').text(profile.displayName)
+                            $('#displayName').text(profile.displayName).attr('data-name', result.value.toUpperCase())
                             $('.navbar .container-fluid').show(400)
                             Swal.fire({
                                 title: 'สวัสดีคุณ ' + result.value,
@@ -341,10 +364,12 @@
         function checkRegist() {
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
+            if (regist != null) regist = JSON.parse(regist)
             console.log("🚀 ~ regist:", regist)
-            if (regist == uid) {
+            if (regist?.uid == uid) {
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
+                $('#displayName').attr('data-name', regist.name.toUpperCase())
                 return
             }
             $.ajax({
@@ -368,7 +393,7 @@
                             liff.closeWindow()
                         })
                     } else {
-                        localStorage.setItem('regist', uid)
+                        localStorage.setItem('regist', JSON.stringify(res))
                     }
                 }
             })
@@ -409,6 +434,7 @@
                 code: convertCode(code),
                 start: start,
                 end: end,
+                name: $('#displayName').attr('data-name'),
                 // uid: 'test',
                 // displayName: 'yeah'
                 uid: liff.getDecodedIDToken().sub,
@@ -477,61 +503,27 @@
             }
         })
         async function sendPost(data) {
-            $.LoadingOverlay('show')
-            $.when(
-                $.ajax({
-                    url: script_url,
-                    type: 'POST',
-                    data: data,
-                }),
-                $.ajax({
-                    url: script_url,
-                    type: 'POST',
-                    data: {
-                        opt: 'setHistory', data: JSON.stringify({
-                            code: data.code,
-                            start: data.start,
-                            end: data.end
-                        })
-                    }
-                })
-            ).done((res1,res2) => {
-                console.log("🚀 ~ ).done ~ res2:", res2)
-                console.log("🚀 ~ ).done ~ res1:", res1)
-                $.LoadingOverlay('hide', true)
-                if (res1[0].status == 'success') {
-                    liff.sendMessages([{
-                        type: 'text',
-                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                    }])
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'บันทึกข้อมูลสำเร็จ',
-                        confirmButtonText: 'ตกลง',
-                    }).then(() => {
-                        history_code[data.code] = {
-                            start: data.start,
-                            end: data.end
-                        }
-                        localStorage.setItem('history_code', JSON.stringify(history_code))
-                        liff.closeWindow()
-                    })
-                } else {
-                    console.log(res);
-                }
-            })
-            // Promise.all([
-            //     $.post(script_url, data),
-            //     $.post(script_url, {
-            //         opt: 'setHistory', data: JSON.stringify({
-            //             code: data.code,
-            //             start: data.start,
-            //             end: data.end
-            //         })
+            // $.LoadingOverlay('show')
+            // $.when(
+            //     $.ajax({
+            //         url: script_url,
+            //         type: 'POST',
+            //         data: data,
+            //     }),
+            //     $.ajax({
+            //         url: script_url,
+            //         type: 'POST',
+            //         data: {
+            //             opt: 'setHistory', data: JSON.stringify({
+            //                 code: data.code,
+            //                 start: data.start,
+            //                 end: data.end
+            //             })
+            //         }
             //     })
-            // ]).then((res) => {
+            // ).done((res1, res2) => {
             //     $.LoadingOverlay('hide', true)
-            //     if (res[0].status == 'success') {
+            //     if (res1[0].status == 'success') {
             //         liff.sendMessages([{
             //             type: 'text',
             //             text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
@@ -552,34 +544,89 @@
             //         console.log(res);
             //     }
             // })
-            // $.ajax({
-            //     url: script_url,
-            //     type: 'POST',
-            //     data: data,
-            //     success: function (res) {
-            //         $.LoadingOverlay('hide')
-            //         if (res.status == 'success') {
-            //             liff.sendMessages([{
-            //                 type: 'text',
-            //                 text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-            //             }])
-            //             Swal.fire({
-            //                 icon: 'success',
-            //                 title: 'บันทึกข้อมูลสำเร็จ',
-            //                 confirmButtonText: 'ตกลง',
-            //             }).then(() => {
-            //                 history_code[data.code] = {
-            //                     start: data.start,
-            //                     end: data.end
-            //                 }
-            //                 localStorage.setItem('history_code', JSON.stringify(history_code))
-            //                 liff.closeWindow()
-            //             })
-            //         } else {
-            //             console.log(res);
-            //         }
-            //     }
-            // })
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                html: '<div class="container-fluid"><div class="row">' +
+                    '<div class="col-12 text-center" id="status-history"><i class="bi bi-hourglass-split"></i></i>อัพเดทประวัติ</div>' +
+                    '</div></div>'+
+                    '<div class="col-12 text-center" id="status-gsheet"><i class="bi bi-hourglass-split"></i>บันทึกลง Google Sheet</div>' +
+                    '<div class="col-12 text-center" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i>บันทึกลง Job Consult</div>',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            console.time('sendPost')
+            Promise.all([
+                new Promise((resolve, reject) => {
+                    console.log("save to gsheet");
+                    $.post(script_url, data, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet')
+                            resolve()
+                        } else {
+                            $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
+                            reject()
+                        }
+                    })
+                }),
+                new Promise((resolve, reject) => {
+                    console.log("save to history");
+                    $.post(script_url, {
+                        opt: 'setHistory',
+                        code: data.code,
+                        start: data.start,
+                        end: data.end
+                    }, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ')
+                            resolve()
+                        } else {
+                            $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
+                            reject()
+                        }
+                    })
+                }),
+                new Promise((resolve, reject) => {
+                    console.log("save to job consult");
+                    $.post(script_url, {
+                        opt: 'savejobconsult',
+                        code: data.code,
+                        start: data.start,
+                        end: data.end,
+                        name: $('#displayName').attr('data-name'),
+                    }, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult')
+                            resolve()
+                        } else {
+                            $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
+                            reject()
+                        }
+                    })
+                })
+            ]).then(() => {
+                console.timeEnd('sendPost')
+                setTimeout(() => {
+                    liff.sendMessages([{
+                        type: 'text',
+                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                    }])
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                    }).then(() => {
+                        history_code[data.code] = {
+                            start: data.start,
+                            end: data.end
+                        }
+                        localStorage.setItem('history_code', JSON.stringify(history_code))
+                        liff.closeWindow()
+                    })
+                }, 1000);
+            })
         }
         function checkcode(code) {
             code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
