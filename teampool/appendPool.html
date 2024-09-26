@@ -257,7 +257,7 @@
                             '<option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>' +
                             '<option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>' +
                             '<option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>' +
-                            +'</div></div></div>',
+                            '</div></div></div>',
                         customClass: {
                             input: 'form-select'
                         },
@@ -364,7 +364,15 @@
         function checkRegist() {
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
-            if (regist != null) regist = JSON.parse(regist)
+            if (regist != null) {
+                try{
+                    regist = JSON.parse(regist)
+                }catch(e){
+                    regist = {
+                        uid: null
+                    }
+                }
+            }
             console.log("🚀 ~ regist:", regist)
             if (regist?.uid == uid) {
                 // $.LoadingOverlay('hide')
