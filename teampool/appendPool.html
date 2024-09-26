@@ -548,10 +548,10 @@
                 icon: 'info',
                 title: 'กำลังบันทึกข้อมูล',
                 html: '<div class="container-fluid"><div class="row">' +
-                    '<div class="col-12 text-center" id="status-history"><i class="bi bi-hourglass-split"></i></i>อัพเดทประวัติ</div>' +
+                    '<div class="col-12 text-center text-muted" id="status-history"><i class="bi bi-hourglass-split"></i></i> อัพเดทประวัติ</div>' +
                     '</div></div>'+
-                    '<div class="col-12 text-center" id="status-gsheet"><i class="bi bi-hourglass-split"></i>บันทึกลง Google Sheet</div>' +
-                    '<div class="col-12 text-center" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i>บันทึกลง Job Consult</div>',
+                    '<div class="col-12 text-center text-muted" id="status-gsheet"><i class="bi bi-hourglass-split"></i> บันทึกลง Google Sheet</div>' +
+                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading()
@@ -563,7 +563,7 @@
                     console.log("save to gsheet");
                     $.post(script_url, data, (res) => {
                         if (res.status == 'success') {
-                            $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet')
+                            $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
                             resolve()
                         } else {
                             $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
@@ -580,7 +580,7 @@
                         end: data.end
                     }, (res) => {
                         if (res.status == 'success') {
-                            $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ')
+                            $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
                             resolve()
                         } else {
                             $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
@@ -598,7 +598,7 @@
                         name: $('#displayName').attr('data-name'),
                     }, (res) => {
                         if (res.status == 'success') {
-                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult')
+                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')   
                             resolve()
                         } else {
                             $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
