@@ -374,7 +374,7 @@
                 }
             }
             console.log("🚀 ~ regist:", regist)
-            if (regist?.uid == uid) {
+            if (regist?.uid == uid && regist?.name != null && regist?.name != '') {
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase())
@@ -501,7 +501,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         if (result.value.start_room != '') data['start-room'] = result.value.start_room
-                        if (result.value.end_oom != '') data['end-room'] = end_room = result.value.end_room
+                        if (result.value.end_room != '') data['end-room'] = end_room = result.value.end_room
                         sendPost(data)
                     }
                 })
@@ -604,6 +604,8 @@
                         start: data.start,
                         end: data.end,
                         name: $('#displayName').attr('data-name'),
+                        ['start-room']: data['start-room'],
+                        ['end-room']: data['end-room']
                     }, (res) => {
                         if (res.status == 'success') {
                             $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')   
