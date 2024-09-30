@@ -926,7 +926,7 @@
                             "action": {
                                 "type": "uri",
                                 "label": "ติดต่อ " + update_data.vendor_phone,
-                                "uri": "tel:" + update_data.vendor_phone
+                                "uri": "tel:" + update_data.vendor_phone.replace(/-/g,'').replace(/ /g,'')
                             },
                             "contents": [
                                 {
@@ -1012,7 +1012,7 @@
                                     "action": {
                                         "type": "uri",
                                         "label": "ติดต่อ " + r.vendor_phone,
-                                        "uri": "tel:" + r.vendor_phone
+                                        "uri": "tel:" + r.vendor_phone.replace(/-/g,'').replace(/ /g,'')
                                     },
                                     "contents": [
                                         {
@@ -1657,7 +1657,7 @@
                     "action": {
                         "type": "uri",
                         "label": "ติดต่อ " + update_data.vendor_phone,
-                        "uri": "tel:" + update_data.vendor_phone
+                        "uri": "tel:" + update_data.vendor_phone.replace(/-/g, '').replace(/ /g, '')
                     },
                     "contents": [
                         {
@@ -1746,7 +1746,7 @@
                                 "action": {
                                     "type": "uri",
                                     "label": "ติดต่อ " + r.vendor_phone,
-                                    "uri": "tel:" + r.vendor_phone
+                                    "uri": "tel:" + r.vendor_phone.replace(/-/g, '').replace(/ /g, '')
                                 },
                                 "contents": [
                                     {
@@ -1815,7 +1815,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'มีข้อผิดพลาด',
-                        html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small>',
+                        html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small><br><br>' + JSON.stringify(carousel),
                         confirmButtonText: "ตกลง"
                         //showConfirmButton: false,
                     })
@@ -1907,16 +1907,31 @@
             }
         }
         async function receivejob() {
+            const toast = Swal.mixin({
+                toast: true,
+                iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 50px; height: 50px;margin-start: 5px"/>',
+                customClass: {
+                    icon: 'border-0'
+                },  
+                position: 'top',
+                showConfirmButton: false,
+                timer: 60000,
+                timerProgressBar: true,
+            })
+            $('#submit').prop('disabled', true)
             try {
-                Swal.fire({
-                    iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
-                    customClass: {
-                        icon: 'border-0'
-                    },
+                // Swal.fire({
+                //     iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
+                //     customClass: {
+                //         icon: 'border-0'
+                //     },
+                //     title: 'กำลังรับงานในระบบ',
+                //     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                //     allowOutsideClick: false,
+                //     showConfirmButton: false,
+                // })
+                toast.fire({
                     title: 'กำลังรับงานในระบบ',
-                    html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
                 })
                 let endpoint = scriptUrl + '?mode=receivejob'
                 console.log("🚀 !! endpoint:", endpoint);
@@ -1925,6 +1940,7 @@
                     jobid: jobid,
                     detail: encodeURIComponent(job_detail)
                 }, function (res) {
+                    $('#submit').prop('disabled', false)
                     console.log("🚀 !! res:", res)
                     if (res.status == 'ok') {
                         Swal.fire({

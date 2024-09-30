@@ -19,7 +19,7 @@ if (page.toLowerCase().indexOf("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_re
     window.name = "main";
     let newwindow, newwindow2, newwindow3;
     new Promise((resolve, reject) => {
-        newwindow = window.open("//nsmart.nhealth-asia.com/MTDPDB01/asset_jobs_hist.php?" + parameter, "_blank", "width=400,height=400, top=0, left=0");
+        newwindow = window.open("//nsmart.nhealth-asia.com/MTDPDB01/asset_jobs_hist.php?" + parameter+ '&jobs_m_dept_tech_job_statPage=50', "_blank", "width=400,height=400, top=0, left=0");
         newwindow.onload = () => {
             resolve();
         }
