@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container-fluid">
+        <div class="row my-3 g-2">
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="code" placeholder="ใส่รหัสเครื่อง">
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="year">
+                    <option value="0">เลือกปี</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-primary" id="btn_search">ค้นหา</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#year').val(new Date().getFullYear());
+        });
+        $('#code').keypress(function (e) {
+            if (e.key === 'Enter') {
+                $('#btn_search').click();
+            }
+        });
+        $('#btn_search').click(function () {
+            let code = $('#code').val();
+            let year = $('#year').val();
+            let urls = [
+                'https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_search.php?s_code=&s_sap_code={{code}}&s_code_equip=&s_a_status=&s_groupid=&s_catagory=&s_brand=&s_model=&s_serial_no=&s_cname=&s_branchid=&s_dept=&s_sub_dept=&s_bcode=&s_zone_no=&s_tpriority=&s_warranty=&s_warranty_year=&s_po_asset=&s_doc_no=&s_treceive=&s_mreceive=&s_pmok=&s_caliberok=&s_dept_main=&s_dept_caliber=&s_sup_sale=&s_sup_serv=&s_sup_caliber=&s_tor_type=&s_ecricode=&s_ecriname=',
+                'https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?s_code=&s_sap_code={{code}}&s_code_equip=&s_a_status=&s_groupid=&s_catagory=&s_brand=&s_model=&s_serial_no=&s_cname=&s_branchid=&s_dept=&s_sub_dept=&s_bcode=&s_zone_no=&s_tpriority=&s_warranty=&s_warranty_year=&s_po_asset=&s_doc_no=&s_treceive=&s_mreceive=&s_pmok=&s_caliberok=&s_dept_main=&s_dept_caliber=&s_sup_sale=&s_sup_serv=&s_sup_caliber=&s_tor_type=&s_ecricode=&s_ecriname=',
+                'https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear={{year}}&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code={{code}}&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=&s_sup_serv=&s_jobno=&s_docok=',
+                'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_jobnumber=&s_jobno=&s_job_status=&s_date=&s_to_date=&s_job_result=&s_jobtype=&s_urgentstat=&s_sta=&s_code_equip=&s_code=&s_sap_code={{code}}&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_dept=&s_sub_dept=&s_bcode=&s_tyear=&s_tmonth=&s_date1=&s_dept_tech=&s_emp_id=&s_sup_serv=&s_job_cost_part=&s_classno=&s_failure_head=&s_enterby=',
+                'https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear={{year}}&s_jobdate=&s_to_date=&s_pay=&s_status=&s_pass_status=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code={{code}}&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_caliberok=&caliber_vPageSize=&s_dept_caliber=&s_sup_caliber=&s_jobno=&s_docok='
+            ]
+            urls.forEach(async url => {
+                await new Promise((resolve, reject) => {
+                    window.open(url.replace('{{code}}', code).replace('{{year}}', year), '_blank');
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+</body>
+
+</html>
