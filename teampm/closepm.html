@@ -313,18 +313,14 @@
         })
         $('#mainform').submit(async function (e) {
             e.preventDefault()
-            let code = $('#code').val()
+            let code = $('#code').val().replace(/ |,|\n/g, ',').split(',').map(c => c.trim()).filter(c => c != '')
             let vender = $('#vender').val()
             let date = $('#date').val()
             let safety = $('#safety').is(':checked') ? 'safety' : undefined
             let close_pm = $('#is_pm').is(':checked')
             let close_cal = $('#is_cal').is(':checked')
             date = date.split('-').reverse().join('/')
-            let tmp = code
-            code = code.split(',').map(a => a.trim())
-            if(code === tmp || code[0] === tmp){
-                code = tmp.split(' ').map(a => a.trim())
-            }
+            
             if ((vender == null || vender == '') && !$('#is_team_cal').is(':checked')) {
                 return Swal.fire({
                     title: 'กรุณาเลือก Vender',
