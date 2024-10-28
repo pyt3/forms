@@ -634,14 +634,34 @@
                     //     text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
                     // }])
                     // send telegram
+                    //                     {
+                    //     "status": "success",
+                    //     "e_name": "SCANNING SYSTEMS, ULTRASONIC, GENERAL-PURPOSE",
+                    //     "code": "PYT3_04920",
+                    //     "start": "OPD OB/GYN(ศุนย์สุขภาพหญิง)",
+                    //     "end": "OPD SURGERY(ศัลยกรรม)",
+                    //     "name": "DARANPHOP YIMYAM"
+                    // }
                     const telegram = '7600446984:AAF2t5oRUxyMqxLeujw4FWu-6mdkzNRX1Qo'
-                    $.post('https://https://api.telegram.org/bot' + telegram + '/sendMessage',
-                        {
+                    // $.post('https://api.telegram.org/bot7600446984:AAF2t5oRUxyMqxLeujw4FWu-6mdkzNRX1Qo/sendMessage',
+                    //     {
+                    //         chat_id: '-4561479330',
+                    //         parse_mode: 'HTML',
+                    //         text: `<b>เครื่อง ${save_res[0].ename}</b><br>ได้ถูกย้ายจาก<br>👉<i>${save_res[0].start}</i><br>ไปยัง<br>👉<i>${save_res[0].end}</i<br>โดย @${save_res[0].name}`
+                    //     }
+                    // )
+                    $.ajax({
+                        url: `https://api.telegram.org/bot${telegram}/sendMessage`,
+                        type: 'POST',
+                        data: {
                             chat_id: '-4561479330',
                             parse_mode: 'HTML',
-                            text: `<b>เครื่อง ${data.code}</b>\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                            text: `<b>เครื่อง ${save_res[0].e_name}</b><br>ได้ถูกย้ายจาก<br>👉<i>${save_res[0].start}</i><br>ไปยัง<br>👉<i>${save_res[0].end}</i<br>โดย @${save_res[0].name}`
+                        },
+                        success: function (res) {
+                            console.log("🚀 ~ res:", res)
                         }
-                    )
+                    })
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกข้อมูลสำเร็จ',
