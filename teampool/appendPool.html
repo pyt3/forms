@@ -148,7 +148,7 @@
                     บันทึกข้อมูลการขนย้าย
                 </div>
             </div>
-            <div class="row g-2 justify-content-center">
+            <div class="row g-3 justify-content-center">
                 <div class="col-md-6">
                     <label for="code">รหัสเครื่อง</label>
                     <input type="text" class="form-control text-center" id="code" name="code">
@@ -174,14 +174,14 @@
                         <option value="" selected disabled>เลือกแผนกปลายทาง</option>
                     </select>
                 </div>
-                <div class="col-md-6 text-center">
-                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
-                </div>
                 <div class="col-12">
                     <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
                     <!-- accept only image and video -->
                     <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
                         accept="image/*,video/*">
+                </div>
+                <div class="col-md-6 text-center">
+                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
                 </div>
             </div>
         </div>
@@ -537,19 +537,36 @@
             }
             return quality
         }
+        
         $('#telegram-files').change(function () {
+            if(this.files.length == 0) return
             // compress file
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบีบอัดไฟล์ภาพ',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            let dataTransfer = new DataTransfer();
             const files = this.files;
-            let compress_fileslist = Array.from(files).map(file => {
+            let length = files.length
+            Array.from(files).map(file => {
                 const quality = getCompressionQuality(file)
                 new Compressor(file, {
                     quality: quality,
                     success(result) {
                         console.log("🚀 ~ file:", result)
-                        return new File([result], file.name, {
+                        let f = new File([result], file.name, {
                             type: file.type,
                             lastModified: Date.now()
                         });
+                        dataTransfer.items.add(f);
+                        if(telegram_files.length == length){
+                            $('#telegram-files')[0].files = dataTransfer.files;
+                            Swal.close()
+                        }
                     },
                     error(err) {
                         console.log(err.message);
@@ -697,6 +714,7 @@
                                             // Attach media to FormData
                                             formData.append("chat_id", chatId);
                                             formData.append("media", JSON.stringify(media)); // Add media array
+                                            formData.append("reply_parameters", JSON.stringify({message_id: response.result.message_id})); // Add reply_parameters
 
                                             // Send images as a media group
                                             $.ajax({
