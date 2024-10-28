@@ -563,7 +563,7 @@
                             lastModified: Date.now()
                         });
                         dataTransfer.items.add(f);
-                        if(telegram_files.length == length){
+                        if(dataTransfer.items.length == length) {
                             $('#telegram-files')[0].files = dataTransfer.files;
                             Swal.close()
                         }
