@@ -566,7 +566,7 @@
                     '<div class="col-12 text-center text-muted" id="status-history"><i class="bi bi-hourglass-split"></i></i> อัพเดทประวัติ</div>' +
                     '</div></div>' +
                     '<div class="col-12 text-center text-muted" id="status-gsheet"><i class="bi bi-hourglass-split"></i> บันทึกลง Google Sheet</div>' +
-                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>' + 
+                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>' +
                     '<div class="col-12 text-center text-muted" id="status-telegram"><i class="bi bi-hourglass-split"></i></i> ส่งข้อมูลไป Telegram</div>',
                 allowOutsideClick: false,
                 didOpen: () => {
@@ -579,7 +579,93 @@
                     console.log("save to gsheet");
                     $.post(script_url, data, (res) => {
                         if (res.status == 'success') {
+                            let data = res
                             $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
+                            const chatId = data.chatId
+                            const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
+                            const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
+                            let files = $('#telegram-files')[0].files;
+                            let msg = `
+<b>เครื่อง ${data.e_name}</b>
+
+ได้ถูกย้ายจาก
+
+👉 <i>${data.start}</i>
+
+ไปยัง
+
+👉 <i>${data.end}</i>
+
+โดย ${data.name}`
+                            $.ajax({
+                                url: sendMessageUrl,
+                                type: 'POST',
+                                data: {
+                                    chat_id: chatId,
+                                    text: msg,
+                                    parse_mode: "HTML",
+                                    reply_markup: JSON.stringify({
+                                        inline_keyboard: [
+                                            [{
+                                                text: "บันทึกเพิ่ม",
+                                                url: `https://lin.ee/9Ganv2I`
+                                            }]
+                                        ]
+                                    })
+                                },
+                                success: function (response) {
+                                    if (response.ok) {
+                                        console.log("Message sent successfully!");
+
+                                        // Step 2: Send the images after the message is sent
+                                        if (files.length > 0) {
+                                            const media = [];
+                                            const formData = new FormData();
+
+                                            Array.from(files).forEach((file) => {
+                                                media.push({
+                                                    type: "photo",  // Set the type of media
+                                                    media: `attach://${file.name}` // Use 'attach://' for file attachment
+                                                });
+                                                formData.append(file.name, file); // Attach the file to the FormData
+                                            });
+
+                                            // Attach media to FormData
+                                            formData.append("chat_id", chatId);
+                                            formData.append("media", JSON.stringify(media)); // Add media array
+
+                                            // Send images as a media group
+                                            $.ajax({
+                                                url: sendMediaUrl,
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function (mediaResponse) {
+                                                    if (mediaResponse.ok) {
+                                                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                                        console.log("Media sent successfully!");
+                                                        resolve(mediaResponse)
+                                                    } else {
+                                                        alert("Error sending images: " + mediaResponse.description);
+                                                    }
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    console.error("Error sending images:", errorThrown);
+
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        alert("Error sending message: " + response.description);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error:", error);
+                                    alert("Error sending message.");
+                                }
+                            });
+
                             resolve(res)
                         } else {
                             $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
@@ -633,8 +719,19 @@
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
                     }])
                     sendTelegram(save_res[0])
-                    
-                }, 1000);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                    }).then(() => {
+                        history_code[data.code] = {
+                            start: data.start,
+                            end: data.end
+                        }
+                        localStorage.setItem('history_code', JSON.stringify(history_code))
+                        liff.closeWindow()
+                    })
+                }, 500);
             })
         }
         function checkcode(code) {
@@ -660,103 +757,6 @@
         }
 
         function sendTelegram(data) {
-            const chatId = data.chatId
-            const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
-            const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
-            let files = $('#telegram-files')[0].files;
-            let msg = `
-<b>เครื่อง ${data.e_name}</b>
-
-ได้ถูกย้ายจาก
-
-👉 <i>${data.start}</i>
-
-ไปยัง
-
-👉 <i>${data.end}</i>
-
-โดย ${data.name}`
-            $.ajax({
-                url: sendMessageUrl,
-                type: 'POST',
-                data: {
-                    chat_id: chatId,
-                    text: msg,
-                    parse_mode: "HTML",
-                    reply_markup: JSON.stringify({
-                        inline_keyboard: [
-                            [{
-                                text: "บันทึกเพิ่ม",
-                                url: `https://lin.ee/9Ganv2I`
-                            }]
-                        ]
-                    })
-                },
-                success: function (response) {
-                    if (response.ok) {
-                        console.log("Message sent successfully!");
-
-                        // Step 2: Send the images after the message is sent
-                        if (files.length > 0) {
-                            const media = [];
-                            const formData = new FormData();
-
-                            Array.from(files).forEach((file) => {
-                                media.push({
-                                    type: "photo",  // Set the type of media
-                                    media: `attach://${file.name}` // Use 'attach://' for file attachment
-                                });
-                                formData.append(file.name, file); // Attach the file to the FormData
-                            });
-
-                            // Attach media to FormData
-                            formData.append("chat_id", chatId);
-                            formData.append("media", JSON.stringify(media)); // Add media array
-
-                            // Send images as a media group
-                            $.ajax({
-                                url: sendMediaUrl,
-                                type: 'POST',
-                                data: formData,
-                                contentType: false,
-                                processData: false,
-                                success: function (mediaResponse) {
-                                    if (mediaResponse.ok) {
-                                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                        console.log("Media sent successfully!");
-                                        setTimeout(() => {
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'บันทึกข้อมูลสำเร็จ',
-                                                confirmButtonText: 'ตกลง',
-                                            }).then(() => {
-                                                history_code[data.code] = {
-                                                    start: data.start,
-                                                    end: data.end
-                                                }
-                                                localStorage.setItem('history_code', JSON.stringify(history_code))
-                                                liff.closeWindow()
-                                            })
-                                        }, 500);
-                                    } else {
-                                        alert("Error sending images: " + mediaResponse.description);
-                                    }
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    console.error("Error sending images:", errorThrown);
-                                    
-                                }
-                            });
-                        }
-                    } else {
-                        alert("Error sending message: " + response.description);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error:", error);
-                    alert("Error sending message.");
-                }
-            });
         }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
