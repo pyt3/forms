@@ -642,7 +642,6 @@
                     //     "end": "OPD SURGERY(ศัลยกรรม)",
                     //     "name": "DARANPHOP YIMYAM"
                     // }
-                    const telegram = '7600446984:AAF2t5oRUxyMqxLeujw4FWu-6mdkzNRX1Qo'
                     // $.post('https://api.telegram.org/bot7600446984:AAF2t5oRUxyMqxLeujw4FWu-6mdkzNRX1Qo/sendMessage',
                     //     {
                     //         chat_id: '-4561479330',
@@ -651,12 +650,18 @@
                     //     }
                     // )
                     $.ajax({
-                        url: `https://api.telegram.org/bot${telegram}/sendMessage`,
+                        url: `https://api.telegram.org/bot${save_res[0].token}/sendMessage`,
                         type: 'POST',
                         data: {
                             chat_id: '-4561479330',
                             parse_mode: 'HTML',
-                            text: `<b>เครื่อง ${save_res[0].e_name}</b><br>ได้ถูกย้ายจาก<br>👉<i>${save_res[0].start}</i><br>ไปยัง<br>👉<i>${save_res[0].end}</i<br>โดย @${save_res[0].name}`
+                            text: `<b>เครื่อง ${save_res[0].e_name}</b>
+                            
+                            ได้ถูกย้ายจาก
+                            👉<i>${save_res[0].start}</i>
+                            ไปยัง
+                            👉<iโดย>${save_res[0].end}</i
+                            โดย @${save_res[0].name}`
                         },
                         success: function (res) {
                             console.log("🚀 ~ res:", res)
