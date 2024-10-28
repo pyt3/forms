@@ -588,51 +588,51 @@
                         }
                     })
                 }),
-                new Promise((resolve, reject) => {
-                    console.log("save to history");
-                    $.post(script_url, {
-                        opt: 'setHistory',
-                        code: data.code,
-                        start: data.start,
-                        end: data.end
-                    }, (res) => {
-                        if (res.status == 'success') {
-                            $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
-                            resolve(res)
-                        } else {
-                            $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
-                            reject()
-                        }
-                    })
-                }),
-                new Promise((resolve, reject) => {
-                    console.log("save to job consult");
-                    $.post(script_url, {
-                        opt: 'savejobconsult',
-                        code: data.code,
-                        start: data.start,
-                        end: data.end,
-                        name: $('#displayName').attr('data-name'),
-                        ['start-room']: data['start-room'],
-                        ['end-room']: data['end-room']
-                    }, (res) => {
-                        if (res.status == 'success') {
-                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
-                            resolve(res)
-                        } else {
-                            $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
-                            reject()
-                        }
-                    })
-                })
+                // new Promise((resolve, reject) => {
+                //     console.log("save to history");
+                //     $.post(script_url, {
+                //         opt: 'setHistory',
+                //         code: data.code,
+                //         start: data.start,
+                //         end: data.end
+                //     }, (res) => {
+                //         if (res.status == 'success') {
+                //             $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
+                //             resolve(res)
+                //         } else {
+                //             $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
+                //             reject()
+                //         }
+                //     })
+                // }),
+                // new Promise((resolve, reject) => {
+                //     console.log("save to job consult");
+                //     $.post(script_url, {
+                //         opt: 'savejobconsult',
+                //         code: data.code,
+                //         start: data.start,
+                //         end: data.end,
+                //         name: $('#displayName').attr('data-name'),
+                //         ['start-room']: data['start-room'],
+                //         ['end-room']: data['end-room']
+                //     }, (res) => {
+                //         if (res.status == 'success') {
+                //             $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
+                //             resolve(res)
+                //         } else {
+                //             $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
+                //             reject()
+                //         }
+                //     })
+                // })
             ]).then((save_res) => {
                 console.log("🚀 save_res:", save_res)
                 console.timeEnd('sendPost')
                 setTimeout(() => {
-                    liff.sendMessages([{
-                        type: 'text',
-                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                    }])
+                    // liff.sendMessages([{
+                    //     type: 'text',
+                    //     text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                    // }])
                     // send telegram
                     const telegram = '7600446984:AAF2t5oRUxyMqxLeujw4FWu-6mdkzNRX1Qo'
                     $.post('https://https://api.telegram.org/bot' + telegram + '/sendMessage',
