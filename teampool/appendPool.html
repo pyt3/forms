@@ -690,7 +690,7 @@
                 url: `https://api.telegram.org/bot${data.token}/sendMessage`,
                 type: 'POST',
                 data: {
-                    chat_id: '-4561479330',
+                    chat_id: data.chatId,
                     parse_mode: 'HTML',
                     text: `
 <b>เครื่อง ${data.e_name}</b>
@@ -723,7 +723,7 @@
                     media.push(mediaItem);
                     // Create a promise for each file upload
                     const formData = new FormData();
-                    formData.append("chat_id", chatId);
+                    formData.append("chat_id", data.chatId);
                     formData.append("media", JSON.stringify(media));
 
                     // Add the file to FormData for uploading
