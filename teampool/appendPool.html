@@ -178,7 +178,7 @@
                     <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
                     <!-- accept only image and video -->
                     <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
-                        accept="image/*,video/*">
+                        accept="image/*">
                 </div>
                 <div class="col-md-6 text-center">
                     <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
@@ -532,7 +532,7 @@
                     quality = 0.4
                     break;
                 default:
-                    quality = 0.3
+                    quality = 0.2
                     break;
             }
             return quality
@@ -736,6 +736,9 @@
 
                                                 }
                                             });
+                                        }else{
+                                            $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                            resolve(response)
                                         }
                                     } else {
                                         alert("Error sending message: " + response.description);
