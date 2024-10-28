@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกข้อมูลการขนย้าย</title>
+    <script src="https://fastly.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        /* Your existing styles */
+    </style>
+</head>
+
+<body>
+    <div class="fixed-top">
+        <div class="loader bg-light">
+            <div class="wrapper">
+                <div class="text">LOADING</div>
+                <div class="box"></div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar">
+        <div class="container-fluid" style="display: none">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                &nbsp; <div>
+                    <span id="displayName">Team PM</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+    <div class="container-fluid h-100 d-flex justify-content-center align-items-center">
+        <div class="px-4 pb-4 pt-1">
+            <div class="row justify-content-center">
+                <div class="col h4 fw-bold text-center text-dark">
+                    บันทึกข้อมูลการขนย้าย
+                </div>
+            </div>
+            <div class="row g-2 justify-content-center">
+                <div class="col-md-6">
+                    <label for="code">รหัสเครื่อง</label>
+                    <input type="text" class="form-control text-center" id="code" name="code">
+                </div>
+                <div class="col-md-12">
+                    <div class="d-flex gap-2">
+                        <span class="badge text-bg-primary btn" id="scope">Scope</span>
+                        <span class="badge text-bg-primary btn" id="ups">UPS</span>
+                    </div>
+                </div>
+                <div class="col-md-6" id="div-start">
+                    <label for="start">แผนกต้นทาง</label>
+                    <select name="start" id="start" class="form-select">
+                        <option value="" selected disabled>เลือกแผนกต้นทาง</option>
+                    </select>
+                </div>
+                <div class="col-12 text-center mt-3" style="display:none"><i class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
+                <div class="col-md-6" id="div-end">
+                    <label for="end">แผนกปลายทาง</label>
+                    <select name="end" id="end" class="form-select">
+                        <option value="" selected disabled>เลือกแผนกปลายทาง</option>
+                    </select>
+                </div>
+                <div class="col-md-6 text-center">
+                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
+                </div>
+                <div class="col-12">
+                    <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
+                    <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple accept="image/*,video/*">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec';
+        var profile;
+        var history_code = {};
+
+        $(document).ready(function () {
+            $('#end').append($('#start option').not(':first-child').clone());
+
+            $('#ups').click(function () {
+                Swal.fire({
+                    input: 'number',
+                    title: 'หมายเลข UPS',
+                    inputPlaceholder: 'กรุณาระบุหมายเลข UPS',
+                    customClass: {
+                        input: 'text-center'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: 'ยกเลิก',
+                    preConfirm: (ups) => {
+                        return ups;
+                    }
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        if (res.value == '' || res.value == null) $('#code').val('UPS');
+                        else $('#code').val('UPS ' + ('00' + res.value).slice(-2));
+                    }
+                });
+            });
+
+            $('#scope').click(function () {
+                $('#code').val('SCOPE');
+            });
+
+            $.getJSON(script_url, function (data) {
+                history_code = data;
+                console.log("🚀 ~ history_code:", history_code);
+            });
+
+            // Initialize Telegram Web App
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            tg.MainButton.text = "Submit";
+            tg.MainButton.show();
+
+            tg.onEvent('mainButtonClicked', function () {
+                $('#submit-btn').click();
+            });
+
+            tg.ready();
+
+            $('#submit-btn').click(function () {
+                var code = $('#code').val();
+                var start = $('#start').val();
+                var end = $('#end').val();
+                if (code == '' && checkcode(code)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณากรอกรหัสเครื่อง',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    return false;
+                }
+                if (start == '' || start == null) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาเลือกแผนกต้นทาง',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    return false;
+                }
+                if (end == '' || end == null) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาเลือกแผนกปลายทาง',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    return false;
+                }
+                let data = {
+                    opt: 'add',
+                    code: convertCode(code),
+                    start: start,
+                    end: end,
+                    name: tg.initDataUnsafe.user.first_name,
+                    uid: tg.initDataUnsafe.user.id,
+                    displayName: tg.initDataUnsafe.user.username
+                };
+                sendPost(data);
+            });
+
+            $('select option').each(function () {
+                $(this).val($(this).text().trim());
+            });
+            $('select').select2({
+                theme: 'bootstrap-5'
+            });
+            initHistory_code();
+            $('#start, #end').append(depts_array.sort().map(dept => {
+                return `<option value="${dept}">${dept}</option>`;
+            }).join(''));
+        });
+
+        function initHistory_code() {
+            var typingTimer;
+            var doneTypingInterval = 500;
+            var $input = $('#code');
+            $input.on('keyup', function () {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(doneTyping, doneTypingInterval);
+            });
+            $input.on('keydown', function () {
+                clearTimeout(typingTimer);
+            });
+            function doneTyping() {
+                let code = $('#code').val().toUpperCase();
+                let his = _.pickBy(history_code, (v, k) => {
+                    return k.includes(code);
+                });
+                console.log(his);
+                if (_.size(his) > 0) {
+                    his = _.values(his)[0];
+                    $('#start').val(his.start).change();
+                    $('#end').val(his.end).change();
+                    $('.bi-arrow-down-up').parent().show(200);
+                } else {
+                    $('.bi-arrow-down-up').parent().hide(200);
+                    $('#start').val('').change();
+                    $('#end').val('').change();
+                }
+            }
+            $('.bi-arrow-down-up').click(function () {
+                $('#div-start').addClass('animate__animated animate__backOutRight animate__faster');
+                $('#div-end').addClass('animate__animated animate__backOutLeft animate__faster');
+                setTimeout(() => {
+                    let start = $('#start').val();
+                    let end = $('#end').val();
+                    $('#start').val(end).change();
+                    $('#end').val(start).change();
+                    $('#div-start').removeClass('animate__animated animate__backOutRight');
+                    $('#div-end').removeClass('animate__animated animate__backOutLeft');
+                    $('#div-start').addClass('animate__animated animate__backInLeft animate__faster');
+                    $('#div-end').addClass('animate__animated animate__backInRight animate__faster');
+                }, 500);
+                $(this).animate({ borderSpacing: -360 }, {
+                    step: function (now, fx) {
+                        $(this).css('transform', 'rotate(' + now + 'deg)');
+                    },
+                    duration: 'slow'
+                }, 'linear');
+            });
+        }
+
+        function sendPost(data) {
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                html: '<div class="container-fluid"><div class="row">' +
+                    '<div class="col-12 text-center text-muted" id="status-history"><i class="bi bi-hourglass-split"></i></i> อัพเดทประวัติ</div>' +
+                    '</div></div>' +
+                    '<div class="col-12 text-center text-muted" id="status-gsheet"><i class="bi bi-hourglass-split"></i> บันทึกลง Google Sheet</div>' +
+                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            console.time('sendPost');
+            Promise.all([
+                new Promise((resolve, reject) => {
+                    console.log("save to gsheet");
+                    $.post(script_url, data, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success');
+                            resolve(res);
+                        } else {
+                            $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet');
+                            reject();
+                        }
+                    });
+                })
+            ]).then((save_res) => {
+                console.log("🚀 save_res:", save_res);
+                console.timeEnd('sendPost');
+                setTimeout(() => {
+                    sendTelegram(save_res[0]);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                    }).then(() => {
+                        history_code[data.code] = {
+                            start: data.start,
+                            end: data.end
+                        };
+                        localStorage.setItem('history_code', JSON.stringify(history_code));
+                        tg.close();
+                    });
+                }, 1000);
+            });
+        }
+
+        function checkcode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '');
+            if (!Number(code) == NaN && (code.length < 4 || code.length > 11)) {
+                return false;
+            }
+            return true;
+        }
+
+        function convertCode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '');
+            if (isNaN(code)) {
+                return code;
+            }
+            if (code.length >= 4 || code.length <= 5) {
+                code = ('00000' + code).slice(-5);
+                code = 'PYT3_' + code;
+            } else if (code.length == 6) {
+                code = ('000000' + code).slice(-6);
+                code = 'DEMO_' + code;
+            }
+            return code;
+        }
+
+        function sendTelegram(data) {
+            const chatId = data.chatId;
+            const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
+            const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
+            let files = $('#telegram-files')[0].files;
+            let msg = `
+<b>เครื่อง ${data.e_name}</b>
+
+ได้ถูกย้ายจาก
+
+👉 <i>${data.start}</i>
+
+ไปยัง
+
+👉 <i>${data.end}</i>
+
+โดย ${data.name}`;
+            $.ajax({
+                url: sendMessageUrl,
+                type: 'POST',
+                data: {
+                    chat_id: chatId,
+                    text: msg,
+                    parse_mode: "HTML"
+                },
+                success: function (response) {
+                    if (response.ok) {
+                        console.log("Message sent successfully!");
+
+                        if (files.length > 0) {
+                            const media = [];
+                            const formData = new FormData();
+
+                            Array.from(files).forEach((file) => {
+                                media.push({
+                                    type: "photo",
+                                    media: `attach://${file.name}`
+                                });
+                                formData.append(file.name, file);
+                            });
+
+                            formData.append("chat_id", chatId);
+                            formData.append("media", JSON.stringify(media));
+
+                            $.ajax({
+                                url: sendMediaUrl,
+                                type: 'POST',
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                success: function (mediaResponse) {
+                                    if (mediaResponse.ok) {
+                                        alert("All images sent successfully!");
+                                    } else {
+                                        alert("Error sending images: " + mediaResponse.description);
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error("Error sending images:", errorThrown);
+                                    alert("Error sending images.");
+                                }
+                            });
+                        }
+                    } else {
+                        alert("Error sending message: " + response.description);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Error sending message.");
+                }
+            });
+        }
+    </script>
+    <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+</body>
+
+</html>
