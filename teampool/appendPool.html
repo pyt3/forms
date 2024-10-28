@@ -517,6 +517,70 @@
                 sendPost(data)
             }
         })
+        function getCompressionQuality(file) {
+            let quality = 0.3
+            switch (true) {
+                case file.size / 1024 <= 200:
+                    quality = 0.8
+                    break;
+
+                case file.size / 1024 <= 600:
+                    quality = 0.6
+                    break;
+
+                case file.size / 1024 <= 2000:
+                    quality = 0.4
+                    break;
+                default:
+                    quality = 0.3
+                    break;
+            }
+            return quality
+        }
+        $('#telegram-files').change(function () {
+            // compress file
+            const files = this.files;
+            let compress_fileslist = Array.from(files).map(file => {
+                const quality = getCompressionQuality(file)
+                new Compressor(file, {
+                    quality: quality,
+                    success(result) {
+                        console.log("🚀 ~ file:", result)
+                        return new File([result], file.name, {
+                            type: file.type,
+                            lastModified: Date.now()
+                        });
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                });
+            })
+            $('#telegram-files')[0].files = compress_fileslist
+        
+            // const reader = new FileReader();
+            // reader.onload = function (e) {
+            //     const img = new Image();
+            //     img.src = e.target.result;
+            //     img.onload = function () {
+            //         const elem = document.createElement('canvas');
+            //         const width = 800;
+            //         const scaleFactor = width / img.width;
+            //         elem.width = width;
+            //         elem.height = img.height * scaleFactor;
+            //         const ctx = elem.getContext('2d');
+            //         ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
+            //         ctx.canvas.toBlob((blob) => {
+            //             const file = new File([blob], 'image', {
+            //                 type: 'image/jpeg',
+            //                 lastModified: Date.now()
+            //             });
+            //             console.log("🚀 ~ file:", file)
+            //         }, 'image/jpeg', 1);
+            //     }
+            // }
+            // reader.readAsDataURL(file);
+        })
         async function sendPost(data) {
             // $.LoadingOverlay('show')
             // $.when(
@@ -764,6 +828,7 @@
     <script src="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
 </body>
 
 </html>
