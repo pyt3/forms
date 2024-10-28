@@ -566,7 +566,8 @@
                     '<div class="col-12 text-center text-muted" id="status-history"><i class="bi bi-hourglass-split"></i></i> อัพเดทประวัติ</div>' +
                     '</div></div>' +
                     '<div class="col-12 text-center text-muted" id="status-gsheet"><i class="bi bi-hourglass-split"></i> บันทึกลง Google Sheet</div>' +
-                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>',
+                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>' + 
+                    '<div class="col-12 text-center text-muted" id="status-telegram"><i class="bi bi-hourglass-split"></i></i> ส่งข้อมูลไป Telegram</div>',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading()
@@ -586,80 +587,53 @@
                         }
                     })
                 }),
-                // new Promise((resolve, reject) => {
-                //     console.log("save to history");
-                //     $.post(script_url, {
-                //         opt: 'setHistory',
-                //         code: data.code,
-                //         start: data.start,
-                //         end: data.end
-                //     }, (res) => {
-                //         if (res.status == 'success') {
-                //             $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
-                //             resolve(res)
-                //         } else {
-                //             $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
-                //             reject()
-                //         }
-                //     })
-                // }),
-                // new Promise((resolve, reject) => {
-                //     console.log("save to job consult");
-                //     $.post(script_url, {
-                //         opt: 'savejobconsult',
-                //         code: data.code,
-                //         start: data.start,
-                //         end: data.end,
-                //         name: $('#displayName').attr('data-name'),
-                //         ['start-room']: data['start-room'],
-                //         ['end-room']: data['end-room']
-                //     }, (res) => {
-                //         if (res.status == 'success') {
-                //             $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
-                //             resolve(res)
-                //         } else {
-                //             $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
-                //             reject()
-                //         }
-                //     })
-                // })
+                new Promise((resolve, reject) => {
+                    console.log("save to history");
+                    $.post(script_url, {
+                        opt: 'setHistory',
+                        code: data.code,
+                        start: data.start,
+                        end: data.end
+                    }, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
+                            resolve(res)
+                        } else {
+                            $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
+                            reject()
+                        }
+                    })
+                }),
+                new Promise((resolve, reject) => {
+                    console.log("save to job consult");
+                    $.post(script_url, {
+                        opt: 'savejobconsult',
+                        code: data.code,
+                        start: data.start,
+                        end: data.end,
+                        name: $('#displayName').attr('data-name'),
+                        ['start-room']: data['start-room'],
+                        ['end-room']: data['end-room']
+                    }, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
+                            resolve(res)
+                        } else {
+                            $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
+                            reject()
+                        }
+                    })
+                })
             ]).then((save_res) => {
                 console.log("🚀 save_res:", save_res)
                 console.timeEnd('sendPost')
                 setTimeout(() => {
-                    // liff.sendMessages([{
-                    //     type: 'text',
-                    //     text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                    // }])
-                    // send telegram
-                    //                     {
-                    //     "status": "success",
-                    //     "e_name": "SCANNING SYSTEMS, ULTRASONIC, GENERAL-PURPOSE",
-                    //     "code": "PYT3_04920",
-                    //     "start": "OPD OB/GYN(ศุนย์สุขภาพหญิง)",
-                    //     "end": "OPD SURGERY(ศัลยกรรม)",
-                    //     "name": "DARANPHOP YIMYAM"
-                    // }
-                    // $.post('https://api.telegram.org/bot7600446984:AAF2t5oRUxyMqxLeujw4FWu-6mdkzNRX1Qo/sendMessage',
-                    //     {
-                    //         chat_id: '-4561479330',
-                    //         parse_mode: 'HTML',
-                    //         text: `<b>เครื่อง ${save_res[0].ename}</b><br>ได้ถูกย้ายจาก<br>👉<i>${save_res[0].start}</i><br>ไปยัง<br>👉<i>${save_res[0].end}</i<br>โดย @${save_res[0].name}`
-                    //     }
-                    // )
+                    liff.sendMessages([{
+                        type: 'text',
+                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                    }])
                     sendTelegram(save_res[0])
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'บันทึกข้อมูลสำเร็จ',
-                        confirmButtonText: 'ตกลง',
-                    }).then(() => {
-                        history_code[data.code] = {
-                            start: data.start,
-                            end: data.end
-                        }
-                        localStorage.setItem('history_code', JSON.stringify(history_code))
-                        liff.closeWindow()
-                    })
+                    
                 }, 1000);
             })
         }
@@ -708,7 +682,15 @@
                 data: {
                     chat_id: chatId,
                     text: msg,
-                    parse_mode: "HTML"
+                    parse_mode: "HTML",
+                    reply_markup: JSON.stringify({
+                        inline_keyboard: [
+                            [{
+                                text: "บันทึกเพิ่ม",
+                                url: `https://lin.ee/9Ganv2I`
+                            }]
+                        ]
+                    })
                 },
                 success: function (response) {
                     if (response.ok) {
@@ -740,14 +722,29 @@
                                 processData: false,
                                 success: function (mediaResponse) {
                                     if (mediaResponse.ok) {
-                                        alert("All images sent successfully!");
+                                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                        console.log("Media sent successfully!");
+                                        setTimeout(() => {
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'บันทึกข้อมูลสำเร็จ',
+                                                confirmButtonText: 'ตกลง',
+                                            }).then(() => {
+                                                history_code[data.code] = {
+                                                    start: data.start,
+                                                    end: data.end
+                                                }
+                                                localStorage.setItem('history_code', JSON.stringify(history_code))
+                                                liff.closeWindow()
+                                            })
+                                        }, 500);
                                     } else {
                                         alert("Error sending images: " + mediaResponse.description);
                                     }
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.error("Error sending images:", errorThrown);
-                                    alert("Error sending images.");
+                                    
                                 }
                             });
                         }
