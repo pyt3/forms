@@ -686,13 +686,11 @@
         }
 
         function sendTelegram(data) {
-            $.ajax({
-                url: `https://api.telegram.org/bot${data.token}/sendMessage`,
-                type: 'POST',
-                data: {
-                    chat_id: data.chatId,
-                    parse_mode: 'HTML',
-                    text: `
+            const chatId = data.chatId
+            const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
+            const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
+            let files = $('#telegram-files')[0].files;
+            let msg = `
 <b>เครื่อง ${data.e_name}</b>
 
 ได้ถูกย้ายจาก
@@ -704,48 +702,64 @@
 👉 <i>${data.end}</i>
 
 โดย ${data.name}`
+            $.ajax({
+                url: sendMessageUrl,
+                type: 'POST',
+                data: {
+                    chat_id: chatId,
+                    text: msg,
+                    parse_mode: "HTML"
                 },
-                success: function (res) {
-                    console.log("🚀 ~ res:", res)
+                success: function (response) {
+                    if (response.ok) {
+                        console.log("Message sent successfully!");
+
+                        // Step 2: Send the images after the message is sent
+                        if (files.length > 0) {
+                            const media = [];
+                            const formData = new FormData();
+
+                            Array.from(files).forEach((file) => {
+                                media.push({
+                                    type: "photo",  // Set the type of media
+                                    media: `attach://${file.name}` // Use 'attach://' for file attachment
+                                });
+                                formData.append(file.name, file); // Attach the file to the FormData
+                            });
+
+                            // Attach media to FormData
+                            formData.append("chat_id", chatId);
+                            formData.append("media", JSON.stringify(media)); // Add media array
+
+                            // Send images as a media group
+                            $.ajax({
+                                url: sendMediaUrl,
+                                type: 'POST',
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                success: function (mediaResponse) {
+                                    if (mediaResponse.ok) {
+                                        alert("All images sent successfully!");
+                                    } else {
+                                        alert("Error sending images: " + mediaResponse.description);
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error("Error sending images:", errorThrown);
+                                    alert("Error sending images.");
+                                }
+                            });
+                        }
+                    } else {
+                        alert("Error sending message: " + response.description);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Error sending message.");
                 }
-            })
-            if ($('#telegram-files')[0].files.length > 0) {
-                let files = $('#telegram-files')[0].files
-                const media = [];
-                const promises = [];
-
-                // Prepare media array for each selected file
-                Array.from(files).forEach((file) => {
-                    const mediaItem = {
-                        type: "photo", // Type of media
-                        media: `attach://` + file.name // Use 'attach://' for files being uploaded
-                    };
-                    media.push(mediaItem);
-                    // Create a promise for each file upload
-                    const formData = new FormData();
-                    formData.append("chat_id", data.chatId);
-                    formData.append("media", JSON.stringify(media));
-
-                    // Add the file to FormData for uploading
-                    formData.append(file.name, file);
-
-                    promises.push(
-                        $.ajax({
-                            url: 'https://api.telegram.org/bot' + data.token + '/sendMediaGroup',
-                            type: 'POST',
-                            data: formData,
-                            contentType: false,
-                            processData: false,
-                        })
-                    );
-                });
-                $.when(...promises).done(function () {
-                    alert("All images sent successfully!");
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error("Error sending images:", errorThrown);
-                    alert("Error sending images.");
-                });
-            }
+            });
         }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
