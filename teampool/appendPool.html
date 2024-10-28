@@ -177,18 +177,16 @@
                 <div class="col-md-6 text-center">
                     <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12" style="background-color: #3390ec;">
-                <div class="alert alert-warning text-center">
-                    <i class="bi bi-exclamation-triangle-fill"></i> หากไม่ได้ย้ายเข้าห้อง กรุณาเว้นว่างไว้
+                <div class="col-12">
+                    <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
+                    <!-- accept only image and video -->
+                    <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
+                        accept="image/*,video/*">
                 </div>
             </div>
         </div>
     </div>
+
     <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
@@ -649,24 +647,7 @@
                     //         text: `<b>เครื่อง ${save_res[0].ename}</b><br>ได้ถูกย้ายจาก<br>👉<i>${save_res[0].start}</i><br>ไปยัง<br>👉<i>${save_res[0].end}</i<br>โดย @${save_res[0].name}`
                     //     }
                     // )
-                    $.ajax({
-                        url: `https://api.telegram.org/bot${save_res[0].token}/sendMessage`,
-                        type: 'POST',
-                        data: {
-                            chat_id: '-4561479330',
-                            parse_mode: 'HTML',
-                            text: `<b>เครื่อง ${save_res[0].e_name}</b>
-
-                            ได้ถูกย้ายจาก
-                            👉<i>${save_res[0].start}</i>
-                            ไปยัง
-                            👉<i>${save_res[0].end}</i>
-                            โดย @${save_res[0].name}`
-                        },
-                        success: function (res) {
-                            console.log("🚀 ~ res:", res)
-                        }
-                    })
+                    sendTelegram(save_res[0])
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกข้อมูลสำเร็จ',
@@ -702,6 +683,69 @@
                 code = 'DEMO_' + code
             }
             return code
+        }
+
+        function sendTelegram(data) {
+            $.ajax({
+                url: `https://api.telegram.org/bot${data.token}/sendMessage`,
+                type: 'POST',
+                data: {
+                    chat_id: '-4561479330',
+                    parse_mode: 'HTML',
+                    text: `
+<b>เครื่อง ${data.e_name}</b>
+
+ได้ถูกย้ายจาก
+
+👉 <i>${data.start}</i>
+
+ไปยัง
+
+👉 <i>${data.end}</i>
+
+โดย ${data.name}`
+                },
+                success: function (res) {
+                    console.log("🚀 ~ res:", res)
+                }
+            })
+            if ($('#telegram-files')[0].files.length > 0) {
+                let files = $('#telegram-files')[0].files
+                const media = [];
+                const promises = [];
+
+                // Prepare media array for each selected file
+                Array.from(files).forEach((file) => {
+                    const mediaItem = {
+                        type: "photo", // Type of media
+                        media: `attach://` + file.name // Use 'attach://' for files being uploaded
+                    };
+                    media.push(mediaItem);
+                    // Create a promise for each file upload
+                    const formData = new FormData();
+                    formData.append("chat_id", chatId);
+                    formData.append("media", JSON.stringify(media));
+
+                    // Add the file to FormData for uploading
+                    formData.append(file.name, file);
+
+                    promises.push(
+                        $.ajax({
+                            url: 'https://api.telegram.org/bot' + data.token + '/sendMediaGroup',
+                            type: 'POST',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                        })
+                    );
+                });
+                $.when(...promises).done(function () {
+                    alert("All images sent successfully!");
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error("Error sending images:", errorThrown);
+                    alert("Error sending images.");
+                });
+            }
         }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
