@@ -180,6 +180,15 @@
             </div>
         </div>
     </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12" style="background-color: #3390ec;">
+                <div class="alert alert-warning text-center">
+                    <i class="bi bi-exclamation-triangle-fill"></i> หากไม่ได้ย้ายเข้าห้อง กรุณาเว้นว่างไว้
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
@@ -365,9 +374,9 @@
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
             if (regist != null) {
-                try{
+                try {
                     regist = JSON.parse(regist)
-                }catch(e){
+                } catch (e) {
                     regist = {
                         uid: null
                     }
@@ -557,7 +566,7 @@
                 title: 'กำลังบันทึกข้อมูล',
                 html: '<div class="container-fluid"><div class="row">' +
                     '<div class="col-12 text-center text-muted" id="status-history"><i class="bi bi-hourglass-split"></i></i> อัพเดทประวัติ</div>' +
-                    '</div></div>'+
+                    '</div></div>' +
                     '<div class="col-12 text-center text-muted" id="status-gsheet"><i class="bi bi-hourglass-split"></i> บันทึกลง Google Sheet</div>' +
                     '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>',
                 allowOutsideClick: false,
@@ -572,7 +581,7 @@
                     $.post(script_url, data, (res) => {
                         if (res.status == 'success') {
                             $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
-                            resolve()
+                            resolve(res)
                         } else {
                             $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
                             reject()
@@ -589,7 +598,7 @@
                     }, (res) => {
                         if (res.status == 'success') {
                             $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
-                            resolve()
+                            resolve(res)
                         } else {
                             $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
                             reject()
@@ -608,21 +617,31 @@
                         ['end-room']: data['end-room']
                     }, (res) => {
                         if (res.status == 'success') {
-                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')   
-                            resolve()
+                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
+                            resolve(res)
                         } else {
                             $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
                             reject()
                         }
                     })
                 })
-            ]).then(() => {
+            ]).then((save_res) => {
+                console.log("🚀 save_res:", save_res)
                 console.timeEnd('sendPost')
                 setTimeout(() => {
                     liff.sendMessages([{
                         type: 'text',
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
                     }])
+                    // send telegram
+                    const telegram = '7600446984:AAF2t5oRUxyMqxLeujw4FWu-6mdkzNRX1Qo'
+                    $.post('https://https://api.telegram.org/bot' + telegram + '/sendMessage',
+                        {
+                            chat_id: '-4561479330',
+                            parse_mode: 'HTML',
+                            text: `<b>เครื่อง ${data.code}</b>\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                        }
+                    )
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกข้อมูลสำเร็จ',
