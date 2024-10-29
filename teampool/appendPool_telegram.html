@@ -386,7 +386,7 @@
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase())
-                $('#profile').attr('src', profile.photo_url)
+                $('#profile').attr('src', profile.photo_url).css('display', profile.photo_url ? 'block' : 'none')
                 return
             }
             $.ajax({
@@ -461,7 +461,8 @@
                                             res = res.data
                                             localStorage.setItem('regist', JSON.stringify({
                                                 uid: uid,
-                                                name: res.value
+                                                name: profile.username,
+                                                image: profile.photo_url
                                             }))
                                             Swal.fire({
                                                 icon: 'success',
