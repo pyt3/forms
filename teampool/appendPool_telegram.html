@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>บันทึกข้อมูลการขนย้าย</title>
     <script src="https://fastly.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
@@ -118,9 +119,6 @@
             }
         }
     </style>
-    <style>
-        /* Your existing styles */
-    </style>
 </head>
 
 <body>
@@ -131,11 +129,13 @@
                 <div class="box"></div>
             </div>
         </div>
+
     </div>
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="" alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
+                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
                 &nbsp; <div>
                     <span id="displayName">Team PM</span>
                 </div>
@@ -149,7 +149,7 @@
                     บันทึกข้อมูลการขนย้าย
                 </div>
             </div>
-            <div class="row g-2 justify-content-center">
+            <div class="row g-3 justify-content-center">
                 <div class="col-md-6">
                     <label for="code">รหัสเครื่อง</label>
                     <input type="text" class="form-control text-center" id="code" name="code">
@@ -158,6 +158,7 @@
                     <div class="d-flex gap-2">
                         <span class="badge text-bg-primary btn" id="scope">Scope</span>
                         <span class="badge text-bg-primary btn" id="ups">UPS</span>
+
                     </div>
                 </div>
                 <div class="col-md-6" id="div-start">
@@ -174,28 +175,33 @@
                         <option value="" selected disabled>เลือกแผนกปลายทาง</option>
                     </select>
                 </div>
-                <div class="col-md-6 text-center">
-                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
-                </div>
                 <div class="col-12">
                     <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
+                    <!-- accept only image and video -->
                     <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
-                        accept="image/*,video/*">
+                        accept="image/*">
+                </div>
+                <div class="col-md-6 text-center">
+                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
-        var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec';
-        var profile;
-        var history_code = {};
-        const tg = window.Telegram.WebApp;
+        // VConsole will be exported to `window.VConsole` by default.
+        var vConsole = new window.VConsole();
+    </script> -->
+    <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
+        var profile
+        var history_code = {}
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
         $(document).ready(function () {
-            const tg_uid = tg.initDataUnsafe.user.id;
-            alert(tg_uid);
-            $('#end').append($('#start option').not(':first-child').clone());
-
+            $('#end').append($('#start option').not(':first-child').clone())
             $('#ups').click(function () {
                 Swal.fire({
                     input: 'number',
@@ -208,143 +214,432 @@
                     confirmButtonText: 'ตกลง',
                     cancelButtonText: 'ยกเลิก',
                     preConfirm: (ups) => {
-                        return ups;
+                        return ups
                     }
                 }).then(res => {
                     if (res.isConfirmed) {
-                        if (res.value == '' || res.value == null) $('#code').val('UPS');
-                        else $('#code').val('UPS ' + ('00' + res.value).slice(-2));
+                        if (res.value == '' || res.value == null) $('#code').val('UPS')
+                        else $('#code').val('UPS ' + ('00' + res.value).slice(-2))
                     }
-                });
-            });
+                })
+            })
 
             $('#scope').click(function () {
-                $('#code').val('SCOPE');
-            });
+                $('#code').val('SCOPE')
+            })
 
+            // $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
-                history_code = data;
-                console.log("🚀 ~ history_code:", history_code);
-            });
-
-            // Initialize Telegram Web App
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            tg.MainButton.text = "Submit";
-            tg.MainButton.show();
-
-            tg.onEvent('mainButtonClicked', function () {
-                $('#submit-btn').click();
-            });
-
-            tg.ready();
-
-            $('#submit-btn').click(function () {
-                var code = $('#code').val();
-                var start = $('#start').val();
-                var end = $('#end').val();
-                if (code == '' && checkcode(code)) {
+                history_code = data
+                console.log("🚀 ~ history_code:", history_code)
+            })
+            // liff.init({
+            //     liffId: '1660749495-G5e9Av6r',
+            //     // liffId: '1660749495-A2gmPQNb',
+            //     withLoginOnExternalBrowser: true
+            // })
+            liff.ready.then(async () => {
+                checkRegist()
+                profile = await liff.getProfile()
+                if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'กรุณากรอกรหัสเครื่อง',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    return false;
+                        title: 'เนื่องจากเป็น Line ' + profile.displayName + ' กรุณาระบุชื่อของคุณ',
+                        html: '<div container-fluid><div class="row"><div class="col-12"><select id="name-onc" class="form-select">' +
+                            '<option value="" selected disabled>เลือกชื่อของคุณ</option>' +
+                            '<option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>' +
+                            '<option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>' +
+                            '<option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>' +
+                            '<option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>' +
+                            '<option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>' +
+                            '<option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>' +
+                            '<option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>' +
+                            '<option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>' +
+                            '<option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>' +
+                            '<option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>' +
+                            '<option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>' +
+                            '<option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>' +
+                            '<option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>' +
+                            '<option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>' +
+                            '<option value="SOM KONKAEW">SOM KONKAEW</option>' +
+                            '<option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>' +
+                            '<option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>' +
+                            '<option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>' +
+                            '<option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>' +
+                            '</div></div></div>',
+                        customClass: {
+                            input: 'form-select'
+                        },
+                        confirmButtonText: 'ยืนยัน',
+                        allowOutsideClick: false,
+                        preConfirm: () => {
+                            let name = $('#name-onc').val()
+                            if (name == '' || name == null) {
+                                Swal.showValidationMessage(
+                                    `กรุณาระบุชื่อของคุณ`
+                                )
+                            }
+                            return name
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            profile.displayName = result.value + ' (' + profile.displayName + ')'
+                            $('#profile').attr('src', profile.pictureUrl)
+                            $('#displayName').text(profile.displayName).attr('data-name', result.value.toUpperCase())
+                            $('.navbar .container-fluid').show(400)
+                            Swal.fire({
+                                title: 'สวัสดีคุณ ' + result.value,
+                                text: 'ทำรายการต่อได้ครับ',
+                                showConfirmButton: false,
+                                icon: 'success',
+                                timer: 1000
+                            })
+                        }
+                    })
                 }
-                if (start == '' || start == null) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'กรุณาเลือกแผนกต้นทาง',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    return false;
-                }
-                if (end == '' || end == null) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'กรุณาเลือกแผนกปลายทาง',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    return false;
-                }
-                let data = {
-                    opt: 'add',
-                    code: convertCode(code),
-                    start: start,
-                    end: end,
-                    name: tg.initDataUnsafe.user.first_name,
-                    uid: tg.initDataUnsafe.user.id,
-                    displayName: tg.initDataUnsafe.user.username
-                };
-                sendPost(data);
-            });
-
+                $('#profile').attr('src', profile.pictureUrl)
+                $('#displayName').text(profile.displayName)
+                $('.navbar .container-fluid').show(400)
+            })
             $('select option').each(function () {
-                $(this).val($(this).text().trim());
-            });
+                $(this).val($(this).text().trim())
+            })
             $('select').select2({
                 theme: 'bootstrap-5'
-            });
-            initHistory_code();
+            })
+            initHistory_code()
             $('#start, #end').append(depts_array.sort().map(dept => {
-                return `<option value="${dept}">${dept}</option>`;
-            }).join(''));
-        });
+                return `<option value="${dept}">${dept}</option>`
+            }).join(''))
 
+        })
         function initHistory_code() {
-            var typingTimer;
-            var doneTypingInterval = 500;
+            //setup before functions
+            var typingTimer;                //timer identifier
+            var doneTypingInterval = 500;  //time in ms, 0.5 seconds for example
             var $input = $('#code');
+            //on keyup, start the countdown
             $input.on('keyup', function () {
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(doneTyping, doneTypingInterval);
             });
+            //on keydown, clear the countdown 
             $input.on('keydown', function () {
                 clearTimeout(typingTimer);
             });
+            //user is "finished typing," do something
             function doneTyping() {
-                let code = $('#code').val().toUpperCase();
+                let code = $('#code').val().toUpperCase()
                 let his = _.pickBy(history_code, (v, k) => {
-                    return k.includes(code);
-                });
+                    return k.includes(code)
+                })
                 console.log(his);
                 if (_.size(his) > 0) {
-                    his = _.values(his)[0];
-                    $('#start').val(his.start).change();
-                    $('#end').val(his.end).change();
-                    $('.bi-arrow-down-up').parent().show(200);
+                    his = _.values(his)[0]
+                    $('#start').val(his.start).change()
+                    $('#end').val(his.end).change()
+                    $('.bi-arrow-down-up').parent().show(200)
                 } else {
-                    $('.bi-arrow-down-up').parent().hide(200);
-                    $('#start').val('').change();
-                    $('#end').val('').change();
+                    $('.bi-arrow-down-up').parent().hide(200)
+                    $('#start').val('').change()
+                    $('#end').val('').change()
                 }
             }
             $('.bi-arrow-down-up').click(function () {
-                $('#div-start').addClass('animate__animated animate__backOutRight animate__faster');
-                $('#div-end').addClass('animate__animated animate__backOutLeft animate__faster');
+                // $(this).removeClass('animate__animated animate__bounceIn')
+                $('#div-start').addClass('animate__animated animate__backOutRight animate__faster')
+                $('#div-end').addClass('animate__animated animate__backOutLeft animate__faster')
                 setTimeout(() => {
-                    let start = $('#start').val();
-                    let end = $('#end').val();
-                    $('#start').val(end).change();
-                    $('#end').val(start).change();
-                    $('#div-start').removeClass('animate__animated animate__backOutRight');
-                    $('#div-end').removeClass('animate__animated animate__backOutLeft');
-                    $('#div-start').addClass('animate__animated animate__backInLeft animate__faster');
-                    $('#div-end').addClass('animate__animated animate__backInRight animate__faster');
+                    let start = $('#start').val()
+                    let end = $('#end').val()
+                    $('#start').val(end).change()
+                    $('#end').val(start).change()
+                    $('#div-start').removeClass('animate__animated animate__backOutRight')
+                    $('#div-end').removeClass('animate__animated animate__backOutLeft')
+                    $('#div-start').addClass('animate__animated animate__backInLeft animate__faster')
+                    $('#div-end').addClass('animate__animated animate__backInRight animate__faster')
                 }, 500);
+                // rotate element 360 degrees in 1 second
                 $(this).animate({ borderSpacing: -360 }, {
                     step: function (now, fx) {
+                        $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
+                        $(this).css('-moz-transform', 'rotate(' + now + 'deg)');
                         $(this).css('transform', 'rotate(' + now + 'deg)');
                     },
                     duration: 'slow'
                 }, 'linear');
-            });
+            })
         }
+        function checkRegist() {
+            let uid = liff.getDecodedIDToken().sub
+            let regist = localStorage.getItem('regist')
+            if (regist != null) {
+                try {
+                    regist = JSON.parse(regist)
+                } catch (e) {
+                    regist = {
+                        uid: null
+                    }
+                }
+            }
+            console.log("🚀 ~ regist:", regist)
+            if (regist?.uid == uid && regist?.name != null && regist?.name != '') {
+                // $.LoadingOverlay('hide')
+                $('.loader').fadeOut(500)
+                $('#displayName').attr('data-name', regist.name.toUpperCase())
+                return
+            }
+            $.ajax({
+                method: 'POST',
+                url: script_url,
+                data: {
+                    opt: 'checkRegist',
+                    uid: uid
+                },
+                success: function (res) {
+                    console.log("🚀 ~ res:", res)
+                    // $.LoadingOverlay('hide')
+                    $('.loader').fadeOut(500)
+                    if (!res) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'กรุณาลงทะเบียนก่อนใช้งาน',
+                            allowOutsideClick: false,
+                            confirmButtonText: 'ตกลง'
+                        }).then(() => {
+                            liff.closeWindow()
+                        })
+                    } else {
+                        localStorage.setItem('regist', JSON.stringify(res))
+                    }
+                }
+            })
+        }
+        $('#submit-btn').click(function () {
+            var code = $('#code').val()
+            var start = $('#start').val()
+            var end = $('#end').val()
+            if (code == '' && checkcode(code)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกรหัสเครื่อง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return false
+            }
+            if (start == '' || start == null) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกแผนกต้นทาง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return false
+            }
+            if (end == '' || end == null) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกแผนกปลายทาง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return false
+            }
+            let data = {
+                opt: 'add',
+                code: convertCode(code),
+                start: start,
+                end: end,
+                name: $('#displayName').attr('data-name'),
+                // uid: 'test',
+                // displayName: 'yeah'
+                uid: liff.getDecodedIDToken().sub,
+                displayName: profile.displayName
+            }
+            if (start == end) {
+                return Swal.fire({
+                    title: 'กรุณาระบุห้องต้นทาง และปลายทาง',
+                    html: `<div class="container-fluid"><div class="row"><div class="col-12"><label for="start-room">ห้องต้นทาง</label><input id="start-room" class="form-control"></div><div class="col-12"><label for="end-room">ห้องปลายทาง</label><input id="end-room" class="form-control"></div></div></div>`,
+                    showCancelButton: true,
+                    confirmButtonText: 'บันทึกเลย',
+                    cancelButtonText: 'ยกเลิก',
+                    preConfirm: () => {
+                        let start_room = $('#start-room').val()
+                        let end_room = $('#end-room').val()
+                        if (start_room == '' || end_room == '') {
+                            Swal.showValidationMessage(`กรุณากรอกห้องต้นทาง และปลายทาง`)
+                        }
+                        return { start_room, end_room }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        data['start-room'] = result.value.start_room
+                        data['end-room'] = end_room = result.value.end_room
+                        sendPost(data)
+                    }
+                })
+            } else if (start.toLowerCase().indexOf('ward') > -1 || end.toLowerCase().indexOf('ward') > -1 || start == 'ชั้น 20' || end == 'ชั้น 20') {
+                let start_room_html = `<div class="col-12"><label for="start-room">ห้องต้นทาง ${start}</label><input id="start-room" class="form-control"></div>`
+                let end_room_html = `<div class="col-12"><label for="end-room">ห้องปลายทาง ${end}</label><input id="end-room" class="form-control"></div>`
+                let div = $('<div>', { class: 'container-fluid' }).append($('<div>', { class: 'row g-2' }))
+                let title = 'กรุณาระบุ'
+                div.find('.row').append($('<div>', { class: 'col-12 h5' }).html(`<i class="bi bi-door-open-fill"></i><span id="room-swal-title">${title}</span>`))
+                div.find('.row').append($('<div>', { class: 'col-12 alert alert-warning p-1' }).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้อง<br>กรุณาเว้นว่างไว้</u>`))
+                if (start.toLowerCase().indexOf('ward') > -1 || start == 'ชั้น 20') {
+                    title += 'ห้องต้นทาง'
+                    div.find('.row').append($(start_room_html))
+                }
+                if (end.toLowerCase().indexOf('ward') > -1 || end == 'ชั้น 20') {
+                    title += ' ห้องปลายทาง'
+                    div.find('.row').append($(end_room_html))
+                }
+                return Swal.fire({
+                    html: div[0].outerHTML,
+                    showCancelButton: true,
+                    confirmButtonText: 'บันทึกเลย',
+                    cancelButtonText: 'ยกเลิก',
+                    preConfirm: () => {
+                        let start_room = $('#start-room').val()
+                        let end_room = $('#end-room').val()
+                        return { start_room, end_room }
+                    },
+                    didOpen: () => {
+                        $('#room-swal-title').text(title)
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (result.value.start_room != '') data['start-room'] = result.value.start_room
+                        if (result.value.end_room != '') data['end-room'] = end_room = result.value.end_room
+                        sendPost(data)
+                    }
+                })
+            }
+            else {
+                sendPost(data)
+            }
+        })
+        function getCompressionQuality(file) {
+            let quality = 0.3
+            switch (true) {
+                case file.size / 1024 <= 200:
+                    quality = 0.8
+                    break;
 
-        function sendPost(data) {
+                case file.size / 1024 <= 600:
+                    quality = 0.6
+                    break;
+
+                case file.size / 1024 <= 2000:
+                    quality = 0.4
+                    break;
+                default:
+                    quality = 0.2
+                    break;
+            }
+            return quality
+        }
+        
+        $('#telegram-files').change(function () {
+            if(this.files.length == 0) return
+            // compress file
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบีบอัดไฟล์ภาพ',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            let dataTransfer = new DataTransfer();
+            const files = this.files;
+            let length = files.length
+            Array.from(files).map(file => {
+                const quality = getCompressionQuality(file)
+                new Compressor(file, {
+                    quality: quality,
+                    success(result) {
+                        console.log("🚀 ~ file:", result)
+                        let f = new File([result], file.name, {
+                            type: file.type,
+                            lastModified: Date.now()
+                        });
+                        dataTransfer.items.add(f);
+                        if(dataTransfer.items.length == length) {
+                            $('#telegram-files')[0].files = dataTransfer.files;
+                            Swal.close()
+                        }
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                });
+            })
+        
+            // const reader = new FileReader();
+            // reader.onload = function (e) {
+            //     const img = new Image();
+            //     img.src = e.target.result;
+            //     img.onload = function () {
+            //         const elem = document.createElement('canvas');
+            //         const width = 800;
+            //         const scaleFactor = width / img.width;
+            //         elem.width = width;
+            //         elem.height = img.height * scaleFactor;
+            //         const ctx = elem.getContext('2d');
+            //         ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
+            //         ctx.canvas.toBlob((blob) => {
+            //             const file = new File([blob], 'image', {
+            //                 type: 'image/jpeg',
+            //                 lastModified: Date.now()
+            //             });
+            //             console.log("🚀 ~ file:", file)
+            //         }, 'image/jpeg', 1);
+            //     }
+            // }
+            // reader.readAsDataURL(file);
+        })
+        async function sendPost(data) {
+            // $.LoadingOverlay('show')
+            // $.when(
+            //     $.ajax({
+            //         url: script_url,
+            //         type: 'POST',
+            //         data: data,
+            //     }),
+            //     $.ajax({
+            //         url: script_url,
+            //         type: 'POST',
+            //         data: {
+            //             opt: 'setHistory', data: JSON.stringify({
+            //                 code: data.code,
+            //                 start: data.start,
+            //                 end: data.end
+            //             })
+            //         }
+            //     })
+            // ).done((res1, res2) => {
+            //     $.LoadingOverlay('hide', true)
+            //     if (res1[0].status == 'success') {
+            //         liff.sendMessages([{
+            //             type: 'text',
+            //             text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+            //         }])
+            //         Swal.fire({
+            //             icon: 'success',
+            //             title: 'บันทึกข้อมูลสำเร็จ',
+            //             confirmButtonText: 'ตกลง',
+            //         }).then(() => {
+            //             history_code[data.code] = {
+            //                 start: data.start,
+            //                 end: data.end
+            //             }
+            //             localStorage.setItem('history_code', JSON.stringify(history_code))
+            //             liff.closeWindow()
+            //         })
+            //     } else {
+            //         console.log(res);
+            //     }
+            // })
             Swal.fire({
                 icon: 'info',
                 title: 'กำลังบันทึกข้อมูล',
@@ -352,76 +647,26 @@
                     '<div class="col-12 text-center text-muted" id="status-history"><i class="bi bi-hourglass-split"></i></i> อัพเดทประวัติ</div>' +
                     '</div></div>' +
                     '<div class="col-12 text-center text-muted" id="status-gsheet"><i class="bi bi-hourglass-split"></i> บันทึกลง Google Sheet</div>' +
-                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>',
+                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>' +
+                    '<div class="col-12 text-center text-muted" id="status-telegram"><i class="bi bi-hourglass-split"></i></i> ส่งข้อมูลไป Telegram</div>',
                 allowOutsideClick: false,
                 didOpen: () => {
-                    Swal.showLoading();
+                    Swal.showLoading()
                 }
-            });
-            console.time('sendPost');
+            })
+            console.time('sendPost')
             Promise.all([
                 new Promise((resolve, reject) => {
                     console.log("save to gsheet");
                     $.post(script_url, data, (res) => {
                         if (res.status == 'success') {
-                            $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success');
-                            resolve(res);
-                        } else {
-                            $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet');
-                            reject();
-                        }
-                    });
-                })
-            ]).then((save_res) => {
-                console.log("🚀 save_res:", save_res);
-                console.timeEnd('sendPost');
-                setTimeout(() => {
-                    sendTelegram(save_res[0]);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'บันทึกข้อมูลสำเร็จ',
-                        confirmButtonText: 'ตกลง',
-                    }).then(() => {
-                        history_code[data.code] = {
-                            start: data.start,
-                            end: data.end
-                        };
-                        localStorage.setItem('history_code', JSON.stringify(history_code));
-                        tg.close();
-                    });
-                }, 1000);
-            });
-        }
-
-        function checkcode(code) {
-            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '');
-            if (!Number(code) == NaN && (code.length < 4 || code.length > 11)) {
-                return false;
-            }
-            return true;
-        }
-
-        function convertCode(code) {
-            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '');
-            if (isNaN(code)) {
-                return code;
-            }
-            if (code.length >= 4 || code.length <= 5) {
-                code = ('00000' + code).slice(-5);
-                code = 'PYT3_' + code;
-            } else if (code.length == 6) {
-                code = ('000000' + code).slice(-6);
-                code = 'DEMO_' + code;
-            }
-            return code;
-        }
-
-        function sendTelegram(data) {
-            const chatId = data.chatId;
-            const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
-            const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
-            let files = $('#telegram-files')[0].files;
-            let msg = `
+                            let data = res
+                            $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
+                            const chatId = data.chatId
+                            const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
+                            const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
+                            let files = $('#telegram-files')[0].files;
+                            let msg = `
 <b>เครื่อง ${data.e_name}</b>
 
 ได้ถูกย้ายจาก
@@ -432,67 +677,179 @@
 
 👉 <i>${data.end}</i>
 
-โดย ${data.name}`;
-            $.ajax({
-                url: sendMessageUrl,
-                type: 'POST',
-                data: {
-                    chat_id: chatId,
-                    text: msg,
-                    parse_mode: "HTML"
-                },
-                success: function (response) {
-                    if (response.ok) {
-                        console.log("Message sent successfully!");
-
-                        if (files.length > 0) {
-                            const media = [];
-                            const formData = new FormData();
-
-                            Array.from(files).forEach((file) => {
-                                media.push({
-                                    type: "photo",
-                                    media: `attach://${file.name}`
-                                });
-                                formData.append(file.name, file);
-                            });
-
-                            formData.append("chat_id", chatId);
-                            formData.append("media", JSON.stringify(media));
-
+โดย ${data.name}`
                             $.ajax({
-                                url: sendMediaUrl,
+                                url: sendMessageUrl,
                                 type: 'POST',
-                                data: formData,
-                                contentType: false,
-                                processData: false,
-                                success: function (mediaResponse) {
-                                    if (mediaResponse.ok) {
-                                        alert("All images sent successfully!");
+                                data: {
+                                    chat_id: chatId,
+                                    text: msg,
+                                    parse_mode: "HTML",
+                                    reply_markup: JSON.stringify({
+                                        inline_keyboard: [
+                                            [{
+                                                text: "บันทึกเพิ่ม",
+                                                url: `https://lin.ee/9Ganv2I`
+                                            }]
+                                        ]
+                                    })
+                                },
+                                success: function (response) {
+                                    if (response.ok) {
+                                        console.log("Message sent successfully!");
+
+                                        // Step 2: Send the images after the message is sent
+                                        if (files.length > 0) {
+                                            const media = [];
+                                            const formData = new FormData();
+
+                                            Array.from(files).forEach((file) => {
+                                                media.push({
+                                                    type: "photo",  // Set the type of media
+                                                    media: `attach://${file.name}` // Use 'attach://' for file attachment
+                                                });
+                                                formData.append(file.name, file); // Attach the file to the FormData
+                                            });
+
+                                            // Attach media to FormData
+                                            formData.append("chat_id", chatId);
+                                            formData.append("media", JSON.stringify(media)); // Add media array
+                                            formData.append("reply_parameters", JSON.stringify({message_id: response.result.message_id})); // Add reply_parameters
+
+                                            // Send images as a media group
+                                            $.ajax({
+                                                url: sendMediaUrl,
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function (mediaResponse) {
+                                                    if (mediaResponse.ok) {
+                                                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                                        console.log("Media sent successfully!");
+                                                        resolve(mediaResponse)
+                                                    } else {
+                                                        alert("Error sending images: " + mediaResponse.description);
+                                                    }
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    console.error("Error sending images:", errorThrown);
+
+                                                }
+                                            });
+                                        }else{
+                                            $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                            resolve(response)
+                                        }
                                     } else {
-                                        alert("Error sending images: " + mediaResponse.description);
+                                        alert("Error sending message: " + response.description);
                                     }
                                 },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    console.error("Error sending images:", errorThrown);
-                                    alert("Error sending images.");
+                                error: function (xhr, status, error) {
+                                    console.error("Error:", error);
+                                    alert("Error sending message.");
                                 }
                             });
+                        } else {
+                            $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
+                            reject()
                         }
-                    } else {
-                        alert("Error sending message: " + response.description);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error:", error);
-                    alert("Error sending message.");
-                }
-            });
+                    })
+                }),
+                new Promise((resolve, reject) => {
+                    console.log("save to history");
+                    $.post(script_url, {
+                        opt: 'setHistory',
+                        code: data.code,
+                        start: data.start,
+                        end: data.end
+                    }, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
+                            resolve(res)
+                        } else {
+                            $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
+                            reject()
+                        }
+                    })
+                }),
+                new Promise((resolve, reject) => {
+                    console.log("save to job consult");
+                    $.post(script_url, {
+                        opt: 'savejobconsult',
+                        code: data.code,
+                        start: data.start,
+                        end: data.end,
+                        name: $('#displayName').attr('data-name'),
+                        ['start-room']: data['start-room'],
+                        ['end-room']: data['end-room']
+                    }, (res) => {
+                        if (res.status == 'success') {
+                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
+                            resolve(res)
+                        } else {
+                            $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
+                            reject()
+                        }
+                    })
+                })
+            ]).then((save_res) => {
+                console.log("🚀 save_res:", save_res)
+                console.timeEnd('sendPost')
+                setTimeout(() => {
+                    liff.sendMessages([{
+                        type: 'text',
+                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                    }])
+                    sendTelegram(save_res[0])
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                    }).then(() => {
+                        history_code[data.code] = {
+                            start: data.start,
+                            end: data.end
+                        }
+                        localStorage.setItem('history_code', JSON.stringify(history_code))
+                        liff.closeWindow()
+                    })
+                }, 500);
+            })
+        }
+        function checkcode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
+            if (!Number(code) == NaN && (code.length < 4 || code.length > 11)) {
+                return false
+            }
+            return true
+        }
+        function convertCode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
+            if (isNaN(code)) {
+                return code
+            }
+            if (code.length >= 4 || code.length <= 5) {
+                code = ('00000' + code).slice(-5)
+                code = 'PYT3_' + code
+            } else if (code.length == 6) {
+                code = ('000000' + code).slice(-6)
+                code = 'DEMO_' + code
+            }
+            return code
+        }
+
+        function sendTelegram(data) {
         }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
 </body>
 
 </html>
