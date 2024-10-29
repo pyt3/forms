@@ -240,7 +240,7 @@
             //     // liffId: '1660749495-A2gmPQNb',
             //     withLoginOnExternalBrowser: true
             // })
-            if (profile.user.id) {
+            if (profile.id) {
                 checkRegist()
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
@@ -297,8 +297,7 @@
                         }
                     })
                 }
-                $('#profile').attr('src', profile.pictureUrl)
-                $('#displayName').text(profile.displayName)
+            
                 $('.navbar .container-fluid').show(400)
             }
             $('select option').each(function () {
@@ -387,6 +386,7 @@
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase())
+                $('#profile').attr('src', profile.photo_url)
                 return
             }
             $.ajax({
@@ -448,7 +448,7 @@
                                         opt: 'regist_telegram',
                                         uid: uid,
                                         name: res.value,
-                                        telegram_name: profile.user.username
+                                        telegram_name: profile.username
                                     },
                                     success: function (res) {
                                         if(res == 'success'){
