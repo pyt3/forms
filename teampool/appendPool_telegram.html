@@ -406,7 +406,7 @@
                             icon: 'error',
                             title: 'กรุณาลงทะเบียนก่อนใช้งาน',
                             allowOutsideClick: false,
-                            confirmButtonText: 'ตกลง',
+                            confirmButtonText: 'ลงทะเบียน',
                             input: 'select',
                             inputOptions: {
                                 '': 'เลือกชื่อของคุณ',
@@ -427,9 +427,6 @@
                                 'JIRASSAYA CHUENYOO': 'JIRASSAYA CHUENYOO',
                                 'ILADA BUAPRALAT': 'ILADA BUAPRALAT'
                             },
-                            customClass: {
-                                input: 'form-select'
-                            },
                             preConfirm: () => {
                                 let name = $('#swal2-select').val()
                                 if (name == '' || name == null) {
@@ -441,6 +438,14 @@
                             }
                         }).then((res) => {
                             if(res.isConfirmed){
+                                Swaql.fire({
+                                    icon: 'info',
+                                    title: 'กำลังลงทะเบียน',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                })
                                 $.ajax({
                                     method: 'POST',
                                     url: script_url,
@@ -457,6 +462,13 @@
                                                 uid: uid,
                                                 name: res.value
                                             }))
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'ลงทะเบียนสำเร็จ',
+                                                text: 'กรุณาลองใช้งานอีกครั้ง',
+                                                showConfirmButton: false,
+                                                allowOutsideClick: false,
+                                            })
                                             location.reload()
                                         }else{
                                             Swal.fire({
