@@ -496,6 +496,8 @@
             })
         }
         $('#submit-btn').click(function () {
+            let regist = localStorage.getItem('regist')
+            regist = JSON.parse(regist)
             var code = $('#code').val()
             var start = $('#start').val()
             var end = $('#end').val()
@@ -531,11 +533,11 @@
                 code: convertCode(code),
                 start: start,
                 end: end,
-                name: $('#displayName').attr('data-name'),
+                name: regist.name,
                 // uid: 'test',
                 // displayName: 'yeah'
-                uid: liff.getDecodedIDToken().sub,
-                displayName: profile.displayName
+                uid: profile.id,
+                displayName: profile.username,
             }
             if (start == end) {
                 return Swal.fire({
@@ -614,7 +616,7 @@
                     quality = 0.4
                     break;
                 default:
-                    quality = 0.2
+                    quality = 0.3
                     break;
             }
             return quality
@@ -758,7 +760,7 @@
 
 👉 <i>${data.end}</i>
 
-โดย ${data.name}`
+โดย <a href="tg://user?id=${data.uid}">@${data.displayName}</a>`
                             $.ajax({
                                 url: sendMessageUrl,
                                 type: 'POST',
