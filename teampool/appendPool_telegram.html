@@ -202,7 +202,7 @@
             document.querySelector('.select2-search__field').focus();
         });
         $(document).ready(function () {
-            alert(tg.initDataUnsafe.user.id)
+            profile = tg.initUnsafeData().user
             $('#end').append($('#start option').not(':first-child').clone())
             $('#ups').click(function () {
                 Swal.fire({
@@ -240,9 +240,8 @@
             //     // liffId: '1660749495-A2gmPQNb',
             //     withLoginOnExternalBrowser: true
             // })
-            liff.ready.then(async () => {
+            if (profile.user.id) {
                 checkRegist()
-                profile = await liff.getProfile()
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
                         title: 'เนื่องจากเป็น Line ' + profile.displayName + ' กรุณาระบุชื่อของคุณ',
@@ -301,7 +300,7 @@
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
                 $('.navbar .container-fluid').show(400)
-            })
+            }
             $('select option').each(function () {
                 $(this).val($(this).text().trim())
             })
@@ -372,7 +371,7 @@
             })
         }
         function checkRegist() {
-            let uid = liff.getDecodedIDToken().sub
+            let uid = profile.user.id
             let regist = localStorage.getItem('regist')
             if (regist != null) {
                 try {
@@ -395,7 +394,8 @@
                 url: script_url,
                 data: {
                     opt: 'checkRegist',
-                    uid: uid
+                    uid: uid,
+                    telegram: true
                 },
                 success: function (res) {
                     console.log("🚀 ~ res:", res)
@@ -406,9 +406,71 @@
                             icon: 'error',
                             title: 'กรุณาลงทะเบียนก่อนใช้งาน',
                             allowOutsideClick: false,
-                            confirmButtonText: 'ตกลง'
-                        }).then(() => {
-                            liff.closeWindow()
+                            confirmButtonText: 'ตกลง',
+                            input: 'select',
+                            inputOptions: {
+                                '': 'เลือกชื่อของคุณ',
+                                'ANUPHAB CHANTO': 'ANUPHAB CHANTO',
+                                'NARUECHA CHAIYAPHAN': 'NARUECHA CHAIYAPHAN',
+                                'DARANPHOP YIMYAM': 'DARANPHOP YIMYAM',
+                                'CHATVIPA KAEWPRESERT': 'CHATVIPA KAEWPRESERT',
+                                'SASIMAPORN KHANTHAHOME': 'SASIMAPORN KHANTHAHOME',
+                                'PHIMRAPEEPORN PHRASOPOL': 'PHIMRAPEEPORN PHRASOPOL',
+                                'SERMKEAT HADJANG': 'SERMKEAT HADJANG',
+                                'RAPIPHAN KHAMSUWAN': 'RAPIPHAN KHAMSUWAN',
+                                'CHANCHAI SAE-LEE': 'CHANCHAI SAE-LEE',
+                                'SARAN THAMMATHORN': 'SARAN THAMMATHORN',
+                                'SOM KONKAEW': 'SOM KONKAEW',
+                                'ITTIPAT IEMDEE': 'ITTIPAT IEMDEE',
+                                'RATCHATA PIRIYAKITSAKUL': 'RATCHATA PIRIYAKITSAKUL',
+                                'PATCHARAPORN JORNSAMER': 'PATCHARAPORN JORNSAMER',
+                                'JIRASSAYA CHUENYOO': 'JIRASSAYA CHUENYOO',
+                                'ILADA BUAPRALAT': 'ILADA BUAPRALAT'
+                            },
+                            customClass: {
+                                input: 'form-select'
+                            },
+                            preConfirm: () => {
+                                let name = $('#swal2-select').val()
+                                if (name == '' || name == null) {
+                                    Swal.showValidationMessage(
+                                        `กรุณาระบุชื่อของคุณ`
+                                    )
+                                }
+                                return name
+                            }
+                        }).then((res) => {
+                            if(res.isConfirmed){
+                                $.ajax({
+                                    method: 'POST',
+                                    url: script_url,
+                                    data: {
+                                        opt: 'regist_telegram',
+                                        uid: uid,
+                                        name: res.value,
+                                        telegram_name: profile.user.username
+                                    },
+                                    success: function (res) {
+                                        if(res == 'success'){
+                                            res = res.data
+                                            localStorage.setItem('regist', JSON.stringify({
+                                                uid: uid,
+                                                name: res.value
+                                            }))
+                                            location.reload()
+                                        }else{
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'ลงทะเบียนไม่สำเร็จ',
+                                                text: 'กรุณาลองติดต่อผู้ดูแลระบบ',
+                                                showConfirmButton: false,
+                                                allowOutsideClick: false,
+                                            })
+                                        }
+                                        // refresh telegram webapp
+                                    }
+                                })
+                            }
                         })
                     } else {
                         localStorage.setItem('regist', JSON.stringify(res))
@@ -540,9 +602,9 @@
             }
             return quality
         }
-        
+
         $('#telegram-files').change(function () {
-            if(this.files.length == 0) return
+            if (this.files.length == 0) return
             // compress file
             Swal.fire({
                 icon: 'info',
@@ -566,7 +628,7 @@
                             lastModified: Date.now()
                         });
                         dataTransfer.items.add(f);
-                        if(dataTransfer.items.length == length) {
+                        if (dataTransfer.items.length == length) {
                             $('#telegram-files')[0].files = dataTransfer.files;
                             Swal.close()
                         }
@@ -576,7 +638,7 @@
                     },
                 });
             })
-        
+
             // const reader = new FileReader();
             // reader.onload = function (e) {
             //     const img = new Image();
@@ -716,7 +778,7 @@
                                             // Attach media to FormData
                                             formData.append("chat_id", chatId);
                                             formData.append("media", JSON.stringify(media)); // Add media array
-                                            formData.append("reply_parameters", JSON.stringify({message_id: response.result.message_id})); // Add reply_parameters
+                                            formData.append("reply_parameters", JSON.stringify({ message_id: response.result.message_id })); // Add reply_parameters
 
                                             // Send images as a media group
                                             $.ajax({
@@ -739,7 +801,7 @@
 
                                                 }
                                             });
-                                        }else{
+                                        } else {
                                             $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
                                             resolve(response)
                                         }
