@@ -385,7 +385,7 @@
             if (regist?.uid == uid && regist?.name != null && regist?.name != '') {
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
-                $('#displayName').attr('data-name', regist.name.toUpperCase())
+                $('#displayName').attr('data-name', regist.name.toUpperCase()).text(regist.telegram_name)
                 $('#profile').attr('src', profile.photo_url).css('display', profile.photo_url ? 'block' : 'none')
                 return
             }
@@ -461,7 +461,8 @@
                                             res = res.data
                                             localStorage.setItem('regist', JSON.stringify({
                                                 uid: uid,
-                                                name: profile.username,
+                                                name: data.name,
+                                                telegram_name: profile.username,
                                                 image: profile.photo_url
                                             }))
                                             Swal.fire({
