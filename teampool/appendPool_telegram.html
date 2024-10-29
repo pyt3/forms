@@ -489,6 +489,8 @@
                         })
                     } else {
                         localStorage.setItem('regist', JSON.stringify(res))
+                        $('#displayName').attr('data-name', res.name.toUpperCase()).text(res.telegram_name)
+                        $('#profile').attr('src', profile.photo_url).css('display', profile.photo_url ? 'block' : 'none')
                     }
                 }
             })
