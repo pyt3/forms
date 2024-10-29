@@ -134,8 +134,8 @@
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
-                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                <!-- <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
+                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top"> -->
                 &nbsp; <div>
                     <span id="displayName">Team PM</span>
                 </div>
@@ -386,8 +386,7 @@
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase()).text(regist.telegram_name)
-                $('#profile').attr('src', profile.photo_url).css('display', profile.photo_url ? 'block' : 'none')
-                return
+                
             }
             $.ajax({
                 method: 'POST',
