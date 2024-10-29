@@ -536,7 +536,7 @@
                 name: regist.name,
                 // uid: 'test',
                 // displayName: 'yeah'
-                uid: profile.id,
+                uid: regist.uid,
                 displayName: profile.username,
             }
             if (start == end) {
@@ -760,7 +760,7 @@
 
 👉 <i>${data.end}</i>
 
-โดย <a href="tg://user?id=${data.uid}">@${data.displayName}</a>`
+โดย <a href="tg://user?id=${data.uid}">@${profile.username}</a>`
                             $.ajax({
                                 url: sendMessageUrl,
                                 type: 'POST',
