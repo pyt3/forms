@@ -11,8 +11,101 @@
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet"
+        href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="../teampm/main const.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #FF8604;
+            width: 100vw;
+            font-family: 'Abril Fatface', cursive;
+            font-family: 'Cedarville Cursive', cursive;
+            font-family: 'Mitr', sans-serif;
+        }
+
+        img#profile {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+        }
+
+        .loader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .wrapper {
+            width: 180px;
+            height: 50px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .text {
+            z-index: 3;
+            font-family: Whitney, -apple-system, Helvetica;
+            letter-spacing: 1px;
+            font-weight: 700;
+            font-size: 20px;
+            color: white;
+            filter: drop-shadow(2px 2px 0px #ff9e02);
+        }
+
+        .box {
+            width: 100%;
+            height: 100%;
+            background-color: #ef5d2e;
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: loading ease-in-out 0.9s infinite alternate-reverse;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: translateX(-20px);
+            }
+
+            100% {
+                transform: translateX(20px);
+            }
+        }
+
+        .box::before {
+            content: "";
+            width: 20px;
+            height: 170%;
+            background-color: #ff9d0089;
+            position: absolute;
+            z-index: 1;
+            animation: loading2 ease-in-out 0.9s infinite alternate-reverse;
+        }
+
+        @keyframes loading2 {
+            0% {
+                transform: translateX(-50px);
+            }
+
+            100% {
+                transform: translateX(50px);
+            }
+        }
+    </style>
     <style>
         /* Your existing styles */
     </style>
@@ -61,7 +154,8 @@
                         <option value="" selected disabled>เลือกแผนกต้นทาง</option>
                     </select>
                 </div>
-                <div class="col-12 text-center mt-3" style="display:none"><i class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
+                <div class="col-12 text-center mt-3" style="display:none"><i
+                        class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
                 <div class="col-md-6" id="div-end">
                     <label for="end">แผนกปลายทาง</label>
                     <select name="end" id="end" class="form-select">
@@ -73,7 +167,8 @@
                 </div>
                 <div class="col-12">
                     <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
-                    <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple accept="image/*,video/*">
+                    <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
+                        accept="image/*,video/*">
                 </div>
             </div>
         </div>
@@ -83,8 +178,10 @@
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec';
         var profile;
         var history_code = {};
-
+        const tg = window.Telegram.WebApp;
         $(document).ready(function () {
+            const tg_uid = tg.initDataUnsafe.user.id;
+            alert(tg_uid);
             $('#end').append($('#start option').not(':first-child').clone());
 
             $('#ups').click(function () {
