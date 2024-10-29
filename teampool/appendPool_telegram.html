@@ -456,7 +456,8 @@
                                         telegram_name: profile.username
                                     },
                                     success: function (res) {
-                                        if(res == 'success'){
+                                        console.log("🚀 ~ checkRegist ~ res:", res)
+                                        if(res.status == 'success'){
                                             res = res.data
                                             localStorage.setItem('regist', JSON.stringify({
                                                 uid: uid,
