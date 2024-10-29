@@ -446,22 +446,23 @@
                                         Swal.showLoading()
                                     }
                                 })
+                                let post_data = {
+                                    opt: 'regist_telegram',
+                                    uid: uid,
+                                    name: res.value,
+                                    telegram_name: profile.username
+                                }
                                 $.ajax({
                                     method: 'POST',
                                     url: script_url,
-                                    data: {
-                                        opt: 'regist_telegram',
-                                        uid: uid,
-                                        name: res.value,
-                                        telegram_name: profile.username
-                                    },
+                                    data: post_data,
                                     success: function (res) {
                                         console.log("🚀 ~ checkRegist ~ res:", res)
                                         if(res.status == 'success'){
                                             res = res.data
                                             localStorage.setItem('regist', JSON.stringify({
                                                 uid: uid,
-                                                name: data.name,
+                                                name: post_data.name,
                                                 telegram_name: profile.username,
                                                 image: profile.photo_url
                                             }))
