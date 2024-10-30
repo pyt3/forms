@@ -632,7 +632,7 @@
 
         $('#telegram-files').change(async function () {
             if ($('#telegram-files')[0].files.length == 0) return
-            console.log("🚀 ~ file:", $('#telegram-files'));
+            console.log("🚀 ~ file:", $('#telegram-files')[0].files);
             // compress file
             Swal.fire({
                 icon: 'info',
