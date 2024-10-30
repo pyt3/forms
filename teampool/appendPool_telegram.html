@@ -645,7 +645,7 @@
             })
             let dataTransfer = new DataTransfer();
             let files = $('#telegram-files')[0].files
-            let length = Array.from(files).length
+            let length = $('#telegram-files')[0].files.length
             (async function() {
                 for (const file of files) {
                     console.log("🚀 ~ file:", file);
