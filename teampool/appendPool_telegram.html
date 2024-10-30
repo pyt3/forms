@@ -644,8 +644,7 @@
                 }
             })
             let dataTransfer = new DataTransfer();
-            const files = $('#telegram-files')[0].files
-            console.log("🚀 ~ files:", files)
+            let files = $('#telegram-files')[0].files
             let length = files.length
             (async function() {
                 for (const file of files) {
