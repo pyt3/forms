@@ -528,6 +528,15 @@
                 })
                 return false
             }
+            if( $('#telegram-files')[0].files.length == 0){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกรูปภาพ',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return false
+            }
             let data = {
                 opt: 'add',
                 code: convertCode(code),
