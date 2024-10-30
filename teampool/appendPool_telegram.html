@@ -633,7 +633,7 @@
         }
 
         $('#telegram-files').change(function () {
-            if (this.files.length == 0) return
+            if ($('#telegram-files')[0].files.length == 0) return
             // compress file
             Swal.fire({
                 icon: 'info',
@@ -644,7 +644,7 @@
                 }
             })
             let dataTransfer = new DataTransfer();
-            const files = this.files;
+            const files = $('#telegram-files')[0].files
             let length = files.length
             (async function() {
                 for (const file of files) {
