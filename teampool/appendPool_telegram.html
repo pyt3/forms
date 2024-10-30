@@ -202,7 +202,6 @@
             document.querySelector('.select2-search__field').focus();
         });
         $(document).ready(function () {
-            tg.ready()
             profile = tg.initDataUnsafe.user
             $('#end').append($('#start option').not(':first-child').clone())
             $('#ups').click(function () {
@@ -633,7 +632,6 @@
         }
 
         $('#telegram-files').change(function () {
-            return
             if ($('#telegram-files')[0].files.length == 0) return
             // compress file
             Swal.fire({
