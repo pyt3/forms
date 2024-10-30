@@ -178,7 +178,7 @@
                 <div class="col-12">
                     <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
                     <!-- accept only image and video -->
-                    <input type="file" class="form-control" name="telegram-files" id="telegram-files"  multiple
+                    <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
                         accept="image/*">
                 </div>
                 <div class="col-md-6 text-center">
@@ -297,7 +297,7 @@
                         }
                     })
                 }
-            
+
                 $('.navbar .container-fluid').show(400)
             }
             $('select option').each(function () {
@@ -386,7 +386,7 @@
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase()).text(regist.telegram_name)
-                
+
             }
             $.ajax({
                 method: 'POST',
@@ -436,7 +436,7 @@
                                 return name
                             }
                         }).then((res) => {
-                            if(res.isConfirmed){
+                            if (res.isConfirmed) {
                                 Swal.fire({
                                     icon: 'info',
                                     title: 'กำลังลงทะเบียน',
@@ -457,7 +457,7 @@
                                     data: post_data,
                                     success: function (res) {
                                         console.log("🚀 ~ checkRegist ~ res:", res)
-                                        if(res.status == 'success'){
+                                        if (res.status == 'success') {
                                             res = res.data
                                             localStorage.setItem('regist', JSON.stringify({
                                                 uid: uid,
@@ -473,7 +473,7 @@
                                                 allowOutsideClick: false,
                                             })
                                             location.reload()
-                                        }else{
+                                        } else {
                                             Swal.fire({
                                                 icon: 'error',
                                                 title: 'ลงทะเบียนไม่สำเร็จ',
@@ -528,7 +528,7 @@
                 })
                 return false
             }
-            if( $('#telegram-files')[0].files.length == 0){
+            if ($('#telegram-files')[0].files.length == 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'กรุณาเลือกรูปภาพ',
@@ -631,7 +631,7 @@
             return quality
         }
 
-        $('#telegram-files').change(function () {
+        $('#telegram-files').change(async function () {
             if ($('#telegram-files')[0].files.length == 0) return
             console.log("🚀 ~ file:", $('#telegram-files'));
             // compress file
@@ -645,35 +645,33 @@
             })
             let dataTransfer = new DataTransfer();
             let files = $('#telegram-files')[0].files
-            let length = $('#telegram-files')[0].files[0].length
-            (async function() {
-                for (const file of files) {
-                    console.log("🚀 ~ file:", file);
-                    const quality = getCompressionQuality(file);
-                    await new Promise((resolve, reject) => {
-                        new Compressor(file, {
-                            quality: quality,
-                            success(result) {
-                                console.log("🚀 ~ file:", result);
-                                let f = new File([result], file.name, {
-                                    type: file.type,
-                                    lastModified: Date.now()
-                                });
-                                dataTransfer.items.add(f);
-                                resolve();
-                            },
-                            error(err) {
-                                console.log(err.message);
-                                reject(err);
-                            },
-                        });
+            let length = $('#telegram-files')[0].files.length
+            for (const file of files) {
+                console.log("🚀 ~ file:", file);
+                const quality = getCompressionQuality(file);
+                await new Promise((resolve, reject) => {
+                    new Compressor(file, {
+                        quality: quality,
+                        success(result) {
+                            console.log("🚀 ~ file:", result);
+                            let f = new File([result], file.name, {
+                                type: file.type,
+                                lastModified: Date.now()
+                            });
+                            dataTransfer.items.add(f);
+                            resolve();
+                        },
+                        error(err) {
+                            console.log(err.message);
+                            reject(err);
+                        },
                     });
-                }
-                if (dataTransfer.items.length == length) {
-                    $('#telegram-files')[0].files = dataTransfer.files;
-                    Swal.close();
-                }
-            })();
+                });
+            }
+            if (dataTransfer.items.length == length) {
+                $('#telegram-files')[0].files = dataTransfer.files;
+                Swal.close();
+            }
 
             // const reader = new FileReader();
             // reader.onload = function (e) {
