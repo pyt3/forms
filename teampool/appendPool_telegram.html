@@ -653,6 +653,7 @@
                         console.log(e)
                             const file = e.data.file;
                             const quality = e.data.quality;
+                            let Image = window.Image;
                             importScripts('https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js');
                             new Compressor(file, {
                                 quality: quality,
