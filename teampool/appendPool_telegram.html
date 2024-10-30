@@ -637,6 +637,7 @@
             const files = this.files;
             let length = files.length
             Array.from(files).map(file => {
+                console.log("🚀 ~ file:", file);
                 const quality = getCompressionQuality(file)
                 new Compressor(file, {
                     quality: quality,
@@ -682,6 +683,7 @@
             // reader.readAsDataURL(file);
         })
         async function sendPost(data) {
+            let regist = JSON.parse(localStorage.getItem('regist'))
             // $.LoadingOverlay('show')
             // $.when(
             //     $.ajax({
@@ -760,7 +762,7 @@
 
 👉 <i>${data.end}</i>
 
-โดย <a href="tg://user?id=${data.uid}">@${profile.username}</a>`
+โดย <a href="tg://user?id=${regist.uid}">@${regist.telegram_name}</a>`
                             $.ajax({
                                 url: sendMessageUrl,
                                 type: 'POST',
@@ -772,7 +774,7 @@
                                         inline_keyboard: [
                                             [{
                                                 text: "บันทึกเพิ่ม",
-                                                url: `https://lin.ee/9Ganv2I`
+                                                url: `
                                             }]
                                         ]
                                     })
