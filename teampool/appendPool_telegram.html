@@ -632,6 +632,11 @@
         $('#telegram-files').change(async function () {
             if ($('#telegram-files')[0].files.length == 0) return
             console.log("🚀 ~ file:", $('#telegram-files')[0].files);
+            // if image type is HEIC
+            let mime = $('#telegram-files')[0].files[0].type
+            if(mime == 'image/heic' || mime == 'image/heif'){
+                return
+            }
             // compress file
             Swal.fire({
                 icon: 'info',
