@@ -202,6 +202,7 @@
             document.querySelector('.select2-search__field').focus();
         });
         $(document).ready(function () {
+            tg.ready()
             profile = tg.initDataUnsafe.user
             $('#end').append($('#start option').not(':first-child').clone())
             $('#ups').click(function () {
@@ -783,7 +784,9 @@
                                         inline_keyboard: [
                                             [{
                                                 text: "บันทึกเพิ่ม",
-                                                url: `
+                                                web_app: {
+                                                    url: "https://pyt3.github.io/forms/teampool/appendPool_telegram.html"
+                                                }
                                             }]
                                         ]
                                     })
