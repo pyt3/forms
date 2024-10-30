@@ -651,7 +651,6 @@
                     const worker = new Worker(URL.createObjectURL(new Blob([`
                         self.onmessage = function(e) {
                             const file = e.data.file;
-                            console.log("🚀 ~ file:", file)
                             const quality = e.data.quality;
                             importScripts('https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js');
                             new Compressor(file, {
@@ -682,6 +681,7 @@
 
                     worker.postMessage({ file: file, quality: getCompressionQuality(file) });
                 });
+            });
             });
 
             Promise.all(promises).then(() => {
