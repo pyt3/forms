@@ -298,7 +298,7 @@
                         }
                     })
                 }
-            
+
                 $('.navbar .container-fluid').show(400)
             }
             $('select option').each(function () {
@@ -387,7 +387,7 @@
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase()).text(regist.telegram_name)
-                
+
             }
             $.ajax({
                 method: 'POST',
@@ -437,7 +437,7 @@
                                 return name
                             }
                         }).then((res) => {
-                            if(res.isConfirmed){
+                            if (res.isConfirmed) {
                                 Swal.fire({
                                     icon: 'info',
                                     title: 'กำลังลงทะเบียน',
@@ -458,7 +458,7 @@
                                     data: post_data,
                                     success: function (res) {
                                         console.log("🚀 ~ checkRegist ~ res:", res)
-                                        if(res.status == 'success'){
+                                        if (res.status == 'success') {
                                             res = res.data
                                             localStorage.setItem('regist', JSON.stringify({
                                                 uid: uid,
@@ -474,7 +474,7 @@
                                                 allowOutsideClick: false,
                                             })
                                             location.reload()
-                                        }else{
+                                        } else {
                                             Swal.fire({
                                                 icon: 'error',
                                                 title: 'ลงทะเบียนไม่สำเร็จ',
@@ -529,7 +529,7 @@
                 })
                 return false
             }
-            if( $('#telegram-files')[0].files.length == 0){
+            if ($('#telegram-files')[0].files.length == 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'กรุณาเลือกรูปภาพ',
@@ -633,7 +633,7 @@
         }
 
         $('#telegram-files').change(function () {
-            if($('#telegram-files')[0].files.length == 0) return
+            if (this.files.length == 0) return
             // compress file
             Swal.fire({
                 icon: 'info',
@@ -646,52 +646,36 @@
             let dataTransfer = new DataTransfer();
             const files = this.files;
             let length = files.length
-            let promises = Array.from(files).map(file => {
+            const promises = Array.from(files).map(file => {
+                console.log("🚀 ~ file:", file);
+                const quality = getCompressionQuality(file);
                 return new Promise((resolve, reject) => {
-                    const worker = new Worker(URL.createObjectURL(new Blob([`
-                        self.onmessage = function(e) {
-                        console.log(e)
-                            const file = e.data.file;
-                            const quality = e.data.quality;
-                            let Image = window.Image;
-                            importScripts('https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js');
-                            new Compressor(file, {
-                                quality: quality,
-                                success(result) {
-                                    self.postMessage({ result });
-                                },
-                                error(err) {
-                                    self.postMessage({ error: err.message });
-                                },
-                            });
-                        };
-                    `], { type: 'application/javascript' })));
-
-                    worker.onmessage = function(e) {
-                        if (e.data.error) {
-                            reject(e.data.error);
-                        } else {
-                            let f = new File([e.data.result], file.name, {
+                    new Compressor(file, {
+                        quality: quality,
+                        success(result) {
+                            console.log("🚀 ~ file:", result);
+                            let f = new File([result], file.name, {
                                 type: file.type,
                                 lastModified: Date.now()
                             });
                             dataTransfer.items.add(f);
                             resolve();
-                        }
-                        worker.terminate();
-                    };
-
-                    worker.postMessage({ file: file, quality: getCompressionQuality(file) });
+                        },
+                        error(err) {
+                            console.log(err.message);
+                            reject(err);
+                        },
+                    });
                 });
-            });
             });
 
             Promise.all(promises).then(() => {
-                $('#telegram-files')[0].files = dataTransfer.files;
-                Swal.close();
+                if (dataTransfer.items.length == length) {
+                    $('#telegram-files')[0].files = dataTransfer.files;
+                    Swal.close();
+                }
             }).catch(err => {
                 console.error("Error compressing files:", err);
-                Swal.close();
             });
 
             // const reader = new FileReader();
