@@ -371,7 +371,7 @@
         function checkRegist() {
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
-            if (regist == null) {
+            if (regist != null) {
                 try {
                     regist = JSON.parse(regist)
                 } catch (e) {
@@ -379,9 +379,13 @@
                         uid: null
                     }
                 }
+            }else{
+                regist = {
+                    uid: null
+                }
             }
             console.log("🚀 ~ regist:", regist)
-            if (regist?.uid == uid && regist?.name != null && regist?.name != '') {
+            if (regist?.uid == uid && regist?.name != null && regist?.name != '' && regist?.telegram_id) {
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase())
@@ -678,6 +682,7 @@
                             const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
                             const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
                             let files = $('#telegram-files')[0].files;
+                            let regist = localStorage.getItem('regist')
                             let msg = `
 <b>เครื่อง ${data.e_name}</b>
 
@@ -689,7 +694,7 @@
 
 👉 <i>${data.end}</i>
 
-โดย ${data.name}`
+โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name}</a>
                             $.ajax({
                                 url: sendMessageUrl,
                                 type: 'POST',
