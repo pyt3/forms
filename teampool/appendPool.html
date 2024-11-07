@@ -371,7 +371,7 @@
         function checkRegist() {
             let uid = liff.getDecodedIDToken().sub
             let regist = localStorage.getItem('regist')
-            if (regist != null) {
+            if (regist == null) {
                 try {
                     regist = JSON.parse(regist)
                 } catch (e) {
