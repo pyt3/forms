@@ -660,6 +660,14 @@
                         // Attach media to FormData
                         formData.append("chat_id", tg_const.chatId); // Add chat_id
                         formData.append("media", JSON.stringify(media)); // Add media array
+                        formData.append("reply_markup", JSON.stringify({
+                            inline_keyboard: [
+                                [{
+                                    text: "บันทึกเพิ่ม",
+                                    url: `https://lin.ee/9Ganv2I`
+                                }]
+                            ]
+                        })); // Add reply_markup
 
                         // Send images as a media group
                         $.ajax({
@@ -844,15 +852,8 @@
                         message_id: id,
                         caption: caption,
                         parse_mode: 'HTML',
-                        show_caption_above_media: true,
-                        reply_markup: JSON.stringify({
-                            inline_keyboard: [
-                                [{
-                                    text: "บันทึกเพิ่ม",
-                                    url: `https://lin.ee/9Ganv2I`
-                                }]
-                            ]
-                        })
+                        show_caption_above_media: true
+                       
                     },
                     success: function (response) {
                         if (response.ok) {
