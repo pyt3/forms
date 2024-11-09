@@ -553,7 +553,6 @@
 
         $('#telegram-files').change(function () {
             if (this.files.length == 0) return
-            let mime = $('#telegram-files')[0].files[0].type
             // compress file
             Swal.fire({
                 icon: 'info',
@@ -567,6 +566,8 @@
             const files = this.files;
             let length = files.length
             Array.from(files).map(file => {
+                console.log(file);
+                let mime = file.type
                 const quality = getCompressionQuality(file)
                 console.log("🚀 ~ Array.from ~ mime:", mime)
                 if (mime == 'image/heic') {
