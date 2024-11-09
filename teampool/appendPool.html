@@ -569,24 +569,30 @@
             Array.from(files).map(file => {
                 const quality = getCompressionQuality(file)
                 if (mime == 'image/heic') {
-                    heic2any({
-                        blob: file,
-                        toType: "image/jpeg",
-                        quality: quality
-                    }).then((conversionResult) => {
-                        console.log("🚀 ~ conversionResult:", conversionResult)
-                        let f = new File([conversionResult], file.name, {
-                            type: 'image/jpeg',
-                            lastModified: Date.now()
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        const blob = new Blob([new Uint8Array(e.target.result)], { type: 'image/heic' });
+                        console.log("🚀 ~ blob:", blob)
+                        heic2any({
+                            blob: blob,
+                            toType: "image/jpeg",
+                            quality: quality
+                        }).then((conversionResult) => {
+                            console.log("🚀 ~ conversionResult:", conversionResult)
+                            let f = new File([conversionResult], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            });
+                            dataTransfer.items.add(f);
+                            if (dataTransfer.items.length == length) {
+                                $('#telegram-files')[0].files = dataTransfer.files;
+                                Swal.close()
+                            }
+                        }).catch((e) => {
+                            console.log("🚀 ~ e:", e)
                         });
-                        dataTransfer.items.add(f);
-                        if (dataTransfer.items.length == length) {
-                            $('#telegram-files')[0].files = dataTransfer.files;
-                            Swal.close()
-                        }
-                    }).catch((e) => {
-                        console.log("🚀 ~ e:", e)
-                    });
+                    }
+                    reader.readAsArrayBuffer(file);
                 } else {
                     new Compressor(file, {
                         quality: quality,
