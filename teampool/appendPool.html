@@ -660,14 +660,6 @@
                         // Attach media to FormData
                         formData.append("chat_id", tg_const.chatId); // Add chat_id
                         formData.append("media", JSON.stringify(media)); // Add media array
-                        // formData.append("reply_markup", JSON.stringify({
-                        //     inline_keyboard: [
-                        //         [{
-                        //             text: "บันทึกเพิ่ม",
-                        //             url: `https://lin.ee/9Ganv2I`
-                        //         }]
-                        //     ]
-                        // })); // Add reply_markup
 
                         // Send images as a media group
                         $.ajax({
@@ -678,7 +670,7 @@
                             processData: false,
                             success: function (mediaResponse) {
                                 if (mediaResponse.ok) {
-                                    mediagroup_id = mediaResponse.result[mediaResponse.result.length - 1].message_id
+                                    mediagroup_id = mediaResponse.result[0].message_id
 
                                     console.log("Media sent successfully!");
                                     resolve(mediagroup_id)
@@ -718,10 +710,12 @@
 
 👉 <i>${data.end}</i>
 
-โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>`
+โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
+
+<a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
                             resolve(msg)
                             // $.ajax({
-                            //     url: sendMessageUrl,
+                            //     url: sendMessageUrl,s
                             //     type: 'POST',
                             //     data: {
                             //         chat_id: chatId,
@@ -853,14 +847,6 @@
                         caption: caption,
                         parse_mode: 'HTML',
                         show_caption_above_media: true,
-                        reply_markup: JSON.stringify({
-                            inline_keyboard: [
-                                [{
-                                    text: "บันทึกเพิ่ม",
-                                    url: `https://lin.ee/9Ganv2I`
-                                }]
-                            ]
-                        })
                        
                     },
                     success: function (response) {
