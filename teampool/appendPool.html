@@ -642,6 +642,7 @@
             })
             console.time('sendPost')
             let result_name, mediagroup_id
+            let files = $('#telegram-files')[0].files;
             Promise.all([
                 new Promise((resolve, reject) => {
                     if (files.length > 0) {
