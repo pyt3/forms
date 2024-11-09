@@ -567,10 +567,10 @@
             let length = files.length
             Array.from(files).map(file => {
                 console.log(file);
-                let mime = file.type
+                let mime = file.type == "" ? file.name.split('.')[1] : file.type.split('/')[1]
                 const quality = getCompressionQuality(file)
                 console.log("🚀 ~ Array.from ~ mime:", mime)
-                if (mime == 'image/heic') {
+                if (mime == 'heic') {
                     let reader = new FileReader();
                     reader.onload = function (e) {
                         let blob = new Blob([e.target.result], {type: file.type});
