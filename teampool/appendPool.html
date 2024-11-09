@@ -671,7 +671,7 @@
                             success: function (mediaResponse) {
                                 if (mediaResponse.ok) {
                                     mediagroup_id = mediaResponse.result[0].message_id;
-                                   
+
                                     console.log("Media sent successfully!");
                                     resolve(mediagroup_id)
                                 } else {
@@ -789,12 +789,12 @@
             ]).then((save_res) => {
                 console.log("🚀 save_res:", save_res)
                 console.timeEnd('sendPost')
-                setTimeout(() => {
+                setTimeout(async () => {
                     liff.sendMessages([{
                         type: 'text',
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
                     }])
-                    sendTelegram(save_res[0], save_res[1])
+                    await sendTelegram(save_res[0], save_res[1])
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกข้อมูลสำเร็จ',
@@ -807,7 +807,7 @@
                         localStorage.setItem('history_code', JSON.stringify(history_code))
                         liff.closeWindow()
                     })
-                }, 500);
+                }, 200);
             })
         }
         function checkcode(code) {
@@ -832,42 +832,43 @@
             return code
         }
 
-        function sendTelegram(id, message) {
+        async function sendTelegram(id, message) {
             let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
             let caption = message
-            $.ajax({
-                url: editMessageUrl,
-                type: 'POST',
-                data: {
-                    chat_id: tg_const.chatId,
-                    message_id: id,
-                    caption: caption,
-                    parse_mode: 'HTML',
-                    show_caption_above_media: true,
-                    reply_markup: JSON.stringify({
-                        inline_keyboard: [
-                            [{
-                                text: "บันทึกเพิ่ม",
-                                url: `https://lin.ee/9Ganv2I`
-                            }]
-                        ]
-                    })
-                },
-                success: function (response) {
-                    if (response.ok) {
-                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                        console.log("Message sent successfully!");
-                    } else {
-                        alert("Error sending message: " + response.description);
+            await new Promise((resolve, reject) => {
+                $.ajax({
+                    url: editMessageUrl,
+                    type: 'POST',
+                    data: {
+                        chat_id: tg_const.chatId,
+                        message_id: id,
+                        caption: caption,
+                        parse_mode: 'HTML',
+                        show_caption_above_media: true,
+                        reply_markup: JSON.stringify({
+                            inline_keyboard: [
+                                [{
+                                    text: "บันทึกเพิ่ม",
+                                    url: `https://lin.ee/9Ganv2I`
+                                }]
+                            ]
+                        })
+                    },
+                    success: function (response) {
+                        if (response.ok) {
+                            $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                            console.log("Message sent successfully!");
+                            resolve(response)
+                        } else {
+                            alert("Error sending message: " + response.description);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                        alert("Error sending message.");
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error:", error);
-                    alert("Error sending message.");
-                }
+                })
             })
-
-           
         }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
