@@ -534,15 +534,15 @@
             let quality = 0.3
             switch (true) {
                 case file.size / 1024 <= 200:
-                    quality = 0.8
-                    break;
-
-                case file.size / 1024 <= 600:
                     quality = 0.6
                     break;
 
-                case file.size / 1024 <= 2000:
+                case file.size / 1024 <= 600:
                     quality = 0.4
+                    break;
+
+                case file.size / 1024 <= 2000:
+                    quality = 0.2
                     break;
                 default:
                     quality = 0.2
