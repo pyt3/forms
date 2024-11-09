@@ -568,13 +568,14 @@
             let length = files.length
             Array.from(files).map(file => {
                 const quality = getCompressionQuality(file)
+                console.log("🚀 ~ Array.from ~ mime:", mime)
                 if (mime == 'image/heic') {
                     let reader = new FileReader();
                     reader.onload = function (e) {
                         let blob = new Blob([e.target.result], {type: file.type});
                         console.log("🚀 ~ blob:", blob)
                         heic2any({
-                            blob: blob,
+                            blob,
                             toType: "image/jpeg",
                             quality: quality
                         }).then((conversionResult) => {
