@@ -569,9 +569,8 @@
             Array.from(files).map(file => {
                 const quality = getCompressionQuality(file)
                 if (mime == 'image/heic') {
-                    let blob = this.files[0]
                     heic2any({
-                        blob,
+                        blob: file,
                         toType: "image/jpeg",
                         quality: quality
                     }).then((conversionResult) => {
