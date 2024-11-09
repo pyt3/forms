@@ -233,7 +233,7 @@
                 history_code = data
                 console.log("🚀 ~ history_code:", history_code)
             })
-            
+
             liff.init({
                 liffId: '1660749495-G5e9Av6r',
                 // liffId: '1660749495-A2gmPQNb',
@@ -647,7 +647,7 @@
                     if (files.length > 0) {
                         const media = [];
                         const formData = new FormData();
-                        const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
+                        const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
                         Array.from(files).forEach((file) => {
                             media.push({
                                 type: "photo",  // Set the type of media
@@ -657,9 +657,8 @@
                         });
 
                         // Attach media to FormData
-                        formData.append("chat_id", chatId);
+                        formData.append("chat_id", tg_const.chatId); // Add chat_id
                         formData.append("media", JSON.stringify(media)); // Add media array
-                        formData.append("reply_parameters", JSON.stringify({ message_id: response.result.message_id })); // Add reply_parameters
 
                         // Send images as a media group
                         $.ajax({
@@ -671,8 +670,7 @@
                             success: function (mediaResponse) {
                                 if (mediaResponse.ok) {
                                     mediagroup_id = mediaResponse.result[0].message_id;
-                                    while (!)
-                                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                   
                                     console.log("Media sent successfully!");
                                     resolve(mediaResponse)
                                 } else {
@@ -833,7 +831,41 @@
             return code
         }
 
-        function sendTelegram(data) {
+        function sendTelegram(id, message) {
+            let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
+            let caption = message
+            $.ajax({
+                url: editMessageUrl,
+                type: 'POST',
+                data: {
+                    chat_id: tg_const.chatId,
+                    message_id: id,
+                    caption: caption,
+                    parse_mode: 'HTML',
+                    reply_markup: JSON.stringify({
+                        inline_keyboard: [
+                            [{
+                                text: "บันทึกเพิ่ม",
+                                url: `https://lin.ee/9Ganv2I`
+                            }]
+                        ]
+                    })
+                },
+                success: function (response) {
+                    if (response.ok) {
+                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                        console.log("Message sent successfully!");
+                    } else {
+                        alert("Error sending message: " + response.description);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Error sending message.");
+                }
+            })
+
+           
         }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
