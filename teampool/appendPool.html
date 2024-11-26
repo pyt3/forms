@@ -791,13 +791,7 @@
             ]).then((save_res) => {
                 console.log("🚀 save_res:", save_res)
                 console.timeEnd('sendPost')
-                setTimeout(async () => {
-                    liff.sendMessages([{
-                        type: 'text',
-                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                    }])
-                    sendTelegram(save_res[0], save_res[1], data.start, data.end)
-                }, 200);
+                sendTelegram(save_res[0], save_res[1], data.start, data.end)
             })
         }
         function checkcode(code) {
@@ -822,10 +816,14 @@
             return code
         }
 
-        async function sendTelegram(id, message,start, end) {
+        async function sendTelegram(id, message, start, end) {
             let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
             let caption = message
             await new Promise((resolve, reject) => {
+                liff.sendMessages([{
+                    type: 'text',
+                    text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                }])
                 if (id == 'no file') {
                     $.ajax({
                         url: `https://api.telegram.org/bot${tg_const.token}/sendMessage`,
@@ -874,9 +872,9 @@
                                         }
                                         localStorage.setItem('history_code', JSON.stringify(history_code))
                                         liff.closeWindow()
+                                        resolve()
                                     })
                                 }, 500);
-                                resolve()
                             } else {
                                 alert("Error sending message: " + response.description);
                             }
