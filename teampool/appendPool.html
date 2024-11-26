@@ -796,19 +796,7 @@
                         type: 'text',
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
                     }])
-                    await sendTelegram(save_res[0], save_res[1])
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'บันทึกข้อมูลสำเร็จ',
-                        confirmButtonText: 'ตกลง',
-                    }).then(() => {
-                        history_code[data.code] = {
-                            start: data.start,
-                            end: data.end
-                        }
-                        localStorage.setItem('history_code', JSON.stringify(history_code))
-                        liff.closeWindow()
-                    })
+                    sendTelegram(save_res[0], save_res[1], data.start, data.end)
                 }, 200);
             })
         }
@@ -834,7 +822,7 @@
             return code
         }
 
-        async function sendTelegram(id, message) {
+        async function sendTelegram(id, message,start, end) {
             let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
             let caption = message
             await new Promise((resolve, reject) => {
@@ -874,7 +862,21 @@
                             if (response.ok) {
                                 $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
                                 console.log("Message sent successfully!");
-                                resolve(response)
+                                setTimeout(() => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'บันทึกข้อมูลสำเร็จ',
+                                        confirmButtonText: 'ตกลง',
+                                    }).then(() => {
+                                        history_code[data.code] = {
+                                            start: start,
+                                            end: end
+                                        }
+                                        localStorage.setItem('history_code', JSON.stringify(history_code))
+                                        liff.closeWindow()
+                                    })
+                                }, 500);
+                                resolve()
                             } else {
                                 alert("Error sending message: " + response.description);
                             }

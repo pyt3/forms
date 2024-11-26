@@ -305,7 +305,7 @@ async function formSubmit() {
     if (Number($('#pump-room-temp').val()) < 30) {
         await Swal.fire({
             icon: 'warning',
-            title: 'อุณหภูมิห้องปั๊มต่ำกว่า 30 องศา',
+            title: 'อย่าลืมตรวจสอบปั๊ม dissicant air dryer',
             html: '<span class="fw-bold text-danger">ปั๊ม dissicant air dryer อาจะหยุดทำงาน</span><br>กรุณาตรวจสอบ<br><img src="https://nsmart.nhealth-asia.com/MTDPDB01/img.php?files=202005260826590.friulair.jpg" class="img-fluid" style="max-height: 400px">',
             confirmButtonText: 'ตกลง',
         })
