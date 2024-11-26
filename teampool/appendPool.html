@@ -649,7 +649,6 @@
                         const media = [];
                         const formData = new FormData();
                         const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
-                        if(files.length == 0) resolve('no file')
                         Array.from(files).forEach((file) => {
                             media.push({
                                 type: "photo",  // Set the type of media
@@ -672,8 +671,6 @@
                             success: function (mediaResponse) {
                                 if (mediaResponse.ok) {
                                     mediagroup_id = mediaResponse.result[0].message_id
-                                    $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram')
-                                    console.log("Media sent successfully!");
                                     resolve(mediagroup_id)
                                 } else {
                                     alert("Error sending images: " + mediaResponse.description);
@@ -876,8 +873,8 @@
                                         localStorage.setItem('history_code', JSON.stringify(history_code))
                                         liff.closeWindow()
                                     })
+                                    resolve()
                                 }, 500);
-                                resolve()
                             } else {
                                 alert("Error sending message: " + response.description);
                             }
