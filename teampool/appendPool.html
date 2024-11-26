@@ -187,11 +187,11 @@
         </div>
     </div>
 
-    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script> -->
+    </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
@@ -649,6 +649,7 @@
                         const media = [];
                         const formData = new FormData();
                         const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
+                        if(files.length == 0) resolve('no file')
                         Array.from(files).forEach((file) => {
                             media.push({
                                 type: "photo",  // Set the type of media
@@ -791,7 +792,13 @@
             ]).then((save_res) => {
                 console.log("🚀 save_res:", save_res)
                 console.timeEnd('sendPost')
-                sendTelegram(save_res[0], save_res[1], data.start, data.end)
+                setTimeout(async () => {
+                    liff.sendMessages([{
+                        type: 'text',
+                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
+                    }])
+                    sendTelegram(save_res[0], save_res[1], data.start, data.end)
+                }, 200);
             })
         }
         function checkcode(code) {
@@ -816,14 +823,10 @@
             return code
         }
 
-        async function sendTelegram(id, message, start, end) {
+        async function sendTelegram(id, message,start, end) {
             let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
             let caption = message
             await new Promise((resolve, reject) => {
-                liff.sendMessages([{
-                    type: 'text',
-                    text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                }])
                 if (id == 'no file') {
                     $.ajax({
                         url: `https://api.telegram.org/bot${tg_const.token}/sendMessage`,
@@ -861,7 +864,6 @@
                                 $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
                                 console.log("Message sent successfully!");
                                 setTimeout(() => {
-                                    let history_code = JSON.parse(localStorage.getItem('history_code'))
                                     Swal.fire({
                                         icon: 'success',
                                         title: 'บันทึกข้อมูลสำเร็จ',
@@ -873,9 +875,9 @@
                                         }
                                         localStorage.setItem('history_code', JSON.stringify(history_code))
                                         liff.closeWindow()
-                                        resolve()
                                     })
                                 }, 500);
+                                resolve()
                             } else {
                                 alert("Error sending message: " + response.description);
                             }
