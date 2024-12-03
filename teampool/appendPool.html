@@ -187,11 +187,11 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
-    </script>
+    </script> -->
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
@@ -643,8 +643,19 @@
             console.time('sendPost')
             let result_name, mediagroup_id
             let files = $('#telegram-files')[0].files;
+
+            const retryRequest = (fn, retries = 3) => {
+                return fn().catch(err => {
+                    if (retries > 0) {
+                        return retryRequest(fn, retries - 1);
+                    } else {
+                        throw err;
+                    }
+                });
+            };
+
             Promise.all([
-                new Promise((resolve, reject) => {
+                retryRequest(() => new Promise((resolve, reject) => {
                     if (files.length > 0) {
                         const media = [];
                         const formData = new FormData();
@@ -674,19 +685,20 @@
                                     resolve(mediagroup_id)
                                 } else {
                                     alert("Error sending images: " + mediaResponse.description);
+                                    reject(mediaResponse.description);
                                 }
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
                                 console.error("Error sending images:", errorThrown);
-
+                                reject(errorThrown);
                             }
                         });
                     } else {
                         $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
                         resolve('no file')
                     }
-                }),
-                new Promise((resolve, reject) => {
+                })),
+                retryRequest(() => new Promise((resolve, reject) => {
                     console.log("save to gsheet");
                     $.post(script_url, data, (res) => {
                         if (res.status == 'success') {
@@ -712,44 +724,13 @@
 
 <a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
                             resolve(msg)
-                            // $.ajax({
-                            //     url: sendMessageUrl,s
-                            //     type: 'POST',
-                            //     data: {
-                            //         chat_id: chatId,
-                            //         text: msg,
-                            //         parse_mode: "HTML",
-                            //         reply_markup: JSON.stringify({
-                            //             inline_keyboard: [
-                            //                 [{
-                            //                     text: "บันทึกเพิ่ม",
-                            //                     url: `https://lin.ee/9Ganv2I`
-                            //                 }]
-                            //             ]
-                            //         })
-                            //     },
-                            //     success: function (response) {
-                            //         if (response.ok) {
-                            //             console.log("Message sent successfully!");
-
-                            //             // Step 2: Send the images after the message is sent
-
-                            //         } else {
-                            //             alert("Error sending message: " + response.description);
-                            //         }
-                            //     },
-                            //     error: function (xhr, status, error) {
-                            //         console.error("Error:", error);
-                            //         alert("Error sending message.");
-                            //     }
-                            // });
                         } else {
                             $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
                             reject()
                         }
                     })
-                }),
-                new Promise((resolve, reject) => {
+                })),
+                retryRequest(() => new Promise((resolve, reject) => {
                     console.log("save to history");
                     $.post(script_url, {
                         opt: 'setHistory',
@@ -765,8 +746,8 @@
                             reject()
                         }
                     })
-                }),
-                new Promise((resolve, reject) => {
+                })),
+                retryRequest(() => new Promise((resolve, reject) => {
                     console.log("save to job consult");
                     $.post(script_url, {
                         opt: 'savejobconsult',
@@ -785,7 +766,7 @@
                             reject()
                         }
                     })
-                })
+                }))
             ]).then((save_res) => {
                 console.log("🚀 save_res:", save_res)
                 console.timeEnd('sendPost')
@@ -796,95 +777,84 @@
                     }])
                     sendTelegram(save_res[0], save_res[1], data.start, data.end)
                 }, 200);
-            })
-        }
-        function checkcode(code) {
-            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
-            if (!Number(code) == NaN && (code.length < 4 || code.length > 11)) {
-                return false
-            }
-            return true
-        }
-        function convertCode(code) {
-            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
-            if (isNaN(code)) {
-                return code
-            }
-            if (code.length >= 4 || code.length <= 5) {
-                code = ('00000' + code).slice(-5)
-                code = 'PYT3_' + code
-            } else if (code.length == 6) {
-                code = ('000000' + code).slice(-6)
-                code = 'DEMO_' + code
-            }
-            return code
+            }).catch(err => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
+                    text: 'กรุณาลองใหม่อีกครั้ง',
+                    confirmButtonText: 'ตกลง'
+                });
+                console.error("Error in sendPost:", err);
+            });
         }
 
-        async function sendTelegram(id, message,start, end) {
+        async function sendTelegram(id, message, start, end) {
             let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
             let caption = message
-            await new Promise((resolve, reject) => {
-                if (id == 'no file') {
-                    $.ajax({
-                        url: `https://api.telegram.org/bot${tg_const.token}/sendMessage`,
-                        type: 'POST',
-                        data: {
-                            chat_id: tg_const.chatId,
-                            text: caption,
-                            parse_mode: 'HTML',
-                            show_caption_above_media: true,
-                        },
-                        success: function (response) {
-                            if (response.ok) {
-                                $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                console.log("Message sent successfully!");
-                                resolve(response)
-                            } else {
-                                alert("Error sending message: " + response.description);
-                            }
-                        },
-                    })
-                } else {
-                    $.ajax({
-                        url: editMessageUrl,
-                        type: 'POST',
-                        data: {
-                            chat_id: tg_const.chatId,
-                            message_id: id,
-                            caption: caption,
-                            parse_mode: 'HTML',
-                            show_caption_above_media: true,
+            retryRequest(async () => {
+                await new Promise((resolve, reject) => {
+                    if (id == 'no file') {
+                        $.ajax({
+                            url: `https://api.telegram.org/bot${tg_const.token}/sendMessage`,
+                            type: 'POST',
+                            data: {
+                                chat_id: tg_const.chatId,
+                                text: caption,
+                                parse_mode: 'HTML',
+                                show_caption_above_media: true,
+                            },
+                            success: function (response) {
+                                if (response.ok) {
+                                    $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                    console.log("Message sent successfully!");
+                                    resolve(response)
+                                } else {
+                                    alert("Error sending message: " + response.description);
+                                }
+                            },
+                        })
+                    } else {
+                        $.ajax({
+                            url: editMessageUrl,
+                            type: 'POST',
+                            data: {
+                                chat_id: tg_const.chatId,
+                                message_id: id,
+                                caption: caption,
+                                parse_mode: 'HTML',
+                                show_caption_above_media: true,
 
-                        },
-                        success: function (response) {
-                            if (response.ok) {
-                                $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                console.log("Message sent successfully!");
-                                setTimeout(() => {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'บันทึกข้อมูลสำเร็จ',
-                                        confirmButtonText: 'ตกลง',
-                                    }).then(() => {
-                                        history_code[data.code] = {
-                                            start: start,
-                                            end: end
-                                        }
-                                        localStorage.setItem('history_code', JSON.stringify(history_code))
-                                        liff.closeWindow()
-                                    })
-                                    resolve()
-                                }, 500);
-                            } else {
-                                alert("Error sending message: " + response.description);
+                            },
+                            success: function (response) {
+                                if (response.ok) {
+                                    $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                                    console.log("Message sent successfully!");
+                                    setTimeout(() => {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'บันทึกข้อมูลสำเร็จ',
+                                            confirmButtonText: 'ตกลง',
+                                        }).then(() => {
+                                            history_code[data.code] = {
+                                                start: start,
+                                                end: end
+                                            }
+                                            localStorage.setItem('history_code', JSON.stringify(history_code))
+                                            liff.closeWindow()
+                                        })
+                                        resolve()
+                                    }, 500);
+                                } else {
+                                    alert("Error sending message: " + response.description);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error:", error);
+                                alert("Error sending message.");
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error:", error);
-                            alert("Error sending message.");
-                        }
-                    })
-                }
+                        })
+                    }
+                })
             })
         }
     </script>
