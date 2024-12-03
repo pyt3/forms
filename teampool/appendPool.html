@@ -788,6 +788,28 @@
             });
         }
 
+        function checkcode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
+            if (!Number(code) == NaN && (code.length < 4 || code.length > 11)) {
+                return false
+            }
+            return true
+        }
+        function convertCode(code) {
+            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
+            if (isNaN(code)) {
+                return code
+            }
+            if (code.length >= 4 || code.length <= 5) {
+                code = ('00000' + code).slice(-5)
+                code = 'PYT3_' + code
+            } else if (code.length == 6) {
+                code = ('000000' + code).slice(-6)
+                code = 'DEMO_' + code
+            }
+            return code
+        }
+
         async function sendTelegram(id, message, start, end) {
             let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
             let caption = message
