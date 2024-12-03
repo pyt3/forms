@@ -625,6 +625,15 @@
                 }
             })
         })
+        const retryRequest = (fn, retries = 3) => {
+            return fn().catch(err => {
+                if (retries > 0) {
+                    return retryRequest(fn, retries - 1);
+                } else {
+                    throw err;
+                }
+            });
+        };
         async function sendPost(data) {
             Swal.fire({
                 icon: 'info',
@@ -644,15 +653,7 @@
             let result_name, mediagroup_id
             let files = $('#telegram-files')[0].files;
 
-            const retryRequest = (fn, retries = 3) => {
-                return fn().catch(err => {
-                    if (retries > 0) {
-                        return retryRequest(fn, retries - 1);
-                    } else {
-                        throw err;
-                    }
-                });
-            };
+
 
             Promise.all([
                 retryRequest(() => new Promise((resolve, reject) => {
