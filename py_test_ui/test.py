@@ -28,6 +28,7 @@ import calendar
 import pyperclip
 import fitz
 from pypdf import PdfReader, PdfWriter
+import random
 
 # # set cmd to support utf-8
 # os.system('chcp 874')
@@ -38,10 +39,58 @@ from pypdf import PdfReader, PdfWriter
 # from closeCAL import closeCAL
 
 from openpyxl import load_workbook
-logging.basicConfig(filename='log.txt', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s',
-                    level=logging.ERROR)
+
+class LineLimitRotatingFileHandler(logging.Handler):
+    def __init__(self, filename, max_lines=50000):
+        super().__init__()
+        self.filename = filename
+        self.max_lines = max_lines
+        self._ensure_log_file_exists()
+
+    def _ensure_log_file_exists(self):
+        """Ensure the log file exists, creating it if necessary."""
+        if not os.path.exists(self.filename):
+            with open(self.filename, 'w'):
+                pass
+
+    def _get_line_count(self):
+        """Return the number of lines in the log file."""
+        with open(self.filename, 'r') as f:
+            return len(f.readlines())
+
+    def _rotate_log(self):
+        """Rotate the log file to limit the number of lines."""
+        with open(self.filename, 'r') as f:
+            lines = f.readlines()
+        
+        # Keep the last max_lines lines
+        with open(self.filename, 'w') as f:
+            f.writelines(lines[-self.max_lines:])
+
+    def emit(self, record):
+        """Write the log record to the log file and check line count."""
+        try:
+            # Check the current line count
+            if self._get_line_count() >= self.max_lines:
+                self._rotate_log()
+
+            # Write the log message to the file
+            with open(self.filename, 'a') as f:
+                f.write(self.format(record) + '\n')
+        except Exception:
+            self.handleError(record)
+
+logger = logging.getLogger('my_logger')
+logger.setLevel(logging.ERROR)
+handler = LineLimitRotatingFileHandler('log.txt', max_lines=50000)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+# logging.basicConfig(filename='log.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # logging.basicConfig(level=logging.ERROR)
 
+#set depth of recursion
+sys.setrecursionlimit(10000)
 
 # pretty.install()
 # pretty.pretty_print = True
@@ -69,9 +118,7 @@ lock = threading.Lock()
 data = {
     "user": confdata["USERNAME"],
     "pass": confdata["PASSWORD"],
-    "Submit": "Submit",
-    "Submit.x": "79",
-    "Submit.y": "30",
+    "Submit": "Submit"
 }
 
 cookies = {
@@ -86,7 +133,7 @@ headers = {
     "Upgrade-Insecure-Requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-    "Referer": "http://nsmart.nhealth-asia.com/mtdpdb01/default.php",
+    "Referer": "https://nsmart.nhealth-asia.com/mtdpdb01/default.php",
     "Accept-Language": "th-TH,th;q=0.9,en;q=0.8",
 }
 emp_list = {}
@@ -156,7 +203,8 @@ def convertTime(time):
         hours = time / 3600
         minutes = (time % 3600) / 60
         seconds = time % 60
-        time = f'{int(hours)} hours {int(minutes)} minutes {int(seconds)} seconds'
+        time = f'{int(hours)} hours {int(minutes)} minutes {
+            int(seconds)} seconds'
         return time
 
     return time
@@ -498,7 +546,7 @@ def get_screen_shot(soup, css_file, text, type, code=""):
     # filename is time in format 20240506
     file_name = datetime.now().strftime("%Y%m%d")
     html_str = str(soup).replace('src="../images/',
-                   'src="https://nsmart.nhealth-asia.com/MTDPDB01/images/')
+                                 'src="https://nsmart.nhealth-asia.com/MTDPDB01/images/')
     html_str = html_str.replace(
         'src="../Styles/', 'src="https://nsmart.nhealth-asia.com/MTDPDB01/Styles/')
     html_str = html_str.replace(
@@ -734,30 +782,32 @@ def closeCAL(row, self_call=False):
 
 
 def attachFilePM(file_name_list, row):
-    # def attachFilePM(id, team, engineer, date, file_name_list, status, attach):
     global SEARCH_KEY
+    if row['DATE-PM'] == 'nan' or row['DATE-PM'] == '':
+        return {"status": 'ok', 'text': 'No PM Work', 'nosave': True}
+    if row['PM-ATTACH-STATUS'] != 'nan':
+        return {"status": 'done', 'text': row['PM-ATTACH-STATUS'], 'nosave': True}
     id = row[SEARCH_KEY[0]]
     team = row['TEAM']
     engineer = row['ENGINEER']
-    date = row['DATE-PM']
     status = row['PM-STATUS']
     attach = row['ATTACH-FILE-PM']
     if attach != 'yes':
         return {"status": 'ok', 'text': 'No need to attach PM file', 'nosave': True}
     if status.lower() == 'success':
         return {"status": 'done', 'text': 'Already attached PM file', 'nosave': True}
-    start_date = row['START-PLAN']
-    end_date = row['END-PLAN']
+    start_date = formatDate(row['START-PLAN'])
+    end_date = formatDate(row['END-PLAN'])
     now_year = row['YEAR']
     findname = [ele for ele in file_name_list if row['ID CODE'] +
                 '_'+now_year+'_pm' in ele]
     if len(findname) == 0:
-        return {"status": 'fail', 'text': 'PM Work not found'}
+        return {"status": 'fail', 'text': 'PM File For Attach not found'}
     report_name = findname[0]
     # print type of dataurl
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFilePM(file_name_list, row)
+        return attachFilePM(file_name_list, row)
     response = False
     code = id
     try:
@@ -771,6 +821,8 @@ def attachFilePM(file_name_list, row):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        logging.error(f"An error occurred on line {
+                      sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFilePM(file_name_list, row)
     response.encoding = "tis-620"
@@ -785,7 +837,6 @@ def attachFilePM(file_name_list, row):
     if tr == None:
         return {"status": 'fail', 'text': 'PM Work not found'}
     a_href = tr.find('a')['href'].split('?')[1]
-    job_no = a_href.split('jobno=')[1].split('&')[0]
     response = requests.get(
         "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain08.php?" +
         a_href + "&ccsForm=Maindocattache1",
@@ -796,39 +847,87 @@ def attachFilePM(file_name_list, row):
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     form = soup.find('form', {'name': 'Post'})
-    file_count = 0
+    if form == None:
+        time.sleep(2)
+        set_login()
+        return attachFilePM(file_name_list, row)
+    file_count = []
     file_tr = soup.find_all('table', {'class': 'Grid'})[
         1].find_all('tr', {'class': 'Row'})
+    # Report PM PANALEE UEASUNTHONNOP
     for tr in file_tr:
         if tr.find_all('td')[2].text.strip() == 'Report PM ' + engineer.upper():
-            file_count += 1
+            file_count.append(tr.find_all('td')[0].find('a')['href'])
 
-    if file_count > 0:
-        return {"status": 'ok', 'text': 'Already attached PM file'}
+    if len(file_count) > 0:
+        for url, i in zip(file_count, range(len(file_count))):
+            del_form = False
+            print('[red]Deleting old PM file: ' + str(i+1) + "/" +
+                  str(len(file_count)) + '[/red] [yellow]' + code + '[/yellow]', end='\r')
+            logging.info(f'Deleting old PM file: {
+                         i+1}/{len(file_count)} {code}')
+            try:
+                del_form = requests.get("https://nsmart.nhealth-asia.com/MTDPDB01/pm/"+url,
+                                        headers=headers,
+                                        cookies=cookies,
+                                        verify=False,
+                                        )
+                del_form.encoding = "tis-620"
+                del_form = BeautifulSoup(del_form.text, "lxml")
+                del_form = del_form.find('form', {'name': 'Post'})
+                if del_form == None:
+                    continue
+                inputs = del_form.findAll('input')
+                form_data = {}
+                for inp in inputs:
+                    try:
+                        form_data[inp['name']] = inp['value']
+                    except:
+                        continue
+                form_data.pop("Button_Update")
+                form_data['Button_Delete.x'] = str(random.randint(10, 50))
+                form_data['Button_Delete.y'] = str(random.randint(5, 20))
+                del_response = requests.post("https://nsmart.nhealth-asia.com/MTDPDB01/pm/"+url + "&ccsForm=Maindocattache1%3AEdit",
+                                             headers=headers,
+                                             cookies=cookies,
+                                             data=form_data,
+                                             verify=False,
+                                             )
+
+            except requests.exceptions.RequestException as e:
+                print(f"An error occurred on line {
+                      sys.exc_info()[-1].tb_lineno}: {e}")
+                time.sleep(5)
+                return attachFilePM(file_name_list, row)
+
+        print('[red]Delete old PM file: ' + str(len(file_count)) +
+              ' file(s) success[/red] [yellow]' + code + '[/yellow]')
+        logging.info(f'Delete old PM file: {
+                     len(file_count)} file(s) success {code}')
+
     form_data = {}
     inputs = form.findAll('input')
-    emp_name = ''
-    for input in inputs:
+    if len(inputs) == 0:
+        time.sleep(2)
+        set_login()
+        return attachFilePM(file_name_list, row)
+    for inp in inputs:
         try:
-            form_data[input['name']] = input['value']
+            form_data[inp['name']] = inp['value']
         except:
             continue
-
-    emp_name = team.upper()
-
     inputs = [
-        {'name': 'docno', 'value': file_count+1},
+        {'name': 'docno', 'value': "1"},
         {'name': 'description_doc', 'value': 'Report PM ' + engineer.upper()},
         {'name': 'jobno', 'value': a_href.split('jobno=')[1].split('&')[0]}
     ]
     #  create formdata foor post request
-    for input in inputs:
-        form_data[input['name']] = input['value']
-
+    for inp in inputs:
+        form_data[inp['name']] = inp['value']
     # get file base64 from report folder
     file = open(os.path.join(root_dir, 'REPORTS',
-                report_name + '.pdf'), 'rb').read()
-    files = {'document_File': ('report.pdf', file, 'application/pdf')}
+                report_name + '.pdf'), 'rb')
+    files = {'document_File': (report_name + '.pdf', file, 'application/pdf')}
 
     # dataurl = json.loads(dataurl)
     # if dataurl.get('isImage') == True:
@@ -866,27 +965,29 @@ def attachFilePM(file_name_list, row):
 
 def attachFileCAL(file_name_list, row):
     global SEARCH_KEY
+    if row['DATE-CAL'] == 'nan' or row['DATE-CAL'] == '':
+        return {"status": 'ok', 'text': 'No PM Work', 'nosave': True}
+    if row['CAL-ATTACH-STATUS'] != 'nan':
+        return {"status": 'done', 'text': row['CAL-ATTACH-STATUS'], 'nosave': True}
     id = row[SEARCH_KEY[0]]
-    team = row['TEAM']
     engineer = row['ENGINEER']
-    date = row['DATE-CAL']
     status = row['CAL-STATUS']
     attach = row['ATTACH-FILE-CAL']
     if attach != 'yes':
         return {"status": 'ok', 'text': 'No need to attach CAL file', 'nosave': True}
     if status.lower() == 'success':
         return {"status": 'done', 'text': 'Already attached CAL file', 'nosave': True}
-    start_date = row['START-PLAN']
-    end_date = row['END-PLAN']
+    start_date = formatDate(row['START-PLAN'])
+    end_date = formatDate(row['END-PLAN'])
     now_year = row['YEAR']
     findname = [ele for ele in file_name_list if row['ID CODE'] +
                 "_"+now_year+"_cal" in ele]
     if len(findname) == 0:
-        return {"status": 'fail', 'text': 'CAL Work not found'}
+        return {"status": 'fail', 'text': 'CAL File For Attach not found'}
     report_name = findname[0]
     if cookies['PHPSESSID'] is None:
         set_login()
-        attachFileCAL(file_name_list, row)
+        return attachFileCAL(file_name_list, row)
     response = False
     code = id
     try:
@@ -900,6 +1001,8 @@ def attachFileCAL(file_name_list, row):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        logging.error(f"An error occurred on line {
+                      sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFileCAL(file_name_list, row)
     response.encoding = "tis-620"
@@ -914,7 +1017,6 @@ def attachFileCAL(file_name_list, row):
     if tr == None:
         return {"status": 'fail', 'text': 'CAL Work not found'}
     a_href = tr.find('a')['href'].split('?')[1]
-    job_no = a_href.split('jobno=')[1].split('&')[0]
     response = requests.get(
         "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_5.php?" +
         a_href + "&ccsForm=caliber_jobs_tech%3AEdit",
@@ -925,19 +1027,70 @@ def attachFileCAL(file_name_list, row):
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     form = soup.find('form', {'name': 'Post'})
-    file_count = 0
+    if form == None:
+        time.sleep(2)
+        set_login()
+        return attachFileCAL(file_name_list, row)
+    file_count = []
     file_tr = soup.find_all('table', {'class': 'Grid'})[
         1].find_all('tr', {'class': 'Row'})
     for tr in file_tr:
         if tr.find_all('td')[2].text.strip() == 'Report CAL ' + engineer.upper():
-            file_count += 1
-    if file_count > 0:
-        return {"status": 'ok', 'text': 'Already attached CAL file'}
+            file_count.append(tr.find_all('td')[0].find('a')['href'])
+    if len(file_count) > 0:
+        for url, i in zip(file_count, range(len(file_count))):
+            del_form = False
+            print('[red]Deleting old CAL file: ' + str(i+1) + "/" +
+                  str(len(file_count)) + '[/red] [yellow]' + code + '[/yellow]', end='\r')
+            logging.info(f'Deleting old CAL file: {
+                         i+1}/{len(file_count)} {code}')
+            try:
+                del_form = requests.get("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/"+url,
+                                        headers=headers,
+                                        cookies=cookies,
+                                        verify=False,
+                                        )
+                del_form.encoding = "tis-620"
+                del_form = BeautifulSoup(del_form.text, "lxml")
+                del_form = del_form.find('form', {'name': 'Post'})
+                if del_form == None:
+                    continue
+                inputs = del_form.findAll('input')
+                form_data = {}
+                for inp in inputs:
+                    try:
+                        form_data[inp['name']] = inp['value']
+                    except:
+                        continue
+                form_data.pop("Button_Update")
+                form_data['Button_Delete.x'] = str(random.randint(10, 50))
+                form_data['Button_Delete.y'] = str(random.randint(5, 20))
+                del_response = requests.post("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/"+url + "&ccsForm=Caliberdocattache1%3AEdit",
+                                             headers=headers,
+                                             cookies=cookies,
+                                             data=form_data,
+                                             verify=False,
+                                             )
+
+            except requests.exceptions.RequestException as e:
+                print(f"An error occurred on line {
+                      sys.exc_info()[-1].tb_lineno}: {e}")
+                time.sleep(5)
+                return attachFileCAL(file_name_list, row)
+
+        print('[red]Delete old CAL file: ' + str(len(file_count)) +
+              ' file(s) success[/red] [yellow]' + code + '[/yellow]')
+        logging.info(f'Delete old CAL file: {
+                     len(file_count)} file(s) success {code}')
+
     form_data = {}
     inputs = form.findAll('input')
-
+    if len(inputs) == 0:
+        time.sleep(2)
+        set_login()
+        return attachFileCAL(file_name_list, row)   
     inputs = [
-        {'name': 'docno', 'value': file_count+1},
+        {'name': 'docno', 'value': "1"},
         {'name': 'description_doc', 'value': 'Report CAL ' + engineer.upper()},
         {'name': 'jobno', 'value': a_href.split('jobno=')[1].split('&')[0]}
     ]
@@ -1033,6 +1186,8 @@ def read_file(option=None):
                 table.add_row('CAL Jobs Not Attached', str(attach_cal))
 
             Console().print(table)
+            logging.info('Total Medical Devices Found: {} devices'.format(
+                len(df)))
             print(f'\n[red]Do you want to start the process? (Y/N): [/red]', end='')
             start = input()
             if start.lower() == 'y':
@@ -1063,6 +1218,8 @@ def read_file(option=None):
                             print('[green]{}[/green] / [blue]{}[/blue] [yellow]Close PM JOB[/yellow] [light blue]{}[/light blue]'.format(
                                 str(index+1), str(len(df)), row[SEARCH_KEY[0]])
                             )
+                            logging.info(
+                                'Close PM JOB: {}'.format(row[SEARCH_KEY[0]]))
                             if row[SEARCH_KEY[0]] != 'nan':
                                 issave = False
                                 process_result_pm = ''
@@ -1092,9 +1249,14 @@ def read_file(option=None):
                                         if process_result_pm.get('status') == 'ok':
                                             print(
                                                 '[green]{}[/green]'.format(process_result_pm.get('text')))
+                                            logging.info(
+                                                'PM-CLOSED: {}'.format(process_result_pm.get('text')))
                                     else:
                                         print(
                                             '[red]{}[/red]'.format(process_result_pm.get('text')))
+                                        logging.error(
+                                            'PM-CLOSED: {}'.format(process_result_pm.get('text')))
+
                                         df.at[index,
                                               'PM-CLOSED'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok' or process_result_cal.get('status') == 'done':
@@ -1105,9 +1267,14 @@ def read_file(option=None):
                                         if process_result_cal.get('status') == 'ok':
                                             print(
                                                 '[green]{}[/green]'.format(process_result_cal.get('text')))
+                                            logging.info(
+                                                'CAL-CLOSED: {}'.format(process_result_cal.get('text')))
                                     elif process_result_cal.get('status') != 'done':
                                         print(
                                             '[red]{}[/red]'.format(process_result_cal.get('text')))
+                                        logging.error(
+                                            'CAL-CLOSED: {}'.format(process_result_cal.get('text')))
+
                                         df.at[index,
                                               'CAL-CLOSED'] = process_result_cal.get('text')
                                     master_df['PM-ATTACH-STATUS'] = master_df['PM-ATTACH-STATUS'].astype(
@@ -1137,9 +1304,13 @@ def read_file(option=None):
                                         if process_result_pm.get('status') == 'ok':
                                             print(
                                                 '[green]{}[/green]'.format(process_result_pm.get('text')))
+                                            logging.info(
+                                                'PM-ATTACH-STATUS: {}'.format(process_result_pm.get('text')))
                                     else:
                                         print(
                                             '[red]{}[/red]'.format(process_result_pm.get('text')))
+                                        logging.error(
+                                            'PM-ATTACH-STATUS: {}'.format(process_result_pm.get('text')))
                                         df.at[index,
                                               'PM-ATTACH-STATUS'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok' or process_result_cal.get('status') == 'done':
@@ -1150,9 +1321,13 @@ def read_file(option=None):
                                                 'text').startswith('Attach') else process_result_cal.get('text')
                                         print(
                                             '[green]{}[/green]'.format(process_result_cal.get('text')))
+                                        logging.info(
+                                            'CAL-ATTACH-STATUS: {}'.format(process_result_cal.get('text')))
                                     else:
                                         print(
                                             '[red]{}[/red]'.format(process_result_cal.get('text')))
+                                        logging.error(
+                                            'CAL-ATTACH-STATUS: {}'.format(process_result_cal.get('text')))
                                         df.at[index,
                                               'CAL-ATTACH-STATUS'] = process_result_cal.get('text')
                                     master_df['PM-CLOSED'] = master_df['PM-CLOSED'].astype(
@@ -1193,9 +1368,13 @@ def read_file(option=None):
                                         if process_result_pm.get('status') == 'ok':
                                             print(
                                                 '[green]{}[/green]'.format(process_result_pm.get('text')))
+                                            logging.info(
+                                                'PM-CLOSED: {}'.format(process_result_pm.get('text')))
                                     else:
                                         print(
                                             '[red]{}[/red]'.format(process_result_pm.get('text')))
+                                        logging.error(
+                                            'PM-CLOSED: {}'.format(process_result_pm.get('text')))
                                         df.at[index,
                                               'PM-CLOSED'] = process_result_pm.get('text')
                                     if process_result_cal.get('status') == 'ok' or process_result_cal.get('status') == 'done':
@@ -1206,9 +1385,13 @@ def read_file(option=None):
                                         if process_result_cal.get('status') == 'ok':
                                             print(
                                                 '[green]{}[/green]'.format(process_result_cal.get('text')))
+                                            logging.info(
+                                                'CAL-CLOSED: {}'.format(process_result_cal.get('text')))
                                     else:
                                         print(
                                             '[red]{}[/red]'.format(process_result_cal.get('text')))
+                                        logging.error(
+                                            'CAL-CLOSED: {}'.format(process_result_cal.get('text')))
                                         df.at[index,
                                               'CAL-CLOSED'] = process_result_cal.get('text')
                                     if process_result_pm_attach.get('status') == 'ok' or process_result_pm_attach.get('status') == 'done':
@@ -1219,9 +1402,13 @@ def read_file(option=None):
                                         if process_result_pm_attach.get('status') == 'ok':
                                             print(
                                                 '[green]{}[/green]'.format(process_result_pm_attach.get('text')))
+                                            logging.info(
+                                                'PM-ATTACH-STATUS: {}'.format(process_result_pm_attach.get('text')))
                                     else:
                                         print(
                                             '[red]{}[/red]'.format(process_result_pm_attach.get('text')))
+                                        logging.error(
+                                            'PM-ATTACH-STATUS: {}'.format(process_result_pm_attach.get('text')))
                                         df.at[index, 'PM-ATTACH-STATUS'] = process_result_pm_attach.get(
                                             'text')
                                         issave = False if issave == False and process_result_pm.get(
@@ -1234,9 +1421,13 @@ def read_file(option=None):
                                         if process_result_cal_attach.get('status') == 'ok':
                                             print(
                                                 '[green]{}[/green]'.format(process_result_cal_attach.get('text')))
+                                            logging.info(
+                                                'CAL-ATTACH-STATUS: {}'.format(process_result_cal_attach.get('text')))
                                     else:
                                         print(
                                             '[red]{}[/red]'.format(process_result_cal_attach.get('text')))
+                                        logging.error(
+                                            'CAL-ATTACH-STATUS: {}'.format(process_result_cal_attach.get('text')))
                                         df.at[index, 'CAL-ATTACH-STATUS'] = process_result_cal_attach.get(
                                             'text')
 
@@ -1244,6 +1435,8 @@ def read_file(option=None):
                                     # convert 'nan' to empty string with match entire cell
                                     print(
                                         '[green]===========Auto Saved=============[/green]')
+                                    logging.info(
+                                        '===========Auto Saved=============')
                                     df.style.format(lambda v: "number-format: @").to_excel(
                                         writer, sheet_name='Sheet1', index=False)
                                     issave = False
@@ -1252,9 +1445,13 @@ def read_file(option=None):
                 except Exception as e:
                     print(
                         f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+                    logging.error(
+                        f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
                 finally:
                     print(
                         '[green]=============Save Result to Excel==============[/green]')
+                    logging.info(
+                        '=============Save Result to Excel==============')
                     # convert 'nan' to empty string with match entire cell
                     df = df.replace('^nan$', '', regex=True)
                     # format excel to string
@@ -1268,6 +1465,10 @@ def read_file(option=None):
                     '\n[green]Closed jobs and attached files successfully[/green]')
                 print('[green]Completed in[/green]: [yellow]{}[/yellow] seconds'.format(
                     convertTime(end_time - start_time)))
+                logging.info(
+                    'Closed jobs and attached files successfully')
+                logging.info(
+                    'Completed in: {}'.format(convertTime(end_time - start_time)))
                 print('Press any button to return to the main menu: ', end='')
                 input()
                 # clear console
@@ -1288,6 +1489,8 @@ def read_file(option=None):
             writer.close()
     except Exception as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        logging.error(
+            f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         print('[red]Error[/red]')
         print('Press any button to return to the main menu: ', end='')
         input()
@@ -1305,7 +1508,7 @@ def convertDate(date):
     months_str = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
                   'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
     months_str_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     if date.find(' ') > -1:
         date = date.split(' ')
         if len(date) == 1:
@@ -1682,7 +1885,7 @@ def change_file_name_MICal():
             # copy file and rename to _cal.pdf
             shutil.copy(os.path.join(report_path, name+'_pm.pdf'),
                         os.path.join(report_path, name+'_cal.pdf'))
-            
+
             # writer = PdfWriter(clone_from=os.path.join(report_path, name))
             # for page in writer.pages:
             #     page.compress_content_streams(level=9)
@@ -1850,21 +2053,26 @@ def showmenu():
                                         'download cert.txt'), encoding='utf-8').read()
         # copy to clipboard
         pyperclip.copy(script_text)
+        logging.info('User selected menu #1')
         print(
             '\n[green]Script for downloading ECERT files copied successfully[/green]')
+        logging.info('Script for downloading ECERT files copied successfully')
         print('\nPress any key to return to the main menu: ', end='')
         input()
         os.system('cls' if os.name == 'nt' else 'clear')
         print(init_text)
         showmenu()
     elif menu == '2':
+        logging.info('User selected menu #2')
         change_file_name()
         showmenu()
     elif menu == '6':
+        logging.info('User selected menu #6')
         get_equipment_file()
         showmenu()
 
     elif menu == '7':
+        logging.info('User selected menu #7')
         re_init_app()
         showmenu()
     else:
@@ -1873,10 +2081,13 @@ def showmenu():
         load_tool_list('none')
 
         if menu == '3':
+            logging.info('User selected menu #3')
             read_file('close_pm_cal')
         elif menu == '4':
+            logging.info('User selected menu #4')
             read_file('attach_pm_cal')
         elif menu == '5':
+            logging.info('User selected menu #5')
             read_file()
 
         else:
@@ -1889,6 +2100,8 @@ try:
     # change_file_name_MICal()
 except Exception as e:
     print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+    logging.error(f"An error occurred on line {
+                  sys.exc_info()[-1].tb_lineno}: {e}")
 # change_file_name()
 # get_emp_list()
 # get_equipment_file()

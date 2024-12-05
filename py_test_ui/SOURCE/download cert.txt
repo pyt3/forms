@@ -71,32 +71,65 @@ async function download_cert(btn) {
     //     await getPDF(pdf_link, name, approved_pdf_urls.length)
     //   }
     // })
+    let approved_pdf_urls_length = [...approved_pdf_urls].length
     for (let item of approved_pdf_urls) {
       let { name, pdf_link } = item
-      $(btn).text(`Downloading ${count}/${approved_pdf_urls.length}`)
-      await getPDF(pdf_link, name, approved_pdf_urls.length, btn)
+      $(btn).text(`Downloading ${count}/${approved_pdf_urls_length}`)
+      let success = false
+      let try_attempt = 5
+      while (!success && try_attempt > 0) {
+        try {
+          await getPDF(pdf_link, name, approved_pdf_urls_length, btn)
+          success = true
+        } catch (error) {
+          console.log(`Error downloading ${name}, retrying...`)
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          try_attempt--
+        }
+      }
+      // delete item
+      approved_pdf_urls = approved_pdf_urls.filter(e => e.name != name)
     }
   })
 }
 var count = 1
 async function getPDF(url, name, len, btn) {
-  let res = await fetch(url)
-  console.log(res.ok);
-  if (!res.ok) {
+  let res
+  try{
+    res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/pdf',
+      },
+    })
+  }catch(e){
+    console.log('retrying');
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    return getPDF(url, name, len, btn)
+  }
+  console.log(res);
+  if (!res.ok || res.status != 200) {
     console.log(res.status);
     console.log('retrying');
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    return getPDF(url, name, len)
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    return getPDF(url, name, len, btn)
   }
   let blob = await res.blob()
-  if (!blob || blob.type != 'application/pdf') return getPDF(url, name, len)
+  if (!blob || blob.type != 'application/pdf') {
+    console.log('retrying');
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    return getPDF(url, name, len, btn)
+  }
   blob = new Blob([blob], { type: 'application/pdf' })
 
   let a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
   a.download = name
   a.click()
+  document.body.appendChild(a)
+  document.body.removeChild(a)
   console.log(`Downloaded ${count}/${len} (${name})`)
+  URL.revokeObjectURL(a.href)
   if (count == len) {
     count = 0
     $(btn).removeClass('btn-danger').addClass('btn-primary').text('Download Cert')
@@ -105,6 +138,10 @@ async function getPDF(url, name, len, btn) {
       title: 'ดาวน์โหลดเสร็จสิ้น',
       confirmButtonText: 'ปิด',
     })
+  }
+  if(count > 0 & count%100 == 0){
+    await new Promise(resolve => setTimeout(resolve, 10000))
+    
   }
   count++
   return true
