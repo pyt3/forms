@@ -1231,13 +1231,11 @@
                 } else {
                     let text = `UPDATE<br>${wo ? ('WO.' + wo) : ''}<br>รหัส ${code}<br>วันที่ ${update_data.date} น.<br><br>${update}<br><br>#${name}`
                     update_data.text = text.replace(/<br>/g, '\n')
-                    update_data.tg_html = `UPDATE
-${wo ? ('<b>WO.</b>' + wo) : ''}
-<b>รหัส</b> ${code}
-<b>วันที่</b> ${update_data.date} น.
+                    update_data.tg_html = `🎉UPDATE🎉
+<b>📅 วันที่</b> ${update_data.date} น.
 
 <b>รายละเอียด</b>
-${update}
+<blockquote>${update}</blockquote>
 
 #${name}`
                     Swal.fire({
