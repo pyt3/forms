@@ -421,7 +421,7 @@
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-       //  var vConsole = new VConsole();
+        //  var vConsole = new VConsole();
     </script>
     <script>
         // const liff_id = '1655873446-3xe866Ql'
@@ -926,7 +926,7 @@
                             "action": {
                                 "type": "uri",
                                 "label": "ติดต่อ " + update_data.vendor_phone,
-                                "uri": "tel:" + update_data.vendor_phone.replace(/-/g,'').replace(/ /g,'')
+                                "uri": "tel:" + update_data.vendor_phone.replace(/-/g, '').replace(/ /g, '')
                             },
                             "contents": [
                                 {
@@ -1012,7 +1012,7 @@
                                     "action": {
                                         "type": "uri",
                                         "label": "ติดต่อ " + r.vendor_phone,
-                                        "uri": "tel:" + r.vendor_phone.replace(/-/g,'').replace(/ /g,'')
+                                        "uri": "tel:" + r.vendor_phone.replace(/-/g, '').replace(/ /g, '')
                                     },
                                     "contents": [
                                         {
@@ -1122,6 +1122,7 @@
                     }
                     data = data.data()
                     job_detail = data.detail
+                    tg_thread_id = data.thread_id
                     if (!data.name && !data.reciever) {
                         $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                         $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
@@ -1195,7 +1196,7 @@
                 $('#more-update-btn').addClass('d-none')
                 $.LoadingOverlay("hide");
             }
-            let update_data
+            let update_data, tg_thread_id
             $("#submit").click(() => {
                 let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
                     if (x[0] === '-') return "- " + x.slice(1).trim();
@@ -1212,7 +1213,8 @@
                     name: name,
                     vendor_phone: $('#vendor_phone').val(),
                     image: $('#image').attr('src'),
-                    date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })
+                    date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }),
+                    thread_id: tg_thread_id
                 }
                 if (update == "") {
                     Swal.fire({
@@ -1229,6 +1231,15 @@
                 } else {
                     let text = `UPDATE<br>${wo ? ('WO.' + wo) : ''}<br>รหัส ${code}<br>วันที่ ${update_data.date} น.<br><br>${update}<br><br>#${name}`
                     update_data.text = text.replace(/<br>/g, '\n')
+                    update_data.tg_html = `UPDATE
+${wo ? ('<b>WO.</b>' + wo) : ''}
+<b>รหัส</b> ${code}
+<b>วันที่</b> ${update_data.date} น.
+
+<b>รายละเอียด</b>
+${update}
+
+#${name}`
                     Swal.fire({
                         title: 'ตรวจสอบข้อมูล',
                         html: text,
@@ -1317,6 +1328,37 @@
             }).catch(err => {
                 console.log(err);
             })
+            let tg_api = '7681265177:AAFVGgh5lAzXRRfiole5ywOlY-CoEIOjEz4'
+            let chat_id = '-1002300341036'
+            let tg_url = 'https://api.telegram.org/bot' + tg_api + '/sendMessage'
+            let tg_data = {
+                chat_id: chat_id,
+                text: update_data.tg_html,
+                message_thread_id: update_data.thread_id,
+                parse_mode: 'HTML',
+                reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                        [{ text: '🔊 อัพเดทงาน', url: 'https://liff.line.me/1661543046-alpJexbX?jobid=' + update_data.jobid }]
+                    ]
+                })
+            }
+            $.ajax({
+                url: tg_url,
+                method: 'POST',
+                data: tg_data,
+                success: (res) => {
+                    console.log(res)
+                },
+                error: (err) => {
+                    console.log(err)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ส่งข้อมูล telegram ไม่สำเร็จ',
+                        html: 'ส่งข้อความนี้ให้ผู้พัฒนาเพื่อแก้ไขปัญหา<br>' + JSON.stringify(err),
+                    })
+                }
+            })
+
             let detail = await firestore.collection('jobdata/').doc(update_data.jobid).get().then(doc => doc.data().detail)
             localStorage.removeItem('updateText' + update_data.jobid)
             // liff.sendMessages([
@@ -1912,7 +1954,7 @@
                 iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 50px; height: 50px;margin-start: 5px"/>',
                 customClass: {
                     icon: 'border-0'
-                },  
+                },
                 position: 'top',
                 showConfirmButton: false,
                 timer: 60000,

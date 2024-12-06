@@ -203,8 +203,7 @@ def convertTime(time):
         hours = time / 3600
         minutes = (time % 3600) / 60
         seconds = time % 60
-        time = f'{int(hours)} hours {int(minutes)} minutes {
-            int(seconds)} seconds'
+        time = f'{int(hours)} hours {int(minutes)} minutes {int(seconds)} seconds'
         return time
 
     return time
@@ -821,8 +820,7 @@ def attachFilePM(file_name_list, row):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        logging.error(f"An error occurred on line {
-                      sys.exc_info()[-1].tb_lineno}: {e}")
+        logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFilePM(file_name_list, row)
     response.encoding = "tis-620"
@@ -864,8 +862,7 @@ def attachFilePM(file_name_list, row):
             del_form = False
             print('[red]Deleting old PM file: ' + str(i+1) + "/" +
                   str(len(file_count)) + '[/red] [yellow]' + code + '[/yellow]', end='\r')
-            logging.info(f'Deleting old PM file: {
-                         i+1}/{len(file_count)} {code}')
+            logging.info(f'Deleting old PM file: {i+1}/{len(file_count)} {code}')
             try:
                 del_form = requests.get("https://nsmart.nhealth-asia.com/MTDPDB01/pm/"+url,
                                         headers=headers,
@@ -895,15 +892,13 @@ def attachFilePM(file_name_list, row):
                                              )
 
             except requests.exceptions.RequestException as e:
-                print(f"An error occurred on line {
-                      sys.exc_info()[-1].tb_lineno}: {e}")
+                print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
                 time.sleep(5)
                 return attachFilePM(file_name_list, row)
 
         print('[red]Delete old PM file: ' + str(len(file_count)) +
               ' file(s) success[/red] [yellow]' + code + '[/yellow]')
-        logging.info(f'Delete old PM file: {
-                     len(file_count)} file(s) success {code}')
+        logging.info(f'Delete old PM file: {len(file_count)} file(s) success {code}')
 
     form_data = {}
     inputs = form.findAll('input')
@@ -1001,8 +996,7 @@ def attachFileCAL(file_name_list, row):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        logging.error(f"An error occurred on line {
-                      sys.exc_info()[-1].tb_lineno}: {e}")
+        logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFileCAL(file_name_list, row)
     response.encoding = "tis-620"
@@ -1042,8 +1036,7 @@ def attachFileCAL(file_name_list, row):
             del_form = False
             print('[red]Deleting old CAL file: ' + str(i+1) + "/" +
                   str(len(file_count)) + '[/red] [yellow]' + code + '[/yellow]', end='\r')
-            logging.info(f'Deleting old CAL file: {
-                         i+1}/{len(file_count)} {code}')
+            logging.info(f'Deleting old CAL file: {i+1}/{len(file_count)} {code}')
             try:
                 del_form = requests.get("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/"+url,
                                         headers=headers,
@@ -1073,15 +1066,13 @@ def attachFileCAL(file_name_list, row):
                                              )
 
             except requests.exceptions.RequestException as e:
-                print(f"An error occurred on line {
-                      sys.exc_info()[-1].tb_lineno}: {e}")
+                print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
                 time.sleep(5)
                 return attachFileCAL(file_name_list, row)
 
         print('[red]Delete old CAL file: ' + str(len(file_count)) +
               ' file(s) success[/red] [yellow]' + code + '[/yellow]')
-        logging.info(f'Delete old CAL file: {
-                     len(file_count)} file(s) success {code}')
+        logging.info(f'Delete old CAL file: {len(file_count)} file(s) success {code}')
 
     form_data = {}
     inputs = form.findAll('input')
@@ -2100,8 +2091,7 @@ try:
     # change_file_name_MICal()
 except Exception as e:
     print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-    logging.error(f"An error occurred on line {
-                  sys.exc_info()[-1].tb_lineno}: {e}")
+    logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
 # change_file_name()
 # get_emp_list()
 # get_equipment_file()
