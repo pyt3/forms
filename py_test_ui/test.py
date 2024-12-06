@@ -823,6 +823,7 @@ def attachFilePM(file_name_list, row):
         logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFilePM(file_name_list, row)
+    response.raise_for_status()
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -869,6 +870,7 @@ def attachFilePM(file_name_list, row):
                                         cookies=cookies,
                                         verify=False,
                                         )
+                del_form.raise_for_status()
                 del_form.encoding = "tis-620"
                 del_form = BeautifulSoup(del_form.text, "lxml")
                 del_form = del_form.find('form', {'name': 'Post'})
@@ -941,11 +943,13 @@ def attachFilePM(file_name_list, row):
 
     response2 = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain08.php?' + a_href +
                               '&ccsForm=Maindocattache1', headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+    response2.raise_for_status()
     response2.encoding = "tis-620"
     soup = BeautifulSoup(response2.text, "lxml")
-    result_table = soup.find_all('table', {'class': 'Header'})[1]
-    if result_table == None:
+    result_table = soup.find_all('table', {'class': 'Header'})
+    if result_table == None or len(result_table) < 2:
         return {"status": 'fail', 'text': 'Fail to Attach PM file'}
+    result_table = result_table[1]
     result_th = result_table.find('th')
     if result_th.text.strip() != 'Total : 0 records':
         global screenshot
@@ -961,7 +965,7 @@ def attachFilePM(file_name_list, row):
 def attachFileCAL(file_name_list, row):
     global SEARCH_KEY
     if row['DATE-CAL'] == 'nan' or row['DATE-CAL'] == '':
-        return {"status": 'ok', 'text': 'No PM Work', 'nosave': True}
+        return {"status": 'ok', 'text': 'No CAL Work', 'nosave': True}
     if row['CAL-ATTACH-STATUS'] != 'nan':
         return {"status": 'done', 'text': row['CAL-ATTACH-STATUS'], 'nosave': True}
     id = row[SEARCH_KEY[0]]
@@ -999,6 +1003,7 @@ def attachFileCAL(file_name_list, row):
         logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFileCAL(file_name_list, row)
+    response.raise_for_status()
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
     # print(soup)
@@ -1043,6 +1048,7 @@ def attachFileCAL(file_name_list, row):
                                         cookies=cookies,
                                         verify=False,
                                         )
+                del_form.raise_for_status()
                 del_form.encoding = "tis-620"
                 del_form = BeautifulSoup(del_form.text, "lxml")
                 del_form = del_form.find('form', {'name': 'Post'})
@@ -1100,11 +1106,13 @@ def attachFileCAL(file_name_list, row):
 
     response2 = requests.post("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_5.php?" + a_href +
                               "&ccsForm=Caliberdocattache1", headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+    response2.raise_for_status()
     response2.encoding = "tis-620"
     soup = BeautifulSoup(response2.text, "lxml")
-    result_table = soup.find_all('table', {'class': 'Header'})[1]
-    if result_table == None:
+    result_table = soup.find_all('table', {'class': 'Header'})
+    if result_table == None or len(result_table) < 2:
         return {"status": 'fail', 'text': 'Fail to Attach CAL file'}
+    result_table = result_table[1]
     result_th = result_table.find('th')
     if result_th.text.strip() != 'Total : 0 records':
         global screenshot
