@@ -190,7 +190,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
+        // var vConsole = new window.VConsole();
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
@@ -774,7 +774,7 @@
                         type: 'text',
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
                     }])
-                    sendTelegram(save_res[0], save_res[1], data.start, data.end)
+                    sendTelegram(save_res[0], save_res[1], data)
                 }, 200);
             }).catch(err => {
                 Swal.fire({
@@ -809,9 +809,10 @@
             return code
         }
 
-        async function sendTelegram(id, message, start, end) {
+        async function sendTelegram(id, message, data) {
             let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
             let caption = message
+            let { start, end, me_code } = data
             retryRequest(async () => {
                 await new Promise((resolve, reject) => {
                     if (id == 'no file') {
@@ -856,7 +857,7 @@
                                             title: 'บันทึกข้อมูลสำเร็จ',
                                             confirmButtonText: 'ตกลง',
                                         }).then(() => {
-                                            history_code[data.code] = {
+                                            history_code[me_code] = {
                                                 start: start,
                                                 end: end
                                             }
