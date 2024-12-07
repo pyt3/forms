@@ -190,7 +190,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        var vConsole = new window.VConsole();
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
@@ -699,16 +699,17 @@
                 })),
                 retryRequest(() => new Promise((resolve, reject) => {
                     console.log("save to gsheet");
-                    $.post(script_url, data, (res) => {
-                        if (res.status == 'success') {
-                            let data = res
-                            $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
-                            const chatId = data.chatId
-                            const sendMessageUrl = `https://api.telegram.org/bot${data.token}/sendMessage`;
-                            const sendMediaUrl = `https://api.telegram.org/bot${data.token}/sendMediaGroup`;
-                            let files = $('#telegram-files')[0].files;
-                            let regist = JSON.parse(localStorage.getItem('regist'))
-                            let msg = `
+                    $.ajax({
+                        url: script_url,
+                        type: 'POST',
+                        data: data,
+                        timeout: 10000,
+                        success: function (res) {
+                            if (res.status == 'success') {
+                                let data = res
+                                $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
+                                let regist = JSON.parse(localStorage.getItem('regist'))
+                                let msg = `
 <b>เครื่อง ${data.e_name}</b> (${data.code})
 
 ได้ถูกย้ายจาก
@@ -722,8 +723,13 @@
 โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
 
 <a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
-                            resolve(msg)
-                        } else {
+                                resolve(msg)
+                            } else {
+                                $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
+                                reject()
+                            }
+                        },
+                        error: function () {
                             $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
                             reject()
                         }
