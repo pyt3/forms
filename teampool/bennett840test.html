@@ -275,7 +275,15 @@
                             confirmButtonText: 'ตกลง',
                             timer: 2000
                         }).then(() => {
-                            liff.closeWindow()
+                            liff.sendMessages([{
+                                type: 'text',
+                                text: ' verify: ' + code,
+                            }]).then(() => {
+                                console.log('message sent')
+                                liff.closeWindow()
+                            }).catch((err) => {
+                                console.error(err)
+                            })
                         })
                     }
                 },
