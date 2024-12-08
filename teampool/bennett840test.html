@@ -189,13 +189,8 @@
         // var vConsole = new window.VConsole();
     </script>
     <script>
-        var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
+        var script_url = 'https://script.google.com/macros/s/AKfycby_oM2B8UTKDQ9Z1fKolxdah501ZCjAS8FMnZjkgqPqfU7UfLH6T4d5nnmT0HhUtnVH1g/exec'
         var profile
-        var tg_const
-        var history_code = {}
-        $(document).on('select2:open', () => {
-            document.querySelector('.select2-search__field').focus();
-        });
         $(document).ready(function () {
             liff.init({
                 liffId: '1660749495-A2gmPQNb',
@@ -215,14 +210,17 @@
             $('#do-est').on('change', function () {
                 if ($(this).is(':checked')) {
                     $('#div-last-est').show().prop('required', true)
+                    $('#last-est').val(new Date().toISOString({ timeZone: 'Asia/Bangkok' }).split('T')[0])
                 } else {
                     $('#div-last-est').hide().prop('required', false)
+                    $('#last-est').val('')
                 }
             })
             $('#last-sst').val(new Date().toISOString({ timeZone: 'Asia/Bangkok' }).split('T')[0])
 
         })
         $('#submit-btn').on('click', function () {
+            event.preventDefault()
             var code = $('#code').val()
             var working_hours = $('#working-hours').val()
             var last_sst = $('#last-sst').val()
@@ -255,11 +253,32 @@
                 uid: liff.getDecodedIDToken().sub,
                 opt: 'bennett840test'
             }
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading()
+                }
+            })
             $.ajax({
                 url: script_url,
                 method: 'POST',
                 data: data,
-                success: function (res) {},
+                success: function (res) {
+                    console.log("🚀 ~ res:", res)
+                    if(res.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'บันทึกข้อมูลสำเร็จ',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'ตกลง',
+                            timer: 2000
+                        }).then(() => {
+                            liff.closeWindow()
+                        })
+                    }
+                },
                 error: function (err) {
                     console.error(err)
                 }
