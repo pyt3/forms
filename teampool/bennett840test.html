@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกข้อมูลการขนย้าย</title>
+    <script src="https://fastly.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cedarville+Cursive&family=Mitr&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="../teampm/main const.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            font-family: 'Abril Fatface', cursive;
+            font-family: 'Cedarville Cursive', cursive;
+            font-family: 'Mitr', sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+        }
+
+        img#profile {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+        }
+
+        .loader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .wrapper {
+            width: 180px;
+            height: 50px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .text {
+            z-index: 3;
+            font-family: Whitney, -apple-system, Helvetica;
+            letter-spacing: 1px;
+            font-weight: 700;
+            font-size: 20px;
+            color: white;
+            filter: drop-shadow(2px 2px 0px #ff9e02);
+        }
+
+        .box {
+            width: 100%;
+            height: 100%;
+            background-color: #ef5d2e;
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: loading ease-in-out 0.9s infinite alternate-reverse;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: translateX(-20px);
+            }
+
+            100% {
+                transform: translateX(20px);
+            }
+        }
+
+        .box::before {
+            content: "";
+            width: 20px;
+            height: 170%;
+            background-color: #ff9d0089;
+            position: absolute;
+            z-index: 1;
+            animation: loading2 ease-in-out 0.9s infinite alternate-reverse;
+        }
+
+        @keyframes loading2 {
+            0% {
+                transform: translateX(-50px);
+            }
+
+            100% {
+                transform: translateX(50px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-body-tertiary">
+    <!-- <div class="fixed-top">
+        <div class="loader bg-light">
+            <div class="wrapper">
+                <div class="text">LOADING</div>
+                <div class="box"></div>
+            </div>
+        </div>
+
+    </div> -->
+    <nav class="navbar">
+        <div class="container-fluid" style="display: none">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
+                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                &nbsp; <div>
+                    <span id="displayName">Team PM</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+    <div class="container h-100 d-flex justify-content-center align-items-center">
+        <div class="px-4 pb-4 pt-1">
+            <div class="d-flex flex-column">
+                <div class="text-center">
+                    <img src="./bennett840.png" alt="bennett840" class="img-fluid" style="max-height: 200px; width: auto;">
+
+                </div>
+                <div class="col h4 fw-bold text-center text-dark">
+                    Bennett 840 Test
+                </div>
+            </div>
+            <div class="row g-3 justify-content-start">
+                <div class="col-md-12">
+                    <label for="code">รหัสเครื่อง</label>
+                    <input type="text" class="form-control text-center" id="code" name="code">
+                </div>
+                <div class="col-md-12" id="div-working-hours">
+                    <label for="working-hours">ชั่วโมงการทำงาน</label>
+                    <input type="number" class="form-control text-center" id="working-hours" name="working-hours" step="0.01">
+                </div>
+                <div class="col-md-12" id="div-start">
+                    <label for="last-sst">เวลาที่ตรวจสอบ SST ล่าสุด</label>
+                    <input type="date" class="form-control text-center" id="last-sst" name="last-sst">
+                </div>
+                <div class="col-md-12" id="div-do-est">
+                    <input type="checkbox" class="form-check-input" id="do-est" name="do-est">
+                    <label for="do-est">ดำเนินการตรวจสอบ EST</label>
+                </div>
+                <div class="col-md-12" id="div-last-est" style="display: none;">
+                    <label for="last-est">เวลาที่ตรวจสอบ EST ล่าสุด</label>
+                    <input type="date" class="form-control text-center" id="last-est" name="last-est">
+                </div>
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        // var vConsole = new window.VConsole();
+    </script>
+    <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
+        var profile
+        var tg_const
+        var history_code = {}
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+        $(document).ready(function () {
+            liff.init({
+                liffId: '1660749495-A2gmPQNb',
+            })
+            liff.ready.then(async () => {
+                if(!liff.isLoggedIn()) {
+                    liff.login({
+                        redirectUri: location.href
+                    })
+                    return
+                }
+                profile = await liff.getProfile()
+                $('#profile').attr('src', profile.pictureUrl)
+                $('#displayName').text(profile.displayName)
+                $('.navbar .container-fluid').show()
+            })
+            $('#do-est').on('change', function () {
+                if ($(this).is(':checked')) {
+                    $('#div-last-est').show().prop('required', true)
+                } else {
+                    $('#div-last-est').hide().prop('required', false)
+                }
+            })
+            $('#last-sst').val(new Date().toISOString({ timeZone: 'Asia/Bangkok' }).split('T')[0])
+
+        })
+        $('#submit-btn').on('click', function () {
+            var code = $('#code').val()
+            var working_hours = $('#working-hours').val()
+            var last_sst = $('#last-sst').val()
+            var do_est = $('#do-est').is(':checked')
+            var last_est = $('#last-est').val()
+            if (!code || !working_hours || !last_sst) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return
+            }
+            if (do_est && !last_est) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return
+            }
+            var data = {
+                code: code,
+                working_hours: working_hours,
+                last_sst: last_sst,
+                do_est: do_est,
+                last_est: last_est,
+                uid: liff.getDecodedIDToken().sub,
+                opt: 'bennett840test'
+            }
+            $.ajax({
+                url: script_url,
+                method: 'POST',
+                data: data,
+                success: function (res) {},
+                error: function (err) {
+                    console.error(err)
+                }
+            })
+        })
+    </script>
+    <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+</body>
+
+</html>
