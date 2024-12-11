@@ -190,7 +190,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
+        // var vConsole = new window.VConsole();
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
@@ -655,63 +655,61 @@
 
             Promise.all([
                 retryRequest(() => new Promise((resolve, reject) => {
-                    Promise.all([
-                        retryRequest(() => {
-                            if (files.length > 0) {
-                                const media = [];
-                                const formData = new FormData();
-                                const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
-                                Array.from(files).forEach((file) => {
-                                    media.push({
-                                        type: "photo",  // Set the type of media
-                                        media: `attach://${file.name}` // Use 'attach://' for file attachment
-                                    });
-                                    formData.append(file.name, file); // Attach the file to the FormData
-                                });
+                    if (files.length > 0) {
+                        const media = [];
+                        const formData = new FormData();
+                        const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
+                        Array.from(files).forEach((file) => {
+                            media.push({
+                                type: "photo",  // Set the type of media
+                                media: `attach://${file.name}` // Use 'attach://' for file attachment
+                            });
+                            formData.append(file.name, file); // Attach the file to the FormData
+                        });
 
-                                // Attach media to FormData
-                                formData.append("chat_id", tg_const.chatId); // Add chat_id
-                                formData.append("media", JSON.stringify(media)); // Add media array
+                        // Attach media to FormData
+                        formData.append("chat_id", tg_const.chatId); // Add chat_id
+                        formData.append("media", JSON.stringify(media)); // Add media array
 
-                                // Send images as a media group
-                                $.ajax({
-                                    url: sendMediaUrl,
-                                    type: 'POST',
-                                    data: formData,
-                                    contentType: false,
-                                    processData: false,
-                                    success: function (mediaResponse) {
-                                        if (mediaResponse.ok) {
-                                            mediagroup_id = mediaResponse.result[0].message_id
-                                            resolve(mediagroup_id)
-                                        } else {
-                                            alert("Error sending images: " + mediaResponse.description);
-                                            reject(mediaResponse.description);
-                                        }
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                        console.error("Error sending images:", errorThrown);
-                                        reject(errorThrown);
-                                    }
-                                });
-                            } else {
-                                $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                resolve('no file')
+                        // Send images as a media group
+                        $.ajax({
+                            url: sendMediaUrl,
+                            type: 'POST',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (mediaResponse) {
+                                if (mediaResponse.ok) {
+                                    mediagroup_id = mediaResponse.result[0].message_id
+                                    resolve(mediagroup_id)
+                                } else {
+                                    alert("Error sending images: " + mediaResponse.description);
+                                    reject(mediaResponse.description);
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.error("Error sending images:", errorThrown);
+                                reject(errorThrown);
                             }
-                        }),
-                        retryRequest(() => new Promise((resolve, reject) => {
-                            console.log("save to gsheet");
-                            $.ajax({
-                                url: script_url,
-                                type: 'POST',
-                                data: data,
-                                timeout: 10000,
-                                success: function (res) {
-                                    if (res.status == 'success') {
-                                        let data = res
-                                        $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
-                                        let regist = JSON.parse(localStorage.getItem('regist'))
-                                        let msg = `
+                        });
+                    } else {
+                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
+                        resolve('no file')
+                    }
+                })),
+                retryRequest(() => new Promise((resolve, reject) => {
+                    console.log("save to gsheet");
+                    $.ajax({
+                        url: script_url,
+                        type: 'POST',
+                        data: data,
+                        timeout: 10000,
+                        success: function (res) {
+                            if (res.status == 'success') {
+                                let data = res
+                                $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
+                                let regist = JSON.parse(localStorage.getItem('regist'))
+                                let msg = `
 <b>เครื่อง ${data.e_name}</b> (${data.code})
 
 ได้ถูกย้ายจาก
@@ -725,26 +723,18 @@
 โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
 
 <a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
-                                        resolve(msg)
-                                    } else {
-                                        $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
-                                        reject()
-                                    }
-                                },
-                                error: function () {
-                                    $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
-                                    reject()
-                                }
-                            })
-                        })),
-                    ]).then(async (res) => {
-                        await sendTelegram(save_res[0], save_res[1], data)
-                        resolve(res)
-                    }).catch(err => {
-                        reject(err)
+                                resolve(msg)
+                            } else {
+                                $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
+                                reject()
+                            }
+                        },
+                        error: function () {
+                            $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
+                            reject()
+                        }
                     })
                 })),
-
                 retryRequest(() => new Promise((resolve, reject) => {
                     console.log("save to history");
                     $.post(script_url, {
@@ -790,7 +780,7 @@
                         type: 'text',
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
                     }])
-                    
+                    sendTelegram(save_res[0], save_res[1], data)
                 }, 200);
             }).catch(err => {
                 Swal.fire({
