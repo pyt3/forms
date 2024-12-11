@@ -655,7 +655,7 @@
             let files = $('#telegram-files')[0].files;
             let tg_msg_id, tg_caption, tg_sent = false
             const checkDone = () => {
-                if (success_all == 6) {
+                if (success_all >= 6) {
                     setTimeout(() => {
                         Swal.fire({
                             icon: 'success',
