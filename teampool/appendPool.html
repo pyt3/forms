@@ -634,6 +634,7 @@
                 }
             });
         };
+        let success_all = 0
         async function sendPost(data) {
             Swal.fire({
                 icon: 'info',
@@ -652,7 +653,26 @@
             console.time('sendPost')
             let result_name, mediagroup_id
             let files = $('#telegram-files')[0].files;
-
+            let tg_msg_id, tg_caption, tg_sent = false
+            const checkDone = () => {
+                if (success_all == 6) {
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'บันทึกข้อมูลสำเร็จ',
+                            confirmButtonText: 'ตกลง',
+                        }).then(() => {
+                            history_code[me_code] = {
+                                start: start,
+                                end: end
+                            }
+                            localStorage.setItem('history_code', JSON.stringify(history_code))
+                            liff.closeWindow()
+                        })
+                        resolve()
+                    }, 200);
+                }
+            }
             Promise.all([
                 retryRequest(() => new Promise((resolve, reject) => {
                     if (files.length > 0) {
@@ -680,7 +700,14 @@
                             processData: false,
                             success: function (mediaResponse) {
                                 if (mediaResponse.ok) {
+                                    success_all++
+                                    checkDone()
                                     mediagroup_id = mediaResponse.result[0].message_id
+                                    tg_msg_id = mediaResponse.result[0].message_id
+                                    if (tg_msg_id && tg_caption && !tg_sent) {
+                                        tg_sent = true
+                                        sendTelegram(tg_msg_id, tg_caption, data)
+                                    }
                                     resolve(mediagroup_id)
                                 } else {
                                     alert("Error sending images: " + mediaResponse.description);
@@ -706,6 +733,8 @@
                         timeout: 10000,
                         success: function (res) {
                             if (res.status == 'success') {
+                                success_all++
+                                checkDone()
                                 let data = res
                                 $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
                                 let regist = JSON.parse(localStorage.getItem('regist'))
@@ -723,6 +752,11 @@
 โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
 
 <a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
+                                tg_caption = msg
+                                if (tg_msg_id && tg_caption && !tg_sent) {
+                                    tg_sent = true
+                                    sendTelegram(tg_msg_id, tg_caption, data)
+                                }
                                 resolve(msg)
                             } else {
                                 $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
@@ -744,6 +778,8 @@
                         end: data.end
                     }, (res) => {
                         if (res.status == 'success') {
+                            success_all++
+                            checkDone()
                             $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
                             resolve(res)
                         } else {
@@ -764,6 +800,8 @@
                         ['end-room']: data['end-room']
                     }, (res) => {
                         if (res.status == 'success') {
+                            success_all++
+                            checkDone()
                             $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
                             resolve(res)
                         } else {
@@ -779,8 +817,13 @@
                     liff.sendMessages([{
                         type: 'text',
                         text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                    }])
-                    sendTelegram(save_res[0], save_res[1], data)
+                    }]).then(() => {
+                        success_all++
+                        checkDone()
+                    }).catch((err) => {
+                        console.error('error', err);
+                    });
+                    // sendTelegram(save_res[0], save_res[1], data)
                 }, 200);
             }).catch(err => {
                 Swal.fire({
@@ -835,6 +878,8 @@
                                 if (response.ok) {
                                     $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
                                     console.log("Message sent successfully!");
+                                    success_all++
+                                    checkDone()
                                     resolve(response)
                                 } else {
                                     alert("Error sending message: " + response.description);
@@ -857,21 +902,7 @@
                                 if (response.ok) {
                                     $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
                                     console.log("Message sent successfully!");
-                                    setTimeout(() => {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'บันทึกข้อมูลสำเร็จ',
-                                            confirmButtonText: 'ตกลง',
-                                        }).then(() => {
-                                            history_code[me_code] = {
-                                                start: start,
-                                                end: end
-                                            }
-                                            localStorage.setItem('history_code', JSON.stringify(history_code))
-                                            liff.closeWindow()
-                                        })
-                                        resolve()
-                                    }, 500);
+
                                 } else {
                                     alert("Error sending message: " + response.description);
                                 }
@@ -883,6 +914,7 @@
                         })
                     }
                 })
+
             })
         }
     </script>
