@@ -231,6 +231,11 @@
                             class="bi bi-clock-history"></i>&nbsp;ประวัติซ่อม</a>
                 </div>
             </div>
+            <div class="row d-none justify-content-center">
+                <div class="col-12 text-center">
+                    <img lt="sign" id="user-sign" style="max-height: 100px;" class="img-fluid">
+                </div>
+            </div>
             <div class="row g-3 justify-content-center">
                 <!-- <div class="col-md-4 has-code"> -->
                 <!-- <div class="col-md-4 has-code d-none">
@@ -594,6 +599,7 @@
                 })
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     data = data.data()
+                    if(data.signature) $('#user-sign').attr('src', data.signature).parent().parent().removeClass('d-none')
                     $('#code').val(data.code)
                     if (!data.name && !data.reciever) {
                         $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
@@ -1121,6 +1127,7 @@
                         })
                     }
                     data = data.data()
+                    if(data.signature) $('#user-sign').attr('src', data.signature).parent().parent().removeClass('d-none')
                     job_detail = data.detail
                     tg_thread_id = data.thread_id
                     if (!data.name && !data.reciever) {
