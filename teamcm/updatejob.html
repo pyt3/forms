@@ -230,6 +230,11 @@
                     <a class="btn btn-sm btn-primary w-100 mt-2 d-none" style="font-size: .7rem;" id="history-btn"><i
                             class="bi bi-clock-history"></i>&nbsp;ประวัติซ่อม</a>
                 </div>
+                <div class="col-12 d-none">
+                    <div class="alert alert-primary text-center mt-2" id="work-status">
+                        
+                    </div>
+                </div>
             </div>
             <div class="row d-none justify-content-center">
                 <div class="col-12 text-center">
@@ -600,6 +605,19 @@
                 firestore.collection('jobdata/').doc(jobid).get().then(data => {
                     data = data.data()
                     if(data.signature) $('#user-sign').attr('src', data.signature).parent().parent().removeClass('d-none')
+                    if(data.status){
+                        switch(data.status){
+                            case "Waiting":
+                                $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
+                                break
+                            case "Return equipment back to vendor":
+                                $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
+                                break
+                            default:
+                                $('#work-status').html('ยังไม่รับงาน')
+                        }
+                        $('#work-status').parent().removeClass('d-none')
+                    }
                     $('#code').val(data.code)
                     if (!data.name && !data.reciever) {
                         $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
@@ -1128,6 +1146,19 @@
                     }
                     data = data.data()
                     if(data.signature) $('#user-sign').attr('src', data.signature).parent().parent().removeClass('d-none')
+                    if(data.status){
+                        switch(data.status){
+                            case "Waiting":
+                                $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
+                                break
+                            case "Return equipment back to vendor":
+                                $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
+                                break
+                            default:
+                                $('#work-status').html('ยังไม่รับงาน')
+                        }
+                        $('#work-status').parent().removeClass('d-none')
+                    }
                     job_detail = data.detail
                     tg_thread_id = data.thread_id
                     if (!data.name && !data.reciever) {
