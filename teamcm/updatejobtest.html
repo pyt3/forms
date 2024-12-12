@@ -2,33 +2,34 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <base target="_top">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>บันทึกข้อมูลการขนย้าย</title>
-    <script src="https://fastly.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsignature/libs/flashcanvas.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsignature/libs/modernizr.js"></script>
-    <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://fastly.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cedarville+Cursive&family=Mitr&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet"
-        href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <!-- icon -->
+    <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
         integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="../teampm/main const.js"></script>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <style>
         * {
             margin: 0;
@@ -37,87 +38,147 @@
         }
 
         body {
-            background-color: #FF8604;
-            width: 100vw;
-            font-family: 'Abril Fatface', cursive;
-            font-family: 'Cedarville Cursive', cursive;
-            font-family: 'Mitr', sans-serif;
+            width: 100%;
+            height: 100%;
+            font-family: 'Prompt', sans-serif;
+            /* background-color: #e9b33b; */
+            /* background-color: #D3D3D3; */
         }
 
-        img#profile {
-            width: 30px;
-            height: 30px;
-            object-fit: cover;
+        #sticker {
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            max-width: 500px;
         }
 
         .loader {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 10;
+            width: 160px;
+            height: 100px;
+            margin-left: -80px;
+            margin-top: -50px;
+            border-radius: 5px;
+            background: #1e3f57;
+            animation: dot1_ 3s cubic-bezier(0.55, 0.3, 0.24, 0.99) infinite;
+        }
+
+        .loader:nth-child(2) {
+            z-index: 11;
+            width: 150px;
+            height: 90px;
+            margin-top: -45px;
+            margin-left: -75px;
+            border-radius: 3px;
+            background: #3c517d;
+            animation-name: dot2_;
+        }
+
+        .loader:nth-child(3) {
+            z-index: 12;
+            width: 40px;
+            height: 20px;
+            margin-top: 50px;
+            margin-left: -20px;
+            border-radius: 0 0 5px 5px;
+            background: #6bb2cd;
+            animation-name: dot3_;
+        }
+
+        @keyframes dot1_ {
+
+            3%,
+            97% {
+                width: 160px;
+                height: 100px;
+                margin-top: -50px;
+                margin-left: -80px;
+            }
+
+            30%,
+            36% {
+                width: 80px;
+                height: 120px;
+                margin-top: -60px;
+                margin-left: -40px;
+            }
+
+            63%,
+            69% {
+                width: 40px;
+                height: 80px;
+                margin-top: -40px;
+                margin-left: -20px;
+            }
+        }
+
+        @keyframes dot2_ {
+
+            3%,
+            97% {
+                height: 90px;
+                width: 150px;
+                margin-left: -75px;
+                margin-top: -45px;
+            }
+
+            30%,
+            36% {
+                width: 70px;
+                height: 96px;
+                margin-left: -35px;
+                margin-top: -48px;
+            }
+
+            63%,
+            69% {
+                width: 32px;
+                height: 60px;
+                margin-left: -16px;
+                margin-top: -30px;
+            }
+        }
+
+        @keyframes dot3_ {
+
+            3%,
+            97% {
+                height: 20px;
+                width: 40px;
+                margin-left: -20px;
+                margin-top: 50px;
+            }
+
+            30%,
+            36% {
+                width: 8px;
+                height: 8px;
+                margin-left: -5px;
+                margin-top: 49px;
+                border-radius: 8px;
+            }
+
+            63%,
+            69% {
+                width: 16px;
+                height: 4px;
+                margin-left: -8px;
+                margin-top: -37px;
+                border-radius: 10px;
+            }
+        }
+
+        .load-bar {
             width: 100vw;
             height: 100vh;
-        }
-
-        .wrapper {
-            width: 180px;
-            height: 50px;
-            position: relative;
             display: flex;
-            align-items: center;
             justify-content: center;
-            z-index: 2;
-        }
-
-        .text {
-            z-index: 3;
-            font-family: Whitney, -apple-system, Helvetica;
-            letter-spacing: 1px;
-            font-weight: 700;
-            font-size: 20px;
-            color: white;
-            filter: drop-shadow(2px 2px 0px #ff9e02);
-        }
-
-        .box {
-            width: 100%;
-            height: 100%;
-            background-color: #ef5d2e;
-            position: absolute;
-            z-index: 2;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            animation: loading ease-in-out 0.9s infinite alternate-reverse;
-        }
-
-        @keyframes loading {
-            0% {
-                transform: translateX(-20px);
-            }
-
-            100% {
-                transform: translateX(20px);
-            }
-        }
-
-        .box::before {
-            content: "";
-            width: 20px;
-            height: 170%;
-            background-color: #ff9d0089;
-            position: absolute;
-            z-index: 1;
-            animation: loading2 ease-in-out 0.9s infinite alternate-reverse;
-        }
-
-        @keyframes loading2 {
-            0% {
-                transform: translateX(-50px);
-            }
-
-            100% {
-                transform: translateX(50px);
-            }
         }
 
         html.touch #scrollgrabber {
@@ -146,814 +207,1944 @@
             border-radius: 10px
         }
     </style>
+    <title>อัพเดทงาน</title>
 </head>
 
-<body>
-    <div class="fixed-top">
-        <div class="loader bg-light">
-            <div class="wrapper">
-                <div class="text">LOADING</div>
-                <div class="box"></div>
-            </div>
+<body class="bg-body-tertiary">
+    <div class="load-bar">
+        <div class="container">
+            <div class="loader"></div>
+            <div class="loader"></div>
+            <div class="loader"></div>
         </div>
-
     </div>
-    <nav class="navbar">
-        <div class="container-fluid" style="display: none">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
-                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
-                &nbsp; <div>
-                    <span id="displayName">Team PM</span>
-                </div>
-            </a>
-        </div>
-    </nav>
-    <div class="container-fluid h-100 d-flex justify-content-center align-items-center">
-        <div class="px-4 pb-4 pt-1">
-            <div class="row justify-content-center">
-                <div class="col h4 fw-bold text-center text-dark">
-                    บันทึกข้อมูลการขนย้าย
+    <main>
+        <!-- <div class="container-fluid "> -->
+        <div class="container d-none">
+            <div class="row d-none" id="developer">
+                <div class="col-12">
+                    developer <i class="bi bi-person-fill"></i>
                 </div>
             </div>
-            <div class="row g-3 justify-content-center">
-                <div class="col-md-6">
-                    <label for="code">รหัสเครื่อง</label>
-                    <input type="text" class="form-control text-center" id="code" name="code">
+            <div class="row alert alert-success justify-content-between mx-1 p-1 py-2 mt-3" style="font-size: 0.8rem;">
+                <div class="col-8">
+                    WO. <span id="workorder"></span>
+                    <div class="mt-2">
+                        <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
+                            style="font-size: 0.8rem;"></span>
+                    </div>
+                    <div class="has-code mt-2">
+                        <!-- <div class="col-md-4 has-code d-none"> -->
+                        <div class="input-group">
+                            <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
+                            <input type="text" class="form-control" id="request-no" name="request-no"
+                                style="font-size: 0.8rem;" readonly>
+                            <span class="input-group-text bg-warning" id="edit-request"><i
+                                    class="bi bi-pencil-square"></i></span>
+                        </div>
+                    </div>
+                    <div class="has-code mt-2 d-none">
+                        <!-- <div class="col-md-4 has-code d-none"> -->
+                        <div class="input-group">
+                            <span class="input-group-text" style="font-size: 0.8rem;">Code</span>
+                            <input type="text" class="form-control" id="code" name="code" style="font-size: 0.8rem;"
+                                readonly>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="d-flex gap-2">
-                        <span class="badge text-bg-primary btn" id="scope">Scope</span>
-                        <span class="badge text-bg-primary btn" id="ups">UPS</span>
+                <div class="col-4 ps-0 d-flex align-items-center justify-content-center flex-column">
+                    <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
+                        class="img-fluid rounded shadow shadow-sm border" style="object-fit: cover; opacity: 0.5;">
+                    <a class="btn btn-sm btn-primary w-100 mt-2 d-none" style="font-size: .7rem;" id="history-btn"><i
+                            class="bi bi-clock-history"></i>&nbsp;ประวัติซ่อม</a>
+                </div>
+                <div class="col-12 d-none">
+                    <div class="alert alert-primary text-center mt-2" id="work-status">
 
                     </div>
                 </div>
-                <div class="col-md-6" id="div-start">
-                    <label for="start">แผนกต้นทาง</label>
-                    <select name="start" id="start" class="form-select">
-                        <option value="" selected disabled>เลือกแผนกต้นทาง</option>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12 text-center d-none">
+                    <img lt="sign" id="user-sign" style="max-height: 100px;" class="img-fluid">
+                </div>
+                <div class="col-12 text-center d-none">
+                    <button class="btn btn-info w-100" id="open-sign">
+                        <i class="bi bi-pencil-square"></i>&nbsp;เซ็นรับทราบ
+                    </button>
+                </div>
+            </div>
+            <div class="row g-3 justify-content-center">
+                <!-- <div class="col-md-4 has-code"> -->
+                <!-- <div class="col-md-4 has-code d-none">
+                    <div class="input-group">
+                        <span class="input-group-text">Code</span>
+                        <input type="text" class="form-control" id="code" name="code" readonly>
+                    </div>
+                </div> -->
+                <div class="col-12 mobile" style="position: relative;">
+                    <label for="update">อัพเดท</label>
+                    <textarea name="update" id="update" class="form-control" rows="5" maxlength="5000"
+                        placeholder="กรอกข้อมูลอัพเดท"></textarea>
+                    <span
+                        style="position: absolute;right: 20px;bottom: 5px;font-size: 0.7rem;color: #888;background-color: #33333333;border-radius: 5px;padding-left: 3px;padding-right: 3px;"
+                        id="char-count">0/5000</span>
+                    <button class="btn bg-secondary-subtle mt-2 btn-sm unicode-charactor" id="caret-right-fill"><i
+                            class="bi bi-caret-right-fill"></i></button>
+                </div>
+                <div class="col-12 mobile">
+                    <label for="vendor_phone">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
+                    <input name="vendor_phone" id="vendor_phone" class="form-control" placeholder="กรอกข้อมูลอัพเดท">
+                </div>
+                <div class="col-12 mobile">
+                    <label for="name">ชื่อผู้กรอก</label>
+                    <select name="name" id="name" class="form-select">
+                        <option value="" selected disabled>ชื่อผู้กรอก</option>
+                        <optgroup label="PYT1">
+                            <option value="SONGSIRI KANTI">SONGSIRI KANTI</option>
+                            <option value="NARUEPON JIANVANITCHA">NARUEPON JIANVANITCHA</option>
+                            <option value="SAJIKA CHAY-AROON">SAJIKA CHAY-AROON</option>
+                            <option value="SAHARAT KAEWCHOMCHOEY">SAHARAT KAEWCHOMCHOEY</option>
+                            <option value="VEERAYUT LAOWICHUWAKORNNUKUL">VEERAYUT LAOWICHUWAKORNNUKUL</option>
+                            <option value="BOONYANON MEETO">BOONYANON MEETO</option>
+                            <option value="CHATCHAI TAENGTONG">CHATCHAI TAENGTONG</option>
+                            <option value="NAPHONPHAT PUNYARITJAROEN">NAPHONPHAT PUNYARITJAROEN</option>
+                            <option value="BUNTATIDA PIKHOR">BUNTATIDA PIKHOR</option>
+                            <option value="SARINYA SEEBOONRUANG">SARINYA SEEBOONRUANG</option>
+                            <option value="CHATCHAI ASIPONG">CHATCHAI ASIPONG</option>
+                            <option value="SORAWIT TONTARAWONGSA">SORAWIT TONTARAWONGSA</option>
+                            <option value="SIRINTHON WONGKHAMHAN">SIRINTHON WONGKHAMHAN</option>
+                            <option value="PANATDA NAMCHAIDEE">PANATDA NAMCHAIDEE</option>
+                            <option value="SUPITCHAYA NAKMAI">SUPITCHAYA NAKMAI</option>
+                        </optgroup>
+                        <optgroup label="PYT2">
+                            <option value="JIRAWAT MAKARAPIROM">JIRAWAT MAKARAPIROM</option>
+                            <option value="TAMONWAN SUPHABPOOL">TAMONWAN SUPHABPOOL</option>
+                            <option value="SOOKHSUN KHUNTA">SOOKHSUN KHUNTA</option>
+                            <option value="PURIMPRACH SAKDASORASAP">PURIMPRACH SAKDASORASAP</option>
+                            <option value="SOMPORN BOONROD">SOMPORN BOONROD</option>
+                            <option value="CHANAKARN JIANVANITCHA">CHANAKARN JIANVANITCHA</option>
+                            <option value="PAPHAWEETHANAPORN PLONGLA">PAPHAWEETHANAPORN PLONGLA</option>
+                            <option value="KAMONTHIP CHIANGCHATURAT">KAMONTHIP CHIANGCHATURAT</option>
+                            <option value="THITIKA JUNGPANICH">THITIKA JUNGPANICH</option>
+                            <option value="SONGSAKROMJUN">SONGSAK ROMJUN</option>
+                            <option value="NONTAPAT CHALEMTARANUKUL">NONTAPAT CHALEMTARANUKUL</option>
+                            <option value="CHALERMCHAT SATEANKTT">CHALERMCHAT SATEANKTT</option>
+                            <option value="POTCHANAN PANPAN">POTCHANAN PANPAN</option>
+                            <option value="RUNGSIMON POEKABUT">RUNGSIMON POEKABUT</option>
+                            <option value="ANTIKA ONPUTTHA">ANTIKA ONPUTTHA</option>
+                            <option value="PEERAPHAT BUTSRIRAK">PEERAPHAT BUTSRIRAK</option>
+                            <option value="PAIJIT NAKRUNGSU">PAIJIT NAKRUNGSU</option>
+                            <option value="BUNAPHOT PRAKOBSOOK">BUNAPHOT PRAKOBSOOK</option>
+                            <option value="CHAYUTPHON NAVAPHON">CHAYUTPHON NAVAPHON</option>
+                            <option value="SUPAWAT SOKLOM">SUPAWAT SOKLOM</option>
+                        </optgroup>
+                        <optgroup label="PYT3">
+                            <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                            <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                            <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                            <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                            <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                            <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                            <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                            <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                            <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                            <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                            <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                            <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                            <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                            <option value="SOM KONKAEW">SOM KONKAEW</option>
+                            <option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>
+                            <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
+                            <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
+                        </optgroup>
+                        <optgroup label="PTP">
+                            <option value="Apisith Sektaweelarp">Apisith Sektaweelarp</option>
+                            <option value="Suwapa Phuakphan">Suwapa Phuakphan</option>
+                            <option value="Supattra Kaewsuwan">Supattra Kaewsuwan</option>
+                            <option value="Nattaporn Sawisith">Nattaporn Sawisith</option>
+                            <option value="Suriya Sanglin">Suriya Sanglin</option>
+                            <option value="Nattathida Archawapisit">Nattathida Archawapisit</option>
+                            <option value="Chanathip Yodjaroen">Chanathip Yodjaroen</option>
+                            <option value="Chalermchai Winthawamorn">Chalermchai Winthawamorn</option>
+                            <option value="Wirat Arunjarern">Wirat Arunjarern</option>
+                            <option value="Maytapohn Chokdurong">Maytapohn Chokdurong</option>
+                            <option value="Chanakarn Jobsri">Chanakarn Jobsri</option>
+                            <option value="Sarun Sirikarin">Sarun Sirikarin</option>
+                            <option value="Suchanya Kaewkham">Suchanya Kaewkham</option>
+                            <option value="Nuttawat Dilogkunanant">Nuttawat Dilogkunanant</option>
+                            <option value="Raschanee Majanit">Raschanee Majanit</option>
+                            <option value="Chanyaphat Thongmuang">Chanyaphat Thongmuang</option>
+                            <option value="Wansiri Kaewsai">Wansiri Kaewsai</option>
+                            <option value="Pathawee Nakphan">Pathawee Nakphan</option>
+                            <option value="Panuchanart Duangpim">Panuchanart Duangpim</option>
+                            <option value="Aiyaret Kitjachanchaikun">Aiyaret Kitjachanchaikun</option>
+                            <option value="Sawwalauck Comewilai">Sawwalauck Comewilai</option>
+                            <option value="Suphawat Ketman">Suphawat Ketman</option>
+                            <option value="Thanyaporn Termsaithong">Thanyaporn Termsaithong</option>
+                            <option value="Chalermporn Sabua">Chalermporn Sabua</option>
+                            <option value="Thanapon Phonimdang">Thanapon Phonimdang</option>
+                        </optgroup>
+                        <optgroup label="PTN">
+                            <option value="Tawan Kumoab">Tawan Kumoab</option>
+                            <option value="Kunagorn Plypech">Kunagorn Plypech</option>
+                            <option value="Manaphet Khemphet">Manaphet Khemphet</option>
+                            <option value="Supachai Chanovanna">Supachai Chanovanna</option>
+                            <option value="Kamonpan Yamee">Kamonpan Yamee</option>
+                            <option value="Anurut Kumlert">Anurut Kumlert</option>
+                            <option value="Nattawat Piboonsuntornwipat">Nattawat Piboonsuntornwipat</option>
+                            <option value="Orawan Muang-On">Orawan Muang-On</option>
+                            <option value="Sirikorn Sriprathum">Sirikorn Sriprathum</option>
+                            <option value="Kuptain Rodkhom">Kuptain Rodkhom</option>
+                        </optgroup>
+                        <optgroup label="PLK">
+                            <option value="Wirat Arunjarern">Wirat Arunjarern</option>
+                            <option value="Chalermchai Winthawamorn">Chalermchai Winthawamorn</option>
+                        </optgroup>
+                        <optgroup label="PLC">
+                            <option value="Sudarat Phantalee">Sudarat Phantalee</option>
+                            <option value="Narumon Kunna">Narumon Kunna</option>
+                            <option value="Thanaphol Ritjarung">Thanaphol Ritjarung</option>
+                            <option value="Chaiwat Salaiwong">Chaiwat Salaiwong</option>
+                        </optgroup>
+                        <optgroup label="PLR">
+                            <option value="Tawan Kumoab">Tawan Kumoab</option>
+                            <option value="Chombongkoch Rattanavimon">Chombongkoch Rattanavimon</option>
+                            <option value="Kunagorn Plypech">Kunagorn Plypech</option>
+                            <option value="Kanrawee Sudwiwek">Kanrawee Sudwiwek</option>
+                            <option value="Suttapon Jantermtor">Suttapon Jantermtor</option>
+                            <option value="Apiwat Wadkian">Apiwat Wadkian</option>
+                            <option value="Nutyawa Langlam">Nutyawa Langlam</option>
+                        </optgroup>
+                        <optgroup label="PLS">
+                            <option value="Panya Sirithammajak">Panya Sirithammajak</option>
+                            <option value="Wipada Phimsuphaporn">Wipada Phimsuphaporn</option>
+                            <option value="Sitthinee Hommak">Sitthinee Hommak</option>
+                            <option value="Tipkotchapon Sirithanasirapat">Tipkotchapon Sirithanasirapat</option>
+                            <option value="Nattapoom Janwiset">Nattapoom Janwiset</option>
+                            <option value="Phiengfah Muncharoensiri">Phiengfah Muncharoensiri</option>
+                        </optgroup>
+                        <optgroup label="PLD">
+                            <option value="">Select value</option>
+                            <option value="Tawan Kumoab">Tawan Kumoab</option>
+                            <option value="Chombongkoch Rattanawimol">Chombongkoch Rattanawimol</option>
+                            <option value="Kanokwan Sangthong">Kanokwan Sangthong</option>
+                            <option value="Rattiya Chartpram">Rattiya Chartpram</option>
+                            <option value="Kittipat Sukontarkoon">Kittipat Sukontarkoon</option>
+                            <option value="Panya Sirithammajak">Panya Sirithammajak</option>
+                        </optgroup>
                     </select>
                 </div>
-                <div class="col-12 text-center mt-3" style="display:none"><i
-                        class="bi bi-arrow-down-up text-light fs-2 btn btn-success rounded-circle"></i></div>
-                <div class="col-md-6" id="div-end">
-                    <label for="end">แผนกปลายทาง</label>
-                    <select name="end" id="end" class="form-select">
-                        <option value="" selected disabled>เลือกแผนกปลายทาง</option>
-                    </select>
+            </div>
+            <div class="row mt-3 justify-content-center mobile">
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100" id="submit">ยืนยัน</button>
                 </div>
-                <div class="col-12">
-                    <label for="files">เลือกรูปภาพสำหรับส่งเข้ากลุ่ม</label>
-                    <!-- accept only image and video -->
-                    <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
-                        accept="image/*">
+            </div>
+        </div>
+        <div class="container d-none">
+            <div class="row g-3 mt-3 mb-5 justify-content-center">
+                <div class="col-md-4">
+                    <button class="btn btn-danger w-100" id="summary-btn">สรุปงาน</button>
                 </div>
-                <div class="col-md-6 text-center">
-                    <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
+                <div class="col-12 d-none m-3">
+                    <p class="user-select-all border p-3 rounded mt-3 bg-info-subtle" id="summary"></p>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning w-100" id="more-update-btn">อัพเดทเพิ่ม</button>
+                </div>
+                <div class="col-12 d-none" id="mobile-only-warning">
+                    <div class="alert alert-secondary text-center">
+                        <i class="bi bi-exclamation-triangle-fill"></i>&nbsp;อัพเดทข้อมูลในแอพไลน์
+                        ในโทรศัพท์มือถือเท่านั้น
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signatureModalLabel">
+                        <i class="bi bi-pencil-square"></i>&nbsp;เ
+                        เซ็นชื่อรับทราบ
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body m-1 p-0">
+                    <div id="signatureparent" class="d-none">
+                        <div id="signature"></div>
+                        <div id="tools" align="center"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-        // VConsole will be exported to `window.VConsole` by default.
-        // var vConsole = new window.VConsole();
+        // var vConsole = new VConsole();
     </script>
     <script>
-        var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
-        var profile
-        var tg_const
-        var history_code = {}
-        $(document).on('select2:open', () => {
-            document.querySelector('.select2-search__field').focus();
-        });
-        $(document).ready(function () {
-            $('#end').append($('#start option').not(':first-child').clone())
-            $('#ups').click(function () {
-                Swal.fire({
-                    input: 'number',
-                    title: 'หมายเลข UPS',
-                    inputPlaceholder: 'กรุณาระบุหมายเลข UPS',
-                    customClass: {
-                        input: 'text-center'
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: 'ตกลง',
-                    cancelButtonText: 'ยกเลิก',
-                    preConfirm: (ups) => {
-                        return ups
-                    }
-                }).then(res => {
-                    if (res.isConfirmed) {
-                        if (res.value == '' || res.value == null) $('#code').val('UPS')
-                        else $('#code').val('UPS ' + ('00' + res.value).slice(-2))
-                    }
-                })
-            })
-
-            $('#scope').click(function () {
-                $('#code').val('SCOPE')
-            })
-
-            // $.LoadingOverlay('show')
-            $.getJSON(script_url, function (data) {
-                history_code = data
-                console.log("🚀 ~ history_code:", history_code)
-            })
-
+        // const liff_id = '1655873446-3xe866Ql'
+        // const liff_id = '1661543046-a1pJexbX' // use
+        const liff_id = '1661543046-86kpRl4E' // test
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
+        const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
+        var job_detail
+        $(document).ready(async () => {
+            // $('.load-bar').fadeOut(500)
+            moment.locale('th')
             liff.init({
-                liffId: '1660749495-G5e9Av6r',
-                // liffId: '1660749495-A2gmPQNb',
-                withLoginOnExternalBrowser: true
+                liffId: liff_id,
             })
             liff.ready.then(async () => {
-                checkRegist()
-                $.post(script_url, {
-                    opt: 'gettelegram'
-                }, (res) => {
-                    tg_const = res
-                    console.log("🚀 ~ liff.ready.then ~ tg_const:", tg_const)
-                })
-                profile = await liff.getProfile()
-                if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
-                    Swal.fire({
-                        title: 'เนื่องจากเป็น Line ' + profile.displayName + ' กรุณาระบุชื่อของคุณ',
-                        html: '<div container-fluid><div class="row"><div class="col-12"><select id="name-onc" class="form-select">' +
-                            '<option value="" selected disabled>เลือกชื่อของคุณ</option>' +
-                            '<option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>' +
-                            '<option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>' +
-                            '<option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>' +
-                            '<option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>' +
-                            '<option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>' +
-                            '<option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>' +
-                            '<option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>' +
-                            '<option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>' +
-                            '<option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>' +
-                            '<option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>' +
-                            '<option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>' +
-                            '<option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>' +
-                            '<option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>' +
-                            '<option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>' +
-                            '<option value="SOM KONKAEW">SOM KONKAEW</option>' +
-                            '<option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>' +
-                            '<option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>' +
-                            '<option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>' +
-                            '<option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>' +
-                            '</div></div></div>',
-                        customClass: {
-                            input: 'form-select'
-                        },
-                        confirmButtonText: 'ยืนยัน',
-                        allowOutsideClick: false,
-                        preConfirm: () => {
-                            let name = $('#name-onc').val()
-                            if (name == '' || name == null) {
-                                Swal.showValidationMessage(
-                                    `กรุณาระบุชื่อของคุณ`
-                                )
-                            }
-                            return name
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            profile.displayName = result.value + ' (' + profile.displayName + ')'
-                            $('#profile').attr('src', profile.pictureUrl)
-                            $('#displayName').text(profile.displayName).attr('data-name', result.value.toUpperCase())
-                            $('.navbar .container-fluid').show(400)
-                            Swal.fire({
-                                title: 'สวัสดีคุณ ' + result.value,
-                                text: 'ทำรายการต่อได้ครับ',
-                                showConfirmButton: false,
-                                icon: 'success',
-                                timer: 1000
-                            })
-                        }
-                    })
+                if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
+                if (liff.getContext().type != 'group') {
+                    $('.mobile').addClass('d-none')
                 }
-                $('#profile').attr('src', profile.pictureUrl)
-                $('#displayName').text(profile.displayName)
-                $('.navbar .container-fluid').show(400)
-            })
-            $('select option').each(function () {
-                $(this).val($(this).text().trim())
-            })
-            $('select').select2({
-                theme: 'bootstrap-5'
-            })
-            initHistory_code()
-            $('#start, #end').append(depts_array.sort().map(dept => {
-                return `<option value="${dept}">${dept}</option>`
-            }).join(''))
-
-        })
-        function initHistory_code() {
-            //setup before functions
-            var typingTimer;                //timer identifier
-            var doneTypingInterval = 500;  //time in ms, 0.5 seconds for example
-            var $input = $('#code');
-            //on keyup, start the countdown
-            $input.on('keyup', function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(doneTyping, doneTypingInterval);
-            });
-            //on keydown, clear the countdown 
-            $input.on('keydown', function () {
-                clearTimeout(typingTimer);
-            });
-            //user is "finished typing," do something
-            function doneTyping() {
-                let code = $('#code').val().toUpperCase()
-                let his = _.pickBy(history_code, (v, k) => {
-                    return k.includes(code)
-                })
-                console.log(his);
-                if (_.size(his) > 0) {
-                    his = _.values(his)[0]
-                    $('#start').val(his.start).change()
-                    $('#end').val(his.end).change()
-                    $('.bi-arrow-down-up').parent().show(200)
+                if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') {
+                    $('#developer').removeClass('d-none')
                 } else {
-                    $('.bi-arrow-down-up').parent().hide(200)
-                    $('#start').val('').change()
-                    $('#end').val('').change()
+                    $('#developer').addClass('d-none')
                 }
-            }
-            $('.bi-arrow-down-up').click(function () {
-                // $(this).removeClass('animate__animated animate__bounceIn')
-                $('#div-start').addClass('animate__animated animate__backOutRight animate__faster')
-                $('#div-end').addClass('animate__animated animate__backOutLeft animate__faster')
-                setTimeout(() => {
-                    let start = $('#start').val()
-                    let end = $('#end').val()
-                    $('#start').val(end).change()
-                    $('#end').val(start).change()
-                    $('#div-start').removeClass('animate__animated animate__backOutRight')
-                    $('#div-end').removeClass('animate__animated animate__backOutLeft')
-                    $('#div-start').addClass('animate__animated animate__backInLeft animate__faster')
-                    $('#div-end').addClass('animate__animated animate__backInRight animate__faster')
-                }, 500);
-                // rotate element 360 degrees in 1 second
-                $(this).animate({ borderSpacing: -360 }, {
-                    step: function (now, fx) {
-                        $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
-                        $(this).css('-moz-transform', 'rotate(' + now + 'deg)');
-                        $(this).css('transform', 'rotate(' + now + 'deg)');
-                    },
-                    duration: 'slow'
-                }, 'linear');
+                const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
+                firestore = defaultProject.firestore();
+                auth = defaultProject.auth();
+                if (!auth.currentUser) {
+                    // await getAuth()
+                    await getAuth(await liff.getDecodedIDToken().sub)
+                }
+                initialData();
             })
-        }
-        function checkRegist() {
-            let uid = liff.getDecodedIDToken().sub
-            let regist = localStorage.getItem('regist')
-            if (regist != null) {
-                try {
-                    regist = JSON.parse(regist)
-                } catch (e) {
-                    regist = {
-                        uid: null
+            $('.unicode-charactor').click(function () {
+                let msg = document.getElementById('update').value;
+                let g = document.createElement('div');
+                g.innerHTML = '\u25B6';
+                let z = g.innerHTML;
+                document.getElementById('update').value = msg + z;
+            })
+
+            $('#signatureModal').on('shown.bs.modal', function () {
+                setTimeout(() => {
+                    // trig window resize
+                    window.dispatchEvent(new Event('resize'));
+                }, 100);
+            })
+
+            $('#open-sign').click(function () {
+                $('#signatureModal').modal('show')
+                $('#signatureparent').removeClass('d-none')
+            })
+            // let alert_height = $('#image').parents('.alert').height()
+            // console.log("🚀 !! alert_height:", alert_height)
+            // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
+        })
+        var jobid, wo, current_user
+        async function initialData() {
+            if (!liff.isInClient()) {
+                let url = new URL(window.location.href)
+                if (url.searchParams.get('action') != 'summary') {
+                    // add parameter
+                    url.searchParams.set('action', 'summary')
+                    window.open(url, '_self')
+                }
+            }
+            let url = new URL(window.location.href);
+            jobid = url.searchParams.get("jobid");
+            if (!jobid || jobid == '' || jobid == undefined || jobid == null) {
+                $('.load-bar').fadeOut(500)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบข้อมูล',
+                    text: 'ไม่พบข้อมูล',
+                })
+                return liff.closeWindow()
+            }
+            current_user = await firestore.collection('user').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data())
+            let user_site = current_user?.site
+            if (!user_site || user_site == '' || user_site == undefined || user_site == null) {
+                let l = localStorage.getItem('name')
+                if (l != null) {
+                    let n = $('#name option').toArray().find(o => o.value == l)
+                    if (n) return firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
+                        site: n.parentElement.label
+                    }, { merge: true }).then(() => {
+                        $.LoadingOverlay("show");
+                        initialData()
+                    })
+                    current_user = { site: n.parentElement.label }
+                }
+                $('.load-bar').fadeOut(500)
+                $.LoadingOverlay("hide");
+                return Swal.fire({
+                    title: 'กรุณาเลือก Site ของคุณ',
+                    input: 'select',
+                    inputOptions: $('#name optgroup').toArray().reduce((a, c) => {
+                        a[c.label] = c.label
+                        return a
+                    }, {}),
+                    inputPlaceholder: 'เลือก Site',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonText: 'ยืนยัน',
+                    inputValidator: (value) => {
+                        return new Promise((resolve) => {
+                            if (value) {
+                                resolve()
+                            } else {
+                                resolve('กรุณาเลือก Site')
+                            }
+                        })
                     }
-                }
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        let profile = await liff.getProfile()
+                        firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
+                            site: result.value,
+                            line: profile.userId,
+                        }, { merge: true }).then(() => {
+                            $.LoadingOverlay("show");
+                            initialData()
+                        })
+                    }
+                })
+            }
+            $('.load-bar').fadeOut(500)
+            $.LoadingOverlay("hide");
+            $('#name optgroup').not('[label="' + user_site + '"]').remove()
+            $('#name').select2({
+                theme: 'bootstrap-5',
+                width: '100%'
+            })
+            let code = url.searchParams.get("code");
+            console.log("🚀 !! code:", code)
+            let action = url.searchParams.get("action");
+            let updateText = localStorage.getItem('updateText' + jobid)
+            if (updateText != null) {
+                $('#update').val(updateText)
+                updateCount(updateText)
+            }
+            $("#code").val(code);
+            $("#request-no").val(jobid);
+            $(".has-code").removeClass("d-none")
+            $('#name').val(localStorage.getItem('name') || '').trigger('change')
+            $('#name').change(function () {
+                console.log($(this).val());
+                localStorage.setItem('name', $(this).val())
+            })
+            if (code) {
+                $('#history-btn').removeClass('d-none')
+                $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
             } else {
-                regist = {
-                    uid: null
+                $('#history-btn').addClass('d-none')
+            }
+            if (action == 'summary') {
+                $('.mobile').addClass('d-none')
+                $('#edit-request').hide()
+                $('input').attr('readonly', true)
+                $('#summary').parent().removeClass('d-none')
+                $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
+                $('#summary').parents('.container').removeClass('d-none')
+                $('#request-no').parents('.container').removeClass('d-none')
+                if (!liff.isInClient()) {
+                    $('#more-update-btn').addClass('d-none')
+                    $('#mobile-only-warning').removeClass('d-none')
                 }
+                firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
+                    data = data.docs.map(doc => doc.data()).sort((a, b) => a.timestamp - b.timestamp)
+                    let msg
+                    if (data.length == 0) msg = 'ยังไม่มีการอัพเดทงาน'
+                    else msg = data.map(r => {
+                        r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                        return r
+                    }).map(d => {
+                        return `${d.timestamp}<br>${d.update.replace(/\n\n/g, '\n').replace(/\n/g, '<br>')}<br>#${d.name}`
+                    }).join('<br><br>-----------------------------------<br>')
+                    $('#summary').html(msg)
+                    $('#summary').parent().removeClass('d-none').focus()
+                    $.LoadingOverlay("hide");
+                    $('.load-bar').fadeOut(500)
+                })
+                firestore.collection('jobdata/').doc(jobid).get().then(data => {
+                    data = data.data()
+                    if (data.signature) {
+                        $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
+                    } else if (liff.isInClient()) {
+                        $('#open-sign').parent().removeClass('d-none')
+                    }
+                    if (data.status) {
+                        switch (data.status) {
+                            case "Waiting":
+                                $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
+                                break
+                            case "Return equipment back":
+                                $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
+                                break
+                            default:
+                                $('#work-status').html('ยังไม่รับงาน')
+                        }
+                        $('#work-status').parent().removeClass('d-none')
+                    }
+                    $('#code').val(data.code)
+                    if (!data.name && !data.reciever) {
+                        $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
+                        $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
+                        $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
+                    }
+                    else $('#reciever').html("&nbsp;รับงานโดย:<br>" + (data.name || data.reciever))
+                    $('#code').val(data.code)
+                    wo = data.wo || data.workorder
+                    $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
+                    if (data.image) {
+                        $('#image').attr('src', data.image).css('opacity', 1)
+                    } else {
+                        $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
+                    }
+                })
+                // $.ajax({
+                //     url: scriptUrl,
+                //     method: 'POST',
+                //     data: {
+                //         jobid: jobid,
+                //         opt: 'summary'
+                //     },
+                //     success: (res) => {
+                //         $.LoadingOverlay("hide");
+                //         if (res.status == 'success') {
+                //             if (res.result.replace(/\n/g, '<br>') == '') res = 'ยังไม่มีสรุปงาน'
+                //             else res = res.result.replace(/\n/g, '<br>')
+                //             $('#summary').html(res)
+                //             $('#summary').parent().removeClass('d-none').focus()
+                //         } else {
+                //             Swal.fire({
+                //                 icon: 'error',
+                //                 title: 'สรุปงานไม่สำเร็จ',
+                //                 text: 'สรุปงานไม่สำเร็จ',
+                //             })
+                //         }
+                //     },
+                // })
+                $('#more-update-btn').click(() => {
+                    let url = new URL('line://app/' + liff_id)
+                    url.searchParams.set('code', code)
+                    url.searchParams.set('jobid', jobid)
+                    url.searchParams.set('action', 'update')
+                    window.open(url, '_self')
+                })
+                $.LoadingOverlay("hide");
             }
-            console.log("🚀 ~ regist:", regist)
-            if (regist?.uid == uid && regist?.name != null && regist?.name != '' && regist?.telegram_id) {
-                // $.LoadingOverlay('hide')
-                $('.loader').fadeOut(500)
-                $('#displayName').attr('data-name', regist.name.toUpperCase())
-                return
-            }
-            $.ajax({
-                method: 'POST',
-                url: script_url,
-                data: {
-                    opt: 'checkRegist',
-                    uid: uid
-                },
-                success: function (res) {
-                    console.log("🚀 ~ res:", res)
-                    // $.LoadingOverlay('hide')
-                    $('.loader').fadeOut(500)
-                    if (!res) {
+            else if (action == 'shared') {
+                $('#edit-request').hide()
+                Swal.fire({
+                    title: 'Share งาน',
+                    text: 'กำลังดึงข้อมูลรายชื่อห้องแชท',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
+                let job_data = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
+                firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
+                    // get doc_ref of last update
+                    let doc_ref
+                    data = data.docs.map(doc => {
+                        let d = doc.data()
+                        d.doc_ref = doc.ref
+                        return d
+                    }).sort((a, b) => b.timestamp - a.timestamp)
+                    let update_data = data.shift()
+                    doc_ref = update_data.doc_ref
+                    let flex = {
+                        "type": "bubble",
+                        "size": "giga",
+                        "body": {
+                            "type": "box",
+                            "spacing": "md",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "image",
+                                                    "url": job_data.image,
+                                                    "aspectMode": "fit",
+                                                    "size": "full",
+                                                    "action": {
+                                                        "type": "uri",
+                                                        "label": "action",
+                                                        "uri": job_data.image
+                                                    }
+                                                }
+                                            ],
+                                            "width": "72px",
+                                            "height": "72px",
+                                            "cornerRadius": "md"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Update",
+                                                            "weight": "bold",
+                                                            "flex": 3,
+                                                            "color": "#000000",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": job_data.workorder || '---',
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "รหัส",
+                                                            "weight": "bold",
+                                                            "flex": 3,
+                                                            "color": "#000000",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": job_data.code == '' ? 'Component' : job_data.code,
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": 'req no. ' + job_data.job_no + ' ' + moment(update_data.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)'),
+                                                            "size": "sm",
+                                                            "color": "#bcbcbc",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end"
+                                                        }
+                                                    ],
+                                                    "spacing": "sm"
+                                                },
+                                            ],
+                                            "justifyContent": "space-between"
+                                        }
+                                    ],
+                                    "spacing": "xl",
+                                    "paddingAll": "20px"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "spacing": 'lg',
+                                    "flex": 10,
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": update_data.update,
+                                            "wrap": true,
+                                            "scaling": true,
+                                        }
+                                    ],
+                                    "paddingAll": "lg",
+                                    "borderColor": "#bcbcbc",
+                                    "backgroundColor": "#f4f6f9",
+                                    "borderWidth": "light",
+                                    "cornerRadius": "md"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "spacing": "md",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "image",
+                                                    "url": "https://img.icons8.com/fluency-systems-filled/48/share-3.png",
+                                                    "size": "xxs",
+                                                    "aspectMode": "fit"
+                                                }
+                                            ],
+                                            "width": "20px",
+                                            "justifyContent": "center",
+                                            "alignItems": "center",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "action",
+                                                "uri": "https://liff.line.me/1661543046-a1pJexbX?action=shared&jobid=" + job_data.job_no
+                                            }
+                                        }
+                                    ],
+                                    "paddingAll": "lg",
+                                    "paddingEnd": "xxl",
+                                    "paddingStart": "xxl",
+                                    "alignItems": "center",
+                                    "justifyContent": "center"
+                                },
+                                {
+                                    "type": "separator"
+                                }
+                            ],
+                            "paddingTop": "none",
+                            "paddingBottom": "none",
+                            "paddingStart": "md",
+                            "paddingEnd": "md"
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": update_data.name,
+                                            "size": "xs",
+                                            "color": "#bcbcbc",
+                                            "align": "start",
+                                            "scaling": true,
+                                            "adjustMode": "shrink-to-fit"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "copy",
+                                                    "size": "xs",
+                                                    "flex": 5,
+                                                    "align": "end",
+                                                    "color": "#bcbcbc",
+                                                },
+                                                {
+                                                    "type": "image",
+                                                    "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
+                                                    "size": "20px",
+                                                    "flex": 1
+                                                }
+                                            ],
+                                            "justifyContent": "flex-end",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "copy",
+                                                "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
+                                            }
+                                        }
+                                    ],
+                                    "spacing": "sm",
+                                    "justifyContent": "space-between",
+                                    "alignItems": "center"
+                                }
+                            ]
+                        }
+                    }
+                    let detail = job_data.detail
+                    if (detail && detail != '') {
+                        flex.body.contents.splice(1, 0, {
+                            "type": "box",
+                            "layout": "vertical",
+                            "flex": 10,
+                            "spacing": "md",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "อาการเสีย",
+                                    "wrap": true,
+                                    "scaling": true,
+                                    "color": "#777777",
+                                    "size": "xs"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": detail,
+                                            "color": "#052c65",
+                                            "wrap": true,
+                                            "scaling": true,
+                                            "maxLines": 3
+                                        }
+                                    ],
+                                    "spacing": "xl"
+                                }
+                            ],
+                            "paddingAll": "lg",
+                            "borderColor": "#9ec5fe",
+                            "borderWidth": "normal",
+                            "cornerRadius": "md",
+                            "backgroundColor": "#cfe2ff"
+                        })
+                    }
+                    if (update_data.vendor_phone && update_data && update_data.vendor_phone.replace(/\s/g, '') != '') {
+                        flex.body.contents[2].contents.push({
+                            "type": "text",
+                            "text": "📞ติดต่อ " + update_data.vendor_phone,
+                            "action": {
+                                "type": "uri",
+                                "label": "ติดต่อ " + update_data.vendor_phone,
+                                "uri": "tel:" + update_data.vendor_phone.replace(/-/g, '').replace(/ /g, '')
+                            },
+                            "contents": [
+                                {
+                                    "type": "span",
+                                    "text": "📞ติดต่อ"
+                                },
+                                {
+                                    "type": "span",
+                                    "text": " " + update_data.vendor_phone,
+                                    "color": "#006aff",
+                                    "decoration": "underline"
+                                }
+                            ],
+                            "scaling": true,
+                            "wrap": true
+                        })
+                    }
+                    let carousel = {
+                        type: 'carousel',
+                        contents: [flex]
+                    }
+                    if (data.length >= 1) {
+                        data = data.slice(0, 10)
+                        data.forEach(r => {
+                            r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                            let his_flex = {
+                                "type": "bubble",
+                                "size": "giga",
+                                "header": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "📅 " + r.timestamp,
+                                            "weight": "bold",
+                                            "color": "#ffffff"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "# " + r.name,
+                                            "color": "#ffffff",
+                                            "size": "sm"
+                                        }
+                                    ]
+                                },
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "spacing": "lg",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": r.update,
+                                                    "wrap": true,
+                                                    "scaling": true
+                                                }
+                                            ],
+                                            "paddingAll": "lg",
+                                            "borderColor": "#bcbcbc",
+                                            "borderWidth": "light",
+                                            "cornerRadius": "md",
+                                            "backgroundColor": "#f4f6f9",
+                                            "flex": 10,
+                                        }
+                                    ]
+                                },
+                                "styles": {
+                                    "header": {
+                                        "backgroundColor": "#0367d3"
+                                    }
+                                }
+                            }
+                            console.log(r)
+                            if (r.vendor_phone && r.vendor_phone != '' && r.vendor_phone.replace(/\s/g, '') != '') {
+                                his_flex.body.contents[0].contents.push({
+                                    "type": "text",
+                                    "text": "📞ติดต่อ " + r.vendor_phone,
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "ติดต่อ " + r.vendor_phone,
+                                        "uri": "tel:" + r.vendor_phone.replace(/-/g, '').replace(/ /g, '')
+                                    },
+                                    "contents": [
+                                        {
+                                            "type": "span",
+                                            "text": "📞ติดต่อ"
+                                        },
+                                        {
+                                            "type": "span",
+                                            "text": " " + r.vendor_phone,
+                                            "color": "#006aff",
+                                            "decoration": "underline"
+                                        }
+                                    ],
+                                    "scaling": true,
+                                    "wrap": true
+                                })
+                            }
+                            carousel.contents.push(his_flex)
+                        })
+                    }
+                    liff.shareTargetPicker([{
+                        type: 'flex',
+                        altText: 'สรุปงาน ' + job_data.workorder + ' ' + job_data.code,
+                        contents: carousel
+                    }]).then(() => {
+                        $.LoadingOverlay("hide");
+                        $('.load-bar').fadeOut(500)
                         Swal.fire({
-                            icon: 'error',
-                            title: 'กรุณาลงทะเบียนก่อนใช้งาน',
-                            allowOutsideClick: false,
-                            confirmButtonText: 'ตกลง'
+                            icon: 'success',
+                            title: 'แชร์สรุปงานสำเร็จ',
+                            timer: 1500,
+                            showConfirmButton: false,
                         }).then(() => {
                             liff.closeWindow()
                         })
-                    } else {
-                        localStorage.setItem('regist', JSON.stringify(res))
-                    }
-                }
-            })
-        }
-        $('#submit-btn').click(function () {
-            var code = $('#code').val()
-            var start = $('#start').val()
-            var end = $('#end').val()
-            if (code == '' && checkcode(code)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณากรอกรหัสเครื่อง',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                return false
-            }
-            if (start == '' || start == null) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณาเลือกแผนกต้นทาง',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                return false
-            }
-            if (end == '' || end == null) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณาเลือกแผนกปลายทาง',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                return false
-            }
-            if ($('#telegram-files')[0].files.length == 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณาเลือกรูปภาพ',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                return false
-            }
-            let data = {
-                opt: 'add',
-                code: convertCode(code),
-                start: start,
-                end: end,
-                name: $('#displayName').attr('data-name'),
-                // uid: 'test',
-                // displayName: 'yeah'
-                uid: liff.getDecodedIDToken().sub,
-                displayName: profile.displayName
-            }
-            if (start == end) {
-                return Swal.fire({
-                    title: 'กรุณาระบุห้องต้นทาง และปลายทาง',
-                    html: `<div class="container-fluid"><div class="row"><div class="col-12"><label for="start-room">ห้องต้นทาง</label><input id="start-room" class="form-control"></div><div class="col-12"><label for="end-room">ห้องปลายทาง</label><input id="end-room" class="form-control"></div></div></div>`,
-                    showCancelButton: true,
-                    confirmButtonText: 'บันทึกเลย',
-                    cancelButtonText: 'ยกเลิก',
-                    preConfirm: () => {
-                        let start_room = $('#start-room').val()
-                        let end_room = $('#end-room').val()
-                        if (start_room == '' || end_room == '') {
-                            Swal.showValidationMessage(`กรุณากรอกห้องต้นทาง และปลายทาง`)
-                        }
-                        return { start_room, end_room }
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        data['start-room'] = result.value.start_room
-                        data['end-room'] = end_room = result.value.end_room
-                        sendPost(data)
-                    }
-                })
-            } else if (start.toLowerCase().indexOf('ward') > -1 || end.toLowerCase().indexOf('ward') > -1 || start == 'ชั้น 20' || end == 'ชั้น 20') {
-                let start_room_html = `<div class="col-12"><label for="start-room">ห้องต้นทาง ${start}</label><input id="start-room" class="form-control"></div>`
-                let end_room_html = `<div class="col-12"><label for="end-room">ห้องปลายทาง ${end}</label><input id="end-room" class="form-control"></div>`
-                let div = $('<div>', { class: 'container-fluid' }).append($('<div>', { class: 'row g-2' }))
-                let title = 'กรุณาระบุ'
-                div.find('.row').append($('<div>', { class: 'col-12 h5' }).html(`<i class="bi bi-door-open-fill"></i><span id="room-swal-title">${title}</span>`))
-                div.find('.row').append($('<div>', { class: 'col-12 alert alert-warning p-1' }).html(`<i class="bi bi-exclamation-triangle-fill"></i> <u>หากไม่ได้ย้ายเข้าห้อง<br>กรุณาเว้นว่างไว้</u>`))
-                if (start.toLowerCase().indexOf('ward') > -1 || start == 'ชั้น 20') {
-                    title += 'ห้องต้นทาง'
-                    div.find('.row').append($(start_room_html))
-                }
-                if (end.toLowerCase().indexOf('ward') > -1 || end == 'ชั้น 20') {
-                    title += ' ห้องปลายทาง'
-                    div.find('.row').append($(end_room_html))
-                }
-                return Swal.fire({
-                    html: div[0].outerHTML,
-                    showCancelButton: true,
-                    confirmButtonText: 'บันทึกเลย',
-                    cancelButtonText: 'ยกเลิก',
-                    preConfirm: () => {
-                        let start_room = $('#start-room').val()
-                        let end_room = $('#end-room').val()
-                        return { start_room, end_room }
-                    },
-                    didOpen: () => {
-                        $('#room-swal-title').text(title)
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        if (result.value.start_room != '') data['start-room'] = result.value.start_room
-                        if (result.value.end_room != '') data['end-room'] = end_room = result.value.end_room
-                        sendPost(data)
-                    }
+                        liff.closeWindow()
+                    }).catch((err) => {
+                        $.LoadingOverlay("hide");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'แชร์สรุปงานไม่สำเร็จ',
+                            text: 'ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+                        })
+                    })
                 })
             }
             else {
-                sendPost(data)
-            }
-        })
-        function getCompressionQuality(file) {
-            let quality = 0.3
-            switch (true) {
-                case file.size / 1024 <= 200:
-                    quality = 0.6
-                    break;
-
-                case file.size / 1024 <= 600:
-                    quality = 0.4
-                    break;
-
-                case file.size / 1024 <= 2000:
-                    quality = 0.2
-                    break;
-                default:
-                    quality = 0.2
-                    break;
-            }
-            return quality
-        }
-
-        $('#telegram-files').change(function () {
-            if (this.files.length == 0) return
-            // compress file
-            Swal.fire({
-                icon: 'info',
-                title: 'กำลังบีบอัดไฟล์ภาพ',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading()
-                }
-            })
-            let dataTransfer = new DataTransfer();
-            const files = this.files;
-            let length = files.length
-            Array.from(files).map(file => {
-                console.log(file);
-                let mime = file.type == "" ? file.name.split('.')[1] : file.type.split('/')[1]
-                const quality = getCompressionQuality(file)
-                console.log("🚀 ~ Array.from ~ mime:", mime)
-                if (mime == 'heic') {
-                    let reader = new FileReader();
-                    reader.onload = function (e) {
-                        let blob = new Blob([e.target.result], { type: file.type });
-                        console.log("🚀 ~ blob:", blob)
-                        heic2any({
-                            blob,
-                            toType: "image/jpeg",
-                            quality: quality
-                        }).then((conversionResult) => {
-                            console.log("🚀 ~ conversionResult:", conversionResult)
-                            let f = new File([conversionResult], file.name, {
-                                type: 'image/jpeg',
-                                lastModified: Date.now()
-                            });
-                            dataTransfer.items.add(f);
-                            if (dataTransfer.items.length == length) {
-                                $('#telegram-files')[0].files = dataTransfer.files;
-                                Swal.close()
-                            }
-                        }).catch((e) => {
-                            console.log("🚀 ~ e:", e)
-                        });
-                    }
-                    reader.readAsArrayBuffer(file);
-                } else {
-                    new Compressor(file, {
-                        quality: quality,
-                        success(result) {
-                            console.log("🚀 ~ file:", result)
-                            let f = new File([result], file.name, {
-                                type: file.type,
-                                lastModified: Date.now()
-                            });
-                            dataTransfer.items.add(f);
-                            if (dataTransfer.items.length == length) {
-                                $('#telegram-files')[0].files = dataTransfer.files;
-                                Swal.close()
-                            }
-                        },
-                        error(err) {
-                            console.log(err.message);
-                        },
-                    });
-                }
-            })
-        })
-        const retryRequest = (fn, retries = 3) => {
-            return fn().catch(err => {
-                if (retries > 0) {
-                    return retryRequest(fn, retries - 1);
-                } else {
-                    throw err;
-                }
-            });
-        };
-        let success_all = 0
-        async function sendPost(data) {
-            Swal.fire({
-                icon: 'info',
-                title: 'กำลังบันทึกข้อมูล',
-                html: '<div class="container-fluid"><div class="row">' +
-                    '<div class="col-12 text-center text-muted" id="status-history"><i class="bi bi-hourglass-split"></i></i> อัพเดทประวัติ</div>' +
-                    '</div></div>' +
-                    '<div class="col-12 text-center text-muted" id="status-gsheet"><i class="bi bi-hourglass-split"></i> บันทึกลง Google Sheet</div>' +
-                    '<div class="col-12 text-center text-muted" id="status-nsmart"><i class="bi bi-hourglass-split"></i></i> บันทึกลง Job Consult</div>' +
-                    '<div class="col-12 text-center text-muted" id="status-telegram"><i class="bi bi-hourglass-split"></i></i> ส่งข้อมูลไป Telegram</div>',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading()
-                }
-            })
-            console.time('sendPost')
-            let result_name, mediagroup_id
-            let files = $('#telegram-files')[0].files;
-            let tg_msg_id, tg_caption, tg_sent = false
-            const checkDone = () => {
-                if (success_all >= 6) {
-                    setTimeout(() => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'บันทึกข้อมูลสำเร็จ',
-                            confirmButtonText: 'ตกลง',
-                        }).then(() => {
-                            history_code[me_code] = {
-                                start: start,
-                                end: end
-                            }
-                            localStorage.setItem('history_code', JSON.stringify(history_code))
-                            liff.closeWindow()
-                        })
-                        resolve()
-                    }, 200);
-                }
-            }
-            Promise.all([
-                retryRequest(() => new Promise((resolve, reject) => {
-                    if (files.length > 0) {
-                        const media = [];
-                        const formData = new FormData();
-                        const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
-                        Array.from(files).forEach((file) => {
-                            media.push({
-                                type: "photo",  // Set the type of media
-                                media: `attach://${file.name}` // Use 'attach://' for file attachment
-                            });
-                            formData.append(file.name, file); // Attach the file to the FormData
-                        });
-
-                        // Attach media to FormData
-                        formData.append("chat_id", tg_const.chatId); // Add chat_id
-                        formData.append("media", JSON.stringify(media)); // Add media array
-
-                        // Send images as a media group
-                        $.ajax({
-                            url: sendMediaUrl,
-                            type: 'POST',
-                            data: formData,
-                            contentType: false,
-                            processData: false,
-                            success: function (mediaResponse) {
-                                if (mediaResponse.ok) {
-                                    success_all++
-                                    checkDone()
-                                    mediagroup_id = mediaResponse.result[0].message_id
-                                    tg_msg_id = mediaResponse.result[0].message_id
-                                    if (tg_msg_id && tg_caption && !tg_sent) {
-                                        tg_sent = true
-                                        sendTelegram(tg_msg_id, tg_caption, data)
+                firestore.collection('jobdata/').doc(jobid).get().then(async data => {
+                    $('.load-bar').fadeOut(500)
+                    // if(!data.exists) {
+                    //     $.LoadingOverlay("hide");
+                    //     Swal.fire({
+                    //         icon: 'error',
+                    //         title: 'ไม่พบข้อมูล',
+                    //         text: 'ไม่พบข้อมูล',
+                    //     }).then(() => {
+                    //        liff.closeWindow()
+                    //     })
+                    // }
+                    if (!data.exists) {
+                        return Swal.fire({
+                            icon: 'error',
+                            title: 'ไม่พบข้อมูล',
+                            input: 'text',
+                            inputLabel: 'ระบุชื่อคนรับงาน',
+                            inputPlaceholder: 'ระบุชื่อคนรับงาน',
+                            showCancelButton: true,
+                            confirmButtonText: 'ยืนยัน',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            inputValidator: (value) => {
+                                return new Promise((resolve) => {
+                                    if (value) {
+                                        resolve()
+                                    } else {
+                                        resolve('กรุณาระบุชื่อคนรับงาน')
                                     }
-                                    resolve(mediagroup_id)
-                                } else {
-                                    alert("Error sending images: " + mediaResponse.description);
-                                    reject(mediaResponse.description);
-                                }
+                                })
                             },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.error("Error sending images:", errorThrown);
-                                reject(errorThrown);
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                let reciever = result.value
+                                Swal.fire({
+                                    title: 'หากมี WO กรุณากรอก',
+                                    input: 'text',
+                                    inputLabel: 'ระบุ WO',
+                                    inputPlaceholder: 'ระบุ WO',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'ยืนยัน',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                }).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        let wo = result.value
+                                        firestore.collection('jobdata/').doc(jobid).set({
+                                            reciever: reciever,
+                                            timestamp: new Date(),
+                                            wo: wo
+                                        }, { merge: true }).then(() => {
+                                            $.LoadingOverlay("show");
+                                            initialData()
+                                        })
+                                    }
+                                })
                             }
-                        });
-                    } else {
-                        $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                        resolve('no file')
+                        })
                     }
-                })),
-                retryRequest(() => new Promise((resolve, reject) => {
-                    console.log("save to gsheet");
-                    $.ajax({
-                        url: script_url,
-                        type: 'POST',
-                        data: data,
-                        timeout: 10000,
-                        success: function (res) {
-                            if (res.status == 'success') {
-                                success_all++
-                                checkDone()
-                                let data = res
-                                $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
-                                let regist = JSON.parse(localStorage.getItem('regist'))
-                                let msg = `
-<b>เครื่อง ${data.e_name}</b> (${data.code})
-
-ได้ถูกย้ายจาก
-
-👉 <i>${data.start}</i>
-
-ไปยัง
-
-👉 <i>${data.end}</i>
-
-โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
-
-<a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
-                                tg_caption = msg
-                                if (tg_msg_id && tg_caption && !tg_sent) {
-                                    tg_sent = true
-                                    sendTelegram(tg_msg_id, tg_caption, data)
+                    data = data.data()
+                    if (data.signature) {
+                        $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
+                    } else if (liff.isInClient()) {
+                        $('#open-sign').parent().removeClass('d-none')
+                    }
+                    if (data.status) {
+                        switch (data.status) {
+                            case "Waiting":
+                                $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
+                                break
+                            case "Return equipment back":
+                                $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
+                                break
+                            default:
+                                $('#work-status').html('ยังไม่รับงาน')
+                        }
+                        $('#work-status').parent().removeClass('d-none')
+                    }
+                    job_detail = data.detail
+                    tg_thread_id = data.thread_id
+                    if (!data.name && !data.reciever) {
+                        $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
+                        $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
+                        $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
+                        if (current_user.site == 'PYT3') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: "กรุณารับงานก่อน",
+                                html: !current_user.isAuthen ? (`
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="alert alert-warning">
+                                                กรุณาระบุชื่อ และกดปุ่มยืนยันตัวตน
+                                                <small class="text-danger fw-bold">สามารถยืนยันตัวตนได้เพียง 1 คน/บัญชีไลน์</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <select name="receive-name" id="receive-name" class="form-select">
+                                                ${$('#name').html()}
+                                            </select>
+                                        </div>
+                                    </div>    
+                                </div>
+                                `) : "",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonText: 'ยืนยันตัวตน',
+                                denyButtonText: 'รับงาน',
+                                cancelButtonText: 'ยกเลิก',
+                                confirmButtonColor: '#3085d6',
+                                denyButtonColor: '#d33',
+                                cancelButtonColor: "#777",
+                                showCancelButton: true,
+                                showDenyButton: current_user.isAuthen ? true : false,
+                                showConfirmButton: current_user.isAuthen ? false : true,
+                                preConfirm: async (result) => {
+                                    return current_user.isAuthen ? "" : $('#receive-name').val()
                                 }
-                                resolve(msg)
-                            } else {
-                                $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
-                                reject()
-                            }
-                        },
-                        error: function () {
-                            $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
-                            reject()
+                            }).then(async res => {
+                                if (res.isConfirmed) {
+                                    await register(res.value)
+                                } else if (res.isDenied) {
+                                    await receivejob()
+                                }
+                            })
+                        }
+                    }
+                    else {
+                        $('#reciever').html("&nbsp;รับงานโดย:<br> " + (data.name || data.reciever))
+                    }
+                    if (!data.code) $('#code').removeAttr('readonly').attr('placeholder', 'ระบุรหัส').attr('required', true)
+                    else $('#code').val(data.code)
+                    console.log("🚀 !! data.code:", data.code)
+                    $('#vendor_phone').val(data.vendor_phone || '')
+                    wo = data.wo || data.workorder
+                    $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
+                    if (data.image) {
+                        $('#image').attr('src', data.image).css('opacity', 1)
+                    } else {
+                        $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
+                    }
+                    if (data.code) {
+                        $('#history-btn').removeClass('d-none')
+                        $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + data.code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
+                    } else {
+                        $('#history-btn').addClass('d-none')
+                    }
+                })
+                $('.container-fluid, .container').removeClass('d-none')
+                $('#more-update-btn').addClass('d-none')
+                $.LoadingOverlay("hide");
+            }
+            let update_data, tg_thread_id
+            $("#submit").click(() => {
+                let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
+                    if (x[0] === '-') return "- " + x.slice(1).trim();
+                    return x;
+                }).join('\n').replace(/\n-/g, '\n\n-');
+                console.log("🚀 !! update001:", update)
+                let name = $("#name").val();
+                let code = $("#code").val();
+                update_data = {
+                    wo: wo ? ('WO.' + wo) : '------',
+                    code: code,
+                    jobid: jobid,
+                    update: update,
+                    name: name,
+                    vendor_phone: $('#vendor_phone').val(),
+                    image: $('#image').attr('src'),
+                    date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }),
+                    thread_id: tg_thread_id
+                }
+                if (update == "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณากรอกข้อมูลอัพเดท',
+                        text: 'กรุณากรอกข้อมูลอัพเดท',
+                    })
+                } else if (name == null || name == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาเลือกชื่อผู้กรอก',
+                        text: 'กรุณาเลือกชื่อผู้กรอก',
+                    })
+                } else {
+                    let text = `UPDATE<br>${wo ? ('WO.' + wo) : ''}<br>รหัส ${code}<br>วันที่ ${update_data.date} น.<br><br>${update}<br><br>#${name}`
+                    update_data.text = text.replace(/<br>/g, '\n')
+                    update_data.tg_html = `<b>UPDATE</b>
+<b>วันที่</b> ${update_data.date} น.
+
+<b>รายละเอียด</b>
+${update}
+
+#${name}`
+                    Swal.fire({
+                        title: 'ตรวจสอบข้อมูล',
+                        html: text,
+                        showCancelButton: true,
+                        confirmButtonText: 'ยืนยัน',
+                        cancelButtonText: 'ยกเลิก',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            updateData(update_data);
                         }
                     })
-                })),
-                retryRequest(() => new Promise((resolve, reject) => {
-                    console.log("save to history");
-                    $.post(script_url, {
-                        opt: 'setHistory',
-                        code: data.code,
-                        start: data.start,
-                        end: data.end
-                    }, (res) => {
-                        if (res.status == 'success') {
-                            success_all++
-                            checkDone()
-                            $('#status-history').html('<i class="bi bi-check-circle-fill text-success"></i>อัพเดทประวัติ').removeClass('text-muted').addClass('text-success')
-                            resolve(res)
-                        } else {
-                            $('#status-history').html('<i class="bi bi-x-circle-fill text-danger"></i>อัพเดทประวัติ')
-                            reject()
-                        }
-                    })
-                })),
-                retryRequest(() => new Promise((resolve, reject) => {
-                    console.log("save to job consult");
-                    $.post(script_url, {
-                        opt: 'savejobconsult',
-                        code: data.code,
-                        start: data.start,
-                        end: data.end,
-                        name: $('#displayName').attr('data-name'),
-                        ['start-room']: data['start-room'],
-                        ['end-room']: data['end-room']
-                    }, (res) => {
-                        if (res.status == 'success') {
-                            $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
-                            success_all++
-                            checkDone()
-                            resolve(res)
-                        } else {
-                            $('#status-nsmart').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Job Consult')
-                            reject()
-                        }
-                    })
-                }))
-            ]).then((save_res) => {
-                console.log("🚀 save_res:", save_res)
-                console.timeEnd('sendPost')
-                setTimeout(async () => {
-                    liff.sendMessages([{
-                        type: 'text',
-                        text: `เครื่อง ${data.code}\nได้ถูกย้ายจาก\n👉${data.start}\nไปยัง\n👉${data.end}\nโดย @${data.displayName}`
-                    }]).then(() => {
-                        success_all++
-                        checkDone()
-                    }).catch((err) => {
-                        console.error('error', err);
-                    });
-                    // sendTelegram(save_res[0], save_res[1], data)
-                }, 200);
-            }).catch(err => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
-                    text: 'กรุณาลองใหม่อีกครั้ง',
-                    confirmButtonText: 'ตกลง'
-                });
-                console.error("Error in sendPost:", err);
+                }
+            })
+            $('#summary-btn').click(function () {
+                let url = new URL('line://app/' + liff_id)
+                url.searchParams.set('code', code)
+                url.searchParams.set('jobid', jobid)
+                url.searchParams.set('action', 'summary')
+                window.open(url, '_self')
+            })
+            // listen on user finish typing on update field
+            let typingTimer;
+            let doneTypingInterval = 800;
+            $('#update').on('input', function () {
+                clearTimeout(typingTimer);
+                if ($('#update').val()) {
+                    updateCount($('#update').val())
+                    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+                }
             });
         }
-
-        function checkcode(code) {
-            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
-            if (!Number(code) == NaN && (code.length < 4 || code.length > 11)) {
-                return false
-            }
-            return true
+        $('#edit-request').click(() => {
+            Swal.fire({
+                input: 'text',
+                inputLabel: 'request no.',
+                inputPlaceholder: 'request no.',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    let url = new URL(window.location.href)
+                    url.searchParams.set('jobid', result.value)
+                    window.open(url, '_self')
+                }
+            })
+        })
+        function doneTyping() {
+            console.log(jobid);
+            let update = $("#update").val();
+            localStorage.setItem('updateText' + jobid, update)
         }
-        function convertCode(code) {
-            code = code.toLowerCase().replace('pyt3_', '').replace('demo_', '')
-            if (isNaN(code)) {
-                return code
-            }
-            if (code.length >= 4 || code.length <= 5) {
-                code = ('00000' + code).slice(-5)
-                code = 'PYT3_' + code
-            } else if (code.length == 6) {
-                code = ('000000' + code).slice(-6)
-                code = 'DEMO_' + code
-            }
-            return code
+        function updateCount(updateText) {
+            $('#char-count').html(updateText.length + '/5000')
+            if (updateText.length > 5000) $('#char-count').css('color', 'red')
+            else $('#char-count').css('color', '#7777')
         }
-
-        async function sendTelegram(id, message, data) {
-            let editMessageUrl = 'https://api.telegram.org/bot' + tg_const.token + '/editMessageCaption'
-            let caption = message
-            let { start, end, me_code } = data
-            retryRequest(async () => {
-                await new Promise((resolve, reject) => {
-                    if (id == 'no file') {
-                        $.ajax({
-                            url: `https://api.telegram.org/bot${tg_const.token}/sendMessage`,
-                            type: 'POST',
-                            data: {
-                                chat_id: tg_const.chatId,
-                                text: caption,
-                                parse_mode: 'HTML',
-                                show_caption_above_media: true,
-                            },
-                            success: function (response) {
-                                if (response.ok) {
-                                    $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                    console.log("Message sent successfully!");
-                                    success_all++
-                                    checkDone()
-                                    resolve(response)
-                                } else {
-                                    alert("Error sending message: " + response.description);
-                                }
-                            },
-                        })
-                    } else {
-                        $.ajax({
-                            url: editMessageUrl,
-                            type: 'POST',
-                            data: {
-                                chat_id: tg_const.chatId,
-                                message_id: id,
-                                caption: caption,
-                                parse_mode: 'HTML',
-                                show_caption_above_media: true,
-
-                            },
-                            success: function (response) {
-                                if (response.ok) {
-                                    $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                    console.log("Message sent successfully!");
-
-                                } else {
-                                    alert("Error sending message: " + response.description);
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Error:", error);
-                                alert("Error sending message.");
-                            }
+        async function updateData(update_data) {
+            Swal.fire({
+                title: 'กำลังอัพเดทข้อมูล',
+                html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            console.log("🚀 !! update_data:", update_data)
+            let doc_ref
+            await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
+                update: update_data.update,
+                name: update_data.name,
+                vendor_phone: update_data.vendor_phone,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                code: update_data.code,
+            }).then(async (docRef) => {
+                doc_ref = docRef
+                console.log("🚀 !! detail:", detail)
+                console.log('update success');
+            }).catch(err => {
+                console.log(err);
+            })
+            if (current_user.site == 'PYT3') {
+                let tg_api = '7681265177:AAFVGgh5lAzXRRfiole5ywOlY-CoEIOjEz4'
+                let chat_id = '-1002300341036'
+                let tg_url = 'https://api.telegram.org/bot' + tg_api + '/sendMessage'
+                let tg_data = {
+                    chat_id: chat_id,
+                    text: update_data.tg_html,
+                    message_thread_id: update_data.thread_id,
+                    parse_mode: 'HTML',
+                    reply_markup: JSON.stringify({
+                        inline_keyboard: [
+                            [{ text: '🔊 อัพเดทงาน', url: 'https://liff.line.me/1661543046-a1pJexbX?jobid=' + update_data.jobid }]
+                        ]
+                    })
+                }
+                $.ajax({
+                    url: tg_url,
+                    method: 'POST',
+                    data: tg_data,
+                    success: (res) => {
+                        console.log(res)
+                    },
+                    error: (err) => {
+                        console.log(err)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ส่งข้อมูล telegram ไม่สำเร็จ',
+                            html: 'ส่งข้อความนี้ให้ผู้พัฒนาเพื่อแก้ไขปัญหา<br>' + JSON.stringify(err),
                         })
                     }
                 })
+            }
 
+            let detail = await firestore.collection('jobdata/').doc(update_data.jobid).get().then(doc => doc.data().detail)
+            localStorage.removeItem('updateText' + update_data.jobid)
+            // liff.sendMessages([
+            //     {
+            //         type: 'text',
+            //         text: update_data.text
+            //     },
+            //     {
+            //         type: 'flex',
+            //         altText: 'Update ' + update_data.code,
+            //         contents: {
+            //             "type": "bubble",
+            //             "size": "nano",
+            //             "body": {
+            //                 "type": "box",
+            //                 "layout": "vertical",
+            //                 "contents": [
+            //                     {
+            //                         "type": "text",
+            //                         "text": "ดูสรุปงาน",
+            //                         "weight": "bold",
+            //                         "align": "center",
+            //                         "scaling": true,
+            //                         "color": color[0]
+            //                     }
+            //                 ],
+            //                 "action": {
+            //                     "type": "uri",
+            //                     "label": "action",
+            //                     "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid + "&code=" + update_data.code
+            //                 }
+            //             },
+            //             "styles": {
+            //                 "body": {
+            //                     "backgroundColor": color[1]
+            //                 }
+            //             }
+            //         }
+            //     }
+            // ]).then(() => {
+            // })
+            let flex = {
+                "type": "bubble",
+                "size": "giga",
+                "body": {
+                    "type": "box",
+                    "spacing": "md",
+                    "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "image",
+                                            "url": update_data.image,
+                                            "aspectMode": "fit",
+                                            "size": "full",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "action",
+                                                "uri": update_data.image
+                                            }
+                                        }
+                                    ],
+                                    "width": "72px",
+                                    "height": "72px",
+                                    "cornerRadius": "md"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Update",
+                                                    "weight": "bold",
+                                                    "flex": 3,
+                                                    "color": "#000000",
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": update_data.wo,
+                                                    "flex": 5,
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true,
+                                                    "align": "end"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "รหัส",
+                                                    "weight": "bold",
+                                                    "flex": 3,
+                                                    "color": "#000000",
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": update_data.code == '' ? 'Component' : update_data.code,
+                                                    "flex": 5,
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true,
+                                                    "align": "end"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "baseline",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": 'req no. ' + update_data.jobid + ' ' + update_data.date,
+                                                    "size": "sm",
+                                                    "color": "#bcbcbc",
+                                                    "adjustMode": "shrink-to-fit",
+                                                    "scaling": true,
+                                                    "align": "end"
+                                                }
+                                            ],
+                                            "spacing": "sm"
+                                        },
+                                    ],
+                                    "justifyContent": "space-between"
+                                }
+                            ],
+                            "spacing": "xl",
+                            "paddingAll": "20px"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": 'lg',
+                            "flex": 10,
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": update_data.update,
+                                    "wrap": true,
+                                    "scaling": true,
+                                }
+                            ],
+                            "paddingAll": "lg",
+                            "borderColor": "#bcbcbc",
+                            "borderWidth": "light",
+                            "cornerRadius": "md",
+                            "backgroundColor": "#f4f6f9"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "spacing": "md",
+                            "contents": [
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "ดูสรุปงาน 👆",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid
+                                    },
+                                    "style": "primary",
+                                    "height": "sm",
+                                    "scaling": true,
+                                    "adjustMode": "shrink-to-fit",
+                                    "flex": 4
+                                },
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "อัพเดท 📋",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?jobid=" + update_data.jobid
+                                    },
+                                    "style": "primary",
+                                    "height": "sm",
+                                    "scaling": true,
+                                    "adjustMode": "shrink-to-fit",
+                                    "flex": 4
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "image",
+                                            "url": "https://img.icons8.com/fluency-systems-filled/48/share-3.png",
+                                            "size": "xxs",
+                                            "aspectMode": "fit"
+                                        }
+                                    ],
+                                    "width": "20px",
+                                    "justifyContent": "center",
+                                    "alignItems": "center",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "action",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=shared&jobid=" + update_data.jobid
+                                    }
+                                }
+                            ],
+                            "paddingAll": "lg",
+                            "paddingEnd": "xs",
+                            "paddingStart": "xs"
+                        },
+                        {
+                            "type": "separator"
+                        }
+                    ],
+                    "paddingTop": "none",
+                    "paddingBottom": "none",
+                    "paddingStart": "md",
+                    "paddingEnd": "md"
+                },
+                "footer": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": update_data.name,
+                                    "size": "xs",
+                                    "color": "#bcbcbc",
+                                    "align": "start",
+                                    "scaling": true,
+                                    "adjustMode": "shrink-to-fit"
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "copy",
+                                            "size": "xs",
+                                            "flex": 5,
+                                            "align": "end",
+                                            "color": "#bcbcbc",
+                                        },
+                                        {
+                                            "type": "image",
+                                            "url": "https://img.icons8.com/fluency-systems-regular/48/copy--v1.png",
+                                            "size": "20px",
+                                            "flex": 1
+                                        }
+                                    ],
+                                    "justifyContent": "flex-end",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "copy",
+                                        "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
+                                    }
+                                }
+                            ],
+                            "spacing": "sm",
+                            "justifyContent": "space-between",
+                            "alignItems": "center"
+                        }
+                    ]
+                }
+            }
+            if (!detail || detail == '') detail = '-'
+            if (detail && detail != '') {
+                flex.body.contents.splice(1, 0, {
+                    "type": "box",
+                    "layout": "vertical",
+                    "flex": 10,
+                    "spacing": "md",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": "อาการเสีย",
+                            "wrap": true,
+                            "scaling": true,
+                            "color": "#777777",
+                            "size": "xs"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": detail,
+                                    "color": "#052c65",
+                                    "wrap": true,
+                                    "scaling": true,
+                                    "maxLines": 3
+                                }
+                            ],
+                            "spacing": "xl"
+                        }
+                    ],
+                    "paddingAll": "lg",
+                    "borderColor": "#9ec5fe",
+                    "borderWidth": "normal",
+                    "cornerRadius": "md",
+                    "backgroundColor": "#cfe2ff"
+                })
+            }
+            // if (update_data.update.length <= 995) {
+            //     flex.footer.contents[0].contents[1].actions = [{
+            //         "type": "clipboard",
+            //         "label": "copy",
+            //         "clipboardText": update_data.update
+            //     }]
+            // } else {
+            //     flex.footer.contents[0].contents[1].action = {
+            //         "type": "uri",
+            //         "label": "copy",
+            //         "uri": "https://liff.line.me/1661543046-YWbxeK8Q?doc_path=" + doc_ref.path
+            //     }
+            // }
+            if (update_data.vendor_phone && update_data && update_data.vendor_phone.replace(/\s/g, '') != '') {
+                flex.body.contents[2].contents.push({
+                    "type": "text",
+                    "text": "📞ติดต่อ " + update_data.vendor_phone,
+                    "action": {
+                        "type": "uri",
+                        "label": "ติดต่อ " + update_data.vendor_phone,
+                        "uri": "tel:" + update_data.vendor_phone.replace(/-/g, '').replace(/ /g, '')
+                    },
+                    "contents": [
+                        {
+                            "type": "span",
+                            "text": "📞ติดต่อ"
+                        },
+                        {
+                            "type": "span",
+                            "text": " " + update_data.vendor_phone,
+                            "color": "#006aff",
+                            "decoration": "underline"
+                        }
+                    ],
+                    "scaling": true,
+                    "wrap": true
+                })
+            }
+            firestore.collection('jobdata/').doc(update_data.jobid).collection('update').get().then(data => {
+                data = data.docs.map(doc => doc.data()).sort((a, b) => b.timestamp - a.timestamp)
+                let carousel = {
+                    type: 'carousel',
+                    contents: [flex]
+                }
+                let hasMoreThan10 = data.length - 1 > 10
+                if (data.length > 1) {
+                    data = data.slice(1, 11)
+                    data.forEach(r => {
+                        r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                        let his_flex = {
+                            "type": "bubble",
+                            "size": "giga",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "📅 " + r.timestamp,
+                                        "weight": "bold",
+                                        "color": "#ffffff"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "# " + r.name,
+                                        "color": "#ffffff",
+                                        "size": "sm"
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "vertical",
+                                        "spacing": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": r.update,
+                                                "wrap": true,
+                                                "scaling": true
+                                            }
+                                        ],
+                                        "paddingAll": "lg",
+                                        "borderColor": "#bcbcbc",
+                                        "borderWidth": "light",
+                                        "cornerRadius": "md",
+                                        "backgroundColor": "#f4f6f9",
+                                        "flex": 10,
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "header": {
+                                    "backgroundColor": "#0367d3"
+                                }
+                            }
+                        }
+                        console.log(r)
+                        if (r.vendor_phone && r.vendor_phone != '' && r.vendor_phone.replace(/\s/g, '') != '') {
+                            his_flex.body.contents[0].contents.push({
+                                "type": "text",
+                                "text": "📞ติดต่อ " + r.vendor_phone,
+                                "action": {
+                                    "type": "uri",
+                                    "label": "ติดต่อ " + r.vendor_phone,
+                                    "uri": "tel:" + r.vendor_phone.replace(/-/g, '').replace(/ /g, '')
+                                },
+                                "contents": [
+                                    {
+                                        "type": "span",
+                                        "text": "📞ติดต่อ"
+                                    },
+                                    {
+                                        "type": "span",
+                                        "text": " " + r.vendor_phone,
+                                        "color": "#006aff",
+                                        "decoration": "underline"
+                                    }
+                                ],
+                                "scaling": true,
+                                "wrap": true
+                            })
+                        }
+                        carousel.contents.push(his_flex)
+                    })
+                }
+                if (hasMoreThan10) {
+                    let all_flex = {
+                        "type": "bubble",
+                        "size": "giga",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "ดูอัพเดททั้งหมด",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + update_data.jobid
+                                    },
+                                    "style": "link"
+                                }
+                            ],
+                            "spacing": "sm",
+                            "paddingAll": "13px",
+                            "justifyContent": "center",
+                            "alignItems": "center"
+                        }
+                    }
+                    carousel.contents.push(all_flex)
+                }
+                console.log(JSON.stringify(carousel));
+                liff.sendMessages([
+                    {
+                        type: 'flex',
+                        altText: 'Update ' + update_data.code + ' ' + update_data.jobid + ' ' + update_data.wo,
+                        contents: carousel
+                    }
+                ]).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'อัพเดทสำเร็จ',
+                        text: 'อัพเดทสำเร็จ',
+                        timer: 1500,
+                    }).then(() => {
+                        // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
+                        liff.closeWindow();
+                    })
+                }).catch(err => {
+                    console.log(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'มีข้อผิดพลาด',
+                        html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small><br><br>' + JSON.stringify(carousel),
+                        confirmButtonText: "ตกลง"
+                        //showConfirmButton: false,
+                    })
+                })
             })
         }
+        $('.user-select-all').click(function () {
+            // copy to clipboard
+            var $temp = $("<textarea>");
+            var brRegex = /<br\s*[\/]?>/gi;
+            $("body").append($temp);
+            $temp.val($(this).html().replace(brRegex, "\r\n")).select();
+            document.execCommand("copy");
+            $temp.remove();
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000
+            })
+            Toast.fire({
+                icon: 'success',
+                title: 'คัดลอกสำเร็จ'
+            })
+        })
     </script>
-    <div id="signatureparent">
-        <div id="signature">
-
-        </div>
-        <div id="tools" align="center"></div>
-    </div>
-
-
+    <script>
+        var firestore, auth
+        async function getAuth(uid = 'test') {
+            let email = uid + '@jobdata.com'
+            let password = 'jobdata'
+            await auth.signInWithEmailAndPassword(email, password).then(function (user) {
+                console.log("🚀 !! user:", user)
+                console.log('sign in successful')
+            }).catch(async function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                var credential = error.credential;
+                console.log(errorCode)
+                console.log(errorMessage)
+                console.log(credential)
+                await auth.createUserWithEmailAndPassword(email, password).then(function (user) {
+                    console.log('sign up successful')
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    console.log(email)
+                    console.log(credential)
+                });
+            });
+        }
+    </script>
+    <script>
+        let publicKey;
+        function generateRandomBuffer(length) {
+            const buffer = new Uint8Array(length);
+            window.crypto.getRandomValues(buffer);
+            return buffer;
+        }
+        async function register(name) {
+            try {
+                firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
+                    name: name,
+                    isAuthen: true
+                }, { merge: true }).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ยืนยันตัวตนสำเร็จ',
+                        text: 'คุณสามารถรับงานได้แล้ว',
+                        confirmButtonText: 'รับงาน',
+                        allowOutsideClick: false,
+                    }).then(async res => {
+                        if (res.isConfirmed) {
+                            await receivejob()
+                        }
+                    })
+                });
+            } catch (err) {
+                console.error('Error during registration:', err);
+                alert('Registration failed.');
+            }
+        }
+        async function receivejob() {
+            const toast = Swal.mixin({
+                toast: true,
+                iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 50px; height: 50px;margin-start: 5px"/>',
+                customClass: {
+                    icon: 'border-0'
+                },
+                position: 'top',
+                showConfirmButton: false,
+                timer: 60000,
+                timerProgressBar: true,
+            })
+            $('#submit').prop('disabled', true)
+            try {
+                // Swal.fire({
+                //     iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 100px; height: 100px;"/>',
+                //     customClass: {
+                //         icon: 'border-0'
+                //     },
+                //     title: 'กำลังรับงานในระบบ',
+                //     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                //     allowOutsideClick: false,
+                //     showConfirmButton: false,
+                // })
+                toast.fire({
+                    title: 'กำลังรับงานในระบบ',
+                })
+                let endpoint = scriptUrl + '?mode=receivejob'
+                console.log("🚀 !! endpoint:", endpoint);
+                $.getJSON(endpoint, {
+                    name: encodeURIComponent(current_user.name.toUpperCase()),
+                    jobid: jobid,
+                    detail: encodeURIComponent(job_detail)
+                }, function (res) {
+                    $('#submit').prop('disabled', false)
+                    console.log("🚀 !! res:", res)
+                    if (res.status == 'ok') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'รับงานสำเร็จ',
+                            html: 'รับงานสำเร็จ<br>รับงานโดย:<br> ' + current_user.name.toUpperCase(),
+                            confirmButtonText: 'ตกลง',
+                            timer: 2000,
+                        })
+                        if (res.status_text == 'success') {
+                            firestore.collection('jobdata/').doc(jobid).set({
+                                reciever: current_user.name.toUpperCase(),
+                                workorder: res.wo
+                            }, { merge: true }).then(() => {
+                                initialData()
+                            })
+                        }
+                        else if (res.status_text == 'already received') {
+                            // listen for data change on firebase
+                            firestore.collection('jobdata/').doc(jobid).onSnapshot(doc => {
+                                let data = doc.data()
+                                if (data.reciever == current_user.name.toUpperCase()) {
+                                    $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
+                                    $('#workorder').html('WO.' + data.wo).parents('.col-12').removeClass('d-none')
+                                    return
+                                }
+                            })
+                        }
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'รับงานไม่สำเร็จ',
+                            html: 'รับงานไม่สำเร็จ<br>' + res.status_text,
+                            confirmButtonText: 'ตกลง',
+                            allowOutsideClick: false,
+                        })
+                    }
+                })
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    text: err,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                })
+            }
+        }
+    </script>
     <script>
         // $(document).ready(function () {
         //     $('#signature').jSignature({
@@ -3422,15 +4613,20 @@ jSignature v2 jSignature's Undo Button and undo functionality plugin
 
         })();
     </script>
-    <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <script src="//fastly.jsdelivr.net/npm/sweetalert2@11"></script>
     <script
         src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/moment@2.29.4/locale/th.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
 </body>
 
 </html>
