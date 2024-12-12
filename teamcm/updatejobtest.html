@@ -2201,7 +2201,7 @@ ${update}
                         Swal.showLoading()
                     }
                 })
-                $.getJSON(scriptUrl+ '?mode=signature&jobid=' + $('#workorder').html().replace('WO.', '') + '&data=' + dataUrl, function (res) {
+                $.getJSON(scriptUrl+ '?mode=signature&jobid=' + $('#workorder').html().replace('WO.', '') + '&data=' + encodeURIComponent(dataUrl), function (res) {
                     console.log(res)
                     if (res.status == 'success') {
                         Swal.fire({
