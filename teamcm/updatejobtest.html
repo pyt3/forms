@@ -2189,7 +2189,8 @@ ${update}
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
                 // window.document.save_image.test02.value = data
-                $('body').append('<img src="data:' + data.join() + '"/>')
+                let sign = $('<img src="' + dataUrl + '" style="width: 100%; height: auto;">')
+                $('.modal-body').append(sign)
 
                 // document.save_image.submit();
                 Swal.fire({
