@@ -1210,9 +1210,9 @@
                         })
                     }
                     data = data.data()
-                    if (data.signature) {
+                    if (data.signature && data.workorder) {
                         $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
-                    } else if (liff.isInClient()) {
+                    } else if (liff.isInClient() && data.workorder) {
                         $('#open-sign').parent().removeClass('d-none')
                     }
                     if (data.status) {
