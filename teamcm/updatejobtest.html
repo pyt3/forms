@@ -2207,7 +2207,7 @@ ${update}
                             timer: 1500,
                         })
                         $('#open-sign').parent().addClass('d-none')
-                        $('#user-sign').attr('src', dataUrl).parent().removeClass('d-none')
+                        $('#user-sign').attr('src','data:'+ dataUrl).parent().removeClass('d-none')
                         $('#signature').jSignature('reset')
                         // close modal
                         $('#signatureModal').modal('hide')
