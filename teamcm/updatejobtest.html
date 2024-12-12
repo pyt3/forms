@@ -266,7 +266,7 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-12 text-center d-none">
-                    <img lt="sign" id="user-sign" style="max-height: 100px;" class="img-fluid">
+                    <img alt="sign" id="user-sign" style="max-height: 100px;" class="img-fluid">
                 </div>
                 <div class="col-12 text-center d-none">
                     <button class="btn btn-info w-100" id="open-sign">
@@ -2188,10 +2188,6 @@ ${update}
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
-                // window.document.save_image.test02.value = data
-                let sign = $('<img src="data:' + dataUrl + '" style="width: 100%; height: auto;">')
-                $('.modal-body').append(sign)
-
                 // document.save_image.submit();
                 Swal.fire({
                     title: 'กำลังบันทึกลายเซ็น',
@@ -2210,6 +2206,11 @@ ${update}
                             text: 'บันทึกลายเซ็นสำเร็จ',
                             timer: 1500,
                         })
+                        $('#open-sign').parent().addClass('d-none')
+                        $('#user-sign').attr('src', dataUrl).parent().removeClass('d-none')
+                        $('#signature').jSignature('reset')
+                        // close modal
+                        $('#signatureModal').modal('hide')
                     }
                     else {
                         Swal.fire({
