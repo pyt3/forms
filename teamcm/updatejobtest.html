@@ -2206,10 +2206,10 @@ ${update}
                         Swal.showLoading()
                     }
                 })
-                $.post(scriptUrl, {
+                $.getJSON(scriptUrl, {
                     mode: 'signature',
                     jobid: jobid,
-                    data: dataUrl
+                    dataurl: dataUrl
                 }, function (res) {
                     console.log(res)
                     if (res.status == 'ok') {
