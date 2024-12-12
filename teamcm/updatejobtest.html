@@ -2200,14 +2200,14 @@ ${update}
                 $.ajax({
                     method: 'POST',
                     url: ngrok_url,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'ngrok-skip-browser-warning': true
+                    },
                     data: {
                         mode: 'signature',
                         jobid: $('#workorder').html().replace('WO.', ''),
                         data: dataUrl,
-                        header: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'ngrok-skip-browser-warning': true
-                        }
                     },
                     success: (res) => {
                         console.log(res)
