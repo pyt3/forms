@@ -2143,9 +2143,8 @@ ${update}
         $(document).ready(function () {
             // on window resize
             $(window).resize(function () {
-                $('#signature').jSignature({
-                    'UndoButton': true
-                })
+                // reinitiate the jSignature
+                $('#signature').jSignature('init');
             });
         });
 
