@@ -531,6 +531,8 @@
             $('#open-sign').click(function () {
                 $('#signatureModal').modal('show')
                 $('#signatureparent').removeClass('d-none')
+                // rotate mobile device to landscape
+                screen.orientation.lock('landscape')
             })
             // let alert_height = $('#image').parents('.alert').height()
             // console.log("🚀 !! alert_height:", alert_height)
