@@ -3574,15 +3574,18 @@ ${update}
                     var exportplugins = {
                         'default': function (data) { return this.toDataURL() }
                         , 'native': function (data) { return data }
-                        , 'image': function (data) {
+                        , 'image':async function (data) {
                             /*this = canvas elem */
                             // resize to 843 x 211 px
                             var img = new Image()
                                 , c = this
-                            img.onload = function () {
-                                c.getContext("2d").drawImage(img, 0, 0, 843, 211)
-                            }
-                            img.src = 'data:' + data[0] + ',' + data[1]
+                            await new Promise((resolve, reject) => {
+                                img.onload = function () {
+                                    c.getContext("2d").drawImage(img, 0, 0, 843, 211)
+                                    resolve()
+                                }
+                                img.src = 'data:' + data[0] + ',' + data[1]
+                            })
                             
                             var imagestring = this.toDataURL()
 
