@@ -2189,14 +2189,14 @@ ${update}
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
                 // document.save_image.submit();
-                Swal.fire({
-                    title: 'กำลังบันทึกลายเซ็น',
-                    html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
+                // Swal.fire({
+                //     title: 'กำลังบันทึกลายเซ็น',
+                //     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                //     allowOutsideClick: false,
+                //     didOpen: () => {
+                //         Swal.showLoading()
+                //     }
+                // })
                 $.getJSON(scriptUrl + '?mode=signature&jobid=' + $('#workorder').html().replace('WO.', '') + '&data=' + encodeURIComponent(dataUrl), function (res) {
                     console.log(res)
                     if (res.status == 'success') {
