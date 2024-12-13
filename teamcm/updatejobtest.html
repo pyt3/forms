@@ -526,6 +526,9 @@
                     // trig window resize
                     window.dispatchEvent(new Event('resize'));
                 }, 100);
+            }).on('hidden.bs.modal', function () {
+                // rotate mobile device to portrait
+                screen.orientation.lock('portrait')
             })
 
             $('#open-sign').click(function () {
