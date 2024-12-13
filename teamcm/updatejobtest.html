@@ -269,7 +269,7 @@
                     <img alt="sign" id="user-sign" style="max-height: 100px;" class="img-fluid">
                 </div>
                 <div class="col-12 text-center d-none">
-                    <button class="btn btn-info w-100" id="open-sign">
+                    <button class="btn btn-link fw-bold fs-4 w-100" id="open-sign">
                         <i class="bi bi-pencil-square"></i>&nbsp;เซ็นรับทราบ
                     </button>
                 </div>
@@ -3574,21 +3574,8 @@ ${update}
                     var exportplugins = {
                         'default': function (data) { return this.toDataURL() }
                         , 'native': function (data) { return data }
-                        , 'image':async function (data) {
+                        , 'image': function (data) {
                             /*this = canvas elem */
-                            // resize to 843 x 211 px
-                            var img = new Image()
-                                , c = this
-                            await new Promise((resolve, reject) => {
-                                img.onload = function () {
-                                    c.getContext("2d").drawImage(img, 0, 0, 843, 211)
-                                    // log image size
-                                    console.log('image size:', img.width, img.height)
-                                    resolve()
-                                }
-                                img.src = 'data:' + data[0] + ',' + data[1]
-                            })
-                            
                             var imagestring = this.toDataURL()
 
                             if (typeof imagestring === 'string' &&
