@@ -2143,7 +2143,7 @@ ${update}
         $(document).ready(function () {
             // on window resize
             $(window).resize(function () {
-                $('#signature').jSignature('reset')
+                $('#signature').jSignature()
             });
         });
 
@@ -2261,7 +2261,7 @@ ${update}
                         Swal.fire({
                             icon: 'error',
                             title: 'เกิดข้อผิดพลาด',
-                            text: 'ไม่สามารถบันทึกลายเซ็นได้',
+                            text: textStatus,
                             confirmButtonText: 'ตกลง',
                             allowOutsideClick: false,
                         });
