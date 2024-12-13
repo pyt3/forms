@@ -3582,6 +3582,8 @@ ${update}
                             await new Promise((resolve, reject) => {
                                 img.onload = function () {
                                     c.getContext("2d").drawImage(img, 0, 0, 843, 211)
+                                    // log image size
+                                    console.log('image size:', img.width, img.height)
                                     resolve()
                                 }
                                 img.src = 'data:' + data[0] + ',' + data[1]
