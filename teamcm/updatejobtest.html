@@ -2140,15 +2140,12 @@ ${update}
         }
     </script>
     <script>
-        // $(document).ready(function () {
-        //     $('#signature').jSignature({
-        //         'UndoButton': true,
-        //         'background-color': '#d3d3d3',
-        //         'decor-color': '#00008b',
-        //         'color': '#00008b',
-        //         'lineWidth': 5,
-        //     });
-        // });
+        $(document).ready(function () {
+            // on window resize
+            $(window).resize(function () {
+                $('#signature').jSignature('reset')
+            });
+        });
 
 
         jQuery(document).ready(function ($) {
