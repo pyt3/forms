@@ -644,7 +644,7 @@
                         title: 'บันทึกข้อมูลสำเร็จ',
                         confirmButtonText: 'ตกลง',
                     }).then(() => {
-                        history_code[me_code] = {
+                        history_code[full_code] = {
                             start: start,
                             end: end
                         }
@@ -654,6 +654,7 @@
                 }, 200);
             }
         }
+        var full_code
         async function sendPost(data) {
             Swal.fire({
                 icon: 'info',
@@ -737,6 +738,7 @@
                                 success_all++
                                 checkDone()
                                 let data = res
+                                full_code = data.code
                                 $('#status-gsheet').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Google Sheet').removeClass('text-muted').addClass('text-success')
                                 let regist = JSON.parse(localStorage.getItem('regist'))
                                 let msg = `
