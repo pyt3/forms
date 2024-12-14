@@ -635,6 +635,25 @@
             });
         };
         let success_all = 0
+        const checkDone = () => {
+            if (success_all >= 6) {
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                    }).then(() => {
+                        history_code[me_code] = {
+                            start: start,
+                            end: end
+                        }
+                        localStorage.setItem('history_code', JSON.stringify(history_code))
+                        liff.closeWindow()
+                    })
+                    resolve()
+                }, 200);
+            }
+        }
         async function sendPost(data) {
             Swal.fire({
                 icon: 'info',
@@ -654,25 +673,7 @@
             let result_name, mediagroup_id
             let files = $('#telegram-files')[0].files;
             let tg_msg_id, tg_caption, tg_sent = false
-            const checkDone = () => {
-                if (success_all >= 6) {
-                    setTimeout(() => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'บันทึกข้อมูลสำเร็จ',
-                            confirmButtonText: 'ตกลง',
-                        }).then(() => {
-                            history_code[me_code] = {
-                                start: start,
-                                end: end
-                            }
-                            localStorage.setItem('history_code', JSON.stringify(history_code))
-                            liff.closeWindow()
-                        })
-                        resolve()
-                    }, 200);
-                }
-            }
+
             Promise.all([
                 retryRequest(() => new Promise((resolve, reject) => {
                     if (files.length > 0) {
