@@ -2226,7 +2226,17 @@ ${update}
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
-                // document.save_image.submit();
+                // check if there is no signature
+                if (data[1] == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่พบลายเซ็น',
+                        text: 'กรุณาเซ็นลายเซ็นก่อนบันทึก',
+                        confirmButtonText: 'ตกลง',
+                        allowOutsideClick: false,
+                    })
+                    return
+                }
                 Swal.fire({
                     title: 'กำลังบันทึกลายเซ็น',
                     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
