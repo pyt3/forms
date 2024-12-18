@@ -481,7 +481,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
     <script>
-        // var vConsole = new VConsole();
+        var vConsole = new VConsole();
     </script>
     <script>
         // const liff_id = '1655873446-3xe866Ql'
@@ -674,6 +674,12 @@
                     data = data.data()
                     if (data.signature) {
                         $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
+                        $('#open-sign')
+                        .find('.text-primary')
+                        .removeClass('text-primary')
+                        .addClass('text-danger')
+                        .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;เซ็นใหม่')
+                        .parent().removeClass('d-none')
                     } else if (liff.isInClient()) {
                         $('#open-sign').parent().removeClass('d-none')
                     }
@@ -2226,17 +2232,7 @@ ${update}
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
-                // check if there is no signature
-                if (data[1] == '') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'ไม่พบลายเซ็น',
-                        text: 'กรุณาเซ็นลายเซ็นก่อนบันทึก',
-                        confirmButtonText: 'ตกลง',
-                        allowOutsideClick: false,
-                    })
-                    return
-                }
+                // document.save_image.submit();
                 Swal.fire({
                     title: 'กำลังบันทึกลายเซ็น',
                     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
