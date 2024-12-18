@@ -1219,7 +1219,13 @@
                     data = data.data()
                     if (data.signature && data.workorder) {
                         $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
-                    } else if (liff.isInClient() && data.workorder) {
+                        $('#open-sign')
+                            .find('.text-primary')
+                            .removeClass('text-primary')
+                            .addClass('text-danger')
+                            .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;เซ็นใหม่')
+                    } 
+                    if (liff.isInClient() && data.workorder) {
                         $('#open-sign').parent().removeClass('d-none')
                     }
                     if (data.status) {
