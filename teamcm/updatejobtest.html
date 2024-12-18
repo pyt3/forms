@@ -2270,7 +2270,7 @@ ${update}
                                 console.log(res)
                                 if (res.status == 'success') {
                                     await firestore.collection('jobdata/').doc($('#request-no').val()).set({
-                                        signature: res.url
+                                        signature: res.url,
                                         need_sent_signature: true
                                     }, { merge: true })
                                     Swal.fire({
