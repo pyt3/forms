@@ -525,14 +525,10 @@
             })
 
             $('#signatureModal').on('shown.bs.modal', function () {
-                screen.orientation.lock('landscape')
                 setTimeout(() => {
                     // trig window resize
                     window.dispatchEvent(new Event('resize'));
                 }, 100);
-            }).on('hidden.bs.modal', function () {
-                // rotate mobile device to portrait
-                screen.orientation.lock('portrait')
             })
 
             $('#open-sign').click(function () {
@@ -2232,6 +2228,7 @@ ${update}
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
+                console.log(dataUrl);
                 // document.save_image.submit();
                 Swal.fire({
                     title: 'กำลังบันทึกลายเซ็น',
