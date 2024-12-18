@@ -491,6 +491,7 @@
 
         const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
         var job_detail
+        let update_data, tg_thread_id
         $(document).ready(async () => {
             // $('.load-bar').fadeOut(500)
             moment.locale('th')
@@ -1224,7 +1225,7 @@
                             .removeClass('text-primary')
                             .addClass('text-danger')
                             .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;เซ็นใหม่')
-                    } 
+                    }
                     if (liff.isInClient() && data.workorder) {
                         $('#open-sign').parent().removeClass('d-none')
                     }
@@ -1316,7 +1317,7 @@
                 $('#more-update-btn').addClass('d-none')
                 $.LoadingOverlay("hide");
             }
-            let update_data, tg_thread_id
+           
             $("#submit").click(() => {
                 let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
                     if (x[0] === '-') return "- " + x.slice(1).trim();
@@ -2275,6 +2276,12 @@ ${update}
                                         title: 'บันทึกลายเซ็นสำเร็จ',
                                         text: 'บันทึกลายเซ็นสำเร็จ',
                                         timer: 1500,
+                                    })
+                                    $.post('https://api.telegram.org/bot' + tg_api + '/sendPhoto', {
+                                        chat_id: chat_id,
+                                        thread_id: thread_id,
+                                        photo: new Blob([data[1]], { type: 'image/png' }),
+                                        caption: 'signature'
                                     })
                                     $('#open-sign').parent().addClass('d-none')
                                     $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
