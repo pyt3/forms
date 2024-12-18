@@ -2264,9 +2264,12 @@ ${update}
                                 jobid: $('#workorder').html().replace('WO.', ''),
                                 data: encodeURIComponent(dataUrl)
                             },
-                            success: function (res) {
+                            success: async function (res) {
                                 console.log(res)
                                 if (res.status == 'success') {
+                                    await firestore.collection('jobdata/').doc($('#request-no').val()).set({
+                                        signature: res.url
+                                    }, { merge: true })
                                     Swal.fire({
                                         icon: 'success',
                                         title: 'บันทึกลายเซ็นสำเร็จ',
