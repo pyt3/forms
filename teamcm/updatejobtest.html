@@ -1317,7 +1317,7 @@
                 $('#more-update-btn').addClass('d-none')
                 $.LoadingOverlay("hide");
             }
-           
+
             $("#submit").click(() => {
                 let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
                     if (x[0] === '-') return "- " + x.slice(1).trim();
@@ -2277,12 +2277,16 @@ ${update}
                                         text: 'บันทึกลายเซ็นสำเร็จ',
                                         timer: 1500,
                                     })
-                                    $.post('https://api.telegram.org/bot' + tg_api + '/sendPhoto', {
-                                        chat_id: chat_id,
-                                        thread_id: thread_id,
-                                        photo: new Blob([data[1]], { type: 'image/png' }),
-                                        caption: 'signature'
-                                    })
+                                    try {
+                                        $.post('https://api.telegram.org/bot' + tg_api + '/sendPhoto', {
+                                            chat_id: chat_id,
+                                            thread_id: thread_id,
+                                            photo: new Blob([data[1]], { type: 'image/png' }),
+                                            caption: 'signature'
+                                        })
+                                    }catch(err){
+                                        console.log(err)
+                                    }
                                     $('#open-sign').parent().addClass('d-none')
                                     $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
                                     $('#signature').jSignature('reset')
