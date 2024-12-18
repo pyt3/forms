@@ -676,7 +676,7 @@
                             .find('.text-primary')
                             .removeClass('text-primary')
                             .addClass('text-danger')
-                            .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;เซ็นใหม่')
+                            .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
                     }
                     $('#open-sign').parent().removeClass('d-none')
                     if (data.status) {
@@ -1225,7 +1225,7 @@
                             .find('.text-primary')
                             .removeClass('text-primary')
                             .addClass('text-danger')
-                            .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;เซ็นใหม่')
+                            .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
                     }
                     if (liff.isInClient() && data.workorder) {
                         $('#open-sign').parent().removeClass('d-none')
@@ -2279,7 +2279,12 @@ ${update}
                                         text: 'บันทึกลายเซ็นสำเร็จ',
                                         timer: 1500,
                                     })
-                                    $('#open-sign').parent().addClass('d-none')
+                                    $('#open-sign')
+                                        .find('.text-primary')
+                                        .removeClass('text-primary')
+                                        .addClass('text-danger')
+                                        .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+
                                     $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
                                     $('#signature').jSignature('reset')
                                     // close modal
