@@ -492,6 +492,7 @@
         const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
         var job_detail
         let update_data, tg_thread_id
+        let chat_id = '-1002300341036'
         $(document).ready(async () => {
             // $('.load-bar').fadeOut(500)
             moment.locale('th')
@@ -1449,7 +1450,7 @@ ${update}
             })
             if (current_user.site == 'PYT3') {
                 let tg_api = '7681265177:AAFVGgh5lAzXRRfiole5ywOlY-CoEIOjEz4'
-                let chat_id = '-1002300341036'
+
                 let tg_url = 'https://api.telegram.org/bot' + tg_api + '/sendMessage'
                 let tg_data = {
                     chat_id: chat_id,
@@ -2278,13 +2279,21 @@ ${update}
                                         timer: 1500,
                                     })
                                     try {
-                                        $.post('https://api.telegram.org/bot' + tg_api + '/sendPhoto', {
-                                            chat_id: chat_id,
-                                            thread_id: thread_id,
-                                            photo: new Blob([data[1]], { type: 'image/png' }),
-                                            caption: 'signature'
+                                        $.fetch({
+                                            url: 'https://api.telegram.org/bot' + tg_api + '/sendPhoto',
+                                            method: 'POST',
+                                            body: JSON.stringify({
+                                                chat_id: chat_id,
+                                                photo: res.url,
+                                                caption: 'signature',
+                                            }),
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            }
+                                        }).then(res => {
+                                            console.log(res)
                                         })
-                                    }catch(err){
+                                    } catch (err) {
                                         console.log(err)
                                     }
                                     $('#open-sign').parent().addClass('d-none')
