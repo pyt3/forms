@@ -2241,6 +2241,8 @@ ${update}
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     validationMessage: 'กรุณายืนยันลายเซ็น',
+                }).then(result => {
+                    return result
                 })
                 if (!confirm.isConfirmed) return
                 Swal.fire({
