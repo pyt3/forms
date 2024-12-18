@@ -671,11 +671,11 @@
                     if (data.signature) {
                         $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
                         $('#open-sign')
-                        .find('.text-primary')
-                        .removeClass('text-primary')
-                        .addClass('text-danger')
-                        .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;เซ็นใหม่')
-                        .parent().removeClass('d-none')
+                            .find('.text-primary')
+                            .removeClass('text-primary')
+                            .addClass('text-danger')
+                            .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;เซ็นใหม่')
+                            .parent().removeClass('d-none')
                     } else if (liff.isInClient()) {
                         $('#open-sign').parent().removeClass('d-none')
                     }
@@ -2224,12 +2224,13 @@ ${update}
 
             }).appendTo($tools)
 
-            $('<button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i></button>').bind('click',async function (e) {
+            $('<button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i></button>').bind('click', async function (e) {
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
+
                 // confirm signature
-                let {confirm} = await Swal.fire({
+                Swal.fire({
                     title: 'ยืนยันลายเซ็น',
                     text: 'ยืนยันลายเซ็นของคุณ',
                     icon: 'question',
@@ -2242,17 +2243,62 @@ ${update}
                     cancelButtonColor: '#d33',
                     validationMessage: 'กรุณายืนยันลายเซ็น',
                 }).then(result => {
-                    return result
-                })
-                if (!confirm.isConfirmed) return
-                Swal.fire({
-                    title: 'กำลังบันทึกลายเซ็น',
-                    html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading()
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'กำลังบันทึกลายเซ็น',
+                            html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            }
+                        })
+                        $.ajax({
+                            url: scriptUrl,
+                            type: 'POST',
+                            data: {
+                                mode: 'signature',
+                                jobid: $('#workorder').html().replace('WO.', ''),
+                                data: encodeURIComponent(dataUrl)
+                            },
+                            success: function (res) {
+                                console.log(res)
+                                if (res.status == 'success') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'บันทึกลายเซ็นสำเร็จ',
+                                        text: 'บันทึกลายเซ็นสำเร็จ',
+                                        timer: 1500,
+                                    })
+                                    $('#open-sign').parent().addClass('d-none')
+                                    $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
+                                    $('#signature').jSignature('reset')
+                                    // close modal
+                                    $('#signatureModal').modal('hide')
+                                }
+                                else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'บันทึกลายเซ็นไม่สำเร็จ',
+                                        html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + res.status_text,
+                                        confirmButtonText: 'ตกลง',
+                                        allowOutsideClick: false,
+                                    })
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err)
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'บันทึกลายเซ็นไม่สำเร็จ',
+                                    html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + JSON.stringify(err),
+                                    confirmButtonText: 'ตกลง',
+                                    allowOutsideClick: false,
+                                })
+                            }
+                        })
                     }
                 })
+
                 // $.getJSON(scriptUrl + '?mode=signature&jobid=' + $('#workorder').html().replace('WO.', '') + '&data=' + encodeURIComponent(dataUrl), function (res) {
                 //     console.log(res)
                 //     if (res.status == 'success') {
@@ -2278,50 +2324,7 @@ ${update}
                 //         })
                 //     }
                 // })
-                $.ajax({
-                    url : scriptUrl,
-                    type: 'POST',
-                    data: {
-                        mode: 'signature',
-                        jobid: $('#workorder').html().replace('WO.', ''),
-                        data: encodeURIComponent(dataUrl)
-                    },
-                    success: function (res) {
-                        console.log(res)
-                        if (res.status == 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกลายเซ็นสำเร็จ',
-                                text: 'บันทึกลายเซ็นสำเร็จ',
-                                timer: 1500,
-                            })
-                            $('#open-sign').parent().addClass('d-none')
-                            $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
-                            $('#signature').jSignature('reset')
-                            // close modal
-                            $('#signatureModal').modal('hide')
-                        }
-                        else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'บันทึกลายเซ็นไม่สำเร็จ',
-                                html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + res.status_text,
-                                confirmButtonText: 'ตกลง',
-                                allowOutsideClick: false,
-                            })
-                        }
-                    },
-                    error: function (err) {
-                        console.log(err)
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'บันทึกลายเซ็นไม่สำเร็จ',
-                            html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + JSON.stringify(err),
-                            confirmButtonText: 'ตกลง',
-                            allowOutsideClick: false,
-                        })
-                    }
-                })
+
             }).appendTo($tools)
             $('<span><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b></span>').appendTo($tools)
             $('<button type="button" value="" class="btn bg-info-subtle btn-sm mt-4 shadow shadow-sm" style="min-width:50px;"><i class="bi bi-trash3-fill"></i></button>').bind('click', function (e) {
