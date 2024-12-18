@@ -2271,6 +2271,7 @@ ${update}
                                 if (res.status == 'success') {
                                     await firestore.collection('jobdata/').doc($('#request-no').val()).set({
                                         signature: res.url
+                                        need_sent_signature: true
                                     }, { merge: true })
                                     Swal.fire({
                                         icon: 'success',
@@ -2278,24 +2279,6 @@ ${update}
                                         text: 'บันทึกลายเซ็นสำเร็จ',
                                         timer: 1500,
                                     })
-                                    try {
-                                        $.fetch({
-                                            url: 'https://api.telegram.org/bot' + tg_api + '/sendPhoto',
-                                            method: 'POST',
-                                            body: JSON.stringify({
-                                                chat_id: chat_id,
-                                                photo: res.url,
-                                                caption: 'signature',
-                                            }),
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            }
-                                        }).then(res => {
-                                            console.log(res)
-                                        })
-                                    } catch (err) {
-                                        console.log(err)
-                                    }
                                     $('#open-sign').parent().addClass('d-none')
                                     $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
                                     $('#signature').jSignature('reset')
