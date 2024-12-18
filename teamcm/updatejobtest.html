@@ -2228,20 +2228,6 @@ ${update}
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
-                console.log(dataUrl);
-                // document.save_image.submit();
-                // check if signature is empty
-                const empty_signature = 'image/png;base64,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'
-                if (dataUrl == empty_signature) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'กรุณาเซ็นลายเซ็น',
-                        text: 'กรุณาเซ็นลายเซ็นก่อนบันทึก',
-                        confirmButtonText: 'ตกลง',
-                        allowOutsideClick: false,
-                    })
-                    return
-                }
                 // confirm signature
                 let {confirm} = await Swal.fire({
                     title: 'ยืนยันลายเซ็น',
@@ -2255,14 +2241,8 @@ ${update}
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     validationMessage: 'กรุณายืนยันลายเซ็น',
-                    preConfirm: () => {
-                        if (dataUrl == empty_signature) {
-                            Swal.showValidationMessage('กรุณาเซ็นลายเซ็นก่อนบันทึก')
-                        }
-                    }
-
                 })
-                if (!confirm) return
+                if (!confirm.isConfirmed) return
                 Swal.fire({
                     title: 'กำลังบันทึกลายเซ็น',
                     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
