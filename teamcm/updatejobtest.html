@@ -468,10 +468,10 @@
     <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-xl-down">
             <div class="modal-content"  style="min-height: 100vh;">
-                <div class="modal-body m-1 p-0 d-flex flex-column justify-content-center align-items-center h-100">
-                    <div id="signatureparent" class="d-none h-100">
+                <div class="modal-body m-1 p-0">
+                    <div id="signatureparent" class="d-none h-100 w-100 d-flex flex-column align-items-center justify-content-center">
                         <div id="signature"></div>
-                        <div id="tools" align="center"></div>
+                        <div id="tools" align="center" class="row"></div>
                     </div>
                 </div>
             </div>
@@ -2222,7 +2222,7 @@ ${update}
 
             }).appendTo($tools)
 
-            $('<button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i></button>').bind('click', async function (e) {
+            $('<div class="col-6 col-md-auto"><button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i></button></div>').bind('click', async function (e) {
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
@@ -2333,7 +2333,6 @@ ${update}
                 // })
 
             }).appendTo($tools)
-            $('<span><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b></span>').appendTo($tools)
             $('<button type="button" value="" class="btn bg-info-subtle btn-sm mt-4 shadow shadow-sm" style="min-width:50px;"><i class="bi bi-trash3-fill"></i></button>').bind('click', function (e) {
                 $sigdiv.jSignature('reset')
             }).appendTo($tools)
