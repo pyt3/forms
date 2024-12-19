@@ -468,7 +468,7 @@
     <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-xl-down">
             <div class="modal-content"  style="min-height: 100vh;">
-                <div class="modal-body m-1 p-0 d-flex align-items-center h-100">
+                <div class="modal-body m-1 p-0 d-flex flex-column justify-content-center align-items-center h-100">
                     <div id="signatureparent" class="d-none h-100">
                         <div id="signature"></div>
                         <div id="tools" align="center"></div>
@@ -2226,15 +2226,6 @@ ${update}
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
-                if ($sigdiv.jSignature('isModified')) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'กรุณาเซ็นชื่อ',
-                        showConfirmButton: false,
-                        timer: 1500,
-                    })
-                    return
-                }
 
                 // confirm signature
                 Swal.fire({
