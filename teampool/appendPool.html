@@ -828,10 +828,9 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
-                    text: 'กรุณาลองใหม่อีกครั้ง',
+                    text: 'กรุณาลองใหม่อีกครั้ง\n\n' + err,
                     confirmButtonText: 'ตกลง'
                 });
-                console.error("Error in sendPost:", err);
             });
         }
 
