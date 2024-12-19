@@ -468,7 +468,7 @@
     <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-xl-down">
             <div class="modal-content">
-                <div class="modal-body m-1 p-0">
+                <div class="modal-body m-1 p-0 d-flex align-items-center" style="min-height: 100vh;">
                     <div id="signatureparent" class="d-none">
                         <div id="signature"></div>
                         <div id="tools" align="center"></div>
@@ -2155,14 +2155,6 @@ ${update}
         }
     </script>
     <script>
-        $(document).ready(function () {
-            // on window resize
-            $(window).resize(function () {
-                $('#signature').jSignature('reset')
-            });
-        });
-
-
         jQuery(document).ready(function ($) {
 
             var topics = {};
@@ -2234,6 +2226,15 @@ ${update}
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
+                if ($sigdiv.jSignature('isModified')) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาเซ็นชื่อ',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    })
+                    return
+                }
 
                 // confirm signature
                 Swal.fire({
