@@ -467,11 +467,11 @@
     </main>
     <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-xl-down">
-            <div class="modal-content">
-                <div class="modal-body m-1 p-0">
-                    <div id="signatureparent" class="d-none">
+            <div class="modal-content"  style="min-height: 100vh;">
+                <div class="modal-body m-1 p-0 h-100 align-items-center d-flex">
+                    <div id="signatureparent" class="d-none h-100 w-100 d-flex flex-column align-items-center justify-content-center">
                         <div id="signature"></div>
-                        <div id="tools" align="center"></div>
+                        <div id="tools" align="center" class="row w-100"></div>
                     </div>
                 </div>
             </div>
@@ -479,7 +479,7 @@
     </div>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script> -->
     <script>
         // var vConsole = new VConsole();
     </script>
@@ -674,7 +674,7 @@
                         $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
                         $('#open-sign')
                             .find('.text-primary')
-                            .removeClass('text-primary')
+                            .removeClass('text-primary fs-5 fw-bold')
                             .addClass('text-danger')
                             .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
                     }
@@ -1223,7 +1223,7 @@
                         $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
                         $('#open-sign')
                             .find('.text-primary')
-                            .removeClass('text-primary')
+                            .removeClass('text-primary fs-5 fw-bold')
                             .addClass('text-danger')
                             .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
                     }
@@ -2155,14 +2155,6 @@ ${update}
         }
     </script>
     <script>
-        $(document).ready(function () {
-            // on window resize
-            $(window).resize(function () {
-                $('#signature').jSignature('reset')
-            });
-        });
-
-
         jQuery(document).ready(function ($) {
 
             var topics = {};
@@ -2230,7 +2222,7 @@ ${update}
 
             }).appendTo($tools)
 
-            $('<button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i></button>').bind('click', async function (e) {
+            $('<div class="col-6"><button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm w-100" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i> บันทึก</button></div>').bind('click', async function (e) {
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
@@ -2281,7 +2273,7 @@ ${update}
                                     })
                                     $('#open-sign')
                                         .find('.text-primary')
-                                        .removeClass('text-primary')
+                                        .removeClass('text-primary fs-5 fw-bold')
                                         .addClass('text-danger')
                                         .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
 
@@ -2341,8 +2333,7 @@ ${update}
                 // })
 
             }).appendTo($tools)
-            $('<span><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b></span>').appendTo($tools)
-            $('<button type="button" value="" class="btn bg-info-subtle btn-sm mt-4 shadow shadow-sm" style="min-width:50px;"><i class="bi bi-trash3-fill"></i></button>').bind('click', function (e) {
+            $('<div class="col-6"><button type="button" value="" class="btn bg-info-subtle btn-sm mt-4 shadow shadow-sm w-100" style="min-width:50px;"><i class="bi bi-trash3-fill"></i> ล้างทั้งหมด</button></div>').bind('click', function (e) {
                 $sigdiv.jSignature('reset')
             }).appendTo($tools)
 
