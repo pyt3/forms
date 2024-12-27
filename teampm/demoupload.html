@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- no cache -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- no cache -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Mitr', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-12">
+                <h1>
+                    <i class="bi bi-cloud-arrow-up-fill text-primary"></i>
+                    Upload Files
+                </h1>
+            </div>
+            <div class="col-12 col-md-4">
+                <button id="addMoreFiles" class="btn btn-primary w-100">
+                    <i class="bi bi-file-earmark-plus-fill"></i>
+                    Add Files</button>
+                <input type="file" name="files" id="files" class="form-control" multiple hidden>
+            </div>
+
+        </div>
+        <div class="row g-2" id="file-list">
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-warning w-100 d-none" id="uploadFiles">
+                    <i class="bi bi-cloud-upload-fill"></i>
+                    Upload Files</button>
+            </div>
+        </div>
+    </div>
+    <template id="file-template">
+        <div class="col-6 col-md-4 col-lg-2 mb-3" data-name="{{file_name}}" data-datauri="{{file_data}}">
+            <div class="card">
+                <img src="{{file_data}}" class="card-img-top" alt="{{file_name}}"
+                    style="object-fit: cover; aspect-ratio: 16 / 9;">
+                <div class="card-body py-2">
+                    <h6 class="card-title text-truncate">{{file_name}}</h6>
+                    <div class="card-text" style="font-size: 0.7rem;">{{file_size}}</div>
+                    <span class="badge bg-primary progress d-none">Uploading...</span>
+                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"><i
+                            class="bi bi-trash-fill"></i></button>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        const scriptURL = 'xxxxx'
+        $(document).ready(function () {
+            $('#files').change(async function (e) {
+                var files = e.target.files;
+                if (files.length == 0) {
+                    return;
+                }
+                $('#uploadFiles').removeClass('d-none');
+                for (let i = 0; i < files.length; i++) {
+                    await new Promise((resolve, reject) => {
+                        let reader = new FileReader();
+                        reader.onload = function (e) {
+                            let data = e.target.result;
+                            let template = $('#file-template').html();
+                            template = template.replace(/{{file_name}}/g, files[i].name);
+                            template = template.replace('{{file_size}}', (files[i].size / 1000).toFixed(2) + ' KB');
+                            let fileType = files[i].type;
+                            template = template.replace(/{{file_data}}/g, data);
+                            $('#file-list').append(template);
+                            if (!fileType.startsWith('image/')) {
+                                let preview_file = {
+                                    pdf: 'https://img.icons8.com/fluency/96/pdf--v1.png',
+                                    doc: 'https://img.icons8.com/fluency/96/000000/ms-word.png',
+                                    docx: 'https://img.icons8.com/fluency/96/000000/ms-word.png',
+                                    xls: 'https://img.icons8.com/fluency/96/000000/ms-excel.png',
+                                    xlsx: 'https://img.icons8.com/fluency/96/000000/ms-excel.png',
+                                    ppt: 'https://img.icons8.com/fluency/96/000000/ms-powerpoint.png',
+                                    pptx: 'https://img.icons8.com/fluency/96/000000/ms-powerpoint.png',
+                                    txt: 'https://img.icons8.com/fluency/96/000000/txt.png',
+                                    zip: 'https://img.icons8.com/fluency/96/000000/zip.png',
+                                    rar: 'https://img.icons8.com/fluency/96/000000/zip.png',
+                                }
+                                let ext = files[i].name.split('.').pop();
+                                if (preview_file[ext]) {
+                                    $('[data-name="' + files[i].name + '"] img').attr('src', preview_file[ext]);
+                                } else {
+                                    $('[data-name="' + files[i].name + '"] img').attr('src', 'https://img.icons8.com/fluency/96/file.png');
+                                }
+                            } else {
+                            }
+                            resolve();
+                        }
+                        reader.readAsDataURL(files[i]);
+                    });
+                }
+
+            });
+
+            $('#addMoreFiles').click(function () {
+                $('#files').click();
+            });
+
+            $('#file-list').on('click', '.bi-trash-fill', function () {
+                $(this).closest('.col-6').remove();
+                if ($('#file-list .col-6').length == 0) {
+                    $('#uploadFiles').addClass('d-none');
+                }
+            });
+
+            $('#uploadFiles').click(async function () {
+                if ($('#file-list .col-6').length == 0) {
+                    return;
+                }
+                const { value: folderName } = await Swal.fire({
+                    title: 'กรุณากรอกรหัส DEMO',
+                    input: 'text',
+                    customClass: {
+                        input: 'rounded-pill'
+                    },
+                    inputPlaceholder: 'กรอกรหัส DEMO_XXXXXX',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'กรุณากรอกรหัส DEMO'
+                        }
+                    }
+                });
+
+                if (folderName) {
+                    Swal.fire({
+                        title: 'Uploading...',
+                        text: 'กำลังเตรียมอัพโหลดไฟล์',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const getToken = new Promise((resolve, reject) => {
+                        $.getJSON(scriptURL+ '?opt=getToken', function (data) {
+                            resolve(data.token);
+                        });
+                    });
+
+                    const getFolderId = new Promise((resolve, reject) => {
+                        $.getJSON(scriptURL + '?opt=getFolderId&folderName=' + folderName, function (data) {
+                            resolve(data.folderId);
+                        });
+                    });
+
+                    const [token, folderId] = await Promise.all([getToken, getFolderId]);
+
+                    $('#myForm').attr('data-authtoken', token);
+                    $('#myForm').attr('data-folderid', folderId);
+                    try {
+                        await uploadFiles({ folderName: folderName });
+                        Swal.fire('Success', 'Files uploaded successfully!', 'success');
+                    } catch (error) {
+                        Swal.fire('Error', 'Failed to upload files!', 'error');
+                    }
+                }
+            });
+        });
+
+        function convertDataURIToBinary(dataURI) {
+            var BASE64_MARKER = ';base64,';
+            var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+            var base64 = dataURI.substring(base64Index);
+            var raw = window.atob(base64);
+            var rawLength = raw.length;
+            var array = new Uint8Array(new ArrayBuffer(rawLength));
+            for (var i = 0; i < rawLength; i++) {
+                array[i] = raw.charCodeAt(i);
+            }
+            return new Blob([array]);
+        }
+
+        async function uploadFiles(obj) {
+            return new Promise((resolve, reject) => {
+                // let f = $('#myForm').find('input[type="file"]').toArray().map(r => $(r).prop('files')).filter(r => r.length > 0).map(r => [...r]).flat()
+                let f = $('#file-list .col-6').toArray().map(r => $(r).data('datauri')).map(r => convertDataURIToBinary(r))
+                let files = []
+                let file_length = f.length
+                if (file_length == 0) {
+                    resolve(obj)
+                }
+                f.forEach((file, i) => {
+                    let fr = new FileReader();
+                    fr.fileName = file.name;
+                    fr.fileSize = file.size;
+                    fr.fileType = file.type;
+                    fr.readAsArrayBuffer(file);
+                    fr.onload = e => {
+                        let id = 'p' + i
+                        let div = $('<div>').addClass('text-truncate').attr('id', id).html('Initializing.').appendTo('#progress')
+                        const f = e.target;
+                        const resource = {
+                            fileName: f.fileName,
+                            fileSize: f.fileSize,
+                            fileType: f.fileType,
+                            fileBuffer: f.result,
+                            accessToken: $('#myForm').attr('data-authtoken'),
+                            folderId: $('#myForm').attr('data-folderid')
+                        };
+                        const ru = new ResumableUploadToGoogleDrive();
+                        ru.Do(resource, function (res, err) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            console.log(res);
+                            let msg = "";
+                            if (res.status == "Uploading") {
+                                msg =
+                                    Math.round(
+                                        (res.progressNumber.current / res.progressNumber.end) * 100
+                                    ) +
+                                    "% (" +
+                                    f.fileName +
+                                    ")";
+                            } else {
+                                msg = res.status + " (" + f.fileName + ")";
+                            }
+
+                            if (res.status == "Done") {
+                                files.push(res.result)
+                                if (files.length == file_length) {
+                                    obj['files'] = files
+                                    resolve(obj)
+                                }
+                            }
+
+                            $('#' + id).html(msg);
+                        });
+                    };
+                });
+            })
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/tanaikech/ResumableUploadForGoogleDrive_js@master/resumableupload_js.min.js"></script>
+
+</body>
+
+</html>
