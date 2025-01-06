@@ -223,6 +223,7 @@
             queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
             queryArr.push(client + (('00000' + id).slice(-5)))
             queryArr= queryArr.map(q=>q.toUpperCase())
+            console.log("🚀 ~ queryArr:", queryArr)
             firestore.collection(client)
                 .where('e_code', "in", queryArr)
                 .where('time', ">=", start)
