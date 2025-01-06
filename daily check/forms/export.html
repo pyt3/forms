@@ -212,7 +212,9 @@
             month = parseInt(month)
             year = parseInt(year)
             let start = new Date(year, month - 1, 1).getTime()
+            console.log("🚀 ~ start:", start)
             let end = new Date(year, month, 1).getTime()
+            console.log("🚀 ~ end:", end)
             $.LoadingOverlay("show");
             let queryArr = []
 
