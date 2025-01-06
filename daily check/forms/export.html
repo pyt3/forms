@@ -212,7 +212,8 @@
             let end = new Date(year, month, 1).getTime()
             $.LoadingOverlay("show");
             firestore.collection(client)
-                .where('e_code', "==", code)
+                .where('e_code', ">=", code)
+                .where('e_code', "<=", code + '\uf8ff')
                 .where('time', ">=", start)
                 .where('time', "<", end)
                 .get()
@@ -258,7 +259,8 @@
                     localStorage.setItem('report_obj', JSON.stringify(queryobj[code]))
                     $.LoadingOverlay("hide");
                     console.log(location.origin)
-                    window.open(location.href.split('forms/export')[0] + '/' + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1', '_blank')
+                    console.log(location.href.split('forms/export')[0] + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1')
+                    window.open(location.href.split('forms/export')[0] + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1', '_blank')
                     console.log("🚀 ~ location.href.split('forms/export')[0] + '/' + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1", location.href.split('forms/export')[0] + '/' + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1')
                 })
 
