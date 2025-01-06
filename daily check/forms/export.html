@@ -218,10 +218,10 @@
             $.LoadingOverlay("show");
             let queryArr = []
 
-            queryArr.push(client + '_' + (('00000' + id).slice(-5)))
-            queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
-            queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
-            queryArr.push(client + (('00000' + id).slice(-5)))
+            queryArr.push(client + '_' + (('00000' + code).slice(-5)))
+            queryArr.push(client + 'D_' + (('00000' + code).slice(-5)))
+            queryArr.push('DEMO_' + (('000000' + code).slice(-6)))
+            queryArr.push(client + (('00000' + code).slice(-5)))
             queryArr= queryArr.map(q=>q.toUpperCase())
             console.log("🚀 ~ queryArr:", queryArr)
             firestore.collection(client)
