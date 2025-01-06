@@ -57,7 +57,7 @@ $(document).ready(() => {
     let weeknum = 1
     let week_check = {}
     Object.keys(testobj).forEach(key => {
-        console.log("🚀 ~ key", key)
+        
         let paper = '.' + key.toLowerCase()
         let isSetImage = false
         for (let i = 1; i <= (beforeuse_question_num + afteruse_question_num); i++) {
@@ -134,7 +134,6 @@ $(document).ready(() => {
             let parent = img.parent()
             parent.css('max-height', imgWidth)
         }
-
     })
 
     let imgs = document.querySelectorAll('.isloading')
@@ -156,10 +155,24 @@ $(document).ready(() => {
             }
         }
         else q = ''
-        $(paper + ' [name="daily-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
-        $(paper + ' [name="daily-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
-        $(paper + ' [name="daily-afteruse-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
-        $(paper + ' [name="daily-afteruse-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
+        let keys = ['staff', 'manager', 'staff_afteruse', 'manager_afteruse']
+        keys.forEach(key => {
+            q[q_key[key]] ? q[q_key[key]] = ('https://lh3.googleusercontent.com/d/' + q[q_key[key]].split('?id=')[1]) : ''
+            switch (key){
+                case 'staff':
+                    $(paper + ' [name="daily-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
+                    break
+                case 'manager':
+                    $(paper + ' [name="daily-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager']], class: 'rot270 ' + (q[q_key['manager']] ? 'isloading' : '') }))
+                    break
+                case 'staff_afteruse':
+                    $(paper + ' [name="daily-afteruse-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff_afteruse']], class: 'rot270 ' + (q[q_key['staff_afteruse']] ? 'isloading' : '') }))
+                    break
+                case 'manager_afteruse':
+                    $(paper + ' [name="daily-afteruse-approve' + '-' + i + '"]').append($('<img>', { src: q[q_key['manager_afteruse']], class: 'rot270 ' + (q[q_key['manager_afteruse']] ? 'isloading' : '') }))
+                    break
+            }
+        })
     }
 
     function incrementCounter() {
