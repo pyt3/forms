@@ -138,6 +138,7 @@
                 setFirebase(JSON.parse(config))
             } else {
                 $.post(script_url, { opt: 'getconst' }, async function (c) {
+                    console.log("🚀 ~ c:", c)
                     localStorage.setItem('config', JSON.stringify(c))
                     setFirebase(c)
                 })
