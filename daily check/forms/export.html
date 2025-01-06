@@ -230,7 +230,6 @@
                 .where('time', "<", end)
                 .get()
                 .then(async function (querySnapshot) {
-                    console.log(querySnapshot.empty)
                     if (querySnapshot.empty) {
                         $.LoadingOverlay("hide");
                         return Swal.fire({
@@ -240,6 +239,7 @@
                     }
                     let queryobj = {}
                     let form
+                    let e_code
                     querySnapshot.forEach((doc) => {
                         let d = doc.data()
                         console.log("🚀 !! d:", d)
@@ -267,8 +267,8 @@
                             })
                         }
                     });
-                    console.log(queryobj[code])
-                    localStorage.setItem('report_obj', JSON.stringify(queryobj[code]))
+                    console.log(queryobj)
+                    localStorage.setItem('report_obj', JSON.stringify(Object.values(queryobj)[0]))
                     $.LoadingOverlay("hide");
                     console.log(location.origin)
                     console.log(location.href.split('forms/export')[0] + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1')
