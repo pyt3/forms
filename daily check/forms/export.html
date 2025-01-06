@@ -195,6 +195,15 @@
             if (!auth.currentUser) {
                 await getAuth()
             }
+            if (/^\d+$/.test(code)) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาระบุรหัสเครื่องให้ถูกต้อง',
+                    html: '<span class="text-danger">ต้องระบุรหัสเครื่องให้ครบทั้งหมด</span>',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
             let year = $('#export-year').val()
             let month = $('#export-month').val()
             let code = $('#export-code').val()
@@ -212,11 +221,9 @@
             let end = new Date(year, month, 1).getTime()
             $.LoadingOverlay("show");
             firestore.collection(client)
-                .where('e_code', ">=", code)
-                .where('e_code', "<=", code + '\uf8ff')
+                .where('e_code', "==", code.toUpperCase())
                 .where('time', ">=", start)
                 .where('time', "<", end)
-                .orderBy('time')
                 .get()
                 .then(async function (querySnapshot) {
                     console.log(querySnapshot.empty)
