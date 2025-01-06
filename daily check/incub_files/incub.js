@@ -105,6 +105,12 @@ $(document).ready(() => {
         let q = week_check[key]
         console.log("🚀 ~ q", q)
         let target = $('[name="paper-week-' + (weeknum + 1) + '"]')
+        let keys = ['img_url', 'signature_staff', 'signature_manager']
+        keys.forEach(k => {
+            if (q[k]) {
+                q[k] = 'https://lh3.googleusercontent.com/d/' + q[k].split('?id=')[1]
+            }
+        })
         let img = $('<img>', { src: q.img_url, id: 'paper-week-' + (weeknum + 1), height: 17 * 6.2 }).addClass('paper-week')
         target.replaceWith($('<center>').append(img))
         $('[name="date-week-' + (weeknum + 1) + '"]').text(key)
