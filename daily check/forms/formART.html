@@ -106,7 +106,8 @@
         </div>
     </nav>
     <main style="margin-top: 50px;">
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-menu" aria-labelledby="offcanvas-menuLabel">
+        <div class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvas-menu"
+            aria-labelledby="offcanvas-menuLabel">
             <div class="offcanvas-header text-bg-primary">
                 <h5 class="offcanvas-title" id="offcanvasLabel"><i class="bi bi-stack"></i> Select Form</h5>
                 <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas"
@@ -114,17 +115,17 @@
             </div>
             <div class="offcanvas-body">
                 <ul class="nav nav-pills custom-nav-pills flex-column" role="tablist">
-                    <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Room</div>
+                    <!-- <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Room</div> -->
                     <li class="nav-item" role="presentation">
                         <button class="nav-link w-100 text-start active" id="pills-tab-med-gas" data-bs-toggle="pill"
                             data-bs-target="#tab-med-gas" type="button" role="tab" aria-selected="true">Medcal Gas
                             Medifold Room</button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <!-- <li class="nav-item" role="presentation">
                         <button class="nav-link w-100 text-start" id="pills-tab-status-room" data-bs-toggle="pill"
                             data-bs-target="#tab-status-room" type="button" role="tab" aria-selected="false">Status
                             Room</button>
-                    </li>
+                    </li> -->
                     <li class="nav-item" role="presentation">
                         <button class="nav-link w-100 text-start" id="pills-tab-stock-room" data-bs-toggle="pill"
                             data-bs-target="#tab-stock-room" type="button" role="tab" aria-selected="true">Stock
@@ -136,25 +137,63 @@
                             data-bs-target="#tab-liquid-nitrogen" type="button" role="tab" aria-selected="false">Liquid
                             Nitrogen Storage Room</button>
                     </li>
+                    <hr>
+                    <li class="nav-item" role="presentation">
+                        <div class="w-100 text-start px-3 pb-1 rounded fw-bold h5" disabled>Embryology Room</div>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-embryology-status" data-bs-toggle="pill"
+                            data-bs-target="#tab-embryology-status" type="button" role="tab" aria-selected="false">Room
+                            Status</button>
+                    </li>
+                    <div class="w-100 text-start px-3 pb-1 rounded fw-bold text-secondary" disabled>Medical Equipment
+                    </div>
+                    <ul>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-embryology-embryo"
+                                data-bs-toggle="pill" data-bs-target="#tab-embryology-embryo" type="button" role="tab"
+                                aria-selected="false">Embryo
+                                Culture</button>
+                        </li>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-embryology-refrigerator"
+                                data-bs-toggle="pill" data-bs-target="#tab-embryology-refrigerator" type="button"
+                                role="tab" aria-selected="false">Refrigerator</button>
+                        </li>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-embryology-incubator"
+                                data-bs-toggle="pill" data-bs-target="#tab-embryology-incubator" type="button"
+                                role="tab" aria-selected="false">Incubator</button>
+                        </li>
+                    </ul>
+                    </li>
                     <!-- sepatator -->
                     <hr>
-                    <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Medical
-                        Equipment
+                    <li class="nav-item" role="presentation">
+                        <div class="w-100 text-start px-3 pb-1 rounded fw-bold h5" disabled>Andrology Room</div>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-andrology-status" data-bs-toggle="pill"
+                            data-bs-target="#tab-andrology-status" type="button" role="tab" aria-selected="false">Room
+                            Status</button>
+                    </li>
+                    <div class="w-100 text-start px-3 pb-1 rounded fw-bold text-secondary" disabled>Medical Equipment
                     </div>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start" id="pills-tab-embryo" data-bs-toggle="pill"
-                            data-bs-target="#tab-embryo" type="button" role="tab" aria-selected="false">Embryo
-                            Culture</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start" id="pills-tab-refrigerator" data-bs-toggle="pill"
-                            data-bs-target="#tab-refrigerator" type="button" role="tab"
-                            aria-selected="false">Refrigerator</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start" id="pills-tab-incubator" data-bs-toggle="pill"
-                            data-bs-target="#tab-incubator" type="button" role="tab"
-                            aria-selected="false">Incubator</button>
+                    <ul>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-andrology-refrigerator"
+                                data-bs-toggle="pill" data-bs-target="#tab-andrology-refrigerator" type="button"
+                                role="tab" aria-selected="false">Refrigerator</button>
+                        </li>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-andrology-incubator"
+                                data-bs-toggle="pill" data-bs-target="#tab-andrology-incubator" type="button" role="tab"
+                                aria-selected="false">Incubator</button>
+                        </li>
+                    </ul>
                     </li>
                 </ul>
             </div>
@@ -329,136 +368,6 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade animate__animated" id="tab-status-room">
-                <div class="container mb-3 p-0">
-                    <div class="row">
-                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
-                            Status Room <span class="text-danger">ART</span>
-                        </div>
-                    </div>
-                </div>
-                <form id="statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
-                        <div class="row">
-                            <div class="col text-center">
-                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="statusroom-name" name="statusroom-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
-                        <div class="row">
-                            <div class="col text-center d-flex flex-column">
-                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
-                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
-                                    <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift"
-                                            id="status-room-shift-morning" value="เช้า" autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="status-room-shift-morning"><i
-                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
-                                    </div>
-                                    <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift"
-                                            id="status-room-shift-evening" value="เย็น" autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="status-room-shift-evening"><i
-                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
-                                        <span
-                                            class="fw-bold text-white bg-primary rounded-pill border px-4">DR-Analyst</span>
-                                    </div>
-                                    <div class="col-6 mt-0 text-center">
-                                        <label for="statusroom-dr-plessure">Pressure <span
-                                                class="text-muted">(Pa)</span></label>
-                                        <input type="number" step="0.05" inputmode="decimal"
-                                            name="statusroom-dr-plessure" id="statusroom-dr-plessure"
-                                            class="form-control text-center">
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-dr-temp">Temperature <span
-                                                class="text-muted">(°C)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-temp"
-                                            id="statusroom-dr-temp" class="form-control text-center" max="26" min="22">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-dr-humid">Humidity <span
-                                                class="text-muted">(%rH)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal" name="statusroom-dr-humid"
-                                            id="statusroom-dr-humid" class="form-control text-center" max="55" min="45">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="statusroom-dr-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
-                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Desktop
-                                            Meter</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-desktopmeter-temp">Temperature <span
-                                                class="text-muted">(°C)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal"
-                                            name="statusroom-desktopmeter-temp" id="statusroom-desktopmeter-temp"
-                                            class="form-control text-center" max="26" min="22">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="statusroom-desktopmeter-humid">Humidity <span
-                                                class="text-muted">(%rH)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal"
-                                            name="statusroom-desktopmeter-humid" id="statusroom-desktopmeter-humid"
-                                            class="form-control text-center" max="55" min="45">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="statusroom-desktopmeter-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
-                                        <span class="fw-bold text-light bg-info rounded-pill border px-4">
-                                            <i class="bi bi-bell-fill"></i> Alarm System</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-6 text-center">
-                                        <!-- radio with active and inactive status -->
-                                        <input type="radio" class="btn-check" name="statusroom-alarm"
-                                            id="statusroom-alarm-active" value="active" autocomplete="off" required>
-                                        <label class="btn btn-outline-primary  w-100" for="statusroom-alarm-active"><i
-                                                class="bi bi-check-circle-fill"></i> Active</label>
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <input type="radio" class="btn-check" name="statusroom-alarm"
-                                            id="statusroom-alarm-inactive" value="inactive" autocomplete="off" required>
-                                        <label class="btn btn-outline-danger w-100" for="statusroom-alarm-inactive"><i
-                                                class="bi bi-x-circle-fill"></i> Inactive</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 mt-3 text-center">
-                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
             <div class="tab-pane fade animate__animated" id="tab-stock-room">
                 <div class="container mb-3 p-0">
                     <div class="row">
@@ -549,8 +458,8 @@
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="liquid-nitrogen-name" name="liquid-nitrogen-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                                <input type="text" class="form-control name" id="liquid-nitrogen-name"
+                                    name="liquid-nitrogen-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
                     </section>
@@ -560,15 +469,17 @@
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
                                 <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="liquid-nitrogen-shift-morning"
-                                            value="เช้า" autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="liquid-nitrogen-shift-morning"><i
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="liquid-nitrogen-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="liquid-nitrogen-shift-morning"><i
                                                 class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
-                                        <input type="radio" class="btn-check" name="shift" id="liquid-nitrogen-shift-evening"
-                                            value="เย็น" autocomplete="off">
-                                        <label class="btn btn-outline-primary  w-100" for="liquid-nitrogen-shift-evening"><i
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="liquid-nitrogen-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="liquid-nitrogen-shift-evening"><i
                                                 class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
                                     </div>
                                 </div>
@@ -613,21 +524,161 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade animate__animated" id="tab-embryo">
+            <div class="tab-pane fade animate__animated" id="tab-embryology-status">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
-                            Embryo Culture <span class="text-danger">ART</span>
+                            <span class="text-danger">Embryology Room</span>
+                            Status
                         </div>
                     </div>
                 </div>
-                <form id="embryo-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                <form id="embryology-statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
                     <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="embryo-name" name="embryo-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                                <input type="text" class="form-control name" id="embryology-statusroom-name"
+                                    name="embryology-statusroom-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="status-room-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="status-room-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="status-room-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="status-room-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">DR-Analyst</span>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="embryology-statusroom-dr-plessure">Pressure <span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.05" inputmode="decimal"
+                                            name="embryology-statusroom-dr-plessure"
+                                            id="embryology-statusroom-dr-plessure" class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-dr-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-dr-temp" id="embryology-statusroom-dr-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-dr-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-dr-humid" id="embryology-statusroom-dr-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-statusroom-dr-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-desktopmeter-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-desktopmeter-temp"
+                                            id="embryology-statusroom-desktopmeter-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-desktopmeter-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-desktopmeter-humid"
+                                            id="embryology-statusroom-desktopmeter-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-statusroom-desktopmeter-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-light bg-info rounded-pill border px-4">
+                                            <i class="bi bi-bell-fill"></i> Alarm System</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <input type="radio" class="btn-check" name="embryology-statusroom-alarm"
+                                            id="embryology-statusroom-alarm-active" value="active" autocomplete="off"
+                                            required>
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="embryology-statusroom-alarm-active"><i
+                                                class="bi bi-check-circle-fill"></i> Active</label>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <input type="radio" class="btn-check" name="embryology-statusroom-alarm"
+                                            id="embryology-statusroom-alarm-inactive" value="inactive"
+                                            autocomplete="off" required>
+                                        <label class="btn btn-outline-danger w-100"
+                                            for="embryology-statusroom-alarm-inactive"><i
+                                                class="bi bi-x-circle-fill"></i> Inactive</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-embryology-embryo">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Embryology Room</span>
+                            Embryo Culture
+                        </div>
+                    </div>
+                </div>
+                <form id="embryology-embryo-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="embryology-embryo-name"
+                                    name="embryology-embryo-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
                     </section>
@@ -652,82 +703,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-white bg-danger rounded-pill border px-4">MINC <span
-                                                class="text-warning">A</span></span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-minc-a-controlbar">Control Bar</label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-minc-a-controlbar" id="embryo-minc-a-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-minc-a-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-minc-a-temp"
-                                            id="embryo-minc-a-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="embryo-minc-a-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-white bg-danger rounded-pill border px-4">MINC <span
-                                                class="text-warning">B</span></span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-minc-b-controlbar">Control Bar</label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-minc-b-controlbar" id="embryo-minc-b-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-minc-b-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-minc-b-temp"
-                                            id="embryo-minc-b-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="embryo-minc-b-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-white bg-danger rounded-pill border px-4">MINC <span
-                                                class="text-warning">C</span></span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-minc-c-controlbar">Control Bar</label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-minc-c-controlbar" id="embryo-minc-c-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-minc-c-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-minc-c-temp"
-                                            id="embryo-minc-c-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="embryo-minc-c-alert">
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+
                     <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -739,25 +715,13 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-planer-a-controlbar">Control Bar</label>
+                                        <label for="embryology-embryo-planer-a-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-planer-a-controlbar" id="embryo-planer-a-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-planer-a-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-planer-a-temp"
-                                            id="embryo-planer-a-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                    <div class="col-12 text-start">
-                                        <label for="embryo-planer-a-pergedtime" class="ms-2">CO<sub>2</sub> Purged
-                                            Time</label>
-                                        <input name="embryo-planer-a-pergedtime" id="embryo-planer-a-pergedtime"
-                                            class="form-control text-center no-required">
+                                            name="embryology-embryo-planer-a-temp" id="embryology-embryo-planer-a-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="embryo-planer-a-alert">
+                                <div class="row mt-2" id="embryology-embryo-planer-a-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -769,25 +733,13 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-planer-b-controlbar">Control Bar</label>
+                                        <label for="embryology-embryo-planer-b-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-planer-b-controlbar" id="embryo-planer-b-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-planer-b-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-planer-b-temp"
-                                            id="embryo-planer-b-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                    <div class="col-12 text-start">
-                                        <label for="embryo-planer-b-pergedtime" class="ms-2">CO<sub>2</sub> Purged
-                                            Time</label>
-                                        <input name="embryo-planer-b-pergedtime" id="embryo-planer-b-pergedtime"
-                                            class="form-control text-center no-required">
+                                            name="embryology-embryo-planer-b-temp" id="embryology-embryo-planer-b-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="embryo-planer-b-alert">
+                                <div class="row mt-2" id="embryology-embryo-planer-b-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -799,25 +751,13 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-planer-c-controlbar">Control Bar</label>
+                                        <label for=embryology-embryo-planer-c-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-planer-c-controlbar" id="embryo-planer-c-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-planer-c-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-planer-c-temp"
-                                            id="embryo-planer-c-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                    <div class="col-12 text-start">
-                                        <label for="embryo-planer-c-pergedtime" class="ms-2">CO<sub>2</sub> Purged
-                                            Time</label>
-                                        <input name="embryo-planer-c-pergedtime" id="embryo-planer-c-pergedtime"
-                                            class="form-control text-center no-required">
+                                            name="embryology-embryo-planer-c-temp" id="embryology-embryo-planer-c-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="embryo-planer-c-alert">
+                                <div class="row mt-2" id="embryology-embryo-planer-c-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -829,25 +769,13 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-planer-d-controlbar">Control Bar</label>
+                                        <label for="embryology-embryo-planer-d-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-planer-d-controlbar" id="embryo-planer-d-controlbar"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-planer-d-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-planer-d-temp"
-                                            id="embryo-planer-d-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                    <div class="col-12 text-start">
-                                        <label for="embryo-planer-d-pergedtime" class="ms-2">CO<sub>2</sub> Purged
-                                            Time</label>
-                                        <input name="embryo-planer-d-pergedtime" id="embryo-planer-d-pergedtime"
-                                            class="form-control text-center no-required">
+                                            name="embryology-embryo-planer-d-temp" id="embryology-embryo-planer-d-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="embryo-planer-d-alert">
+                                <div class="row mt-2" id="embryology-embryo-planer-d-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -859,25 +787,200 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-planer-e-controlbar">Control Bar</label>
+                                        <label for="embryology-embryo-planer-e-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-planer-e-controlbar" id="embryo-planer-e-controlbar"
+                                            name="embryology-embryo-planer-e-temp" id="embryology-embryo-planer-e-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-planer-e-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">A</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-a-co2" id="embryology-embryo-ec6s-a-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-a-o2" id="embryology-embryo-ec6s-a-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-a-controlbar_co2"
+                                            id="embryology-embryo-ec6s-a-controlbar_co2"
                                             class="form-control text-center">
                                     </div>
                                     <div class="col-6 text-center">
-                                        <label for="embryo-planer-e-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-planer-e-temp"
-                                            id="embryo-planer-e-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
+                                        <label for="embryology-embryo-ec6s-a-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-a-controlbar_n2"
+                                            id="embryology-embryo-ec6s-a-controlbar_n2"
+                                            class="form-control text-center">
                                     </div>
-                                    <div class="col-12 text-start">
-                                        <label for="embryo-planer-e-pergedtime" class="ms-2">CO<sub>2</sub> Purged
-                                            Time</label>
-                                        <input name="embryo-planer-e-pergedtime" id="embryo-planer-e-pergedtime"
-                                            class="form-control text-center no-required">
+
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-a-temp" id="embryology-embryo-ec6s-a-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="embryo-planer-e-alert">
+                                <div class="row mt-2" id="embryology-embryo-ec6s-a-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">B</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-b-co2" id="embryology-embryo-ec6s-b-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-b-o2" id="embryology-embryo-ec6s-b-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-b-controlbar_co2"
+                                            id="embryology-embryo-ec6s-b-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-b-controlbar_n2"
+                                            id="embryology-embryo-ec6s-b-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-b-temp" id="embryology-embryo-ec6s-b-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+
+
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-ec6s-b-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">C</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-c-co2" id="embryology-embryo-ec6s-c-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-c-o2">O<sub>2</sub></label>
+                                        <input type="embryology-number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-c-o2" id="embryology-embryo-ec6s-c-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-c-controlbar_co2"
+                                            id="embryology-embryo-ec6s-c-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-c-controlbar_n2"
+                                            id="embryology-embryo-ec6s-c-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-c-temp" id="embryology-embryo-ec6s-c-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-ec6s-c-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">D</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-d-co2" id="embryology-embryo-ec6s-d-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-d-o2" id="embryology-embryo-ec6s-d-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-d-controlbar_co2"
+                                            id="embryology-embryo-ec6s-d-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-d-controlbar_n2"
+                                            id="embryology-embryo-ec6s-d-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-d-temp" id="embryology-embryo-ec6s-d-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-ec6s-d-alert">
                                 </div>
                             </div>
                         </div>
@@ -893,128 +996,48 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-co2">CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-embryoplus-co2"
-                                            id="embryo-embryoplus-co2" class="form-control text-center" min="5.7"
-                                            max="6.3">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-o2">O<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-embryoplus-o2"
-                                            id="embryo-embryoplus-o2" class="form-control text-center" min="4.5"
-                                            max="5.5">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-controlbar-co2">C.Bar CO<sub>2</sub></label>
+                                        <label for="embryology-embryo-embryoplus-co2">CO<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-embryoplus-controlbar-co2"
-                                            id="embryo-embryoplus-controlbar-co2" class="form-control text-center">
+                                            name="embryology-embryo-embryoplus-co2"
+                                            id="embryology-embryo-embryoplus-co2" class="form-control text-center"
+                                            min="5.7" max="6.3">
                                     </div>
                                     <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-controlbar-n2">C.Bar N<sub>2</sub></label>
+                                        <label for="embryology-embryo-embryoplus-o2">O<sub>2</sub></label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-embryoplus-controlbar-n2" id="embryo-embryoplus-controlbar-n2"
+                                            name="embryology-embryo-embryoplus-o2" id="embryology-embryo-embryoplus-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-embryoplus-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.7" max="0.9"
+                                            name="embryology-embryo-embryoplus-controlbar_co2"
+                                            id="embryology-embryo-embryoplus-controlbar_co2"
                                             class="form-control text-center">
                                     </div>
                                     <div class="col-6 text-center">
-                                        <label for="embryo-embryoplus-temp">Temperature</label>
+                                        <label for="embryology-embryo-embryoplus-controlbar_n2">C.Bar
+                                            N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.7" max="0.9"
+                                            name="embryology-embryo-embryoplus-controlbar_n2"
+                                            id="embryology-embryo-embryoplus-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-embryoplus-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-embryoplus-temp" id="embryo-embryoplus-temp"
-                                            class="form-control text-center" min="36.8" max="37.2">
+                                            name="embryology-embryo-embryoplus-temp"
+                                            id="embryology-embryo-embryoplus-temp" class="form-control text-center"
+                                            min="36.8" max="37.2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="embryo-embryoplus-alert">
+                                <div class="row mt-2" id="embryology-embryo-embryoplus-alert">
                                 </div>
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
-                                                class="text-warning">A</span></span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-a-co2">CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-co2"
-                                            id="embryo-ec6s-a-co2" class="form-control text-center" min="5.7" max="6.3">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-a-o2">O<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-o2"
-                                            id="embryo-ec6s-a-o2" class="form-control text-center" min="4.5" max="5.5">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-a-controlbar-co2">C.Bar CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-ec6s-a-controlbar-co2" id="embryo-ec6s-a-controlbar-co2"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-a-controlbar-n2">C.Bar N<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-ec6s-a-controlbar-n2" id="embryo-ec6s-a-controlbar-n2"
-                                            class="form-control text-center">
-                                    </div>
 
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-a-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-a-temp"
-                                            id="embryo-ec6s-a-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="embryo-ec6s-a-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
-                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
-                                                class="text-warning">B</span></span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1">
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-co2">CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-b-co2"
-                                            id="embryo-ec6s-b-co2" class="form-control text-center" min="5.7" max="6.3">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-o2">O<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-b-o2"
-                                            id="embryo-ec6s-b-o2" class="form-control text-center" min="4.5" max="5.5">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-controlbar-co2">C.Bar CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-ec6s-b-controlbar" id="embryo-ec6s-b-controlbar-co2"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-controlbar-n2">C.Bar N<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal"
-                                            name="embryo-ec6s-b-controlbar-n2" id="embryo-ec6s-b-controlbar-n2"
-                                            class="form-control text-center">
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <label for="embryo-ec6s-b-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="embryo-ec6s-b-temp"
-                                            id="embryo-ec6s-b-temp" class="form-control text-center" min="36.8"
-                                            max="37.2">
-                                    </div>
-
-
-                                </div>
-                                <div class="row mt-2" id="embryo-ec6s-b-alert">
-                                </div>
-                            </div>
-                        </div>
-                    </section>
                     <div class="row justify-content-center">
                         <div class="col-md-4 mt-3 text-center">
                             <button type="submit" class="btn btn-danger btn-lg w-100">บันทึกข้อมูล</button>
@@ -1022,21 +1045,23 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade animate__animated" id="tab-refrigerator">
+            <div class="tab-pane fade animate__animated" id="tab-embryology-refrigerator">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
-                            Refrigerator <span class="text-danger">ART</span>
+                            <span class="text-danger">Embryology Room</span>
+                            Refrigerator
                         </div>
                     </div>
                 </div>
-                <form id="refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                <form id="embryology-refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
                     <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="refrigerator-name"
-                                    name="refrigerator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                                <input type="text" class="form-control name" id="embryology-refrigerator-name"
+                                    name="embryology-refrigerator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
                     </section>
@@ -1074,52 +1099,35 @@
                                 </div>
                                 <div class="row justify-content-center g-3">
                                     <div class="col-6 text-center">
-                                        <label for="refrigerator-refrig-temp">Temperature <span
+                                        <label for="embryology-refrigerator-refrig-temp">Temperature <span
                                                 class="text-muted">(°C)</span></label>
                                         <input type="number" step="0.01" inputmode="decimal"
-                                            name="refrigerator-refrig-temp" id="refrigerator-refrig-temp"
-                                            class="form-control text-center" max="8" min="2">
+                                            name="embryology-refrigerator-refrig-temp"
+                                            id="embryology-refrigerator-refrig-temp" class="form-control text-center"
+                                            max="8" min="2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="refrigerator-refrig-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
-                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">ESCORT
-                                            (DataLogger)</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3">
-                                    <div class="col-6 text-center">
-                                        <label for="refrigerator-escort-temp">Temperature <span
-                                                class="text-muted">(°C)</span></label>
-                                        <input type="number" step="0.01" inputmode="decimal"
-                                            name="refrigerator-escort-temp" id="refrigerator-escort-temp"
-                                            class="form-control text-center" max="8" min="2">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="refrigerator-escort-alert">
+                                <div class="row mt-2" id="embryology-refrigerator-refrig-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
                                     <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
                                         <span
-                                            class="fw-bold text-light bg-danger rounded-pill border px-4">Thermometer</span>
+                                            class="fw-bold text-light bg-danger rounded-pill border px-4">DataLogger</span>
                                     </div>
                                 </div>
                                 <div class="row justify-content-center g-3">
                                     <div class="col-6 text-center">
-                                        <label for="refrigerator-thermo-temp">Temperature <span
+                                        <label for="embryology-refrigerator-thermo-temp">Thermometer <span
                                                 class="text-muted">(°C)</span></label>
                                         <input type="number" step="0.01" inputmode="decimal"
-                                            name="refrigerator-thermo-temp" id="refrigerator-thermo-temp"
-                                            class="form-control text-center" max="8" min="2">
+                                            name="embryology-refrigerator-thermo-temp"
+                                            id="embryology-refrigerator-thermo-temp" class="form-control text-center"
+                                            max="8" min="2">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="refrigerator-thermo-alert">
+                                <div class="row mt-2" id="embryology-refrigerator-thermo-alert">
                                 </div>
                             </div>
                         </div>
@@ -1131,21 +1139,23 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade animate__animated" id="tab-incubator">
+            <div class="tab-pane fade animate__animated" id="tab-embryology-incubator">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
-                            Incubator <span class="text-danger">ART</span>
+                            <span class="text-danger">Embryology Room</span>
+                            Incubator
                         </div>
                     </div>
                 </div>
-                <form id="incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                <form id="embryology-incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
                     <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="incubator-name" name="incubator-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                                <input type="text" class="form-control name" id="embryology-incubator-name"
+                                    name="embryology-incubator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
                     </section>
@@ -1181,13 +1191,14 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="incubator-memmert-temp">Temperature</label>
+                                        <label for="embryology-incubator-memmert-temp">Temperature</label>
                                         <input type="number" step="0.1" inputmode="decimal"
-                                            name="incubator-memmert-temp" id="incubator-memmert-temp"
-                                            class="form-control text-center" min="36" max="38">
+                                            name="embryology-incubator-memmert-temp"
+                                            id="embryology-incubator-memmert-temp" class="form-control text-center"
+                                            min="36" max="38">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="incubator-memmert-alert">
+                                <div class="row mt-2" id="embryology-incubator-memmert-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -1199,18 +1210,327 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-6 text-center">
-                                        <label for="incubator-astec-temp">Temperature</label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="incubator-astec-temp"
-                                            id="incubator-astec-temp" class="form-control text-center" min="36"
-                                            max="38">
+                                        <label for="embryology-incubator-astec-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-incubator-astec-temp" id="embryology-incubator-astec-temp"
+                                            class="form-control text-center" min="36" max="38">
                                     </div>
                                     <div class="col-6 text-center">
-                                        <label for="incubator-astec-co2">CO<sub>2</sub></label>
-                                        <input type="number" step="0.1" inputmode="decimal" name="incubator-astec-co2"
-                                            id="incubator-astec-co2" class="form-control text-center" min="5" max="7">
+                                        <label for="embryology-incubator-astec-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-incubator-astec-co2" id="embryology-incubator-astec-co2"
+                                            class="form-control text-center" min="5" max="7">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="incubator-astec-alert">
+                                <div class="row mt-2" id="embryology-incubator-astec-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-danger btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-andrology-status">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Andrology Room</span>
+                            Status
+                        </div>
+                    </div>
+                </div>
+                <form id="andrology-statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="andrology-statusroom-name"
+                                    name="andrology-statusroom-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-status-room-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary w-100" for="andrology-status-room-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-status-room-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary w-100" for="andrology-status-room-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-dark bg-info rounded-pill border px-4">Thermometer</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-dr-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-dr-temp" id="andrology-statusroom-dr-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-dr-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-dr-humid" id="andrology-statusroom-dr-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <label for="andrology-statusroom-dr-pressure">Pressure<span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-dr-pressure"
+                                            id="andrology-statusroom-dr-pressure" class="form-control text-center"
+                                            max="22" min="18">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-statusroom-dr-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-desktopmeter-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-desktopmeter-temp"
+                                            id="andrology-statusroom-desktopmeter-temp" class="form-control text-center"
+                                            max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-desktopmeter-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-desktopmeter-humid"
+                                            id="andrology-statusroom-desktopmeter-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-statusroom-desktopmeter-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-andrology-refrigerator">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Andrology Room</span>
+                            Refrigerator
+                        </div>
+                    </div>
+                </div>
+                <form id="andrology-refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="andrology-refrigerator-name"
+                                    name="andrology-refrigerator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-refrigerator-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-refrigerator-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i>
+                                            รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-refrigerator-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-refrigerator-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i>
+                                            รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">Refrigerator</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-refrigerator-refrig-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-refrigerator-refrig-temp"
+                                            id="andrology-refrigerator-refrig-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-refrigerator-refrig-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">ESCORT
+                                            (DataLogger)</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-refrigerator-escort-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-refrigerator-escort-temp"
+                                            id="andrology-refrigerator-escort-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-refrigerator-escort-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-light bg-danger rounded-pill border px-4">Refrigerator</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-refrigerator-thermo-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-refrigerator-thermo-temp"
+                                            id="andrology-refrigerator-thermo-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-refrigerator-thermo-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-andrology-incubator">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Andrology Room</span>
+                            Incubator
+                        </div>
+                    </div>
+                </div>
+                <form id="andrology-incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="andrology-incubator-name"
+                                    name="andrology-incubator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-incubator-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-incubator-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-incubator-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-incubator-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-primary rounded-pill border px-4">ASTEC SCA
+                                            165DS</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-incubator-astec-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="andrology-incubator-astec-temp" id="andrology-incubator-astec-temp"
+                                            class="form-control text-center" min="36" max="38">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-incubator-astec-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="andrology-incubator-astec-co2" id="andrology-incubator-astec-co2"
+                                            class="form-control text-center" min="5" max="7">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-incubator-astec-alert">
                                 </div>
                             </div>
                         </div>
@@ -1327,13 +1647,6 @@
                 let invalid = $('<div>', { class: 'invalid-feedback' }).text('กรุณากรอก ' + $(parent.find('label')[0]).text())
                 parent.append(invalid)
             })
-            // $('#med-gas-checklist input, #med-gas-checklist select, input[type="checkbox"], input[type="radio"]').attr('required', true).each(function () {
-            //     let parent = $(this).parent()
-            //     if ($(this).attr('type') == 'checkbox') parent = $(this).parent().parent()
-            //     else if ($(this).attr('type') == 'radio') parent = $(this).parent()
-            //     let invalid = $('<div>', { class: 'invalid-feedback' }).text('กรุณากรอก ' + $(parent.find('label')[0]).text())
-            //     parent.append(invalid)
-            // })
             $('#clear-data-btn').click(() => {
                 localStorage.removeItem('history')
                 location.reload()
@@ -1472,7 +1785,7 @@
                                 if (key.indexOf('-lot') > -1) $('#' + key).val(data[key])
                             })
                             console.log(localStorage.getItem('user'));
-                            if (localStorage.getItem('user') != null) {
+                            if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
                                 $('#name').val(localStorage.getItem('user') || "")
                             } else {
                                 $('#name').val("")
@@ -1550,6 +1863,8 @@
             })
             if ($('.name').toArray().map(a => a.value).filter(a => a != '').length > 0) {
                 localStorage.setItem('user', $('.name').toArray().map(a => a.value).filter(a => a != '')[0])
+            } else {
+                localStorage.removeItem('user')
             }
             atsave[form.attr('id')] = obj
             localStorage.setItem('history', JSON.stringify(atsave))
@@ -1557,7 +1872,7 @@
         }
 
         function getHistory() {
-            $('.name').val(localStorage.getItem('user'))
+            $('.name').val(localStorage.getItem('user') == null ? "" : localStorage.getItem('user'))
             let history = localStorage.getItem('history')
             if (history != null) {
                 let obj = JSON.parse(history)
@@ -1624,33 +1939,12 @@ Right  =  ${obj['n2-manifold-right']} psi
 บันทึกโดย
 @${obj.name}`
                     break
-                case "statusroom-checklist":
-                    message = `👉 ผลการตรวจเช็ค Status Room
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-DR-Analyst
-👉 temperature = ${obj['statusroom-dr-temp']} ํC
-👉 humidity = ${obj['statusroom-dr-humid']} %RH
-👉 pressure = ${obj['statusroom-dr-plessure']} Pa
--------------------------------
-
-Desktop-Meter
-👉 temperature = ${obj['statusroom-desktopmeter-temp']} ํC
-👉 humidity = ${obj['statusroom-desktopmeter-humid']} %RH
--------------------------------
-
-Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
-
-บันทึกโดย
-@${obj['statusroom-name']}`
-                    break
                 case "stockroom-checklist":
                     message = `👉 ผลการตรวจเช็ค Stock Room
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
-👉temperature = ${obj['stockroom-thermo-temp']} ํC
+👉temperature = ${obj['stockroom-thermo-temp']}  ํC
 👉humidity = ${obj['stockroom-thermo-humid']} %RH
 -------------------------------
 
@@ -1662,125 +1956,194 @@ Alarm System is ${obj['statusroom-alarm'].toUpperCase()}
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
-👉temperature = ${obj['liquid-nitrogen-thermo-temp']} ํC
-👉humidity = ${obj['liquid-nitrogen-humid']} %RH
+👉temperature = ${obj['liquid-nitrogen-thermo-temp']}  ํC
+👉humidity = ${obj['liquid-nitrogen-thermo-humid']} %RH
 -------------------------------
 
 บันทึกโดย
 @${obj['liquid-nitrogen-name']}`
                     break
-                case "embryo-checklist":
-                    message = `👉 ผลการตรวจเช็ค Embryo Culture
+                case "embryology-statusroom-checklist":
+                    message = `👉 ผลการตรวจเช็ค Status Room Embryology
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
-MINC A
-👉 control bar = ${obj['embryo-minc-a-controlbar']} bar
-👉 temperature = ${obj['embryo-minc-a-temp']} ํC
+DR-Analyst
+👉 temperature = ${obj['embryology-statusroom-dr-temp']}  ํC
+👉 humidity = ${obj['embryology-statusroom-dr-humid']} %RH
+👉 pressure = ${obj['embryology-statusroom-dr-plessure']} Pa
 -------------------------------
 
-MINC B
-👉 control bar = ${obj['embryo-minc-b-controlbar']} bar
-👉 temperature = ${obj['embryo-minc-b-temp']} ํC
+Desktop-Meter
+👉 temperature = ${obj['embryology-statusroom-desktopmeter-temp']}  ํC
+👉 humidity = ${obj['embryology-statusroom-desktopmeter-humid']} %RH
 -------------------------------
 
-MINC C
-👉 control bar = ${obj['embryo-minc-c-controlbar']} bar
-👉 temperature = ${obj['embryo-minc-c-temp']} ํC
--------------------------------
+Alarm System is ${obj['embryology-statusroom-alarm'].toUpperCase()}
 
-// PLANER A-E
+บันทึกโดย
+@${obj['embryology-statusroom-name']}`
+                    break
+                case "embryology-embryo-checklist":
+                    message = `👉 ผลการตรวจเช็ค Embryo Culture ห้อง Embryology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
 PLANER A
-👉 control bar = ${obj['embryo-planer-a-controlbar']} bar
-👉 temperature = ${obj['embryo-planer-a-temp']} ํC
-${obj['embryo-planer-a-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-a-pergedtime']}
+👉 temperature = ${obj['embryology-embryo-planer-a-temp']}  ํC
 -------------------------------
 
 PLANER B
-👉 control bar = ${obj['embryo-planer-b-controlbar']} bar
-👉 temperature = ${obj['embryo-planer-b-temp']} ํC
-${obj['embryo-planer-b-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-b-pergedtime']}
+👉 temperature = ${obj['embryology-embryo-planer-b-temp']}  ํC
 -------------------------------
 
 PLANER C
-👉 control bar = ${obj['embryo-planer-c-controlbar']} bar
-👉 temperature = ${obj['embryo-planer-c-temp']} ํC
-${obj['embryo-planer-c-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-c-pergedtime']}
+👉 temperature = ${obj['embryology-embryo-planer-c-temp']}  ํC
 -------------------------------
 
 PLANER D
-👉 control bar = ${obj['embryo-planer-d-controlbar']} bar
-👉 temperature = ${obj['embryo-planer-d-temp']} ํC
-${obj['embryo-planer-d-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-d-pergedtime']}
+👉 temperature = ${obj['embryology-embryo-planer-d-temp']}  ํC
 -------------------------------
 
 PLANER E
-👉 control bar = ${obj['embryo-planer-e-controlbar']} bar
-👉 temperature = ${obj['embryo-planer-e-temp']} ํC
-${obj['embryo-planer-e-pergedtime'] == '' ? '' : '👉perged time = ' + obj['embryo-planer-e-pergedtime']}
+👉 temperature = ${obj['embryology-embryo-planer-e-temp']}  ํC
 -------------------------------
 
 EMBRYO PLUS
-👉 CO2 = ${obj['embryo-embryoplus-co2']} %
-👉 O2 = ${obj['embryo-embryoplus-o2']} %
+👉 CO2 = ${obj['embryology-embryo-embryoplus-co2']} %
+👉 O2 = ${obj['embryology-embryo-embryoplus-o2']} %
 
-👉 control bar CO2 = ${obj['embryo-embryoplus-controlbar-co2']} bar
-👉 control bar N2 = ${obj['embryo-embryoplus-controlbar-n2']} bar
+👉 control bar CO2 = ${obj['embryology-embryo-embryoplus-controlbar-co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-embryoplus-controlbar-n2']} bar
 
-👉 temperature = ${obj['embryo-embryoplus-temp']} ํC
+👉 temperature = ${obj['embryology-embryo-embryoplus-temp']}  ํC
 -------------------------------
 
 EC6S A
-👉 CO2 = ${obj['embryo-ec6s-a-co2']} %
-👉 O2 = ${obj['embryo-ec6s-a-o2']} %
+👉 CO2 = ${obj['embryology-embryo-ec6s-a-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-a-o2']} %
 
-👉 control bar CO2 = ${obj['embryo-ec6s-a-controlbar-co2']} bar
-👉 control bar N2 = ${obj['embryo-ec6s-a-controlbar-n2']} bar
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-a-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-a-controlbar_n2']} bar
 
-👉 temperature = ${obj['embryo-ec6s-a-temp']} ํC
+👉 temperature = ${obj['embryology-embryo-ec6s-a-temp']}  ํC
+-------------------------------
+
+EC6S B
+👉 CO2 = ${obj['embryology-embryo-ec6s-b-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-b-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-b-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-b-controlbar_n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-ec6s-b-temp']}  ํC
+-------------------------------
+
+EC6S C
+👉 CO2 = ${obj['embryology-embryo-ec6s-c-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-c-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-c-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-c-controlbar_n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-ec6s-c-temp']}  ํC
+-------------------------------
+
+EC6S D
+👉 CO2 = ${obj['embryology-embryo-ec6s-d-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-d-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-d-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-d-controlbar_n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-ec6s-d-temp']}  ํC
 -------------------------------
 
 บันทึกโดย
-@${obj['embryo-name']}`
+@${obj['embryology-embryo-name']}`
                     break
-                case "refrigerator-checklist":
-                    message = `👉 ผลการตรวจเช็ค Refrigerator
+                case "embryology-refrigerator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 Refrigerator
-👉 temperature = ${obj['refrigerator-refrig-temp']} ํC
+👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
 -------------------------------
 
-Thermometer
-👉 temperature = ${obj['refrigerator-thermo-temp']} ํC
--------------------------------
-
-ESCORT
-👉 temperature = ${obj['refrigerator-escort-temp']} ํC
+DataLogger
+👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
 -------------------------------
 
 บันทึกโดย
-@${obj['refrigerator-name']}`
+@${obj['embryology-refrigerator-name']}`
                     break
-                case "incubator-checklist":
-                    message = `👉 ผลการตรวจเช็ค Incubator
+                case "embryology-incubator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
 ASTEC
-👉 CO2 = ${obj['incubator-astec-co2']}
-👉 temperature = ${obj['incubator-astec-temp']} ํC
+👉 CO2 = ${obj['embryology-incubator-astec-co2']} %
+👉 temperature = ${obj['embryology-incubator-astec-temp']}  ํC
 -------------------------------
 
 MEMMERT
-👉 temperature = ${obj['incubator-memmert-temp']} ํC
+👉 temperature = ${obj['embryology-incubator-memmert-temp']}  ํC
 -------------------------------
 
 บันทึกโดย
-@${obj['incubator-name']}`
+@${obj['embryology-incubator-name']}`
+                    break
+                case "andrology-statusroom-checklist":
+                    message = `👉 ผลการตรวจเช็ค Status Room Andrology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+Temperature
+👉 temperature = ${obj['andrology-statusroom-dr-temp']}  ํC
+👉 humidity = ${obj['andrology-statusroom-dr-humid']} %RH
+👉 pressure = ${obj['andrology-statusroom-dr-pressure']} Pa
+-------------------------------
+
+Thermo-Hygrometer
+👉 temperature = ${obj['andrology-statusroom-desktopmeter-temp']}  ํC
+👉 humidity = ${obj['andrology-statusroom-desktopmeter-humid']} %RH
+-------------------------------
+
+บันทึกโดย
+@${obj['andrology-statusroom-name']}`
                     break
 
+                case "andrology-refrigerator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Andrology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+Refrigerator
+👉 temperature = ${obj['andrology-refrigerator-thermo-temp']}  ํC
+-------------------------------
+
+ESCORT
+👉 temperature = ${obj['andrology-refrigerator-escort-temp']}  ํC
+-------------------------------
+
+บันทึกโดย
+@${obj['andrology-refrigerator-name']}`
+                    break
+                case "andrology-incubator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Andrology
+                
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+ASTEC SCA 165DS
+👉 temperature = ${obj['andrology-incubator-astec-temp']}  ํC
+👉 CO2 = ${obj['andrology-incubator-astec-co2']} %
+-------------------------------
+
+บันทึกโดย
+@${obj['andrology-incubator-name']}`
+                    break
                 default: return
             }
 
@@ -1828,7 +2191,7 @@ MEMMERT
                 obj[a.name] = a.value.toString()
             })
             console.log(obj);
-            obj.opt = 'submit'
+            obj.opt = 'submittest'
             obj.form = $(form).attr('id')
             console.log(obj);
             $.LoadingOverlay("show");

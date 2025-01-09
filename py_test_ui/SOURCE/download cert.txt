@@ -56,10 +56,10 @@ async function download_cert(btn) {
         let id = href.split('id=')[1].split('&')[0]
         let pdf_link
         if (href.includes('page=pm-cert')) {
-          pdf_link = `${pdf_page}&id=${id}`
+          pdf_link = `${pdf_page}&id=${id}&naview=1`
         }
         else if (href.includes('page=cal-cert')) {
-          pdf_link = `${cal_page}&id=${id}`
+          pdf_link = `${cal_page}&id=${id}&naview=1`
         }
         approved_pdf_urls.push({ name, pdf_link })
       }
