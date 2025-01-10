@@ -1927,265 +1927,18 @@
             );
         }
 
-        function sendLineNotify(obj) {
-            let message
-            switch (obj.form) {
-                case "med-gas-checklist":
-                    message = `👉 ผลการตรวจเช็คแก็สทางการแพทย์
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-👉 Trigas Manifold
-Left  =  ${obj['trigas-manifold-left']} psi
-Right  =  ${obj['trigas-manifold-right']} psi
--------------------------------
-
-👉 CO2 Manifold
-Left  =  ${obj['c02-manifold-left']} psi
-Right  =  ${obj['c02-manifold-right']} psi
--------------------------------
-
-👉 N2 Manifold
-Left  =  ${obj['n2-manifold-left']} psi
-Right  =  ${obj['n2-manifold-right']} psi
--------------------------------
-
-บันทึกโดย
-@${obj.name}`
-                    break
-                case "stockroom-checklist":
-                    message = `👉 ผลการตรวจเช็ค Stock Room
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-👉temperature = ${obj['stockroom-thermo-temp']}  ํC
-👉humidity = ${obj['stockroom-thermo-humid']} %RH
--------------------------------
-
-บันทึกโดย
-@${obj['stockroom-name']}`
-                    break
-                case "liquid-nitrogen-checklist":
-                    message = `👉 ผลการตรวจเช็ค Liquid Nitrogen Stock Room
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-👉temperature = ${obj['liquid-nitrogen-thermo-temp']}  ํC
-👉humidity = ${obj['liquid-nitrogen-thermo-humid']} %RH
--------------------------------
-
-บันทึกโดย
-@${obj['liquid-nitrogen-name']}`
-                    break
-                case "embryology-statusroom-checklist":
-                    message = `👉 ผลการตรวจเช็ค Status Room Embryology
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-DR-Analyst
-👉 temperature = ${obj['embryology-statusroom-dr-temp']}  ํC
-👉 humidity = ${obj['embryology-statusroom-dr-humid']} %RH
-👉 pressure = ${obj['embryology-statusroom-dr-plessure']} Pa
--------------------------------
-
-Desktop-Meter
-👉 temperature = ${obj['embryology-statusroom-desktopmeter-temp']}  ํC
-👉 humidity = ${obj['embryology-statusroom-desktopmeter-humid']} %RH
--------------------------------
-
-Alarm System is ${obj['embryology-statusroom-alarm'].toUpperCase()}
-
-บันทึกโดย
-@${obj['embryology-statusroom-name']}`
-                    break
-                case "embryology-embryo-checklist":
-                    message = `👉 ผลการตรวจเช็ค Embryo Culture ห้อง Embryology
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-PLANER A
-👉 temperature = ${obj['embryology-embryo-planer-a-temp']}  ํC
--------------------------------
-
-PLANER B
-👉 temperature = ${obj['embryology-embryo-planer-b-temp']}  ํC
--------------------------------
-
-PLANER C
-👉 temperature = ${obj['embryology-embryo-planer-c-temp']}  ํC
--------------------------------
-
-PLANER D
-👉 temperature = ${obj['embryology-embryo-planer-d-temp']}  ํC
--------------------------------
-
-PLANER E
-👉 temperature = ${obj['embryology-embryo-planer-e-temp']}  ํC
--------------------------------
-
-EMBRYO PLUS
-👉 CO2 = ${obj['embryology-embryo-embryoplus-co2']} %
-👉 O2 = ${obj['embryology-embryo-embryoplus-o2']} %
-
-👉 control bar CO2 = ${obj['embryology-embryo-embryoplus-controlbar-co2']} bar
-👉 control bar N2 = ${obj['embryology-embryo-embryoplus-controlbar-n2']} bar
-
-👉 temperature = ${obj['embryology-embryo-embryoplus-temp']}  ํC
--------------------------------
-
-EC6S A
-👉 CO2 = ${obj['embryology-embryo-ec6s-a-co2']} %
-👉 O2 = ${obj['embryology-embryo-ec6s-a-o2']} %
-
-👉 control bar CO2 = ${obj['embryology-embryo-ec6s-a-controlbar_co2']} bar
-👉 control bar N2 = ${obj['embryology-embryo-ec6s-a-controlbar_n2']} bar
-
-👉 temperature = ${obj['embryology-embryo-ec6s-a-temp']}  ํC
--------------------------------
-
-EC6S B
-👉 CO2 = ${obj['embryology-embryo-ec6s-b-co2']} %
-👉 O2 = ${obj['embryology-embryo-ec6s-b-o2']} %
-
-👉 control bar CO2 = ${obj['embryology-embryo-ec6s-b-controlbar_co2']} bar
-👉 control bar N2 = ${obj['embryology-embryo-ec6s-b-controlbar_n2']} bar
-
-👉 temperature = ${obj['embryology-embryo-ec6s-b-temp']}  ํC
--------------------------------
-
-EC6S C
-👉 CO2 = ${obj['embryology-embryo-ec6s-c-co2']} %
-👉 O2 = ${obj['embryology-embryo-ec6s-c-o2']} %
-
-👉 control bar CO2 = ${obj['embryology-embryo-ec6s-c-controlbar_co2']} bar
-👉 control bar N2 = ${obj['embryology-embryo-ec6s-c-controlbar_n2']} bar
-
-👉 temperature = ${obj['embryology-embryo-ec6s-c-temp']}  ํC
--------------------------------
-
-EC6S D
-👉 CO2 = ${obj['embryology-embryo-ec6s-d-co2']} %
-👉 O2 = ${obj['embryology-embryo-ec6s-d-o2']} %
-
-👉 control bar CO2 = ${obj['embryology-embryo-ec6s-d-controlbar_co2']} bar
-👉 control bar N2 = ${obj['embryology-embryo-ec6s-d-controlbar_n2']} bar
-
-👉 temperature = ${obj['embryology-embryo-ec6s-d-temp']}  ํC
--------------------------------
-
-บันทึกโดย
-@${obj['embryology-embryo-name']}`
-                    break
-                case "embryology-refrigerator-checklist":
-                    message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-Refrigerator
-👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
--------------------------------
-
-DataLogger
-👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
--------------------------------
-
-บันทึกโดย
-@${obj['embryology-refrigerator-name']}`
-                    break
-                case "embryology-incubator-checklist":
-                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-ASTEC
-👉 CO2 = ${obj['embryology-incubator-astec-co2']} %
-👉 temperature = ${obj['embryology-incubator-astec-temp']}  ํC
--------------------------------
-
-MEMMERT
-👉 temperature = ${obj['embryology-incubator-memmert-temp']}  ํC
--------------------------------
-
-บันทึกโดย
-@${obj['embryology-incubator-name']}`
-                    break
-                case "andrology-statusroom-checklist":
-                    message = `👉 ผลการตรวจเช็ค Status Room Andrology
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-Temperature
-👉 temperature = ${obj['andrology-statusroom-dr-temp']}  ํC
-👉 humidity = ${obj['andrology-statusroom-dr-humid']} %RH
-👉 pressure = ${obj['andrology-statusroom-dr-pressure']} Pa
--------------------------------
-
-Thermo-Hygrometer
-👉 temperature = ${obj['andrology-statusroom-desktopmeter-temp']}  ํC
-👉 humidity = ${obj['andrology-statusroom-desktopmeter-humid']} %RH
--------------------------------
-
-บันทึกโดย
-@${obj['andrology-statusroom-name']}`
-                    break
-                case "andrology-refrigerator-checklist":
-                    message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Andrology
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-Refrigerator
-👉 temperature = ${obj['andrology-refrigerator-thermo-temp']}  ํC
--------------------------------
-
-ESCORT
-👉 temperature = ${obj['andrology-refrigerator-escort-temp']}  ํC
--------------------------------
-
-บันทึกโดย
-@${obj['andrology-refrigerator-name']}`
-                    break
-                case "andrology-incubator-checklist":
-                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Andrology
-                
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-ASTEC SCA 165DS
-👉 temperature = ${obj['andrology-incubator-astec-temp']}  ํC
-👉 CO2 = ${obj['andrology-incubator-astec-co2']} %
--------------------------------
-
-บันทึกโดย
-@${obj['andrology-incubator-name']}`
-                    break
-                default: return
-            }
-
-            $.ajax({
-                url: script_url,
-                type: 'POST',
-                data: {
-                    opt: 'sendLineNotifyTest',
-                    msg: message,
-                },
-                success: function (res) {
-                    console.log(res)
-                },
-                error: function (err) {
-                    console.log(err)
-                }
-            })
-        }
-
+        const token = '7333807165:AAGQoFbZdpIIiFoh-vhF0aaKjqgSP0foiEY'
+        // const chat_id = '-1002471345058'
+        const chat_id = '7589285459'
+        const parse_mode = 'HTML'
         function sendTelegram(obj) {
-            let message
-            let token = '7333807165:AAGQoFbZdpIIiFoh-vhF0aaKjqgSP0foiEY'
-            let chat_id = '-1002471345058'
-            let message_thread_id
-            let parse_mode = 'HTML'
-            switch (obj.form) {
-                case "med-gas-checklist":
-                    message_thread_id = 8
-                    message = `<strong>👉 Medical Gas Daily Check Report</strong>
+            return new Promise((resolve, reject) => {
+                let message
+                let message_thread_id
+                switch (obj.form) {
+                    case "med-gas-checklist":
+                        message_thread_id = 8
+                        message = `<strong>👉 Medical Gas Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2204,10 +1957,10 @@ Left  =  <b>${obj['n2-manifold-left']}</b>  psi
 Right  =  <b>${obj['n2-manifold-right']}</b>  psi
 </blockquote>
 ${obj.name}`
-                    break
-                case "stockroom-checklist":
-                    message_thread_id = 10
-                    message = `<strong>👉 Stock Room Daily Check Report</strong>
+                        break
+                    case "stockroom-checklist":
+                        message_thread_id = 10
+                        message = `<strong>👉 Stock Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2216,10 +1969,10 @@ Temperature =  <b>${obj['stockroom-thermo-temp']}</b>   ํC
 Humidity =  <b>${obj['stockroom-thermo-humid']}</b>  %RH
 </blockquote>
 ${obj['stockroom-name']}`
-                    break
-                case "liquid-nitrogen-checklist":
-                    message_thread_id = 11
-                    message = `<strong>👉 Liquid Nitrogen Stock Room Daily Check Report</strong>
+                        break
+                    case "liquid-nitrogen-checklist":
+                        message_thread_id = 11
+                        message = `<strong>👉 Liquid Nitrogen Stock Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2228,10 +1981,10 @@ Temperature =  <b>${obj['liquid-nitrogen-thermo-temp']}</b>   ํC
 Humidity =  <b>${obj['liquid-nitrogen-thermo-humid']}</b>  %RH
 </blockquote>
 ${obj['liquid-nitrogen-name']}`
-                    break
-                case "embryology-statusroom-checklist":
-                    message_thread_id = 12
-                    message = `<strong>👉 Embryology Status Room Daily Check Report</strong>
+                        break
+                    case "embryology-statusroom-checklist":
+                        message_thread_id = 12
+                        message = `<strong>👉 Embryology Status Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2250,10 +2003,10 @@ Humidity =  <b>${obj['embryology-statusroom-desktopmeter-humid']}</b>  %RH
 Status =  <b>${obj['embryology-statusroom-alarm'].toUpperCase()}</b>
 </blockquote>
 ${obj['embryology-statusroom-name']}`
-                    break
-                case "embryology-embryo-checklist":
-                    message_thread_id = 12
-                    message = `<strong>👉 Embryo Culture Daily Check Report</strong>
+                        break
+                    case "embryology-embryo-checklist":
+                        message_thread_id = 12
+                        message = `<strong>👉 Embryo Culture Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2317,24 +2070,24 @@ Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_n2']}</b>  bar
 Temperature =  <b>${obj['embryology-embryo-ec6s-d-temp']}</b>   ํC
 </blockquote>
 ${obj['embryology-embryo-name']}`
-                    break
-                case "embryology-refrigerator-checklist":
-                    message_thread_id = 12
-                    //                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
+                        break
+                    case "embryology-refrigerator-checklist":
+                        message_thread_id = 12
+                        //                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
 
-                    // 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+                        // 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
-                    // Refrigerator
-                    // 👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
-                    // -------------------------------
+                        // Refrigerator
+                        // 👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
+                        // -------------------------------
 
-                    // DataLogger
-                    // 👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
-                    // -------------------------------
+                        // DataLogger
+                        // 👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
+                        // -------------------------------
 
-                    // บันทึกโดย
-                    // @${obj['embryology-refrigerator-name']}`
-                    message = `<strong>👉 Embryology Refrigerator Daily Check Report</strong>
+                        // บันทึกโดย
+                        // @${obj['embryology-refrigerator-name']}`
+                        message = `<strong>👉 Embryology Refrigerator Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2346,10 +2099,10 @@ Temperature =  <b>${obj['embryology-refrigerator-refrig-temp']}</b>   ํC
 Temperature =  <b>${obj['embryology-refrigerator-thermo-temp']}</b>   ํC
 </blockquote>
 ${obj['embryology-refrigerator-name']}`
-                    break
-                case "embryology-incubator-checklist":
-                    message_thread_id = 12
-                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
+                        break
+                    case "embryology-incubator-checklist":
+                        message_thread_id = 12
+                        message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
@@ -2364,10 +2117,10 @@ MEMMERT
 
 บันทึกโดย
 @${obj['embryology-incubator-name']}`
-                    break
-                case "andrology-statusroom-checklist":
-                    message_thread_id = 13
-                    message = `<strong>👉 Andrology Status Room Daily Check Report</strong>
+                        break
+                    case "andrology-statusroom-checklist":
+                        message_thread_id = 13
+                        message = `<strong>👉 Andrology Status Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2382,10 +2135,10 @@ Temperature =  <b>${obj['andrology-statusroom-desktopmeter-temp']}</b>   ํC
 Humidity =  <b>${obj['andrology-statusroom-desktopmeter-humid']}</b>  %RH
 </blockquote>
 ${obj['andrology-statusroom-name']}`
-                    break
-                case "andrology-incubator-checklist":
-                    message_thread_id = 13
-                    message = `<strong>👉 Andrology Incubator Daily Check Report</strong>
+                        break
+                    case "andrology-incubator-checklist":
+                        message_thread_id = 13
+                        message = `<strong>👉 Andrology Incubator Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2394,21 +2147,81 @@ Temperature =  <b>${obj['andrology-incubator-astec-temp']}</b>   ํC
 CO2 =  <b>${obj['andrology-incubator-astec-co2']}</b>  %
 </blockquote>
 ${obj['andrology-incubator-name']}`
-                    break
-                default: return
-            }
+                        break
+                    default: return
+                }
 
-            $.ajax({
-                url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-                type: 'POST',
-                data: {
-                    chat_id: chat_id,
-                    text: message,
-                    parse_mode: parse_mode,
-                },
-                success: function (res) {
-                    console.log(res)
-                },
+                $.ajax({
+                    url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+                    type: 'POST',
+                    data: {
+                        chat_id: chat_id,
+                        text: message,
+                        parse_mode: parse_mode,
+                    },
+                    success: function (res) {
+                        console.log(res)
+                        resolve(res)
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error sending images:", errorThrown);
+                        reject(errorThrown);
+                    }
+                })
+
+            })
+        }
+
+        function sendTelegram_confirm(obj) {
+            return new Promise((resolve, reject) => {
+                switch (obj.form) {
+                    case "med-gas-checklist":
+                        obj.form = "Medical Gas"
+                        break
+                    case "stockroom-checklist":
+                        obj.form = "Stock Room"
+                        break
+                    case "liquid-nitrogen-checklist":
+                        obj.form = "Liquid Nitrogen"
+                        break
+                    case "embryology-statusroom-checklist":
+                        obj.form = "Embryology Status Room"
+                        break
+                    case "embryology-embryo-checklist":
+                        obj.form = "Embryo Culture"
+                        break
+                    case "embryology-refrigerator-checklist":
+                        obj.form = "Refrigerator"
+                        break
+                    case "embryology-incubator-checklist":
+                        obj.form = "Incubator"
+                        break
+                    case "andrology-statusroom-checklist":
+                        obj.form = "Andrology Status Room"
+                        break
+                    case "andrology-incubator-checklist":
+                        obj.form = "Andrology Incubator"
+                        break
+                    default: return
+                }
+                let message = `✔✔ ${obj.form}Daily Check for ${moment().format('DD/MM/YYYY')} ${obj.shift} has been submitted ✔✔`
+                $.ajax({
+                    url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+                    type: 'POST',
+                    data: {
+                        chat_id: tg.initDataUnsafe.user.id,
+                        text: message,
+                        parse_mode: parse_mode,
+                    },
+                    success: function (res) {
+                        console.log(res)
+                        resolve(res)
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error sending images:", errorThrown);
+                        reject(errorThrown);
+                    }
+                })
             })
         }
 
@@ -2445,7 +2258,7 @@ ${obj['andrology-incubator-name']}`
         let success_all = 0
         const checkDone = () => {
             console.log("🚀 ~ checkDone ~ success_all", success_all);
-            if (success_all >= 2) {
+            if (success_all >= 3) {
                 setTimeout(() => {
                     $('html, body').animate({
                         scrollTop: 0
@@ -2489,6 +2302,7 @@ ${obj['andrology-incubator-name']}`
             Promise.all([
                 retryRequest(() => saveToSheet(obj)),
                 retryRequest(() => sendTelegram(obj)),
+                retryRequest(() => sendTelegram_confirm(obj)),
             ])
         }
 
