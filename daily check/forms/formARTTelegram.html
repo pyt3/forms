@@ -1938,7 +1938,8 @@
                 switch (obj.form) {
                     case "med-gas-checklist":
                         message_thread_id = 8
-                        message = `<strong>👉 Medical Gas Daily Check Report</strong>
+                        message = `<strong>✅ Medical Gas Daily Check Report</strong>
+
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -1956,11 +1957,12 @@ Right  =  <b>${obj['c02-manifold-right']}</b>  psi
 Left  =  <b>${obj['n2-manifold-left']}</b>  psi
 Right  =  <b>${obj['n2-manifold-right']}</b>  psi
 </blockquote>
-${obj.name}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "stockroom-checklist":
                         message_thread_id = 10
-                        message = `<strong>👉 Stock Room Daily Check Report</strong>
+                        message = `<strong>✅ Stock Room Daily Check Report</strong>
+
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -1968,11 +1970,12 @@ ${obj.name}`
 Temperature =  <b>${obj['stockroom-thermo-temp']}</b>   ํC
 Humidity =  <b>${obj['stockroom-thermo-humid']}</b>  %RH
 </blockquote>
-${obj['stockroom-name']}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "liquid-nitrogen-checklist":
                         message_thread_id = 11
-                        message = `<strong>👉 Liquid Nitrogen Stock Room Daily Check Report</strong>
+                        message = `<strong>✅ Liquid Nitrogen Stock Room Daily Check Report</strong>
+
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -1980,11 +1983,12 @@ ${obj['stockroom-name']}`
 Temperature =  <b>${obj['liquid-nitrogen-thermo-temp']}</b>   ํC
 Humidity =  <b>${obj['liquid-nitrogen-thermo-humid']}</b>  %RH
 </blockquote>
-${obj['liquid-nitrogen-name']}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-statusroom-checklist":
                         message_thread_id = 12
-                        message = `<strong>👉 Embryology Status Room Daily Check Report</strong>
+                        message = `<strong>✅ Embryology Status Room Daily Check Report</strong>
+
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2002,11 +2006,12 @@ Humidity =  <b>${obj['embryology-statusroom-desktopmeter-humid']}</b>  %RH
 <b><i>👉 Alarm System</i></b>
 Status =  <b>${obj['embryology-statusroom-alarm'].toUpperCase()}</b>
 </blockquote>
-${obj['embryology-statusroom-name']}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-embryo-checklist":
                         message_thread_id = 12
-                        message = `<strong>👉 Embryo Culture Daily Check Report</strong>
+                        message = `<strong>✅ Embryo Culture Daily Check Report</strong>
+
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2069,25 +2074,12 @@ Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_co2']}</b>  bar
 Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_n2']}</b>  bar
 Temperature =  <b>${obj['embryology-embryo-ec6s-d-temp']}</b>   ํC
 </blockquote>
-${obj['embryology-embryo-name']}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-refrigerator-checklist":
                         message_thread_id = 12
-                        //                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
+                        message = `<strong>✅ Embryology Refrigerator Daily Check Report</strong>
 
-                        // 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-                        // Refrigerator
-                        // 👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
-                        // -------------------------------
-
-                        // DataLogger
-                        // 👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
-                        // -------------------------------
-
-                        // บันทึกโดย
-                        // @${obj['embryology-refrigerator-name']}`
-                        message = `<strong>👉 Embryology Refrigerator Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2098,29 +2090,30 @@ Temperature =  <b>${obj['embryology-refrigerator-refrig-temp']}</b>   ํC
 <b><i>👉 DataLogger</i></b>
 Temperature =  <b>${obj['embryology-refrigerator-thermo-temp']}</b>   ํC
 </blockquote>
-${obj['embryology-refrigerator-name']}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-incubator-checklist":
                         message_thread_id = 12
-                        message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
+                        message = `<strong>✅ Embryology Incubator Daily Check Report</strong>
 
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 ASTEC</i></b
+CO2 =  <b>${obj['embryology-incubator-astec-co2']}</b>  %
+Temperature =  <b>${obj['embryology-incubator-astec-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 MEMMERT</i></b
+Temperature =  <b>${obj['embryology-incubator-memmert-temp']}</b>   ํC
+</blockquote>
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
 
-ASTEC
-👉 CO2 = ${obj['embryology-incubator-astec-co2']} %
-👉 temperature = ${obj['embryology-incubator-astec-temp']}  ํC
--------------------------------
-
-MEMMERT
-👉 temperature = ${obj['embryology-incubator-memmert-temp']}  ํC
--------------------------------
-
-บันทึกโดย
-@${obj['embryology-incubator-name']}`
                         break
                     case "andrology-statusroom-checklist":
                         message_thread_id = 13
-                        message = `<strong>👉 Andrology Status Room Daily Check Report</strong>
+                        message = `<strong>✅ Andrology Status Room Daily Check Report</strong>
+
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2134,11 +2127,12 @@ Pressure =  <b>${obj['andrology-statusroom-dr-pressure']}</b>  Pa
 Temperature =  <b>${obj['andrology-statusroom-desktopmeter-temp']}</b>   ํC
 Humidity =  <b>${obj['andrology-statusroom-desktopmeter-humid']}</b>  %RH
 </blockquote>
-${obj['andrology-statusroom-name']}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "andrology-incubator-checklist":
                         message_thread_id = 13
-                        message = `<strong>👉 Andrology Incubator Daily Check Report</strong>
+                        message = `<strong>✅ Andrology Incubator Daily Check Report</strong>
+
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2146,7 +2140,23 @@ ${obj['andrology-statusroom-name']}`
 Temperature =  <b>${obj['andrology-incubator-astec-temp']}</b>   ํC
 CO2 =  <b>${obj['andrology-incubator-astec-co2']}</b>  %
 </blockquote>
-${obj['andrology-incubator-name']}`
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
+                        break
+                    case "andrology-refrigerator-checklist":
+                        message_thread_id = 13
+                        message = `<strong>✅ Andrology Refrigerator Daily Check Report</strong>
+
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Refrigerator</i></b>
+Temperature =  <b>${obj['andrology-refrigerator-refrig-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 ESCORT</i></b
+Temperature =  <b>${obj['andrology-refrigerator-escort-temp']}</b>   ํC
+</blockquote>
+Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     default: return
                 }
@@ -2158,6 +2168,19 @@ ${obj['andrology-incubator-name']}`
                         chat_id: chat_id,
                         text: message,
                         parse_mode: parse_mode,
+                        message_thread_id: message_thread_id,
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    {
+                                        text: "Go to Checklist",
+                                        web_app: {
+                                            url: "https://pyt3.github.io/forms/daily%20check/forms/formARTTelegram.html"
+                                        }
+                                    }
+                                ]
+                            ]
+                        }
                     },
                     success: function (res) {
                         console.log(res)
@@ -2201,6 +2224,8 @@ ${obj['andrology-incubator-name']}`
                         break
                     case "andrology-incubator-checklist":
                         obj.form = "Andrology Incubator"
+                    case "andrology-refrigerator-checklist":
+                        obj.form = "Andrology Refrigerator"
                         break
                     default: return
                 }
@@ -2313,6 +2338,7 @@ ${obj['andrology-incubator-name']}`
                     data: obj,
                     type: 'POST',
                     success: function (res) {
+                        let form = $('#' + obj.form)
                         console.log(res)
                         if (res.status) {
                             $(form).trigger('reset')
