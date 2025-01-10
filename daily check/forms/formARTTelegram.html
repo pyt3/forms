@@ -2175,15 +2175,17 @@ ASTEC SCA 165DS
                 }
             })
         }
-        let message
-        let token = '7333807165:AAGQoFbZdpIIiFoh-vhF0aaKjqgSP0foiEY'
-        let chat_id = '-1002471345058'
-        let message_thread_id
-        let parse_mode = 'HTML'
-        switch (obj.form) {
-            case "med-gas-checklist":
-                message_thread_id = 8
-                message = `<strong>👉 Medical Gas Daily Check Report</strong>
+
+        function sendTelegram(obj) {
+            let message
+            let token = '7333807165:AAGQoFbZdpIIiFoh-vhF0aaKjqgSP0foiEY'
+            let chat_id = '-1002471345058'
+            let message_thread_id
+            let parse_mode = 'HTML'
+            switch (obj.form) {
+                case "med-gas-checklist":
+                    message_thread_id = 8
+                    message = `<strong>👉 Medical Gas Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2202,10 +2204,10 @@ Left  =  <b>${obj['n2-manifold-left']}</b>  psi
 Right  =  <b>${obj['n2-manifold-right']}</b>  psi
 </blockquote>
 ${obj.name}`
-                break
-            case "stockroom-checklist":
-                message_thread_id = 10
-                message = `<strong>👉 Stock Room Daily Check Report</strong>
+                    break
+                case "stockroom-checklist":
+                    message_thread_id = 10
+                    message = `<strong>👉 Stock Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2214,10 +2216,10 @@ Temperature =  <b>${obj['stockroom-thermo-temp']}</b>   ํC
 Humidity =  <b>${obj['stockroom-thermo-humid']}</b>  %RH
 </blockquote>
 ${obj['stockroom-name']}`
-                break
-            case "liquid-nitrogen-checklist":
-                message_thread_id = 11
-                message = `<strong>👉 Liquid Nitrogen Stock Room Daily Check Report</strong>
+                    break
+                case "liquid-nitrogen-checklist":
+                    message_thread_id = 11
+                    message = `<strong>👉 Liquid Nitrogen Stock Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2226,10 +2228,10 @@ Temperature =  <b>${obj['liquid-nitrogen-thermo-temp']}</b>   ํC
 Humidity =  <b>${obj['liquid-nitrogen-thermo-humid']}</b>  %RH
 </blockquote>
 ${obj['liquid-nitrogen-name']}`
-                break
-            case "embryology-statusroom-checklist":
-                message_thread_id = 12
-                message = `<strong>👉 Embryology Status Room Daily Check Report</strong>
+                    break
+                case "embryology-statusroom-checklist":
+                    message_thread_id = 12
+                    message = `<strong>👉 Embryology Status Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2248,10 +2250,10 @@ Humidity =  <b>${obj['embryology-statusroom-desktopmeter-humid']}</b>  %RH
 Status =  <b>${obj['embryology-statusroom-alarm'].toUpperCase()}</b>
 </blockquote>
 ${obj['embryology-statusroom-name']}`
-                break
-            case "embryology-embryo-checklist":
-                message_thread_id = 12
-                message = `<strong>👉 Embryo Culture Daily Check Report</strong>
+                    break
+                case "embryology-embryo-checklist":
+                    message_thread_id = 12
+                    message = `<strong>👉 Embryo Culture Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2315,24 +2317,24 @@ Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_n2']}</b>  bar
 Temperature =  <b>${obj['embryology-embryo-ec6s-d-temp']}</b>   ํC
 </blockquote>
 ${obj['embryology-embryo-name']}`
-                break
-            case "embryology-refrigerator-checklist":
-                message_thread_id = 12
-                //                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
+                    break
+                case "embryology-refrigerator-checklist":
+                    message_thread_id = 12
+                    //                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
 
-                // 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+                    // 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
-                // Refrigerator
-                // 👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
-                // -------------------------------
+                    // Refrigerator
+                    // 👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
+                    // -------------------------------
 
-                // DataLogger
-                // 👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
-                // -------------------------------
+                    // DataLogger
+                    // 👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
+                    // -------------------------------
 
-                // บันทึกโดย
-                // @${obj['embryology-refrigerator-name']}`
-                message = `<strong>👉 Embryology Refrigerator Daily Check Report</strong>
+                    // บันทึกโดย
+                    // @${obj['embryology-refrigerator-name']}`
+                    message = `<strong>👉 Embryology Refrigerator Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2344,10 +2346,10 @@ Temperature =  <b>${obj['embryology-refrigerator-refrig-temp']}</b>   ํC
 Temperature =  <b>${obj['embryology-refrigerator-thermo-temp']}</b>   ํC
 </blockquote>
 ${obj['embryology-refrigerator-name']}`
-                break
-            case "embryology-incubator-checklist":
-                message_thread_id = 12
-                message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
+                    break
+                case "embryology-incubator-checklist":
+                    message_thread_id = 12
+                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
 
@@ -2362,10 +2364,10 @@ MEMMERT
 
 บันทึกโดย
 @${obj['embryology-incubator-name']}`
-                break
-            case "andrology-statusroom-checklist":
-                message_thread_id = 13
-                message = `<strong>👉 Andrology Status Room Daily Check Report</strong>
+                    break
+                case "andrology-statusroom-checklist":
+                    message_thread_id = 13
+                    message = `<strong>👉 Andrology Status Room Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2380,10 +2382,10 @@ Temperature =  <b>${obj['andrology-statusroom-desktopmeter-temp']}</b>   ํC
 Humidity =  <b>${obj['andrology-statusroom-desktopmeter-humid']}</b>  %RH
 </blockquote>
 ${obj['andrology-statusroom-name']}`
-                break
-            case "andrology-incubator-checklist":
-                message_thread_id = 13
-                message = `<strong>👉 Andrology Incubator Daily Check Report</strong>
+                    break
+                case "andrology-incubator-checklist":
+                    message_thread_id = 13
+                    message = `<strong>👉 Andrology Incubator Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote>
@@ -2392,22 +2394,22 @@ Temperature =  <b>${obj['andrology-incubator-astec-temp']}</b>   ํC
 CO2 =  <b>${obj['andrology-incubator-astec-co2']}</b>  %
 </blockquote>
 ${obj['andrology-incubator-name']}`
-                break
-            default: return
-        }
+                    break
+                default: return
+            }
 
-        $.ajax({
-            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-            type: 'POST',
-            data: {
-                chat_id: chat_id,
-                text: message,
-                parse_mode: parse_mode,
-            },
-            success: function (res) {
-                console.log(res)
-            },
-        })
+            $.ajax({
+                url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+                type: 'POST',
+                data: {
+                    chat_id: chat_id,
+                    text: message,
+                    parse_mode: parse_mode,
+                },
+                success: function (res) {
+                    console.log(res)
+                },
+            })
         }
 
         (() => {
