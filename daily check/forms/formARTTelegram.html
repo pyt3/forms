@@ -1,0 +1,2549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-control" content="no-cache , no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"> -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="icon" href="../icon.png" type="image/png">
+    <style>
+        body {
+            max-width: 100vw;
+            height: 100%;
+            /* overflow-x: hidden; */
+            font-family: 'Akshar', sans-serif;
+            font-family: 'Prompt', sans-serif;
+            background-color: #F8C8DC44;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #FAA0A0;
+            color: #673147;
+        }
+
+        .nav-tabs .nav-link {
+            color: #673147;
+            font-weight: bolder;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+        }
+
+        input::placeholder {
+            color: #00000033 !important;
+            opacity: 0.2;
+        }
+
+        main {
+            min-height: 100vh;
+        }
+
+        .custom-nav-pills .nav-link.active {
+            background-color: #cfe2ff;
+            color: #0d6efd;
+            font-weight: bolder;
+        }
+
+        .nav-item {
+            list-style-type: none;
+        }
+
+
+        .custom-nav-item ::before {
+            content: '\23F5' !important;
+            color: #0d6efd;
+            margin-right: 0.5em;
+        }
+
+
+        /* section{
+            background-color: #fff;
+        } */
+    </style>
+    <title>ART Medical Gas Daily Check</title>
+
+    <script>
+        // document.write('<script defer src="../js/../js/medicalGas-art.js?cache=' + new Date().getTime() + '"><\/script>')
+    </script>
+</head>
+
+<body class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-subtle px-2 fixed-top py-0">
+        <div class="container-fluid p-0">
+            <div class="navbar-brand d-flex w-100 align-items-center justify-content-between" href="#">
+                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas-menu" aria-controls="offcanvasExample">
+                    <i class="bi bi-stack"></i> Select Form
+                </button>
+                <div class="d-flex flex-column align-items-end justify-content-center">
+                    <div>
+                        <img src="../bmepyt3_icon-removebg-preview.png" alt="" height="20px" class="d-inline-block">
+                        <img src="https://img.icons8.com/fluency/48/test-account--v1.png" alt="display" width="25px"
+                            height="25px" class="rounded-circle img-fluid" id="line-display"
+                            style="object-fit: contain;">
+                    </div>
+                    <span class="timenow" style="font-size: 0.8rem; color: #85898d;"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main style="margin-top: 50px;">
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-menu" aria-labelledby="offcanvas-menuLabel">
+            <div class="offcanvas-header text-bg-primary">
+                <h5 class="offcanvas-title" id="offcanvasLabel"><i class="bi bi-stack"></i> Select Form</h5>
+                <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="nav nav-pills custom-nav-pills flex-column" role="tablist">
+                    <!-- <div class="w-100 text-start px-3 pb-1 rounded text-secondary fw-bold h5" disabled>Room</div> -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start active" id="pills-tab-med-gas" data-bs-toggle="pill"
+                            data-bs-target="#tab-med-gas" type="button" role="tab" aria-selected="true">Medcal Gas
+                            Medifold Room</button>
+                    </li>
+                    <!-- <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-status-room" data-bs-toggle="pill"
+                            data-bs-target="#tab-status-room" type="button" role="tab" aria-selected="false">Status
+                            Room</button>
+                    </li> -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-stock-room" data-bs-toggle="pill"
+                            data-bs-target="#tab-stock-room" type="button" role="tab" aria-selected="true">Stock
+                            Room</button>
+                    </li>
+                    <!-- liquid nitrogen storage room -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-liquid-nitrogen" data-bs-toggle="pill"
+                            data-bs-target="#tab-liquid-nitrogen" type="button" role="tab" aria-selected="false">Liquid
+                            Nitrogen Storage Room</button>
+                    </li>
+                    <hr>
+                    <li class="nav-item" role="presentation">
+                        <div class="w-100 text-start px-3 pb-1 rounded fw-bold h5" disabled>Embryology Room</div>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-embryology-status" data-bs-toggle="pill"
+                            data-bs-target="#tab-embryology-status" type="button" role="tab" aria-selected="false">Room
+                            Status</button>
+                    </li>
+                    <div class="w-100 text-start px-3 pb-1 rounded fw-bold text-secondary" disabled>Medical Equipment
+                    </div>
+                    <ul>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-embryology-embryo"
+                                data-bs-toggle="pill" data-bs-target="#tab-embryology-embryo" type="button" role="tab"
+                                aria-selected="false">Embryo
+                                Culture</button>
+                        </li>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-embryology-refrigerator"
+                                data-bs-toggle="pill" data-bs-target="#tab-embryology-refrigerator" type="button"
+                                role="tab" aria-selected="false">Refrigerator</button>
+                        </li>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-embryology-incubator"
+                                data-bs-toggle="pill" data-bs-target="#tab-embryology-incubator" type="button"
+                                role="tab" aria-selected="false">Incubator</button>
+                        </li>
+                    </ul>
+                    </li>
+                    <!-- sepatator -->
+                    <hr>
+                    <li class="nav-item" role="presentation">
+                        <div class="w-100 text-start px-3 pb-1 rounded fw-bold h5" disabled>Andrology Room</div>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100 text-start" id="pills-tab-andrology-status" data-bs-toggle="pill"
+                            data-bs-target="#tab-andrology-status" type="button" role="tab" aria-selected="false">Room
+                            Status</button>
+                    </li>
+                    <div class="w-100 text-start px-3 pb-1 rounded fw-bold text-secondary" disabled>Medical Equipment
+                    </div>
+                    <ul>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-andrology-refrigerator"
+                                data-bs-toggle="pill" data-bs-target="#tab-andrology-refrigerator" type="button"
+                                role="tab" aria-selected="false">Refrigerator</button>
+                        </li>
+                        <li class="nav-item" role="presentation"
+                            style="list-style-type: disc; color: var(--bs-primary);">
+                            <button class="nav-link w-100 text-start" id="pills-tab-andrology-incubator"
+                                data-bs-toggle="pill" data-bs-target="#tab-andrology-incubator" type="button" role="tab"
+                                aria-selected="false">Incubator</button>
+                        </li>
+                    </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-content" id="tab-content">
+            <div class="tab-pane fade animate__animated active show" id="tab-med-gas">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Medical Gas <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="med-gas-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="name" name="name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="morning" value="เช้า"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="evening" value="เย็น"
+                                            autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                        <span class="fw-bold text-white bg-dark rounded-pill border px-4">Tri-Gas</span>
+                                        <div>Manifold</div>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="trigas-mgd">แรงดันใช้งาน (MGD)</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="trigas-mgd"
+                                            id="trigas-mgd" class="form-control text-center">
+                                    </div>
+
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="trigas-manifold-left">แรงดันฝั่งซ้าย</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="trigas-manifold-left"
+                                            id="trigas-manifold-left" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="trigas-manifold-right">แรงดันฝั่งขวา</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="trigas-manifold-right"
+                                            id="trigas-manifold-right" class="form-control text-center">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="trigas-lot" class="ms-2">Lot No.</label>
+                                        <input type="text" id="trigas-lot" class="form-control" name="trigas-lot">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary">
+                                        <span
+                                            class="fw-bold text-white bg-dark rounded-pill border px-4">Carbondioxide</span>
+                                        <div>Manifold</div>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="c02-mgd">แรงดันใช้งาน (MGD)</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-mgd" id="c02-mgd"
+                                            class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="c02-manifold-left">แรงดันฝั่งซ้าย</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-left"
+                                            id="c02-manifold-left" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="c02-manifold-right">แรงดันฝั่งขวา</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="c02-manifold-right"
+                                            id="c02-manifold-right" class="form-control text-center">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="c02-lot" class="ms-2">Lot No.</label>
+                                        <input type="text" id="c02-lot" class="form-control" name="c02-lot">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mt-2">
+                                        <span class="fw-bold text-white rounded-pill border px-3"
+                                            style="background-color: #696969;">Nitrogen</span>
+                                        <div>Manifold</div>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="n2-manifold-mgd">แรงดันใช้งาน (MGD)</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="n2-manifold-mgd"
+                                            id="n2-manifold-mgd" class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-2">
+                                    <div class="col-6 text-center">
+                                        <label for="n2-manifold-left">แรงดันฝั่งซ้าย</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="n2-manifold-left"
+                                            id="n2-manifold-left" class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="n2-manifold-right">แรงดันฝั่งขวา</label>
+                                        <input type="number" step="0.1" inputmode="decimal" name="n2-manifold-right"
+                                            id="n2-manifold-right" class="form-control text-center">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="n2-lot" class="ms-2">Lot No.</label>
+                                        <input type="text" id="n2-lot" class="form-control" name="n2-lot">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row justify-content-start">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">
+                                            <i class="bi bi-battery-charging"></i> UPS</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <!-- radio with active and inactive status -->
+                                        <input type="radio" class="btn-check" name="med-gas-ups" id="med-gas-ups-active"
+                                            value="active" autocomplete="off" required>
+                                        <label class="btn btn-outline-primary  w-100" for="med-gas-ups-active"><i
+                                                class="bi bi-check-circle-fill"></i> Active</label>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <input type="radio" class="btn-check" name="med-gas-ups"
+                                            id="med-gas-ups-inactive" value="inactive" autocomplete="off" required>
+                                        <label class="btn btn-outline-danger  w-100" for="med-gas-ups-inactive"><i
+                                                class="bi bi-x-circle-fill"></i> Inactive</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-stock-room">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Stock Room <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="stockroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="stockroom-name" name="stockroom-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="stockroom-shift-morning"
+                                            value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="stockroom-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="stockroom-shift-evening"
+                                            value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="stockroom-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-success rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="stockroom-thermo-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="stockroom-thermo-temp" id="stockroom-thermo-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="stockroom-thermo-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="stockroom-thermo-humid" id="stockroom-thermo-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="stockroom-thermo-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-liquid-nitrogen">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            Liquid Nitrogen Storage Room <span class="text-danger">ART</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="liquid-nitrogen-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="liquid-nitrogen-name"
+                                    name="liquid-nitrogen-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="liquid-nitrogen-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="liquid-nitrogen-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="liquid-nitrogen-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="liquid-nitrogen-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-success rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="liquid-nitrogen-thermo-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="liquid-nitrogen-thermo-temp" id="liquid-nitrogen-thermo-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="liquid-nitrogen-thermo-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="liquid-nitrogen-thermo-humid" id="liquid-nitrogen-thermo-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="liquid-nitrogen-thermo-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-embryology-status">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Embryology Room</span>
+                            Status
+                        </div>
+                    </div>
+                </div>
+                <form id="embryology-statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="embryology-statusroom-name"
+                                    name="embryology-statusroom-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="status-room-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="status-room-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="status-room-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="status-room-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">DR-Analyst</span>
+                                    </div>
+                                    <div class="col-6 mt-0 text-center">
+                                        <label for="embryology-statusroom-dr-plessure">Pressure <span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.05" inputmode="decimal"
+                                            name="embryology-statusroom-dr-plessure"
+                                            id="embryology-statusroom-dr-plessure" class="form-control text-center">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-dr-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-dr-temp" id="embryology-statusroom-dr-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-dr-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-dr-humid" id="embryology-statusroom-dr-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-statusroom-dr-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-desktopmeter-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-desktopmeter-temp"
+                                            id="embryology-statusroom-desktopmeter-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-statusroom-desktopmeter-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-statusroom-desktopmeter-humid"
+                                            id="embryology-statusroom-desktopmeter-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-statusroom-desktopmeter-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-light bg-info rounded-pill border px-4">
+                                            <i class="bi bi-bell-fill"></i> Alarm System</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <input type="radio" class="btn-check" name="embryology-statusroom-alarm"
+                                            id="embryology-statusroom-alarm-active" value="active" autocomplete="off"
+                                            required>
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="embryology-statusroom-alarm-active"><i
+                                                class="bi bi-check-circle-fill"></i> Active</label>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <input type="radio" class="btn-check" name="embryology-statusroom-alarm"
+                                            id="embryology-statusroom-alarm-inactive" value="inactive"
+                                            autocomplete="off" required>
+                                        <label class="btn btn-outline-danger w-100"
+                                            for="embryology-statusroom-alarm-inactive"><i
+                                                class="bi bi-x-circle-fill"></i> Inactive</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-embryology-embryo">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Embryology Room</span>
+                            Embryo Culture
+                        </div>
+                    </div>
+                </div>
+                <form id="embryology-embryo-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="embryology-embryo-name"
+                                    name="embryology-embryo-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="embryo-shift-morning"
+                                            value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="embryo-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="embryo-shift-evening"
+                                            value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="embryo-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-info rounded-pill border px-4">Planer <span
+                                                class="text-dark">A</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-planer-a-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-planer-a-temp" id="embryology-embryo-planer-a-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-planer-a-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-info rounded-pill border px-4">Planer <span
+                                                class="text-dark">B</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-planer-b-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-planer-b-temp" id="embryology-embryo-planer-b-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-planer-b-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-info rounded-pill border px-4">Planer <span
+                                                class="text-dark">C</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for=embryology-embryo-planer-c-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-planer-c-temp" id="embryology-embryo-planer-c-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-planer-c-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-info rounded-pill border px-4">Planer <span
+                                                class="text-dark">D</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-planer-d-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-planer-d-temp" id="embryology-embryo-planer-d-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-planer-d-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-info rounded-pill border px-4">Planer <span
+                                                class="text-dark">E</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-planer-e-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-planer-e-temp" id="embryology-embryo-planer-e-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-planer-e-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">A</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-a-co2" id="embryology-embryo-ec6s-a-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-a-o2" id="embryology-embryo-ec6s-a-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-a-controlbar_co2"
+                                            id="embryology-embryo-ec6s-a-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-a-controlbar_n2"
+                                            id="embryology-embryo-ec6s-a-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-a-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-a-temp" id="embryology-embryo-ec6s-a-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-ec6s-a-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">B</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-b-co2" id="embryology-embryo-ec6s-b-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-b-o2" id="embryology-embryo-ec6s-b-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-b-controlbar_co2"
+                                            id="embryology-embryo-ec6s-b-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-b-controlbar_n2"
+                                            id="embryology-embryo-ec6s-b-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-b-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-b-temp" id="embryology-embryo-ec6s-b-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+
+
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-ec6s-b-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">C</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-c-co2" id="embryology-embryo-ec6s-c-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryo-ec6s-c-o2">O<sub>2</sub></label>
+                                        <input type="embryology-number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-c-o2" id="embryology-embryo-ec6s-c-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-c-controlbar_co2"
+                                            id="embryology-embryo-ec6s-c-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-c-controlbar_n2"
+                                            id="embryology-embryo-ec6s-c-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-c-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-c-temp" id="embryology-embryo-ec6s-c-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-ec6s-c-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC6S <span
+                                                class="text-warning">D</span></span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-d-co2" id="embryology-embryo-ec6s-d-co2"
+                                            class="form-control text-center" min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-d-o2" id="embryology-embryo-ec6s-d-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-d-controlbar_co2"
+                                            id="embryology-embryo-ec6s-d-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-controlbar_n2">C.Bar N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.3" max="0.5"
+                                            name="embryology-embryo-ec6s-d-controlbar_n2"
+                                            id="embryology-embryo-ec6s-d-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-ec6s-d-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-ec6s-d-temp" id="embryology-embryo-ec6s-d-temp"
+                                            class="form-control text-center" min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-ec6s-d-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">EmbryoPlus</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-embryoplus-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-embryoplus-co2"
+                                            id="embryology-embryo-embryoplus-co2" class="form-control text-center"
+                                            min="5.7" max="6.3">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-embryoplus-o2">O<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-embryoplus-o2" id="embryology-embryo-embryoplus-o2"
+                                            class="form-control text-center" min="4.5" max="5.5">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-embryoplus-controlbar_co2">C.Bar
+                                            CO<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.7" max="0.9"
+                                            name="embryology-embryo-embryoplus-controlbar_co2"
+                                            id="embryology-embryo-embryoplus-controlbar_co2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-embryoplus-controlbar_n2">C.Bar
+                                            N<sub>2</sub></label>
+                                        <input type="number" step="0.01" inputmode="decimal" min="0.7" max="0.9"
+                                            name="embryology-embryo-embryoplus-controlbar_n2"
+                                            id="embryology-embryo-embryoplus-controlbar_n2"
+                                            class="form-control text-center">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-embryo-embryoplus-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-embryo-embryoplus-temp"
+                                            id="embryology-embryo-embryoplus-temp" class="form-control text-center"
+                                            min="36.8" max="37.2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-embryo-embryoplus-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-danger btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-embryology-refrigerator">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Embryology Room</span>
+                            Refrigerator
+                        </div>
+                    </div>
+                </div>
+                <form id="embryology-refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="embryology-refrigerator-name"
+                                    name="embryology-refrigerator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="refrigerator-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="refrigerator-shift-morning"><i class="bi bi-cloud-sun-fill fs-4"></i>
+                                            รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="refrigerator-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="refrigerator-shift-evening"><i class="bi bi-cloud-moon-fill fs-4"></i>
+                                            รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">Refrigerator</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-refrigerator-refrig-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-refrigerator-refrig-temp"
+                                            id="embryology-refrigerator-refrig-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-refrigerator-refrig-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-light bg-danger rounded-pill border px-4">DataLogger</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-refrigerator-thermo-temp">Thermometer <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="embryology-refrigerator-thermo-temp"
+                                            id="embryology-refrigerator-thermo-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-refrigerator-thermo-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-embryology-incubator">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Embryology Room</span>
+                            Incubator
+                        </div>
+                    </div>
+                </div>
+                <form id="embryology-incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="embryology-incubator-name"
+                                    name="embryology-incubator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="incubator-shift-morning"
+                                            value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="incubator-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift" id="incubator-shift-evening"
+                                            value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100" for="incubator-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span
+                                            class="fw-bold text-white bg-danger rounded-pill border px-4">Memmert</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-incubator-memmert-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-incubator-memmert-temp"
+                                            id="embryology-incubator-memmert-temp" class="form-control text-center"
+                                            min="36" max="38">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-incubator-memmert-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-primary rounded-pill border px-4">ASTEC SCA
+                                            165DS</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-incubator-astec-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-incubator-astec-temp" id="embryology-incubator-astec-temp"
+                                            class="form-control text-center" min="36" max="38">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="embryology-incubator-astec-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="embryology-incubator-astec-co2" id="embryology-incubator-astec-co2"
+                                            class="form-control text-center" min="5" max="7">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="embryology-incubator-astec-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-danger btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-andrology-status">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Andrology Room</span>
+                            Status
+                        </div>
+                    </div>
+                </div>
+                <form id="andrology-statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="andrology-statusroom-name"
+                                    name="andrology-statusroom-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-status-room-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary w-100"
+                                            for="andrology-status-room-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-status-room-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary w-100"
+                                            for="andrology-status-room-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-dark bg-info rounded-pill border px-4">Thermometer</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-dr-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-dr-temp" id="andrology-statusroom-dr-temp"
+                                            class="form-control text-center" max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-dr-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-dr-humid" id="andrology-statusroom-dr-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <label for="andrology-statusroom-dr-pressure">Pressure<span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-dr-pressure"
+                                            id="andrology-statusroom-dr-pressure" class="form-control text-center"
+                                            max="22" min="18">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-statusroom-dr-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Thermo-Hygro
+                                            Meter</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-desktopmeter-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-desktopmeter-temp"
+                                            id="andrology-statusroom-desktopmeter-temp" class="form-control text-center"
+                                            max="26" min="22">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-statusroom-desktopmeter-humid">Humidity <span
+                                                class="text-muted">(%rH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-statusroom-desktopmeter-humid"
+                                            id="andrology-statusroom-desktopmeter-humid"
+                                            class="form-control text-center" max="55" min="45">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-statusroom-desktopmeter-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-success btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-andrology-refrigerator">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Andrology Room</span>
+                            Refrigerator
+                        </div>
+                    </div>
+                </div>
+                <form id="andrology-refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="andrology-refrigerator-name"
+                                    name="andrology-refrigerator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-refrigerator-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-refrigerator-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i>
+                                            รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-refrigerator-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-refrigerator-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i>
+                                            รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-white bg-primary rounded-pill border px-4">Refrigerator</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-refrigerator-refrig-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-refrigerator-refrig-temp"
+                                            id="andrology-refrigerator-refrig-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-refrigerator-refrig-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">ESCORT
+                                            (DataLogger)</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-refrigerator-escort-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-refrigerator-escort-temp"
+                                            id="andrology-refrigerator-escort-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-refrigerator-escort-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span
+                                            class="fw-bold text-light bg-danger rounded-pill border px-4">Refrigerator</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-refrigerator-thermo-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="andrology-refrigerator-thermo-temp"
+                                            id="andrology-refrigerator-thermo-temp" class="form-control text-center"
+                                            max="8" min="2">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-refrigerator-thermo-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-warning btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-andrology-incubator">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-dark mt-4 display-6 fw-bold" id="header-text">
+                            <span class="text-danger">Andrology Room</span>
+                            Incubator
+                        </div>
+                    </div>
+                </div>
+                <form id="andrology-incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
+                    novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="andrology-incubator-name"
+                                    name="andrology-incubator-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                        <div class="row">
+                            <div class="col text-center d-flex flex-column">
+                                <label for="shift" class="fs-3">รอบตรวจสอบ</label>
+                                <div class="d-flex w-100 justify-content-evenly align-items-center mt-2">
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-incubator-shift-morning" value="เช้า" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-incubator-shift-morning"><i
+                                                class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
+                                    </div>
+                                    <div class="col-6 px-2">
+                                        <input type="radio" class="btn-check" name="shift"
+                                            id="andrology-incubator-shift-evening" value="เย็น" autocomplete="off">
+                                        <label class="btn btn-outline-primary  w-100"
+                                            for="andrology-incubator-shift-evening"><i
+                                                class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-5 text-secondary">
+                                        <span class="fw-bold text-white bg-primary rounded-pill border px-4">ASTEC SCA
+                                            165DS</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-incubator-astec-temp">Temperature</label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="andrology-incubator-astec-temp" id="andrology-incubator-astec-temp"
+                                            class="form-control text-center" min="36" max="38">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="andrology-incubator-astec-co2">CO<sub>2</sub></label>
+                                        <input type="number" step="0.1" inputmode="decimal"
+                                            name="andrology-incubator-astec-co2" id="andrology-incubator-astec-co2"
+                                            class="form-control text-center" min="5" max="7">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="andrology-incubator-astec-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-danger btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- <div class="container-fluid m-0 p-0">
+            <iframe frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div> -->
+    </main>
+
+    <footer>
+        <!-- <div class="row justify-content-center align-items-center">
+            <div class="col-12 text-center">
+                <img src="../bmepyt3.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-12 text-center">
+                <img src="../bmeg5.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+        </div> -->
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-center" style="font-size: 0.7rem;">
+                Developed by <span class="text-primary">Daranphop Yimyam (BME PYT3)</span>
+            </div>
+        </div>
+        <div class="copyright mb-3" align="center" style="font-size: 0.7rem;">
+            <script>
+                document.write('&copy;');
+                document.write(' 2022 ');
+                document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
+            </script>
+        </div>
+        <img src="" alt="" id="compressing" hidden>
+    </footer>
+    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/compress-js@2.0.2/dist/compressjs.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        // var vConsole = new window.VConsole();
+    </script>
+    <script>
+        var script_url = 'https://script.google.com/macros/s/AKfycbwew5SoKXY39vXShqtwgL7OAVJle0fLaE3vY6_T5R5pmHeK4fNo8Jjw8pJY2VPQiVLc/exec'
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500,
+        })
+
+        $(document).ready(() => {
+            // Initialize Telegram Web App
+            const tg = window.Telegram.WebApp;
+
+            // Retrieve user information
+            const user = tg.initDataUnsafe.user;
+            if (user) {
+                console.log(`Hello, ${user.first_name}!`);
+                const profileImageURL = `https://t.me/i/userpic/320/${user.id}.jpg`;
+                document.getElementById("profile-pic").src = profileImageURL;
+            } else {
+                console.log("User data not available.");
+            }
+            $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/c4138b94-68e0-48e5-9021-57d76f7c9348/page/V9LZD").attr('width', '100%')
+            let width = $('iframe').width()
+            let height = width * 0.5833
+            $('iframe').height(height)
+            setInterval(function () {
+                let timenow = moment().format('DD MMM YY (HH:mm:ss)')
+                $('.timenow').html(timenow);
+            }, 1000);
+
+            $.when(getHistory()).done(function () {
+                $.LoadingOverlay("hide");
+                $('#header-text').addClass('animate__animated animate__rubberBand')
+                setTimeout(() => {
+                    $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
+
+                }, 1000);
+            })
+
+            $('#offcanvas-menu').find('.nav-link').on('shown.bs.tab', function (e) {
+                let target = $(this).attr('data-bs-target')
+                console.log("🚀 !! target:", target)
+                $(target).addClass('animate__slideInLeft animate__faster')
+                setTimeout(() => {
+                    $(target).removeClass('animate__slideInLeft animate__faster')
+                }, 1000);
+                $('#offcanvas-menu').offcanvas('hide')
+            })
+
+            var typingTimer;
+            var doneTypingInterval = 700;
+            var $input = $('form input, form select, input[type="checkbox"]')
+            $input.on('input', function () {
+                let inp = this
+                let form = $(this).closest('form')
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(function () {
+                    doneTyping($(form).attr('id'), inp)
+                }, doneTypingInterval);
+            });
+            $input.on('keydown', function () {
+                clearTimeout(typingTimer);
+            });
+            function doneTyping(id, inp) {
+                checkMinMaxLimit(inp)
+                autoSave(id)
+            }
+            $('form').find('input, select, input[type="checkbox"], input[type="radio"]').not('.no-required').attr('required', true).each(function () {
+                let parent = $(this).parent()
+                if ($(this).attr('type') == 'checkbox') parent = $(this).parent().parent()
+                else if ($(this).attr('type') == 'radio') parent = $(this).parent()
+                let invalid = $('<div>', { class: 'invalid-feedback' }).text('กรุณากรอก ' + $(parent.find('label')[0]).text())
+                parent.append(invalid)
+            })
+            $('#clear-data-btn').click(() => {
+                localStorage.removeItem('history')
+                location.reload()
+            })
+            liff.init({
+                liffId: "1657104960-bN4Om4yY",
+                // liffId: "1655873446-MpmBPPzl",
+                withLoginOnExternalBrowser: true,
+            })
+            liff.ready.then(async () => {
+                getLastSaved()
+                $.LoadingOverlay("show");
+                console.log('liff init success');
+                let profile = await liff.getProfile()
+                console.log("🚀 ~ profile:", profile)
+                console.log(liff.getDecodedIDToken().sub);
+                $('#line-display').attr('src', profile.pictureUrl).show(200)
+                $.LoadingOverlay("hide");
+                let now = new Date()
+                if (now.getHours() >= 6 && now.getHours() < 14) {
+                    $('label[for="morning"]').click()
+                } else {
+                    $('label[for="evening"]').click()
+                }
+            })
+                .catch((err) => {
+                    console.log(err.code, err.message);
+                });
+
+
+
+        })
+
+        var section_alerts = {}
+        function checkMinMaxLimit(inp) {
+            let min = $(inp).attr('min')
+            let max = $(inp).attr('max')
+            let recheck = $(inp).attr('data-recheck')
+            let sec_id = $(inp).attr('id').split('-').slice(0, -1).join('-')
+            if (!min || !max || recheck) return
+            if (min != undefined && max != undefined) {
+                let label = $(inp).parent().find('label').text().split(' ')[0]
+                let val = $(inp).val()
+                if (val != '' && Number(val) < Number(min)) {
+                    if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
+                    section_alerts[sec_id][$(inp).attr('id')] = {
+                        label: label,
+                        min: min,
+                        max: max,
+                        val: val,
+                        html: `<span class="text-decoration-underline">ค่าต่ำกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
+                    }
+                    // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} ต่ำกว่า ${min} ไม่ปกติ</span>`)
+                } else if (val != '' && Number(val) > Number(max)) {
+                    if (!section_alerts[sec_id]) section_alerts[sec_id] = {}
+                    section_alerts[sec_id][$(inp).attr('id')] = {
+                        label: label,
+                        min: min,
+                        max: max,
+                        val: val,
+                        html: `<span class="text-decoration-underline">ค่าสูงกว่า</span> ช่วงที่กำหนด ${min} - ${max} กรุณาตรวจสอบอีกครั้ง`
+                    }
+                    // $('#statusroom-alert').append(`<span class="text-danger" style="font-size: 0.7rem">${label} สูงกว่า ${max} ไม่ปกติ</span>`)
+                } else {
+                    if (section_alerts[sec_id]) {
+                        delete section_alerts[sec_id][$(inp).attr('id')]
+                    }
+                    $('#' + $(inp).attr('id')).removeClass('border-danger border-2')
+                }
+                console.log("🚀 !! section_alerts:", section_alerts)
+            }
+            Object.keys(section_alerts).forEach(sec_id => {
+                let alert_text = ''
+                Object.keys(section_alerts[sec_id]).forEach(id => {
+                    console.log("🚀 !! id:", id)
+                    // alert_text += `<span class="alert alert-danger" style="font-size: 0.9rem">${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].text}</span>`
+                    alert_text += `<div class="col-12">
+                                        <div class="alert alert-danger p-1 py-2 ps-2 mb-1 d-flex align-items-center justify-content-between" role="alert" style="font-size: 0.8rem">
+                                            <div class="col-md-9 col-8 text-start">
+                                                <i class="bi bi-exclamation-triangle-fill"></i> 
+                                                ${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].html}
+                                            </div>
+                                            <div class="col-md-3 col-4 text-end">
+                                                <button class="btn btn-danger py-0 px-1 me-2 section-alert-btn" style="font-size: 0.8rem" type="button" data-alert-id=${id}>ตรวจสอบแล้ว</button>    
+                                            </div>
+                                        </div>
+                                    </div>`
+                    $('#' + id).addClass('border-danger border-2')
+
+                })
+                $('#' + sec_id + '-alert').html(alert_text)
+                $('.section-alert-btn').click(function () {
+                    $('#' + $(this).data('alert-id')).removeClass('border-danger border-2').removeAttr('min max')
+                    $(this).parent().parent().parent().remove()
+
+                    let sec_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
+                    delete section_alerts[sec_id][$(this).data('alert-id')]
+                    console.log(section_alerts);
+                })
+            })
+        }
+
+
+        function getLastSaved() {
+            let forms = $('form').toArray().map(a => {
+                return {
+                    url: script_url + '?opt=get_last&form=' + $(a).attr('id'),
+                    form: $(a).attr('id')
+                }
+            })
+            Promise.all(forms.map(a => {
+                $.ajax(a.url, {
+                    success: function (res) {
+                        console.log(res)
+                        if (res.status == 'success') {
+                            let data = res.data
+                            Object.keys(data).forEach(key => {
+                                if (key.length < 1) return
+                                if (!$('#' + key)) return
+                                // if ($('#' + key).is(':checkbox')) {
+                                //     if (data[key] == '✓') {
+                                //         $('#' + key).prop('checked', true).val('✓')
+                                //     } else {
+                                //         $('#' + key).prop('checked', false).val('')
+                                //     }
+                                //     return
+                                // } else if ($('#' + key).is(':radio')) {
+                                //     if (data[key] == '✓') {
+                                //         $('#' + key).prop('checked', true)
+                                //     } else {
+                                //         $('#' + key).prop('checked', false)
+                                //     }
+                                //     return
+                                // }
+                                $('#' + key).attr('placeholder', data[key])
+                                if (key.indexOf('-lot') > -1) $('#' + key).val(data[key])
+                            })
+                            console.log(localStorage.getItem('user'));
+                            if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
+                                $('#name').val(localStorage.getItem('user') || "")
+                            } else {
+                                $('#name').val("")
+                            }
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'ไม่สามารถดึงข้อมูลล่าสุดของ ' + a.form + ' ได้'
+                            })
+                        }
+                    },
+                })
+            }))
+
+            // return $.ajax({
+            //     url: script_url,
+            //     data: obj,
+            //     type: 'GET',
+            //     success: function (res) {
+            //         console.log(res)
+            //         if (res.status == 'success') {
+            //             let data = res.data
+            //             Object.keys(data).forEach(key => {
+            //                 if (key.length < 1) return
+            //                 if (!$('#' + key)) return
+            //                 // if ($('#' + key).is(':checkbox')) {
+            //                 //     if (data[key] == '✓') {
+            //                 //         $('#' + key).prop('checked', true).val('✓')
+            //                 //     } else {
+            //                 //         $('#' + key).prop('checked', false).val('')
+            //                 //     }
+            //                 //     return
+            //                 // } else if ($('#' + key).is(':radio')) {
+            //                 //     if (data[key] == '✓') {
+            //                 //         $('#' + key).prop('checked', true)
+            //                 //     } else {
+            //                 //         $('#' + key).prop('checked', false)
+            //                 //     }
+            //                 //     return
+            //                 // }
+            //                 $('#' + key).attr('placeholder', data[key])
+            //             })
+            //             console.log(localStorage.getItem('user'));
+            //             if (localStorage.getItem('user') != null) {
+            //                 $('#name').val(localStorage.getItem('user') || "")
+            //             } else {
+            //                 $('#name').val("")
+            //             }
+            //         } else {
+            //             Toast.fire({
+            //                 icon: 'error',
+            //                 title: 'ไม่สามารถดึงข้อมูลล่าสุดได้'
+            //             })
+            //         }
+            //     },
+            // })
+        }
+
+        var atsave = {}
+        function autoSave(form) {
+            form = $('#' + form)
+            let data = form.serializeArray()
+            let obj = {}
+            data.forEach(a => {
+                if ($('#' + a.name).is(':checkbox')) {
+                    if (a.value == '✓') {
+                        obj[a.name] = '✓'
+                    } else {
+                        obj[a.name] = '✗'
+                    }
+                    return
+                }
+
+                obj[a.name] = a.value
+            })
+            if ($('.name').toArray().map(a => a.value).filter(a => a != '').length > 0) {
+                localStorage.setItem('user', $('.name').toArray().map(a => a.value).filter(a => a != '')[0])
+            } else {
+                localStorage.removeItem('user')
+            }
+            atsave[form.attr('id')] = obj
+            localStorage.setItem('history', JSON.stringify(atsave))
+            console.log(atsave)
+        }
+
+        function getHistory() {
+            $('.name').val(localStorage.getItem('user') == null ? "" : localStorage.getItem('user'))
+            let history = localStorage.getItem('history')
+            if (history != null) {
+                let obj = JSON.parse(history)
+                console.log("🚀 ~ obj:", obj)
+                Object.keys(obj).forEach(key => {
+                    console.log("🚀 !! key:", key)
+                    Object.keys(obj[key]).forEach(k => {
+                        console.log("🚀 !! k:", k)
+                        if ($('[name="' + k + '"]').is(':checkbox')) {
+                            if (obj[key][k] == '✓') {
+                                $('#' + k).prop('checked', true).val('✓')
+                            } else {
+                                $('#' + k).prop('checked', false).val('')
+                            }
+                            return
+                        } else if ($('[name="' + k + '"]').is(':radio')) {
+                            console.log(`[name="${k}"][value="${obj[key][k]}"]`)
+                            if (obj[key][k] && obj[key][k] != '') {
+                                // find radio with value
+                                $(`[name="${k}"][value="${obj[key][k]}"]`).click()
+                            }
+                            return
+                        } else {
+                            $(`[name="${k}"]`).val(obj[key][k])
+                        }
+                    })
+                })
+            }
+        }
+
+
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+
+        function sendLineNotify(obj) {
+            let message
+            switch (obj.form) {
+                case "med-gas-checklist":
+                    message = `👉 ผลการตรวจเช็คแก็สทางการแพทย์
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+👉 Trigas Manifold
+Left  =  ${obj['trigas-manifold-left']} psi
+Right  =  ${obj['trigas-manifold-right']} psi
+-------------------------------
+
+👉 CO2 Manifold
+Left  =  ${obj['c02-manifold-left']} psi
+Right  =  ${obj['c02-manifold-right']} psi
+-------------------------------
+
+👉 N2 Manifold
+Left  =  ${obj['n2-manifold-left']} psi
+Right  =  ${obj['n2-manifold-right']} psi
+-------------------------------
+
+บันทึกโดย
+@${obj.name}`
+                    break
+                case "stockroom-checklist":
+                    message = `👉 ผลการตรวจเช็ค Stock Room
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+👉temperature = ${obj['stockroom-thermo-temp']}  ํC
+👉humidity = ${obj['stockroom-thermo-humid']} %RH
+-------------------------------
+
+บันทึกโดย
+@${obj['stockroom-name']}`
+                    break
+                case "liquid-nitrogen-checklist":
+                    message = `👉 ผลการตรวจเช็ค Liquid Nitrogen Stock Room
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+👉temperature = ${obj['liquid-nitrogen-thermo-temp']}  ํC
+👉humidity = ${obj['liquid-nitrogen-thermo-humid']} %RH
+-------------------------------
+
+บันทึกโดย
+@${obj['liquid-nitrogen-name']}`
+                    break
+                case "embryology-statusroom-checklist":
+                    message = `👉 ผลการตรวจเช็ค Status Room Embryology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+DR-Analyst
+👉 temperature = ${obj['embryology-statusroom-dr-temp']}  ํC
+👉 humidity = ${obj['embryology-statusroom-dr-humid']} %RH
+👉 pressure = ${obj['embryology-statusroom-dr-plessure']} Pa
+-------------------------------
+
+Desktop-Meter
+👉 temperature = ${obj['embryology-statusroom-desktopmeter-temp']}  ํC
+👉 humidity = ${obj['embryology-statusroom-desktopmeter-humid']} %RH
+-------------------------------
+
+Alarm System is ${obj['embryology-statusroom-alarm'].toUpperCase()}
+
+บันทึกโดย
+@${obj['embryology-statusroom-name']}`
+                    break
+                case "embryology-embryo-checklist":
+                    message = `👉 ผลการตรวจเช็ค Embryo Culture ห้อง Embryology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+PLANER A
+👉 temperature = ${obj['embryology-embryo-planer-a-temp']}  ํC
+-------------------------------
+
+PLANER B
+👉 temperature = ${obj['embryology-embryo-planer-b-temp']}  ํC
+-------------------------------
+
+PLANER C
+👉 temperature = ${obj['embryology-embryo-planer-c-temp']}  ํC
+-------------------------------
+
+PLANER D
+👉 temperature = ${obj['embryology-embryo-planer-d-temp']}  ํC
+-------------------------------
+
+PLANER E
+👉 temperature = ${obj['embryology-embryo-planer-e-temp']}  ํC
+-------------------------------
+
+EMBRYO PLUS
+👉 CO2 = ${obj['embryology-embryo-embryoplus-co2']} %
+👉 O2 = ${obj['embryology-embryo-embryoplus-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-embryoplus-controlbar-co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-embryoplus-controlbar-n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-embryoplus-temp']}  ํC
+-------------------------------
+
+EC6S A
+👉 CO2 = ${obj['embryology-embryo-ec6s-a-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-a-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-a-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-a-controlbar_n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-ec6s-a-temp']}  ํC
+-------------------------------
+
+EC6S B
+👉 CO2 = ${obj['embryology-embryo-ec6s-b-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-b-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-b-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-b-controlbar_n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-ec6s-b-temp']}  ํC
+-------------------------------
+
+EC6S C
+👉 CO2 = ${obj['embryology-embryo-ec6s-c-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-c-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-c-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-c-controlbar_n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-ec6s-c-temp']}  ํC
+-------------------------------
+
+EC6S D
+👉 CO2 = ${obj['embryology-embryo-ec6s-d-co2']} %
+👉 O2 = ${obj['embryology-embryo-ec6s-d-o2']} %
+
+👉 control bar CO2 = ${obj['embryology-embryo-ec6s-d-controlbar_co2']} bar
+👉 control bar N2 = ${obj['embryology-embryo-ec6s-d-controlbar_n2']} bar
+
+👉 temperature = ${obj['embryology-embryo-ec6s-d-temp']}  ํC
+-------------------------------
+
+บันทึกโดย
+@${obj['embryology-embryo-name']}`
+                    break
+                case "embryology-refrigerator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+Refrigerator
+👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
+-------------------------------
+
+DataLogger
+👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
+-------------------------------
+
+บันทึกโดย
+@${obj['embryology-refrigerator-name']}`
+                    break
+                case "embryology-incubator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+ASTEC
+👉 CO2 = ${obj['embryology-incubator-astec-co2']} %
+👉 temperature = ${obj['embryology-incubator-astec-temp']}  ํC
+-------------------------------
+
+MEMMERT
+👉 temperature = ${obj['embryology-incubator-memmert-temp']}  ํC
+-------------------------------
+
+บันทึกโดย
+@${obj['embryology-incubator-name']}`
+                    break
+                case "andrology-statusroom-checklist":
+                    message = `👉 ผลการตรวจเช็ค Status Room Andrology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+Temperature
+👉 temperature = ${obj['andrology-statusroom-dr-temp']}  ํC
+👉 humidity = ${obj['andrology-statusroom-dr-humid']} %RH
+👉 pressure = ${obj['andrology-statusroom-dr-pressure']} Pa
+-------------------------------
+
+Thermo-Hygrometer
+👉 temperature = ${obj['andrology-statusroom-desktopmeter-temp']}  ํC
+👉 humidity = ${obj['andrology-statusroom-desktopmeter-humid']} %RH
+-------------------------------
+
+บันทึกโดย
+@${obj['andrology-statusroom-name']}`
+                    break
+                case "andrology-refrigerator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Andrology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+Refrigerator
+👉 temperature = ${obj['andrology-refrigerator-thermo-temp']}  ํC
+-------------------------------
+
+ESCORT
+👉 temperature = ${obj['andrology-refrigerator-escort-temp']}  ํC
+-------------------------------
+
+บันทึกโดย
+@${obj['andrology-refrigerator-name']}`
+                    break
+                case "andrology-incubator-checklist":
+                    message = `👉 ผลการตรวจเช็ค Incubator ห้อง Andrology
+                
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+ASTEC SCA 165DS
+👉 temperature = ${obj['andrology-incubator-astec-temp']}  ํC
+👉 CO2 = ${obj['andrology-incubator-astec-co2']} %
+-------------------------------
+
+บันทึกโดย
+@${obj['andrology-incubator-name']}`
+                    break
+                default: return
+            }
+
+            $.ajax({
+                url: script_url,
+                type: 'POST',
+                data: {
+                    opt: 'sendLineNotifyTest',
+                    msg: message,
+                },
+                success: function (res) {
+                    console.log(res)
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        }
+        let message
+        let token = '7333807165:AAGQoFbZdpIIiFoh-vhF0aaKjqgSP0foiEY'
+        let chat_id = '-1002471345058'
+        let message_thread_id
+        let parse_mode = 'HTML'
+        switch (obj.form) {
+            case "med-gas-checklist":
+                message_thread_id = 8
+                message = `<strong>👉 Medical Gas Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Trigas Manifold</i></b>
+Left  =  <b>${obj['trigas-manifold-left']}</b>  psi
+Right  =  <b>${obj['trigas-manifold-right']}</b>  psi
+</blockquote>
+<blockquote>
+<b><i>👉 CO2 Manifold</i></b>
+Left  =  <b>${obj['c02-manifold-left']}</b>  psi
+Right  =  <b>${obj['c02-manifold-right']}</b>  psi
+</blockquote>
+<blockquote>
+<b><i>👉 N2 Manifold</i></b>
+Left  =  <b>${obj['n2-manifold-left']}</b>  psi
+Right  =  <b>${obj['n2-manifold-right']}</b>  psi
+</blockquote>
+${obj.name}`
+                break
+            case "stockroom-checklist":
+                message_thread_id = 10
+                message = `<strong>👉 Stock Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Temperature</i></b>
+Temperature =  <b>${obj['stockroom-thermo-temp']}</b>   ํC
+Humidity =  <b>${obj['stockroom-thermo-humid']}</b>  %RH
+</blockquote>
+${obj['stockroom-name']}`
+                break
+            case "liquid-nitrogen-checklist":
+                message_thread_id = 11
+                message = `<strong>👉 Liquid Nitrogen Stock Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Temperature</i></b>
+Temperature =  <b>${obj['liquid-nitrogen-thermo-temp']}</b>   ํC
+Humidity =  <b>${obj['liquid-nitrogen-thermo-humid']}</b>  %RH
+</blockquote>
+${obj['liquid-nitrogen-name']}`
+                break
+            case "embryology-statusroom-checklist":
+                message_thread_id = 12
+                message = `<strong>👉 Embryology Status Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 DR-Analyst</i></b>
+Temperature =  <b>${obj['embryology-statusroom-dr-temp']}</b>   ํC
+Humidity =  <b>${obj['embryology-statusroom-dr-humid']}</b>  %RH
+Pressure =  <b>${obj['embryology-statusroom-dr-plessure']}</b>  Pa
+</blockquote>
+<blockquote>
+<b><i>👉 Desktop-Meter</i></b>
+Temperature =  <b>${obj['embryology-statusroom-desktopmeter-temp']}</b>   ํC
+Humidity =  <b>${obj['embryology-statusroom-desktopmeter-humid']}</b>  %RH
+</blockquote>
+<blockquote>
+<b><i>👉 Alarm System</i></b>
+Status =  <b>${obj['embryology-statusroom-alarm'].toUpperCase()}</b>
+</blockquote>
+${obj['embryology-statusroom-name']}`
+                break
+            case "embryology-embryo-checklist":
+                message_thread_id = 12
+                message = `<strong>👉 Embryo Culture Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 PLANER A</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-a-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER B</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-b-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER C</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-c-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER D</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-d-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER E</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-e-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EMBRYO PLUS</i></b>
+CO2 =  <b>${obj['embryology-embryo-embryoplus-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-embryoplus-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-embryoplus-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-embryoplus-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-embryoplus-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S A</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-a-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-a-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-a-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-a-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-a-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S B</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-b-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-b-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-b-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-b-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-b-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S C</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-c-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-c-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-c-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-c-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-c-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S D</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-d-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-d-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-d-temp']}</b>   ํC
+</blockquote>
+${obj['embryology-embryo-name']}`
+                break
+            case "embryology-refrigerator-checklist":
+                message_thread_id = 12
+                //                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
+
+                // 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+                // Refrigerator
+                // 👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
+                // -------------------------------
+
+                // DataLogger
+                // 👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
+                // -------------------------------
+
+                // บันทึกโดย
+                // @${obj['embryology-refrigerator-name']}`
+                message = `<strong>👉 Embryology Refrigerator Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Refrigerator</i></b>
+Temperature =  <b>${obj['embryology-refrigerator-refrig-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 DataLogger</i></b>
+Temperature =  <b>${obj['embryology-refrigerator-thermo-temp']}</b>   ํC
+</blockquote>
+${obj['embryology-refrigerator-name']}`
+                break
+            case "embryology-incubator-checklist":
+                message_thread_id = 12
+                message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+ASTEC
+👉 CO2 = ${obj['embryology-incubator-astec-co2']} %
+👉 temperature = ${obj['embryology-incubator-astec-temp']}  ํC
+-------------------------------
+
+MEMMERT
+👉 temperature = ${obj['embryology-incubator-memmert-temp']}  ํC
+-------------------------------
+
+บันทึกโดย
+@${obj['embryology-incubator-name']}`
+                break
+            case "andrology-statusroom-checklist":
+                message_thread_id = 13
+                message = `<strong>👉 Andrology Status Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Temperature</i></b>
+Temperature =  <b>${obj['andrology-statusroom-dr-temp']}</b>   ํC
+Humidity =  <b>${obj['andrology-statusroom-dr-humid']}</b>  %RH
+Pressure =  <b>${obj['andrology-statusroom-dr-pressure']}</b>  Pa
+</blockquote>
+<blockquote>
+<b><i>👉 Thermo-Hygrometer</i></b>
+Temperature =  <b>${obj['andrology-statusroom-desktopmeter-temp']}</b>   ํC
+Humidity =  <b>${obj['andrology-statusroom-desktopmeter-humid']}</b>  %RH
+</blockquote>
+${obj['andrology-statusroom-name']}`
+                break
+            case "andrology-incubator-checklist":
+                message_thread_id = 13
+                message = `<strong>👉 Andrology Incubator Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 ASTEC SCA 165DS</i></b>
+Temperature =  <b>${obj['andrology-incubator-astec-temp']}</b>   ํC
+CO2 =  <b>${obj['andrology-incubator-astec-co2']}</b>  %
+</blockquote>
+${obj['andrology-incubator-name']}`
+                break
+            default: return
+        }
+
+        $.ajax({
+            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+            type: 'POST',
+            data: {
+                chat_id: chat_id,
+                text: message,
+                parse_mode: parse_mode,
+            },
+            success: function (res) {
+                console.log(res)
+            },
+        })
+        }
+
+        (() => {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault()
+                    if (!form.checkValidity()) {
+                        event.stopPropagation()
+                        form.classList.add('was-validated')
+                        $
+                        $(form).find(':invalid').first().focus()
+                    } else {
+                        ChecklistForm(form)
+                    }
+                }, false)
+            })
+        })()
+
+    </script>
+    <script>
+        const retryRequest = (fn, retries = 3) => {
+            return fn().catch(err => {
+                if (retries > 0) {
+                    return retryRequest(fn, retries - 1);
+                } else {
+                    throw err;
+                }
+            });
+        };
+
+        let success_all = 0
+        const checkDone = () => {
+            console.log("🚀 ~ checkDone ~ success_all", success_all);
+            if (success_all >= 2) {
+                setTimeout(() => {
+                    $('html, body').animate({
+                        scrollTop: 0
+                    }, 200);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                        timer: 800,
+                        allowOutsideClick: false,
+                        timerProgressBar: true
+                    }).then(() => {
+                        liff.closeWindow()
+                    })
+                }, 200);
+            }
+        }
+
+        function ChecklistForm(form) {
+            // check if not attach image
+            let data = $(form).serializeArray()
+            let obj = {}
+            data.forEach(a => {
+                obj[a.name] = a.value.toString()
+            })
+            console.log(obj);
+            obj.opt = 'submittest'
+            obj.form = $(form).attr('id')
+            console.log(obj);
+            // $.LoadingOverlay("show");
+            localStorage.setItem('user', $(form).find('.name')[0].value)
+            Swal.fire({
+                iconHtml: '<i class="bi bi-send-fill text-primary fs-2"></i>',
+                title: 'กำลังบันทึกข้อมูล',
+                html: 'กรุณารอสักครู่',
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+                allowOutsideClick: () => !Swal.isLoading(),
+            })
+            Promise.all([
+                retryRequest(() => saveToSheet(obj)),
+                retryRequest(() => sendTelegram(obj)),
+            ])
+        }
+
+        function saveToSheet(obj) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: script_url,
+                    data: obj,
+                    type: 'POST',
+                    success: function (res) {
+                        console.log(res)
+                        if (res.status) {
+                            $(form).trigger('reset')
+                            $(form).removeClass('was-validated')
+                            // scroll to top
+                            let history = localStorage.getItem('history')
+                            if (history != null) {
+                                let obj = JSON.parse(history)
+                                delete obj[$(form).attr('id')]
+                                localStorage.setItem('history', JSON.stringify(obj))
+                            }
+                            checkDone()
+                        } else {
+                            reject(res)
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error sending images:", errorThrown);
+                        reject(errorThrown);
+                    }
+                })
+            })
+
+        }
+
+    </script>
+    <script>
+        function checkMinMax(id) {
+            let focusEle = ''
+            Object.keys(section_alerts).forEach(key => {
+                if (key.indexOf(id) > -1) {
+                    Object.keys(section_alerts[key]).forEach(alert_id => {
+                        if (focusEle == '') {
+                            focusEle = alert_id
+                        }
+                    })
+                    return false
+                }
+            })
+            if (focusEle != '') {
+
+                $('#' + focusEle).remove.focus()
+                return false
+            }
+            return true
+        }
+    </script>
+</body>
+
+</html>
