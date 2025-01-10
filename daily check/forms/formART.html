@@ -106,8 +106,7 @@
         </div>
     </nav>
     <main style="margin-top: 50px;">
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-menu"
-            aria-labelledby="offcanvas-menuLabel">
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-menu" aria-labelledby="offcanvas-menuLabel">
             <div class="offcanvas-header text-bg-primary">
                 <h5 class="offcanvas-title" id="offcanvasLabel"><i class="bi bi-stack"></i> Select Form</h5>
                 <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas"
@@ -1262,13 +1261,15 @@
                                     <div class="col-6 px-2">
                                         <input type="radio" class="btn-check" name="shift"
                                             id="andrology-status-room-shift-morning" value="เช้า" autocomplete="off">
-                                        <label class="btn btn-outline-primary w-100" for="andrology-status-room-shift-morning"><i
+                                        <label class="btn btn-outline-primary w-100"
+                                            for="andrology-status-room-shift-morning"><i
                                                 class="bi bi-cloud-sun-fill fs-4"></i> รอบเช้า</label>
                                     </div>
                                     <div class="col-6 px-2">
                                         <input type="radio" class="btn-check" name="shift"
                                             id="andrology-status-room-shift-evening" value="เย็น" autocomplete="off">
-                                        <label class="btn btn-outline-primary w-100" for="andrology-status-room-shift-evening"><i
+                                        <label class="btn btn-outline-primary w-100"
+                                            for="andrology-status-room-shift-evening"><i
                                                 class="bi bi-cloud-moon-fill fs-4"></i> รอบเย็น</label>
                                     </div>
                                 </div>
@@ -2114,7 +2115,6 @@ Thermo-Hygrometer
 บันทึกโดย
 @${obj['andrology-statusroom-name']}`
                     break
-
                 case "andrology-refrigerator-checklist":
                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Andrology
 
@@ -2162,6 +2162,240 @@ ASTEC SCA 165DS
                 }
             })
         }
+        let message
+        let token = '7333807165:AAGQoFbZdpIIiFoh-vhF0aaKjqgSP0foiEY'
+        let chat_id = '-1002471345058'
+        let message_thread_id
+        let parse_mode = 'HTML'
+        switch (obj.form) {
+            case "med-gas-checklist":
+                message_thread_id = 8
+                message = `<strong>👉 Medical Gas Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Trigas Manifold</i></b>
+Left  =  <b>${obj['trigas-manifold-left']}</b>  psi
+Right  =  <b>${obj['trigas-manifold-right']}</b>  psi
+</blockquote>
+<blockquote>
+<b><i>👉 CO2 Manifold</i></b>
+Left  =  <b>${obj['c02-manifold-left']}</b>  psi
+Right  =  <b>${obj['c02-manifold-right']}</b>  psi
+</blockquote>
+<blockquote>
+<b><i>👉 N2 Manifold</i></b>
+Left  =  <b>${obj['n2-manifold-left']}</b>  psi
+Right  =  <b>${obj['n2-manifold-right']}</b>  psi
+</blockquote>
+${obj.name}`
+                break
+            case "stockroom-checklist":
+                message_thread_id = 10
+                message = `<strong>👉 Stock Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Temperature</i></b>
+Temperature =  <b>${obj['stockroom-thermo-temp']}</b>   ํC
+Humidity =  <b>${obj['stockroom-thermo-humid']}</b>  %RH
+</blockquote>
+${obj['stockroom-name']}`
+                break
+            case "liquid-nitrogen-checklist":
+                message_thread_id = 11
+                message = `<strong>👉 Liquid Nitrogen Stock Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Temperature</i></b>
+Temperature =  <b>${obj['liquid-nitrogen-thermo-temp']}</b>   ํC
+Humidity =  <b>${obj['liquid-nitrogen-thermo-humid']}</b>  %RH
+</blockquote>
+${obj['liquid-nitrogen-name']}`
+                break
+            case "embryology-statusroom-checklist":
+                message_thread_id = 12
+                message = `<strong>👉 Embryology Status Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 DR-Analyst</i></b>
+Temperature =  <b>${obj['embryology-statusroom-dr-temp']}</b>   ํC
+Humidity =  <b>${obj['embryology-statusroom-dr-humid']}</b>  %RH
+Pressure =  <b>${obj['embryology-statusroom-dr-plessure']}</b>  Pa
+</blockquote>
+<blockquote>
+<b><i>👉 Desktop-Meter</i></b>
+Temperature =  <b>${obj['embryology-statusroom-desktopmeter-temp']}</b>   ํC
+Humidity =  <b>${obj['embryology-statusroom-desktopmeter-humid']}</b>  %RH
+</blockquote>
+<blockquote>
+<b><i>👉 Alarm System</i></b>
+Status =  <b>${obj['embryology-statusroom-alarm'].toUpperCase()}</b>
+</blockquote>
+${obj['embryology-statusroom-name']}`
+                break
+            case "embryology-embryo-checklist":
+                message_thread_id = 12
+                message = `<strong>👉 Embryo Culture Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 PLANER A</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-a-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER B</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-b-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER C</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-c-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER D</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-d-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 PLANER E</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-e-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EMBRYO PLUS</i></b>
+CO2 =  <b>${obj['embryology-embryo-embryoplus-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-embryoplus-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-embryoplus-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-embryoplus-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-embryoplus-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S A</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-a-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-a-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-a-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-a-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-a-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S B</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-b-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-b-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-b-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-b-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-b-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S C</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-c-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-c-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-c-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-c-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-c-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 EC6S D</i></b>
+CO2 =  <b>${obj['embryology-embryo-ec6s-d-co2']}</b>  %
+O2 =  <b>${obj['embryology-embryo-ec6s-d-o2']}</b>  %
+Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_co2']}</b>  bar
+Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_n2']}</b>  bar
+Temperature =  <b>${obj['embryology-embryo-ec6s-d-temp']}</b>   ํC
+</blockquote>
+${obj['embryology-embryo-name']}`
+                break
+            case "embryology-refrigerator-checklist":
+                message_thread_id = 12
+                //                     message = `👉 ผลการตรวจเช็ค Refrigerator ห้อง Embryology
+
+                // 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+                // Refrigerator
+                // 👉 temperature = ${obj['embryology-refrigerator-refrig-temp']}  ํC
+                // -------------------------------
+
+                // DataLogger
+                // 👉 temperature = ${obj['embryology-refrigerator-thermo-temp']}  ํC
+                // -------------------------------
+
+                // บันทึกโดย
+                // @${obj['embryology-refrigerator-name']}`
+                message = `<strong>👉 Embryology Refrigerator Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Refrigerator</i></b>
+Temperature =  <b>${obj['embryology-refrigerator-refrig-temp']}</b>   ํC
+</blockquote>
+<blockquote>
+<b><i>👉 DataLogger</i></b>
+Temperature =  <b>${obj['embryology-refrigerator-thermo-temp']}</b>   ํC
+</blockquote>
+${obj['embryology-refrigerator-name']}`
+                break
+            case "embryology-incubator-checklist":
+                message_thread_id = 12
+                message = `👉 ผลการตรวจเช็ค Incubator ห้อง Embryology
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
+
+ASTEC
+👉 CO2 = ${obj['embryology-incubator-astec-co2']} %
+👉 temperature = ${obj['embryology-incubator-astec-temp']}  ํC
+-------------------------------
+
+MEMMERT
+👉 temperature = ${obj['embryology-incubator-memmert-temp']}  ํC
+-------------------------------
+
+บันทึกโดย
+@${obj['embryology-incubator-name']}`
+                break
+            case "andrology-statusroom-checklist":
+                message_thread_id = 13
+                message = `<strong>👉 Andrology Status Room Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 Temperature</i></b>
+Temperature =  <b>${obj['andrology-statusroom-dr-temp']}</b>   ํC
+Humidity =  <b>${obj['andrology-statusroom-dr-humid']}</b>  %RH
+Pressure =  <b>${obj['andrology-statusroom-dr-pressure']}</b>  Pa
+</blockquote>
+<blockquote>
+<b><i>👉 Thermo-Hygrometer</i></b>
+Temperature =  <b>${obj['andrology-statusroom-desktopmeter-temp']}</b>   ํC
+Humidity =  <b>${obj['andrology-statusroom-desktopmeter-humid']}</b>  %RH
+</blockquote>
+${obj['andrology-statusroom-name']}`
+                break
+            case "andrology-incubator-checklist":
+                message_thread_id = 13
+                message = `<strong>👉 Andrology Incubator Daily Check Report</strong>
+<strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
+<strong>🕑 Shift: </strong> ${obj.shift}
+<blockquote>
+<b><i>👉 ASTEC SCA 165DS</i></b>
+Temperature =  <b>${obj['andrology-incubator-astec-temp']}</b>   ํC
+CO2 =  <b>${obj['andrology-incubator-astec-co2']}</b>  %
+</blockquote>
+${obj['andrology-incubator-name']}`
+                break
+            default: return
+        }
+
+        $.ajax({
+            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+            type: 'POST',
+            data: {
+                chat_id: chat_id,
+                text: message,
+                parse_mode: parse_mode,
+            },
+            success: function (res) {
+                console.log(res)
+            },
+        })
+        }
 
         (() => {
             'use strict'
@@ -2183,6 +2417,38 @@ ASTEC SCA 165DS
 
     </script>
     <script>
+        const retryRequest = (fn, retries = 3) => {
+            return fn().catch(err => {
+                if (retries > 0) {
+                    return retryRequest(fn, retries - 1);
+                } else {
+                    throw err;
+                }
+            });
+        };
+
+        let success_all = 0
+        const checkDone = () => {
+            console.log("🚀 ~ checkDone ~ success_all", success_all);
+            if (success_all >= 2) {
+                setTimeout(() => {
+                    $('html, body').animate({
+                        scrollTop: 0
+                    }, 200);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        confirmButtonText: 'ตกลง',
+                        timer: 800,
+                        allowOutsideClick: false,
+                        timerProgressBar: true
+                    }).then(() => {
+                        liff.closeWindow()
+                    })
+                }, 200);
+            }
+        }
+
         function ChecklistForm(form) {
             // check if not attach image
             let data = $(form).serializeArray()
@@ -2194,21 +2460,32 @@ ASTEC SCA 165DS
             obj.opt = 'submittest'
             obj.form = $(form).attr('id')
             console.log(obj);
-            $.LoadingOverlay("show");
+            // $.LoadingOverlay("show");
             localStorage.setItem('user', $(form).find('.name')[0].value)
-            $.ajax({
-                url: script_url,
-                data: obj,
-                type: 'POST',
-                success: function (res) {
-                    console.log(res)
-                    $('html, body').animate({
-                        scrollTop: 0
-                    }, 500);
-                    $.LoadingOverlay("hide");
-                    if (res.status) {
-                        sendLineNotify(obj)
-                        setTimeout(() => {
+            Swal.fire({
+                iconHtml: '<i class="bi bi-send-fill text-primary fs-2"></i>',
+                title: 'กำลังบันทึกข้อมูล',
+                html: 'กรุณารอสักครู่',
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+                allowOutsideClick: () => !Swal.isLoading(),
+            })
+            Promise.all([
+                retryRequest(() => saveToSheet(obj)),
+                retryRequest(() => sendTelegram(obj)),
+            ])
+        }
+
+        function saveToSheet(obj) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: script_url,
+                    data: obj,
+                    type: 'POST',
+                    success: function (res) {
+                        console.log(res)
+                        if (res.status) {
                             $(form).trigger('reset')
                             $(form).removeClass('was-validated')
                             // scroll to top
@@ -2218,24 +2495,18 @@ ASTEC SCA 165DS
                                 delete obj[$(form).attr('id')]
                                 localStorage.setItem('history', JSON.stringify(obj))
                             }
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลสำเร็จ',
-                                text: 'กรุณาปิดหน้าต่างนี้',
-                                confirmButtonText: 'ปิดหน้าต่าง',
-                            }).then(() => {
-                                liff.closeWindow()
-                            })
-                        }, 1000);
-                    } else {
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'บันทึกข้อมูลไม่สำเร็จ'
-                        })
-                        $.LoadingOverlay("hide");
+                            checkDone()
+                        } else {
+                            reject(res)
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error sending images:", errorThrown);
+                        reject(errorThrown);
                     }
-                },
+                })
             })
+
         }
 
     </script>
