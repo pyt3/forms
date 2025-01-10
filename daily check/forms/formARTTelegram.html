@@ -2191,6 +2191,27 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.error("Error sending message:", errorThrown);
+                        if(errorThrown == 'Bad Request: message thread not found') {
+                            $.ajax({
+                                url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+                                type: 'POST',
+                                data: {
+                                    chat_id: chat_id,
+                                    text: message,
+                                    parse_mode: parse_mode,
+                                },
+                                success: function (res) {
+                                    console.log(res)
+                                    success_all++
+                                    checkDone()
+                                    resolve(res)
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error("Error sending message:", errorThrown);
+                                    reject(errorThrown);
+                                }
+                            })  
+                        }
                         reject(errorThrown);
                     }
                 })
@@ -2233,7 +2254,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                         break
                     default: return
                 }
-                let message = `✔✔ ${form}Daily Check for ${moment().format('DD/MM/YYYY')} ${obj.shift} has been submitted ✔✔`
+                let message = `${form} Daily Check for ${moment().format('DD/MM/YYYY')} ${obj.shift} has been submitted!!`
                 $.ajax({
                     url: 'https://api.telegram.org/bot' + token + '/sendMessage',
                     type: 'POST',
@@ -2302,7 +2323,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                         allowOutsideClick: false,
                         timerProgressBar: true
                     }).then(() => {
-                        liff.closeWindow()
+                        tg.close()
                     })
                 }, 200);
             }
