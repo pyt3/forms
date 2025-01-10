@@ -2190,8 +2190,9 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                         resolve(res)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.error("Error sending message:", errorThrown);
-                        if(errorThrown == 'Bad Request: message thread not found') {
+                        let res = JSON.parse(jqXHR.responseText)
+                        console.error("Error sending message:", res.description);
+                        if(res.description == 'Bad Request: message thread not found') {
                             $.ajax({
                                 url: 'https://api.telegram.org/bot' + token + '/sendMessage',
                                 type: 'POST',
@@ -2207,7 +2208,8 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                                     resolve(res)
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
-                                    console.error("Error sending message:", errorThrown);
+                                    let res = JSON.parse(jqXHR.responseText)
+                                    console.error("Error sending message:", res.description);
                                     reject(errorThrown);
                                 }
                             })  
