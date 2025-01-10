@@ -1604,8 +1604,7 @@
             console.log("🚀 ~ user:", user);
             if (user) {
                 console.log(`Hello, ${user.first_name}!`);
-                const profileImageURL = `https://t.me/i/userpic/320/${user.id}.jpg`;
-                $('#line-display').attr('src', profileImageURL).show(200)
+                $('#line-display').attr('src', user.photo_url).show(200)
             } else {
                 console.log("User data not available.");
             }
