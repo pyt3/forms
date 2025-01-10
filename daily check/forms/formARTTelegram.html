@@ -1602,12 +1602,12 @@
 
             // Retrieve user information
             const user = tg.initDataUnsafe.user;
-            console.log("🚀 ~ user:", user);
+            
             if (user) {
-                console.log(`Hello, ${user.first_name}!`);
+                
                 $('#line-display').attr('src', user.photo_url).show(200)
             } else {
-                console.log("User data not available.");
+                
             }
             $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/c4138b94-68e0-48e5-9021-57d76f7c9348/page/V9LZD").attr('width', '100%')
             let width = $('iframe').width()
@@ -1629,7 +1629,7 @@
 
             $('#offcanvas-menu').find('.nav-link').on('shown.bs.tab', function (e) {
                 let target = $(this).attr('data-bs-target')
-                console.log("🚀 !! target:", target)
+                
                 $(target).addClass('animate__slideInLeft animate__faster')
                 setTimeout(() => {
                     $(target).removeClass('animate__slideInLeft animate__faster')
@@ -1731,12 +1731,12 @@
                     }
                     $('#' + $(inp).attr('id')).removeClass('border-danger border-2')
                 }
-                console.log("🚀 !! section_alerts:", section_alerts)
+                
             }
             Object.keys(section_alerts).forEach(sec_id => {
                 let alert_text = ''
                 Object.keys(section_alerts[sec_id]).forEach(id => {
-                    console.log("🚀 !! id:", id)
+                    
                     // alert_text += `<span class="alert alert-danger" style="font-size: 0.9rem">${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].text}</span>`
                     alert_text += `<div class="col-12">
                                         <div class="alert alert-danger p-1 py-2 ps-2 mb-1 d-flex align-items-center justify-content-between" role="alert" style="font-size: 0.8rem">
@@ -1759,7 +1759,7 @@
 
                     let sec_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
                     delete section_alerts[sec_id][$(this).data('alert-id')]
-                    console.log(section_alerts);
+                    
                 })
             })
         }
@@ -1775,7 +1775,7 @@
             Promise.all(forms.map(a => {
                 $.ajax(a.url, {
                     success: function (res) {
-                        console.log(res)
+                        
                         if (res.status == 'success') {
                             let data = res.data
                             Object.keys(data).forEach(key => {
@@ -1799,7 +1799,7 @@
                                 $('#' + key).attr('placeholder', data[key])
                                 if (key.indexOf('-lot') > -1) $('#' + key).val(data[key])
                             })
-                            console.log(localStorage.getItem('user'));
+                            
                             if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
                                 $('#name').val(localStorage.getItem('user') || "")
                             } else {
@@ -1883,7 +1883,7 @@
             }
             atsave[form.attr('id')] = obj
             localStorage.setItem('history', JSON.stringify(atsave))
-            console.log(atsave)
+            
         }
 
         function getHistory() {
@@ -1891,11 +1891,11 @@
             let history = localStorage.getItem('history')
             if (history != null) {
                 let obj = JSON.parse(history)
-                console.log("🚀 ~ obj:", obj)
+                
                 Object.keys(obj).forEach(key => {
-                    console.log("🚀 !! key:", key)
+                    
                     Object.keys(obj[key]).forEach(k => {
-                        console.log("🚀 !! k:", k)
+                        
                         if ($('[name="' + k + '"]').is(':checkbox')) {
                             if (obj[key][k] == '✓') {
                                 $('#' + k).prop('checked', true).val('✓')
@@ -1904,7 +1904,7 @@
                             }
                             return
                         } else if ($('[name="' + k + '"]').is(':radio')) {
-                            console.log(`[name="${k}"][value="${obj[key][k]}"]`)
+                            
                             if (obj[key][k] && obj[key][k] != '') {
                                 // find radio with value
                                 $(`[name="${k}"][value="${obj[key][k]}"]`).click()
@@ -2184,7 +2184,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                         }
                     },
                     success: function (res) {
-                        console.log(res)
+                        
                         success_all++
                         checkDone()
                         resolve(res)
@@ -2202,7 +2202,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                                     parse_mode: parse_mode,
                                 },
                                 success: function (res) {
-                                    console.log(res)
+                                    
                                     success_all++
                                     checkDone()
                                     resolve(res)
@@ -2213,8 +2213,9 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                                     reject(errorThrown);
                                 }
                             })  
+                        }else{
+                            reject(errorThrown);
                         }
-                        reject(errorThrown);
                     }
                 })
 
@@ -2266,7 +2267,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                         parse_mode: parse_mode,
                     },
                     success: function (res) {
-                        console.log(res)
+                        
                         success_all++
                         checkDone()
                         resolve(res)
@@ -2311,7 +2312,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
         let success_all = 0
         const checkDone = () => {
-            console.log("🚀 ~ checkDone ~ success_all", success_all);
+            
             if (success_all >= 3) {
                 setTimeout(() => {
                     $('html, body').animate({
@@ -2338,10 +2339,10 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
             data.forEach(a => {
                 obj[a.name] = a.value.toString()
             })
-            console.log(obj);
+            
             obj.opt = 'submittest'
             obj.form = $(form).attr('id')
-            console.log(obj);
+            
             // $.LoadingOverlay("show");
             localStorage.setItem('user', $(form).find('.name')[0].value)
             Swal.fire({
@@ -2371,7 +2372,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                     type: 'POST',
                     success: function (res) {
                         let form = $('#' + obj.form)
-                        console.log(res)
+                        
                         if (res.status) {
                             $(form).trigger('reset')
                             $(form).removeClass('was-validated')
