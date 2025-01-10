@@ -1594,10 +1594,11 @@
             showConfirmButton: false,
             timer: 1500,
         })
+        const tg = null
 
         $(document).ready(() => {
             // Initialize Telegram Web App
-            const tg = window.Telegram.WebApp;
+            tg = window.Telegram.WebApp;
 
             // Retrieve user information
             const user = tg.initDataUnsafe.user;
@@ -2321,7 +2322,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
             // $.LoadingOverlay("show");
             localStorage.setItem('user', $(form).find('.name')[0].value)
             Swal.fire({
-                iconHtml: '<i class="bi bi-send-fill text-primary display-2"></i>',
+                iconHtml: '<i class="bi bi-telegram display-1 text-primary"></i>',
                 customClass: {
                     icon: 'border-0'
                 },
