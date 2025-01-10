@@ -2189,7 +2189,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                         resolve(res)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.error("Error sending images:", errorThrown);
+                        console.error("Error sending message:", errorThrown);
                         reject(errorThrown);
                     }
                 })
@@ -2199,39 +2199,40 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
         function sendTelegram_confirm(obj) {
             return new Promise((resolve, reject) => {
+                let form
                 switch (obj.form) {
                     case "med-gas-checklist":
-                        obj.form = "Medical Gas"
+                        form =  "Medical Gas"
                         break
                     case "stockroom-checklist":
-                        obj.form = "Stock Room"
+                        form =  "Stock Room"
                         break
                     case "liquid-nitrogen-checklist":
-                        obj.form = "Liquid Nitrogen"
+                        form =  "Liquid Nitrogen"
                         break
                     case "embryology-statusroom-checklist":
-                        obj.form = "Embryology Status Room"
+                        form =  "Embryology Status Room"
                         break
                     case "embryology-embryo-checklist":
-                        obj.form = "Embryo Culture"
+                        form =  "Embryo Culture"
                         break
                     case "embryology-refrigerator-checklist":
-                        obj.form = "Refrigerator"
+                        form =  "Refrigerator"
                         break
                     case "embryology-incubator-checklist":
-                        obj.form = "Incubator"
+                        form =  "Incubator"
                         break
                     case "andrology-statusroom-checklist":
-                        obj.form = "Andrology Status Room"
+                        form =  "Andrology Status Room"
                         break
                     case "andrology-incubator-checklist":
-                        obj.form = "Andrology Incubator"
+                        form =  "Andrology Incubator"
                     case "andrology-refrigerator-checklist":
-                        obj.form = "Andrology Refrigerator"
+                        form =  "Andrology Refrigerator"
                         break
                     default: return
                 }
-                let message = `✔✔ ${obj.form}Daily Check for ${moment().format('DD/MM/YYYY')} ${obj.shift} has been submitted ✔✔`
+                let message = `✔✔ ${form}Daily Check for ${moment().format('DD/MM/YYYY')} ${obj.shift} has been submitted ✔✔`
                 $.ajax({
                     url: 'https://api.telegram.org/bot' + token + '/sendMessage',
                     type: 'POST',
@@ -2320,7 +2321,10 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
             // $.LoadingOverlay("show");
             localStorage.setItem('user', $(form).find('.name')[0].value)
             Swal.fire({
-                iconHtml: '<i class="bi bi-send-fill text-primary fs-2"></i>',
+                iconHtml: '<i class="bi bi-send-fill text-primary display-2"></i>',
+                customClass: {
+                    icon: 'border-0'
+                },
                 title: 'กำลังบันทึกข้อมูล',
                 html: 'กรุณารอสักครู่',
                 didOpen: () => {
