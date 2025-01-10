@@ -2184,6 +2184,8 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                     },
                     success: function (res) {
                         console.log(res)
+                        success_all++
+                        checkDone()
                         resolve(res)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -2240,6 +2242,8 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                     },
                     success: function (res) {
                         console.log(res)
+                        success_all++
+                        checkDone()
                         resolve(res)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -2350,6 +2354,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                                 delete obj[$(form).attr('id')]
                                 localStorage.setItem('history', JSON.stringify(obj))
                             }
+                            success_all++
                             checkDone()
                         } else {
                             reject(res)
