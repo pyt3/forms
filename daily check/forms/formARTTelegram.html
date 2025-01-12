@@ -1852,12 +1852,12 @@
                             
                             if (obj[key][k] && obj[key][k] != '') {
                                 // find radio with value
-                                $(`[name="${k}"][value="${obj[key][k]}"]`).click()
+                                // $(`[name="${k}"][value="${obj[key][k]}"]`)
+                                $('[name="' + k + '"][value="' + obj[key][k] + '"]').click()
                             }
                             return
                         } else {
-                            console.log(k, obj[key][k]);
-                            $(`[name="${k}"]`).val(obj[key][k])
+                            $('[name="' + k + '"]').val(obj[key][k])
                         }
                     })
                 })
