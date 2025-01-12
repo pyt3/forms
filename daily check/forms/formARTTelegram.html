@@ -1840,9 +1840,9 @@
                 let obj = JSON.parse(history)
                 
                 Object.keys(obj).forEach(key => {
-                    
+                    console.log(key);
                     Object.keys(obj[key]).forEach(k => {
-                        
+                        console.log(k);
                         if ($('[name="' + k + '"]').is(':checkbox')) {
                             if (obj[key][k] == '✓') {
                                 $('#' + k).prop('checked', true).val('✓')
