@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js?90"></script>
     <!-- <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +25,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="icon" href="../icon.png" type="image/png">
     <style>
+        html{
+            /* background-image: url('https://web.telegram.org/a/chat-bg-br.f34cc96fbfb048812820.png'); */
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
         body {
             max-width: 100vw;
             height: 100%;
@@ -32,6 +39,13 @@
             font-family: 'Akshar', sans-serif;
             font-family: 'Prompt', sans-serif;
             background-color: #F8C8DC44;
+            /* background-image: url('https://web.telegram.org/a/chat-bg-pattern-light.ee148af944f6580293ae.png'); */
+            /* background-color: transparent; */
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            
         }
 
         .nav-tabs .nav-link.active {
@@ -208,7 +222,7 @@
                     </div>
                 </div>
                 <form id="med-gas-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -217,7 +231,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -238,7 +252,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -332,7 +346,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row justify-content-start">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -377,7 +391,7 @@
                     </div>
                 </div>
                 <form id="stockroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -386,7 +400,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -407,7 +421,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -454,7 +468,7 @@
                     </div>
                 </div>
                 <form id="liquid-nitrogen-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -463,7 +477,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -486,7 +500,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -535,7 +549,7 @@
                 </div>
                 <form id="embryology-statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
                     novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -544,7 +558,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -565,7 +579,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -673,7 +687,7 @@
                     </div>
                 </div>
                 <form id="embryology-embryo-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -682,7 +696,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -704,7 +718,7 @@
                         </div>
                     </section>
 
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -798,7 +812,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -985,7 +999,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -1056,7 +1070,7 @@
                 </div>
                 <form id="embryology-refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
                     novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -1065,7 +1079,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -1088,7 +1102,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -1150,7 +1164,7 @@
                 </div>
                 <form id="embryology-incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
                     novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -1159,7 +1173,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -1180,7 +1194,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -1245,7 +1259,7 @@
                 </div>
                 <form id="andrology-statusroom-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
                     novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -1254,7 +1268,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -1277,7 +1291,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">                       
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -1327,7 +1341,7 @@
                 </div>
                 <form id="andrology-refrigerator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
                     novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -1336,7 +1350,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -1361,7 +1375,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -1423,7 +1437,7 @@
                 </div>
                 <form id="andrology-incubator-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation"
                     novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -1432,7 +1446,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -1455,7 +1469,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid rounded-4 m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
@@ -1548,17 +1562,7 @@
 
             // Retrieve user information
             const user = tg.initDataUnsafe.user;
-            tg.checkHomeScreenStatus(function (isHomeScreen) {
-                console.log("🚀 ~ isHomeScreen:", isHomeScreen)
-                if (isHomeScreen) {
-                    console.log('Telegram Web App is installed')
-                } else {
-                    console.log('Telegram Web App is not installed')
-                }
-            });
-            
             if (user) {
-                
                 $('#line-display').attr('src', user.photo_url).show(200)
             } else {
                 
