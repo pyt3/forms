@@ -1725,9 +1725,11 @@
                         
                         if (res.status == 'success') {
                             let data = res.data
+                            console.log(data);
                             Object.keys(data).forEach(key => {
+                                console.log(key);
                                 if (key.length < 1) return
-                                if (!$('#' + key)) return
+                                if (!$("[name='" + key + "']")) return
                                 // if ($('#' + key).is(':checkbox')) {
                                 //     if (data[key] == '✓') {
                                 //         $('#' + key).prop('checked', true).val('✓')
@@ -1743,8 +1745,8 @@
                                 //     }
                                 //     return
                                 // }
-                                $('#' + key).attr('placeholder', data[key])
-                                if (key.indexOf('-lot') > -1) $('#' + key).val(data[key])
+                                $('[name="' + key + '"]').attr('placeholder', data[key])
+                                if (key.indexOf('-lot') > -1) $("[name='" + key + "']").val(data[key])
                             })
                             
                             if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
