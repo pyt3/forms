@@ -1719,6 +1719,7 @@
                     form: $(a).attr('id')
                 }
             })
+            let history = JSON.parse(localStorage.getItem('history'))
             Promise.all(forms.map(a => {
                 $.ajax(a.url, {
                     success: function (res) {
@@ -1746,7 +1747,14 @@
                                 //     return
                                 // }
                                 $('[name="' + key + '"]').attr('placeholder', data[key])
-                                if (key.indexOf('-lot') > -1) $("[name='" + key + "']").val(data[key])
+                                if (key.indexOf('-lot') > -1) {
+                                    let ele = $('[name="' + key + '"]')
+                                    if(ele.val() == '') {
+                                        if (history && history[a.form] && history[a.form][key] && history[a.form][key] != '') {
+                                            ele.val(history[a.form][key])
+                                        }
+                                    }
+                                }
                             })
                             
                             if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
