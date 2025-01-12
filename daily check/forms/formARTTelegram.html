@@ -1548,7 +1548,14 @@
 
             // Retrieve user information
             const user = tg.initDataUnsafe.user;
-            
+            tg.checkHomeScreenStatus(function (isHomeScreen) {
+                console.log("🚀 ~ isHomeScreen:", isHomeScreen)
+                if (isHomeScreen) {
+                    console.log('Telegram Web App is installed')
+                } else {
+                    console.log('Telegram Web App is not installed')
+                }
+            });
             
             if (user) {
                 
