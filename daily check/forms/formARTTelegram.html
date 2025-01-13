@@ -1944,21 +1944,15 @@
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 Trigas Manifold</i></b>
+<blockquote><b><i>👉 Trigas Manifold</i></b>
 Left  =  <b>${obj['trigas-manifold-left']}</b>  psi
-Right  =  <b>${obj['trigas-manifold-right']}</b>  psi
-</blockquote>
-<blockquote>
-<b><i>👉 CO2 Manifold</i></b>
+Right  =  <b>${obj['trigas-manifold-right']}</b>  psi</blockquote>
+<blockquote><b><i>👉 CO2 Manifold</i></b>
 Left  =  <b>${obj['c02-manifold-left']}</b>  psi
-Right  =  <b>${obj['c02-manifold-right']}</b>  psi
-</blockquote>
-<blockquote>
-<b><i>👉 N2 Manifold</i></b>
+Right  =  <b>${obj['c02-manifold-right']}</b>  psi</blockquote>
+<blockquote><b><i>👉 N2 Manifold</i></b>
 Left  =  <b>${obj['n2-manifold-left']}</b>  psi
-Right  =  <b>${obj['n2-manifold-right']}</b>  psi
-</blockquote>
+Right  =  <b>${obj['n2-manifold-right']}</b>  psi</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "stockroom-checklist":
@@ -1967,11 +1961,9 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 Temperature</i></b>
+<blockquote><b><i>👉 Temperature</i></b>
 Temperature =  <b>${obj['stockroom-thermo-temp']}</b>   ํC
-Humidity =  <b>${obj['stockroom-thermo-humid']}</b>  %RH
-</blockquote>
+Humidity =  <b>${obj['stockroom-thermo-humid']}</b>  %RH</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "liquid-nitrogen-checklist":
@@ -1980,11 +1972,9 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 Temperature</i></b>
+<blockquote><b><i>👉 Temperature</i></b>
 Temperature =  <b>${obj['liquid-nitrogen-thermo-temp']}</b>   ํC
-Humidity =  <b>${obj['liquid-nitrogen-thermo-humid']}</b>  %RH
-</blockquote>
+Humidity =  <b>${obj['liquid-nitrogen-thermo-humid']}</b>  %RH</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-statusroom-checklist":
@@ -1993,21 +1983,15 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 DR-Analyst</i></b>
+<blockquote><b><i>👉 DR-Analyst</i></b>
 Temperature =  <b>${obj['embryology-statusroom-dr-temp']}</b>   ํC
 Humidity =  <b>${obj['embryology-statusroom-dr-humid']}</b>  %RH
-Pressure =  <b>${obj['embryology-statusroom-dr-plessure']}</b>  Pa
-</blockquote>
-<blockquote>
-<b><i>👉 Desktop-Meter</i></b>
+Pressure =  <b>${obj['embryology-statusroom-dr-plessure']}</b>  Pa</blockquote>
+<blockquote><b><i>👉 Desktop-Meter</i></b>
 Temperature =  <b>${obj['embryology-statusroom-desktopmeter-temp']}</b>   ํC
-Humidity =  <b>${obj['embryology-statusroom-desktopmeter-humid']}</b>  %RH
-</blockquote>
-<blockquote>
-<b><i>👉 Alarm System</i></b>
-Status =  <b>${obj['embryology-statusroom-alarm'].toUpperCase()}</b>
-</blockquote>
+Humidity =  <b>${obj['embryology-statusroom-desktopmeter-humid']}</b>  %RH</blockquote>
+<blockquote><b><i>👉 Alarm System</i></b>
+Status =  <b>${obj['embryology-statusroom-alarm'].toUpperCase()}</b></blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-embryo-checklist":
@@ -2016,66 +2000,46 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 PLANER A</i></b>
-Temperature =  <b>${obj['embryology-embryo-planer-a-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 PLANER B</i></b>
-Temperature =  <b>${obj['embryology-embryo-planer-b-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 PLANER C</i></b>
-Temperature =  <b>${obj['embryology-embryo-planer-c-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 PLANER D</i></b>
-Temperature =  <b>${obj['embryology-embryo-planer-d-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 PLANER E</i></b>
-Temperature =  <b>${obj['embryology-embryo-planer-e-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 EMBRYO PLUS</i></b>
+<blockquote><b><i>👉 PLANER A</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-a-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 PLANER B</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-b-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 PLANER C</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-c-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 PLANER D</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-d-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 PLANER E</i></b>
+Temperature =  <b>${obj['embryology-embryo-planer-e-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 EMBRYO PLUS</i></b>
 CO2 =  <b>${obj['embryology-embryo-embryoplus-co2']}</b>  %
 O2 =  <b>${obj['embryology-embryo-embryoplus-o2']}</b>  %
 Control Bar CO2 =  <b>${obj['embryology-embryo-embryoplus-controlbar_co2']}</b>  bar
 Control Bar N2 =  <b>${obj['embryology-embryo-embryoplus-controlbar_n2']}</b>  bar
-Temperature =  <b>${obj['embryology-embryo-embryoplus-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 EC6S A</i></b>
+Temperature =  <b>${obj['embryology-embryo-embryoplus-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 EC6S A</i></b>
 CO2 =  <b>${obj['embryology-embryo-ec6s-a-co2']}</b>  %
 O2 =  <b>${obj['embryology-embryo-ec6s-a-o2']}</b>  %
 Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-a-controlbar_co2']}</b>  bar
 Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-a-controlbar_n2']}</b>  bar
-Temperature =  <b>${obj['embryology-embryo-ec6s-a-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 EC6S B</i></b>
+Temperature =  <b>${obj['embryology-embryo-ec6s-a-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 EC6S B</i></b>
 CO2 =  <b>${obj['embryology-embryo-ec6s-b-co2']}</b>  %
 O2 =  <b>${obj['embryology-embryo-ec6s-b-o2']}</b>  %
 Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-b-controlbar_co2']}</b>  bar
 Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-b-controlbar_n2']}</b>  bar
-Temperature =  <b>${obj['embryology-embryo-ec6s-b-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 EC6S C</i></b>
+Temperature =  <b>${obj['embryology-embryo-ec6s-b-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 EC6S C</i></b>
 CO2 =  <b>${obj['embryology-embryo-ec6s-c-co2']}</b>  %
 O2 =  <b>${obj['embryology-embryo-ec6s-c-o2']}</b>  %
 Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-c-controlbar_co2']}</b>  bar
 Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-c-controlbar_n2']}</b>  bar
-Temperature =  <b>${obj['embryology-embryo-ec6s-c-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 EC6S D</i></b>
+Temperature =  <b>${obj['embryology-embryo-ec6s-c-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 EC6S D</i></b>
 CO2 =  <b>${obj['embryology-embryo-ec6s-d-co2']}</b>  %
 O2 =  <b>${obj['embryology-embryo-ec6s-d-o2']}</b>  %
 Control Bar CO2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_co2']}</b>  bar
 Control Bar N2 =  <b>${obj['embryology-embryo-ec6s-d-controlbar_n2']}</b>  bar
-Temperature =  <b>${obj['embryology-embryo-ec6s-d-temp']}</b>   ํC
-</blockquote>
+Temperature =  <b>${obj['embryology-embryo-ec6s-d-temp']}</b>   ํC</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-refrigerator-checklist":
@@ -2084,14 +2048,10 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 Refrigerator</i></b>
-Temperature =  <b>${obj['embryology-refrigerator-refrig-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 DataLogger</i></b>
-Temperature =  <b>${obj['embryology-refrigerator-thermo-temp']}</b>   ํC
-</blockquote>
+<blockquote><b><i>👉 Refrigerator</i></b>
+Temperature =  <b>${obj['embryology-refrigerator-refrig-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 DataLogger</i></b>
+Temperature =  <b>${obj['embryology-refrigerator-thermo-temp']}</b>   ํC</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "embryology-incubator-checklist":
@@ -2100,15 +2060,11 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 ASTEC</i></b
+<blockquote><b><i>👉 ASTEC</i></b
 CO2 =  <b>${obj['embryology-incubator-astec-co2']}</b>  %
-Temperature =  <b>${obj['embryology-incubator-astec-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 MEMMERT</i></b
-Temperature =  <b>${obj['embryology-incubator-memmert-temp']}</b>   ํC
-</blockquote>
+Temperature =  <b>${obj['embryology-incubator-astec-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 MEMMERT</i></b
+Temperature =  <b>${obj['embryology-incubator-memmert-temp']}</b>   ํC</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
 
                         break
@@ -2118,17 +2074,9 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 Temperature</i></b>
-Temperature =  <b>${obj['andrology-statusroom-dr-temp']}</b>   ํC
-Humidity =  <b>${obj['andrology-statusroom-dr-humid']}</b>  %RH
-Pressure =  <b>${obj['andrology-statusroom-dr-pressure']}</b>  Pa
-</blockquote>
-<blockquote>
-<b><i>👉 Thermo-Hygrometer</i></b>
+<blockquote><b><i>👉 Thermo-Hygrometer</i></b>
 Temperature =  <b>${obj['andrology-statusroom-desktopmeter-temp']}</b>   ํC
-Humidity =  <b>${obj['andrology-statusroom-desktopmeter-humid']}</b>  %RH
-</blockquote>
+Humidity =  <b>${obj['andrology-statusroom-desktopmeter-humid']}</b>  %R</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "andrology-incubator-checklist":
@@ -2137,11 +2085,9 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 ASTEC SCA 165DS</i></b>
+<blockquote><b><i>👉 ASTEC SCA 165DS</i></b>
 Temperature =  <b>${obj['andrology-incubator-astec-temp']}</b>   ํC
-CO2 =  <b>${obj['andrology-incubator-astec-co2']}</b>  %
-</blockquote>
+CO2 =  <b>${obj['andrology-incubator-astec-co2']}</b>  %</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     case "andrology-refrigerator-checklist":
@@ -2150,14 +2096,10 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote>
-<b><i>👉 Refrigerator</i></b>
-Temperature =  <b>${obj['andrology-refrigerator-refrig-temp']}</b>   ํC
-</blockquote>
-<blockquote>
-<b><i>👉 ESCORT</i></b
-Temperature =  <b>${obj['andrology-refrigerator-escort-temp']}</b>   ํC
-</blockquote>
+<blockquote><b><i>👉 Refrigerator</i></b>
+Temperature =  <b>${obj['andrology-refrigerator-refrig-temp']}</b>   ํC</blockquote>
+<blockquote><b><i>👉 ESCORT</i></b
+Temperature =  <b>${obj['andrology-refrigerator-escort-temp']}</b>   ํC</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                         break
                     default: return
