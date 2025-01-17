@@ -598,7 +598,6 @@ def closePM(row, self_call=False):
         return closePM(row, self_call)
     response.encoding = "tis-620"
     soup = BeautifulSoup(response.text, "lxml")
-    # print(soup)
     table = soup.find("table", {"class", "Grid"})
     if table == None:
         print("No table found, re-login...")
