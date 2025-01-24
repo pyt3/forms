@@ -183,5 +183,5 @@ function get_url(url) {
     let regex1 = /https:\/\/drive.google.com|\/open|\/uc|\/file|\/d|export|download|\?id|\/view|usp|=sharing/g
     let regex2 = /([\w-]){33}|([\w-]){19}/g
     let url_id = url.replace(regex1, "").match(regex2)[0]
-    return 'https"//lh3.googleusercontent.com/d/' + url_id
+    return 'https://lh3.googleusercontent.com/d/' + url_id
 }
