@@ -24,6 +24,7 @@ var year = new Date(testobj['DAY'][tempkey].time).getFullYear()
 var year_bd = year + 543
 var q_key = {
     1: "daily-check-system",
+    
     2: 'daily-check-switch',
     3: 'daily-check-paddle',
     4: 'daily-check-ekg',
