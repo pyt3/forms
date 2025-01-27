@@ -24,6 +24,7 @@ var year = new Date(testobj['DAY'][tempkey].time).getFullYear()
 var year_bd = year + 543
 var q_key = {
     1: "daily-check-system",
+
     2: 'daily-check-switch',
     3: 'daily-check-paddle',
     4: 'daily-check-ekg',
@@ -61,7 +62,7 @@ $(document).ready(() => {
             // let point_position = getPointPosition($('[id="' + key_point + '"]'))
             // coords.push(point_position)
             coords.push($('[id="' + key_point + '"]')[0])
-            $('[id="sign-'+date+'-d"]').attr('src', testobj['DAY'][key].signature_staff).show()
+            $('[id="sign-'+date+'-d"]').attr('src', get_url(testobj['DAY'][key].signature_staff)).show()
             // console.log("🚀 ~ point_position:", point_position)
         })
         // connect all point
@@ -77,7 +78,7 @@ $(document).ready(() => {
             let key_point = `${point}-${date}-n`
             $('[id="'+key_point+'"]').text('✘')
             coords.push($('[id="' + key_point + '"]')[0])
-            $('[id="sign-'+date+'-n"]').attr('src', testobj['NIGHT'][key].signature_staff).show()
+            $('[id="sign-'+date+'-n"]').attr('src', get_url(testobj['NIGHT'][key].signature_staff)).show()
         })
 
         coords = coords.filter(item => item != undefined)
@@ -175,4 +176,12 @@ function mapSign(text) {
         default:
             return ''
     }
+}
+
+
+function get_url(url) {
+    let regex1 = /https:\/\/drive.google.com|\/open|\/uc|\/file|\/d|export|download|\?id|\/view|usp|=sharing/g
+    let regex2 = /([\w-]){33}|([\w-]){19}/g
+    let url_id = url.replace(regex1, "").match(regex2)[0]
+    return 'https://lh3.googleusercontent.com/d/' + url_id
 }

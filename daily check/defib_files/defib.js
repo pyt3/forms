@@ -57,7 +57,7 @@ $(document).ready(() => {
     let weeknum = 1
     let week_check = {}
     Object.keys(testobj).forEach(key => {
-        
+
         let paper = '.' + key.toLowerCase()
         let isSetImage = false
         for (let i = 1; i <= (beforeuse_question_num + afteruse_question_num); i++) {
@@ -111,7 +111,10 @@ $(document).ready(() => {
         let q = week_check[key]
         console.log("🚀 ~ q", q)
         let target = $('[name="paper-week-' + (weeknum + 1) + '"]')
-        let img = $('<img>', { src: q.img_url, id: 'paper-week-' + (weeknum + 1), height: 17 * 6.2 }).addClass('paper-week')
+        let img = $('<img>', {
+            src: 'https://lh3.googleusercontent.com/d/' + q.img_url.split('?id=')[1]
+            , id: 'paper-week-' + (weeknum + 1), height: 17 * 6.2
+        }).addClass('paper-week')
         target.replaceWith($('<center>').append(img))
         $('[name="date-week-' + (weeknum + 1) + '"]').text(key)
         $('[name="staff-week-' + (weeknum + 1) + '"]').html($('<span>').text(q.rec_name)).append('&nbsp;&nbsp;&nbsp;')
@@ -158,7 +161,7 @@ $(document).ready(() => {
         let keys = ['staff', 'manager', 'staff_afteruse', 'manager_afteruse']
         keys.forEach(key => {
             q[q_key[key]] ? q[q_key[key]] = ('https://lh3.googleusercontent.com/d/' + q[q_key[key]].split('?id=')[1]) : ''
-            switch (key){
+            switch (key) {
                 case 'staff':
                     $(paper + ' [name="daily-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
                     break
