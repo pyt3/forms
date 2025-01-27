@@ -5,6 +5,344 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timer: 1500,
 })
+//  {
+//   "type": "carousel",
+//   "contents": [
+//     {
+//       "type": "bubble",
+//       "body": {
+//         "type": "box",
+//         "layout": "vertical",
+//         "contents": [
+//           {
+//             "type": "text",
+//             "text": "Liquid O2",
+//             "weight": "bold",
+//             "size": "xl"
+//           },
+//           {
+//             "type": "text",
+//             "text": "วันที่ 27/01/2025 เวลา 07:39 น.",
+//             "size": "sm",
+//             "color": "#aaaaaa"
+//           },
+//           {
+//             "type": "separator",
+//             "margin": "md"
+//           },
+//           {
+//             "type": "box",
+//             "layout": "horizontal",
+//             "contents": [
+//               {
+//                 "type": "box",
+//                 "layout": "vertical",
+//                 "contents": [
+//                   {
+//                     "type": "box",
+//                     "layout": "vertical",
+//                     "margin": "md",
+//                     "spacing": "sm",
+//                     "contents": []
+//                   },
+//                   {
+//                     "type": "box",
+//                     "layout": "vertical",
+//                     "margin": "md",
+//                     "spacing": "sm",
+//                     "contents": [
+//                       {
+//                         "type": "text",
+//                         "text": "Liquid oxygen ",
+//                         "weight": "bold",
+//                         "size": "md"
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "ปริมาณคงเหลือ",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "2011 psi",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "แรงดัน",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "8.75 bar",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       }
+//                     ]
+//                   },
+//                   {
+//                     "type": "separator",
+//                     "margin": "md"
+//                   },
+//                   {
+//                     "type": "box",
+//                     "layout": "vertical",
+//                     "margin": "md",
+//                     "spacing": "sm",
+//                     "contents": [
+//                       {
+//                         "type": "text",
+//                         "text": "Oxygen Manifold",
+//                         "weight": "bold",
+//                         "size": "md"
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "Left",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "2011 psi",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "Right",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "1626 psi",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       }
+//                     ]
+//                   },
+//                   {
+//                     "type": "separator",
+//                     "margin": "md"
+//                   },
+//                   {
+//                     "type": "box",
+//                     "layout": "vertical",
+//                     "margin": "md",
+//                     "spacing": "sm",
+//                     "contents": [
+//                       {
+//                         "type": "text",
+//                         "text": "Carbon Dioxide Manifold",
+//                         "weight": "bold",
+//                         "size": "md"
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "Left",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "5900 psi",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "Right",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "900 psi",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       }
+//                     ]
+//                   },
+//                   {
+//                     "type": "separator",
+//                     "margin": "md"
+//                   },
+//                   {
+//                     "type": "box",
+//                     "layout": "vertical",
+//                     "margin": "md",
+//                     "spacing": "sm",
+//                     "contents": [
+//                       {
+//                         "type": "text",
+//                         "text": "Nitrous Manifold",
+//                         "weight": "bold",
+//                         "size": "md"
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "Left",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "851 psi",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       },
+//                       {
+//                         "type": "box",
+//                         "layout": "baseline",
+//                         "spacing": "sm",
+//                         "contents": [
+//                           {
+//                             "type": "text",
+//                             "text": "Right",
+//                             "color": "#aaaaaa",
+//                             "size": "sm",
+//                             "flex": 5
+//                           },
+//                           {
+//                             "type": "text",
+//                             "text": "861 psi",
+//                             "wrap": true,
+//                             "size": "sm",
+//                             "flex": 2,
+//                             "align": "end"
+//                           }
+//                         ]
+//                       }
+//                     ]
+//                   },
+//                   {
+//                     "type": "separator",
+//                     "margin": "md"
+//                   }
+//                 ]
+//               }
+//             ]
+//           },
+//           {
+//             "type": "box",
+//             "layout": "vertical",
+//             "contents": [
+//               {
+//                 "type": "text",
+//                 "text": "บันทึกโดย @ILADA BUAPRALAT",
+//                 "size": "sm",
+//                 "color": "#aaaaaa",
+//                 "margin": "md"
+//               },
+//               {
+//                 "type": "text",
+//                 "text": "🔊 Dashboard สรุปผลการตรวจเช็คแก็ส จะอัพเดทและส่งผลภายใน 15 นาที",
+//                 "size": "sm",
+//                 "color": "#aaaaaa",
+//                 "margin": "md"
+//               }
+//             ]
+//           }
+//         ]
+//       }
+//     },
+//     {
+//       "type": "bubble",
+//       "body": {
+//         "type": "box",
+//         "layout": "vertical",
+//         "contents": [
+//           {
+//             "type": "image",
+//             "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
+//             "size": "full",
+//             "aspectMode": "cover",
+//             "gravity": "center",
+//             "align": "center"
+//           }
+//         ],
+//         "margin": "none",
+//         "paddingAll": "none",
+//         "spacing": "none",
+//         "justifyContent": "center"
+//       }
+//     }
+//   ]
+// }
 
 $(document).ready(() => {
 
