@@ -117,11 +117,28 @@
                 transform: translateX(50px);
             }
         }
+        .img-grid-row{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .img-grid-col{
+            flex: 33.33%;
+            max-width: 33.33%;
+            padding: 0 4px;
+        }
+
+        .img-grid-col img{
+            margin-top: 8px;
+            vertical-align: middle;
+            width: 100%;
+        }
     </style>
 </head>
 
 <body>
-    <div class="fixed-top">
+    <!-- <div class="fixed-top">
         <div class="loader bg-light">
             <div class="wrapper">
                 <div class="text">LOADING</div>
@@ -129,7 +146,7 @@
             </div>
         </div>
 
-    </div>
+    </div> -->
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
             <a class="navbar-brand d-flex align-items-center" href="#">
@@ -180,8 +197,16 @@
                     <input type="file" class="form-control" name="telegram-files" id="telegram-files" multiple
                         accept="image/*">
                 </div>
+              
                 <div class="col-md-6 text-center">
                     <button class="btn btn-warning w-50" id="submit-btn">บันทึก</button>
+                </div>
+                <div class="col-12">
+                    <div class="img-grid-row d-flex flex-wrap">
+                        <div class="img-grid-col"></div>
+                        <div class="img-grid-col"></div>
+                        <div class="img-grid-col"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -231,21 +256,21 @@
             // $.LoadingOverlay('show')
             $.getJSON(script_url, function (data) {
                 history_code = data
-                console.log("🚀 ~ history_code:", history_code)
+                
             })
 
-            liff.init({
-                liffId: '1660749495-G5e9Av6r',
-                // liffId: '1660749495-A2gmPQNb',
-                withLoginOnExternalBrowser: true
-            })
+            // liff.init({
+            //     liffId: '1660749495-G5e9Av6r',
+            //     // liffId: '1660749495-A2gmPQNb',
+            //     withLoginOnExternalBrowser: true
+            // })
             liff.ready.then(async () => {
                 checkRegist()
                 $.post(script_url, {
                     opt: 'gettelegram'
                 }, (res) => {
                     tg_const = res
-                    console.log("🚀 ~ liff.ready.then ~ tg_const:", tg_const)
+                    
                 })
                 profile = await liff.getProfile()
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
@@ -339,7 +364,7 @@
                 let his = _.pickBy(history_code, (v, k) => {
                     return k.includes(code)
                 })
-                console.log(his);
+                
                 if (_.size(his) > 0) {
                     his = _.values(his)[0]
                     $('#start').val(his.start).change()
@@ -392,7 +417,7 @@
                     uid: null
                 }
             }
-            console.log("🚀 ~ regist:", regist)
+            
             if (regist?.uid == uid && regist?.name != null && regist?.name != '' && regist?.telegram_id) {
                 // $.LoadingOverlay('hide')
                 $('.loader').fadeOut(500)
@@ -407,7 +432,7 @@
                     uid: uid
                 },
                 success: function (res) {
-                    console.log("🚀 ~ res:", res)
+                    
                     // $.LoadingOverlay('hide')
                     $('.loader').fadeOut(500)
                     if (!res) {
@@ -573,27 +598,26 @@
             let dataTransfer = new DataTransfer();
             const files = this.files;
             let length = files.length
-            Array.from(files).map(file => {
-                console.log(file);
+            $('.img-grid-col').empty()
+            Array.from(files).map((file,i) => {
                 let mime = file.type == "" ? file.name.split('.')[1] : file.type.split('/')[1]
                 const quality = getCompressionQuality(file)
-                console.log("🚀 ~ Array.from ~ mime:", mime)
                 if (mime == 'heic') {
                     let reader = new FileReader();
                     reader.onload = function (e) {
                         let blob = new Blob([e.target.result], { type: file.type });
-                        console.log("🚀 ~ blob:", blob)
+                        
                         heic2any({
                             blob,
                             toType: "image/jpeg",
                             quality: quality
                         }).then((conversionResult) => {
-                            console.log("🚀 ~ conversionResult:", conversionResult)
                             let f = new File([conversionResult], file.name, {
                                 type: 'image/jpeg',
                                 lastModified: Date.now()
                             });
                             dataTransfer.items.add(f);
+                            appendPreview(URL.createObjectURL(f),i)
                             if (dataTransfer.items.length == length) {
                                 $('#telegram-files')[0].files = dataTransfer.files;
                                 Swal.close()
@@ -607,12 +631,13 @@
                     new Compressor(file, {
                         quality: quality,
                         success(result) {
-                            console.log("🚀 ~ file:", result)
+                            
                             let f = new File([result], file.name, {
                                 type: file.type,
                                 lastModified: Date.now()
                             });
                             dataTransfer.items.add(f);
+                            appendPreview(URL.createObjectURL(f),i)
                             if (dataTransfer.items.length == length) {
                                 $('#telegram-files')[0].files = dataTransfer.files;
                                 Swal.close()
@@ -636,7 +661,7 @@
         };
         let success_all = 0
         const checkDone = () => {
-            console.log("🚀 ~ checkDone ~ success_all", success_all);
+            
             if (success_all >= 6) {
                 setTimeout(() => {
                     Swal.fire({
@@ -652,6 +677,23 @@
                 }, 200);
             }
         }
+
+        function appendPreview(fileurl,i) {
+            
+            let eq = i % 3
+            
+            $('.img-grid-col').eq(eq).append($('<img>', { src: fileurl }).on('click', function () {
+                Swal.fire({
+                    imageUrl: fileurl,
+                    imageWidth: '100%',
+                    imageHeight: '100%',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                })
+            }))
+        }
+
         async function sendPost(data) {
             Swal.fire({
                 icon: 'info',
@@ -724,7 +766,7 @@
                     }
                 })),
                 retryRequest(() => new Promise((resolve, reject) => {
-                    console.log("save to gsheet");
+                    
                     $.ajax({
                         url: script_url,
                         type: 'POST',
@@ -769,7 +811,7 @@
                     })
                 })),
                 retryRequest(() => new Promise((resolve, reject) => {
-                    console.log("save to history");
+                    
                     $.post(script_url, {
                         opt: 'setHistory',
                         code: data.code,
@@ -788,7 +830,7 @@
                     })
                 })),
                 retryRequest(() => new Promise((resolve, reject) => {
-                    console.log("save to job consult");
+                    
                     $.post(script_url, {
                         opt: 'savejobconsult',
                         code: data.code,
@@ -810,7 +852,7 @@
                     })
                 }))
             ]).then((save_res) => {
-                console.log("🚀 save_res:", save_res)
+                
                 console.timeEnd('sendPost')
                 setTimeout(async () => {
                     liff.sendMessages([{
@@ -875,7 +917,7 @@
                             success: function (response) {
                                 if (response.ok) {
                                     $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                    console.log("Message sent successfully!");
+                                    
                                     history_code[me_code] = {
                                         start: start,
                                         end: end
@@ -904,7 +946,7 @@
                             success: function (response) {
                                 if (response.ok) {
                                     $('#status-telegram').html('<i class="bi bi-check-circle-fill text-success"></i>ส่งข้อมูลไป Telegram').removeClass('text-muted').addClass('text-success')
-                                    console.log("Message sent successfully!");
+                                    
                                     history_code[me_code] = {
                                         start: start,
                                         end: end
