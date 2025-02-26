@@ -22,6 +22,9 @@
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="../icon.png" type="image/png">
     <style>
         body {
@@ -83,6 +86,9 @@
             margin-right: 0.5em;
         }
 
+        .fs-small {
+            font-size: 0.8rem
+        }
 
         /* section{
             background-color: #fff;
@@ -116,38 +122,137 @@
         </div>
     </nav>
     <main style="margin-top: 50px;">
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-menu" aria-labelledby="offcanvas-menuLabel">
+        <div class="offcanvas offcanvas-start bg-dark" tabindex="-1" id="offcanvas-menu"
+            aria-labelledby="offcanvas-menuLabel">
             <div class="offcanvas-header text-bg-primary">
                 <h5 class="offcanvas-title" id="offcanvasLabel"><i class="bi bi-stack"></i> Select Form</h5>
                 <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
             </div>
-            <div class="offcanvas-body bg-dark">
+            <div class="offcanvas-body">
                 <ul class="nav nav-pills custom-nav-pills flex-column" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start active" id="pills-tab-ro-1" data-bs-toggle="pill"
-                            data-bs-target="#tab-ro-1" type="button" role="tab" aria-selected="true">RO <span
-                                class="text-danger">ตู้ล้าง 1</span></button>
+                        <button class="nav-link w-100 text-start active" id="pills-tab-zone" data-bs-toggle="pill"
+                            data-bs-target="#tab-zone" type="button" role="tab" aria-selected="false">
+                            <i class="bi bi-house-door-fill text-info"></i>
+                            Working Zone</span></button>
                     </li>
+                    <div class="text-light-emphasis">
+                        <hr>
+                    </div>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start" id="pills-tab-ro-2" data-bs-toggle="pill"
-                            data-bs-target="#tab-ro-2" type="button" role="tab" aria-selected="false">RO <span
-                                class="text-danger">ตู้ล้าง 2</span></button>
+                        <button class="nav-link w-100 text-start" id="pills-tab-dryer" data-bs-toggle="pill"
+                            data-bs-target="#tab-dryer" type="button" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-fan text-info"></i>
+                            Dryer Cabinet
+                            <small class="text-light-emphasis">
+                                (เครื่องอบ/เป่าลมแห้ง)
+                            </small>
+                        </button>
                     </li>
+                    <div class="text-light-emphasis">
+                        <hr>
+                    </div>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start" id="pills-tab-ro-stream" data-bs-toggle="pill"
-                            data-bs-target="#tab-ro-stream" type="button" role="tab" aria-selected="true">RO <span
-                                class="text-danger">ตู้นึ่ง</span></button>
+                        <button class="nav-link w-100 text-start" id="pills-tab-ultrasonic" data-bs-toggle="pill"
+                            data-bs-target="#tab-ultrasonic" type="button" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-soap text-info"></i>
+                            Ultrasonic Cleanser
+                            <small class="text-light-emphasis">
+                                (เครื่องล้างเครื่องมือด้วยคลื่นความถี่สูง)
+                            </small>
+                        </button>
                     </li>
-                    <!-- liquid nitrogen storage room -->
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link w-100 text-start" id="pills-tab-gas-detector" data-bs-toggle="pill"
-                            data-bs-target="#tab-gas-detector" type="button" role="tab" aria-selected="false">Gas
-                            Detector</button>
-                    </li>
+                    <div class="text-light-emphasis">
+                        <hr>
+                    </div>
+                    <button class="nav-link w-100 text-start dropdown-toggle" id="pills-autoclave"
+                        data-bs-toggle="collapse" data-bs-target="#collapse-autoclave" aria-expanded="false"
+                        aria-controls="collapse-autoclave">
+                        <i class="fa-solid fa-wind text-info"></i>
+                        Autoclave
+                        <small class="text-light-emphasis">(เครื่องนึ่งด้วยไอน้ำ)</small>
+                    </button>
+                    <div class="collapse ms-4" id="collapse-autoclave">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link w-100 text-start" id="pills-tab-autoclave" data-bs-toggle="pill"
+                                data-bs-target="#tab-autoclave" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-list-check text-info"></i>
+                                ระบบการทำงานของเครื่องนึ่ง
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link w-100 text-start" id="pills-tab-autoclave-ro" data-bs-toggle="pill"
+                                data-bs-target="#tab-autoclave-ro" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-glass-water-droplet text-info"></i>
+                                ระบบน้ำ RO ของเครื่องนึ่ง
+                            </button>
+                        </li>
+                    </div>
+                    <div class="text-light-emphasis">
+                        <hr>
+                    </div>
+                    <button class="nav-link w-100 text-start dropdown-toggle" id="pills-washer"
+                        data-bs-toggle="collapse" data-bs-target="#collapse-washer" aria-expanded="false"
+                        aria-controls="collapse-washer">
+                        <i class="fa-solid fa-droplet text-info"></i>
+                        Automatic Washer
+                        <small class="text-light-emphasis">
+                            (เครื่องล้างฆ่าเชื่ออัตโนมัติ)
+                        </small>
+                    </button>
+                    <div class="collapse ms-4" id="collapse-washer">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link w-100 text-start" id="pills-tab-washer" data-bs-toggle="pill"
+                                data-bs-target="#tab-washer" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-list-check text-info"></i>
+                                ระบบการทำงานของเครื่องล้าง
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link w-100 text-start" id="pills-tab-washer-ro" data-bs-toggle="pill"
+                                data-bs-target="#tab-washer-ro" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-glass-water-droplet text-info"></i>
+                                ระบบน้ำ RO ของเครื่องล้าง
+                            </button>
+                        </li>
+                    </div>
+                    <div class="text-light-emphasis">
+                        <hr>
+                    </div>
+                    <button class="nav-link w-100 text-start dropdown-toggle text-wrap" id="pills-eto"
+                        data-bs-toggle="collapse" data-bs-target="#collapse-eto" aria-expanded="false"
+                        aria-controls="collapse-eto">
+                        <i class="fa-solid fa-droplet text-info"></i>
+                        Ethylene Oxide Sterilizer
+                        <small class="text-light-emphasis">
+                            (เครื่องฆ่าเชื้อด้วยเอทิลีนอกไซด์)
+                        </small>
+                    </button>
+                    <div class="collapse ms-4" id="collapse-eto">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link w-100 text-start" id="pills-tab-eto" data-bs-toggle="pill"
+                                data-bs-target="#tab-eto" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-list-check text-info"></i>
+                                ระบบการทำงานของเครื่อง ETO
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link w-100 text-start" id="pills-tab-eto-detector" data-bs-toggle="pill"
+                                data-bs-target="#tab-eto-detector" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-tv text-info"></i>
+                                Gas Detector (เครื่องตรวจวัดแก๊ส)
+                            </button>
+                        </li>
+                    </div>
+                    <div class="text-light-emphasis">
+                        <hr>
+                    </div>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link w-100 text-start" id="pills-tab-air-comp" data-bs-toggle="pill"
-                            data-bs-target="#tab-air-comp" type="button" role="tab" aria-selected="false">Air
+                            data-bs-target="#tab-air-comp" type="button" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-fan text-info"></i>
+                            Air
                             Compressor</button>
                     </li>
                 </ul>
@@ -155,33 +260,793 @@
         </div>
         </div>
         <div class="tab-content" id="tab-content">
-            <div class="tab-pane fade animate__animated active show" id="tab-ro-1">
+            <div class="tab-pane fade animate__animated active show" id="tab-zone">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
-                            RO <span class="text-danger">ตู้ล้าง 1</span>
+                            <div class="d-flex flex-column gap-2">
+                                <i class="bi bi-house-door-fill"></i>
+                                Working Zone
+                            </div>
                         </div>
                     </div>
                 </div>
-                <form id="ro-1-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                <form id="zone-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="ro-1-name" name="ro-1-name"
+                                <input type="text" class="form-control name" id="zone-name" name="zone-name"
                                     placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
                         <div class="row justify-content-start g-3">
-
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-primary">
-                                    <i class="bi bi-droplet-half"></i>
-                                    คุณภาพน้ำ
-                                </span>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-white bg-success rounded-pill border px-4">
+                                            <i class="fa-solid fa-hand-holding-heart"></i>
+                                            Sterile Zone
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="zone-sterile-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-sterile-temp"
+                                            id="zone-sterile-temp" class="form-control text-center" max="24" min="18" data-alert-id="zone-sterile-alert" data-alert-title="อุณหภูมิ">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="zone-sterile-humid">Humidity <span
+                                                class="text-muted">(%RH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-sterile-humid"
+                                            id="zone-sterile-humid" class="form-control text-center" max="60" min="50" data-alert-id="zone-sterile-alert" data-alert-title="ความชื้น">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="zone-sterile-pressure">Pressure <span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="zone-sterile-pressure" id="zone-sterile-pressure"
+                                            class="form-control text-center" max="4" min="1" data-alert-id="zone-sterile-alert" data-alert-title="ความดัน">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="zone-sterile-alert">
+                                </div>
                             </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">
+                                            <i class="fa fa-hand-sparkles" aria-hidden="true"></i>
+                                            Clean Zone
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="zone-clean-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-clean-temp"
+                                            id="zone-clean-temp" class="form-control text-center" max="24" min="18" data-alert-id="zone-clean-alert" data-alert-title="อุณหภูมิ">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="zone-clean-humid">Humidity <span
+                                                class="text-muted">(%RH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-clean-humid"
+                                            id="zone-clean-humid" class="form-control text-center" max="60" min="50" data-alert-id="zone-clean-alert" data-alert-title="ความชื้น">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="zone-clean-pressure">Pressure <span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-clean-pressure"
+                                            id="zone-clean-pressure" class="form-control text-center" max="4" min="1" data-alert-id="zone-clean-alert" data-alert-title="ความดัน">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="zone-clean-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-danger rounded-pill border px-4">
+                                            <i class="bi bi-exclamation-triangle-fill"></i>
+                                            Dirty Zone
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-6 text-center">
+                                        <label for="zone-dirty-temp">Temperature <span
+                                                class="text-muted">(°C)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-dirty-temp"
+                                            id="zone-dirty-temp" class="form-control text-center" max="24" min="18" data-alert-id="zone-dirty-alert" data-alert-title="อุณหภูมิ">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="zone-dirty-humid">Humidity <span
+                                                class="text-muted">(%RH)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-dirty-humid"
+                                            id="zone-dirty-humid" class="form-control text-center" max="60" min="50" data-alert-id="zone-dirty-alert" data-alert-title="ความชื้น">
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <label for="zone-dirty-pressure">Pressure <span
+                                                class="text-muted">(Pa)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal" name="zone-dirty-pressure"
+                                            id="zone-dirty-pressure" class="form-control text-center" max="4" min="1" data-alert-id="zone-dirty-alert" data-alert-title="ความดัน">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="zone-dirty-alert">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-dryer">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
+                            <div class="d-flex flex-column gap-2">
+                                <i class="fa-solid fa-fan"></i>
+                                Dryer Cabinet
+                                <div class="fs-4 text-secondary">(เครื่องอบ/เป่าลมแห้ง)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="dryer-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="dryer-name" name="dryer-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-light">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">หมายเลขเครื่อง</label>
+                                <input type="text" class="form-control" id="dryer-id" name="dryer-id"
+                                    placeholder="PYT3_XXXXX">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">
+                                            <i class="fa-solid fa-calendar-day"></i>
+                                            การตรวจเช็คประจำวัน
+                                        </span>
+                                    </div>
+                                </div>
+                                <!--      -->
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="dryer-check-1">
+                                                1. เช็ดทำความสะอาดด้านในตู้ด้วยผ้า ชุบน้ำหมาดๆ
+                                            </label>
+                                            <div class="mt-2 px-3 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-1-normal" name="dryer-check-1" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="dryer-check-1-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-1-abnormal" name="dryer-check-1" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="dryer-check-1-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="dryer-check-2">
+                                                <div class="d-flex flex-column">
+                                                    2. เช็ดทำความสะอาดด้านนอกตู้ด้วย ผ้าชุบน้ำหมาดๆ
+                                                </div>
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-2-normal" name="dryer-check-2" value="✓"
+                                                        required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="dryer-check-2-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-2-abnormal" name="dryer-check-2" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="dryer-check-2-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="dryer-check-3">
+                                                3. เช็คสภาพของสายไฟและสวิทซ์ไฟ ว่ายังใช้งานได้ดีอยู่
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-3-normal" name="dryer-check-3" value="✓"
+                                                        required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="dryer-check-3-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-1-abnormal" name="dryer-check-3" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="dryer-check-3-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="dryer-check-1">
+                                                4. นำถาดรองรับน้ำไปทำความสะอาด ด้วยการล้างและตากแห้ง
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-4-normal" name="dryer-check-4" value="✓"
+                                                        required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="dryer-check-4-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check
+                                                    form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-4-abnormal" name="dryer-check-4" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="dryer-check-4-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="dryer-check-5">
+                                                5. ตรวจสอบขายึดตะแกรงให้อยู่ใน สภาพแน่นหนา
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-5-normal" name="dryer-check-5" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="dryer-check-5-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="dryer-check-5-abnormal" name="dryer-check-5" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="dryer-check-5-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-ultrasonic">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
+                            <div class="d-flex flex-column gap-2">
+                                <i class="fa-solid fa-soap"></i>
+                                Ultrasonic Cleanser
+                                <div class="fs-4 text-secondary">(เครื่องล้างเครื่องมือด้วยคลื่นความถี่สูง)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="ultrasonic-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="ultrasonic-name" name="ultrasonic-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-light">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">หมายเลขเครื่อง</label>
+                                <input type="text" class="form-control" id="ultrasonic-id" name="ultrasonic-id"
+                                    placeholder="PYT3_XXXXX">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">
+                                            <i class="fa-solid fa-calendar-day"></i>
+                                            การตรวจเช็คประจำวัน
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="ultrasonic-check-1">
+                                                1. เช็ดทำความสะอาดด้านใน TANK ด้วยผ้าชุบน้ำหมาดๆ
+                                            </label>
+                                            <div class="mt-2 px-3 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-1-normal" name="ultrasonic-check-1"
+                                                        value="✓" required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-1-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-1-abnormal" name="ultrasonic-check-1"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-1-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="ultrasonic-check-2">
+                                                <div class="d-flex flex-column">
+                                                    2. เช็ดทำความสะอาดด้านนอกตู้ ด้วยผ้าชุบน้ำหมาดๆ
+                                                </div>
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-2-normal" name="ultrasonic-check-2"
+                                                        value="✓" required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-2-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-2-abnormal" name="ultrasonic-check-2"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-2-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="ultrasonic-check-3">
+                                                3. เช็คสภาพของสายไฟและสวิทซ์ ไฟว่ายังใช้งานได้ดีอยู่
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-3-normal" name="ultrasonic-check-3"
+                                                        value="✓" required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-3-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-1-abnormal" name="ultrasonic-check-3"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-3-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="ultrasonic-check-1">
+                                                4. เปลี่ยนถ่ายน้ำทุกครั้ง ที่มี ไฟสัญญาณเตือน
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-4-normal" name="ultrasonic-check-4"
+                                                        value="✓" required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-4-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check
+                                                    form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="ultrasonic-check-4-abnormal" name="ultrasonic-check-4"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="ultrasonic-check-4-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-autoclave">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
+                            <div class="d-flex flex-column">
+                                Autoclave
+                                <div class="fs-4 text-secondary">เครื่องนึ่งฆ่าเชื้อด้วยไอน้ำ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="autoclave-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="autoclave-name" name="autoclave-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-light">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">หมายเลขเครื่อง</label>
+                                <input type="text" class="form-control" id="autoclave-id" name="autoclave-id"
+                                    placeholder="PYT3_XXXXX">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3 mb-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">
+                                            <i class="fa-solid fa-calendar-day"></i>
+                                            การตรวจเช็คประจำวัน
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-12 text-start">
+                                        <label for="autoclave-water-pressure">1. ระบบน้ำ, แรงดันน้ำ
+                                            <span class="text-muted">(bar)</span></label>
+                                        </label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="autoclave-water-pressure" id="autoclave-water-pressure"
+                                            class="form-control text-center" max="4" min="2"
+                                            data-alert-id="autoclave-water-pressure-alert"
+                                            data-alert-title="ระบบน้ำ, แรงดันน้ำ">
+                                        <div class="row mt-2" id="autoclave-water-pressure-alert">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-start">
+                                        <label for="autoclave-air-pressure">2. ระบบลม, แรงดันลม
+                                            <span class="text-muted">(bar)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="autoclave-air-pressure" id="autoclave-air-pressure"
+                                            class="form-control text-center" max="8" min="6"
+                                            data-alert-id="autoclave-air-pressure-alert"
+                                            data-alert-title="ระบบลม, แรงดันลม">
+                                        <div class="row mt-2" id="autoclave-air-pressure-alert">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-start">
+                                        <label for="autoclave-steam-pressure">3. ระบบไอน้ำ, แรงดันไอน้ำ
+                                            <span class="text-muted">(bar)</span></label>
+                                        <input type="number" step="0.01" inputmode="decimal"
+                                            name="autoclave-steam-pressure" id="autoclave-steam-pressure"
+                                            class="form-control text-center" max="3" min="2.7"
+                                            data-alert-id="autoclave-steam-pressure-alert"
+                                            data-alert-title="ระบบไอน้ำ, แรงดันไอน้ำ">
+                                        <div class="row mt-2" id="autoclave-steam-pressure-alert">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-2">
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-check-4">
+                                                4. กระดาษกราฟ
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-4-normal" name="autoclave-check-4" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-check-4-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-4-abnormal" name="autoclave-check-4"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-check-4-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-check-5">
+                                                5. การขึ้นลงของขอบประตู
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-5-normal" name="autoclave-check-5" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-check-5-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-5-abnormal" name="autoclave-check-5"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-check-5-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-check-6">
+                                                6. ระบบไฟฟ้าของแผงควบคุม
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-6-normal" name="autoclave-check-6" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-check-6-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-6-abnormal" name="autoclave-check-6"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-check-6-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-check-7">
+                                                7. ความสะอาดของท่อ Drain
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-7-normal" name="autoclave-check-7" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-check-7-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-7-abnormal" name="autoclave-check-7"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-check-7-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-check-8">
+                                                8. ทำ Bowie Dick Test
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-8-normal" name="autoclave-check-8" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-check-8-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-8-abnormal" name="autoclave-check-8"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-check-8-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-check-9">
+                                                9. เช็ดทำความสะอาด Unload
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-9-normal" name="autoclave-check-9" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-check-9-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-9-abnormal" name="autoclave-check-9"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-check-9-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-check-10">
+                                                10. เช็ดทำความสะอาดใน Chamber
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-10-normal" name="autoclave-check-10"
+                                                        value="✓" required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-check-10-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-check-10-abnormal" name="autoclave-check-10"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-check-10-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-autoclave-ro">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
+                            <i class="bi bi-droplet-half"></i>
+                            RO <span class="text-danger">Autoclave</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="autoclave-ro-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="autoclave-ro-name"
+                                    name="autoclave-ro-name" placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
 
                                 <div class="row justify-content-center mt-2 g-3">
@@ -193,15 +1058,14 @@
                                 </div>
                                 <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-12">
-                                        <label for="ro-1-ph" class="ms-2">PH <span
+                                        <label for="autoclave-ro-ph" class="ms-2">PH <span
                                                 class="text-muted">(6-9)</span></label>
-                                        <input type="number" id="ro-1-ph" class="form-control" name="ro-1-ph"
-                                            inputmode="decimal" step="0.01" min="6" max="9" required
-                                            data-alert-id="ro-1-ph-alert" data-alert-title="PH">
+                                        <input type="number" id="autoclave-ro-ph" class="form-control"
+                                            name="autoclave-ro-ph" inputmode="decimal" step="0.01" min="6" max="9"
+                                            required data-alert-id="autoclave-ro-ph-alert" data-alert-title="PH">
                                     </div>
-
                                 </div>
-                                <div class="row mt-2" id="ro-1-ph-alert">
+                                <div class="row mt-2" id="autoclave-ro-ph-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -214,36 +1078,17 @@
                                 </div>
                                 <div class="row justify-content-center g-3 mt-1">
                                     <div class="col-12">
-                                        <label for="ro-1-water-hardness" class="ms-2">Water hardness <span
+                                        <label for="autoclave-ro-water-hardness" class="ms-2">Water hardness <span
                                                 class="text-muted">(<= 25 ppm)</span>
                                         </label>
-                                        <input type="number" id="ro-1-water-hardness" class="form-control"
-                                            name="ro-1-water-hardness" inputmode="decimal" required min="0" max="25"
-                                            step="0.01" required data-alert-id="ro-1-water-hardness-alert"
+                                        <input type="number" id="autoclave-ro-water-hardness" class="form-control"
+                                            name="autoclave-ro-water-hardness" inputmode="decimal" required min="0"
+                                            max="25" step="0.01" required
+                                            data-alert-id="autoclave-ro-water-hardness-alert"
                                             data-alert-title="Water hardness" </div>
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="ro-1-water-hardness-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">TDS
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-12">
-                                        <label for="ro-1-tds" class="ms-2">Total Dissolved Solids <span
-                                                class="text-muted">(<= 500 ppm)</span>
-                                        </label>
-                                        <input type="number" id="ro-1-tds" class="form-control" name="ro-1-tds"
-                                            inputmode="decimal" required min="0" max="500" step="0.01" required
-                                            data-alert-id="ro-1-tds-alert" data-alert-title="TDS">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="ro-1-tds-alert">
+                                <div class="row mt-2" id="autoclave-ro-water-hardness-alert">
                                 </div>
                             </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
@@ -255,445 +1100,84 @@
                                 </div>
                                 <div class="row justify-content-center g-3 mt-1">
                                     <div class="col-12">
-                                        <label for="ro-1-ec" class="ms-2">Electrical Conductivity <span
-                                                class="text-muted">(<= 50 &#181;S/cm)</span>
+                                        <label for="autoclave-ro-ec" class="ms-2">Electrical Conductivity <span
+                                                class="text-muted">(<= 10 &#181;S/cm)</span>
                                         </label>
-                                        <input type="number" id="ro-1-ec" class="form-control" name="ro-1-ec"
-                                            inputmode="decimal" required min="0" max="50" step="0.01" required
-                                            data-alert-id="ro-1-ec-alert" data-alert-title="EC">
+                                        <input type="number" id="autoclave-ro-ec" class="form-control"
+                                            name="autoclave-ro-ec" inputmode="decimal" required min="0" max="10"
+                                            step="0.01" required data-alert-id="autoclave-ro-ec-alert"
+                                            data-alert-title="EC">
                                     </div>
                                 </div>
-                                <div class="row mt-2" id="ro-1-ec-alert">
+                                <div class="row mt-2" id="autoclave-ro-ec-alert">
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <!-- รูปผลการตรวจวัด -->
-                                <label for="ro-1-img" class="form-label">รูปผลการตรวจวัด</label>
-                                <input type="file" name="ro-1-img" id="ro-1-img" class="form-control ro-img"
-                                    accept="image/*">
-                                <div class="d-flex justify-content-center">
-                                    <img src="" alt="" id="ro-1-img-preview"
-                                        class="rounded mt-3 ro-img-preview active img-fluid" style="max-height: 400px">
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-secondary" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-warning">
-                                    <i class="bi bi-lightning-fill"></i>
-                                    ระบบไฟฟ้า
-                                </span>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-dark-subtle shadow">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
                                     <div class="col-12 text-center fw-light  text-secondary">
                                         <span
-                                            class="fw-bold text-dark bg-warning rounded-pill border px-4">ตู้ระบบไฟฟ้า</span>
+                                            class="fw-bold text-dark  bg-info-subtle rounded-pill border px-4">การเติมเกลือ</span>
                                     </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" id="ro-1-circuit-box-normal"
-                                                name="ro-1-circuit-box" value="✓" required>
-                                            <label class="form-check-label" for="ro-1-circuit-box">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" id="ro-1-circuit-box-abnormal"
-                                                name="ro-1-circuit-box" value="✗">
-                                            <label class="form-check-inline" for="ro-1-circuit-box">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-dark">
-                                    <i class="bi bi-bar-chart-fill"></i>
-                                    Pressure Gauge
-                                </span>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">Pressure Gauge
-                                            P1</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-1-pressure-guage-p1-normal" name="ro-1-pressure-guage-p1"
-                                                value="✓">
-                                            <label class="form-check-label" for="ro-1-pressure-guage-p1">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-1-pressure-guage-p1-abnormal" name="ro-1-pressure-guage-p1"
-                                                value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-1-pressure-guage-p1">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                    </section>
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 mt-3 text-center">
-                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="tab-pane fade animate__animated" id="tab-ro-2">
-                <div class="container mb-3 p-0">
-                    <div class="row">
-                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
-                            RO <span class="text-danger">ตู้ล้าง 2</span>
-                        </div>
-                    </div>
-                </div>
-                <form id="ro-2-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
-                        <div class="row">
-                            <div class="col text-center">
-                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="ro-2-name" name="ro-2-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-primary">
-                                    <i class="bi bi-droplet-half"></i>
-                                    คุณภาพน้ำ
-                                </span>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-
-                                <div class="row justify-content-center mt-2 g-3">
-                                </div>
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-white bg-dark rounded-pill border px-4">ค่า PH</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-12">
-                                        <label for="ro-2-ph" class="ms-2">PH <span
-                                                class="text-muted">(6-9)</span></label>
-                                        <input type="number" id="ro-2-ph" class="form-control" name="ro-2-ph"
-                                            inputmode="decimal" step="0.01" min="6" max="9" required
-                                            data-alert-id="ro-2-ph-alert" data-alert-title="PH">
-                                    </div>
-
-                                </div>
-                                <div class="row mt-2" id="ro-2-ph-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-primary-subtle rounded-pill border px-4">Water
-                                            hardness
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-12">
-                                        <label for="ro-2-water-hardness" class="ms-2">Water hardness <span
-                                                class="text-muted">(<= 25 ppm)</span>
-                                        </label>
-                                        <input type="number" id="ro-2-water-hardness" class="form-control"
-                                            name="ro-2-water-hardness" inputmode="decimal" required min="0" max="25"
-                                            step="0.01" required data-alert-id="ro-2-water-hardness-alert"
-                                            data-alert-title="Water hardness" </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="ro-2-water-hardness-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">TDS
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-12">
-                                        <label for="ro-2-tds" class="ms-2">Total Dissolved Solids <span
-                                                class="text-muted">(<= 500 ppm)</span>
-                                        </label>
-                                        <input type="number" id="ro-2-tds" class="form-control" name="ro-2-tds"
-                                            inputmode="decimal" required min="0" max="500" step="0.01" required
-                                            data-alert-id="ro-2-tds-alert" data-alert-title="TDS">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="ro-2-tds-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-12">
-                                        <label for="ro-2-ec" class="ms-2">Electrical Conductivity <span
-                                                class="text-muted">(<= 50 &#181;S/cm)</span>
-                                        </label>
-                                        <input type="number" id="ro-2-ec" class="form-control" name="ro-2-ec"
-                                            inputmode="decimal" required min="0" max="50" step="0.01" required
-                                            data-alert-id="ro-2-ec-alert" data-alert-title="EC">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="ro-2-ec-alert">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <!-- รูปผลการตรวจวัด -->
-                                <label for="ro-2-img" class="form-label">รูปผลการตรวจวัด</label>
-                                <input type="file" name="ro-2-img" id="ro-2-img" class="form-control ro-img"
-                                    accept="image/*">
-                                <div class="d-flex justify-content-center">
-                                    <img src="" alt="" id="ro-2-img-preview"
-                                        class="rounded mt-3 ro-img-preview img-fluid" style="max-height: 400px">
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-secondary" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-warning">
-                                    <i class="bi bi-lightning-fill"></i>
-                                    ระบบไฟฟ้า
-                                </span>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-dark-subtle shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span
-                                            class="fw-bold text-dark bg-warning rounded-pill border px-4">ตู้ระบบไฟฟ้า</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" id="ro-2-circuit-box-normal"
-                                                name="ro-2-circuit-box" value="✓" required>
-                                            <label class="form-check-label" for="ro-2-circuit-box">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" id="ro-2-circuit-box-abnormal"
-                                                name="ro-2-circuit-box" value="✗">
-                                            <label class="form-check-inline" for="ro-2-circuit-box">ผิดปกติ</label>
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-ro-check-1">
+                                                ตรวจเช็คถังเกลือ
+                                                <span class="text-muted">(เติมทุกวัน 1 ชามรูปไต)</span>
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-ro-check-1-normal" name="autoclave-ro-check-1"
+                                                        value="✓" required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-ro-check-1-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-ro-check-1-abnormal" name="autoclave-ro-check-1"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-ro-check-1-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-dark">
-                                    <i class="bi bi-bar-chart-fill"></i>
-                                    Pressure Gauge
-                                </span>
-                            </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
                                     <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">Pressure Gauge
-                                            P1</span>
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">ระบบไฟฟ้า</span>
                                     </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-2-pressure-guage-p1-normal" name="ro-2-pressure-guage-p1"
-                                                value="✓">
-                                            <label class="form-check-label" for="ro-2-pressure-guage-p1">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-2-pressure-guage-p1-abnormal" name="ro-2-pressure-guage-p1"
-                                                value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-2-pressure-guage-p1">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                    </section>
-
-
-
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 mt-3 text-center">
-                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="tab-pane fade animate__animated" id="tab-ro-stream">
-                <div class="container mb-3 p-0">
-                    <div class="row">
-                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
-                            RO <span class="text-danger">ตู้นึ่ง</span>
-                        </div>
-                    </div>
-                </div>
-                <form id="ro-stream-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
-                        <div class="row">
-                            <div class="col text-center">
-                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
-                                <input type="text" class="form-control name" id="ro-stream-name" name="ro-stream-name"
-                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
-                            </div>
-                        </div>
-                    </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
-                        <div class="row justify-content-start g-3">
-
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-primary">
-                                    <i class="bi bi-droplet-half"></i>
-                                    คุณภาพน้ำ
-                                </span>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-
-                                <div class="row justify-content-center mt-2 g-3">
-                                </div>
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-white bg-dark rounded-pill border px-4">ค่า PH
-                                            (A)</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1">
                                     <div class="col-12">
-                                        <label for="ro-stream-ph" class="ms-2">PH <span
-                                                class="text-muted">(6-9)</span></label>
-                                        <input type="number" id="ro-stream-ph" class="form-control" name="ro-stream-ph"
-                                            inputmode="decimal" step="0.01" min="6" max="9" required
-                                            data-alert-id="ro-stream-ph-alert" data-alert-title="PH">
-                                    </div>
-
-                                </div>
-                                <div class="row mt-2" id="ro-stream-ph-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-primary-subtle rounded-pill border px-4">Water
-                                            hardness (B)
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-12">
-                                        <label for="ro-stream-water-hardness" class="ms-2">Water hardness <span
-                                                class="text-muted">(<= 25 ppm)</span>
-                                        </label>
-                                        <input type="number" id="ro-stream-water-hardness" class="form-control"
-                                            name="ro-stream-water-hardness" inputmode="decimal" required min="0"
-                                            max="25" step="0.01" required data-alert-id="ro-stream-water-hardness-alert"
-                                            data-alert-title="Water hardness" </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="ro-stream-water-hardness-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">TDS
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-12">
-                                        <label for="ro-stream-tds" class="ms-2">Total Dissolved Solids <span
-                                                class="text-muted">(<= 500 ppm)</span>
-                                        </label>
-                                        <input type="number" id="ro-stream-tds" class="form-control"
-                                            name="ro-stream-tds" inputmode="decimal" required min="0" max="500"
-                                            step="0.01" required data-alert-id="ro-stream-tds-alert"
-                                            data-alert-title="TDS">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="ro-stream-tds-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-3 mt-1">
-                                    <div class="col-12">
-                                        <label for="ro-stream-ec" class="ms-2">Electrical Conductivity <span
-                                                class="text-muted">(<= 50 &#181;S/cm)</span>
-                                        </label>
-                                        <input type="number" id="ro-stream-ec" class="form-control" name="ro-stream-ec"
-                                            inputmode="decimal" required min="0" max="50" step="0.01" required
-                                            data-alert-id="ro-stream-ec-alert" data-alert-title="EC">
-                                    </div>
-                                </div>
-                                <div class="row mt-2" id="ro-stream-ec-alert">
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span
-                                            class="fw-bold text-danger bg-danger-subtle rounded-pill border px-4">ปริมาณเกลือ
-                                            ในถัง</span>
-                                    </div>
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <small>มากกว่าขีดมาร์ค</small>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-salt-level-normal" name="ro-stream-salt-level" value="✓">
-                                            <label class="form-check-label" for="ro-stream-salt-level">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-salt-level-abnormal" name="ro-stream-salt-level"
-                                                value="✗">
-                                            <label class="form-check-inline" for="ro-stream-salt-level">ผิดปกติ</label>
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="autoclave-ro-check-2">
+                                                ตู้ระบบไฟฟ้า
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-ro-check-2-normal" name="autoclave-ro-check-2"
+                                                        value="✓" required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="autoclave-ro-check-2-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="autoclave-ro-check-2-abnormal" name="autoclave-ro-check-2"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="autoclave-ro-check-2-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -710,246 +1194,266 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-secondary" id="daily-check">
-                        <div class="row justify-content-start g-3">
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-warning">
-                                    <i class="bi bi-lightning-fill"></i>
-                                    ระบบไฟฟ้า
-                                </span>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-washer">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
+                            <div class="d-flex flex-column gap-2">
+                                <i class="fa-solid fa-droplet"></i>
+                                Automatic Washer
+                                <div class="fs-4 text-secondary">เครื่องล้างฆ่าเชื่ออัตโนมัติ</div>
                             </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-dark-subtle shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">ตู้ระบบไฟฟ้า
-                                            (C)</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-circuit-box-normal" name="ro-stream-circuit-box" value="✓"
-                                                required>
-                                            <label class="form-check-label" for="ro-stream-circuit-box">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-circuit-box-abnormal" name="ro-stream-circuit-box"
-                                                value="✗">
-                                            <label class="form-check-inline" for="ro-stream-circuit-box">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="washer-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="washer-name" name="washer-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
                             </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-dark-subtle shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Auto Valve
-                                            Resin (D)</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-valve-resin-normal" name="ro-stream-valve-resin" value="✓"
-                                                required>
-                                            <label class="form-check-label" for="ro-stream-valve-resin">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-valve-resin-abnormal" name="ro-stream-valve-resin"
-                                                value="✗">
-                                            <label class="form-check-inline" for="ro-stream-valve-resin">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-dark-subtle shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Auto Valve
-                                            Carbon (E)</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-valve-carbon-normal" name="ro-stream-valve-carbon"
-                                                value="✓" required>
-                                            <label class="form-check-label" for="ro-stream-valve-carbon">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-valve-carbon-abnormal" name="ro-stream-valve-carbon"
-                                                value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-stream-valve-carbon">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-dark-subtle shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-warning rounded-pill border px-4">Auto Valve
-                                            Anthracite (F)</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-valve-anthracite-normal" name="ro-stream-valve-anthracite"
-                                                value="✓" required>
-                                            <label class="form-check-label"
-                                                for="ro-stream-valve-anthracite">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-valve-anthracite-abnormal"
-                                                name="ro-stream-valve-anthracite" value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-stream-valve-anthracite">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-light">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">หมายเลขเครื่อง</label>
+                                <input type="text" class="form-control" id="washer-id" name="washer-id"
+                                    placeholder="PYT3_XXXXX">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
                         <div class="row justify-content-start g-3">
-                            <div class="col-12 text-center">
-                                <span class="fs-1 fw-bold text-dark">
-                                    <i class="bi bi-bar-chart-fill"></i>
-                                    Pressure Gauge
-                                </span>
-                            </div>
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">P1
-                                            (ก่อนเข้าถังสารกรอง) (G)
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">
+                                            <i class="fa-solid fa-calendar-day"></i>
+                                            การตรวจเช็คประจำวัน
                                         </span>
                                     </div>
                                 </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p1-normal"
-                                                name="ro-stream-pressure-guage-p1" value="✓">
-                                            <label class="form-check-label"
-                                                for="ro-stream-pressure-guage-p1">ปกติ</label>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="washer-check-1">
+                                                1. ทำความสะอาดตะแกรงกรองสิ่งสกปรกโดยผู้ปฏิบัติงานรอบแรกของแต่ละวัน
+                                                รวมทั้งเช็ดทำความสะอาดภายนอกเครื่องล้าง
+                                            </label>
+                                            <div class="mt-2 px-3 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-1-normal" name="washer-check-1" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-check-1-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-1-abnormal" name="washer-check-1" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-check-1-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p1-abnormal"
-                                                name="ro-stream-pressure-guage-p1" value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-stream-pressure-guage-p1">ผิดปกติ</label>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="washer-check-2">
+                                                <div class="d-flex flex-column">
+                                                    2. ตรวจสอบส่วนต่างๆ เช่น ผนังภายในห้องล้าง และส่วนต่างๆภายใน
+                                                    <small class="ms-3 text-secondary fs-small">
+                                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                                        หากมีสิ่งสกรปกตกค้างให้ทำความสะอาดให้เรียบร้อย</small>
+                                                </div>
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-2-normal" name="washer-check-2" value="✓"
+                                                        required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-check-2-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-2-abnormal" name="washer-check-2" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-check-2-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="washer-check-3">
+                                                3. ประกอบตะแกรงกรองสิ่งสกปรกให้เข้าที่เดิม
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-3-normal" name="washer-check-3" value="✓"
+                                                        required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-check-3-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-1-abnormal" name="washer-check-3" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-check-3-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="washer-check-1">
+                                                4. ตรวจสอบแกนหมุนสำหรับพ่นฉีดน้ำยา
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-4-normal" name="washer-check-4" value="✓"
+                                                        required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-check-4-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check
+                                                    form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-4-abnormal" name="washer-check-4" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-check-4-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="washer-check-5">
+                                                5. ตรวจสอบระดับการใช้งานให้เพียงพอกับการใช้งาน
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-5-normal" name="washer-check-5" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-check-5-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-5-abnormal" name="washer-check-5" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-check-5-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle weekly-check">
+                        <div class="row justify-content-start g-3">
                             <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
                                 <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">P2 (Resin Tank)
-                                            (H)
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">
+                                            <i class="fa-solid fa-calendar-week"></i>
+                                            การตรวจเช็คประจำสัปดาห์
                                         </span>
                                     </div>
                                 </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p2-normal"
-                                                name="ro-stream-pressure-guage-p2" value="✓">
-                                            <label class="form-check-label"
-                                                for="ro-stream-pressure-guage-p2">ปกติ</label>
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="washer-check-week-1">
+                                                1. ตรวจชั้นวางของเครื่องล้าง รวมทั้งข้อต่อต่างๆ
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-1-week-1-normal" name="washer-check-week-1"
+                                                        value="✓" required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-check-1-week-1-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check
+                                                    form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-1-week-1-abnormal" name="washer-check-week-1"
+                                                        value="✗">
+                                                    <label class="form-check
+                                                        label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-check-1-week-1-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p2-abnormal"
-                                                name="ro-stream-pressure-guage-p2" value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-stream-pressure-guage-p2">ผิดปกติ</label>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="washer-check-week-2">
+                                                2. ตรวจเช็คทำความสะอาดแกนหมุนสำหรับพ่นฉีดน้ำ และชั้นวางของ
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-week-2-normal" name="washer-check-week-2"
+                                                        value="✓" required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-check-week-2-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-check-week-2-abnormal" name="washer-check-week-2"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-check-week-2-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row mt-2" id="zone-sterile-alert">
                                 </div>
                             </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">P3 (Carbon
-                                            Tank) (I)
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p3-normal"
-                                                name="ro-stream-pressure-guage-p3" value="✓">
-                                            <label class="form-check-label"
-                                                for="ro-stream-pressure-guage-p3">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p3-abnormal"
-                                                name="ro-stream-pressure-guage-p3" value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-stream-pressure-guage-p3">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
-                                <div class="row justify-content-center mt-2 g-3">
-                                    <div class="col-12 text-center fw-light  text-secondary">
-                                        <span class="fw-bold text-dark bg-info rounded-pill border px-4">P4 (Anthracite
-                                            Tank) (J)
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center g-2 mt-1 px-1">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p4-normal"
-                                                name="ro-stream-pressure-guage-p4" value="✓">
-                                            <label class="form-check-label"
-                                                for="ro-stream-pressure-guage-p4">ปกติ</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                id="ro-stream-pressure-guage-p4-abnormal"
-                                                name="ro-stream-pressure-guage-p4" value="✗">
-                                            <label class="form-check-inline"
-                                                for="ro-stream-pressure-guage-p4">ผิดปกติ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
                     </section>
                     <div class="row justify-content-center">
                         <div class="col-md-4 mt-3 text-center">
@@ -958,7 +1462,311 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade animate__animated" id="tab-gas-detector">
+            <div class="tab-pane fade animate__animated" id="tab-washer-ro">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
+                            <i class="bi bi-droplet-half"></i>
+                            RO <span class="text-danger">Washer</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="washer-ro-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="washer-ro-name" name="washer-ro-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+
+                                <div class="row justify-content-center mt-2 g-3">
+                                </div>
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light  text-secondary">
+                                        <span class="fw-bold text-white bg-dark rounded-pill border px-4">ค่า PH</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-2 mt-1">
+                                    <div class="col-12">
+                                        <label for="washer-ro-ph" class="ms-2">PH <span
+                                                class="text-muted">(6-9)</span></label>
+                                        <input type="number" id="washer-ro-ph" class="form-control" name="washer-ro-ph"
+                                            inputmode="decimal" step="0.01" min="6" max="9" required
+                                            data-alert-id="washer-ro-ph-alert" data-alert-title="PH">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="washer-ro-ph-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light  text-secondary">
+                                        <span class="fw-bold text-dark bg-primary-subtle rounded-pill border px-4">Water
+                                            hardness
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-12">
+                                        <label for="washer-ro-water-hardness" class="ms-2">Water hardness <span
+                                                class="text-muted">(<= 25 ppm)</span>
+                                        </label>
+                                        <input type="number" id="washer-ro-water-hardness" class="form-control"
+                                            name="washer-ro-water-hardness" inputmode="decimal" required min="0"
+                                            max="25" step="0.01" required data-alert-id="washer-ro-water-hardness-alert"
+                                            data-alert-title="Water hardness" </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="washer-ro-water-hardness-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light  text-secondary">
+                                        <span class="fw-bold text-light bg-success rounded-pill border px-4">EC
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center g-3 mt-1">
+                                    <div class="col-12">
+                                        <label for="washer-ro-ec" class="ms-2">Electrical Conductivity <span
+                                                class="text-muted">(<= 10 &#181;S/cm)</span>
+                                        </label>
+                                        <input type="number" id="washer-ro-ec" class="form-control" name="washer-ro-ec"
+                                            inputmode="decimal" required min="0" max="10" step="0.01" required
+                                            data-alert-id="washer-ro-ec-alert" data-alert-title="EC">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="washer-ro-ec-alert">
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light  text-secondary">
+                                        <span
+                                            class="fw-bold text-dark  bg-info-subtle rounded-pill border px-4">การเติมเกลือ</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="washer-ro-check-1">
+                                                ตรวจเช็คถังเกลือ
+                                                <span class="text-muted">(เติมทุกวัน 1 ชามรูปไต)</span>
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-ro-check-1-normal" name="washer-ro-check-1" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-ro-check-1-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-ro-check-1-abnormal" name="washer-ro-check-1"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-ro-check-1-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light  text-secondary">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">ระบบไฟฟ้า</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column mt-2">
+                                            <label for="washer-ro-check-2">
+                                                ตู้ระบบไฟฟ้า
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-ro-check-2-normal" name="washer-ro-check-2" value="✓"
+                                                        required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="washer-ro-check-2-normal">
+                                                        <i class="bi bi-check-circle-fill text-success"></i> ปกติ
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="washer-ro-check-2-abnormal" name="washer-ro-check-2"
+                                                        value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="washer-ro-check-2-abnormal">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <!-- รูปผลการตรวจวัด -->
+                                <label for="washer-ro-img" class="form-label">รูปผลการตรวจวัด</label>
+                                <input type="file" name="washer-ro-img" id="washer-ro-img" class="form-control ro-img"
+                                    accept="image/*">
+                                <div class="d-flex justify-content-center">
+                                    <img src="" alt="" id="washer-ro-img-preview"
+                                        class="rounded mt-3 ro-img-preview img-fluid" style="max-height: 300px">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-eto">
+                <div class="container mb-3 p-0">
+                    <div class="row">
+                        <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
+                            <div class="d-flex flex-column gap-2">
+                                <i class="fa-solid fa-list-check text-primary-emphasis"></i>
+                                ETO Sterilizer
+                                <div class="fs-4 text-secondary">เครื่องฆ่าเชื้อด้วยแก็สเอทธิลีนออกไซด์</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="eto-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
+                                <input type="text" class="form-control name" id="eto-name" name="eto-name"
+                                    placeholder="กรอกชื่อผู้ตรวจสอบ">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-light">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label for="name" class="fs-3">หมายเลขเครื่อง</label>
+                                <input type="text" class="form-control" id="eto-id" name="eto-id"
+                                    placeholder="PYT3_XXXXX">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
+                        <div class="row justify-content-start g-3">
+                            <div class="col-12 border border-dark rounded pb-3 bg-light shadow">
+                                <div class="row justify-content-center mt-2 g-3">
+                                    <div class="col-12 text-center fw-light fs-3 text-secondary mb-2">
+                                        <span class="fw-bold text-bg-warning rounded-pill border px-4">
+                                            <i class="fa-solid fa-calendar-day"></i>
+                                            การตรวจเช็คประจำวัน
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- 1. เช็ดภายในเครื่องด้วยผ้าแห้ง ขอบ ประตูและตะแกรงทุกวัน 2. เช็คนอกเครื่องใช้ผ้าชุบน้ำหมาดๆ เช็ดด้านนอกทุกวัน 3. ตรวจเช็คปลั๊ก สายไฟ และแผง ควบคุมวงจรไฟฟ้าด้านข้าง -->
+                                <div class="row justify-content-center g-3">
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="eto-check-1">
+                                                1. เช็ดภายในเครื่องด้วยผ้าแห้ง ขอบประตู และตะแกรงทุกวัน
+                                            </label>
+                                            <div class="mt-2 px-3 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="eto-check-1-normal"
+                                                        name="eto-check-1" value="✓" required>
+                                                    <label class="form-check-label bg-success-subtle rounded-pill px-3"
+                                                        for="eto-check-1-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="eto-check-1-abnormal" name="eto-check-1" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="eto-check-1-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="eto-check-2">
+                                                <div class="d-flex flex-column">
+                                                    2. เช็คนอกเครื่องใช้ผ้าชุบน้ำหมาดๆ เช็ดด้านนอกทุกวัน
+                                                </div>
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="eto-check-2-normal"
+                                                        name="eto-check-2" value="✓" required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="eto-check-2-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="eto-check-2-abnormal" name="eto-check-2" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="eto-check-2-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column">
+                                            <label for="eto-check-3">
+                                                3. ตรวจเช็คปลั๊ก สายไฟ และแผง ควบคุมวงจรไฟฟ้าด้านข้าง
+                                            </label>
+                                            <div class="mt-2 px-3">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="eto-check-3-normal"
+                                                        name="eto-check-3" value="✓" required>
+                                                    <label class="form-check
+                                                        label bg-success-subtle rounded-pill px-3"
+                                                        for="eto-check-3-normal"><i
+                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                        ปกติ</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                        id="eto-check-1-abnormal" name="eto-check-3" value="✗">
+                                                    <label class="form-check-label bg-danger-subtle rounded-pill px-3"
+                                                        for="eto-check-3-abnormal"><i
+                                                            class="bi bi-x-circle-fill text-danger"></i> ผิดปกติ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4 mt-3 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade animate__animated" id="tab-eto-detector">
                 <div class="container mb-3 p-0">
                     <div class="row">
                         <div class="col-12 text-center text-light mt-4 display-6 fw-bold" id="header-text">
@@ -967,7 +1775,7 @@
                     </div>
                 </div>
                 <form id="gas-detector-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -976,7 +1784,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-info-subtle">
                         <div class="row">
                             <div class="col text-center d-flex flex-column">
                                 <label for="shift" class="fs-3">รอบตรวจสอบ</label>
@@ -999,7 +1807,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
                         <div class="row justify-content-start g-3">
 
                             <div class="col-12 text-center">
@@ -1109,7 +1917,7 @@
                     </div>
                 </div>
                 <form id="air-compressor-checklist" class="mb-5 container-fluid m-0 p-0 needs-validation" novalidate>
-                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-2 rounded-2 p-4 bg-success-subtle">
                         <div class="row">
                             <div class="col text-center">
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
@@ -1118,7 +1926,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 text-center">
                                 <span class="fs-2 fw-bold text-primary">
@@ -1185,7 +1993,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle" id="daily-check">
+                    <section class="container-fluid m-0 mt-3 rounded-2 p-4 bg-primary-subtle">
                         <div class="row justify-content-start g-3">
                             <div class="col-12 text-center">
                                 <span class="fs-2 fw-bold text-primary">
@@ -1293,12 +2101,16 @@
         var script_url = 'https://script.google.com/macros/s/AKfycbxs0HBnBJPh1rFf6dVP0Vd3VQthFUTI74hwln7Wp94xdDRzgPyfPHzIh9O5lLA2EhhTEg/exec'
         var Toast
         $(document).ready(() => {
+            console.log([...new Set($('form').toArray().map(e => e.id).sort())])
             Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1500,
             })
+            if(new Date().getDay() !== 1){
+                $('.weekly-check').remove()
+            }
             // $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/c4138b94-68e0-48e5-9021-57d76f7c9348/page/V9LZD").attr('width', '100%')
             let width = $('iframe').width()
             let height = width * 0.5833
@@ -1324,13 +2136,16 @@
                 $('input[type="file"]').val('')
                 $('.ro-img-preview').removeClass('active').attr('src', '')
                 $(target).find('.ro-img-preview').addClass('active')
-                
+
                 $(target).addClass('animate__slideInLeft animate__faster')
                 setTimeout(() => {
                     $(target).removeClass('animate__slideInLeft animate__faster')
                 }, 1000);
                 $('#offcanvas-menu').offcanvas('hide')
+                toggleCollapse()
             })
+
+            toggleCollapse()
 
             var typingTimer;
             var doneTypingInterval = 700;
@@ -1372,13 +2187,13 @@
                 liffId: "1657104960-eLkEQkw9",
                 withLoginOnExternalBrowser: true,
             })
-            getLastSaved()
+            // getLastSaved()
             liff.ready.then(async () => {
                 $.LoadingOverlay("show");
                 console.log('liff init success');
                 let profile = await liff.getProfile()
                 console.log("🚀 ~ profile:", profile)
-                
+
                 $('#line-display').attr('src', profile.pictureUrl).attr('alt', profile.displayName)
                 $.LoadingOverlay("hide");
                 let now = new Date()
@@ -1396,12 +2211,27 @@
 
         })
 
+        function toggleCollapse() {
+            let ele = $('#offcanvas-menu').find('.nav-link.active')
+            let collapse = $(ele).parents().toArray().filter(e => $(e).hasClass('collapse'))
+            console.log("🚀 ~ collapse:", collapse)
+            if (collapse.length > 0) {
+                collapse.forEach(e => {
+                    $(e).collapse('show')
+                })
+            } else {
+                $('#offcanvas-menu').find('.collapse').collapse('hide')
+            }
+        }
+
         var section_alerts = {}
         function checkMinMaxLimit(inp) {
             let min = $(inp).attr('min')
             let max = $(inp).attr('max')
             let recheck = $(inp).attr('data-recheck')
             let alert_id = $(inp).attr('data-alert-id')
+            if (!alert_id) return
+            alert_id = alert_id.replace('-alert', '')
             if (!min || !max || recheck) return
             if (min != undefined && max != undefined) {
                 let label = $(inp).attr('data-alert-title')
@@ -1445,7 +2275,7 @@
                         delete section_alerts[alert_id]
                     }
                     $('#' + $(inp).attr('id')).removeClass('border-danger border-2')
-                    $('#' + alert_id).html('')
+                    $('#' + alert_id + '-alert').html('')
                 }
             }
             Object.keys(section_alerts).forEach(alert_id => {
@@ -1464,18 +2294,19 @@
                                     </div>`
                 $('#' + $(inp).attr('id')).addClass('border-danger border-2')
 
-                $('#' + alert_id).html(alert_text)
-                $('.section-alert-btn').click(function () {
+                $('#' + alert_id + '-alert').append(alert_text)
+                $('.section-alert-btn').off('click').click(function () {
                     $('#' + $(this).data('alert-id')).removeClass('border-danger border-2').removeAttr('min max')
                     $(this).parent().parent().parent().remove()
 
-                    let alert_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
+                    let alert_id = $(this).data('alert-id').replace('-alert', '')
+                    console.log("🚀 ~ alert_id:", alert_id)
+                    console.log("🚀 ~ section_alerts:", section_alerts)
                     delete section_alerts[alert_id][$(this).data('alert-id')]
-                    
+
                 })
             })
         }
-
 
         function getLastSaved() {
             let forms = $('form').toArray().map(a => {
@@ -1487,7 +2318,7 @@
             Promise.all(forms.map(a => {
                 $.ajax(a.url, {
                     success: function (res) {
-                        
+
                         if (res.status == 'success') {
                             let data = res.data
                             Object.keys(data).forEach(key => {
@@ -1495,7 +2326,7 @@
                                 if (!$('#' + key)) return
                                 $('#' + key).attr('placeholder', data[key])
                             })
-                            
+
                             if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
                                 $('#' + a.form + ' .name').val(localStorage.getItem('user') || "")
                             } else {
@@ -1585,11 +2416,11 @@
             let history = localStorage.getItem('history')
             if (history != null) {
                 let obj = JSON.parse(history)
-                
+
                 Object.keys(obj).forEach(key => {
-                    
+
                     Object.keys(obj[key]).forEach(k => {
-                        
+
                         let ele = $('#' + key + ' [name="' + k + '"]')
                         if (ele.is(':checkbox')) {
                             if (obj[key][k] == '✓') {
@@ -1599,7 +2430,7 @@
                             }
                             return
                         } else if (ele.is(':radio')) {
-                            
+
                             if (obj[key][k] && obj[key][k] != '') {
                                 if (obj[key][k] == '✓') {
                                     $('#' + ele.attr('name') + '-normal').prop('checked', true)
@@ -1616,7 +2447,6 @@
             }
         }
 
-
         function toTitleCase(str) {
             return str.replace(
                 /\w\S*/g,
@@ -1626,125 +2456,196 @@
             );
         }
 
-        function sendLineNotify(obj) {
+        function sendTelegram(obj) {
             let message
+            console.log('telegram', obj);
             switch (obj.form) {
-                case "ro-1-checklist":
-                    message = `👉 ผลการตรวจเช็คระบบน้ำ RO #1
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
-
-💦 คุณภาพน้ำ
-PH = ${obj['ro-1-ph']}
-Water Hardness = ${obj['ro-1-water-hardness']} ppm
-TDS = ${obj['ro-1-tds']} ppm
-EC = ${obj['ro-1-ec']} µS/cm
--------------------------------
-
-⚡ ระบบไฟฟ้า
-ตู้ระบบไฟฟ้า = ${obj['ro-1-circuit-box'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-👉 Pressure Gauge
-P1 = ${obj['ro-1-pressure-guage-p1'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-บันทึกโดย
-@${obj['ro-1-name']}`
-                    break
-                case "ro-2-checklist":
-                    message = `👉 ผลการตรวจเช็คระบบน้ำ RO #2
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
-
-💦 คุณภาพน้ำ
-PH = ${obj['ro-2-ph']}
-Water Hardness = ${obj['ro-2-water-hardness']} ppm
-TDS = ${obj['ro-2-tds']} ppm
-EC = ${obj['ro-2-ec']} µS/cm
--------------------------------
-
-⚡ ระบบไฟฟ้า
-ตู้ระบบไฟฟ้า = ${obj['ro-2-circuit-box'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-👉 Pressure Gauge
-P1 = ${obj['ro-2-pressure-guage-p1'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-บันทึกโดย
-@${obj['ro-2-name']}`
-                    break
-                case "ro-stream-checklist":
-                    message = `👉 ผลการตรวจเช็คระบบน้ำ RO ตู้นึ่ง
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
-
-💦 คุณภาพน้ำ
-PH (A) = ${obj['ro-stream-ph']}
-Water Hardness (B) = ${obj['ro-stream-water-hardness']} ppm
-TDS = ${obj['ro-stream-tds']} ppm
-EC = ${obj['ro-stream-ec']} µS/cm
-ปริมาณเกลือในถัง = ${obj['ro-stream-salt-level'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-⚡ ระบบไฟฟ้า
-ตู้ระบบไฟฟ้า (C) = ${obj['ro-stream-circuit-box'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-Auto Valve Resin (D) = ${obj['ro-stream-valve-resin'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-Auto Valve Carbon (E) = ${obj['ro-stream-valve-carbon'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-Auto Valve Anthracite (F) = ${obj['ro-stream-valve-anthracite'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-👉 Pressure Gauge
-P1 (ก่อนเข้าถังสารกรอง) (G) = ${obj['ro-stream-pressure-guage-p1'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-P2 (Resin Tank) (H) = ${obj['ro-stream-pressure-guage-p2'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-P3 (Carbon Tank) (I) = ${obj['ro-stream-pressure-guage-p3'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-P4 (Anthracite Tank) (J) = ${obj['ro-stream-pressure-guage-p4'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-บันทึกโดย
-@${obj['ro-stream-name']}`
-                    break
-                case "gas-detector-checklist":
-                    message = `👉 ผลการตรวจเช็ค Gas Detector
-
-📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')} รอบ ${obj.shift}
-
-เช็คสถานะการทำงาน
-👉 หน้าจอ = ${obj['gas-detector-display'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-👉 ระบบ Alarm = ${obj['gas-detector-alarm'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-👉 ค่าความเข้ม EO = ${obj['gas-detector-eo'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
-
-บันทึกโดย
-@${obj['gas-detector-name']}`
-                    break
                 case "air-compressor-checklist":
-                    message = `👉 ผลการตรวจเช็ค Air Compressor
+                    message = `<b>😊 ผลการตรวจเช็ค Air Compressor</b>
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 Air Compressor #1</b> 
+
+<b>ระบบไฟฟ้า</b> = ${obj['air-compressor-1-circuit'] == '✓' ? '✔️' : '❌'}
+<b>Drain น้ำออกจากถังเก็บลม 10 นาที</b> = ${obj['air-compressor-1-water-drain'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+<blockquote><b>👉 Air Compressor #2</b> 
+<b>ระบบไฟฟ้า</b> = ${obj['air-compressor-2-circuit'] == '✓' ? '✔️' : '❌'}
+<b>Drain น้ำออกจากถังเก็บลม 10 นาที</b> = ${obj['air-compressor-2-water-drain'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+บันทึกโดย ${obj['air-compressor-name']}`
+                    break
+                case 'autoclave-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค Autoclave</b>
+
+<b>🆔 รหัส:</b> ${obj['autoclave-id']}
 
 📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 แรงดันลม:</b> ${obj['autoclave-air-pressure']} Bar
 
-👉Air Compressor #1 
-ระบบไฟฟ้า = ${obj['air-compressor-1-circuit'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-Drain น้ำออกจากถังเก็บลม 10 นาที = ${obj['air-compressor-1-water-drain'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
+<b>👉 แรงดันน้ำ:</b> ${obj['autoclave-water-pressure']} Bar
 
-👉Air Compressor #2
-ระบบไฟฟ้า = ${obj['air-compressor-2-circuit'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
-Drain น้ำออกจากถังเก็บลม 10 นาที = ${obj['air-compressor-2-water-drain'] == '✓' ? 'ปกติ 👍' : 'ผิดปกติ ❌'}
--------------------------------
+<b>👉 แรงดันไอน้ำ:</b> ${obj['autoclave-steam-pressure']} Bar
 
-บันทึกโดย
-@${obj['air-compressor-name']}`
-                    break
+<b>👉 กระดาษกราฟ</b> = ${obj['autoclave-check-4'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 การขึ้นลงของขอบประตู</b> = ${obj['autoclave-check-5'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ระบบไฟฟ้าของแผงควบคุม</b> = ${obj['autoclave-check-6'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ความสะอาดของท่อ Drain</b> = ${obj['autoclave-check-7'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ทำ Bowie Dick Test</b> = ${obj['autoclave-check-8'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เช็ดทำความสะอาด Unload</b> = ${obj['autoclave-check-9'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เช็ดทำความสะอาดใน Chamber</b> = ${obj['autoclave-check-10'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+บันทึกโดย ${obj['autoclave-name']}`
+                    break;
+                case 'autoclave-ro-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค RO Autoclave</b>
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 ค่า PH:</b> ${obj['autoclave-ro-ph']}
+
+<b>👉 ค่า Water hardness:</b> ${obj['autoclave-ro-water-hardness']} ppm
+
+<b>👉 ค่า Electrical Conductivity:</b> ${obj['autoclave-ro-ec']} &#181;S/cm
+
+<b>👉 ตรวจเช็คถังเกลือ</b> = ${obj['autoclave-ro-check-1'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ตู้ระบบไฟฟ้า</b> = ${obj['autoclave-ro-check-2'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+บันทึกโดย ${obj['autoclave-ro-name']}`
+                    break;
+                case 'dryer-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค Dryer Cabinet</b>
+
+<b>🆔 รหัส:</b> ${obj['dryer-id']}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 เช็ดทำความสะอาดด้านในตู้ด้วยผ้า ชุบน้ำหมาดๆ:</b> ${obj['dryer-check-1'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เช็ดทำความสะอาดด้านนอกตู้ด้วย ผ้าชุบน้ำหมาดๆ:</b> ${obj['dryer-check-2'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เช็คสภาพของสายไฟและสวิทซ์ไฟ ว่ายังใช้งานได้ดีอยู่:</b> ${obj['dryer-check-3'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 นำถาดรองรับน้ำไปทำความสะอาด ด้วยการล้างและตากแห้ง:</b> ${obj['dryer-check-4'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ตรวจสอบขายึดตะแกรงให้อยู่ใน สภาพแน่นหนา:</b> ${obj['dryer-check-5'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+บันทึกโดย ${obj['dryer-name']}`
+                    break;
+                case 'eto-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค ETO Sterilizer</b>
+
+<b>🆔 รหัส:</b> ${obj['eto-id']}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 เช็ดภายในเครื่องด้วยผ้าแห้ง ขอบประตู และตะแกรงทุกวัน:</b> ${obj['eto-check-1'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เช็คนอกเครื่องใช้ผ้าชุบน้ำหมาดๆ เช็ดด้านนอกทุกวัน:</b> ${obj['eto-check-2'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ตรวจเช็คปลั๊ก สายไฟ และแผง ควบคุมวงจรไฟฟ้าด้านข้าง:</b> ${obj['eto-check-3'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+บันทึกโดย ${obj['eto-name']}`
+                    break;
+                case 'gas-detector-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค Gas Detector</b>
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 รอบตรวจสอบ:</b> ${obj['shift']}
+
+<b>👉 หน้าจอ:</b> ${obj['gas-detector-display'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ระบบ Alarm:</b> ${obj['gas-detector-alarm'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ค่าความเข้ม EO ที่แสดง:</b> ${obj['gas-detector-eo']} ppm</blockquote>
+
+บันทึกโดย ${obj['gas-detector-name']}`
+                    break;
+                case 'washer-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค Automatic Washer</b>
+
+<b>🆔 รหัส:</b> ${obj['washer-id']}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 ทำความสะอาดตะแกรงกรองสิ่งสกปรก:</b> ${obj['washer-check-1'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ตรวจสอบส่วนต่างๆ เช่น ผนังภายในห้องล้าง:</b> ${obj['washer-check-2'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ประกอบตะแกรงกรองสิ่งสกปรกให้เข้าที่เดิม:</b> ${obj['washer-check-3'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ตรวจสอบแกนหมุนสำหรับพ่นฉีดน้ำยา:</b> ${obj['washer-check-4'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ตรวจสอบระดับการใช้งานให้เพียงพอกับการใช้งาน:</b> ${obj['washer-check-5'] == '✓' ? '✔️' : '❌'}</blockquote>${new Date().getDay() !== 1? '': `
+
+ตรวจเช็คประจำสัปดาห์
+<blockquote><b>👉 ตรวจชั้นวางของเครื่องล้าง รวมทั้งข้อต่อต่างๆ:</b> ${obj['washer-check-week-1'] == '✓' ? '✔️' : '❌'}
+<b>👉 ตรวจเช็คทำความสะอาดแกนหมุนสำหรับพ่นฉีดน้ำ และชั้นวางของ:</b> ${obj['washer-check-week-2'] == '✓' ? '✔️' : '❌'}</blockquote>`}
+
+บันทึกโดย ${obj['washer-name']}`
+                    break;
+                case 'washer-ro-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค RO Washer</b>
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 ค่า PH:</b> ${obj['washer-ro-ph']}
+
+<b>👉 ค่า Water hardness:</b> ${obj['washer-ro-water-hardness']} ppm
+
+<b>👉 ค่า Electrical Conductivity:</b> ${obj['washer-ro-ec']} &#181;S/cm
+
+<b>👉 ตรวจเช็คถังเกลือ:</b> ${obj['washer-ro-check-1'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 ตู้ระบบไฟฟ้า:</b> ${obj['washer-ro-check-2'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+บันทึกโดย ${obj['washer-ro-name']}`
+                    break;
+                case 'zone-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค Working Zone</b>
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 Sterile Zone</b>
+<b>Temperature:</b> ${obj['zone-sterile-temp']} °C
+<b>Humidity:</b> ${obj['zone-sterile-humid']} %RH
+<b>Pressure:</b> ${obj['zone-sterile-pressure']} Pa
+
+<b>👉 Clean Zone</b>
+<b>Temperature:</b> ${obj['zone-clean-temp']} °C
+<b>Humidity:</b> ${obj['zone-clean-humid']} %RH
+<b>Pressure:</b> ${obj['zone-clean-pressure']} Pa
+
+<b>👉 Dirty Zone</b>
+<b>Temperature:</b> ${obj['zone-dirty-temp']} °C
+<b>Humidity:</b> ${obj['zone-dirty-humid']} %RH
+<b>Pressure:</b> ${obj['zone-dirty-pressure']} Pa</blockquote>
+
+บันทึกโดย ${obj['zone-name']}`
+                    break;
+                case 'ultrasonic-checklist':
+                    message = `<b>😊 ผลการตรวจเช็ค Ultrasonic Cleaner</b>
+
+<b>🆔 รหัส:</b> ${obj['ultrasonic-id']}
+
+📆 ประจำวันที่ ${moment().format('DD/MM/YYYY')}
+<blockquote><b>👉 เช็ดทำความสะอาดด้านใน TANK ด้วยผ้าชุบน้ำหมาดๆ:</b> ${obj['ultrasonic-check-1'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เช็ดทำความสะอาดด้านนอกตู้ ด้วยผ้าชุบน้ำหมาดๆ:</b> ${obj['ultrasonic-check-2'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เช็คสภาพของสายไฟและสวิทซ์ ไฟว่ายังใช้งานได้ดีอยู่:</b> ${obj['ultrasonic-check-3'] == '✓' ? '✔️' : '❌'}
+
+<b>👉 เปลี่ยนถ่ายน้ำทุกครั้ง ที่มี ไฟสัญญาณเตือน:</b> ${obj['ultrasonic-check-4'] == '✓' ? '✔️' : '❌'}</blockquote>
+
+บันทึกโดย ${obj['ultrasonic-name']}`
+                    break;
                 default: return
             }
-
             $.ajax({
                 url: script_url,
                 type: 'POST',
                 data: {
-                    opt: 'sendLineNotify',
+                    opt: 'sendTelegram',
                     msg: message,
                     img: img_file
                 },
@@ -1787,8 +2688,9 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
             console.log(obj);
             obj.opt = 'submit'
             obj.form = $(form).attr('id')
-            obj.uid = liff.getDecodedIDToken().sub
-            obj.displayname =$('#line-display').attr('alt')
+            // obj.uid = liff.getDecodedIDToken().sub
+            obj.uid = 'xxxxxxx'
+            obj.displayname = $('#line-display').attr('alt')
             if ($(form).find('[type="file"]').length > 0 && $(form).find('[type="file"]').val() == '') {
                 return Swal.fire({
                     icon: 'error',
@@ -1799,7 +2701,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
                     $('#' + form).find('[type="file"]').focus()
                 })
             }
-            
+
             $.LoadingOverlay("show");
             localStorage.setItem('user', $(form).find('.name')[0].value)
             $.ajax({
@@ -1813,7 +2715,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
                     }, 500);
                     $.LoadingOverlay("hide");
                     if (res.status) {
-                        sendLineNotify(obj)
+                        sendTelegram(obj)
                         setTimeout(() => {
                             $(form).trigger('reset')
                             $(form).removeClass('was-validated')
@@ -1868,6 +2770,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
         }
     </script>
     <script>
+        let img_file = undefined
         $(document).ready(() => {
             $('.ro-img').each(function () {
                 let id = $(this).attr('id')
@@ -1896,7 +2799,7 @@ Drain น้ำออกจากถังเก็บลม 10 นาที = $
                     preview.addClass('animate__animated animate__flipInY')
 
                     img_file = files[0]
-                    
+
                 });
 
                 comp.on('compressing', () => console.log('compressing'))
