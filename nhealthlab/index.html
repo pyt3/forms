@@ -398,12 +398,6 @@
                 canvas.height = canvas.offsetHeight * ratio;
                 canvas.getContext("2d").scale(ratio, ratio);
                 signaturePad.clear(); // otherwise isEmpty() might return incorrect value
-                canvas2.width = canvas2.offsetWidth * ratio;
-                // if (ratio > 2) canvas2.height = canvas2.offsetHeight * ratio * 1.5;
-                // else 
-                canvas2.height = canvas2.offsetHeight * ratio;
-                canvas2.getContext("2d").scale(ratio, ratio);
-                signaturePadAfterUse.clear(); // otherwise isEmpty() might return incorrect value
             }
             window.addEventListener("resize", resizeCanvas);
             resizeCanvas();
