@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-control" content="no-cache , no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous"></script>
+    <!-- <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script> -->
+    <script src="https://fastly.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"> -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="../icon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/light.min.css"
+        integrity="sha512-f8LUKm2wrh9rs65zSIiYNeAZ0adMPGuJExwXzQ7q8uE16egTJULOaaKtUDP1awJBPiArPhDuXl+UZY/ZgoR5SA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.0.4/dist/signature_pad.umd.min.js"></script>
+    <style>
+        * {
+            font-family: 'Prompt', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            font-family: 'Prompt', sans-serif;
+            overflow-x: hidden;
+            background: rgba(120, 198, 155, .3);
+        }
+
+        .text-green {
+            color: #066d5c
+        }
+
+
+        .fs-small {
+            font-size: 0.8rem
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+        }
+
+        ::placeholder {
+            color: #ccc !important
+                /* You can change this color to your preferred placeholder color */
+        }
+
+
+        .radio-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 8px;
+        }
+
+        .radio-container input {
+            display: none;
+        }
+
+        .radio-container .checked {
+            display: none;
+            color: #007bff;
+        }
+
+        .radio-container input:checked~.checked {
+            display: inline;
+        }
+
+        .radio-container input:checked~.unchecked {
+            display: none;
+        }
+
+        .img-grid-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        .img-grid-col {
+            flex: 33.33%;
+            max-width: 33.33%;
+            padding: 0 8px;
+        }
+
+        .img-grid-col img {
+            /* margin-top: 8px; */
+            vertical-align: middle;
+            width: 100%;
+        }
+
+
+        #signature {
+            /* padding: 10px;
+            border: 1px dotted black; */
+            aspect-ratio: 16/9;
+        }
+    </style>
+    <title>CSSD Daily Check</title>
+
+    <script>
+        // document.write('<script defer src="../js/../js/medicalGas-art.js?cache=' + new Date().getTime() + '"><\/script>')
+    </script>
+</head>
+
+<body>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="../daily check/form-img/pyt3.png" alt="Bootstrap" height="50">
+            </a>
+        </div>
+    </nav>
+    <main class="mt-4">
+        <div class="container-fluid">
+            <form id="mainForm">
+                <div class="row g-3 p-3">
+                    <div class="col-12">
+                        <h3 class="text-center fw-bold" style="color: #056c5b">DEMONSTRATION CHEMECAL</h3>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="date">
+                            <i class="fa-solid fa-calendar text-green"></i> วันที่
+                        </label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="append-name">
+                            <i class="fa-solid fa-user text-green"></i> ผู้ขอใช้สารเคมี <span
+                                class="text-body-secondary">(ชื่อ-นามสกุล)</span>
+                        </label>
+                        <input type="text" class="form-control" id="append-name" name="append-name" required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="chem-name">
+                            <i class="fa-solid fa-flask text-green"></i> ชื่อของสารเคมี
+                        </label>
+                        <input type="text" class="form-control" id="chem-name" name="chem-name" required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="chem-company">
+                            <i class="fa-solid fa-building text-green"></i> บริษัทผู้จำหน่ายสารเคมี
+                        </label>
+                        <input type="text" class="form-control" id="chem-company" name="chem-company" required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="chem-size">
+                            <i class="fa-solid fa-flask text-green"></i> ขนาดของสารเคมี <span
+                                class="text-body-secondary">(ระบุพร้อมหน่วย)</span>
+                        </label>
+                        <input type="text" class="form-control" id="chem-size" name="chem-size" placeholder="เช่น 100ml"
+                            required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="chem-quantity">
+                            <i class="fa-solid fa-flask text-green"></i> จำนวนของสารเคมี <span
+                                class="text-body-secondary">(ระบุพร้อมหน่วย)</span>
+                        </label>
+                        <input type="text" class="form-control" id="chem-quantity" name="chem-quantity"
+                            placeholder="เช่น 1 ขวด" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="chem-objective">
+                            <i class="fa-solid fa-list-ul text-green"></i> วัตถุประสงค์ในการนำมาใช้งาน
+                        </label>
+                        <textarea class="form-control" id="chem-objective" name="chem-objective" rows="3"
+                            required></textarea>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="chem-department">
+                            <i class="fa-solid fa-building-user text-green"></i>
+                            แผนกที่ต้องการทดลองใช้สารเคมี
+                        </label>
+                        <input type="text" class="form-control" id="chem-department" name="chem-department" required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="chem-store">
+                            <i class="fa-solid fa-warehouse text-green"></i> สถานที่จัดเก็บสารเคมี
+                        </label>
+                        <input type="text" class="form-control" id="chem-store" name="chem-store" required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="chem-has-sds">
+                            <i class="fa-solid fa-file-alt text-green"></i> มี SDS หรือไม่
+                        </label>
+                        <label class="radio-container ps-2">
+                            <input type="radio" name="chem-has-sds" id="chem-has-sds-yes" value="มีเอกสาร SDS" required>
+                            <i class="far fa-circle text-secondary-emphasis unchecked"></i>
+                            <i class="fas fa-check-circle checked"></i>
+                            มีเอกสาร SDS
+                        </label>
+
+                        <label class="radio-container ps-2">
+                            <input type="radio" name="chem-has-sds" id="chem-has-sds-no" value="ไม่มีเอกสาร SDS"
+                                required>
+                            <i class="far fa-circle text-secondary-emphasis unchecked"></i>
+                            <i class="fas fa-circle-xmark text-danger checked"></i>
+                            ไม่มีเอกสาร SDS
+                        </label>
+                        <div class="alert alert-danger w-100 mt-3 sds-alert d-none">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            หากไม่มีเอกสาร SDS จะไม่สามารถขึ้นทะเบียนสารเคมีได้
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="phone">
+                            <i class="fa-solid fa-phone text-green"></i> เบอร์ติดต่อผู้ประสานงาน
+                        </label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <label for="email">
+                            <i class="fa-solid fa-envelope text-green"></i> อีเมล
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="aaa@gmail.com"
+                            required>
+                    </div>
+                    <div class="col-12">
+                        <label for="remark">
+                            <i class="fa-solid fa-sticky-note text-green"></i> หมายเหตุ
+                        </label>
+                        <textarea class="form-control" id="remark" name="remark" rows="3"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="image">
+                            <i class="bi bi-image-fill text-green"></i>
+                            รูปภาพ
+                        </label>
+                        <div class="rounded-3 border p-2 text-center text-secondary"
+                            style="cursor: pointer; background: #c3c8cb" ;" id="image-label">
+                            <i class="fa-solid fa-images"></i>
+                            คลิกเลือกรูปภาพ
+                        </div>
+                        <input type="file" class="form-control rounded-3" id="image" name="image" accept="image/*"
+                            multiple hidden>
+                        <input type="file" name="temp-imgs" id="temp-imgs" class="d-none" multiple hidden>
+                        </label>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="img-grid-row d-flex flex-wrap">
+                            <div class="img-grid-col"></div>
+                            <div class="img-grid-col"></div>
+                            <div class="img-grid-col"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="signature" class="form-label">
+                            <i class="fa-solid fa-signature text-green"></i> ลายเซ็นชื่อรับรองข้อมูล
+                        </label>
+                        <div>
+                            <canvas id="signature" name="signature"
+                                class="rounded-3 w-100 ratio ratio-16x9 bg-body-tertiary"></canvas>
+                        </div>
+                        <div class="col text-end">
+                            <button type="button" class="btn btn-sm clear-signature rounded-3"
+                                style="background-color: #056c5b; color :#fff">clear</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <!-- <div class="row justify-content-center align-items-center">
+            <div class="col-12 text-center">
+                <img src="../bmepyt3.jpg" alt="footer" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-12 text-center">
+                <img src="../bmeg5.jpg" alt="footer" class="img-fluid" style="max-width:150px; max-height: 60px;">
+            </div>
+        </div> -->
+        <div class="row justify-content-center align-items-center">
+            <div class="col text-center text-center text-light" style="font-size: 0.7rem;">
+                Developed by <span class="text-primary">Daranphop Yimyam (BME PYT3)</span>
+            </div>
+        </div>
+        <div class="copyright mb-3 text-secondary" align="center" style="font-size: 0.7rem;">
+            <script>
+                document.write('&copy;');
+                document.write(' 2022 ');
+                document.write('  N-Health Phayathai 3 Daily Check - All Rights Reserved.');
+            </script>
+        </div>
+        <img src="" alt="" id="compressing" hidden>
+    </footer>
+    <template id="img-template">
+        <div class="d-flex justify-content-center align-items-center position-relative border rounded-3 mt-3">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger"
+                style="cursor: pointer;">
+                x
+            </span>
+            <img src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png" alt=""
+                class="img-fluid rounded-3" style="cursor: pointer;">
+        </div>
+    </template>
+    <script>
+        var signaturePad= undefined, resizeCanvas;
+        $(document).ready(() => {
+            SignaturePad.prototype.removeBlanks = function () {
+                var imgWidth = this._ctx.canvas.width;
+                var imgHeight = this._ctx.canvas.height;
+                var imageData = this._ctx.getImageData(0, 0, imgWidth, imgHeight),
+                    data = imageData.data,
+                    getAlpha = function (x, y) {
+                        return data[(imgWidth * y + x) * 4 + 3]
+                    },
+                    scanY = function (fromTop) {
+                        var offset = fromTop ? 1 : -1;
+                        // loop through each row
+                        for (var y = fromTop ? 0 : imgHeight - 1; fromTop ? (y < imgHeight) : (y > -1); y += offset) {
+                            // loop through each column
+                            for (var x = 0; x < imgWidth; x++) {
+                                if (getAlpha(x, y)) {
+                                    return y;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    },
+                    scanX = function (fromLeft) {
+                        var offset = fromLeft ? 1 : -1;
+                        // loop through each column
+                        for (var x = fromLeft ? 0 : imgWidth - 1; fromLeft ? (x < imgWidth) : (x > -1); x += offset) {
+                            // loop through each row
+                            for (var y = 0; y < imgHeight; y++) {
+                                if (getAlpha(x, y)) {
+                                    return x;
+                                }
+                            }
+                        }
+                        return null; // all image is white
+                    };
+                var cropTop = scanY(true),
+                    cropBottom = scanY(false),
+                    cropLeft = scanX(true),
+                    cropRight = scanX(false);
+                var relevantData = this._ctx.getImageData(cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop);
+                this.canvas.width = cropRight - cropLeft;
+                this.canvas.height = cropBottom - cropTop;
+                this._ctx.clearRect(0, 0, cropRight - cropLeft, cropBottom - cropTop);
+                this._ctx.putImageData(relevantData, 0, 0);
+            };
+
+            var canvas = document.getElementById("signature");
+            let sign = new SignaturePad(canvas, {
+                backgroundColor: "rgb(255,255,255,0)",
+                penColor: "rgb(0,0,255)",
+            });
+            signaturePad = sign;
+            $('#save').on('click', () => {
+                event.preventDefault()
+                let signature = signaturePad.toDataURL();
+                let a = document.createElement('a')
+                a.href = signature
+                a.setAttribute('download', 'signature')
+                a.click();
+            })
+            $('.clear-signature').on('click', () => {
+                event.preventDefault()
+                resizeCanvas()
+                let id = $(this).closest('canvas').attr('id')
+                if (id == 'signature') {
+                    signaturePad.clear()
+                } else {
+                    signaturePadAfterUse.clear()
+                }
+            })
+            resizeCanvas = function () {
+                var ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                // if (ratio > 2) canvas.height = canvas.offsetHeight * ratio * 1.5;
+                // else 
+                canvas.height = canvas.offsetHeight * ratio;
+                canvas.getContext("2d").scale(ratio, ratio);
+                signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+                canvas2.width = canvas2.offsetWidth * ratio;
+                // if (ratio > 2) canvas2.height = canvas2.offsetHeight * ratio * 1.5;
+                // else 
+                canvas2.height = canvas2.offsetHeight * ratio;
+                canvas2.getContext("2d").scale(ratio, ratio);
+                signaturePadAfterUse.clear(); // otherwise isEmpty() might return incorrect value
+            }
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
+            console.log([...new Set($('form').toArray().map(e => e.id).sort())])
+            Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+            })
+
+            flatpickr("#date", {
+                altInput: true,
+                altFormat: "j/m/Y",
+                dateFormat: "Y-m-d",
+                locale: "th",
+                defaultDate: new Date(),
+                theme: "light",
+            });
+
+            $('#image-label').click(function () {
+                $('#image').click();
+            });
+
+            $('#image').change(function (e) {
+
+                let files = e.target.files;
+                let tempFiles = $('#temp-imgs')[0].files;
+                let newFiles = Array.from(files);
+                let allFiles = [...tempFiles, ...newFiles];
+
+                // Check for duplicate files
+                let fileNames = new Set();
+                allFiles = allFiles.filter(file => {
+                    if (fileNames.has(file.name)) {
+                        return false;
+                    } else {
+                        fileNames.add(file.name);
+                        return true;
+                    }
+                });
+
+                Swal.fire({
+                    iconHtml: '<i class="bi bi-hourglass-split text-danger"></i>',
+                    title: 'Loading..',
+                    customClass: {
+                        icon: 'border-0',
+                        title: 'text-danger',
+                        content: 'text-dark',
+                        popup: 'rounded-4'
+                    },
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                })
+
+                let datatransfer = new DataTransfer();
+                allFiles.forEach(file => {
+                    datatransfer.items.add(file);
+                });
+                $('#temp-imgs')[0].files = datatransfer.files;
+
+                renderImagePreview(allFiles);
+            });
+
+
+            function renderImagePreview(allFiles) {
+                $('#image-label').text('เลือกแล้ว (' + allFiles.length + ' รูป)');
+                $('.img-grid-col').empty();
+                allFiles.forEach((file, i) => {
+                    let eq = i % 3;
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        let img = $($('#img-template').html());
+                        img.find('img').attr('src', e.target.result);
+                        img.find('span').on('click', function () {
+                            let datatransfer = new DataTransfer();
+                            let files = $('#temp-imgs')[0].files;
+                            for (let i = 0; i < files.length; i++) {
+                                if (files[i].name != file.name) {
+                                    datatransfer.items.add(files[i]);
+                                }
+                            }
+                            $('#temp-imgs')[0].files = datatransfer.files;
+                            renderImagePreview([...datatransfer.files]);
+                        });
+                        img.find('img').on('click', function () {
+                            Swal.fire({
+                                imageUrl: e.target.result,
+                                imageWidth: '100%',
+                                imageHeight: '100%',
+                                showCloseButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false
+                            });
+                        });
+                        let div = $('.img-grid-col').eq(eq)
+                        div.append(img)
+                        if (i == allFiles.length - 1) {
+                            Swal.close();
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+
+
+
+
+
+            $('[name="chem-has-sds"]').change(function () {
+                if ($(this).val() == 'ไม่มีเอกสาร SDS') {
+                    $(this).parent().addClass('text-danger')
+                    $('.sds-alert').removeClass('d-none')
+                    $('#submit-btn').addClass('d-none')
+                } else {
+                    $(this).parent().parent().find('.radio-container').removeClass('text-danger')
+                    $('.sds-alert').addClass('d-none')
+                    $('#submit-btn').removeClass('d-none')
+                }
+            })
+        })
+
+        function submit() {
+            if ($('#image').val() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกรูปภาพ',
+                    customClass: {
+                        icon: 'text-danger',
+                        title: 'text-danger',
+                        content: 'text-dark',
+                        popup: 'rounded-4'
+                    },
+                    confirmButtonText: 'ปิด',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                })
+                return false;
+            }
+            uploadFiles().then((res) => {
+                let data = $('#mainform').serializeArray().reduce((obj, item) => {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, { fileIds: res.join(','), opt: 'submit' });
+                data.uid = liff.getDecodedIDToken().sub;
+                data.profile = $('#username').text().trim();
+                data.picture = $('#userAvatar').attr('src');
+                console.log(data);
+                Swal.fire({
+                    iconHtml: '<i class="bi bi-hourglass-split text-danger"></i>',
+                    title: 'กำลังส่งข้อมูล',
+                    customClass: {
+                        icon: 'border-0',
+                        title: 'text-danger',
+                        content: 'text-dark',
+                        popup: 'rounded-4'
+                    },
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                })
+                $.post(scripturl, data, function (response) {
+                    success()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ส่งข้อมูลสำเร็จ',
+                        text: 'ขอบคุณที่ใช้บริการ',
+                        customClass: {
+                            icon: 'text-success',
+                            title: 'text-success',
+                            content: 'text-dark',
+                            popup: 'rounded-4'
+                        },
+                        confirmButtonText: 'ปิด',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                    })
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: 'กรุณาลองใหม่อีกครั้ง',
+                        customClass: {
+                            icon: 'text-danger',
+                            title: 'text-danger',
+                            content: 'text-dark',
+                            popup: 'rounded-4'
+                        },
+                        confirmButtonText: 'ปิด',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                    })
+                });
+            });
+        }
+        async function uploadFiles() {
+            Swal.fire({
+                iconHtml: '<i class="bi bi-cloud-arrow-up-fill text-danger"></i>',
+                title: 'กำลังอัพโหลดไฟล์',
+                customClass: {
+                    icon: 'border-0',
+                    title: 'text-danger',
+                    content: 'text-dark',
+                    popup: 'rounded-4'
+                },
+                allowOutsideClick: false,
+                html: '<div class="container-fluid"><div class="row" id="progress"></div></div>',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+            })
+            const { token, folder_id } = await getDownloadToken();
+            const f = document.getElementById("temp-imgs");
+            if (f.files.length == 0) {
+                return false
+            }
+            let file = await new Promise((resolve, reject) => {
+                let length = f.files.length;
+                let count = 0;
+                let uploadfiles = [];
+                [...f.files].forEach((file, i) => {
+                    let fr = new FileReader();
+                    fr.fileName = file.name;
+                    fr.fileSize = file.size;
+                    fr.fileType = file.type;
+                    fr.readAsArrayBuffer(file);
+                    fr.onload = e => {
+                        var id = "p" + ++i;
+                        var div = $("<div>", { class: 'col-12 text-truncate' });
+                        div.attr("id", id);
+                        $("#progress").append(div);
+                        $('#' + id).text('Initialising (' + fr.fileName + ')')
+                        const f = e.target;
+                        const resource = {
+                            fileName: f.fileName,
+                            fileSize: f.fileSize,
+                            fileType: f.fileType,
+                            fileBuffer: f.result,
+                            accessToken: token,
+                            folderId: folder_id,
+                            fields: "id",
+                        };
+                        const ru = new ResumableUploadToGoogleDrive();
+                        ru.Do(resource, function (res, err) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            console.log(res);
+                            let msg = "";
+                            if (res.status == 'start' || res.status == 'getLocation' || res.status == 'initialize') {
+                                msg = '<i class="bi bi-cloud-arrow-up-fill"></i> กำลังเตรียมอัพโหลด ' + f.fileName;
+                            }
+                            else if (res.status == "Uploading") {
+                                msg =
+                                    '<i class="bi bi-hourglass-split text-start text-danger"></i> กำลังอัพโหลด ' +
+                                    Math.round(
+                                        (res.progressNumber.current / res.progressNumber.end) * 100
+                                    ) +
+                                    "% (" +
+                                    f.fileName +
+                                    ")";
+                            } else {
+                                msg = '<i class="bi bi-check-circle-fill text-start text-success"></i> อัพโหลดสำเร็จ  (' + f.fileName + ")";
+                            }
+
+                            // If you want to put the uploaded file information to the active Spreadsheet,
+                            // please use the following function.
+                            if (res.status == "Done") {
+                                uploadfiles.push(res.result.id);
+                                if (uploadfiles.length == length) {
+                                    resolve(uploadfiles);
+                                }
+                            }
+
+                            $('#' + id).html(msg)
+                        });
+                    };
+                });
+            });
+            return file;
+        }
+
+        function getDownloadToken() {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: scripturl + '?opt=token',
+                    type: 'GET',
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        function success() {
+            $('main').html('')
+            $('main').append(`
+            <div class="row">
+                <div class="col-12 text-center">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 100px;"></i>
+                    <h3 class="text-success">ส่งข้อมูลสำเร็จ</h3>
+                    <p>ขอบคุณที่ใช้บริการ</p>
+                </div>
+            </div>
+            `)
+        }
+    </script>
+
+    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/compress-js@2.0.2/dist/compressjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/th.min.js"
+        integrity="sha512-0XU8EDwsRqhnSukLw3KIQoRvFJs3SGlsoLpX1RpRAjmYrc7w56F6J5pwJ0p0p+v23qg14VPRQe9OhPRfbhVzdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/tanaikech/ResumableUploadForGoogleDrive_js@master/resumableupload_js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        // var vConsole = new window.VConsole();
+    </script>
+
+</body>
+
+</html>
