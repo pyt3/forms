@@ -137,8 +137,8 @@
     </nav>
     <main class="mt-4">
         <div class="container-fluid">
-            <form id="mainForm">
-                <div class="row g-3 p-3">
+            <form id="mainForm" class="needs-validation" novalidate>
+                <div class="row g-3 p-3 justify-content-start">
                     <div class="col-12">
                         <h3 class="text-center fw-bold" style="color: #056c5b">DEMONSTRATION CHEMECAL</h3>
                     </div>
@@ -146,26 +146,26 @@
                         <label for="date">
                             <i class="fa-solid fa-calendar text-green"></i> วันที่
                         </label>
-                        <input type="date" class="form-control" id="date" name="date" required>
+                        <input type="date" class="form-control" id="date" name="date" requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="append-name">
                             <i class="fa-solid fa-user text-green"></i> ผู้ขอใช้สารเคมี <span
                                 class="text-body-secondary">(ชื่อ-นามสกุล)</span>
                         </label>
-                        <input type="text" class="form-control" id="append-name" name="append-name" required>
+                        <input type="text" class="form-control" id="append-name" name="append-name" requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-name">
                             <i class="fa-solid fa-flask text-green"></i> ชื่อของสารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-name" name="chem-name" required>
+                        <input type="text" class="form-control" id="chem-name" name="chem-name" requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-company">
                             <i class="fa-solid fa-building text-green"></i> บริษัทผู้จำหน่ายสารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-company" name="chem-company" required>
+                        <input type="text" class="form-control" id="chem-company" name="chem-company" requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-size">
@@ -173,7 +173,7 @@
                                 class="text-body-secondary">(ระบุพร้อมหน่วย)</span>
                         </label>
                         <input type="text" class="form-control" id="chem-size" name="chem-size" placeholder="เช่น 100ml"
-                            required>
+                            requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-quantity">
@@ -181,34 +181,35 @@
                                 class="text-body-secondary">(ระบุพร้อมหน่วย)</span>
                         </label>
                         <input type="text" class="form-control" id="chem-quantity" name="chem-quantity"
-                            placeholder="เช่น 1 ขวด" required>
+                            placeholder="เช่น 1 ขวด" requireddd>
                     </div>
                     <div class="col-12">
                         <label for="chem-objective">
                             <i class="fa-solid fa-list-ul text-green"></i> วัตถุประสงค์ในการนำมาใช้งาน
                         </label>
                         <textarea class="form-control" id="chem-objective" name="chem-objective" rows="3"
-                            required></textarea>
+                            requireddd></textarea>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-department">
                             <i class="fa-solid fa-building-user text-green"></i>
                             แผนกที่ต้องการทดลองใช้สารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-department" name="chem-department" required>
+                        <input type="text" class="form-control" id="chem-department" name="chem-department" requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-store">
                             <i class="fa-solid fa-warehouse text-green"></i> สถานที่จัดเก็บสารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-store" name="chem-store" required>
+                        <input type="text" class="form-control" id="chem-store" name="chem-store" requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-has-sds">
                             <i class="fa-solid fa-file-alt text-green"></i> มี SDS หรือไม่
                         </label>
                         <label class="radio-container ps-2">
-                            <input type="radio" name="chem-has-sds" id="chem-has-sds-yes" value="มีเอกสาร SDS" required>
+                            <input type="radio" name="chem-has-sds" id="chem-has-sds-yes" value="มีเอกสาร SDS"
+                                requireddd>
                             <i class="far fa-circle text-secondary-emphasis unchecked"></i>
                             <i class="fas fa-check-circle checked"></i>
                             มีเอกสาร SDS
@@ -216,7 +217,7 @@
 
                         <label class="radio-container ps-2">
                             <input type="radio" name="chem-has-sds" id="chem-has-sds-no" value="ไม่มีเอกสาร SDS"
-                                required>
+                                requireddd>
                             <i class="far fa-circle text-secondary-emphasis unchecked"></i>
                             <i class="fas fa-circle-xmark text-danger checked"></i>
                             ไม่มีเอกสาร SDS
@@ -230,14 +231,14 @@
                         <label for="phone">
                             <i class="fa-solid fa-phone text-green"></i> เบอร์ติดต่อผู้ประสานงาน
                         </label>
-                        <input type="text" class="form-control" id="phone" name="phone" required>
+                        <input type="text" class="form-control" id="phone" name="phone" requireddd>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="email">
                             <i class="fa-solid fa-envelope text-green"></i> อีเมล
                         </label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="aaa@gmail.com"
-                            required>
+                            requireddd>
                     </div>
                     <div class="col-12">
                         <label for="remark">
@@ -245,7 +246,7 @@
                         </label>
                         <textarea class="form-control" id="remark" name="remark" rows="3"></textarea>
                     </div>
-                    <div class="col-12">
+                    <div class="col-md-4">
                         <label for="image">
                             <i class="bi bi-image-fill text-green"></i>
                             รูปภาพ
@@ -260,7 +261,6 @@
                         <input type="file" name="temp-imgs" id="temp-imgs" class="d-none" multiple hidden>
                         </label>
                     </div>
-
                     <div class="col-12">
                         <div class="img-grid-row d-flex flex-wrap">
                             <div class="img-grid-col"></div>
@@ -268,6 +268,8 @@
                             <div class="img-grid-col"></div>
                         </div>
                     </div>
+                </div>
+                <div class="row g-3 p-3 justify-content-center">
                     <div class="col-md-5">
                         <label for="signature" class="form-label">
                             <i class="fa-solid fa-signature text-green"></i> ลายเซ็นชื่อรับรองข้อมูล
@@ -280,6 +282,11 @@
                             <button type="button" class="btn btn-sm clear-signature rounded-3"
                                 style="background-color: #056c5b; color :#fff">clear</button>
                         </div>
+                    </div>
+                </div>
+                <div class="row g-3 p-3 justify-content-center">
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">ส่งข้อมูล</button>
                     </div>
                 </div>
             </form>
@@ -319,7 +326,8 @@
         </div>
     </template>
     <script>
-        var signaturePad= undefined, resizeCanvas;
+        const scripturl = 'https://script.google.com/macros/s/AKfycbxbVeaVpTyLMKnQY76DkvwnOPIMrgbd9ib_56WD3LQYNkfgq818J18ceFu3hz2dIw_G7g/exec'
+        var signaturePad = undefined, resizeCanvas;
         $(document).ready(() => {
             SignaturePad.prototype.removeBlanks = function () {
                 var imgWidth = this._ctx.canvas.width;
@@ -540,15 +548,42 @@
                 })
                 return false;
             }
+            if (signaturePad.isEmpty()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเซ็นชื่อ',
+                    customClass: {
+                        icon: 'text-danger',
+                        title: 'text-danger',
+                        content: 'text-dark',
+                        popup: 'rounded-4'
+                    },
+                    confirmButtonText: 'ปิด',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                });
+                return false;
+            }
+            signaturePad.removeBlanks()
+            let signImage = new File([signaturePad.toDataURL()], "s-" + new Date().getTime() + ".png", { type: "image/png" });
+            let dataTransfer = new DataTransfer();
+            let files = $('#temp-imgs')[0].files;
+            for (let i = 0; i < files.length; i++) {
+                dataTransfer.items.add(files[i]);
+            }
+            dataTransfer.items.add(signImage);
+            document.getElementById('temp-imgs').files = dataTransfer.files;
             uploadFiles().then((res) => {
                 let data = $('#mainform').serializeArray().reduce((obj, item) => {
                     obj[item.name] = item.value;
                     return obj;
-                }, { fileIds: res.join(','), opt: 'submit' });
-                data.uid = liff.getDecodedIDToken().sub;
-                data.profile = $('#username').text().trim();
-                data.picture = $('#userAvatar').attr('src');
+                }, { files: JSON.stringify(res), opt: 'submit' });
+                // data.uid = liff.getDecodedIDToken().sub;
+                // data.profile = $('#username').text().trim();
+                // data.picture = $('#userAvatar').attr('src');
                 console.log(data);
+                return
                 Swal.fire({
                     iconHtml: '<i class="bi bi-hourglass-split text-danger"></i>',
                     title: 'กำลังส่งข้อมูล',
@@ -610,7 +645,9 @@
                     popup: 'rounded-4'
                 },
                 allowOutsideClick: false,
-                html: '<div class="container-fluid"><div class="row" id="progress"></div></div>',
+                html: '<div class="container-fluid">' +
+                    '<div class="row"><div class="progress rounded-pill m-0 p-0" role="progressbar" aria-label="Danger striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 1.5rem"><div class="progress-bar progress-bar-striped bg-danger progress-bar-animated fs-5" style="width: 0%"></div></div></div>' +
+                    '<div class="row mt-3" id="progress"></div></div>',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading()
@@ -625,6 +662,7 @@
                 let length = f.files.length;
                 let count = 0;
                 let uploadfiles = [];
+                let progress_tag = new Array(length).fill(0);
                 [...f.files].forEach((file, i) => {
                     let fr = new FileReader();
                     fr.fileName = file.name;
@@ -645,7 +683,7 @@
                             fileBuffer: f.result,
                             accessToken: token,
                             folderId: folder_id,
-                            fields: "id",
+                            fields: "id,name",
                         };
                         const ru = new ResumableUploadToGoogleDrive();
                         ru.Do(resource, function (res, err) {
@@ -653,34 +691,39 @@
                                 console.log(err);
                                 return;
                             }
-                            console.log(res);
                             let msg = "";
                             if (res.status == 'start' || res.status == 'getLocation' || res.status == 'initialize') {
                                 msg = '<i class="bi bi-cloud-arrow-up-fill"></i> กำลังเตรียมอัพโหลด ' + f.fileName;
                             }
                             else if (res.status == "Uploading") {
+                                let progress = Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
+                                progress_tag[i] = progress;
+                                console.log("🚀 ~ progress_tag:", progress_tag)
                                 msg =
                                     '<i class="bi bi-hourglass-split text-start text-danger"></i> กำลังอัพโหลด ' +
-                                    Math.round(
-                                        (res.progressNumber.current / res.progressNumber.end) * 100
-                                    ) +
+                                    progress +
                                     "% (" +
                                     f.fileName +
                                     ")";
                             } else {
+                                progress_tag[i] = 100;
                                 msg = '<i class="bi bi-check-circle-fill text-start text-success"></i> อัพโหลดสำเร็จ  (' + f.fileName + ")";
                             }
 
                             // If you want to put the uploaded file information to the active Spreadsheet,
                             // please use the following function.
                             if (res.status == "Done") {
-                                uploadfiles.push(res.result.id);
+                                uploadfiles.push({ id: res.result.id, name: res.result.name });
                                 if (uploadfiles.length == length) {
                                     resolve(uploadfiles);
                                 }
                             }
 
                             $('#' + id).html(msg)
+                            let progress_num = progress_tag.reduce((a, b) => a + b, 0) / length;
+                            console.log("🚀 ~ progress_num:", progress_num)
+                            $('.progress').attr('aria-valuenow', progress_num)
+                            $('.progress-bar').css('width', progress_num + '%').text(progress_num.toFixed(2) + '%')
                         });
                     };
                 });
@@ -715,6 +758,29 @@
             </div>
             `)
         }
+    </script>
+    <script>
+        (() => {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault()
+                    if (!form.checkValidity()) {
+                        event.stopPropagation()
+                        form.classList.add('was-validated')
+                        $(form).find(':invalid').first().focus()
+                    } else {
+                        submit()
+                    }
+
+                }, false)
+            })
+        })()
     </script>
 
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
