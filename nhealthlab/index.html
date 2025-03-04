@@ -28,7 +28,6 @@
     <link rel="icon" href="../icon.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/light.min.css"
         integrity="sha512-f8LUKm2wrh9rs65zSIiYNeAZ0adMPGuJExwXzQ7q8uE16egTJULOaaKtUDP1awJBPiArPhDuXl+UZY/ZgoR5SA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -36,6 +35,7 @@
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.0.4/dist/signature_pad.umd.min.js"></script>
+
     <style>
         * {
             font-family: 'Prompt', sans-serif;
@@ -48,7 +48,7 @@
 
             font-family: 'Prompt', sans-serif;
             overflow-x: hidden;
-            background: rgba(120, 198, 155, .3);
+
         }
 
         .text-green {
@@ -62,6 +62,7 @@
 
         .form-control {
             border-radius: 0.5rem;
+
         }
 
         ::placeholder {
@@ -115,9 +116,9 @@
 
 
         #signature {
-            /* padding: 10px;
-            border: 1px dotted black; */
+            border: 1px solid #ccc;
             aspect-ratio: 16/9;
+            background: rgba(120, 198, 155, .3);
         }
     </style>
     <title>CSSD Daily Check</title>
@@ -127,11 +128,11 @@
     </script>
 </head>
 
-<body>
-    <nav class="navbar bg-body-tertiary">
+<body class="bg-light">
+    <nav class="navbar bg-success-subtle">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="../daily check/form-img/pyt3.png" alt="Bootstrap" height="50">
+                <img src="https://pt3she.github.io/e-forms/src/imgs/pyt3.png" alt="Bootstrap" height="50">
             </a>
         </div>
     </nav>
@@ -140,76 +141,78 @@
             <form id="mainForm" class="needs-validation" novalidate>
                 <div class="row g-3 p-3 justify-content-start">
                     <div class="col-12">
-                        <h3 class="text-center fw-bold" style="color: #056c5b">DEMONSTRATION CHEMECAL</h3>
+                        <h3 class="text-center fw-bold" style="color: #056c5b">
+                            <i class="fa-solid fa-flask text-danger"></i>
+                            DEMONSTRATION CHEMECAL
+                        </h3>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="date">
-                            <i class="fa-solid fa-calendar text-green"></i> วันที่
+                            <i class="fa-solid fa-calendar text-danger"></i> วันที่
                         </label>
-                        <input type="date" class="form-control" id="date" name="date" requireddd>
+                        <input type="date" class="form-control" id="date" name="date" required>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="append-name">
-                            <i class="fa-solid fa-user text-green"></i> ผู้ขอใช้สารเคมี <span
+                            <i class="fa-solid fa-user text-danger"></i> ผู้ขอใช้สารเคมี <span
                                 class="text-body-secondary">(ชื่อ-นามสกุล)</span>
                         </label>
-                        <input type="text" class="form-control" id="append-name" name="append-name" requireddd>
+                        <input type="text" class="form-control" id="append-name" name="append-name" required>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-name">
-                            <i class="fa-solid fa-flask text-green"></i> ชื่อของสารเคมี
+                            <i class="fa-solid fa-flask text-danger"></i> ชื่อของสารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-name" name="chem-name" requireddd>
+                        <input type="text" class="form-control" id="chem-name" name="chem-name" required>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-company">
-                            <i class="fa-solid fa-building text-green"></i> บริษัทผู้จำหน่ายสารเคมี
+                            <i class="fa-solid fa-building text-danger"></i> บริษัทผู้จำหน่ายสารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-company" name="chem-company" requireddd>
+                        <input type="text" class="form-control" id="chem-company" name="chem-company" required>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-size">
-                            <i class="fa-solid fa-flask text-green"></i> ขนาดของสารเคมี <span
+                            <i class="fa-solid fa-flask text-danger"></i> ขนาดของสารเคมี <span
                                 class="text-body-secondary">(ระบุพร้อมหน่วย)</span>
                         </label>
                         <input type="text" class="form-control" id="chem-size" name="chem-size" placeholder="เช่น 100ml"
-                            requireddd>
+                            required>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-quantity">
-                            <i class="fa-solid fa-flask text-green"></i> จำนวนของสารเคมี <span
+                            <i class="fa-solid fa-flask text-danger"></i> จำนวนของสารเคมี <span
                                 class="text-body-secondary">(ระบุพร้อมหน่วย)</span>
                         </label>
                         <input type="text" class="form-control" id="chem-quantity" name="chem-quantity"
-                            placeholder="เช่น 1 ขวด" requireddd>
+                            placeholder="เช่น 1 ขวด" required>
                     </div>
                     <div class="col-12">
                         <label for="chem-objective">
-                            <i class="fa-solid fa-list-ul text-green"></i> วัตถุประสงค์ในการนำมาใช้งาน
+                            <i class="fa-solid fa-list-ul text-danger"></i> วัตถุประสงค์ในการนำมาใช้งาน
                         </label>
                         <textarea class="form-control" id="chem-objective" name="chem-objective" rows="3"
-                            requireddd></textarea>
+                            required></textarea>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-department">
-                            <i class="fa-solid fa-building-user text-green"></i>
+                            <i class="fa-solid fa-building-user text-danger"></i>
                             แผนกที่ต้องการทดลองใช้สารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-department" name="chem-department" requireddd>
+                        <input type="text" class="form-control" id="chem-department" name="chem-department" required>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-store">
-                            <i class="fa-solid fa-warehouse text-green"></i> สถานที่จัดเก็บสารเคมี
+                            <i class="fa-solid fa-warehouse text-danger"></i> สถานที่จัดเก็บสารเคมี
                         </label>
-                        <input type="text" class="form-control" id="chem-store" name="chem-store" requireddd>
+                        <input type="text" class="form-control" id="chem-store" name="chem-store" required>
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="chem-has-sds">
-                            <i class="fa-solid fa-file-alt text-green"></i> มี SDS หรือไม่
+                            <i class="fa-solid fa-file-alt text-danger"></i> มี SDS หรือไม่
                         </label>
                         <label class="radio-container ps-2">
-                            <input type="radio" name="chem-has-sds" id="chem-has-sds-yes" value="มีเอกสาร SDS"
-                                requireddd>
+                            <input type="radio" name="chem-has-sds" id="chem-has-sds-yes" value="มีเอกสาร SDS" required>
                             <i class="far fa-circle text-secondary-emphasis unchecked"></i>
                             <i class="fas fa-check-circle checked"></i>
                             มีเอกสาร SDS
@@ -217,7 +220,7 @@
 
                         <label class="radio-container ps-2">
                             <input type="radio" name="chem-has-sds" id="chem-has-sds-no" value="ไม่มีเอกสาร SDS"
-                                requireddd>
+                                required>
                             <i class="far fa-circle text-secondary-emphasis unchecked"></i>
                             <i class="fas fa-circle-xmark text-danger checked"></i>
                             ไม่มีเอกสาร SDS
@@ -229,26 +232,19 @@
                     </div>
                     <div class="col-md-4 col-lg-3">
                         <label for="phone">
-                            <i class="fa-solid fa-phone text-green"></i> เบอร์ติดต่อผู้ประสานงาน
+                            <i class="fa-solid fa-phone text-danger"></i> เบอร์ติดต่อผู้ประสานงาน
                         </label>
-                        <input type="text" class="form-control" id="phone" name="phone" requireddd>
-                    </div>
-                    <div class="col-md-4 col-lg-3">
-                        <label for="email">
-                            <i class="fa-solid fa-envelope text-green"></i> อีเมล
-                        </label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="aaa@gmail.com"
-                            requireddd>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
                     </div>
                     <div class="col-12">
                         <label for="remark">
-                            <i class="fa-solid fa-sticky-note text-green"></i> หมายเหตุ
+                            <i class="fa-solid fa-sticky-note text-danger"></i> หมายเหตุ
                         </label>
                         <textarea class="form-control" id="remark" name="remark" rows="3"></textarea>
                     </div>
                     <div class="col-md-4">
                         <label for="image">
-                            <i class="bi bi-image-fill text-green"></i>
+                            <i class="bi bi-image-fill text-danger"></i>
                             รูปภาพ
                         </label>
                         <div class="rounded-3 border p-2 text-center text-secondary"
@@ -272,11 +268,10 @@
                 <div class="row g-3 p-3 justify-content-center">
                     <div class="col-md-5">
                         <label for="signature" class="form-label">
-                            <i class="fa-solid fa-signature text-green"></i> ลายเซ็นชื่อรับรองข้อมูล
+                            <i class="fa-solid fa-signature text-danger"></i> ลายเซ็นชื่อรับรองข้อมูล
                         </label>
                         <div>
-                            <canvas id="signature" name="signature"
-                                class="rounded-3 w-100 ratio ratio-16x9 bg-body-tertiary"></canvas>
+                            <canvas id="signature" name="signature" class="rounded-3 w-100 ratio ratio-16x9"></canvas>
                         </div>
                         <div class="col text-end">
                             <button type="button" class="btn btn-sm clear-signature rounded-3"
@@ -286,7 +281,7 @@
                 </div>
                 <div class="row g-3 p-3 justify-content-center">
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary w-100">ส่งข้อมูล</button>
+                        <button type="submit" class="btn btn-primary w-100" id="submit-btn">ส่งข้อมูล</button>
                     </div>
                 </div>
             </form>
@@ -302,7 +297,7 @@
             </div>
         </div> -->
         <div class="row justify-content-center align-items-center">
-            <div class="col text-center text-center text-light" style="font-size: 0.7rem;">
+            <div class="col text-center text-center text-body-secondary" style="font-size: 0.7rem;">
                 Developed by <span class="text-primary">Daranphop Yimyam (BME PYT3)</span>
             </div>
         </div>
@@ -391,12 +386,8 @@
             $('.clear-signature').on('click', () => {
                 event.preventDefault()
                 resizeCanvas()
-                let id = $(this).closest('canvas').attr('id')
-                if (id == 'signature') {
-                    signaturePad.clear()
-                } else {
-                    signaturePadAfterUse.clear()
-                }
+                signaturePad.clear()
+
             })
             resizeCanvas = function () {
                 var ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -531,6 +522,23 @@
         })
 
         function submit() {
+            if($('[name="chem-has-sds"]:checked').length == 0){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาเลือกมี SDS หรือไม่',
+                    customClass: {
+                        icon: 'text-danger',
+                        title: 'text-danger',
+                        content: 'text-dark',
+                        popup: 'rounded-4'
+                    },
+                    confirmButtonText: 'ปิด',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                })
+                return false;
+            }
             if ($('#image').val() == '') {
                 Swal.fire({
                     icon: 'error',
@@ -565,8 +573,10 @@
                 });
                 return false;
             }
-            signaturePad.removeBlanks()
-            let signImage = new File([signaturePad.toDataURL()], "s-" + new Date().getTime() + ".png", { type: "image/png" });
+            // signaturePad.removeBlanks()
+            let dataUrl = signaturePad.toDataURL();
+            let blob = dataURLtoBlob(dataUrl);
+            let signImage = new File([blob], 'sign.png', { type: 'image/png' });
             let dataTransfer = new DataTransfer();
             let files = $('#temp-imgs')[0].files;
             for (let i = 0; i < files.length; i++) {
@@ -575,15 +585,15 @@
             dataTransfer.items.add(signImage);
             document.getElementById('temp-imgs').files = dataTransfer.files;
             uploadFiles().then((res) => {
-                let data = $('#mainform').serializeArray().reduce((obj, item) => {
+                let data = $('#mainForm').serializeArray().reduce((obj, item) => {
                     obj[item.name] = item.value;
                     return obj;
                 }, { files: JSON.stringify(res), opt: 'submit' });
+                data['chem-has-sds'] = $('[name="chem-has-sds"]:checked').val() == 'มีเอกสาร SDS' ? '✔' : '✘';
                 // data.uid = liff.getDecodedIDToken().sub;
                 // data.profile = $('#username').text().trim();
                 // data.picture = $('#userAvatar').attr('src');
                 console.log(data);
-                return
                 Swal.fire({
                     iconHtml: '<i class="bi bi-hourglass-split text-danger"></i>',
                     title: 'กำลังส่งข้อมูล',
@@ -599,7 +609,8 @@
                     },
                 })
                 $.post(scripturl, data, function (response) {
-                    success()
+                    console.log("🚀 ~ response:", response)
+                    success(response.message);
                     Swal.fire({
                         icon: 'success',
                         title: 'ส่งข้อมูลสำเร็จ',
@@ -632,6 +643,20 @@
                         allowEnterKey: false,
                     })
                 });
+            });
+        }
+
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(','),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {
+                type: mime
             });
         }
         async function uploadFiles() {
@@ -746,14 +771,13 @@
             });
         }
 
-        function success() {
+        function success(message) {
             $('main').html('')
             $('main').append(`
             <div class="row">
                 <div class="col-12 text-center">
                     <i class="bi bi-check-circle-fill text-success" style="font-size: 100px;"></i>
-                    <h3 class="text-success">ส่งข้อมูลสำเร็จ</h3>
-                    <p>ขอบคุณที่ใช้บริการ</p>
+                    <h3 class="text-success">${message}</h3>
                 </div>
             </div>
             `)
