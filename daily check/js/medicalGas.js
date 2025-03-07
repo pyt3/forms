@@ -11,7 +11,7 @@ $(document).ready(() => {
     let comp = Compress({
         inputSelector: '#liquid-o2-volume-img',
         downloadSelector: '#compressing',
-        rate: 40,
+        rate: 20,
         imagePrefix: 'compressed-',
         dimen: null,
     });
@@ -33,7 +33,6 @@ $(document).ready(() => {
         $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
 
         img_file = files[0]
-        console.log("🚀 ~ img_file:", img_file)
     });
 
     comp.on('compressing', () => console.log('compressing'))
