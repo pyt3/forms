@@ -1017,7 +1017,9 @@ function sendMessage(obj, img_id) {
             originalContentUrl: `https://lh3.googleusercontent.com/d/${img_id}`,
             previewImageUrl: `https://lh3.googleusercontent.com/d/${img_id}`
         }
-    ])
+    ], {
+        isMultiple: true,
+    })
         .then(function (res) {
             if (res) {
                 // succeeded in sending a message through TargetPicker
