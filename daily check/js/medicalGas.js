@@ -768,6 +768,7 @@ function getDownloadToken() {
     });
 }
 
+const { token, folder_id } = await getDownloadToken();
 async function uploadFiles() {
     return new Promise(async main_resolve => {
         Swal.fire({
@@ -786,7 +787,7 @@ async function uploadFiles() {
                 Swal.showLoading()
             },
         })
-        const { token, folder_id } = await getDownloadToken();
+       
         const f = document.getElementById("liquid-o2-volume-img");
         if (f.files.length == 0) {
             return false
