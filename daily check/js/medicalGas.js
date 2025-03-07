@@ -1081,7 +1081,7 @@ function convertBase64ToBlob(base64) {
 function getDownloadToken() {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: scripturl + '?opt=token',
+            url: script_url + '?opt=token',
             type: 'GET',
             success: function (data) {
                 resolve(data);
