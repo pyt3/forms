@@ -693,9 +693,7 @@ function sendMessage(obj, img_id) {
             altText: 'Liquid O2',
             contents: message
         }
-    ], {
-        isMultiple: false,
-    })
+    ])
         .then(function (res) {
             if (res) {
                 // succeeded in sending a message through TargetPicker
