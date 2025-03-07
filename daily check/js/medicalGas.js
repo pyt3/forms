@@ -687,7 +687,7 @@ async function formSubmit() {
     .then((res) => {
         console.log(res)
         sendMessage(obj,res[1][0].id)
-    }
+    })
     
 }
 
@@ -1049,7 +1049,7 @@ function sendMessage(obj, img_id) {
                     }
                 }).then(() => {
                     sendMessage(obj)
-                }
+                })
             }
         })
         .catch(function (error) {
@@ -1094,7 +1094,7 @@ function getDownloadToken() {
 }
 
 async function uploadFiles() {
-    return new Promise(main_resolve => {
+    return new Promise(async main_resolve => {
         Swal.fire({
             iconHtml: '<i class="bi bi-cloud-arrow-up-fill text-danger"></i>',
             title: 'กำลังอัพโหลดไฟล์',
