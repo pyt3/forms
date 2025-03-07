@@ -669,30 +669,26 @@ async function formSubmit() {
             url: script_url,
             data: obj,
             type: 'POST',
-            // success: function (res) {
-
-            //     if (res.status) {
-
-            //     } else {
-            //         Toast.fire({
-            //             icon: 'error',
-            //             title: 'บันทึกข้อมูลไม่สำเร็จ'
-            //         })
-            //         $.LoadingOverlay("hide");
-            //     }
-            // },
+            success: function (res) {
+                console.log(res)
+                if (res.status == 'success') {
+                    resolve(res)
+                } else {
+                    reject(res)
+                }
+            }
         })
     })
     Promise.all([saveData, uploadFiles()])
-    .then((res) => {
-        console.log(res)
-        sendMessage(obj,res[1][0].id)
-    })
-    
+        .then((res) => {
+            console.log(res)
+            sendMessage(obj, res[1][0].id)
+        })
+
 }
 
 function sendMessage(obj, img_id) {
-    $.getJSON(script_url +'?opt=set_trashed&id='+img_id,function(res){
+    $.getJSON(script_url + '?opt=set_trashed&id=' + img_id, function (res) {
         console.log(res)
     })
     let message = {
