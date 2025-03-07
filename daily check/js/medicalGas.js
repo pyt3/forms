@@ -1011,7 +1011,11 @@ function sendMessage(obj, img_id) {
         }
     }
     liff.shareTargetPicker([
-        message,
+        {
+            type: 'flex',
+            altText: 'Liquid O2',
+            contents: message
+        },
         {
             type: 'image',
             originalContentUrl: `https://lh3.googleusercontent.com/d/${img_id}`,
