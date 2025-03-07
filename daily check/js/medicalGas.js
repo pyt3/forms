@@ -692,7 +692,9 @@ async function formSubmit() {
 }
 
 function sendMessage(obj, img_id) {
-
+    $.getJSON(script_url +'?opt=set_trashed&id='+img_id,function(res){
+        console.log(res)
+    })
     let message = {
         type: "bubble",
         body: {
