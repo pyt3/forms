@@ -695,6 +695,18 @@ function sendMessage(obj, img_id) {
     })
     let message = {
         type: "bubble",
+        hero: {
+            type: "image",
+            url: "https://lh3.googleusercontent.com/d/" + img_id,
+            size: "full",
+            aspectMode: "cover",
+            aspectRatio: "3:4",
+            action: {
+                type: "uri",
+                label: "action",
+                uri: "https://lh3.googleusercontent.com/d/" + img_id + "?openExternalBrowser=1"
+            }
+        },
         body: {
             type: "box",
             layout: "vertical",
@@ -708,7 +720,7 @@ function sendMessage(obj, img_id) {
                 },
                 {
                     type: "text",
-                    text: `วันที่ 07/03/2025 น.`,
+                    text: `วันที่ ${moment().format('DD/MM/YYYY')} เวลา ${moment().format('HH:mm')} น.`,
                     size: "sm",
                     color: "#aaaaaa",
                     scaling: true
@@ -745,7 +757,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['liquid-o2-volume']} mm`,
+                                    text: `${obj['liquid-o2-volume'].toLocaleString()} mm`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -769,7 +781,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['liquid-o2-pressure']} bar`,
+                                    text: `${obj['liquid-o2-pressure'].toLocaleString()} bar`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -812,7 +824,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['oxygen-manifold-left']} psi`,
+                                    text: `${obj['oxygen-manifold-left'].toLocaleString()} psi`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -836,7 +848,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['oxygen-manifold-right']} psi`,
+                                    text: `${obj['oxygen-manifold-right'].toLocaleString()} psi`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -879,7 +891,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['c02-manifold-left']} psi`,
+                                    text: `${obj['c02-manifold-left'].toLocaleString()} psi`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -903,7 +915,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['c02-manifold-right']} psi`,
+                                    text: `${obj['c02-manifold-right'].toLocaleString()} psi`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -946,7 +958,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['nitrous-manifold-left']} psi`,
+                                    text: `${obj['nitrous-manifold-left'].toLocaleString()} psi`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -970,7 +982,7 @@ function sendMessage(obj, img_id) {
                                 },
                                 {
                                     type: "text",
-                                    text: `${obj['nitrous-manifold-right']} psi`,
+                                    text: `${obj['nitrous-manifold-right'].toLocaleString()} psi`,
                                     wrap: true,
                                     size: "sm",
                                     flex: 2,
@@ -1012,14 +1024,13 @@ function sendMessage(obj, img_id) {
     }
     liff.shareTargetPicker([
         {
+            type: 'text',
+            text: 'ข้อมูลการตรวจเช็คแก็สประจำวัน' + moment().format('DD/MM/YYYY')
+        },
+        {
             type: 'flex',
             altText: 'Liquid O2',
             contents: message
-        },
-        {
-            type: 'image',
-            originalContentUrl: `https://lh3.googleusercontent.com/d/${img_id}`,
-            previewImageUrl: `https://lh3.googleusercontent.com/d/${img_id}`
         }
     ], {
         isMultiple: true,
