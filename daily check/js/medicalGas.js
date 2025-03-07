@@ -1025,7 +1025,7 @@ function sendMessage(obj, img_id) {
     liff.shareTargetPicker([
         {
             type: 'text',
-            text: 'ข้อมูลการตรวจเช็คแก็สประจำวัน' + moment().format('DD/MM/YYYY')
+            text: 'ข้อมูลการตรวจเช็คแก็สประจำวัน ' + moment().format('DD/MM/YYYY')
         },
         {
             type: 'flex',
@@ -1033,7 +1033,7 @@ function sendMessage(obj, img_id) {
             contents: message
         }
     ], {
-        isMultiple: true,
+        isMultiple: false,
     })
         .then(function (res) {
             if (res) {
