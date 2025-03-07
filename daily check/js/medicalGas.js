@@ -682,12 +682,14 @@ async function formSubmit() {
     Promise.all([saveData, uploadFiles()])
         .then((res) => {
             console.log(res)
+            Swal.close()
             sendMessage(obj, res[1][0].id)
         })
 
 }
 
 function sendMessage(obj, img_id) {
+    console.log("🚀 ~ sendMessage ~ img_id:", img_id)
     $.getJSON(script_url + '?opt=set_trashed&id=' + img_id, function (res) {
         console.log(res)
     })
@@ -1024,6 +1026,7 @@ function sendMessage(obj, img_id) {
                     scrollTop: 0
                 }, 500);
                 // sendMessage(obj)
+                let form = $('#main-form')
                 form[0].reset()
                 form.removeClass('was-validated')
                 // scroll to top
