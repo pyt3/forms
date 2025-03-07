@@ -683,7 +683,7 @@ async function formSubmit() {
             // },
         })
     })
-    Promise.all([saveData(obj), uploadFiles()])
+    Promise.all([saveData, uploadFiles()])
     .then((res) => {
         console.log(res)
         sendMessage(obj,res[1][0].id)
