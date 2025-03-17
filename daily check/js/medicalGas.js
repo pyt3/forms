@@ -68,7 +68,10 @@ $(document).ready(() => {
                             type: 'image/jpeg',
                             lastModified: Date.now()
                         });
-                        return f
+                        return {
+                            file: f,
+                            data: conversionResult
+                        }
                     }).catch((e) => {
                         console.log("🚀 ~ e:", e)
                     });
@@ -83,7 +86,10 @@ $(document).ready(() => {
                             type: file.type,
                             lastModified: Date.now()
                         });
-                        return f
+                        return {
+                            file: f,
+                            data: result
+                        }
                     },
                     error(err) {
                         console.log(err.message);
@@ -92,19 +98,19 @@ $(document).ready(() => {
             }
         })
         img_file = conversionResult[0]
-        let reader = new FileReader()
-        reader.readAsDataURL(img_file)
-        reader.onloadend = function (e) {
-            $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
-            $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
-            // scroll image to center of screen
-            $('html, body').animate({
-                scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
-            }, 100)
+        $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
+        $('#liquid-o2-volume-img-preview').attr('src', img_file.data).show()
+        // scroll image to center of screen
+        $('html, body').animate({
+            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
+        }, 100)
 
-            $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
-        }
-
+        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
+        Swal.close()
+        let datatransfrer = new DataTransfer();
+        datatransfrer.items.add(img_file.file);
+        $('#liquid-o2-volume-img').prop('files', datatransfrer.files)
+        img_file = img_file.data
 
         console.log("🚀 ~ img_file:", img_file)
     })
@@ -184,26 +190,6 @@ $(document).ready(() => {
 })
 
 let img_file
-$('#liquid-o2-volume-img').change(function () {
-    let file = this.files[0]
-    let reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onloadend = function (e) {
-        // log file size in kb
-        console.log('file size', file.size / 1024, 'kb')
-        // $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
-        // $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
-        // // scroll image to center of screen
-        // $('html, body').animate({
-        //     scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
-        // }, 100)
-
-        // $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
-
-        // img_file = e.target.result
-    }
-})
-
 $('#remark-btn').click(() => {
     let o2 = $('#o2-remark').val()
     let co2 = $('#co2-remark').val()
