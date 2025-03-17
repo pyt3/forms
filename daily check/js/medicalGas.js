@@ -177,7 +177,7 @@ function showConversionPreview(dataurl, name, type) {
 
     $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
     Swal.close()
-    let file = new File([convertBase64ToBlob(dataurl)], name, { type: type })
+    let file = new File([convertBase64ToBlob(dataurl)], name.split('.')[0], { type: type })
     let datatransfrer = new DataTransfer();
     datatransfrer.items.add(file);
     $('#liquid-o2-volume-img').prop('files', datatransfrer.files)
