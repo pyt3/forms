@@ -346,35 +346,108 @@ const Toast = Swal.mixin({
 
 $(document).ready(() => {
 
-    let comp = Compress({
-        inputSelector: '#liquid-o2-volume-img',
-        downloadSelector: '#compressing',
-        rate: 40,
-        imagePrefix: 'compressed-',
-        dimen: null,
-    });
-    comp.on('compressed', (files) => {
-        console.group('compressed images data url');
-        console.log('this array contains the url for the compressed images');
-        console.log(files);
-        console.log('listen to the compressed event to get the array');
-        console.groupEnd();
-        // log dataurl size in kb
-        console.log('dataurl size', files[0].length / 1024, 'kb')
-        $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
-        $('#liquid-o2-volume-img-preview').attr('src', files[0]).show()
-        // scroll image to center of screen
-        $('html, body').animate({
-            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
-        }, 100)
+    // let comp = Compress({
+    //     inputSelector: '#liquid-o2-volume-img',
+    //     downloadSelector: '#compressing',
+    //     rate: 40,
+    //     imagePrefix: 'compressed-',
+    //     dimen: null,
+    // });
+    // comp.on('compressed', (files) => {
+    //     console.group('compressed images data url');
+    //     console.log('this array contains the url for the compressed images');
+    //     console.log(files);
+    //     console.log('listen to the compressed event to get the array');
+    //     console.groupEnd();
+    //     // log dataurl size in kb
+    //     console.log('dataurl size', files[0].length / 1024, 'kb')
+    //     $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
+    //     $('#liquid-o2-volume-img-preview').attr('src', files[0]).show()
+    //     // scroll image to center of screen
+    //     $('html, body').animate({
+    //         scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
+    //     }, 100)
 
-        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
+    //     $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
 
-        img_file = files[0]
+    //     img_file = files[0]
+    //     console.log("🚀 ~ img_file:", img_file)
+    // });
+
+    // comp.on('compressing', () => console.log('compressing'))
+
+    $('#liquid-o2-volume-img').change(function () {
+        if (this.files.length == 0) return
+        // compress file
+        Swal.fire({
+            icon: 'info',
+            title: 'กำลังบีบอัดไฟล์ภาพ',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        let dataTransfer = new DataTransfer();
+        const files = this.files;
+        let length = files.length
+        let conversionResult = Array.from(files).map((file, i) => {
+            let mime = file.type == "" ? file.name.split('.')[1] : file.type.split('/')[1]
+            const quality = 0.2
+            if (mime == 'heic') {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    let blob = new Blob([e.target.result], { type: file.type });
+
+                    heic2any({
+                        blob,
+                        toType: "image/jpeg",
+                        quality: quality
+                    }).then((conversionResult) => {
+                        let f = new File([conversionResult], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        return f
+                    }).catch((e) => {
+                        console.log("🚀 ~ e:", e)
+                    });
+                }
+                reader.readAsArrayBuffer(file);
+            } else {
+                new Compressor(file, {
+                    quality: quality,
+                    success(result) {
+
+                        let f = new File([result], file.name, {
+                            type: file.type,
+                            lastModified: Date.now()
+                        });
+                        return f
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                });
+            }
+        })
+        img_file = conversionResult[0]
+        let reader = new FileReader()
+        reader.readAsDataURL(img_file)
+        reader.onloadend = function (e) {
+            $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
+            $('#liquid-o2-volume-img-preview').attr('src', e.target.result).show()
+            // scroll image to center of screen
+            $('html, body').animate({
+                scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
+            }, 100)
+
+            $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
+        }
+
+
         console.log("🚀 ~ img_file:", img_file)
-    });
+    })
 
-    comp.on('compressing', () => console.log('compressing'))
 
     setInterval(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
