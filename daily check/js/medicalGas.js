@@ -65,7 +65,7 @@ $(document).ready(() => {
                         toType: "image/jpeg",
                         quality: quality
                     }).then((conversionResult) => {
-                        showConversionPreview(conversionResult)
+                        showConversionPreview(conversionResult, file.name, 'image/jpeg')
                     }).catch((e) => {
                         console.log("🚀 ~ e:", e)
                     });
@@ -77,7 +77,7 @@ $(document).ready(() => {
                     success(result) {
                         let reader = new FileReader();
                         reader.onload = function (e) {
-                            showConversionPreview(e.target.result)
+                            showConversionPreview(e.target.result, file.name,file.type)
                         }
                         reader.readAsDataURL(result);
                     },
@@ -163,7 +163,7 @@ $(document).ready(() => {
 
 })
 
-function showConversionPreview(dataurl){
+function showConversionPreview(dataurl, name, type) {
     $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
     $('#liquid-o2-volume-img-preview').attr('src', dataurl).show()
     // scroll image to center of screen
@@ -173,8 +173,9 @@ function showConversionPreview(dataurl){
 
     $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
     Swal.close()
+    let file = new File([convertBase64ToBlob(dataurl)], name, { type: type })
     let datatransfrer = new DataTransfer();
-    datatransfrer.items.add(img_file.file);
+    datatransfrer.items.add(file);
     $('#liquid-o2-volume-img').prop('files', datatransfrer.files)
     console.log($('#liquid-o2-volume-img').prop('files')[0].size / 1024);
     console.log($('#liquid-o2-volume-img').prop('files')[0].type);
