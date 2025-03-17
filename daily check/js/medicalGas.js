@@ -49,7 +49,6 @@ $(document).ready(() => {
                 Swal.showLoading()
             }
         })
-        let dataTransfer = new DataTransfer();
         const files = this.files;
         let length = files.length
         let conversionResult = Array.from(files).map((file, i) => {
