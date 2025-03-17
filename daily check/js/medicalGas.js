@@ -5,344 +5,6 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timer: 1500,
 })
-//  {
-//   "type": "carousel",
-//   "contents": [
-//     {
-//       "type": "bubble",
-//       "body": {
-//         "type": "box",
-//         "layout": "vertical",
-//         "contents": [
-//           {
-//             "type": "text",
-//             "text": "Liquid O2",
-//             "weight": "bold",
-//             "size": "xl"
-//           },
-//           {
-//             "type": "text",
-//             "text": "วันที่ 27/01/2025 เวลา 07:39 น.",
-//             "size": "sm",
-//             "color": "#aaaaaa"
-//           },
-//           {
-//             "type": "separator",
-//             "margin": "md"
-//           },
-//           {
-//             "type": "box",
-//             "layout": "horizontal",
-//             "contents": [
-//               {
-//                 "type": "box",
-//                 "layout": "vertical",
-//                 "contents": [
-//                   {
-//                     "type": "box",
-//                     "layout": "vertical",
-//                     "margin": "md",
-//                     "spacing": "sm",
-//                     "contents": []
-//                   },
-//                   {
-//                     "type": "box",
-//                     "layout": "vertical",
-//                     "margin": "md",
-//                     "spacing": "sm",
-//                     "contents": [
-//                       {
-//                         "type": "text",
-//                         "text": "Liquid oxygen ",
-//                         "weight": "bold",
-//                         "size": "md"
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "ปริมาณคงเหลือ",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "2011 psi",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "แรงดัน",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "8.75 bar",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       }
-//                     ]
-//                   },
-//                   {
-//                     "type": "separator",
-//                     "margin": "md"
-//                   },
-//                   {
-//                     "type": "box",
-//                     "layout": "vertical",
-//                     "margin": "md",
-//                     "spacing": "sm",
-//                     "contents": [
-//                       {
-//                         "type": "text",
-//                         "text": "Oxygen Manifold",
-//                         "weight": "bold",
-//                         "size": "md"
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "Left",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "2011 psi",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "Right",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "1626 psi",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       }
-//                     ]
-//                   },
-//                   {
-//                     "type": "separator",
-//                     "margin": "md"
-//                   },
-//                   {
-//                     "type": "box",
-//                     "layout": "vertical",
-//                     "margin": "md",
-//                     "spacing": "sm",
-//                     "contents": [
-//                       {
-//                         "type": "text",
-//                         "text": "Carbon Dioxide Manifold",
-//                         "weight": "bold",
-//                         "size": "md"
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "Left",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "5900 psi",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "Right",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "900 psi",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       }
-//                     ]
-//                   },
-//                   {
-//                     "type": "separator",
-//                     "margin": "md"
-//                   },
-//                   {
-//                     "type": "box",
-//                     "layout": "vertical",
-//                     "margin": "md",
-//                     "spacing": "sm",
-//                     "contents": [
-//                       {
-//                         "type": "text",
-//                         "text": "Nitrous Manifold",
-//                         "weight": "bold",
-//                         "size": "md"
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "Left",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "851 psi",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       },
-//                       {
-//                         "type": "box",
-//                         "layout": "baseline",
-//                         "spacing": "sm",
-//                         "contents": [
-//                           {
-//                             "type": "text",
-//                             "text": "Right",
-//                             "color": "#aaaaaa",
-//                             "size": "sm",
-//                             "flex": 5
-//                           },
-//                           {
-//                             "type": "text",
-//                             "text": "861 psi",
-//                             "wrap": true,
-//                             "size": "sm",
-//                             "flex": 2,
-//                             "align": "end"
-//                           }
-//                         ]
-//                       }
-//                     ]
-//                   },
-//                   {
-//                     "type": "separator",
-//                     "margin": "md"
-//                   }
-//                 ]
-//               }
-//             ]
-//           },
-//           {
-//             "type": "box",
-//             "layout": "vertical",
-//             "contents": [
-//               {
-//                 "type": "text",
-//                 "text": "บันทึกโดย @ILADA BUAPRALAT",
-//                 "size": "sm",
-//                 "color": "#aaaaaa",
-//                 "margin": "md"
-//               },
-//               {
-//                 "type": "text",
-//                 "text": "🔊 Dashboard สรุปผลการตรวจเช็คแก็ส จะอัพเดทและส่งผลภายใน 15 นาที",
-//                 "size": "sm",
-//                 "color": "#aaaaaa",
-//                 "margin": "md"
-//               }
-//             ]
-//           }
-//         ]
-//       }
-//     },
-//     {
-//       "type": "bubble",
-//       "body": {
-//         "type": "box",
-//         "layout": "vertical",
-//         "contents": [
-//           {
-//             "type": "image",
-//             "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
-//             "size": "full",
-//             "aspectMode": "cover",
-//             "gravity": "center",
-//             "align": "center"
-//           }
-//         ],
-//         "margin": "none",
-//         "paddingAll": "none",
-//         "spacing": "none",
-//         "justifyContent": "center"
-//       }
-//     }
-//   ]
-// }
 
 $(document).ready(() => {
 
@@ -708,6 +370,9 @@ async function formSubmit() {
             icon: 'error',
             title: 'กรุณาแนบรูปภาพก่อนกดบันทึก',
             showConfirmButton: false,
+            customClass: {
+                popup: 'rounded-4'
+            },
             timer: 1500
         }).then(() => {
             $('#liquid-o2-volume-img').focus()
@@ -719,6 +384,9 @@ async function formSubmit() {
             title: 'อย่าลืมตรวจสอบปั๊ม dissicant air dryer',
             html: '<span class="fw-bold text-danger">ปั๊ม dissicant air dryer อาจะหยุดทำงาน</span><br>กรุณาตรวจสอบ<br><img src="https://nsmart.nhealth-asia.com/MTDPDB01/img.php?files=202005260826590.friulair.jpg" class="img-fluid" style="max-height: 400px">',
             confirmButtonText: 'ตกลง',
+            customClass: {
+                popup: 'rounded-4'
+            }
         })
     }
     let form = $('#main-form')
@@ -727,90 +395,424 @@ async function formSubmit() {
     data.forEach(a => {
         obj[a.name] = a.value.toString()
     })
+    // obj['liquid-o2-volume-img'] = await uploadFiles()[0].id
     obj.opt = 'submit'
-    $.LoadingOverlay("show");
     localStorage.setItem('user', obj.name)
     console.log(obj)
-    $.ajax({
-        url: script_url,
-        data: obj,
-        type: 'POST',
-        // success: function (res) {
-
-        //     if (res.status) {
-
-        //     } else {
-        //         Toast.fire({
-        //             icon: 'error',
-        //             title: 'บันทึกข้อมูลไม่สำเร็จ'
-        //         })
-        //         $.LoadingOverlay("hide");
-        //     }
-        // },
-    })
-    sendLineNotify(obj)
-    setTimeout(() => {
-        $('html, body').animate({
-            scrollTop: 0
-        }, 500);
-        $.LoadingOverlay("hide");
-        // sendLineNotify(obj)
-        form[0].reset()
-        form.removeClass('was-validated')
-        // scroll to top
-        localStorage.removeItem('history')
-        Swal.fire({
-            icon: 'success',
-            title: 'บันทึกข้อมูลสำเร็จ',
-            text: 'กรุณาปิดหน้าต่างนี้',
-            confirmButtonText: 'ปิดหน้าต่าง',
-        }).then(() => {
-            liff.closeWindow()
+    let saveData = new Promise((resolve, reject) => {
+        $.ajax({
+            url: script_url,
+            data: obj,
+            type: 'POST',
+            success: function (res) {
+                console.log(res)
+                if (res.status == 'success') {
+                    resolve(res)
+                } else {
+                    reject(res)
+                }
+            }
         })
-    }, 2000)
+    })
+    Promise.all([saveData, uploadFiles()])
+        .then((res) => {
+            console.log(res)
+            Swal.close()
+            sendMessage(obj, res[1][0].id)
+        })
+
 }
 
-function sendLineNotify(obj) {
-
-    let message = `👉 Liquid oxygen 
-ปริมาณคงเหลือ  =  ${obj['liquid-o2-volume']} mm
-แรงดัน  =   ${obj['liquid-o2-pressure']} bar
--------------------------------
-
-👉 Oxygen Manifold
-Left  =  ${obj['oxygen-manifold-left']} psi
-Right  =  ${obj['oxygen-manifold-right']} psi
--------------------------------
-
-👉 Carbon Dioxide Manifold
-Left  =  ${obj['c02-manifold-left']} psi
-Right  =  ${obj['c02-manifold-right']} psi
--------------------------------
-
-👉 Nitrous Manifold
-Left  =  ${obj['nitrous-manifold-left']} psi
-Right  =  ${obj['nitrous-manifold-right']} psi
--------------------------------
-
-บันทึกโดย
-@${obj.name}
-
-🔊 Dashboard สรุปผลการตรวจเช็คแก็ส จะอัพเดทและส่งผลภายใน 15 นาที`
-    $.ajax({
-        url: script_url,
-        type: 'POST',
-        data: {
-            opt: 'sendLineNotify',
-            msg: message,
-            img: img_file
-        },
-        success: function (res) {
-            console.log(res)
-        },
-        error: function (err) {
-            console.log(err)
-        }
+function sendMessage(obj, img_id) {
+    console.log("🚀 ~ sendMessage ~ img_id:", img_id)
+    $.getJSON(script_url + '?opt=set_trashed&id=' + img_id, function (res) {
+        console.log(res)
     })
+    let message = {
+        type: "bubble",
+        hero: {
+            type: "image",
+            url: "https://lh3.googleusercontent.com/d/" + img_id,
+            size: "full",
+            aspectMode: "cover",
+            aspectRatio: "3:4",
+            action: {
+                type: "uri",
+                label: "action",
+                uri: "https://lh3.googleusercontent.com/d/" + img_id + "?openExternalBrowser=1"
+            }
+        },
+        body: {
+            type: "box",
+            layout: "vertical",
+            contents: [
+                {
+                    type: "text",
+                    text: "🔊 Liquid O2",
+                    weight: "bold",
+                    size: "xl",
+                    scaling: true
+                },
+                {
+                    type: "text",
+                    text: `วันที่ ${moment().format('DD/MM/YYYY')} เวลา ${moment().format('HH:mm')} น.`,
+                    size: "sm",
+                    color: "#aaaaaa",
+                    scaling: true
+                },
+                {
+                    type: "separator",
+                    margin: "md"
+                },
+                {
+                    type: "box",
+                    layout: "vertical",
+                    margin: "md",
+                    spacing: "sm",
+                    contents: [
+                        {
+                            type: "text",
+                            text: "Liquid oxygen",
+                            weight: "bold",
+                            size: "md",
+                            scaling: true
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "ปริมาณคงเหลือ",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['liquid-o2-volume'].toLocaleString()} mm`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "แรงดัน",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['liquid-o2-pressure'].toLocaleString()} bar`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    margin: "md"
+                },
+                {
+                    type: "box",
+                    layout: "vertical",
+                    margin: "md",
+                    spacing: "sm",
+                    contents: [
+                        {
+                            type: "text",
+                            text: "Oxygen Manifold",
+                            weight: "bold",
+                            size: "md",
+                            scaling: true
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Left",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['oxygen-manifold-left'].toLocaleString()} psi`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Right",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['oxygen-manifold-right'].toLocaleString()} psi`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    margin: "md"
+                },
+                {
+                    type: "box",
+                    layout: "vertical",
+                    margin: "md",
+                    spacing: "sm",
+                    contents: [
+                        {
+                            type: "text",
+                            text: "Carbon Dioxide Manifold",
+                            weight: "bold",
+                            size: "md",
+                            scaling: true
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Left",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['c02-manifold-left'].toLocaleString()} psi`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Right",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['c02-manifold-right'].toLocaleString()} psi`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: "separator",
+                    margin: "md"
+                },
+                {
+                    type: "box",
+                    layout: "vertical",
+                    margin: "md",
+                    spacing: "sm",
+                    contents: [
+                        {
+                            type: "text",
+                            text: "Nitrous Manifold",
+                            weight: "bold",
+                            size: "md",
+                            scaling: true
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Left",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['nitrous-manifold-left'].toLocaleString()} psi`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Right",
+                                    color: "#aaaaaa",
+                                    size: "sm",
+                                    flex: 5,
+                                    scaling: true
+                                },
+                                {
+                                    type: "text",
+                                    text: `${obj['nitrous-manifold-right'].toLocaleString()} psi`,
+                                    wrap: true,
+                                    size: "sm",
+                                    flex: 2,
+                                    align: "end",
+                                    scaling: true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        footer: {
+            type: "box",
+            layout: "vertical",
+            contents: [
+                {
+                    type: "button",
+                    action: {
+                        type: "uri",
+                        label: "Dashboard",
+                        uri: "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD"
+                    }
+                },
+                {
+                    type: "separator"
+                },
+                {
+                    type: "text",
+                    text: "บันทึกโดย " + obj.name,
+                    size: "xxs",
+                    color: "#aaaaaa",
+                    margin: "md",
+                    align: "center",
+                    scaling: true
+                }
+            ]
+        }
+    }
+    liff.shareTargetPicker([
+        {
+            type: 'text',
+            text: 'ข้อมูลการตรวจเช็คแก็สประจำวัน ' + moment().format('DD/MM/YYYY')
+        },
+        {
+            type: 'flex',
+            altText: 'Liquid O2',
+            contents: message
+        }
+    ])
+        .then(function (res) {
+            if (res) {
+                // succeeded in sending a message through TargetPicker
+                console.log(`[${res.status}] Message sent!`);
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 500);
+                // sendMessage(obj)
+                let form = $('#main-form')
+                form[0].reset()
+                form.removeClass('was-validated')
+                // scroll to top
+                localStorage.removeItem('history')
+                Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกข้อมูลสำเร็จ',
+                    text: 'กรุณาปิดหน้าต่างนี้',
+                    confirmButtonText: 'ปิดหน้าต่าง',
+                }).then(() => {
+                    liff.closeWindow()
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'คุณจำเป็นต้องส่งข้อมูลเข้ากลุ่ม Medical Gas',
+                    cyustomClass: {
+                        popup: 'rounded-4'
+                    }
+                }).then(() => {
+                    sendMessage(obj)
+                })
+            }
+        })
+        .catch(function (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาดในการส่งข้อมูล',
+                html: 'กรุณาส่งข้อมูลข้อผิดพลาดให้ผู้พัฒนา<br><br>' + error,
+                customClass: {
+                    popup: 'rounded-4'
+                }
+            })
+            // something went wrong before sending a message
+            console.log("something wrong happen");
+        });
 }
 
 function convertBase64ToBlob(base64) {
@@ -824,6 +826,128 @@ function convertBase64ToBlob(base64) {
     let blob = new Blob([ab], { type: mimeString })
     return blob
 }
+
+function getDownloadToken() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: script_url + '?opt=token',
+            type: 'GET',
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+var token, folder_id
+(async function () {
+    let data = await getDownloadToken()
+    token = data.token
+    folder_id = data.folder_id
+}
+)()
+async function uploadFiles() {
+    return new Promise(async main_resolve => {
+        Swal.fire({
+            iconHtml: '<i class="bi bi-cloud-arrow-up-fill text-danger"></i>',
+            title: 'กำลังอัพโหลดไฟล์',
+            customClass: {
+                icon: 'border-0',
+                popup: 'rounded-4'
+            },
+            allowOutsideClick: false,
+            html: '<div class="container-fluid">' +
+                '<div class="row"><div class="progress rounded-pill m-0 p-0" role="progressbar" aria-label="Danger striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 1.5rem"><div class="progress-bar progress-bar-striped bg-danger progress-bar-animated fs-5" style="width: 0%"></div></div></div>' +
+                '<div class="row mt-3" id="progress"></div></div>',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+        })
+
+        const f = document.getElementById("liquid-o2-volume-img");
+        if (f.files.length == 0) {
+            return false
+        }
+        let file = await new Promise((resolve, reject) => {
+            let length = f.files.length;
+            let count = 0;
+            let uploadfiles = [];
+            let progress_tag = new Array(length).fill(0);
+            [...f.files].forEach((file, i) => {
+                let fr = new FileReader();
+                fr.fileName = file.name;
+                fr.fileSize = file.size;
+                fr.fileType = file.type;
+                fr.readAsArrayBuffer(file);
+                fr.onload = e => {
+                    var id = "p" + ++i;
+                    var div = $("<div>", { class: 'col-12 text-truncate' });
+                    div.attr("id", id);
+                    $("#progress").append(div);
+                    $('#' + id).text('Initialising (' + fr.fileName + ')')
+                    const f = e.target;
+                    const resource = {
+                        fileName: f.fileName,
+                        fileSize: f.fileSize,
+                        fileType: f.fileType,
+                        fileBuffer: f.result,
+                        accessToken: token,
+                        folderId: folder_id,
+                        fields: "id,name",
+                    };
+                    const ru = new ResumableUploadToGoogleDrive();
+                    ru.Do(resource, function (res, err) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        let msg = "";
+                        if (res.status == 'start' || res.status == 'getLocation' || res.status == 'initialize') {
+                            msg = '<i class="bi bi-cloud-arrow-up-fill"></i> กำลังเตรียมอัพโหลด ' + f.fileName;
+                        }
+                        else if (res.status == "Uploading") {
+                            let progress = Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
+                            progress_tag[i] = progress;
+                            console.log("🚀 ~ progress_tag:", progress_tag)
+                            msg =
+                                '<i class="bi bi-hourglass-split text-start text-danger"></i> กำลังอัพโหลด ' +
+                                progress +
+                                "% (" +
+                                f.fileName +
+                                ")";
+                        } else {
+                            progress_tag[i] = 100;
+                            msg = '<i class="bi bi-check-circle-fill text-start text-success"></i> อัพโหลดสำเร็จ  (' + f.fileName + ")";
+                        }
+
+                        // If you want to put the uploaded file information to the active Spreadsheet,
+                        // please use the following function.
+                        if (res.status == "Done") {
+                            uploadfiles.push({ id: res.result.id, name: res.result.name });
+                            if (uploadfiles.length == length) {
+                                resolve(uploadfiles);
+                            }
+                        }
+
+                        $('#' + id).html(msg)
+                        let progress_num = progress_tag.reduce((a, b) => a + b, 0) / length;
+                        console.log("🚀 ~ progress_num:", progress_num)
+                        $('.progress').attr('aria-valuenow', progress_num)
+                        $('.progress-bar').css('width', progress_num + '%').text(progress_num.toFixed(2) + '%')
+                    });
+                };
+            });
+        });
+        main_resolve(file);
+    })
+
+}
+
+
 
 (() => {
     'use strict'
