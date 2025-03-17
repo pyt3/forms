@@ -51,7 +51,8 @@ $(document).ready(() => {
         })
         const files = this.files;
         let length = files.length
-        let conversionResult = Array.from(files).map((file, i) => {
+        let conversionResult = []
+        Array.from(files).forEach((file, i) => {
             let mime = file.type == "" ? file.name.split('.')[1] : file.type.split('/')[1]
             const quality = 0.2
             if (mime == 'heic') {
@@ -64,14 +65,7 @@ $(document).ready(() => {
                         toType: "image/jpeg",
                         quality: quality
                     }).then((conversionResult) => {
-                        let f = new File([conversionResult], file.name, {
-                            type: 'image/jpeg',
-                            lastModified: Date.now()
-                        });
-                        return {
-                            file: f,
-                            data: conversionResult
-                        }
+                        showConversionPreview(conversionResult)
                     }).catch((e) => {
                         console.log("🚀 ~ e:", e)
                     });
@@ -81,15 +75,11 @@ $(document).ready(() => {
                 new Compressor(file, {
                     quality: quality,
                     success(result) {
-
-                        let f = new File([result], file.name, {
-                            type: file.type,
-                            lastModified: Date.now()
-                        });
-                        return {
-                            file: f,
-                            data: result
+                        let reader = new FileReader();
+                        reader.onload = function (e) {
+                            showConversionPreview(e.target.result)
                         }
+                        reader.readAsDataURL(result);
                     },
                     error(err) {
                         console.log(err.message);
@@ -97,24 +87,6 @@ $(document).ready(() => {
                 });
             }
         })
-        img_file = conversionResult[0]
-        $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
-        $('#liquid-o2-volume-img-preview').attr('src', img_file.data).show()
-        // scroll image to center of screen
-        $('html, body').animate({
-            scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
-        }, 100)
-
-        $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
-        Swal.close()
-        let datatransfrer = new DataTransfer();
-        datatransfrer.items.add(img_file.file);
-        $('#liquid-o2-volume-img').prop('files', datatransfrer.files)
-        console.log($('#liquid-o2-volume-img').prop('files')[0].size/1024);
-        console.log($('#liquid-o2-volume-img').prop('files')[0].type);
-        img_file = img_file.data
-
-        console.log("🚀 ~ img_file:", img_file)
     })
 
 
@@ -190,6 +162,23 @@ $(document).ready(() => {
         });
 
 })
+
+function showConversionPreview(dataurl){
+    $('#liquid-o2-volume-img-preview').removeClass('animate__animated animate__flipInY')
+    $('#liquid-o2-volume-img-preview').attr('src', dataurl).show()
+    // scroll image to center of screen
+    $('html, body').animate({
+        scrollTop: $('#liquid-o2-volume-img-preview').offset().top - 150
+    }, 100)
+
+    $('#liquid-o2-volume-img-preview').addClass('animate__animated animate__flipInY')
+    Swal.close()
+    let datatransfrer = new DataTransfer();
+    datatransfrer.items.add(img_file.file);
+    $('#liquid-o2-volume-img').prop('files', datatransfrer.files)
+    console.log($('#liquid-o2-volume-img').prop('files')[0].size / 1024);
+    console.log($('#liquid-o2-volume-img').prop('files')[0].type);
+}
 
 let img_file
 $('#remark-btn').click(() => {
