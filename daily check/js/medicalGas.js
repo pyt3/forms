@@ -65,6 +65,7 @@ $(document).ready(() => {
                         toType: "image/jpeg",
                         quality: quality
                     }).then((conversionResult) => {
+                        console.log("🚀 ~ Array.from ~ conversionResult:", conversionResult)
                         showConversionPreview(conversionResult, file.name, 'image/jpeg')
                     }).catch((e) => {
                         console.log("🚀 ~ e:", e)
