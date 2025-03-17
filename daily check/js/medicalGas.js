@@ -110,6 +110,8 @@ $(document).ready(() => {
         let datatransfrer = new DataTransfer();
         datatransfrer.items.add(img_file.file);
         $('#liquid-o2-volume-img').prop('files', datatransfrer.files)
+        console.log($('#liquid-o2-volume-img').prop('files')[0].size/1024);
+        console.log($('#liquid-o2-volume-img').prop('files')[0].type);
         img_file = img_file.data
 
         console.log("🚀 ~ img_file:", img_file)
