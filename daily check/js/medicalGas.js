@@ -69,6 +69,7 @@ $(document).ready(() => {
                         reader.onload = function (e) {
                             showConversionPreview(e.target.result, file.name, 'image/jpeg')
                         }
+                        reader.readAsDataURL(conversionResult);
                     }).catch((e) => {
                         console.log("🚀 ~ e:", e)
                     });
