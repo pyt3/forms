@@ -504,7 +504,7 @@
                 if (liff.getContext().type != 'group') {
                     $('.mobile').addClass('d-none')
                 }
-                if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') {
+                if (await getUID() == 'U798fc2c46a2efd7013b12eac4dac408a') {
                     $('#developer').removeClass('d-none')
                 } else {
                     $('#developer').addClass('d-none')
@@ -514,7 +514,7 @@
                 auth = defaultProject.auth();
                 if (!auth.currentUser) {
                     // await getAuth()
-                    await getAuth(await liff.getDecodedIDToken().sub)
+                    await getAuth(await getUID())
                 }
                 initialData();
             })
@@ -562,13 +562,13 @@
                 })
                 return liff.closeWindow()
             }
-            current_user = await firestore.collection('user').doc(liff.getDecodedIDToken().sub).get().then(doc => doc.data())
+            current_user = await firestore.collection('user').doc(await getUID()).get().then(doc => doc.data())
             let user_site = current_user?.site
             if (!user_site || user_site == '' || user_site == undefined || user_site == null) {
                 let l = localStorage.getItem('name')
                 if (l != null) {
                     let n = $('#name option').toArray().find(o => o.value == l)
-                    if (n) return firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
+                    if (n) return firestore.collection('user').doc(await getUID()).set({
                         site: n.parentElement.label
                     }, { merge: true }).then(() => {
                         $.LoadingOverlay("show");
@@ -602,7 +602,7 @@
                 }).then(async (result) => {
                     if (result.isConfirmed) {
                         let profile = await liff.getProfile()
-                        firestore.collection('user').doc(liff.getDecodedIDToken().sub).set({
+                        firestore.collection('user').doc(await getUID()).set({
                             site: result.value,
                             line: profile.userId,
                         }, { merge: true }).then(() => {
@@ -2005,6 +2005,26 @@ ${update}
                 title: 'คัดลอกสำเร็จ'
             })
         })
+
+        async function getUID(){
+            return await new Promise(async resolve => {
+                if (liff.getDecodedIDToken()) {
+                    resolve(liff.getDecodedIDToken().sub)
+                } else {
+                    await liff.getProfile().then(profile => {
+                        resolve(profile.userId)
+                    }).catch(err => {
+                        console.log(err)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ไม่สามารถดึงข้อมูลผู้ใช้ได้',
+                            text: 'กรุณาลองใหม่อีกครั้ง',
+                            confirmButtonText: 'ตกลง'
+                        })
+                    })
+                }
+            })
+        }
     </script>
     <script>
         var firestore, auth
