@@ -148,7 +148,8 @@
         <div class="px-4 pb-4 pt-1">
             <div class="d-flex flex-column">
                 <div class="text-center">
-                    <img src="./bennett840.png" alt="bennett840" class="img-fluid" style="max-height: 200px; width: auto;">
+                    <img src="./bennett840.png" alt="bennett840" class="img-fluid"
+                        style="max-height: 200px; width: auto;">
 
                 </div>
                 <div class="col h4 fw-bold text-center text-dark">
@@ -162,7 +163,8 @@
                 </div>
                 <div class="col-md-12" id="div-working-hours">
                     <label for="working-hours">ชั่วโมงการทำงาน</label>
-                    <input type="number" class="form-control text-center" id="working-hours" name="working-hours" step="0.01">
+                    <input type="number" class="form-control text-center" id="working-hours" name="working-hours"
+                        step="0.01">
                 </div>
                 <div class="col-md-12" id="div-start">
                     <label for="last-sst">เวลาที่ตรวจสอบ SST ล่าสุด</label>
@@ -196,7 +198,7 @@
                 liffId: '1660749495-gwG6yw7m',
             })
             liff.ready.then(async () => {
-                if(!liff.isLoggedIn()) {
+                if (!liff.isLoggedIn()) {
                     liff.login({
                         redirectUri: location.href
                     })
@@ -219,7 +221,7 @@
             $('#last-sst').val(new Date().toISOString({ timeZone: 'Asia/Bangkok' }).split('T')[0])
 
         })
-        $('#submit-btn').on('click', function () {
+        $('#submit-btn').on('click', async function () {
             event.preventDefault()
             var code = $('#code').val()
             var working_hours = $('#working-hours').val()
@@ -250,7 +252,7 @@
                 last_sst: last_sst,
                 do_est: do_est,
                 last_est: last_est,
-                uid: liff.getDecodedIDToken().sub,
+                uid: await getUID(),
                 opt: 'bennett840test'
             }
             Swal.fire({
@@ -267,7 +269,7 @@
                 data: data,
                 success: function (res) {
                     console.log("🚀 ~ res:", res)
-                    if(res.status) {
+                    if (res.status) {
                         Swal.fire({
                             icon: 'success',
                             title: 'บันทึกข้อมูลสำเร็จ',
@@ -292,6 +294,26 @@
                 }
             })
         })
+
+        async function getUID() {
+            return await new Promise(async resolve => {
+                if (liff.getDecodedIDToken()) {
+                    resolve(liff.getDecodedIDToken().sub)
+                } else {
+                    await liff.getProfile().then(profile => {
+                        resolve(profile.userId)
+                    }).catch(err => {
+                        console.log(err)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ไม่สามารถดึงข้อมูลผู้ใช้ได้',
+                            text: 'กรุณาลองใหม่อีกครั้ง',
+                            confirmButtonText: 'ตกลง'
+                        })
+                    })
+                }
+            })
+        }
     </script>
     <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
     <script
