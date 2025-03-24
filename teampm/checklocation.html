@@ -248,7 +248,7 @@
                 auth = defaultProject.auth();
                 if (!auth.currentUser) {
                     // await getAuth()
-                    await getAuth(await liff.getDecodedIDToken().sub)
+                    await getAuth(await getUID())
                 }
                 $.LoadingOverlay('hide', true)
                 if (!await checkClient()) {
@@ -294,10 +294,10 @@
                         allowOutsideClick: false,
                         showCancelButton: false,
                         confirmButtonText: 'ตกลง',
-                    }).then(res => {
+                    }).then(async res => {
                         if (res.isConfirmed) {
                             cl = res.value
-                            firestore.collection('users').doc(liff.getDecodedIDToken().sub).set({
+                            firestore.collection('users').doc(await getUID()).set({
                                 client: cl
                             }).then(() => {
                                 client = cl
@@ -341,7 +341,7 @@
         // }
 
         async function checkClient() {
-            let user = await firestore.collection('users').doc(liff.getDecodedIDToken().sub).get()
+            let user = await firestore.collection('users').doc(await getUID()).get()
             console.log("🚀 !! user:", user.data())
             if (user.exists) {
                 client = user.data().client
@@ -353,6 +353,26 @@
             } else {
                 return false
             }
+        }
+
+        async function getUID() {
+            return await new Promise(async resolve => {
+                if (liff.getDecodedIDToken()) {
+                    resolve(liff.getDecodedIDToken().sub)
+                } else {
+                    await liff.getProfile().then(profile => {
+                        resolve(profile.userId)
+                    }).catch(err => {
+                        console.log(err)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ไม่สามารถดึงข้อมูลผู้ใช้ได้',
+                            text: 'กรุณาลองใหม่อีกครั้ง',
+                            confirmButtonText: 'ตกลง'
+                        })
+                    })
+                }
+            })
         }
 
         function searchLocationData() {
