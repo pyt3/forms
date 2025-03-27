@@ -1982,6 +1982,9 @@ ${update}
                 ]
                 console.log(messages);
                 if (!work_detail.has_sent_init_msg) {
+                    Object.keys(work_detail).forEach(key => {
+                        if (!work_detail[key] && work_detail[key] == '') work_detail[key] = '-'
+                    })
                     // {
                     //     "code": "PYT3_06068",
                     //     "workorder": "1349079",
@@ -2248,7 +2251,7 @@ ${update}
                 let method = 'sendMessages'
                 
                 console.log("🚀 ~ liff.isInClient():", liff.isInClient())
-                if (!liff.isInClient()) {
+                if (liff.getContext().type != 'group' && liff.getContext().type != 'utou') {
                     method = 'shareTargetPicker'
                     let { value: confirm } = await Swal.fire({
                         icon: 'info',
@@ -2263,6 +2266,9 @@ ${update}
                 }
                 console.log(messages);
                 liff[method](messages).then(() => {
+                    firestore.collection('jobdata/').doc(update_data.jobid).set({
+                        has_sent_init_msg: true
+                    }, { merge: true })
                     Swal.fire({
                         icon: 'success',
                         title: 'อัพเดทสำเร็จ',
