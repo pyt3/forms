@@ -1498,7 +1498,6 @@ ${update}
                 code: update_data.code,
             }).then(async (docRef) => {
                 doc_ref = docRef
-                console.log("🚀 !! detail:", detail)
                 console.log('update success');
             }).catch(err => {
                 console.log(err);
@@ -2001,8 +2000,251 @@ ${update}
                     //     "reciever": "SERMKEAT HADJANG",
                     //     "job_no": "1331416"
                     // }
+                    let init_msg = {
+                        "type": "carousel",
+                        "contents": [
+                            {
+                                "type": "bubble",
+                                "size": "giga",
+                                "header": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "⚠️ งานแจ้งซ่อม ⚠️",
+                                            "weight": "bold",
+                                            "align": "center",
+                                            "gravity": "center",
+                                            "scaling": true,
+                                            "size": "lg"
+                                        }
+                                    ]
+                                },
+                                "hero": {
+                                    "type": "image",
+                                    "url": work_detail.image,
+                                    "size": "3xl",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "action",
+                                        "uri": work_detail.image
+                                    }
+                                },
+                                "body": {
+                                    "type": "box",
+                                    "spacing": "md",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "contents": [
+                                                {
+                                                    "type": "box",
+                                                    "layout": "vertical",
+                                                    "contents": [
+                                                        {
+                                                            "type": "box",
+                                                            "layout": "vertical",
+                                                            "contents": [
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": "เครื่อง",
+                                                                    "flex": 3,
+                                                                    "adjustMode": "shrink-to-fit",
+                                                                    "scaling": true,
+                                                                    "color": "#aaaaaa"
+                                                                },
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": work_detail.ename || '-',
+                                                                    "scaling": true,
+                                                                    "align": "start",
+                                                                    "color": "#666666",
+                                                                    "wrap": true
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "box",
+                                                            "layout": "horizontal",
+                                                            "contents": [
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": "รหัส",
+                                                                    "flex": 3,
+                                                                    "color": "#aaaaaa",
+                                                                    "adjustMode": "shrink-to-fit",
+                                                                    "scaling": true
+                                                                },
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": work_detail.code || '-',
+                                                                    "flex": 5,
+                                                                    "adjustMode": "shrink-to-fit",
+                                                                    "scaling": true,
+                                                                    "align": "end",
+                                                                    "color": "#666666"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "box",
+                                                            "layout": "horizontal",
+                                                            "contents": [
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": "แผนก(เครื่อง)",
+                                                                    "flex": 3,
+                                                                    "color": "#aaaaaa",
+                                                                    "adjustMode": "shrink-to-fit",
+                                                                    "scaling": true
+                                                                },
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": work_detail.dept || '-',
+                                                                    "flex": 5,
+                                                                    "scaling": true,
+                                                                    "align": "end",
+                                                                    "color": "#666666",
+                                                                    "wrap": true
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "box",
+                                                            "layout": "horizontal",
+                                                            "contents": [
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": "แผนก(ผู้แจ้ง)",
+                                                                    "flex": 3,
+                                                                    "color": "#aaaaaa",
+                                                                    "adjustMode": "shrink-to-fit",
+                                                                    "scaling": true
+                                                                },
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": (work_detail.sender || '-') + (work_detail.coop || ''),
+                                                                    "flex": 5,
+                                                                    "scaling": true,
+                                                                    "align": "end",
+                                                                    "color": "#666666",
+                                                                    "wrap": true
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "box",
+                                                            "layout": "horizontal",
+                                                            "contents": [
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": "ผู้แจ้ง",
+                                                                    "flex": 3,
+                                                                    "color": "#aaaaaa",
+                                                                    "adjustMode": "shrink-to-fit",
+                                                                    "scaling": true
+                                                                },
+                                                                {
+                                                                    "type": "text",
+                                                                    "text": work_detail.sender || '-',
+                                                                    "flex": 5,
+                                                                    "adjustMode": "shrink-to-fit",
+                                                                    "scaling": true,
+                                                                    "align": "end",
+                                                                    "color": "#666666",
+                                                                    "wrap": true
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "justifyContent": "space-between",
+                                                    "spacing": "md"
+                                                }
+                                            ],
+                                            "paddingAll": "5px",
+                                            "spacing": "md"
+                                        }
+                                    ],
+                                    "paddingTop": "none",
+                                    "paddingBottom": "none",
+                                    "paddingStart": "md",
+                                    "paddingEnd": "md"
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": moment(work_detail.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)'),
+                                            "size": "xs",
+                                            "color": "#bcbcbc",
+                                            "adjustMode": "shrink-to-fit",
+                                            "scaling": true,
+                                            "align": "center"
+                                        }
+                                    ],
+                                    "spacing": "sm"
+                                }
+                            },
+                            {
+                                "type": "bubble",
+                                "size": "giga",
+                                "header": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "รายละเอียดอาการเสีย",
+                                            "color": "#ffffff",
+                                            "size": "lg",
+                                            "align": "center"
+                                        }
+                                    ]
+                                },
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "spacing": "lg",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": work_detail.detail,
+                                                    "wrap": true,
+                                                    "scaling": true
+                                                }
+                                            ],
+                                            "paddingAll": "lg",
+                                            "borderColor": "#bcbcbc",
+                                            "borderWidth": "light",
+                                            "cornerRadius": "md",
+                                            "backgroundColor": "#f4f6f9",
+                                            "flex": 10
+                                        }
+                                    ]
+                                },
+                                "styles": {
+                                    "header": {
+                                        "backgroundColor": "#0367d3"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                    messages.unshift({
+                        type: 'flex',
+                        altText: 'Job ' + work_detail.code + ' ' + work_detail.job_no + ' ' + work_detail.workorder,
+                        contents: init_msg
+                    })
                 }
-                return true
                 let method = 'sendMessages'
                 if (!liff.isInClient()) {
                     method = 'shareTargetPicker'
