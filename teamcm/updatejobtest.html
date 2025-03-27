@@ -2249,6 +2249,7 @@ ${update}
                 if (!liff.isInClient()) {
                     method = 'shareTargetPicker'
                     let { value: confirm } = await Swal.fire({
+                        icon: 'info',
                         title: 'กรุณาเลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
                         confirmButtonText: `ตกลง`,
                         allowOutsideClick: false,
@@ -2258,7 +2259,7 @@ ${update}
                         },
                     })
                 }
-                liff[method]().then(() => {
+                liff[method](messages).then(() => {
                     Swal.fire({
                         icon: 'success',
                         title: 'อัพเดทสำเร็จ',
