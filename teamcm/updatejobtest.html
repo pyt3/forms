@@ -502,9 +502,7 @@
             })
             liff.ready.then(async () => {
                 if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
-                // if (liff.getContext().type != 'group') {
-                //     $('.mobile').addClass('d-none')
-                // }
+
                 if (await getUID() == 'U798fc2c46a2efd7013b12eac4dac408a') {
                     $('#developer').removeClass('d-none')
                 } else {
@@ -544,14 +542,17 @@
         })
         var jobid, wo, current_user
         async function initialData() {
-            if (!liff.isInClient()) {
-                let url = new URL(window.location.href)
-                if (url.searchParams.get('action') != 'summary') {
-                    // add parameter
-                    url.searchParams.set('action', 'summary')
-                    window.open(url, '_self')
-                }
-            }
+            // if (liff.getContext().type != 'group') {
+            //     $('.mobile').addClass('d-none')
+            // }
+            // if (!liff.isInClient()) {
+            //     let url = new URL(window.location.href)
+            //     if (url.searchParams.get('action') != 'summary') {
+            //         // add parameter
+            //         url.searchParams.set('action', 'summary')
+            //         window.open(url, '_self')
+            //     }
+            // }
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if (!jobid || jobid == '' || jobid == undefined || jobid == null) {
@@ -1981,7 +1982,7 @@ ${update}
                     }
                 ]
                 console.log(messages);
-                if(!work_detail.has_sent_init_msg){
+                if (!work_detail.has_sent_init_msg) {
                     // {
                     //     "code": "PYT3_06068",
                     //     "workorder": "1349079",
