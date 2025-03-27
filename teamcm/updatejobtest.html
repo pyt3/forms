@@ -562,7 +562,7 @@
                     title: 'ไม่พบข้อมูล',
                     text: 'ไม่พบข้อมูล',
                     customClass: {
-                        confirmButton: 'btn btn-primary',
+                        
                         popup: 'rounded-4'
                     },
                 })
@@ -597,7 +597,7 @@
                     allowEscapeKey: false,
                     confirmButtonText: 'ยืนยัน',
                     customClass: {
-                        confirmButton: 'btn btn-primary',
+                        
                         popup: 'rounded-4'
                     },
                     inputValidator: (value) => {
@@ -759,7 +759,7 @@
                     showConfirmButton: false,
                     allowOutsideClick: false,
                     customClass: {
-                        confirmButton: 'btn btn-primary',
+                        
                         popup: 'rounded-4'
                     },
                     didOpen: () => {
@@ -1159,7 +1159,7 @@
                             timer: 1500,
                             showConfirmButton: false,
                             customClass: {
-                                confirmButton: 'btn btn-primary',
+                                
                                 popup: 'rounded-4'
                             },
                         }).then(() => {
@@ -1173,7 +1173,7 @@
                             title: 'แชร์สรุปงานไม่สำเร็จ',
                             text: 'ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
                             customClass: {
-                                confirmButton: 'btn btn-primary',
+                                
                                 popup: 'rounded-4'
                             },
                         })
@@ -1205,7 +1205,7 @@
                             allowOutsideClick: false,
                             allowEscapeKey: false,
                             customClass: {
-                                confirmButton: 'btn btn-primary',
+                                
                                 popup: 'rounded-4'
                             },
                             inputValidator: (value) => {
@@ -1230,7 +1230,7 @@
                                     allowOutsideClick: false,
                                     allowEscapeKey: false,
                                     customClass: {
-                                        confirmButton: 'btn btn-primary',
+                                        
                                         popup: 'rounded-4'
                                     },
                                 }).then(async (result) => {
@@ -1313,7 +1313,7 @@
                                 showDenyButton: current_user.isAuthen ? true : false,
                                 showConfirmButton: current_user.isAuthen ? false : true,
                                 customClass: {
-                                    confirmButton: 'btn btn-primary',
+                                    
                                     popup: 'rounded-4'
                                 },
                                 preConfirm: async (result) => {
@@ -1379,7 +1379,7 @@
                         title: 'กรุณากรอกข้อมูลอัพเดท',
                         text: 'กรุณากรอกข้อมูลอัพเดท',
                         customClass: {
-                            confirmButton: 'btn btn-primary',
+                            
                             popup: 'rounded-4'
                         },
                     })
@@ -1389,7 +1389,7 @@
                         title: 'กรุณาเลือกชื่อผู้กรอก',
                         text: 'กรุณาเลือกชื่อผู้กรอก',
                         customClass: {
-                            confirmButton: 'btn btn-primary',
+                            
                             popup: 'rounded-4'
                         },
                     })
@@ -1412,7 +1412,7 @@ ${update}
                         allowOutsideClick: false,
                         allowEscapeKey: false,
                         customClass: {
-                            confirmButton: 'btn btn-primary',
+                            
                             popup: 'rounded-4'
                         },
                     }).then(result => {
@@ -1453,7 +1453,7 @@ ${update}
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 customClass: {
-                    confirmButton: 'btn btn-primary',
+                    
                     popup: 'rounded-4'
                 },
             }).then(result => {
@@ -1481,14 +1481,13 @@ ${update}
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 customClass: {
-                    confirmButton: 'btn btn-primary',
+                    
                     popup: 'rounded-4'
                 },
                 didOpen: () => {
                     Swal.showLoading()
                 }
             })
-            console.log("🚀 !! update_data:", update_data)
             let doc_ref
             await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
                 update: update_data.update,
@@ -2250,7 +2249,6 @@ ${update}
                 }
                 let method = 'sendMessages'
                 
-                console.log("🚀 ~ liff.isInClient():", liff.isInClient())
                 if (liff.getContext().type != 'group' && liff.getContext().type != 'utou') {
                     method = 'shareTargetPicker'
                     let { value: confirm } = await Swal.fire({
@@ -2259,10 +2257,20 @@ ${update}
                         confirmButtonText: `ตกลง`,
                         allowOutsideClick: false,
                         customClass: {
-                            confirmButton: 'btn btn-primary',
                             popup: 'rounded-4'
                         },
                     })
+                    if(confirm) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'กำลังดึงรายชื่อกลุ่มไลน์',
+                            text: 'กำลังส่งข้อความ',
+                            customClass: {
+                                popup: 'rounded-4'
+                            },
+                            allowOutsideClick: false,
+                        })
+                    }
                 }
                 console.log(messages);
                 liff[method](messages).then(() => {
@@ -2274,7 +2282,7 @@ ${update}
                         title: 'อัพเดทสำเร็จ',
                         text: 'อัพเดทสำเร็จ',
                         customClass: {
-                            confirmButton: 'btn btn-primary',
+                            
                             popup: 'rounded-4'
                         },
                         timer: 1500,
@@ -2290,7 +2298,7 @@ ${update}
                         html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small><br><br>' + JSON.stringify(carousel),
                         confirmButtonText: "ตกลง",
                         customClass: {
-                            confirmButton: 'btn btn-primary',
+                            
                             popup: 'rounded-4'
                         },
                         //showConfirmButton: false,
@@ -2333,7 +2341,7 @@ ${update}
                             text: 'กรุณาลองใหม่อีกครั้ง',
                             confirmButtonText: 'ตกลง',
                             customClass: {
-                                confirmButton: 'btn btn-primary',
+                                
                                 popup: 'rounded-4'
                             },
                         })
@@ -2395,7 +2403,7 @@ ${update}
                         text: 'คุณสามารถรับงานได้แล้ว',
                         confirmButtonText: 'รับงาน',
                         customClass: {
-                            confirmButton: 'btn btn-primary',
+                            
                             popup: 'rounded-4'
                         },
                         allowOutsideClick: false,
@@ -2453,7 +2461,7 @@ ${update}
                             html: 'รับงานสำเร็จ<br>รับงานโดย:<br> ' + current_user.name.toUpperCase(),
                             confirmButtonText: 'ตกลง',
                             customClass: {
-                                confirmButton: 'btn btn-primary',
+                                
                                 popup: 'rounded-4'
                             },
                             timer: 2000,
@@ -2484,7 +2492,7 @@ ${update}
                             title: 'รับงานไม่สำเร็จ',
                             html: 'รับงานไม่สำเร็จ<br>' + res.status_text,
                             customClass: {
-                                confirmButton: 'btn btn-primary',
+                                
                                 popup: 'rounded-4'
                             },
                             confirmButtonText: 'ตกลง',
@@ -2497,7 +2505,7 @@ ${update}
                     icon: 'error',
                     text: err,
                     customClass: {
-                        confirmButton: 'btn btn-primary',
+                        
                         popup: 'rounded-4'
                     },
                     showConfirmButton: false,
@@ -2593,7 +2601,7 @@ ${update}
                     cancelButtonColor: '#d33',
                     validationMessage: 'กรุณายืนยันลายเซ็น',
                     customClass: {
-                        confirmButton: 'btn btn-primary',
+                        
                         popup: 'rounded-4'
                     },
                 }).then(result => {
@@ -2602,7 +2610,7 @@ ${update}
                             title: 'กำลังบันทึกลายเซ็น',
                             html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
                             customClass: {
-                                confirmButton: 'btn btn-primary',
+                                
                                 popup: 'rounded-4'
                             },
                             allowOutsideClick: false,
@@ -2630,7 +2638,7 @@ ${update}
                                         title: 'บันทึกลายเซ็นสำเร็จ',
                                         text: 'บันทึกลายเซ็นสำเร็จ',
                                         customClass: {
-                                            confirmButton: 'btn btn-primary',
+                                            
                                             popup: 'rounded-4'
                                         },
                                         timer: 1500,
@@ -2652,7 +2660,7 @@ ${update}
                                         title: 'บันทึกลายเซ็นไม่สำเร็จ',
                                         html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + res.status_text,
                                         customClass: {
-                                            confirmButton: 'btn btn-primary',
+                                            
                                             popup: 'rounded-4'
                                         },
                                         confirmButtonText: 'ตกลง',
@@ -2667,7 +2675,7 @@ ${update}
                                     title: 'บันทึกลายเซ็นไม่สำเร็จ',
                                     html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + JSON.stringify(err),
                                     customClass: {
-                                        confirmButton: 'btn btn-primary',
+                                        
                                         popup: 'rounded-4'
                                     },
                                     confirmButtonText: 'ตกลง',
