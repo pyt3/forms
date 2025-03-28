@@ -486,8 +486,8 @@
     </script>
     <script>
         // const liff_id = '1655873446-3xe866Ql'
-        // const liff_id = '1661543046-a1pJexbX' // use
-        const liff_id = '1661543046-86kpRl4E' // test
+        const liff_id = '1661543046-a1pJexbX' // use
+        // const liff_id = '1661543046-86kpRl4E' // test
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
         const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
@@ -542,17 +542,17 @@
         })
         var jobid, wo, current_user
         async function initialData() {
-            // if (liff.getContext().type != 'group') {
-            //     $('.mobile').addClass('d-none')
-            // }
-            // if (!liff.isInClient()) {
-            //     let url = new URL(window.location.href)
-            //     if (url.searchParams.get('action') != 'summary') {
-            //         // add parameter
-            //         url.searchParams.set('action', 'summary')
-            //         window.open(url, '_self')
-            //     }
-            // }
+            if (liff.getContext().type != 'group') {
+                $('.mobile').addClass('d-none')
+            }
+            if (!liff.isInClient()) {
+                let url = new URL(window.location.href)
+                if (url.searchParams.get('action') != 'summary') {
+                    // add parameter
+                    url.searchParams.set('action', 'summary')
+                    window.open(url, '_self')
+                }
+            }
             let url = new URL(window.location.href);
             jobid = url.searchParams.get("jobid");
             if (!jobid || jobid == '' || jobid == undefined || jobid == null) {
