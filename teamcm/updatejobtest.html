@@ -542,10 +542,10 @@
         })
         var jobid, wo, current_user
         async function initialData() {
-            if (liff.getContext().type != 'group') {
-                $('.mobile').addClass('d-none')
-            }
             if (!liff.isInClient()) {
+                if (liff.getContext().type != 'group') {
+                    $('.mobile').addClass('d-none')
+                }
                 let url = new URL(window.location.href)
                 if (url.searchParams.get('action') != 'summary') {
                     // add parameter
