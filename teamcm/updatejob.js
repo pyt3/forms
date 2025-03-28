@@ -1053,7 +1053,7 @@ async function updateData(update_data) {
     localStorage.removeItem('updateText' + update_data.jobid)
     let flex = {
         "type": "bubble",
-        "size": "giga",
+        // "size": "giga",
         "body": {
             "type": "box",
             "spacing": "md",
@@ -1463,7 +1463,7 @@ async function updateData(update_data) {
         if (hasMoreThan10) {
             let all_flex = {
                 "type": "bubble",
-                "size": "giga",
+                // "size": "giga",
                 "body": {
                     "type": "box",
                     "layout": "vertical",
@@ -1768,12 +1768,13 @@ async function updateData(update_data) {
         if (liff.getContext().type != 'group' && liff.getContext().type != 'utou') {
             method = 'shareTargetPicker'
             let { value: confirm } = await Swal.fire({
-                icon: 'info',
+                iconHtml: '<i class="bi bi-line text-success"></i>',
                 title: 'กรุณาเลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
                 confirmButtonText: `ตกลง`,
                 allowOutsideClick: false,
                 customClass: {
-                    popup: 'rounded-4'
+                    popup: 'rounded-4',
+                    icon: 'border-0'
                 },
             })
             if (confirm) {
