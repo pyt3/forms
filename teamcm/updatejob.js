@@ -1494,7 +1494,7 @@ async function updateData(update_data) {
             }
         ]
         console.log(messages);
-        if (!work_detail.has_sent_init_msg) {
+        if (!work_detail.has_sent_init_msg && liff.getContext().type != 'group') {
             Object.keys(work_detail).forEach(key => {
                 if (!work_detail[key] && work_detail[key] == '') work_detail[key] = '-'
             })
