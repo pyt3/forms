@@ -2288,8 +2288,6 @@ jQuery(document).ready(function ($) {
     }
 })
 
-
-    < script >
 /** @preserve 
 jSignature v2 "${buildDate}" "${commitID}"
 Copyright (c) 2012 Willow Systems Corp http://willow-systems.com
