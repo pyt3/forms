@@ -1053,7 +1053,7 @@ async function updateData(update_data) {
     localStorage.removeItem('updateText' + update_data.jobid)
     let flex = {
         "type": "bubble",
-        // "size": "giga",
+        "size": "giga",
         "body": {
             "type": "box",
             "spacing": "md",
@@ -1463,7 +1463,7 @@ async function updateData(update_data) {
         if (hasMoreThan10) {
             let all_flex = {
                 "type": "bubble",
-                // "size": "giga",
+                "size": "giga",
                 "body": {
                     "type": "box",
                     "layout": "vertical",
