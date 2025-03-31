@@ -561,6 +561,37 @@
             return bytes.buffer;
         }
 
+        function generateCalendarRows(month = 1, year = 2024) {
+            const monthDays = generateMonthArr(month, year);
+            const rows = [];
+            let currentRow = Array(7).fill('');
+
+            // Get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
+            const firstDayOfMonth = new Date(year, month - 1, 1);
+            const firstDayIndex = firstDayOfMonth.getDay();
+
+            let dayCounter = 0;
+
+            // Fill in the first row with appropriate offset
+            for (let i = firstDayIndex; i < 7; i++) {
+                currentRow[i] = monthDays[dayCounter];
+                dayCounter++;
+            }
+            rows.push([...currentRow]);
+
+            // Fill in the remaining rows
+            while (dayCounter < monthDays.length) {
+                currentRow = Array(7).fill('');
+                for (let i = 0; i < 7 && dayCounter < monthDays.length; i++) {
+                    currentRow[i] = monthDays[dayCounter];
+                    dayCounter++;
+                }
+                rows.push([...currentRow]);
+            }
+
+            return rows;
+        }
+
         function generateMonthArr(month = 1, year = 2024) {
             let firstDay_of_month = new Date(year, month - 1, 1);
             let lastDay_of_month = new Date(year, month, 0);
@@ -576,7 +607,7 @@
         }
 
         function getCalendar() {
-            let monthArr = generateMonthArr($('#month').val(), $('#year').val())
+            let monthArr = generateCalendarRows($('#month').val(), $('#year').val())
             let table = $('<table>').addClass('table table-bordered').attr('id', 'calendar')
             let thead = $('<thead>')
             thead.append(`<tr>
@@ -589,7 +620,7 @@
                 <th>SA</th>
             </tr>`)
             let tbody = $('<tbody>')
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < monthArr.length; i++) {
                 let tr = $('<tr>')
                 for (let j = 0; j < 7; j++) {
                     tr.append($('<td>'))
@@ -597,7 +628,7 @@
                 tbody.append(tr)
             }
             let count = 0
-            for (let i = 0; i < monthArr.length; i++) {
+            for (let i = 0; i < monthArr.flat().filter(x => x!= '').length; i++) {
                 let day = new Date($('#year').val(), $('#month').val() - 1, i + 1)
                 let dayOfWeek = day.getDay()
                 tbody.find('tr').eq(count).find('td').eq(dayOfWeek).text(i + 1).addClass('text-center').css('cursor', 'pointer')
