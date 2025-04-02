@@ -69,7 +69,12 @@ async function initialData() {
             }
         }else{
             if(liff.getContext().type == 'external'){
-                $('.mobile').removeClass('d-none')
+                let url = new URL(window.location.href)
+                let action = url.searchParams.get('action')
+                let jobid = url.searchParams.get('jobid')
+                let new_url = 'line://app/' + liff_id + '?action=' + action + '&jobid=' + jobid
+                window.open(new_url, '_self')
+                return
             }
         }
     }
