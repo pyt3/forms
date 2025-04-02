@@ -1563,12 +1563,12 @@ async function updateData(update_data) {
                         },
                         "hero": {
                             "type": "image",
-                            "url": work_detail.image,
+                            "url": work_detail.image && work_detail.image != null && work_detail.image != '' ? work_detail.image : $('#image').attr('src'),
                             "size": "3xl",
                             "action": {
                                 "type": "uri",
                                 "label": "action",
-                                "uri": work_detail.image
+                                "uri": work_detail.image && work_detail.image != null && work_detail.image != '' ? work_detail.image : $('#image').attr('src'),
                             }
                         },
                         "body": {
