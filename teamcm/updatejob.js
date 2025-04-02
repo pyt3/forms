@@ -60,11 +60,13 @@ async function initialData() {
         // if (liff.getContext().type != 'group'||(liff.getContext().type == 'external' && liff.getOS() == 'ios')) {
         //     $('.mobile').addClass('d-none')
         // }
-        if(liff.getContext().type == 'external' && liff.getOS() != 'ios'){
-            $('.mobile').removeClass('d-none')
-        }else if(liff.getContext.type == 'group'){
-            $('.mobile').removeClass('d-none')
+        if(liff.getContext.type != 'group'){
+            $('.mobile').addClass('d-none')
         }
+
+        if(liff.getContext().type == 'external' && liff.getOS() == 'ios'){
+            $('.mobile').removeClass('d-none')
+        } 
         let url = new URL(window.location.href)
         if (url.searchParams.get('action') != 'summary') {
             // add parameter
