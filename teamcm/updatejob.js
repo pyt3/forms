@@ -60,7 +60,7 @@ async function initialData() {
         // if (liff.getContext().type != 'group'||(liff.getContext().type == 'external' && liff.getOS() == 'ios')) {
         //     $('.mobile').addClass('d-none')
         // }
-        if(liff.getContext.type != 'group'){
+        if(liff.getContext().type != 'group'){
             $('.mobile').addClass('d-none')
         }
 
