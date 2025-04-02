@@ -73,12 +73,17 @@ async function initialData() {
                 let action = url.searchParams.get('action')
                 let jobid = url.searchParams.get('jobid')
                 let new_url = 'line://app/' + liff_id 
+                let param = []
                 if(action != null && action != undefined && action != ''){
-                    new_url += '?action=' + action
+                    param.push('action=' + action)
                 }
                 if(jobid != null && jobid != undefined && jobid != ''){
-                    new_url += '&jobid=' + jobid
+                    param.push('jobid=' + jobid)
                 }
+                if(param.length > 0){
+                    new_url += '?' + param.join('&')
+                }
+                
                 window.open(new_url, '_self')
                 return
             }
