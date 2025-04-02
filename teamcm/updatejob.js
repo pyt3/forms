@@ -1789,31 +1789,31 @@ async function updateData(update_data) {
 
         if (liff.getContext().type != 'group' && liff.getContext().type != 'utou') {
             method = 'shareTargetPicker'
-            let { value: confirm } = await Swal.fire({
+            // let { value: confirm } = await Swal.fire({
+            //     iconHtml: '<i class="bi bi-line text-success"></i>',
+            //     title: 'กรุณาเลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
+            //     confirmButtonText: `ตกลง`,
+            //     allowOutsideClick: false,
+            //     customClass: {
+            //         popup: 'rounded-4',
+            //         icon: 'border-0'
+            //     },
+            // })
+            // if (confirm) {
+            // }
+            Swal.fire({
                 iconHtml: '<i class="bi bi-line text-success"></i>',
-                title: 'กรุณาเลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
-                confirmButtonText: `ตกลง`,
-                allowOutsideClick: false,
+                title: 'กำลังดึงรายชื่อกลุ่มไลน์',
+                text: 'กำลังส่งข้อความ',
+                didOpen: () => {
+                    Swal.showLoading()
+                },
                 customClass: {
                     popup: 'rounded-4',
                     icon: 'border-0'
                 },
+                allowOutsideClick: false,
             })
-            if (confirm) {
-                Swal.fire({
-                    iconHtml: '<i class="bi bi-line text-success"></i>',
-                    title: 'กำลังดึงรายชื่อกลุ่มไลน์',
-                    text: 'กำลังส่งข้อความ',
-                    didOpen: () => {
-                        Swal.showLoading()
-                    },
-                    customClass: {
-                        popup: 'rounded-4',
-                        icon: 'border-0'
-                    },
-                    allowOutsideClick: false,
-                })
-            }
         }
         console.log(messages);
         liff[method](messages).then(() => {
