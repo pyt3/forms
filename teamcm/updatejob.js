@@ -1850,7 +1850,7 @@ async function updateData(update_data) {
                 allowOutsideClick: false,
             })
         }
-        const send_to_group = function (a,b) {
+        const send_to_group = function (a, b) {
             liff[a](b).then((res) => {
                 if (method == 'sendMessages' || (method == 'shareTargetPicker' && res)) {
                     firestore.collection('jobdata/').doc(update_data.jobid).set({
@@ -1869,7 +1869,7 @@ async function updateData(update_data) {
                         // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
                         liff.closeWindow();
                     })
-                }else{
+                } else {
                     Swal.fire({
                         icon: 'warning',
                         title: 'เลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
@@ -1877,8 +1877,13 @@ async function updateData(update_data) {
                         customClass: {
                             popup: 'rounded-4'
                         },
-                    }).then(() => {
-                        send_to_group(a, b)
+                        confirmButtonText: 'เลือกกลุ่ม',
+                        showCancelButton: true,
+                        cancelButtonText: 'ยกเลิก การอัพเดท',
+                    }).then((res) => {
+                        if (res.isConfirmed) {
+                            send_to_group(a, b)
+                        }
                     })
                 }
             }).catch(err => {
