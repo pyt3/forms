@@ -49,7 +49,7 @@ $(document).ready(async () => {
         //         }
         //     }
         // }
-        if(liff.getOS() == 'ios' && liff.getContext().type == 'external') {
+        if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
             let url = new URL(window.location.href)
             let action = url.searchParams.get('action')
             let jobid = url.searchParams.get('jobid')
@@ -68,17 +68,17 @@ $(document).ready(async () => {
             return window.open(new_url, '_self')
         }
 
-        if(!liff.isInClient()) {
-            if (liff.getContext().type != 'group') {
-                $('.mobile').addClass('d-none')
-            }
-            let url = new URL(window.location.href)
-            if (url.searchParams.get('action') != 'summary') {
-                // add parameter
-                url.searchParams.set('action', 'summary')
-                return window.open(url, '_self')
-            }
-        }
+        // if(!liff.isInClient()) {
+        //     if (liff.getContext().type != 'group') {
+        //         $('.mobile').addClass('d-none')
+        //     }
+        //     let url = new URL(window.location.href)
+        //     if (url.searchParams.get('action') != 'summary') {
+        //         // add parameter
+        //         url.searchParams.set('action', 'summary')
+        //         return window.open(url, '_self')
+        //     }
+        // }
 
         if (!liff.isLoggedIn()) {
             return liff.login({ redirectUri: window.location.href })
@@ -1850,38 +1850,53 @@ async function updateData(update_data) {
                 allowOutsideClick: false,
             })
         }
-        console.log(messages);
-        liff[method](messages).then(() => {
-            firestore.collection('jobdata/').doc(update_data.jobid).set({
-                has_sent_init_msg: true
-            }, { merge: true })
-            Swal.fire({
-                icon: 'success',
-                title: 'อัพเดทสำเร็จ',
-                text: 'อัพเดทสำเร็จ',
-                customClass: {
+        const send_to_group = function (a,b) {
+            liff[a](b).then((res) => {
+                if (method == 'sendMessages' || (method == 'shareTargetPicker' && res)) {
+                    firestore.collection('jobdata/').doc(update_data.jobid).set({
+                        has_sent_init_msg: true
+                    }, { merge: true })
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'อัพเดทสำเร็จ',
+                        text: 'อัพเดทสำเร็จ',
+                        customClass: {
 
-                    popup: 'rounded-4'
-                },
-                timer: 1500,
-            }).then(() => {
-                // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
-                liff.closeWindow();
-            })
-        }).catch(err => {
-            console.log(err);
-            Swal.fire({
-                icon: 'error',
-                title: 'มีข้อผิดพลาด',
-                html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small><br><br>' + JSON.stringify(carousel),
-                confirmButtonText: "ตกลง",
-                customClass: {
+                            popup: 'rounded-4'
+                        },
+                        timer: 1500,
+                    }).then(() => {
+                        // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
+                        liff.closeWindow();
+                    })
+                }else{
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'เลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
+                        text: 'กรุณาลองใหม่อีกครั้ง',
+                        customClass: {
+                            popup: 'rounded-4'
+                        },
+                    }).then(() => {
+                        send_to_group(a, b)
+                    })
+                }
+            }).catch(err => {
+                console.log(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'มีข้อผิดพลาด',
+                    html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small><br><br>' + JSON.stringify(carousel),
+                    confirmButtonText: "ตกลง",
+                    customClass: {
 
-                    popup: 'rounded-4'
-                },
-                //showConfirmButton: false,
+                        popup: 'rounded-4'
+                    },
+                    //showConfirmButton: false,
+                })
             })
-        })
+        }
+        send_to_group(method, messages)
     })
 }
 $('.user-select-all').click(function () {
