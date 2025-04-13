@@ -994,7 +994,12 @@ ${update}
         }
     })
     $('#summary-btn').click(function () {
-        let url = new URL('line://app/' + liff_id)
+        let url
+        if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
+           url = new URL('line://app/' + liff_id)
+        }else{
+              url = new URL('https://liff.line.me/' + liff_id)
+        }
         url.searchParams.set('code', code)
         url.searchParams.set('jobid', jobid)
         url.searchParams.set('action', 'summary')
