@@ -23,60 +23,60 @@ $(document).ready(async () => {
         liffId: liff_id,
     })
     liff.ready.then(async () => {
-        if (!liff.isInClient()) {
-            if (liff.getOS() != 'ios') {
-                if (liff.getContext().type != 'group') {
-                    $('.mobile').addClass('d-none')
-                }
-                let url = new URL(window.location.href)
-                if (url.searchParams.get('action') != 'summary') {
-                    // add parameter
-                    url.searchParams.set('action', 'summary')
-                    window.open(url, '_self')
-                }
-                if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
-            } else {
-                if (liff.getContext().type == 'external') {
-                    let url = new URL(window.location.href)
-                    let action = url.searchParams.get('action')
-                    let jobid = url.searchParams.get('jobid')
-                    let new_url = 'line://app/' + liff_id
-                    let param = []
-                    if (action != null && action != undefined && action != '') {
-                        param.push('action=' + action)
-                    }
-                    if (jobid != null && jobid != undefined && jobid != '') {
-                        param.push('jobid=' + jobid)
-                    }
-                    if (param.length > 0) {
-                        new_url += '?' + param.join('&')
-                    }
+        // if (!liff.isInClient()) {
+        //     if (liff.getOS() != 'ios') {
+        //         if (liff.getContext().type != 'group') {
+        //             $('.mobile').addClass('d-none')
+        //         }
+        //         let url = new URL(window.location.href)
+        //         if (url.searchParams.get('action') != 'summary') {
+        //             // add parameter
+        //             url.searchParams.set('action', 'summary')
+        //             window.open(url, '_self')
+        //         }
+        //         if (!liff.isLoggedIn()) return liff.login({ redirectUri: window.location.href })
+        //     } else {
+        //         if (liff.getContext().type == 'external') {
+        //             let url = new URL(window.location.href)
+        //             let action = url.searchParams.get('action')
+        //             let jobid = url.searchParams.get('jobid')
+        //             let new_url = 'line://app/' + liff_id
+        //             let param = []
+        //             if (action != null && action != undefined && action != '') {
+        //                 param.push('action=' + action)
+        //             }
+        //             if (jobid != null && jobid != undefined && jobid != '') {
+        //                 param.push('jobid=' + jobid)
+        //             }
+        //             if (param.length > 0) {
+        //                 new_url += '?' + param.join('&')
+        //             }
 
-                    window.open(new_url, '_self')
-                    return
-                }
-            }
-        }
-        // if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
-        //     let url = new URL(location.href)
-        //     console.log("🚀 !! url:", url);
-        //     let action = url.searchParams.get('action')
-        //     let jobid = url.searchParams.get('jobid')
-        //     let new_url = 'line://app/' + liff_id
-        //     let param = []
-        //     if (action != null && action != undefined && action != '') {
-        //         param.push('action=' + action)
+        //             window.open(new_url, '_self')
+        //             return
+        //         }
         //     }
-        //     if (jobid != null && jobid != undefined && jobid != '') {
-        //         param.push('jobid=' + jobid)
-        //     }
-        //     if (param.length > 0) {
-        //         new_url += '?' + param.join('&')
-        //     }
-
-        //     return console.log("🚀 !! new_url:", new_url)
-        //     // return window.open(new_url, '_self')
         // }
+        if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
+            let url = new URL(location.href)
+            console.log("🚀 !! url:", url);
+            let action = url.searchParams.get('action')
+            let jobid = url.searchParams.get('jobid')
+            let new_url = 'line://app/' + liff_id
+            let param = []
+            if (action != null && action != undefined && action != '') {
+                param.push('action=' + action)
+            }
+            if (jobid != null && jobid != undefined && jobid != '') {
+                param.push('jobid=' + jobid)
+            }
+            if (param.length > 0) {
+                new_url += '?' + param.join('&')
+            }
+
+            return console.log("🚀 !! new_url:", new_url)
+            // return window.open(new_url, '_self')
+        }
 
         // if(!liff.isInClient()) {
         //     if (liff.getContext().type != 'group') {
