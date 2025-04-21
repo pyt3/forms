@@ -1,4 +1,12 @@
 var vConsole = new VConsole();
+AOS.init();
+document.addEventListener("DOMContentLoaded", function () {
+    NProgress.start();
+    NProgress.inc()
+});
+window.addEventListener("load", function () {
+    NProgress.done();
+});
 // const liff_id = '1655873446-3xe866Ql'
 const liff_id = '1661543046-a1pJexbX' // use
 // const liff_id = '1661543046-86kpRl4E' // test
@@ -50,7 +58,8 @@ $(document).ready(async () => {
         //     }
         // }
         if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
-            let url = new URL(window.location.href)
+            let url = new URL(location.href)
+            console.log("🚀 !! url:", url);
             let action = url.searchParams.get('action')
             let jobid = url.searchParams.get('jobid')
             let new_url = 'line://app/' + liff_id
