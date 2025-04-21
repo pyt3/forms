@@ -65,7 +65,8 @@ $(document).ready(async () => {
                 new_url += '?' + param.join('&')
             }
 
-            return window.open(new_url, '_self')
+            return console.log("🚀 !! new_url:", new_url)
+            // return window.open(new_url, '_self')
         }
 
         // if(!liff.isInClient()) {
@@ -736,7 +737,6 @@ async function initialData() {
                 }).then(() => {
                     liff.closeWindow()
                 })
-                liff.closeWindow()
             }).catch((err) => {
                 $.LoadingOverlay("hide");
                 Swal.fire({
