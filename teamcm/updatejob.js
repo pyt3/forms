@@ -1,4 +1,4 @@
-
+var vConsole = new VConsole();
 // const liff_id = '1655873446-3xe866Ql'
 const liff_id = '1661543046-a1pJexbX' // use
 // const liff_id = '1661543046-86kpRl4E' // test
