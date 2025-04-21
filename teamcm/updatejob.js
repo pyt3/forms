@@ -1,4 +1,4 @@
-var vConsole = new VConsole();
+// var vConsole = new VConsole();
 AOS.init();
 document.addEventListener("DOMContentLoaded", function () {
     NProgress.start();
@@ -75,6 +75,7 @@ $(document).ready(async () => {
             }
 
             // return console.log("🚀 !! new_url:", new_url)
+            
             return window.open(new_url, '_self')
         }
 
