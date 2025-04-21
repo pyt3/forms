@@ -74,8 +74,8 @@ $(document).ready(async () => {
                 new_url += '?' + param.join('&')
             }
 
-            return console.log("🚀 !! new_url:", new_url)
-            // return window.open(new_url, '_self')
+            // return console.log("🚀 !! new_url:", new_url)
+            return window.open(new_url, '_self')
         }
 
         // if(!liff.isInClient()) {
