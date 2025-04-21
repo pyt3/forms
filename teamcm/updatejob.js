@@ -58,7 +58,7 @@ $(document).ready(async () => {
         //     }
         // }
         if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
-            let url = new URL(location.href)
+            let url = new URL(window.location.href)
             console.log("🚀 !! url:", url);
             let action = url.searchParams.get('action')
             let jobid = url.searchParams.get('jobid')
