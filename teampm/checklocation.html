@@ -412,11 +412,14 @@
             // id = id.replace(/\D/g, '')
             let queryArr = []
 
-            queryArr.push(client + '_' + (('00000' + id.toString()).slice(-5)))
             if (!id.includes('_')) {
+                queryArr.push(client + '_' + (('00000' + id.toString()).slice(-5)))
                 for (let i = 1; i <= 15; i++) {
                     queryArr.push(client + '_' + (('00000' + id).slice(-5)) + '_' + i)
                 }
+            }else{
+                let [main_id, sub_id] = id.toString().split('_')
+                queryArr.push(client + '_' + (('00000' + main_id).slice(-5)) + '_' + sub_id)
             }
             queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
             queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
