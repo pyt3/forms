@@ -121,6 +121,9 @@ data = {
     "Submit": "Submit"
 }
 
+# The above Python code snippet defines a dictionary named `cookies` containing three key-value pairs
+# representing cookies used in a web request. The keys represent the cookie names, and the values are
+# the corresponding cookie values.
 cookies = {
     "_ga": "GA1.1.409909798.1624509466",
     "_ga_L9CPT990SV": "GS1.1.1629863162.2.0.1629863162.0",

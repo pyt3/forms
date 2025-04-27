@@ -1,114 +1,60 @@
-import csv
-import datetime
-import emoji
-import firebase_admin
-import inspect
-import json
+import pygame
+from PIL import Image
+from io import BytesIO
+from datetime import datetime
+import urllib3
+from rich.progress import track
+from rich import print
+import concurrent.futures
+from flask import Flask, redirect, request, jsonify, send_file, url_for
+import requests
+from bs4 import BeautifulSoup
+import calendar
+from html2image import Html2Image
 import logging
 import os
-import pyfiglet
-import random
-import requests
-import sys
+import csv
+import re
+import json
 import threading
 import time
-import traceback
-import tracemalloc
+import base64
+import sys
 import urllib.parse
-import urllib3
-from alive_progress import alive_bar
-from bs4 import BeautifulSoup
-from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
-from firebase_admin import credentials, firestore
-from google.api_core.exceptions import DeadlineExceeded
-from pprint import pprint
-from queue import Queue
-from rich import print, pretty
-from rich.console import Console
-from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, track
+from typing import Dict, List, Optional, Union, Any
+from pathlib import Path
+import polars as pl
 
-# Configure logging
-logging.basicConfig(
-    filename='log.txt',
-    filemode='a',
-    format='%(asctime)s - %(levelname)s - %(module)s:%(funcName)s:%(lineno)d - %(message)s',
-    level=logging.INFO
-)
+# Disable keyring password prompts on Linux
+os.environ['PYTHON_KEYRING_BACKEND'] = 'keyring.backends.null.Keyring'
 
-# Increase recursion limit for complex operations
-sys.setrecursionlimit(50000)
+# Third-party imports
 
-# Start memory tracking
-tracemalloc.start()
-
-# Initialize Rich pretty printing
-pretty.install()
+# Configure encodings
+sys.stdin.reconfigure(encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 # Disable SSL warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Get current directory path
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# Initialize Flask application
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+app.app_context().push()
 
-# Initialize global variables and constants
-MAX_WORKORDER = 1000
-TG_API = '7681265177:AAFVGgh5lAzXRRfiole5ywOlY-CoEIOjEz4'
-REQUEST_TIMEOUT = 10
-RETRY_DELAY_BASE = 2
+# Global variables with type hints
+cookies: Dict[str, str] = {
+    "_ga": "GA1.1.409909798.1624509466",
+    "_ga_L9CPT990SV": "GS1.1.1629863162.2.0.1629863162.0",
+    "PHPSESSID": None,
+}
 
-# Create a session for reusing connections
-session = requests.Session()
-session.verify = False
+login_lock = threading.Lock()
+emp_list: Optional[List[List[str]]] = None
+alarm: bool = False
+status_printed: str = 'No internet connection'
+alert_start: Optional[float] = None
 
-# Load configuration
-try:
-    with open(os.path.join(__location__, "configTG.json")) as config:
-        confdata = json.load(config)
-        
-    TG_CHAT_ID = confdata["TG_CHAT_ID"]
-    cssd_chatid = TG_CHAT_ID.get("PYT3_CSSD", "")
-    lab_chatid = TG_CHAT_ID.get("PYT3_LAB", "")
-    repair_chatid = TG_CHAT_ID.get("REPAIR_CENTER", "")
-    site_session_id = confdata["SESSION_ID"]
-    sleep = confdata["SLEEP"]
-except Exception as e:
-    logging.error(f"Failed to load config: {e}")
-    raise
-
-# Thread locking
-lock = threading.Lock()
-
-# Initialize Firebase
-try:
-    cred = credentials.Certificate(os.path.join(__location__, "Admin_SDK.json"))
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
-except Exception as e:
-    logging.error(f"Failed to initialize Firebase: {e}")
-    raise
-
-# Initialize state variables
-current_site = ''
-tg_site_chatid = ''
-isCheckStock = False
-lost_connection = False
-cant_login = 0
-skip_site = []
-snaps = []
-workorder_already_update = []
-temp_waiting_update = []
-enter_by_bme = []
-remainWorks = []
-alreadySent = {}
-start_time = datetime.timestamp(datetime.now())
-
-# Cache for results
-connection_status_cache = {'time': 0, 'status': False}
-sender_cache = {}
-urgent_status_cache = {}
-
-# HTTP headers
 headers = {
     "Connection": "keep-alive",
     "Upgrade-Insecure-Requests": "1",
@@ -118,1085 +64,1483 @@ headers = {
     "Accept-Language": "th-TH,th;q=0.9,en;q=0.8",
 }
 
-# HTTP cookies
-cookies = {
-    "_ga": "GA1.1.409909798.1624509466",
-    "_ga_L9CPT990SV": "GS1.1.1629863162.2.0.1629863162.0",
-    "PHPSESSID": False
-}
 
-# Login data template
-data = {
-    "user": '',
-    "pass": '',
-    "Submit": "Submit",
-    "Submit.x": "79",
-    "Submit.y": "30",
-}
+def set_login(username=None, password=None):
+    """Authenticate with the server and get a session ID.
 
+    Args:
+        username: Optional username, uses default if None
+        password: Optional password, uses default if None
 
-def internet_connection():
-    """Check if internet connection is available with caching for performance."""
-    current_time = time.time()
-    # Use cached result if less than 30 seconds old
-    if current_time - connection_status_cache['time'] < 30:
-        return connection_status_cache['status']
-        
-    start_check = time.time()
-    try:
-        session.get('https://www.google.com/', timeout=5)
-        end_check = time.time()
-        print(f'Internet Connection Time: {end_check - start_check:.2f}s')
-        connection_status_cache['time'] = current_time
-        connection_status_cache['status'] = True
-        return True
-    except requests.exceptions.RequestException:
-        end_check = time.time()
-        print(f'Internet Connection Time: {end_check - start_check:.2f}s')
-        connection_status_cache['time'] = current_time
-        connection_status_cache['status'] = False
-        return False
+    Returns:
+        bool: True if login successful, False otherwise
+    """
+    global cookies
+    with login_lock:
+        logging.info('Setting up login session')
 
-
-def make_request(method, url, retries=5, **kwargs):
-    """Centralized request function with retry logic and error handling."""
-    retry_delay = RETRY_DELAY_BASE
-    kwargs.setdefault('timeout', REQUEST_TIMEOUT)
-    kwargs.setdefault('verify', False)
-    
-    if 'cookies' not in kwargs:
-        kwargs['cookies'] = cookies
-    
-    if 'headers' not in kwargs:
-        kwargs['headers'] = headers
-    
-    for attempt in range(retries):
-        try:
-            if method.lower() == 'get':
-                response = session.get(url, **kwargs)
-            else:
-                response = session.post(url, **kwargs)
-            
-            response.raise_for_status()
-            if url.endswith('.php'):
-                response.encoding = "tis-620"
-            return response
-        except requests.exceptions.RequestException as e:
-            if attempt < retries - 1:
-                print(f"Request failed (attempt {attempt+1}/{retries}): {str(e)}")
-                print(f"Retrying in {retry_delay} seconds...")
-                time.sleep(retry_delay)
-                retry_delay *= 2  # Exponential backoff
-            else:
-                print(f"Max retries reached for {url}")
-                raise
-
-
-def set_login(site, site_data):
-    """Login to the site and save the session ID."""
-    try:
-        with requests.Session() as s:
-            data = {
-                "user": site_data["user"], 
-                "pass": site_data["pass"], 
-                "Submit": "Submit", 
-                "Submit.x": "79", 
-                "Submit.y": "30"
-            }
-            
-            r = s.post(
-                "https://nsmart.nhealth-asia.com/MTDPDB01/index.php",
-                data=data, 
-                headers=headers, 
-                verify=False, 
-                timeout=REQUEST_TIMEOUT
-            )
-
-            site_session_id[site] = s.cookies["PHPSESSID"]
-            # Save session id to config
-            confdata["SESSION_ID"][site] = s.cookies["PHPSESSID"]
-            with open(os.path.join(__location__, "configTG.json"), 'w') as f:
-                json.dump(confdata, f)
-
-            cookies["PHPSESSID"] = site_session_id[site]
-    except Exception as e:
-        print(e)
-        print("[red]No Internet Connection[/red]")
-        time.sleep(5)
-        return set_login(site, site_data)
-
-
-def clean_text(elem):
-    """Extract text from HTML elements with proper handling of line breaks."""
-    text = ''
-    for e in elem.descendants:
-        if isinstance(e, str):
-            text += e.strip()
-        elif e.name == 'br' or e.name == 'p':
-            text += '\n'
-    return text
-
-
-def getSender(order):
-    """Get sender information with caching for performance."""
-    # Check cache first
-    if order in sender_cache:
-        return sender_cache[order]
-        
-    try:
-        url = f"https://nsmart.nhealth-asia.com/mtdpdb01/jobs/REQ_02.php?req_no={order}"
-        response = make_request('get', url)
-        detailsoup = BeautifulSoup(response.text, "lxml")
-        sender = detailsoup.find("input", {"name": "caller"})["value"]
-        # Cache the result
-        sender_cache[order] = sender
-        return sender
-    except Exception as e:
-        print(f"Error getting sender: {e}")
-        time.sleep(2)
-        return getSender(order)
-
-
-def getUrgentStatus(req_no):
-    """Get urgent status information with caching for performance."""
-    # Check cache first
-    if req_no in urgent_status_cache:
-        return urgent_status_cache[req_no]
-        
-    try:
-        url = f"https://nsmart.nhealth-asia.com/mtdpdb01/jobs/REQ_02.php?req_no={req_no}"
-        response = make_request('get', url)
-        soup = BeautifulSoup(response.text, "lxml")
-        
-        
-        room = soup.find('input', {'name': "roomno"}).get("value", "")
-        sender = soup.find('input', {'name': "caller"}).get("value", "")
-        coop = soup.find('input', {'name': "coop_name"}).get("value", "")
-        position = soup.find('input', {'name': "req_position"}).get("value", "")
-        building = soup.find('input', {'name': "bname"}).get("value", "")
-        
-        if len(room) == 0:
-            room = "---"
-            
-        radio = soup.findAll('input', attrs={'name': 'urgentstat'})
-        status = ''
-        for r in radio:
-            if r.has_attr('checked'):
-                val = r.get('value')
-                if val == '1':
-                    status = 'ปกติ (Normal)'
-                elif val == '2':
-                    status = 'ด่วน (Urgent)'
-                elif val == '3':
-                    status = 'ฉุกเฉิน (Emergency)'
-                    
-        result = {
-            'status': status, 
-            'room': room, 
-            'sender': sender, 
-            'coop': coop, 
-            'position': position, 
-            'building': building
+        # Use provided credentials or defaults
+        data = {
+            "user": username or "PYT34DARANPHOP",
+            "pass": password or "577199",
+            "Submit": "Submit",
+            "Submit.x": "79",
+            "Submit.y": "30"
         }
-        
-        # Cache the result
-        urgent_status_cache[req_no] = result
-        return result
-    except Exception as e:
-        print(f"Error getting urgent status: {e}")
-        time.sleep(5)
-        return getUrgentStatus(req_no)
 
-
-def sendTelegramDev(msg, isSilent=False):
-    """Send a Telegram message to the developer."""
-    chatid = '1354847893'
-    try:
-        tg_url = f'https://api.telegram.org/bot{TG_API}/sendMessage'
-        # Convert msg to string if it's not already a string
-        if not isinstance(msg, (str, bytes)):
-            msg = str(msg)
-            
-        tg_response = handle_tg_request(
-            tg_url,
-            params={
-                'chat_id': chatid, 
-                'text': msg, 
-                'parse_mode': 'HTML'
-            }
-        )
-        return True
-    except Exception as e:
-        print(f"Failed to send Telegram notification: {e}")
-        time.sleep(5)
-        return False
-
-
-def sendTelegramStart():
-    """Send a service start notification via Telegram."""
-    chatid = '1354847893'
-    try:
-        tg_url = f'https://api.telegram.org/bot{TG_API}/sendMessage'
-        tg_msg = emoji.emojize(
-            ":check_mark_button: Service Starting...\n\n:check_mark_button: Bot is running..."
-        )
-        handle_tg_request(
-            tg_url,
-            params={
-                'chat_id': chatid, 
-                'text': tg_msg, 
-                'parse_mode': 'HTML'
-            }
-        )
-        return True
-    except Exception as e:
-        print(f"Failed to send Telegram notification: {e}")
-        return False
-
-
-def sendTelegramRecieve(detail, reciever, code, name):
-    """Send a notification that a job has been received."""
-    msg = f"""
-งานรหัส {code}
-เครื่อง {name}
-
-{detail} 
-
-:check_mark_button::check_mark_button: รับงานแล้ว :check_mark_button::check_mark_button:
-
-โดย: {reciever}"""
-    
-    # First convert to emojis, then to string if needed
-    msg_with_emoji = emoji.emojize(msg)
-    
-    # Make sure we're using a string for the 'text' parameter, not bytes
-    if isinstance(msg_with_emoji, bytes):
-        msg_with_emoji = msg_with_emoji.decode('utf-8')
-    
-    chatid = '-1002697367039'
-    
-    try:
-        tg_url = f'https://api.telegram.org/bot{TG_API}/sendMessage'
-        # Use handle_tg_request instead of make_request to get consistent type handling
-        handle_tg_request(
-            tg_url,
-            params={
-                'chat_id': chatid, 
-                'text': msg_with_emoji, 
-                'parse_mode': 'HTML'
-            }
-        )
-        return True
-    except Exception as e:
-        print(f"Failed to send Telegram notification: {e}")
-        time.sleep(5)
-        return False
-
-
-def handle_tg_request(url, params, files=None):
-    """Handle Telegram API requests with migration handling and retries."""
-    max_retries = 5
-    retry_delay = RETRY_DELAY_BASE
-    
-    # Ensure all values in params are strings (not booleans or other types)
-    for key, value in params.items():
-        if not isinstance(value, (str, bytes)) and key != 'chat_id':
-            params[key] = str(value)
-    
-    for attempt in range(max_retries):
         try:
-            if files:
-                response = requests.post(url, data=params, files=files, timeout=REQUEST_TIMEOUT)
-            else:
-                response = requests.post(url, data=params, timeout=REQUEST_TIMEOUT)
-                
-            response.raise_for_status()
-            
-            # Check for chat migration
-            if (response.status_code == 400 and 
-                'parameters' in response.json() and 
-                'migrate_to_chat_id' in response.json()['parameters']):
-                
-                new_chat_id = response.json()['parameters']['migrate_to_chat_id']
-                params['chat_id'] = new_chat_id
-                # Update config with new chat_id
-                site = params.get('site', '').upper()
-                if site:
-                    TG_CHAT_ID[site] = new_chat_id
-                    confdata["TG_CHAT_ID"][site] = new_chat_id
-                    with open(os.path.join(__location__, "configTG.json"), 'w') as f:
-                        json.dump(confdata, f)
-                        
-                # Retry with new chat_id
-                if files:
-                    response = requests.post(url, data=params, files=files)
-                else:
-                    response = requests.post(url, data=params)
-                response.raise_for_status()
-                
-            return response
-            
-        except Exception as e:
-            print(f"Request failed (attempt {attempt+1}/{max_retries}): {str(e)}")
-            if attempt < max_retries - 1:
-                print(f"Retrying in {retry_delay} seconds...")
-                time.sleep(retry_delay)
-                retry_delay *= 2  # Exponential backoff
-            else:
-                raise
-
-
-def sendTelegramThread(chatid, payload):
-    """Send a Telegram message in a separate thread."""
-    if chatid == '':
-        return
-        
-    chatid = str(chatid)
-    try:
-        opt = {'chat_id': chatid, 'parse_mode': 'HTML'}
-        if payload['has_inline']:
-            opt['reply_markup'] = json.dumps(
-                {'inline_keyboard': [
-                    [{"text": emoji.emojize(payload['status_text']),
-                     "url": f"https://liff.line.me/1661543046-a1pJexbX?jobid={payload['reqOrderNum']}"}]
-                ]}
-            )
-
-        tg_photo_url = f'https://api.telegram.org/bot{TG_API}/sendPhoto'
-        tg_url = f'https://api.telegram.org/bot{TG_API}/sendMessage'
-        
-        # Send message with appropriate method
-        if payload['img'] is not None:
-            # Try to send as photo with caption
-            try:
-                opt['caption'] = payload['message']
-                img_response = requests.get(payload['img'])
-                img_response.raise_for_status()
-                
-                tg_response = handle_tg_request(
-                    tg_photo_url, 
-                    opt, 
-                    {'photo': img_response.content}
+            with requests.Session() as s:
+                r = s.post(
+                    "https://nsmart.nhealth-asia.com/MTDPDB01/index.php",
+                    data=data,
+                    headers=headers,
+                    verify=False,
+                    timeout=10
                 )
-            except Exception:
-                # Fallback to text message if photo fails
-                opt.pop('caption', None)
-                opt['text'] = payload['message']
-                tg_response = handle_tg_request(tg_url, opt)
-        else:
-            # Send as regular text message
-            opt['text'] = payload['message']
-            tg_response = handle_tg_request(tg_url, opt)
-
-        if tg_response.status_code == 200:
-            message_id = tg_response.json()['result']['message_id']
-            if payload['reqOrderNum'] != '':
-                doc_ref = db.collection(u'jobdata').document(payload['reqOrderNum'])
-                doc = doc_ref.get()
-                data_obj = {
-                    u'code': payload['ncode'],
-                    u'site': payload['site'],
-                    u'job_no': payload['reqOrderNum'],
-                    u'detail': payload['detail'],
-                    u'building': payload['building'],
-                    u'room': payload['room'],
-                    u'dept': payload['dept'],
-                    u'urgent': payload['urgent'],
-                    u'sender': payload['sender'],
-                    u'coop': payload['coop'],
-                    u'ename': payload['ename'],
-                    u'date': payload['date'],
-                    u'message_id': message_id,
-                }
-                if payload['img'] != '':
-                    data_obj['image'] = payload['img']
-
-                if doc.exists:
-                    doc_ref.update(data_obj)
-                else:
-                    doc_ref.set(data_obj)
-    except Exception as e:
-        print(f"Error in sendTelegramThread: {e}")
-        if 'tg_response' in locals():
-            print(tg_response.text)
-            sendTelegramDev(tg_response.text)
-        if payload.get('img'):
-            sendTelegramDev(payload['img'])
-
-
-def sendNotify(reqOrderNum, date, dept, detail, building, img, urgent, sender, coop, ename, ncode, room, position, site, isReceive=False):
-    """Send a notification about a new job."""
-    global alreadySent
-    
-    # Acquire lock with timeout to prevent deadlocks
-    if not lock.acquire(timeout=100):
-        print("Failed to acquire lock for sendNotify")
-        return
-        
-    try:
-        # Get sender if needed
-        if not sender or sender == '':
-            sender = getSender(reqOrderNum)
-            
-        # Prepare message based on ncode
-        if len(ncode) == 0:
-            msg = f"""<b>Request Order: {reqOrderNum}</b>
-
-<b>:backhand_index_pointing_right: อาการเสีย:</b> 
-<blockquote expandable>
-<b>{detail}</b>
-
-</blockquote>
-<b>:office_building: แผนก(เครื่อง):</b> {dept}
-
-<b>:backhand_index_pointing_right: ผู้แจ้ง:</b> {sender}
-
-<b>:backhand_index_pointing_right: ตำแหน่ง:</b> {position}
-
-<b>:backhand_index_pointing_right:</b> แจ้งซ่อมเครื่องมือไม่ระบุรหัส
-
-<b>:backhand_index_pointing_right: ห้อง:</b> {room}
-
-<b>:spiral_calendar: ในวันที่:</b> {date}
-
-<b>:warning: ความเร่งด่วน:</b> {urgent}
-"""
-        else:
-            msg = f"""<b>Request Order: {reqOrderNum}</b>
-
-<b>:backhand_index_pointing_right: อาการเสีย:</b>
-<blockquote expandable>
-<b>{detail}</b>
-
-</blockquote>
-<b>:office_building: แผนก(เครื่อง):</b> {dept}
-
-<b>:backhand_index_pointing_right: ผู้แจ้ง:</b> {sender}  {coop}
-
-<b>:backhand_index_pointing_right: ตำแหน่ง:</b> {position}
-
-<b>:backhand_index_pointing_right: แจ้งซ่อม:</b> {ename}
-
-<b>:backhand_index_pointing_right: รหัส:</b> {ncode}
-
-<b>:backhand_index_pointing_right: ห้อง:</b> {room}
-
-<b>:spiral_calendar: ในวันที่:</b> {date}
-
-<b>:warning: ความเร่งด่วน:</b> {urgent}
-"""
-
-        # Determine which chat groups should receive the message
-        group_tg_chatid = []
-        print(site)
-        tg_site_chatid = confdata["TG_CHAT_ID"][site]
-        
-        status_text = ':hourglass_not_done: รอรับงาน!!' if not isReceive else ':OK_hand: รับงานแล้ว!!'
-        
-        # Add site prefix for non-PYT3 sites
-        if site == 'PYT3':
-            dept_lowercase = dept.lower().strip()
-            if dept_lowercase == 'central sterile supply (cssd)':
-                group_tg_chatid = [tg_site_chatid, cssd_chatid]
-            elif dept_lowercase.find('laboratory') > -1 and dept_lowercase.find('gastrointestinal') == -1:
-                group_tg_chatid = [tg_site_chatid, lab_chatid]
-            else:
-                group_tg_chatid = [tg_site_chatid]
-        else:
-            msg = site + '\n' + msg
-            group_tg_chatid = [tg_site_chatid]
-            
-        # Emojify the message
-        tg_msg = emoji.emojize(msg)
-        tg_msg = tg_msg.encode('utf-8')
-
-        # Add to repair chat if needed
-        if detail.lower().startswith('[repair]'):
-            group_tg_chatid.append(repair_chatid)
-
-        # Prepare threads for sending messages
-        threads = []
-        for idx, chatid in enumerate(group_tg_chatid):
-            payload = {
-                "message": tg_msg,
-                "site": site,
-                "status_text": status_text,
-                "ncode": ncode,
-                "reqOrderNum": reqOrderNum,
-                "dept": dept,
-                "urgent": urgent,
-                "sender": sender,
-                "building": building,
-                "room": room,
-                "coop": coop,
-                "ename": ename,
-                "date": date,
-                "detail": detail
-            }
-            
-            # Add image if available
-            if img and img != '':
-                payload["img"] = img
-            else:
-                payload["img"] = None
-                
-            # Only first recipient (or repair chats) get inline buttons
-            payload["has_inline"] = (idx == 0 or detail.lower().startswith('[repair]'))
-            
-            # Skip test messages
-            if coop.lower() != "test":
-                t = threading.Thread(target=sendTelegramThread, args=(chatid, payload))
-                threads.append(t)
-                
-        # Start threads with a small delay to avoid rate limiting
-        for t in threads:
-            t.start()
-            time.sleep(0.5)
-            
-        # Wait for all threads to complete
-        for t in threads:
-            t.join()
-            
-        # Update tracking of sent messages
-        if site.upper() not in alreadySent:
-            alreadySent[site.upper()] = []
-            
-        alreadySent[site.upper()].append(reqOrderNum)
-        alreadySent[site.upper()] = list(set(alreadySent[site.upper()]))
-
-        # Prevent too many stored messages
-        if len(alreadySent[site.upper()]) > MAX_WORKORDER:
-            alreadySent[site.upper()] = alreadySent[site.upper()][500:]
-            
-        # Save the updated list to disk
-        with open(os.path.join(__location__, "alreadySent.json"), 'w') as f:
-            json.dump(alreadySent, f)
-            
-    finally:
-        # Always release the lock
-        lock.release()
-
-
-def updateWorkOrder(jobno, workorder, reciever, code, job_status, signature):
-    """Update the status of a work order in Firestore."""
-    # Skip if already updated with same status
-    global batch 
-    global workorder_already_update
-    global temp_waiting_update
-    if any(d['workorder'] == workorder and d['status'] == job_status and d['signature'] == signature for d in workorder_already_update) or jobno == '':
-        return
-
-    try:
-        doc_ref = db.collection(u'jobdata').document(jobno)
-        doc = doc_ref.get()
-        
-        # Prepare data to update
-        d = {
-            u'workorder': workorder,
-            u'timestamp': firestore.SERVER_TIMESTAMP,
-            u'reciever': reciever,
-            u'status': job_status
-        }
-        
-        if signature:
-            d['signature'] = signature
-            
-        # Determine status text and button text for Telegram
-        job_status_text = job_status
-        inline_keyboard_text = ':hourglass_not_done: รอรับงาน!!'
-        
-        if job_status == 'Waiting':
-            job_status_text = '[gray]Waiting[/gray]'
-            inline_keyboard_text = ':OK_hand: รับงานแล้ว!!'
-        elif job_status == 'In process':
-            job_status_text = '[yellow]In Process[/yellow]'
-            inline_keyboard_text = ':hourglass_not_done: In Process!!'
-        elif job_status == 'Return equipment back':
-            job_status_text = '[green]Return equipment back[/green]'
-            inline_keyboard_text = ':check_mark_button: Return equipment back!!'
-        elif job_status == 'Cancel':
-            job_status_text = '[red]Cancel[/red]'
-            inline_keyboard_text = ':cross_mark: Cancel!!'
-        elif job_status == 'Waiting Quatation':
-            job_status_text = '[blue]Waiting Quatation[/blue]'
-            inline_keyboard_text = ':hourglass_not_done: Waiting Quatation!!'
-        elif job_status == 'Waiting for spare part':
-            job_status_text = '[blue]Waiting for spare parts[/blue]'
-            inline_keyboard_text = ':hourglass_not_done: Waiting for spare part!!'
-        elif job_status == 'Send Outsource':
-            job_status_text = '[blue]Send outsource[/blue]'
-            inline_keyboard_text = ':hourglass_not_done: Send outsource!!'
-        elif job_status == 'Dispose':
-            job_status_text = '[blue]Dispose[/blue]'
-            inline_keyboard_text = ':cross_mark: Dispose!!'
-            
-        if doc.exists:
-            fb_data = doc.to_dict()
-            message_id = fb_data.get('message_id')
-            # Update Telegram message if status changed
-            if message_id and (fb_data.get('status') is None or fb_data.get('status') != job_status):
-                try:
-                    tg_url = f'https://api.telegram.org/bot{TG_API}/editMessageReplyMarkup'
-                    chat_id = confdata['TG_CHAT_ID'][current_site]
-                    
-                    tg_data = {
-                        'chat_id': chat_id,
-                        'message_id': message_id,
-                        'reply_markup': json.dumps(
-                            {'inline_keyboard': [
-                                [{"text": emoji.emojize(inline_keyboard_text),
-                                  "url": f"https://liff.line.me/1661543046-a1pJexbX?jobid={fb_data.get('job_no')}"}]
-                            ]}
-                        ),
-                    }
-                    res = requests.post(tg_url, data=tg_data)
-                    res.raise_for_status()
-                except Exception as e:
-                    # Handle message not found errors
-                    if 'res' in locals() and hasattr(res, 'json'):
-                        response_json = res.json()
-                        if 'description' in response_json:
-                            description = response_json.get('description')
-                            if description == 'Bad Request: message to edit not found':
-                                print("Message not found, removing message_id")
-                                # If the message was not found, remove the message_id from the document
-                                update_data = {u'message_id': firestore.DELETE_FIELD}
-                                batch.update(doc_ref, update_data)
-                            sendTelegramDev(description)
-                    else:
-                        sendTelegramDev(str(e))
-                        
-            # Update the document
-            print(f'Updating workorder: {workorder} status: {job_status_text}')
-            d['status'] = job_status
-            batch.update(doc_ref, d.copy())
-            temp_waiting_update.append(
-                {'workorder': workorder, 'status': job_status, 'signature': signature})
-        else:
-            batch.set(doc_ref, d.copy())
-            temp_waiting_update.append(
-                {'workorder': workorder, 'status': 'New'})
-
-    except Exception as e:
-        logging.exception(e)
-        err = traceback.format_exc()
-        timestamp = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
-        err = timestamp + '\n' + err
-        
-        # Split long error messages for Telegram
-        err_parts = [err[i:i+1000] for i in range(0, len(err), 1000)]
-        for er in err_parts:
-            sendTelegramDev(er)
-        # Re-raise the exception
-        raise e
-
-
-def checkJobsRecieve(site_data):
-    """Check and handle jobs that have been received."""
-    global batch
-    global cookies
-    global headers
-    global alreadySent
-    global workorder_already_update
-    global temp_waiting_update
-    
-    batch = db.batch()
-    
-    try:
-        # Get the list of jobs
-        url = "https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php"
-        response = make_request('get', url, data=site_data)
-        
-        soup = BeautifulSoup(response.text, "lxml")
-        table = soup.find("table", {"class", "Grid"})
-        
-        if table is None:
-            print("No table found, re-login...")
-            site_session_id.pop(current_site)
-            set_login(current_site, site_data)
-            return False
-
-        # Process each row in the table
-        tr = table.findAll("tr")
-        for row in tr:
-            # Skip header and footer rows
-            if not (row.has_attr('class') and len(row["class"]) > 0 and 
-                    row["class"][0] != "Caption" and row["class"][0] != "Footer"):
-                continue
-                
-            td = row.findAll("td")
-            
-            # Extract job information from the row
-            link = td[3].find('a').get('href')
-            link_params = link.split('?')[1].split('&')
-            
-            jobno = next((param.split('=')[1] for param in link_params if param.startswith('req_no')), '')
-            workorder = next((param.split('=')[1] for param in link_params if param.startswith('jobno')), '')
-            
-            code = td[4].text.strip()
-            name = td[5].text.strip()
-            detail = td[10].text.strip()
-            reciever = td[14].text.strip()
-            enter_by = td[16].text.strip()
-            job_status = td[12].text.strip()
-            
-            # Get signature if available
-            signature = None
-            if td[15].find('img'):
-                signature_src = td[15].find('img').get('src')
-                if signature_src != '../images/blank.gif':
-                    signature = "https://nsmart.nhealth-asia.com/MTDPDB01" + signature_src.replace('..', '')
-            
-            # Update work order in database
-            updateWorkOrder(jobno, workorder, reciever, code, job_status, signature)
-            
-            # Send notification if this is in the remaining works list
-            if detail in remainWorks:
-                t = threading.Thread(target=sendTelegramRecieve, args=(detail, reciever, code, name))
-                t.start()
-                remainWorks.remove(detail)
-                
-            # Handle jobs that haven't been sent before
-            if current_site.upper() not in alreadySent:
-                alreadySent[current_site.upper()] = []
-                with open(os.path.join(__location__, "alreadySent.json"), 'w') as f:
-                    json.dump(alreadySent, f)
-                    
-            if jobno not in alreadySent[current_site.upper()]:
-                date = td[2].text.strip()
-                dept = td[9].text.strip()
-                ename = name
-                ncode = code
-                img = ''
-                site = current_site
-                building = ''
-                room = ''
-                urgent = 'key by bme'
-                sender = f'BME:{reciever}'
-                coop = ''
-                position = ''
-
-                # Get image if available
-                if td[0].find('img'):
-                    img = "https://nsmart.nhealth-asia.com/MTDPDB01/img.php?files=" + \
-                          urllib.parse.quote(td[0].find('img')["src"].split("=")[-1])
-                          
-                # Get additional details if not entered by BME
-                if enter_by.lower() != 'bme':
-                    status = getUrgentStatus(jobno)
-                    room = status["room"]
-                    sender = status["sender"]
-                    coop = status["coop"]
-                    urgent = status["status"]
-                    position = status["position"]
-                    building = status["building"]
-                    
-                # Send notification about the job
-                t = threading.Thread(target=sendNotify, args=(
-                    jobno, date, dept, detail, building, img, urgent, sender, 
-                    coop, ename, ncode, room, position, site, True))
-                t.start()
-                
-        # Commit batch updates to Firestore
-        batch.commit()
-        
-        # Update tracking of already processed work orders
-        workorder_already_update.extend(temp_waiting_update)
-        temp_waiting_update.clear()
-        
-        return True
-        
-    except Exception as e:
-        temp_waiting_update.clear()
-        logging.exception(e)
-        err = traceback.format_exc()
-        timestamp = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
-        err = timestamp + '\n' + err
-        
-        # Split long error messages for Telegram
-        err_parts = [err[i:i+1000] for i in range(0, len(err), 1000)]
-        for er in err_parts:
-            sendTelegramDev(er)
-            
-        return False
-
-
-def main(site_data):
-    """Main function to process jobs for a site."""
-    global cookies
-    global headers
-    global alreadySent
-    global cant_login
-    global skip_site
-    
-    # Skip sites that have been marked to skip
-    if current_site in skip_site:
-        return True
-        
-    # Check internet connection
-    if not internet_connection():
-        print("[red]No Internet Connection[/red]")
-        time.sleep(10)
-        return False
-        
-    try:
-        # Log current time and site
-        now = datetime.now()
-        current_time = now.strftime("%d/%m/%Y, %H:%M:%S")
-        print(f'[bold yellow]{current_site}[/bold yellow]')
-        print(f"Current Time = {current_time}")
-        print("Checking data...")
-        
-        # Get the list of jobs
-        try:
-            url = "https://nsmart.nhealth-asia.com/mtdpdb01/jobs/BJOBA_01online.php"
-            response = make_request('get', url, data=site_data)
+                r.raise_for_status()
+                cookies['PHPSESSID'] = s.cookies['PHPSESSID']
+                return True
         except requests.exceptions.RequestException as e:
-            print(e)
+            logging.error(f"Login error: {str(e)}")
+            print(f"[red]Connection error: {str(e)}[/red]")
             time.sleep(5)
             return False
 
-        soup = BeautifulSoup(response.text, "lxml")
-        table = soup.find("table", {"class", "Grid"})
-        
-        # Handle login issues
-        if table is None:
-            print("No table found, re-login...")
-            site_session_id.pop(current_site)
-            set_login(current_site, site_data)
-            cant_login += 1
-            
-            # Skip site after too many login failures
-            if cant_login > 5:
-                cant_login = 0
-                skip_site.append(current_site)
-                sendTelegramDev(f"Skip site: {current_site}")
-                return True
-            else:
-                sendTelegramDev(f"No table found, re-login... {current_site}")
-                return False
-                
-        # Process each job in the table
-        tr = table.findAll("tr")
-        iswork = False
-        
-        for row in tr:
-            # Only process asset/general rows
-            if not (row.has_attr('class') and len(row["class"]) > 0 and 
-                   (row["class"][0] == "RowAsset" or row["class"][0] == "RowGeneral")):
-                continue
-                
-            td = row.findAll("td")
-            
-            # Extract job information
-            reqOrderNum = td[3].text.strip()
-            date = td[6].text.strip()
-            ncode = td[9].text.strip()
-            sender = td[13].text.strip()
-            coop = td[14].text.strip()
-            dept = td[8].text.strip()
-            ename = td[10].text.strip()
-            detail = clean_text(td[11])
-            building = td[12].text.strip()
-            
-            # Initialize site's already sent list if needed
-            if alreadySent.get(current_site.upper()) is None:
-                alreadySent[current_site.upper()] = []
-                
-            # Skip already processed jobs
-            if reqOrderNum in alreadySent[current_site.upper()]:
-                print(f"Already sent: {reqOrderNum}")
-                continue
 
-            # Get additional details
-            img = ""
-            getExtra = getUrgentStatus(reqOrderNum)
-            room = getExtra["room"]
-            position = getExtra["position"]
-            urgent = getExtra["status"]
-            sender = getExtra["sender"]
-            coop = getExtra["coop"]
-            
-            # Get image if available
-            if row["class"][0] == "RowAsset" and td[2] is not None and td[2].find("img") is not None:
-                img = (
-                    "https://nsmart.nhealth-asia.com/MTDPDB01/img.php?files=" +
-                    urllib.parse.quote(td[2].find("img")["src"].split("=")[-1])
-                )
-                
-            # Add to list of jobs to track
-            remainWorks.append(detail)
-            site = current_site
-            
-            # Send notification in a separate thread
-            t = threading.Thread(target=sendNotify, args=(
-                reqOrderNum, date, dept, detail, building, img, urgent, 
-                sender, coop, ename, ncode, room, position, site))
-            t.start()
-            
-            iswork = True
-
-        if not iswork:
-            print("No New work order...")
-
-        # Check for jobs that have been received
-        check_job_result = checkJobsRecieve(site_data)
-        retry_count = 0
-        while not check_job_result and retry_count < 3:
-            print("Re-trying check jobs receive...")
-            retry_count += 1
-            check_job_result = checkJobsRecieve(site_data)
-            
-        cant_login = 0
-        return True
-        
-    except Exception as e:
-        logging.exception(e)
-        err = traceback.format_exc()
-        timestamp = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
-        err = timestamp + '\n' + err
-        
-        # Split long error messages for Telegram
-        err_parts = [err[i:i+1000] for i in range(0, len(err), 1000)]
-        for er in err_parts:
-            sendTelegramDev(er)
-            
-        # Re-raise the exception
-        raise e
+def save_empList(emp_list=None):
+    print('save employee')
+    # write over file to clear old data
+    if emp_list is None:
+        return
+    with open('emp_list.csv', encoding="TIS-620", mode='w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        writer.writerows(emp_list)
 
 
-def set_interval(sec):
-    """Process all sites at regular intervals."""
+def load_empList():
+    print('load employee list')
+    global emp_list
+    # handle if file not found
+    if emp_list is None:
+        try:
+            with open('emp_list.csv', encoding="TIS-620", mode='r') as csvfile:
+                reader = csv.reader(csvfile, delimiter=',')
+                emp_list = list(reader)
+                # close file
+                csvfile.close()
+        except:
+            emp_list = [['', '']]
+    return emp_list
+
+
+temp_emp_list = []
+
+
+def get_emp_list(page='1'):
+    print(page)
+    global emp_list
     global cookies
-    global current_site
-    global tg_site_chatid
-
-    # Check internet connection
-    if not internet_connection():
-        print("[red]No Internet Connection[/red]")
-        time.sleep(10)
-        return set_interval(sec)
-
-    # Process each site
-    for site in confdata['AUTHORIZE']:
-        print('.')
-        print('.')
-        data["user"] = confdata['AUTHORIZE'][site]['USERNAME']
-        data["pass"] = confdata['AUTHORIZE'][site]['PASSWORD']
-        site_data = data
-        
-        # Set up session
-        if site not in site_session_id:
-            set_login(site, site_data)
-        else:
-            cookies["PHPSESSID"] = site_session_id[site]
-
-        tg_site_chatid = confdata['TG_CHAT_ID'][site]
-        current_site = site
-        
-        # Process the site, retrying if needed
-        site_result = main(site_data)
-        retry_count = 0
-        while not site_result and retry_count < 3:
-            print("Re-trying site processing...")
-            retry_count += 1
-            site_result = main(site_data)
-
-    # Clear screen and show countdown timer
-    os.system('cls' if os.name == 'nt' else 'clear')
-    
-    console = Console()
-    total_sleep = sleep  # Use the sleep value from config
-
-    print(f"Next scan in {total_sleep} seconds...")
-    
-    with Progress(
-        TextColumn("[bold blue]{task.description}"),
-        BarColumn(bar_width=50, complete_style="green", finished_style="bright_green"),
-        TextColumn("[bold cyan]{task.completed}/{task.total}"),
-        TextColumn("[yellow]•"),
-        TimeElapsedColumn(),
-        TextColumn("[yellow]•"),
-        TimeRemainingColumn(),
-        console=console,
-        expand=True
-    ) as progress:
-        task = progress.add_task("[bold white]Waiting for next scan...", total=total_sleep)
-        while not progress.finished:
-            time.sleep(1)
-            progress.update(task, advance=1)
-
-
-def main_thread():
-    """Main thread function."""
-    global alreadySent
-    
-    # Display welcome banner
-    init_text = pyfiglet.figlet_format("BME   Bot   Notify")
-    print(init_text)
-    
-    # Load previously sent jobs
+    # https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=2023&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code=&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=M09&s_sup_serv=&s_jobno=&s_docok=
     try:
-        with open(os.path.join(__location__, "alreadySent.json")) as reader:
-            alreadySent = json.load(reader)
-    except Exception as e:
-        print(f"Error loading alreadySent.json: {e}")
-        alreadySent = {}
-        with open(os.path.join(__location__, "alreadySent.json"), 'w') as f:
-            json.dump(alreadySent, f)
-        print("Created new alreadySent.json file")
-        
-    # Send startup notification
-    print("Service Starting...")
-    send_start = sendTelegramStart()
-    while not send_start:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/reftable/employee_branch.php?dept_tech=M09&dept_control=1&employeePage=" +
+            str(page),
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
         time.sleep(5)
-        send_start = sendTelegramStart()
+        return get_emp_list(page)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    form = soup.find('form', {'name': 'employee'})
+    if form is None:
+        print("No form found, re-login...")
+        set_login(None, None)
+        return get_emp_list(page)
 
-    # Main processing loop
+    tr = form.find_all('tr', {'class': 'Row'})
+    max_emp = int(tr[0].find('td').text.strip().split('\xa0')[1])
+    print('max emp: ' + str(max_emp))
+    # delete first tr
+    tr.pop(0)
+    if len(temp_emp_list) < max_emp:
+        for row in tr:
+            input = row.find_all('input')
+            if input[0]['value'] == '' or input[1]['value'] == '':
+                continue
+            temp_emp_list.append([input[0]['value'], input[1]['value']])
+        # get next page
+        page = int(page) + 1
+        return get_emp_list(str(page))
+
+    # get all option value and text
+    emp_list = temp_emp_list
+    save_empList(emp_list)
+
+
+def getFirstAndLastDay(date):
+    if date is None or date == '':
+        date = datetime.now()
+    # check if date is string
+    if isinstance(date, str):
+        date = datetime.strptime(date, '%d/%m/%Y')
+    # get first and last day of month
+    first_day = date.replace(day=1)
+    last_day = date.replace(day=calendar.monthrange(date.year, date.month)[1])
+    first_day = first_day.strftime("%d/%m/%Y")
+    last_day = last_day.strftime("%d/%m/%Y")
+    date_year = first_day.split('/')[2]
+    return first_day, last_day, date_year
+
+
+def base64_image_to_base64_pdf(base64_image_string):
     try:
-        while True:
-            set_interval(sleep)
+        # Decode the base64 image string to bytes
+        image_data = base64.b64decode(base64_image_string)
+
+        # Create a BytesIO object to open the image with Pillow
+        image_buffer = BytesIO(image_data)
+
+        # Open the image using Pillow
+        image = Image.open(image_buffer)
+
+        # Create a BytesIO object to save the PDF
+        pdf_buffer = BytesIO()
+        image.save(pdf_buffer, "PDF", resolution=100.0, save_all=True)
+
+        # Get the content of the PDF as bytes
+        pdf_bytes = pdf_buffer.getvalue()
+
+        # Encode the PDF as a base64 string
+        pdf_base64 = base64.b64encode(pdf_bytes).decode("utf-8")
+
+        return pdf_base64
+
     except Exception as e:
-        # Save state before exiting
-        with open(os.path.join(__location__, "alreadySent.json"), 'w') as f:
-            json.dump(alreadySent, f)
-            
-        # Log the error
-        logging.exception(e)
-        err = traceback.format_exc()
-        timestamp = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
-        err = timestamp + '\n' + err
-        
-        # Split long error messages for Telegram
-        err_parts = [err[i:i+1000] for i in range(0, len(err), 1000)]
-        for er in err_parts:
-            sendTelegramDev(er)
-            
-        # Re-raise the exception
-        raise e
+        print(f"An error occurred: {e}")
+        return None
 
 
-def restart_program():
-    """Restart the current program."""
-    python = sys.executable
-    os.execl(python, python, *sys.argv)
+def get_screen_shot(soup, css_file, text):
+    css_file = open(css_file, 'r')
+    css = css_file.read()
+
+    # get screenshot as blob
+
+    # get file path
+    __location__ = os.getcwd()
+    hti = Html2Image(temp_path=__location__, size=(
+        1000, 1000), disable_logging=True)
+    file_name = str(datetime.timestamp(datetime.now())*1000)
+    try:
+        hti.screenshot(html_str=str(soup), css_str=css,
+                       save_as=file_name+'.png')
+    except Exception as e:
+        print(e)
+        pass
+    return_json = {'status': 'ok',
+                   'status_text': text, 'screenshot': file_name}
+    removeTempFile()
+    return return_json
 
 
-def watchdog():
-    """Monitor the main thread and restart if it crashes."""
+def closePM(id, vender, date, safety, self_call=False):
+    global cookies
+    if cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return closePM(id, vender, date, safety, self_call)
+    response = False
+    start_date, end_date, now_year = getFirstAndLastDay(date)
+    code = id
+    try:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
+            str(now_year) + '&s_jobdate=' + start_date +
+            '&s_to_date=' + end_date + '&s_sap_code=' + code,
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        print("connection problem, wait 5 sec")
+        time.sleep(5)
+        return closePM(id, vender, date, safety, self_call)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    # print(soup)
+    table = soup.find("table", {"class", "Grid"})
+    if table == None:
+        print("No table found, re-login...")
+        set_login(None, None)
+        return closePM(id, vender, date, safety, self_call)
+    tr = table.find('tr', {"class", "Row"})
+    if tr == None:
+        return_json = get_screen_shot(
+            soup, 'close_pm_css.css', 'PM Work not found')
+        return json.dumps({'status': 'fail', 'status_text': 'PM Work not found', 'screenshot': return_json['screenshot']}, ensure_ascii=False)
+    a_href = tr.find('a')['href'].split('?')[1]
+    dept_tech = ''
+    # check if vender start with [[CAL]]
+    if vender.startswith('[[CAL]]'):
+        dept_tech = 'M02'
+    else:
+        dept_tech = 'M09'
+    selects = [
+        {'name': 'job_result',  'value': '1', 'text_contain': False},
+        {'name': 'dept_tech',  'value': dept_tech, 'text_contain': False},
+        {'name': 'toolid', 'value': '61', 'text_contain': False},
+        {'name': 'app_issue_name', 'value': '566152', 'text_contain': False},
+    ]
+
+    if date is not None:
+        inputs = [
+            {'name': 'assign_date', 'value': date},
+            {'name': 'act_dstart', 'value': date},
+            {'name': 'act_dfin', 'value': date},
+            {'name': 'approve_date', 'value': date}
+        ]
+    else:
+        today = time.strftime("%d/%m/%Y")
+        inputs = [
+            {'name': 'assign_date', 'value': today},
+            {'name': 'act_dstart', 'value': today},
+            {'name': 'act_dfin', 'value': today},
+            {'name': 'approve_date', 'value': today}
+        ]
+    #  create formdata foor post request
+    form_data = {}
+    for input in inputs:
+        form_data[input['name']] = input['value']
+    for select in selects:
+        form_data[select['name']] = select['value']
+
+    # find element in emp_vender that index [1] contain vender
+    if emp_list is None:
+        load_empList()
+    emp_id = ''
+    if vender.startswith('[[CAL]]'):
+        form_data['emp_id'] = 'ฺB005'.encode('tis-620')
+    else:
+        emp_id = list(filter(lambda x: vender.lower()
+                      in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            get_emp_list(1)
+            emp_id = list(filter(lambda x: vender.lower()
+                          in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            return json.dumps({'status': 'fail', 'status_text': 'Vender not found'}, ensure_ascii=False)
+        form_data['emp_id'] = emp_id[0][0]
+    form_data['pass_status'] = '1'
+    if safety is not None and safety.lower() in 'Electrical Safety Analyzer'.lower():
+        form_data['toolid'] = '24'
+    response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?' + a_href +
+                             '&ccsForm=main_jobs%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    status = re.findall(
+        r'PM status : Completed-send equipment back', soup.text)
+    print("{}, {}".format(id, status[0]))
+    if len(status) > 0:
+        return_json = get_screen_shot(
+            soup, 'close_pm_css.css', 'PM status : Completed-send equipment back')
+        if self_call:
+            return return_json
+        return json.dumps(return_json, ensure_ascii=False)
+    print(soup)
+    result_table = soup.find('table', {'class': 'Record'})
+    if result_table == None:
+        result_json = get_screen_shot(
+            soup, 'close_pm_css.css', 'Fail to Close PM job')
+        return json.dumps({'status': 'fail', 'status_text': 'Fail to Close PM job', 'screenshot': result_json['screenshot']}, ensure_ascii=False)
+    result_tr = result_table.find('tr', {'class': 'Total'})
+    result_td = result_tr.find('td')
+    if result_td.text.strip() == 'PM status : Completed-send equipment back':
+        return_json = get_screen_shot(
+            soup, 'close_pm_css.css', result_td.text.strip())
+        if self_call:
+            return return_json
+        return json.dumps(return_json, ensure_ascii=False)
+
+
+def closeCAL(id, vender, date, safety, self_call=False):
+    global cookies
+    if cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return closeCAL(id, vender, date, safety, self_call)
+    response = False
+    start_date, end_date, now_year = getFirstAndLastDay(date)
+    code = id
+    try:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
+            str(now_year) + '&s_jobdate=' + start_date +
+            '&s_to_date=' + end_date + '&s_sap_code=' + code,
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        time.sleep(5)
+        return closeCAL(id, vender, date, safety, self_call)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    # print(soup)
+    table = soup.find("table", {"class", "Grid"})
+    if table == None:
+        print("No table found, re-login...")
+        set_login(None, None)
+        return closeCAL(id, vender, date, safety, self_call)
+    tr = table.find('tr', {"class", "Row"})
+    if tr == None:
+        result_json = get_screen_shot(
+            soup, 'close_cal_css.css', 'CAL Work not found')
+        return json.dumps({'status': 'fail', 'status_text': 'CAL Work not found', 'screenshot': result_json['screenshot']}, ensure_ascii=False)
+    a_href = tr.find('a')['href'].split('?')[1]
+    dept_caliber = ''
+    # check if vender start with [[CAL]]
+    if vender.startswith('[[CAL]]'):
+        dept_caliber = 'M02'
+    else:
+        dept_caliber = 'M09'
+    selects = [
+        {'name': 'tech_idea_stat',  'value': '4', 'text_contain': False},
+        {'name': 'dept_caliber',  'value': dept_caliber, 'text_contain': False},
+    ]
+    if date is not None:
+        inputs = [
+            {'name': 'assign_date', 'value': date},
+            {'name': 'act_dstart', 'value': date},
+            {'name': 'act_dfin', 'value': date},
+        ]
+    else:
+        today = time.strftime("%d/%m/%Y")
+        inputs = [
+            {'name': 'assign_date', 'value': today},
+            {'name': 'act_dstart', 'value': today},
+            {'name': 'act_dfin', 'value': today},
+        ]
+
+    form_data = {}
+    if emp_list is None:
+        load_empList()
+    emp_id = ''
+    if vender.startswith('[[CAL]]'):
+        form_data['emp_id'] = 'ฺB005'.encode('tis-620')
+    else:
+        emp_id = list(filter(lambda x: vender.lower()
+                      in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            get_emp_list(1)
+            emp_id = list(filter(lambda x: vender.lower()
+                                 in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            return json.dumps({'status': 'fail', 'status_text': 'Vender not found'}, ensure_ascii=False)
+        form_data['emp_id'] = emp_id[0][0]
+    form_data['inspec_app_name'] = 'Ittipat Iemdee'
+    form_data['CheckBox2'] = '1'
+    for input in inputs:
+        form_data[input['name']] = input['value']
+    for select in selects:
+        form_data[select['name']] = select['value']
+    response = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_1.php?' + a_href +
+                             '&ccsForm=caliber_jobs_tech%3AEdit', headers=headers, cookies=cookies, data=form_data, verify=False)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    status = re.findall(r'Completed-send equipment back', soup.text)
+    print(status)
+    if len(status) > 0:
+        return_json = get_screen_shot(
+            soup, 'close_cal_css.css', 'Completed-send equipment back')
+        if self_call:
+            return return_json
+        return json.dumps(return_json, ensure_ascii=False)
+    result_td = list(filter(lambda x: 'Completed-send equipment back' in x.text.strip(), soup.find_all(
+        'table', {'class': 'Record'})[1].find_all('tr', {'class': 'Controls'})[0].find_all('td')))
+    if result_td == None or len(result_td) == 0:
+        result_json = get_screen_shot(
+            soup, 'close_cal_css.css', 'Fail to Close CAL job')
+        return json.dumps({'status': 'fail', 'status_text': 'Fail to Close CAL job', 'screenshot': result_json['screenshot']}, ensure_ascii=False)
+    result_td = result_td[0]
+    # get css file from local
+    return_json = get_screen_shot(
+        soup, 'close_cal_css.css', result_td.text.strip())
+
+    if self_call:
+        return return_json
+    return json.dumps(return_json, ensure_ascii=False)
+
+
+def closePMCAL(id, vender, date, safety):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Submit the functions for execution
+        future1 = executor.submit(closePM, *(id, vender, date, safety, True))
+        future2 = executor.submit(closeCAL, *(id, vender, date, safety, True))
+
+        # Wait for all functions to complete
+        concurrent.futures.wait([future1, future2])
+        result_json = {
+            'pm': future1.result(),
+            'cal': future2.result()
+        }
+        removeTempFile()
+        return json.dumps(result_json)
+
+
+def removeTempFile():
+    # get all pdf file in root folder
+    __location__ = os.getcwd()
+    files = os.listdir(__location__)
+    if len(files) <= 0 or len(files) > 50:
+        return
+    file_names = [f for f in files if f.endswith(".png")]
+    # remove file extension , convert name to int and sort min to max
+    file_names = sorted([int(f.split('.')[0]) for f in file_names])
+    # remove first 25 file
+    for i in range(0, 25):
+        try:
+            os.remove(os.path.join(__location__, str(file_names[i]) + '.png'))
+        except:
+            pass
+
+
+def attachFile(id, vender, date, dataurl):
+    global cookies
+    # print type of dataurl
+    if cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return attachFile(id, vender, date, dataurl)
+    response = False
+    start_date, end_date, now_year = getFirstAndLastDay(date)
+    code = id
+    try:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain_list.php?s_byear=" +
+            str(now_year) + '&s_jobdate=' + start_date +
+            '&s_to_date=' + end_date + '&s_sap_code=' + code,
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        time.sleep(5)
+        return attachFile(id, vender, date, dataurl)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    # print(soup)
+    table = soup.find("table", {"class", "Grid"})
+    if table == None:
+        print("No table found, re-login...")
+        set_login(None, None)
+        return attachFile(id, vender, date, dataurl)
+    tr = table.find('tr', {"class", "Row"})
+    if tr == None:
+        return_json = get_screen_shot(
+            soup, 'close_pm_css.css', 'PM Work not found')
+        return json.dumps({'status': 'fail', 'status_text': 'PM Work not found', 'screenshot': return_json['screenshot']}, ensure_ascii=False)
+    a_href = tr.find('a')['href'].split('?')[1]
+    response = requests.get(
+        "https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain08.php?" +
+        a_href + "&ccsForm=Maindocattache1",
+        headers=headers,
+        cookies=cookies,
+        verify=False,
+    )
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    form = soup.find('form', {'name': 'Post'})
+    file_count = 0
+    find_count_Header = soup.find_all('table', {'class': 'Header'})[1]
+    print(find_count_Header)
+    if find_count_Header is not None and len(find_count_Header) > 0:
+        file_th = find_count_Header.find('th').text.strip().split(' ')[2]
+        file_count = int(file_th)
+    form_data = {}
+    inputs = form.findAll('input')
+    emp_name = ''
+    for input in inputs:
+        try:
+            form_data[input['name']] = input['value']
+        except:
+            print(input)
+    if vender is not None and vender != '':
+        if emp_list is None:
+            load_empList()
+        emp_id = list(filter(lambda x: vender.lower()
+                      in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            get_emp_list(1)
+            emp_id = list(filter(lambda x: vender.lower()
+                          in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            return json.dumps({'status': 'fail', 'status_text': 'Vender not found'}, ensure_ascii=False)
+        emp_name = emp_id[0][1]
+
+    inputs = [
+        {'name': 'docno', 'value': file_count+1},
+        {'name': 'description_doc', 'value': 'Report PM ' + emp_name.upper()},
+        {'name': 'jobno', 'value': a_href.split('jobno=')[1].split('&')[0]}
+    ]
+    #  create formdata foor post request
+    for input in inputs:
+        form_data[input['name']] = input['value']
+    # create file from dataurl
+    # parse json string to json object
+    dataurl = json.loads(dataurl)
+    if dataurl.get('isImage') == True:
+        dataurl = base64_image_to_base64_pdf(dataurl['base64'])
+    else:
+        dataurl = dataurl['base64']
+    file = base64.b64decode(dataurl)
+    files = {'document_File': ('report.pdf', file, 'application/pdf')}
+
+    # set form multipart/form-data
+    # copy headers
+    use_headers = headers.copy()
+    # # use_headers['enctype'] = 'multipart/form-data'
+    # use_headers['Content-Type'] = 'multipart/form-data'
+    # maintain08.php?s_byear=2023&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code=1235&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=&s_sup_serv=&s_jobno=&s_docok=&code=36565&deptco=&jobno=1278631&ccsForm=Maindocattache1
+
+    response2 = requests.post('https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain08.php?' + a_href +
+                              '&ccsForm=Maindocattache1', headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+    response2.encoding = "tis-620"
+    soup = BeautifulSoup(response2.text, "lxml")
+    result_table = soup.find_all('table', {'class': 'Header'})[1]
+    if result_table == None:
+        return json.dumps({'status': 'fail', 'status_text': 'Fail to Attach PM file'}, ensure_ascii=False)
+    result_th = result_table.find('th')
+    if result_th.text.strip() != 'Total : 0 records':
+        return_json = get_screen_shot(
+            soup, 'close_pm_css.css', result_th.text.strip())
+        return json.dumps(return_json, ensure_ascii=False)
+
+
+def attachFileCAL(id, vender, date, dataurl):
+    global cookies
+    if cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return attachFileCAL(id, vender, date, dataurl)
+    response = False
+    start_date, end_date, now_year = getFirstAndLastDay(date)
+    code = id
+    try:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03.php?s_byear=" +
+            str(now_year) + '&s_jobdate=' + start_date +
+            '&s_to_date=' + end_date + '&s_sap_code=' + code,
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        time.sleep(5)
+        return attachFileCAL(id, vender, date, dataurl)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    # print(soup)
+    table = soup.find("table", {"class", "Grid"})
+    if table == None:
+        print("No table found, re-login...")
+        set_login(None, None)
+        return attachFileCAL(id, vender, date, dataurl)
+    tr = table.find('tr', {"class", "Row"})
+    if tr == None:
+        return_json = get_screen_shot(
+            soup, 'close_cal_css.css', 'CAL Work not found')
+        return json.dumps({'status': 'fail', 'status_text': 'CAL Work not found', 'screenshot': return_json['screenshot']}, ensure_ascii=False)
+    a_href = tr.find('a')['href'].split('?')[1]
+    response = requests.get(
+        "https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_5.php?" +
+        a_href + "&ccsForm=caliber_jobs_tech%3AEdit",
+        headers=headers,
+        cookies=cookies,
+        verify=False,
+    )
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    form = soup.find('form', {'name': 'Post'})
+    file_count = 0
+    find_count_Header = soup.find_all('table', {'class': 'Header'})[1]
+    if find_count_Header is not None and len(find_count_Header) > 0:
+        file_th = find_count_Header.find('th').text.strip().split(' ')[2]
+        file_count = int(file_th)
+    form_data = {}
+    inputs = form.findAll('input')
+    emp_name = ''
+    for input in inputs:
+        try:
+            form_data[input['name']] = input['value']
+        except:
+            print(input)
+    if vender is not None and vender != '':
+        if emp_list is None:
+            load_empList()
+        emp_id = list(filter(lambda x: vender.lower()
+                      in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            get_emp_list(1)
+            emp_id = list(filter(lambda x: vender.lower()
+                          in x[1].lower(), emp_list))
+        if len(emp_id) == 0:
+            return json.dumps({'status': 'fail', 'status_text': 'Vender not found'}, ensure_ascii=False)
+        emp_name = emp_id[0][1]
+    inputs = [{'name': 'docno', 'value': file_count+1}, {'name': 'description_doc', 'value': 'Report CAL ' +
+                                                         emp_name.upper()}, {'name': 'jobno', 'value': a_href.split('jobno=')[1].split('&')[0]}]
+    #  create formdata foor post request
+    for input in inputs:
+        form_data[input['name']] = input['value']
+    # create file from dataurl
+    dataurl = json.loads(dataurl)
+    if dataurl.get('isImage') == True:
+        dataurl = base64_image_to_base64_pdf(dataurl['base64'])
+    else:
+        dataurl = dataurl['base64']
+    file = base64.b64decode(dataurl)
+    files = {'document_File': ('report.pdf', file, 'application/pdf')}
+
+    # set form multipart/form-data
+    # copy headers
+    use_headers = headers.copy()
+    # # use_headers['enctype'] = 'multipart/form-data'
+    # use_headers['Content-Type'] = 'multipart/form-data'
+    # maintain08.php?s_byear=2023&s_jobdate=&s_to_date=&s_pay=&s_job_status=&s_job_result=&s_branchid=&s_dept=&s_sub_dept=&s_code=&s_sap_code=1235&s_classno=&s_groupid=&s_catagory=&s_tpriority=&s_brand=&s_model=&s_serial_no=&s_inplan=&s_pmok=&maintain_list_vPageSize=&s_dept_tech=&s_sup_serv=&s_jobno=&s_docok=&code=36565&deptco=&jobno=1278631&ccsForm=Maindocattache1
+
+    response2 = requests.post("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_5.php?" + a_href +
+                              "&ccsForm=Caliberdocattache1", headers=use_headers, cookies=cookies, data=form_data, files=files, verify=False)
+    response2.encoding = "tis-620"
+    soup = BeautifulSoup(response2.text, "lxml")
+    result_table = soup.find_all('table', {'class': 'Header'})[1]
+    if result_table == None:
+        return json.dumps({'status': 'fail', 'status_text': 'Fail to Attach CAL file'}, ensure_ascii=False)
+    result_th = result_table.find('th')
+    if result_th.text.strip() != 'Total : 0 records':
+        return_json = get_screen_shot(
+            soup, 'close_cal_css.css', result_th.text.strip())
+        return json.dumps(return_json, ensure_ascii=False)
+
+
+global t_s
+
+
+def print_process_time(name):
+    global t_s
+    print(name + ' time : ' + str(time.time()-t_s))
+    t_s = time.time()
+
+
+def receivejob(name, jobid, detail):
+    global t_s
+    t_s = time.time()
+    global cookies
+    while cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        print(cookies)
+        print_process_time('set_login')
+    # if cookies['PHPSESSID'] is None:
+    #     set_login()
+    #     return receivejob(name, jobid, detail)
+    response = False
+    staff = {
+        "teerawat sukkit": "514909",
+        "chaiwat salaiwong": "516694",
+        "passawan toanun": "516704",
+        "panalee ueasunthonnop": "530200",
+        "sermkeat hadjang": "534799",
+        "wuttichai chinnawong": "539703",
+        "kitsana buapheat": "541441-1",
+        "rattikarn reantongwattana": "546554",
+        "jirawat makarapirom": "549497-1",
+        "sarawut manchethuan": "554279",
+        "kanistha chinrasri": "563131",
+        "saran thammathorn": "563775",
+        "pornphop luangpon    ": "563776",
+        "pukarin tongkliang": "563778-1",
+        "boonyawat aiemphang   ": "563780",
+        "anuphab chanto": "563844-1",
+        "naruecha chaiyaphan": "563848-1",
+        "khwankhae subda": "566151",
+        "ittipat iemdee": "566152",
+        "phanuporn pengpun": "566262",
+        "rattanalak sakulchareanporn": "568370",
+        "ratchata tawasri": "568858",
+        "sasimaporn khanthahome": "571500",
+        "chatmanee mongkoltananon": "576470",
+        "daranphop yimyam": "577199",
+        "chatvipa kaewpresert": "579520",
+        "phimrapeeporn phrasopol": "586202",
+        "rapiphan khamsuwan": "593014",
+        "som konkaew": "593031",
+        "patcharaporn jornsamer": "596445",
+        "ratchata piriyakitsakul": "597337",
+        "ilada buapralat": "598982",
+        "chanchai sae-lee": "599984",
+        "thanipong phiewkhlam": "600002",
+        "jirassaya chuenyoo": "602630",
+        "chalermporn sabua": "608269",
+        "option_name": "BME"
+    }
+    dept_tech = 'M07'
+    employee = staff.get(name.lower())
+    try:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/jobs/REQ_02.php?req_no="+str(jobid), headers=headers, cookies=cookies, verify=False)
+        response.encoding = "tis-620"
+        print_process_time('get')
+        soup = BeautifulSoup(response.text, "lxml")
+        form = soup.find('form', {'name': 'jobs'})
+        if form is None:
+            print("No form found, re-login...")
+            set_login(None, None)
+            return receivejob(name, jobid, detail)
+        # find td contain "Job status"
+        status = form.find('td', string='Job status')
+        # find td next
+        status = status.find_next('td').text.strip()
+        if status != 'Received request order':
+            print('already received')
+            return json.dumps({'status': 'ok', 'status_text': 'already recieved'}, ensure_ascii=False)
+
+        # serializeArray form to json
+        form_data = {}
+        inputs = form.findAll('input')
+        for input in inputs:
+            form_data[input['name']] = input['value']
+        selects = form.findAll('select')
+        for select in selects:
+            form_data[select['name']] = select.find(
+                'option', {'selected': True})['value']
+        form_data['description'] = detail
+        form_data['jobtype'] = form.find(
+            'input', {'name': 'jobtype', 'checked': True})['value']
+        form_data['jobdate'] = time.strftime("%d/%m/%Y %R %p")
+        form_data['nowdate'] = time.strftime("%d/%m/%Y")
+        form_data['emp_name'] = name.upper()
+        form_data['job_status'] = 9
+        form_data['dept_tech'] = dept_tech
+        form_data['employee'] = employee
+        # encode form_data
+        # Encode form data in TIS-620
+        encoded_form_data = {k: urllib.parse.quote_plus(v.encode(
+            'TIS-620', errors='xmlcharrefreplace')) if isinstance(v, str) else v for k, v in form_data.items()}
+        # Convert encoded form data to query string format
+        encoded_form_data_str = '&'.join(
+            f"{k}={v}" for k, v in encoded_form_data.items())
+
+        use_headers = headers.copy()
+        use_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=TIS-620'
+        # encode form data to compatible with thai language
+        print_process_time('encode')
+        url = f"https://nsmart.nhealth-asia.com/MTDPDB01/jobs/REQ_02.php?req_no=" + \
+            str(jobid)+"&ccsForm=jobs"
+        response = requests.post(
+            url,
+            data=encoded_form_data_str,
+            headers=use_headers,
+            cookies=cookies, verify=False)
+        print_process_time('post')
+        # print request form data payload
+        response.encoding = "tis-620"
+        soup = BeautifulSoup(response.text, "lxml")
+        form = soup.find('form', {'name': 'jobs'})
+        status = form.find('td', string='Job status')
+        # find td next
+        status = status.find_next('td').text.strip()
+        if status.lower() == 'waiting':
+            # find td contain "Work order no"
+            result_table = soup.find('table', {'class': 'Record'})
+            tb = result_table.find('table')
+            td = list(
+                filter(lambda x: 'Work order no' in x.text.strip(), tb.find_all('td')))
+            if len(td) == 0:
+                print('Fail to Receive Job')
+                return json.dumps({'status': 'fail', 'status_text': 'Fail to Receive Job'}, ensure_ascii=False)
+            wo = td[0].text.split('*')[0].split('.')[1].strip()
+            print(wo)
+            print('Receive Job Success')
+            return json.dumps({'status': 'ok', 'status_text': 'success', 'wo': wo}, ensure_ascii=False)
+        else:
+            print('Fail to Receive Job')
+            return json.dumps({'status': 'fail', 'status_text': 'Fail to Receive Job'}, ensure_ascii=False)
+
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return json.dumps({'status': 'fail', 'status_text': 'Fail to Receive Job: ' + str(e)}, ensure_ascii=False)
+
+
+def saveJobConsult(text, dept, code):
+    global cookies
+    while cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return saveJobConsult(text, dept, code)
+    response = False
+    try:
+        response = requests.get(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/jobs/jobconsult_asset_add.php",
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        time.sleep(5)
+        return saveJobConsult(text, dept, code)
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    form = soup.find('form', {'name': 'kpi_consult'})
+    if form is None:
+        print("No form found, re-login...")
+        set_login(None, None)
+        return saveJobConsult(text, dept, code)
+    # serializeArray form to json
+    form_data = {}
+    inputs = form.findAll('input')
+    for input in inputs:
+        form_data[input['name']] = input['value']
+    selects = form.findAll('select')
+    for select in selects:
+        form_data[select['name']] = select.find(
+            'option', {'selected': True})['value']
+    textareas = form.findAll('textarea')
+    for textarea in textareas:
+        form_data[textarea['name']] = textarea.text.strip()
+    sub_dept_dict = {
+        "selectvalue": "",
+        "ambulance(รถพยาบาล)": "00052010431",
+        "anesthesia(วิสัญญี)": "00052010244",
+        "art-lab(ศูนย์ผู้มีบุตรยาก)": "00052010162",
+        "bct(เจาะเลือด)": "00052010434",
+        "bme-pyt3": "00052010313",
+        "cath-lab": "00052010233",
+        "check-up(ตรวจสุขภาพ)": "00052010151",
+        "corporatecustomerservice": "00052010425",
+        "corporatecustomerservice(ลูกค้าองค์กร)": "00052010433",
+        "cssd(จ่ายกลาง)": "00052010245",
+        "dental(ทันตกรรม)": "00052010291",
+        "diabetic&metabolic(เบาหวาน)": "00052010411",
+        "eent(หูตาคอจมูก)": "00052010271",
+        "emergency(ฉุกเฉิน)": "00052010101",
+        "gastrointestinallaboratory(gi)": "00052010351",
+        "hemodialysis(ไตเทียม)": "00052010002",
+        "hopdcenter(ศุนย์มะเร็ง)": "00052010201",
+        "housekeeping": "00052010427",
+        "infectioncontrol(ic)": "00052010423",
+        "intensivecareunit(ผู้ป่วยหนัก)": "00052010241",
+        "laborroom(ห้องคลอด)": "00052010163",
+        "laboratory": "00052010311",
+        "marketing": "00052010424",
+        "nursery(เด็กอ่อน)": "00052010167",
+        "nursingdepartment": "00052010426",
+        "observe(สังเกตอาการ)": "00052010330",
+        "opdcardio(ศูนย์หัวใจ)": "00052010231",
+        "opdcounternurse(cnคัดกรอง)": "00052010381",
+        "opdheadneckbreast(ศุนย์เต้านม)": "00052010181",
+        "opdmedicine(อายุกรรม)": "00052010111",
+        "opdneuro(ศูนย์สมอง)": "00052010422",
+        "opdob/gyn(ศุนย์สุขภาพหญิง)": "00052010161",
+        "opdorthopaedics(ศูนย์กล้ามเนื้อและกระดูก)": "00052010430",
+        "opdpediatric(แผนกเด็ก)": "00052010171",
+        "opdsurgery(ศัลยกรรม)": "00052010131",
+        "opdurology(ทางเดินปัสสาวะ)": "00052010133",
+        "operatingroom(ห้องผ่าตัด)": "00052010243",
+        "pharmacy(เภสัชกรรมห้องยา)": "00052010321",
+        "pharmacy-store(คลังยา)": "00052010432",
+        "phyathaibeautycenter(pbcความงาม)": "00052010191",
+        "physicaltherapy(กายภาพ)": "00052010331",
+        "picu": "00052010003",
+        "pwalifecenter": "00052010421",
+        "pwaชะลอวัย": "00052010134",
+        "vehicle": "00052010428",
+        "ward10": "00052010254",
+        "ward11": "00052010174",
+        "ward12": "00052010175",
+        "ward14": "00052010178",
+        "ward15": "00052010255",
+        "ward17": "00052010246",
+        "ward7": "00052010164",
+        "ward8": "00052010238",
+        "ward9": "00052010185",
+        "warehouse": "00052010429",
+        "x-ray": "00052010301",
+        "รับส่ง": "00052010001",
+        "ห้องเก็บของชั้น19": "00052010313"
+    }
+    dept = sub_dept_dict.get(dept.lower().replace(' ', ''))
+    form_data['sub_dept'] = dept
+    form_data['branchid'] = '00052'
+    form_data['dept'] = '0005201'
+    form_data['sap_code'] = code
+    form_data['request_detail'] = text
+    form_data['consult_detail'] = text
+
+    print(form_data)
+    # encode form data
+    encoded_form_data = {k: urllib.parse.quote_plus(v.encode(
+        'TIS-620', errors='xmlcharrefreplace')) if isinstance(v, str) else v for k, v in form_data.items()}
+    # Convert encoded form data to query string format
+    encoded_form_data_str = '&'.join(
+        f"{k}={v}" for k, v in encoded_form_data.items())
+    use_headers = headers.copy()
+    use_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=TIS-620'
+    response = requests.post(
+        "https://nsmart.nhealth-asia.com/MTDPDB01/jobs/jobconsult_asset_add.php?ccsForm=kpi_consult",
+        data=encoded_form_data_str,
+        headers=use_headers,
+        cookies=cookies, verify=False)
+    if response.status_code == 200:
+        print('save job consult success {}'.format(code))
+        return json.dumps({'status': 'ok', 'status_text': 'success'}, ensure_ascii=False)
+    else:
+        print('save job consult fail {}'.format(code))
+        return json.dumps({'status': 'fail', 'status_text': 'fail'}, ensure_ascii=False)
+
+
+def saveSignature(id, dataurl):
+    global cookies
+    while cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return saveSignature(id, dataurl)
+    response = False
+    print('https://nsmart.nhealth-asia.com/MTDPDB01/save_image.php?jobno=' + id)
+
+    form_data = {
+        "jobno": id,
+        "test02": dataurl
+    }
+    try:
+        response = requests.post(
+            "https://nsmart.nhealth-asia.com/MTDPDB01/save_image.php?jobno=" + id,
+            headers=headers,
+            cookies=cookies,
+            data=form_data,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        time.sleep(5)
+        return saveSignature(id, dataurl)
+    response.raise_for_status()
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    if response.status_code == 200:
+        try:
+            response = requests.get("https://nsmart.nhealth-asia.com/MTDPDB01/signature_edit.php?jobno=" +
+                                    id, headers=headers, cookies=cookies, verify=False)
+            response.raise_for_status()
+            if response.status_code == 200:
+                response.encoding = "tis-620"
+                soup = BeautifulSoup(response.text, "lxml")
+                print(soup.find_all('img'))
+                sign = soup.findAll('img')[0]['src']
+                sign = 'https://nsmart.nhealth-asia.com/MTDPDB01/' + sign
+                print(sign)
+                print('save signature success {}'.format(id))
+                return json.dumps({'status': 'ok', 'status_text': 'success', 'url': sign}, ensure_ascii=False)
+        except requests.exceptions.RequestException as e:
+            print(e)
+            # wait 5 sec
+            time.sleep(5)
+            return saveSignature(id, dataurl)
+    else:
+        print('save signature fail {}'.format(id))
+        return json.dumps({'status': 'fail', 'status_text': 'fail'}, ensure_ascii=False)
+
+
+stocks = {}
+
+tr_obj = {}
+max_elements = 0
+
+
+def getStockBalance(page):
+    url = "https://nsmart.nhealth-asia.com/MTDPDB01/stock/stock01.php"
+    if page is not None:
+        url = url + "?partPage=" + str(page)
+    else:
+        return "page is None"
+
+    try:
+        response = requests.get(
+            url,
+            # data={"USER": "PYT34DARANPHOP", "PASS": "577199", "Submit": "Submit", "Submit.x": "79", "Submit.y": "30"}
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        # wait 5 sec
+        time.sleep(5)
+        return getStockBalance(page)
+
+    print(" .")
+    print("Checking STOCK...")
+    response.encoding = "tis-620"
+    soup = BeautifulSoup(response.text, "lxml")
+    table = soup.find("table", {"class", "Grid"})
+    if (table == None):
+        print("No table found, re-login...")
+        set_login(None, None)
+        return getStockBalance(page)
+    tr = table.findAll("tr",  {"class", "Row"})
+    # get max elements
+    max_elements = tr[0].findAll("td")[0].text.strip()
+    # get only number from max elements text
+    max_elements = int("".join(filter(lambda x: x.isdigit(), max_elements)))
+    tr.pop(0)
+    for row in tr:
+        td = row.findAll("td")
+        id = td[0].text.strip()
+        code = td[1].find("a").text.strip()
+        name = td[2].text.strip()
+        balance = td[9].text.strip()
+        tr_obj[id] = {"code": code, "name": name, "balance": balance, "id": id}
+    # check if tr_obj is not equal to max_elements
+    if len(tr_obj) < max_elements:
+        return getStockBalance(page=page+1)
+
+    else:
+        return json.dumps({'status': 'ok', 'stock_count': len(tr_obj), 'stock_data': tr_obj}, ensure_ascii=False)
+
+
+def handleRequest(request):
+    """Handle all API requests based on the 'mode' parameter.
+
+    Centralizes request processing for the various API endpoints.
+    Ensures consistent error handling and response formats.
+    """
+    global cookies
+
+    # Ensure we have a valid session
+    if cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return handleRequest(request)
+
+    # Extract common parameters
+    mode = request.args.get('mode')
+    id = request.args.get('id')
+    date = request.args.get('date')
+    vender = request.args.get('vender')
+
+    try:
+        if mode == 'stock':
+            return getStockBalance(1)
+        elif mode == 'closepm':
+            safety = request.args.get('safety')
+            return closePM(id, vender, date, safety)
+        elif mode == 'closecal':
+            safety = request.args.get('safety')
+            return closeCAL(id, vender, date, safety)
+        elif mode == 'closepmcal':
+            safety = request.args.get('safety')
+            return closePMCAL(id, vender, date, safety)
+        elif mode == 'attachfile':
+            dataurl = request.form.get('dataurl')
+            return attachFile(id, vender, date, dataurl)
+        elif mode == 'attachfilecal':
+            dataurl = request.form.get('dataurl')
+            return attachFileCAL(id, vender, date, dataurl)
+        elif mode == 'screenshot':
+            screenshot = request.args.get('screenshot')
+            return send_file(str(screenshot)+'.png', mimetype='image/png')
+        elif mode == 'receivejob':
+            name = request.args.get('name')
+            jobid = request.args.get('jobid')
+            detail = request.args.get('detail')
+            return receivejob(name, jobid, detail)
+        elif mode == 'savejobconsult':
+            text = request.args.get('text')
+            dept = request.args.get('dept')
+            code = request.args.get('code')
+            return saveJobConsult(text, dept, code)
+        elif mode == 'signature':
+            jobno = request.args.get('jobno')
+            dataurl = request.form.get('dataurl')
+            return saveSignature(jobno, dataurl)
+        else:
+            return json.dumps({'status': 'error', 'message': 'Mode not found or not specified'}, ensure_ascii=False)
+    except Exception as e:
+        logging.error(f"Error processing request: {str(e)}")
+        return json.dumps({'status': 'error', 'message': f'Error: {str(e)}'}, ensure_ascii=False)
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    """Main API endpoint that dispatches to specific handlers based on the mode."""
+    mode = request.args.get('mode')
+    if mode is not None:
+        return handleRequest(request)
+    return json.dumps({'status': 'ok', 'message': 'API is running'}, ensure_ascii=False)
+
+
+@app.route('/status', methods=['GET'])
+def status():
+    """Check internet connection status."""
+    return checkInternet()
+
+
+def checkInternet():
+    """Verify internet connectivity by pinging Google."""
+    try:
+        requests.get("https://www.google.com", timeout=5)
+        return json.dumps({'status': 'ok'}, ensure_ascii=False)
+    except requests.exceptions.RequestException:
+        return json.dumps({'status': 'fail', 'message': 'No internet connection'}, ensure_ascii=False)
+
+
+@app.route('/startbot', methods=['GET', 'POST'])
+def startbot():
+    """Start the test.py script in a new window, compatible with both Windows and Linux."""
+    try:
+        # Use the appropriate command based on the OS
+        if os.name == 'nt':  # Windows
+            os.system('start python test.py')
+        else:  # Linux/Unix
+            os.system('gnome-terminal -- python3 test.py')
+        return json.dumps({'status': 'ok'}, ensure_ascii=False)
+    except Exception as e:
+        logging.error(f"Failed to start bot: {str(e)}")
+        return json.dumps({'status': 'fail', 'message': str(e)}, ensure_ascii=False)
+
+
+def play_sound():
+    """Play alert sound when internet connection is lost.
+
+    Uses pygame to play an alert sound and properly handles initialization,
+    file existence checks, and cleanup.
+    """
+    try:
+        # Initialize pygame mixer if not already initialized
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+
+        sound_file = os.path.join(os.getcwd(), 'alert.mp3')
+
+        # Check if file exists before trying to play it
+        if not os.path.exists(sound_file):
+            logging.error(f"Alert sound file not found: {sound_file}")
+            return
+
+        # Load and play the sound with proper cleanup
+        pygame.mixer.music.load(sound_file)
+        pygame.mixer.music.play()
+
+        # Wait for playback to finish or timeout after 8 seconds
+        start_time = time.time()
+        while pygame.mixer.music.get_busy() and time.time() - start_time < 8:
+            time.sleep(0.1)
+
+        pygame.mixer.music.stop()
+    except Exception as e:
+        logging.error(f"Error playing sound: {e}")
+
+
+def status_checking():
+    """Monitor internet connectivity in a background thread.
+
+    Periodically checks internet connection and plays alert sound when connectivity is lost.
+    Implements a cooldown period to avoid constant alerts.
+    """
+    global alarm
+    global status_printed
+    global alert_start
+
+    # Configuration
+    CHECK_INTERVAL = 10  # seconds between checks when online
+    ALERT_COOLDOWN = 300  # seconds (5 minutes) between repeated alerts
+
     while True:
-        time.sleep(10)
-        if not main_thread_thread.is_alive():
-            sendTelegramDev("Service is dead, restarting")
-            restart_program()
+        try:
+            # Set a timeout to avoid blocking the thread for too long
+            requests.get("https://www.google.com", timeout=5)
+
+            # Connection is good
+            if status_printed == 'No internet connection':
+                logging.info("Internet connection restored")
+                print("[green]Internet connection is back[/green]")
+                status_printed = 'Internet connected successfully'
+                # Reset alert timer when connection is restored
+                alert_start = None
+
+            alarm = False
+            time.sleep(CHECK_INTERVAL)
+
+        except (requests.ConnectionError, requests.Timeout):
+            # Initialize alert start time if this is the first alert
+            if alert_start is None:
+                alert_start = time.time()
+
+            status_printed = 'No internet connection'
+            current_time = time.time()
+
+            # Only play sound if it's the first alert or if enough time has passed
+            if not alarm or (current_time - alert_start >= ALERT_COOLDOWN):
+                logging.warning("No internet connection detected")
+                print("[red]No internet connection[/red]")
+                alarm = True
+                play_sound()
+
+            # Check more frequently during outage
+            time.sleep(5)
 
 
-if __name__ == "__main__":
-    # Start the main thread
-    main_thread_thread = threading.Thread(target=main_thread)
-    main_thread_thread.daemon = True  # Allow the program to exit if only daemon threads remain
-    main_thread_thread.start()
+# Start the status checking thread
+status_checking_thread = threading.Thread(target=status_checking, daemon=True)
+status_checking_thread.start()
+
+
+@app.route('/get_new_equipments_list', methods=['GET'])
+def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?asset_masterPageSize=100', page='1'):
+    global equipments_arr
+    global cookies
+    current_last_id = request.args.get('id')
+
+    if current_last_id is None or current_last_id == '':
+        return json.dumps({'status': 'fail', 'status_text': 'ID not found'}, ensure_ascii=False)
+    current_last_id = str(current_last_id).strip()
+    if page == '1':
+        equipments_arr = []
+        print("[green]Fetching Equipments...[/green]")
+    page_url = url + "&asset_masterPage=" + str(page)
+
+    # Ensure we have a valid session
+    if cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return get_equipment_file(url, page)
+    try:
+        response = requests.get(
+            page_url,
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        time.sleep(5)
+        return get_equipment_file(url, page)
+    response.encoding = "tis-620"
+    # find table with regex
+    res = re.findall(
+        r'<table\s+[^>]*class=["\']Grid["\'][^>]*>', response.text, re.DOTALL)
+    if len(res) == 0:
+        print("No table found, re-login...")
+        set_login()
+        return get_equipment_file(url, page)
+    # print attr class of each table
+    # find index of '<table class="Grid" cellspacing="0" cellpadding="0">'
+    # index = response.text.find('<table class="Grid" cellspacing="0" cellpadding="0">')
+    tmp = response.text.split(
+        '<table class="Grid" cellspacing="0" cellpadding="0">')
+    tmp2 = tmp[1].split('</table>')
+    table = '<table class="Grid" cellspacing="0" cellpadding="0">' + \
+        tmp2[0] + '</table>'
+    soup = BeautifulSoup(table, "lxml")
+    max_page = soup.find_all('tr', {'class': 'Footer'})[
+        0].text.split('of')[1].strip().split(' ')[0]
+    print('[yellow]Fetching page[/yellow] [blue]{}[/blue] [yellow]out of[/yellow] [blue]{}[/blue]' .format(page, max_page))
+    rows = soup.find_all('tr')
+    if page == 1:
+        rows = rows[1:-1]
+    else:
+        rows = rows[2:-1]
+    for row in rows:
+        cols = row.find_all('td')
+        if cols[3].text.strip() == current_last_id:
+            print(
+                '[yellow]Total Equipments fetched[/yellow] [blue]{}[/blue]' .format(len(equipments_arr)))
+            return json.dumps({'status': 'ok', 'status_text': 'success', 'equipments': equipments_arr}, ensure_ascii=False)
+            break
+        if cols[3].text.strip() == '':
+            continue
+        img = ('https://nsmart.nhealth-asia.com/MTDPDB01/' +
+               cols[1].find('a').get('href')) if cols[1].find('a') is not None else ''
+        cols = [ele.text.strip() if ele.text.strip() !=
+                'Click' else '' for ele in cols]
+        cols[1] = img
+        equipments_arr.append(cols)
+
+    if int(page) >= int(max_page):
+        # # if int(page) == 2:
+        # df = pd.DataFrame(equipments_arr, columns=header)
+        # df.to_excel(os.path.join(root_dir, 'EXCEL FILE',
+        #             'equipment_list.xlsx'), index=False)
+        # # print file path to let user to click
+        # print('[yellow]The equipment list file has been saved at[/yellow] [blue]{}[/blue]' .format(
+        #     os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')))
+        # # open file
+        # file_path = os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')
+        # auto_adjust_column_width_from_df(file_path, 'Sheet1')
+        # os.system('start excel.exe "' + file_path + '"')
+
+        return equipments_arr
+    else:
+
+        page = int(page) + 1
+        return get_equipment_file(url, str(page))
+
+
+def get_repairWorks_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php', page='974'):
+    global equipments_arr
+    global cookies
+    # current_last_id = request.args.get('id')
+    # Get current_last_id from the last row of the csv file
+    current_last_id = None
+    csv_path = os.path.join(os.getcwd(), 'work_order.csv')
+    try:
+        # csv_path = os.path.join(os.getcwd(), 'work_order.csv')
+        # with open(csv_path, 'r', encoding='utf-8') as f:
+        #     if os.path.exists(csv_path):
+        #         df = pl.read_csv(csv_path, encoding='utf-8')
+        #         last_row = df[-1]
+        #         current_last_id = last_row[1]
+        #         print (f"[yellow]Current last ID: {current_last_id}[/yellow]")
+        #     else:
+        #         print("[yellow]No existing work order CSV found, starting from the beginning[/yellow]")
+        #         if current_last_id is None or current_last_id == '':
+        #             current_last_id = ''
+        mode = 'r'
+        
+        with open(csv_path, mode=mode, encoding='utf-8', newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            if reader != []:
+                # Read the last row from the CSV file
+                for row in reader:
+                    current_last_id = row[1]
+                print(f"[yellow]Current last ID: {current_last_id}[/yellow]")
+    except Exception as e:
+        print(f"[red]Error reading last ID from CSV: {str(e)}[/red]")
     
-    # Run the watchdog
-    watchdog()
+    if current_last_id is None or current_last_id == '':
+        current_last_id = '000000'
+    current_last_id = str(current_last_id).strip()
+    if page == '1':
+        equipments_arr = []
+        print("[green]Fetching Equipments...[/green]")
+    page_url = url + "?jobsPage=" + str(page)
+
+    # Ensure we have a valid session
+    if cookies['PHPSESSID'] is None:
+        set_login(None, None)
+        return get_repairWorks_file(url, page)
+    response = False
+    try:
+        response = requests.get(
+            page_url,
+            headers=headers,
+            cookies=cookies,
+            verify=False,
+        )
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        time.sleep(5)
+        return get_repairWorks_file(url, page)
+    response.encoding = "tis-620"
+    # find table with regex
+    res = re.findall(
+        r'<table\s+[^>]*class=["\']Grid["\'][^>]*>', response.text, re.DOTALL)
+    if len(res) == 0:
+        print("No table found, re-login...")
+        set_login()
+        return get_repairWorks_file(url, page)
+    # print attr class of each table
+    # find index of '<table class="Grid" cellspacing="0" cellpadding="0">'
+    # index = response.text.find('<table class="Grid" cellspacing="0" cellpadding="0">')
+    tmp = response.text.split('<table class="Grid"')
+    tmp2 = tmp[1].split('</table>')
+    table = '<table class="Grid"' + tmp2[0] + '</table>'
+    soup = BeautifulSoup(table, "lxml")
+    rows = soup.find_all('tr',{'class': 'RowAsset'})
+    max_page = soup.find_all('tr', {'class': 'Footer'})[
+        0].text.split('of')[1].strip().split(' ')[0]
+    print('[yellow]Fetching page[/yellow] [blue]{}[/blue] [yellow]out of[/yellow] [blue]{}[/blue]' .format(page, max_page))
+    header = [ele.text.strip() for ele in soup.find('tr', {'class': 'Caption'}).find_all('th')]
+    if page == 1:
+        rows = rows[1:-1]
+    else:
+        rows = rows[2:-1]
+    work_arr = []
+    for row in rows:
+        cols = row.find_all('td')
+        # if cols[1].text.strip() != current_last_id:
+        #     print(
+        #         '[yellow]Total Work Order fetched[/yellow] [blue]{}[/blue]' .format(len(equipments_arr)))
+        #     return json.dumps({'status': 'ok', 'status_text': 'success', 'equipments': equipments_arr}, ensure_ascii=False)
+        #     break
+        # if cols[1].text.strip() == '':
+        #     continue
+        cols = [ele.text.strip() if ele.text.strip() !=
+                'Click' else '' for ele in cols]
+        work_arr.append(cols)
+
+    # Save to CSV after processing each page to avoid data loss in case of interruption
+    try:
+        csv_path = os.path.join(os.getcwd(), 'work_order.csv')
+        mode = 'w' if page == '1' else 'a'
+        write_header = (page == '1')
+        
+        with open(csv_path, mode=mode, encoding='utf-8-sig', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            if write_header:
+                writer.writerow(header)
+            for row in work_arr:
+                # Convert any possible Thai characters properly
+                encoded_row = []
+                for cell in row:
+                    if isinstance(cell, str):
+                        # Ensure string is properly encoded for Thai characters
+                        encoded_row.append(cell)
+                    else:
+                        encoded_row.append(cell)
+                writer.writerow(encoded_row)
+        
+        print(f"[green]Work orders saved to {csv_path}[/green]")
+    except Exception as e:
+        print(f"[red]Error saving to CSV: {str(e)}[/red]")
+    
+    # Calculate max pages based on max data and rows per page (typically 25)
+    if int(page) >= int(max_page):
+        # # if int(page) == 2:
+        # df = pd.DataFrame(equipments_arr, columns=header)
+        # df.to_excel(os.path.join(root_dir, 'EXCEL FILE',
+        #             'equipment_list.xlsx'), index=False)
+        # # print file path to let user to click
+        # print('[yellow]The equipment list file has been saved at[/yellow] [blue]{}[/blue]' .format(
+        #     os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')))
+        # # open file
+        # file_path = os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')
+        # auto_adjust_column_width_from_df(file_path, 'Sheet1')
+        # os.system('start excel.exe "' + file_path + '"')
+
+        return equipments_arr
+    else:
+
+        page = int(page) + 1
+        return get_repairWorks_file(url, str(page))
+
+equipments_arr = []
+
+
+if __name__ == '__main__':
+    # from waitress import serve
+    # print("Starting server on port 5050...")
+    # serve(app, port=5050, threads=20, cleanup_interval=30)
+    get_repairWorks_file()
+else:
+    # This code only runs when imported as a module, not when run directly
+    # Useful for development/testing scenarios
+    app.run(port=5050, threaded=True)
+# saveJobConsult("PYT34PUKARIN", "t997",
+#   "test consult job", "AMBULANCE (รถพยาบาล)", 'PYT3_04920')
