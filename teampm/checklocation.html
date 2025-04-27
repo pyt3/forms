@@ -408,8 +408,10 @@
             let queryArr = []
 
             queryArr.push(client + '_' + (('00000' + id).slice(-5)))
-            for (let i = 1; i <= 15; i++) {
-                queryArr.push(client + '_' + (('00000' + id).slice(-5)) + '_' + i)
+            if(!id.includes('_')){
+                for (let i = 1; i <= 15; i++) {
+                    queryArr.push(client + '_' + (('00000' + id).slice(-5)) + '_' + i)
+                }
             }
             queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
             queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
@@ -530,7 +532,9 @@
 
                 }
                 let date = new Date(row.timestamp.toMillis())
-                let tr = $(`<tr></tr>`).html(`<td>${date.toLocaleDateString('th-TH', {
+                let tr = $(`<tr></tr>`).html(`
+                <td>${row.code}</td>
+                <td>${date.toLocaleDateString('th-TH', {
                     year: 'numeric',
                     month: 'numeric',
                     day: 'numeric',
