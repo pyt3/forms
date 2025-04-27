@@ -414,24 +414,66 @@
             queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
             queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
             queryArr.push(client + (('00000' + id).slice(-5)))
-            firestore.collectionGroup('location').where("code", 'in', queryArr).limit(100).get().then(doc => {
-                console.log("🚀 !! doc:", doc)
-                if (doc.empty) {
-                    $.LoadingOverlay("hide", true)
+            // Firestore has a limit of 10 items for 'in' queries
+            // Split queryArr into chunks of 10
+            let chunkedQueries = [];
+            for (let i = 0; i < queryArr.length; i += 10) {
+                chunkedQueries.push(queryArr.slice(i, i + 10));
+            }
+
+            // Use Promise.all to execute all queries concurrently
+            Promise.all(chunkedQueries.map(chunk => {
+                return firestore.collectionGroup('location')
+                    .where("code", 'in', chunk)
+                    .limit(100)
+                    .get();
+            })).then(snapshots => {
+                let data = [];
+                snapshots.forEach(snapshot => {
+                    snapshot.forEach(doc => {
+                        data.push(doc.data());
+                    });
+                });
+                
+                if (data.length === 0) {
+                    $.LoadingOverlay("hide", true);
                     return Swal.fire({
                         icon: 'error',
                         title: 'ไม่พบข้อมูล',
                         text: 'รหัส ' + $('#add-id').val(),
                         confirmButtonText: 'ตกลง',
-                    })
+                    });
                 }
-                let data = []
-                doc.forEach(d => {
-                    data.push(d.data())
-                })
                 console.log(data);
-                createTable(data)
-            })
+                createTable(data);
+            }).catch(error => {
+                console.error("Error searching for documents: ", error);
+                $.LoadingOverlay("hide", true);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'กรุณาลองใหม่อีกครั้ง',
+                    confirmButtonText: 'ตกลง',
+                });
+            });
+            // firestore.collectionGroup('location').where("code", 'in', queryArr).limit(100).get().then(doc => {
+            //     console.log("🚀 !! doc:", doc)
+            //     if (doc.empty) {
+            //         $.LoadingOverlay("hide", true)
+            //         return Swal.fire({
+            //             icon: 'error',
+            //             title: 'ไม่พบข้อมูล',
+            //             text: 'รหัส ' + $('#add-id').val(),
+            //             confirmButtonText: 'ตกลง',
+            //         })
+            //     }
+            //     let data = []
+            //     doc.forEach(d => {
+            //         data.push(d.data())
+            //     })
+            //     console.log(data);
+            //     createTable(data)
+            // })
             // $.ajax({
             //     url: script_url,
             //     method: "GET",
