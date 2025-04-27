@@ -231,8 +231,13 @@
                     searchLocationData()
                 }
             })
+            $('#add-id').on('input', function (e) {
+                // Replace any character that is not 1-9 or underscore
+                let value = $(this).val();
+                value = value.replace(/[^1-9_]/g, '');
+                $(this).val(value);
+            });
             $('#add-btn').click(() => searchLocationData())
-            $('#add-id').mask('00000')
 
             liff.init({
                 // liffId: '1655873446-3xe866Ql', // test id
@@ -408,7 +413,7 @@
             let queryArr = []
 
             queryArr.push(client + '_' + (('00000' + id).slice(-5)))
-            if(!id.includes('_')){
+            if (!id.includes('_')) {
                 for (let i = 1; i <= 15; i++) {
                     queryArr.push(client + '_' + (('00000' + id).slice(-5)) + '_' + i)
                 }
@@ -437,7 +442,7 @@
                         data.push(doc.data());
                     });
                 });
-                
+
                 if (data.length === 0) {
                     $.LoadingOverlay("hide", true);
                     return Swal.fire({
@@ -518,7 +523,7 @@
             table.attr('id', 'data_table')
             let thead = $(`<thead></thead>`).addClass('text-bg-primary')
             let tbody = $(`<tbody></tbody>`)
-            $(thead).append($(`<tr></tr>`).html(`<th>วันที่</th><th>แผนก</th><th>ห้อง</th><th>ผู้บันทึก</th>`).addClass('text-center'))
+            $(thead).append($(`<tr></tr>`).html(`<th>รหัส</th><th>วันที่</th><th>แผนก</th><th>ห้อง</th><th>ผู้บันทึก</th>`).addClass('text-center'))
             $(thead).append($(`<tr class="text-bg-success"></tr>`).append($('<th colspan="4"</th>').text(`ผลการค้นหารหัส ${$('#add-id').val()}`))).addClass('text-center')
 
             $(table).append(thead)
