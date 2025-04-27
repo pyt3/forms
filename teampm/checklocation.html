@@ -414,6 +414,7 @@
             queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
             queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
             queryArr.push(client + (('00000' + id).slice(-5)))
+            console.log(queryArr)
             firestore.collectionGroup('location').where("code", 'in', queryArr).limit(100).get().then(doc => {
                 console.log("🚀 !! doc:", doc)
                 if (doc.empty) {
