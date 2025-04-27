@@ -408,6 +408,9 @@
             let queryArr = []
 
             queryArr.push(client + '_' + (('00000' + id).slice(-5)))
+            for (let i = 1; i <= 15; i++) {
+                queryArr.push(client + '_' + (('00000' + id).slice(-5)) + '_' + i)
+            }
             queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
             queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
             queryArr.push(client + (('00000' + id).slice(-5)))
