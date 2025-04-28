@@ -234,7 +234,7 @@
             $('#add-id').on('input', function (e) {
                 // Replace any character that is not 1-9 or underscore
                 let value = $(this).val();
-                value = value.replace(/[^1-9_]/g, '');
+                value = value.replace(/[^0-9_]/g, '');
                 $(this).val(value);
             });
             $('#add-btn').click(() => searchLocationData())
