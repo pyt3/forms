@@ -40,6 +40,7 @@ import random
 
 from openpyxl import load_workbook
 
+
 class LineLimitRotatingFileHandler(logging.Handler):
     def __init__(self, filename, max_lines=50000):
         super().__init__()
@@ -62,7 +63,7 @@ class LineLimitRotatingFileHandler(logging.Handler):
         """Rotate the log file to limit the number of lines."""
         with open(self.filename, 'r') as f:
             lines = f.readlines()
-        
+
         # Keep the last max_lines lines
         with open(self.filename, 'w') as f:
             f.writelines(lines[-self.max_lines:])
@@ -80,6 +81,7 @@ class LineLimitRotatingFileHandler(logging.Handler):
         except Exception:
             self.handleError(record)
 
+
 logger = logging.getLogger('my_logger')
 logger.setLevel(logging.ERROR)
 handler = LineLimitRotatingFileHandler('log.txt', max_lines=50000)
@@ -89,7 +91,7 @@ logger.addHandler(handler)
 # logging.basicConfig(filename='log.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # logging.basicConfig(level=logging.ERROR)
 
-#set depth of recursion
+# set depth of recursion
 sys.setrecursionlimit(10000)
 
 # pretty.install()
@@ -822,7 +824,8 @@ def attachFilePM(file_name_list, row):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        logging.error(
+            f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFilePM(file_name_list, row)
     response.raise_for_status()
@@ -865,7 +868,8 @@ def attachFilePM(file_name_list, row):
             del_form = False
             print('[red]Deleting old PM file: ' + str(i+1) + "/" +
                   str(len(file_count)) + '[/red] [yellow]' + code + '[/yellow]', end='\r')
-            logging.info(f'Deleting old PM file: {i+1}/{len(file_count)} {code}')
+            logging.info(
+                f'Deleting old PM file: {i+1}/{len(file_count)} {code}')
             try:
                 del_form = requests.get("https://nsmart.nhealth-asia.com/MTDPDB01/pm/"+url,
                                         headers=headers,
@@ -896,13 +900,15 @@ def attachFilePM(file_name_list, row):
                                              )
 
             except requests.exceptions.RequestException as e:
-                print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+                print(
+                    f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
                 time.sleep(5)
                 return attachFilePM(file_name_list, row)
 
         print('[red]Delete old PM file: ' + str(len(file_count)) +
               ' file(s) success[/red] [yellow]' + code + '[/yellow]')
-        logging.info(f'Delete old PM file: {len(file_count)} file(s) success {code}')
+        logging.info(
+            f'Delete old PM file: {len(file_count)} file(s) success {code}')
 
     form_data = {}
     inputs = form.findAll('input')
@@ -1002,7 +1008,8 @@ def attachFileCAL(file_name_list, row):
         )
     except requests.exceptions.RequestException as e:
         print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-        logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+        logging.error(
+            f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
         time.sleep(5)
         return attachFileCAL(file_name_list, row)
     response.raise_for_status()
@@ -1043,7 +1050,8 @@ def attachFileCAL(file_name_list, row):
             del_form = False
             print('[red]Deleting old CAL file: ' + str(i+1) + "/" +
                   str(len(file_count)) + '[/red] [yellow]' + code + '[/yellow]', end='\r')
-            logging.info(f'Deleting old CAL file: {i+1}/{len(file_count)} {code}')
+            logging.info(
+                f'Deleting old CAL file: {i+1}/{len(file_count)} {code}')
             try:
                 del_form = requests.get("https://nsmart.nhealth-asia.com/MTDPDB01/caliber/"+url,
                                         headers=headers,
@@ -1074,20 +1082,22 @@ def attachFileCAL(file_name_list, row):
                                              )
 
             except requests.exceptions.RequestException as e:
-                print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+                print(
+                    f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
                 time.sleep(5)
                 return attachFileCAL(file_name_list, row)
 
         print('[red]Delete old CAL file: ' + str(len(file_count)) +
               ' file(s) success[/red] [yellow]' + code + '[/yellow]')
-        logging.info(f'Delete old CAL file: {len(file_count)} file(s) success {code}')
+        logging.info(
+            f'Delete old CAL file: {len(file_count)} file(s) success {code}')
 
     form_data = {}
     inputs = form.findAll('input')
     if len(inputs) == 0:
         time.sleep(2)
         set_login()
-        return attachFileCAL(file_name_list, row)   
+        return attachFileCAL(file_name_list, row)
     inputs = [
         {'name': 'docno', 'value': "1"},
         {'name': 'description_doc', 'value': 'Report CAL ' + engineer.upper()},
@@ -2101,7 +2111,8 @@ try:
     # change_file_name_MICal()
 except Exception as e:
     print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-    logging.error(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
+    logging.error(
+        f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
 # change_file_name()
 # get_emp_list()
 # get_equipment_file()
