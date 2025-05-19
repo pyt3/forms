@@ -156,13 +156,15 @@ async function initialData() {
         let l = localStorage.getItem('name')
         if (l != null) {
             let n = $('#name option').toArray().find(o => o.value == l)
-            if (n) return firestore.collection('user').doc(await getUID()).set({
-                site: n.parentElement.label
-            }, { merge: true }).then(() => {
-                $.LoadingOverlay("show");
-                initialData()
-            })
-            current_user = { site: n.parentElement.label }
+            if (n) {
+                // current_user = { site: n.parentElement.label }
+                return firestore.collection('user').doc(await getUID()).set({
+                    site: n.parentElement.label
+                }, { merge: true }).then(() => {
+                    $.LoadingOverlay("show");
+                    initialData()
+                })
+            }
         }
         $('.load-bar').fadeOut(500)
         $.LoadingOverlay("hide");
