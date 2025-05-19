@@ -867,12 +867,12 @@ async function initialData() {
                     Swal.fire({
                         icon: 'warning',
                         title: "กรุณารับงานก่อน",
-                        html: !current_user.isAuthen ? (`
+                        html: (!current_user.isAuthen || current_user.isOnCall) ? (`
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="alert alert-warning">
-                                        กรุณาระบุชื่อ และกดปุ่มยืนยันตัวตน
+                                        ${current_user.isOnCall ? "เนื่องจากเป็น On Call กรุณาระบุชื่อ" : "กรุณาระบุชื่อ และกดปุ่มยืนยันตัวตน"}
                                         <small class="text-danger fw-bold">สามารถยืนยันตัวตนได้เพียง 1 คน/บัญชีไลน์</small>
                                     </div>
                                 </div>
@@ -1209,7 +1209,7 @@ async function initialData() {
             }
             liff.shareTargetPicker([{
                 type: 'flex',
-                altText: 'สรุปงาน ' + job_data.workorder + ' ' + job_data.code,
+                altText: 'สรุปงาน ' + work_detail.workorder + ' ' + work_detail.code,
                 contents: flex
             }]).then(() => {
                 $.LoadingOverlay("hide");
