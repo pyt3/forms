@@ -222,51 +222,58 @@
     </div>
     <main>
         <!-- <div class="container-fluid "> -->
-        <div class="container d-none">
+        <div class="container  d-none">
             <div class="row d-none" id="developer">
                 <div class="col-12">
                     developer <i class="bi bi-person-fill"></i>
                 </div>
             </div>
-            <div class="row alert alert-success justify-content-between mx-1 p-1 py-2 mt-3" style="font-size: 0.8rem;" data-aos="fade-left">
-                <div class="col-8">
-                    WO. <span id="workorder"></span>
-                    <div class="mt-2">
-                        <i class="bi bi-check-circle-fill"></i>&nbsp;<span id="reciever"
-                            style="font-size: 0.8rem;"></span>
+            <div class="row justify-content-between mx-1 mt-3 rounded-4 shadow-sm overflow-hidden border" data-aos="fade-left">
+                <div class="col-12 bg-success bg-gradient text-white py-2 px-3">
+                    <h5 class="mb-0 fw-bold">Work Order: <span id="workorder" class="badge bg-white text-success"></span></h5>
+                </div>
+                <div class="col-8 p-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        <span id="reciever" class="fw-semibold"></span>
                     </div>
-                    <div class="has-code mt-2">
-                        <!-- <div class="col-md-4 has-code d-none"> -->
+                    
+                    <div class="has-code mb-3">
                         <div class="input-group">
-                            <span class="input-group-text" style="font-size: 0.8rem;">Request No.</span>
-                            <input type="text" class="form-control" id="request-no" name="request-no"
-                                style="font-size: 0.8rem;" readonly>
-                            <span class="input-group-text bg-warning" id="edit-request"><i
-                                    class="bi bi-pencil-square"></i></span>
+                            <span class="input-group-text bg-light">Request No.</span>
+                            <input type="text" class="form-control" id="request-no" name="request-no" readonly>
+                            <button class="btn btn-warning" id="edit-request" title="Edit request number">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="has-code mt-2 d-none">
-                        <!-- <div class="col-md-4 has-code d-none"> -->
+                    
+                    <div class="has-code d-none">
                         <div class="input-group">
-                            <span class="input-group-text" style="font-size: 0.8rem;">Code</span>
-                            <input type="text" class="form-control" id="code" name="code" style="font-size: 0.8rem;"
-                                readonly>
+                            <span class="input-group-text bg-light">Code</span>
+                            <input type="text" class="form-control" id="code" name="code" readonly>
                         </div>
                     </div>
                 </div>
-                <div class="col-4 ps-0 d-flex align-items-center justify-content-center flex-column">
-                    <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
-                        class="img-fluid rounded shadow shadow-sm border" style="object-fit: cover; opacity: 0.5;">
-                    <a class="btn btn-sm btn-primary w-100 mt-2 d-none" style="font-size: .7rem;" id="history-btn"><i
-                            class="bi bi-clock-history"></i>&nbsp;ประวัติซ่อม</a>
-                </div>
-                <div class="col-12 d-none">
-                    <div class="alert alert-primary text-center mt-2" id="work-status">
-
+                
+                <div class="col-4 p-3 d-flex align-items-center justify-content-center flex-column">
+                    <div class="position-relative rounded-3 overflow-hidden border shadow-sm mb-2" style="width: 100%; aspect-ratio: 1/1;">
+                        <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
+                            class="img-fluid w-100 h-100" style="object-fit: cover; transition: opacity 0.3s;">
                     </div>
+                    <a class="btn btn-sm btn-primary w-100 d-none" id="history-btn">
+                        <i class="bi bi-clock-history me-1"></i>ประวัติซ่อม
+                    </a>
+                </div>
+                
+                <div class="col-12 px-3 pb-3 d-none">
+                    <div class="alert alert-primary rounded-3 text-center fw-bold mb-0" id="work-status"></div>
                 </div>
             </div>
-            <div class="row justify-content-center" data-aos="fade-right">
+            <div class="row justify-content-center mx-1 mt-3 rounded-4 shadow-sm overflow-hidden border" data-aos="fade-right">
+                <div class="col-12 bg-primary bg-gradient text-white py-2 px-3">
+                    <h5 class="mb-0 fw-bold">Work Update</h5>
+                </div>
                 <div class="col-12 text-center d-none">
                     <img alt="sign" id="user-sign" style="max-height: 100px;" class="img-fluid">
                 </div>
@@ -278,17 +285,8 @@
                         </div>
                     </button>
                 </div>
-            </div>
-            <div class="row g-3 justify-content-center" data-aos="fade-left">
-                <!-- <div class="col-md-4 has-code"> -->
-                <!-- <div class="col-md-4 has-code d-none">
-                    <div class="input-group">
-                        <span class="input-group-text">Code</span>
-                        <input type="text" class="form-control" id="code" name="code" readonly>
-                    </div>
-                </div> -->
-                <div class="col-12 mobile" style="position: relative;">
-                    <label for="update">อัพเดท</label>
+                <div class="col-12 p-3 mobile" style="position: relative;">
+                    <label for="update" class="fw-semibold">อัพเดท</label>
                     <textarea name="update" id="update" class="form-control" rows="5" maxlength="5000"
                         placeholder="กรอกข้อมูลอัพเดท"></textarea>
                     <span
@@ -297,12 +295,12 @@
                     <button class="btn bg-secondary-subtle mt-2 btn-sm unicode-charactor" id="caret-right-fill"><i
                             class="bi bi-caret-right-fill"></i></button>
                 </div>
-                <div class="col-12 mobile">
-                    <label for="vendor_phone">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
+                <div class="col-12 px-3 pb-3 mobile">
+                    <label for="vendor_phone" class="fw-semibold">เบอร์โทรติดต่อ <span class="text-muted">(ถ้ามี)</span></label>
                     <input name="vendor_phone" id="vendor_phone" class="form-control" placeholder="กรอกข้อมูลอัพเดท">
                 </div>
-                <div class="col-12 mobile">
-                    <label for="name">ชื่อผู้กรอก</label>
+                <div class="col-12 px-3 pb-3 mobile">
+                    <label for="name" class="fw-semibold">ชื่อผู้กรอก</label>
                     <select name="name" id="name" class="form-select">
                         <option value="" selected disabled>ชื่อผู้กรอก</option>
                         <optgroup label="PYT1">
@@ -440,15 +438,33 @@
                             <option value="Kittipat Sukontarkoon">Kittipat Sukontarkoon</option>
                             <option value="Panya Sirithammajak">Panya Sirithammajak</option>
                         </optgroup>
+                        
                     </select>
                 </div>
             </div>
-            <div class="row mt-3 justify-content-center mobile g-3" data-aos="fade-right">
-                <div class="col-md-6">
-                    <button class="btn btn-primary w-100" id="submit">ยืนยัน</button>
-                </div>
-                <div class="col-md-6">
-                    <button class="btn btn-danger w-100" id="summary-btn">สรุปงาน</button>
+            
+            <div class="row justify-content-center mx-1 mt-3 rounded-4 shadow-sm overflow-hidden border" data-aos="fade-left">
+                <!-- <div class="col-12 bg-warning bg-gradient text-dark py-2 px-3">
+                    <h5 class="mb-0 fw-bold">Actions</h5>
+                </div> -->
+                <div class="col-12 p-3">
+                    <div class="row justify-content-center gap-3">
+                        <div class="col-md-4">
+                            <button class="w-100 btn btn-primary flex-grow-1 py-2" id="submit">
+                                <i class="bi bi-check-circle-fill me-2"></i>ยืนยัน
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="w-100 btn btn-danger flex-grow-1 py-2" id="summary-btn">
+                                <i class="bi bi-file-text-fill me-2"></i>สรุปงาน
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="w-100 btn btn-success flex-grow-1 py-2" id="share-line-btn">
+                                <i class="bi bi-line me-2"></i>Share to Line
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

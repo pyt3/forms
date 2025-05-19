@@ -19,9 +19,9 @@ let chat_id = '-1002300341036'
 $(document).ready(async () => {
     // $('.load-bar').fadeOut(500)
     moment.locale('th')
-    liff.init({
-        liffId: liff_id,
-    })
+    // liff.init({
+    //     liffId: liff_id,
+    // })
     liff.ready.then(async () => {
         // if (!liff.isInClient()) {
         //     if (liff.getOS() != 'ios') {
@@ -936,6 +936,313 @@ async function initialData() {
         $('#more-update-btn').addClass('d-none')
         $.LoadingOverlay("hide");
     }
+
+    $('#share-line-btn').click(async() => {
+        let work_detail = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
+        if (work_detail && work_detail != null){
+            let flex = {
+                "type": "carousel",
+                "contents": [
+                    {
+                        "type": "bubble",
+                        "size": "giga",
+                        "header": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "backgroundColor": "#DCE8F4",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "⚠️ งานแจ้งซ่อม ⚠️",
+                                    "weight": "bold",
+                                    "align": "center",
+                                    "gravity": "center",
+                                    "scaling": true,
+                                    "size": "lg",
+                                    "color": "#333333"
+                                }
+                            ]
+                        },
+                        "hero": {
+                            "type": "image",
+                            "url": work_detail.image && work_detail.image != null && work_detail.image != '' ? work_detail.image : $('#image').attr('src'),
+                            "size": "3xl",
+                            "action": {
+                                "type": "uri",
+                                "label": "action",
+                                "uri": work_detail.image && work_detail.image != null && work_detail.image != '' ? work_detail.image : $('#image').attr('src'),
+                            }
+                        },
+                        "body": {
+                            "type": "box",
+                            "spacing": "md",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {
+                                                    "type": "box",
+                                                    "layout": "vertical",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "เครื่อง",
+                                                            "flex": 3,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "color": "#aaaaaa"
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": work_detail.ename || '-',
+                                                            "scaling": true,
+                                                            "align": "start",
+                                                            "color": "#666666",
+                                                            "wrap": true
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "รหัส",
+                                                            "flex": 3,
+                                                            "color": "#aaaaaa",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": work_detail.code || '-',
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end",
+                                                            "color": "#666666"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "แผนก(เครื่อง)",
+                                                            "flex": 3,
+                                                            "color": "#aaaaaa",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": work_detail.dept || '-',
+                                                            "flex": 5,
+                                                            "scaling": true,
+                                                            "align": "end",
+                                                            "color": "#666666",
+                                                            "wrap": true
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "แผนก(ผู้แจ้ง)",
+                                                            "flex": 3,
+                                                            "color": "#aaaaaa",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": (work_detail.sender || '-') + (work_detail.coop || ''),
+                                                            "flex": 5,
+                                                            "scaling": true,
+                                                            "align": "end",
+                                                            "color": "#666666",
+                                                            "wrap": true
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "horizontal",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "ผู้แจ้ง",
+                                                            "flex": 3,
+                                                            "color": "#aaaaaa",
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": work_detail.sender || '-',
+                                                            "flex": 5,
+                                                            "adjustMode": "shrink-to-fit",
+                                                            "scaling": true,
+                                                            "align": "end",
+                                                            "color": "#666666",
+                                                            "wrap": true
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "justifyContent": "space-between",
+                                            "spacing": "md"
+                                        }
+                                    ],
+                                    "paddingAll": "5px",
+                                    "spacing": "md"
+                                }
+                            ],
+                            "paddingTop": "none",
+                            "paddingBottom": "none",
+                            "paddingStart": "md",
+                            "paddingEnd": "md"
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "อัพเดทงาน",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?jobid=" + work_detail.job_no
+                                    },
+                                    "style": "primary",
+                                    "color": "#0367d3"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": work_detail.date || '-',
+                                    "size": "xs",
+                                    "color": "#bcbcbc",
+                                    "adjustMode": "shrink-to-fit",
+                                    "scaling": true,
+                                    "align": "center",
+                                    "margin": "md"
+                                }
+                            ],
+                            "spacing": "sm"
+                        }
+                    },
+                    {
+                        "type": "bubble",
+                        "size": "giga",
+                        "header": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "รายละเอียดอาการเสีย",
+                                    "color": "#ffffff",
+                                    "size": "lg",
+                                    "align": "center"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "spacing": "lg",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": work_detail.detail || 'ยังไม่มีการอัพเดท',
+                                            "wrap": true,
+                                            "scaling": true
+                                        }
+                                    ],
+                                    "paddingAll": "lg",
+                                    "borderColor": "#bcbcbc",
+                                    "borderWidth": "light",
+                                    "cornerRadius": "md",
+                                    "backgroundColor": "#f4f6f9",
+                                    "flex": 10
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "ดูสรุปงาน",
+                                        "uri": "https://liff.line.me/1661543046-a1pJexbX?action=summary&jobid=" + work_detail.job_no
+                                    },
+                                    "style": "secondary"
+                                }
+                            ]
+                        },
+                        "styles": {
+                            "header": {
+                                "backgroundColor": "#0367d3"
+                            }
+                        }
+                    }
+                ]
+            }
+            liff.shareTargetPicker([{
+                type: 'flex',
+                altText: 'สรุปงาน ' + job_data.workorder + ' ' + job_data.code,
+                contents: flex
+            }]).then(() => {
+                $.LoadingOverlay("hide");
+                $('.load-bar').fadeOut(500)
+                firestore.collection('jobdata/').doc(jobid).update({
+                    has_sent_init_msg: true
+                }).then(() => {
+                    console.log('update success');
+                })
+                Swal.fire({
+                    icon: 'success',
+                    title: 'แชร์สรุปงานสำเร็จ',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    customClass: {
+
+                        popup: 'rounded-4'
+                    },
+                })
+            }).catch((err) => {
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'แชร์สรุปงานไม่สำเร็จ',
+                    text: 'ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+                    customClass: {
+
+                        popup: 'rounded-4'
+                    },
+                })
+            })
+        }
+    })
 
     $("#submit").click(() => {
         let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
