@@ -273,6 +273,7 @@ async function initialData() {
                     .addClass('text-danger')
                     .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
             }
+            $('#job-detail').html(data.detail || '-')
             $('#open-sign').parent().removeClass('d-none')
             if (data.status) {
                 switch (data.status) {
@@ -833,6 +834,7 @@ async function initialData() {
                 })
             }
             data = data.data()
+            $('#job-detail').html(data.detail || '-')
             if (data.signature && data.workorder) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
                 $('#open-sign')
