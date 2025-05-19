@@ -19,9 +19,9 @@ let chat_id = '-1002300341036'
 $(document).ready(async () => {
     // $('.load-bar').fadeOut(500)
     moment.locale('th')
-    // liff.init({
-    //     liffId: liff_id,
-    // })
+    liff.init({
+        liffId: liff_id,
+    })
     liff.ready.then(async () => {
         // if (!liff.isInClient()) {
         //     if (liff.getOS() != 'ios') {
