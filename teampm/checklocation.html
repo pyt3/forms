@@ -417,7 +417,7 @@
                 for (let i = 1; i <= 15; i++) {
                     queryArr.push(client + '_' + (('00000' + id).slice(-5)) + '_' + i)
                 }
-            }else{
+            } else {
                 let [main_id, sub_id] = id.toString().split('_')
                 queryArr.push(client + '_' + (('00000' + main_id).slice(-5)) + '_' + sub_id)
             }
@@ -521,7 +521,7 @@
                     confirmButtonText: 'ตกลง',
                 })
             }
-            data = data.sort((a, b) => b.timestamp - a.timestamp)
+            data = data.filter(a => a.timestamp != '').sort((a, b) => b.timestamp - a.timestamp)
             let table = $(`<table class="table table-bordered table-striped table-hover"></table>`)
             table.attr('id', 'data_table')
             let thead = $(`<thead></thead>`).addClass('text-bg-primary')
@@ -530,7 +530,7 @@
             $(thead).append($(`<tr class="text-bg-success"></tr>`).append($('<th colspan="5"</th>').text(`ผลการค้นหารหัส ${$('#add-id').val()}`))).addClass('text-center')
 
             $(table).append(thead)
-            $(table).append(tbody)  
+            $(table).append(tbody)
             $('#data_table').remove()
             $('#dept_table').append(table)
             console.log("🚀 ~ data", data)
@@ -539,7 +539,7 @@
                     row.dept = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row.dept
 
                 }
-                let date =row.timestamp && row.timestamp != '' ?  new Date(row.timestamp.toMillis()).toLocaleDateString('th-TH', {
+                let date = row.timestamp && row.timestamp != '' ? new Date(row.timestamp.toMillis()).toLocaleDateString('th-TH', {
                     year: 'numeric',
                     month: 'numeric',
                     day: 'numeric',
