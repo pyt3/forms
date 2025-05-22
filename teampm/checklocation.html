@@ -539,14 +539,14 @@
                     row.dept = '<i class="bi bi-geo-alt-fill fs-3 text-danger"></i> &nbsp;&nbsp;' + row.dept
 
                 }
-                let date = new Date(row.timestamp.toMillis())
-                let tr = $(`<tr></tr>`).html(`
-                <td>${row.code}</td>
-                <td>${date.toLocaleDateString('th-TH', {
+                let date =row.timestamp && row.timestamp != '' ?  new Date(row.timestamp.toMillis()).toLocaleDateString('th-TH', {
                     year: 'numeric',
                     month: 'numeric',
                     day: 'numeric',
-                })}</td><td>${row.dept}</td><td>${row.remark == "" ? '---' : row.remark}</td><td>${row.line}</td>`)
+                }) : ""
+                let tr = $(`<tr></tr>`).html(`
+                <td>${row.code}</td>
+                <td>${date}</td><td>${row.dept}</td><td>${row.remark == "" ? '---' : row.remark}</td><td>${row.line}</td>`)
                 $(tbody).append(tr)
             })
             // format first row of tbody
