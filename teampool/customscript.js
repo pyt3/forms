@@ -233,7 +233,7 @@ function initTextArea() {
         if (e.which === 13) {
             let codes = textArea.value.split("\n").map(code => code.trim());
             let iteim_codes = codes.map(x => x.split('code=')[1]).filter(x => x !== undefined);
-            let concerned_codes = ['261066', '375172', '261296', '400625', '261002']
+            let concerned_codes = ['261066', '261296', '261002']
             let isConcerned = iteim_codes.filter(x => concerned_codes.includes(x));
             if (isConcerned.length > 0) {
                 // Create a modal dialog for calibration warning
