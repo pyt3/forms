@@ -237,6 +237,9 @@ async function initialData() {
     }
     if (action == 'summary') {
         $('.mobile').addClass('d-none')
+        $('#update-section').addClass('d-none')
+        $('button[id="submit"]').addClass('d-none')
+        $('button[id="summary-btn"]').addClass('d-none')
         $('#edit-request').hide()
         $('input').attr('readonly', true)
         $('#summary').parent().removeClass('d-none')
