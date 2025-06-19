@@ -21,6 +21,9 @@ from rich import print, pretty
 from rich.progress import track, Progress
 from rich.table import Table
 from rich.console import Console
+from rich import box
+from rich.panel import Panel
+from rich.align import Align
 import sys
 import logging
 import shutil
@@ -1935,20 +1938,70 @@ def showmenu():
     if (last_run_date != today.strftime('%d/%m/%Y')):
         re_init_app()
     # menu
-    Console().print(
-        '[light blue]Welcome to the job closing program[/light blue]')
-    print('[light blue]Please select a menu[/light blue]')
-    print('[yellow][1] Open script for downloading ECERT files[/yellow]')
-    print('[yellow][2] Change file name[/yellow]')
-    print('[yellow][3][/yellow] [red]Close[/red] [yellow]PM and CAL[/yellow]')
-    print('[yellow][4][/yellow] [red]Attach[/red] [yellow]PM and CAL files[/yellow]')
-    print('[yellow][5][/yellow] [red]Close[/red] [yellow]and[/yellow] [red]Attach[/red] [yellow]PM and CAL files[/yellow]')
-    print('[white]----------------------------------------[/white]')
-    print('[red]Additional Programs[/red]')
-    print('[yellow][6] Get all equipment data[/yellow]')
-    print('[yellow][7] Reinitialize Application[/yellow]')
-    # set input color to blue
-    print(f'\n[purple]Press a number to select the menu: [/purple]', end='')
+    console = Console()
+    
+    # Create a centered, stylized header with borders
+    # header = Panel(
+    #     "[bold cyan]CES Assistant Menu[/bold cyan]",
+    #     border_style="blue",
+    #     expand=False,
+    #     padding=(1, 10)
+    # )
+    # console.print(header)
+    
+    header2_text = (
+        "[dim]• Session ID: " + cookies['PHPSESSID'][:8] + "...[/dim]\n"
+        f"[dim]• User: {confdata['USERNAME']} | Site: {login_site}[/dim]\n"
+        f"[dim]• Last run: {confdata.get('Last run', 'Never')}[/dim]"
+    )
+    
+    header2 = Panel(
+        header2_text,
+        title="[bold white]Session Info[/bold white]",
+        border_style="dim",
+        expand=False,
+        padding=(1, 1)
+    )
+    console.print(header2)
+    # Create a two-column layout for the menu options
+    main_table = Table(
+        show_header=True, 
+        header_style="bold yellow",
+        box=box.ROUNDED,
+        expand=True,
+        show_lines=False,
+        padding=(0, 1)
+    )
+    
+    main_table.add_column("Option", justify="center", style="yellow", no_wrap=True)
+    main_table.add_column("Description", style="cyan")
+    
+    # Add rows with improved descriptions
+    main_table.add_row("[1]", "[bold magenta]Download ECERT Files[/bold magenta] (Copy script to clipboard)")
+    main_table.add_row("[2]", "[bold green]Process & Rename Report Files[/bold green] (Extract data)")
+    main_table.add_row("[3]", "[bold blue]Close PM & CAL Jobs[/bold blue] (Complete task records)")
+    main_table.add_row("[4]", "[bold orange1]Attach PM & CAL Files[/bold orange1] (Link documents)")
+    main_table.add_row("[5]", "[bold red]Complete Full Process[/bold red] (Close jobs + attach files)")
+    main_table.add_row("[6]", "[bold cyan]Get Equipment Database[/bold cyan] (Export to Excel)")
+    main_table.add_row("[7]", "[bold yellow]Reinitialize[/bold yellow] Application (Reset session)")
+    
+    # Add visual styles and information
+    panel = Panel(
+        main_table,
+        title="[bold white]Available Functions[/bold white]",
+        border_style="green",
+        expand=False,
+        padding=(1, 1)
+    )
+    console.print(panel)
+    
+    # Add helpful footer information
+    
+    # Input prompt with more visual indication
+    console.print(
+        "\n[bold purple]>>> Enter your selection (1-7):[/bold purple]", 
+        end=" "
+    )
     menu = input()
     if menu == '1':
         dir_path = ''
@@ -2013,6 +2066,3 @@ except Exception as e:
     print(f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
     logging.error(
         f"An error occurred on line {sys.exc_info()[-1].tb_lineno}: {e}")
-# change_file_name()
-# get_emp_list()
-# get_equipment_file()
