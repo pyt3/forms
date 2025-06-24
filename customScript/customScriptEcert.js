@@ -77,138 +77,28 @@ function initTextArea() {
     let waiting_to_recieve = localStorage.getItem("waiting_to_" + method_text);
     if (waiting_to_recieve == null) waiting_to_recieve = [];
     else waiting_to_recieve = JSON.parse(waiting_to_recieve);
-
-    // Create modern container with smooth rounded corners
-    let wrapper = document.createElement("div");
-    wrapper.style = `
-        display: flex; 
-        flex-direction: column; 
-        background-color: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        padding: 20px;
-        margin: 15px 0;
-        width: 100%;
-        max-width: 650px;
-    `;
-
-    // Create title
-    let title = document.createElement("h3");
-    title.textContent = "รหัสเครื่องที่ต้องการ" + method_text;
-    title.style = `
-        width: 100%;
-        text-align: center;
-        margin: 0 0 15px 0;
-        color: #333;
-        font-size: 1.2rem;
-        font-weight: bold;
-    `;
-    wrapper.appendChild(title);
-
-    let wrapper2 = document.createElement("div");
-    wrapper2.style = `
-        display: flex; 
-        flex-direction: row; 
-        justify-content: space-between; 
-        align-items: start;
-        width: 100%;
-        gap: 15px;
-    `;
-
-    // Create modern styled textarea
     let textArea = document.createElement("textarea");
-    textArea.style = `
-        min-width: 300px;
-        flex-grow: 1;
-        border: 2px solid #e0e0e0;
-        margin: 0;
-        padding: 12px;
-        border-radius: 12px;
-        font-size: 1rem;
-        font-family: inherit;
-        resize: vertical;
-        transition: all 0.3s ease;
-        outline: none;
-        box-sizing: border-box;
-        color: #333;
-    `;
+    textArea.style = "min-width: 300px; border: 1px solid #ccc; margin: 5px; padding: 5px; border-radius: 5px;";
     textArea.rows = 10;
     textArea.id = 'textArea';
     textArea.placeholder = "รหัสเครื่องที่ต้องการ" + method_text;
     textArea.value = waiting_to_recieve.join("\n");
-
-    // Add focus and blur events for interactive styling
-    textArea.addEventListener("focus", function () {
-        this.style.borderColor = "#4CAF50";
-        this.style.boxShadow = "0 0 0 3px rgba(76, 175, 80, 0.2)";
-    });
-    textArea.addEventListener("blur", function () {
-        this.style.borderColor = "#e0e0e0";
-        this.style.boxShadow = "none";
-    });
-
-    // Style QR image to match rounded design
+    let wrapper = document.createElement("div");
+    wrapper.style = "display: flex; flex-direction: column; justify-content: start; align-items: start;";
+    let wrapper2 = document.createElement("div");
+    wrapper2.style = "display: flex; flex-direction: row; justify-content: start; align-items: start;";
+    let btn = document.createElement("button");
+    btn.textContent = "บันทึกทั้งหมด 👍";
+    btn.style = "min-width: 100px; border: 1px solid #ccc; margin: 5px; padding: 5px; border-radius: 5px; cursor: pointer;";
+    btn.id = "batch_save_btn";
     let qr_submit_img = document.createElement("img");
     qr_submit_img.src = "https://api.qrserver.com/v1/create-qr-code?data=SAVE%20ALL%20CODES&size=100x100";
-    qr_submit_img.style = `
-        margin: 0;
-        border: 2px solid #e0e0e0;
-        padding: 10px;
-        border-radius: 12px;
-        background-color: white;
-        transition: all 0.3s ease;
-    `;
-    qr_submit_img.addEventListener("mouseover", function () {
-        this.style.borderColor = "#4CAF50";
-        this.style.transform = "translateY(-2px)";
-        this.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
-    });
-    qr_submit_img.addEventListener("mouseout", function () {
-        this.style.borderColor = "#e0e0e0";
-        this.style.transform = "translateY(0)";
-        this.style.boxShadow = "none";
-    });
-
+    qr_submit_img.style = "margin: 5px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;";
     wrapper2.appendChild(textArea);
     wrapper2.appendChild(qr_submit_img);
     wrapper.appendChild(wrapper2);
-
-    // Create modern button with hover effects
-    let btn = document.createElement("button");
-    btn.textContent = "บันทึกทั้งหมด 👍";
-    btn.style = `
-        min-width: 100px;
-        width: 100%;
-        margin: 15px 0 0 0;
-        padding: 12px;
-        border-radius: 12px;
-        background-color: #4CAF50;
-        color: white;
-        font-size: 1.1rem;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
-    `;
-    btn.id = "batch_save_btn";
-
-    // Add hover effects to button
-    btn.addEventListener("mouseover", function () {
-        this.style.backgroundColor = "#45a049";
-        this.style.boxShadow = "0 6px 10px rgba(76, 175, 80, 0.3)";
-        this.style.transform = "translateY(-2px)";
-    });
-    btn.addEventListener("mouseout", function () {
-        this.style.backgroundColor = "#4CAF50";
-        this.style.boxShadow = "0 4px 6px rgba(76, 175, 80, 0.2)";
-        this.style.transform = "translateY(0)";
-    });
-
     wrapper.appendChild(btn);
     document.querySelectorAll('table')[2].parentNode.insertBefore(wrapper, document.querySelectorAll('table')[2]);
-
-    // Existing click handler
     btn.addEventListener("click", function () {
         let codes = textArea.value.split("\n").map(code => code.trim());
         console.log("🚀 ~ codes:", codes)
@@ -226,107 +116,10 @@ function initTextArea() {
             localStorage.setItem("waiting_to_" + method_text, JSON.stringify(waiting_to_recieve));
         }
     });
-
-    // Existing keypress handler
     textArea.addEventListener("keypress", function (e) {
         console.log(method_text)
         if (e.which === 13) {
             let codes = textArea.value.split("\n").map(code => code.trim());
-            let iteim_codes = codes.map(x => x.split('code=')[1]).filter(x => x !== undefined);
-            let concerned_codes = ['261066', '261296', '261002']
-            let isConcerned = iteim_codes.filter(x => concerned_codes.includes(x));
-            if (isConcerned.length > 0) {
-                // Create a modal dialog for calibration warning
-                const alertDialog = document.createElement("dialog");
-                alertDialog.style = `
-                    width: 600px; 
-                    background-color: #ffebee; 
-                    border: 3px solid #d32f2f; 
-                    border-radius: 16px; 
-                    padding: 20px; 
-                    position: fixed; 
-                    top: 50%; 
-                    left: 50%; 
-                    transform: translate(-50%, -50%);
-                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-                    animation: shakeAlert 0.5s ease-in-out;
-                    z-index: 9999;
-                `;
-
-                // Add animation for the alert
-                const alertStyle = document.createElement("style");
-                alertStyle.textContent = `
-                    @keyframes shakeAlert {
-                        0%, 100% { transform: translate(-50%, -50%); }
-                        10%, 30%, 50%, 70%, 90% { transform: translate(-52%, -50%); }
-                        20%, 40%, 60%, 80% { transform: translate(-48%, -50%); }
-                    }
-                `;
-                document.head.appendChild(alertStyle);
-
-                // Create warning icon
-                const warningIcon = document.createElement("div");
-                warningIcon.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#d32f2f">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1 4h-2v-2h2v2z"/>
-                    </svg>
-                `;
-                warningIcon.style = `
-                    display: flex;
-                    justify-content: center;
-                    margin-bottom: 15px;
-                `;
-
-                // Create message
-                const alertMessage = document.createElement("h2");
-                alertMessage.innerHTML = "เครื่องนี้ยังไม่ได้แคล<br>กรุณาตรวจสอบ";
-                alertMessage.style = `
-                    color: #d32f2f;
-                    text-align: center;
-                    font-size: 3rem;
-                    margin: 0 0 20px 0;
-                `;
-
-                // Create close button
-                const closeButton = document.createElement("button");
-                closeButton.textContent = "รับทราบ";
-                closeButton.style = `
-                    width: 100%;
-                    padding: 12px;
-                    background-color: #d32f2f;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 1.1rem;
-                    font-weight: bold;
-                    cursor: pointer;
-                    transition: background-color 0.3s;
-                `;
-                closeButton.addEventListener("mouseover", () => {
-                    closeButton.style.backgroundColor = "#b71c1c";
-                });
-                closeButton.addEventListener("mouseout", () => {
-                    closeButton.style.backgroundColor = "#d32f2f";
-                });
-                closeButton.addEventListener("click", () => {
-                    alertDialog.close();
-                    document.body.removeChild(alertDialog);
-                    codes = codes.filter(code => concerned_codes.indexOf(code.split('code=')[1]) === -1);
-                    textArea.value = codes.join("\n");
-                });
-
-                // Assemble the dialog
-                alertDialog.appendChild(warningIcon);
-                alertDialog.appendChild(alertMessage);
-                alertDialog.appendChild(closeButton);
-
-                // Add to body and show
-                document.body.appendChild(alertDialog);
-                alertDialog.showModal();
-
-                return 
-            }
-
             waiting_to_recieve = [...new Set(codes.filter(code => code !== ""))]
             console.log(waiting_to_recieve[waiting_to_recieve.length - 1] === "SAVE ALL CODES")
             if (waiting_to_recieve[waiting_to_recieve.length - 1] === "SAVE ALL CODES") {
@@ -343,8 +136,6 @@ function initTextArea() {
             }
         }
     });
-
-    // Focus on textarea after rendering
     setTimeout(() => {
         console.log('focus');
         textArea.focus();
@@ -372,182 +163,60 @@ function borrow() {
     });
 }
 function req_unit(e) {
+
     const dialog = document.createElement("dialog");
     let device = e.dataset.device;
     dialog.style = `
-        width: 420px; 
-        background-color: #ffffff; 
-        border-radius: 16px; 
-        padding: 20px; 
-        position: fixed; 
-        top: 50%; 
-        left: 50%; 
-        transform: translate(-50%, -50%);
-        border: none;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        animation: fadeIn 0.3s ease-out;
+        width: 400px; background-color: #f7f7f7; border-radius: 5px; padding: 10px; 
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
     `;
-
-    // Add animation keyframes
-    const styleSheet = document.createElement("style");
-    styleSheet.textContent = `
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -48%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
-        }
-        @keyframes pulseButton {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        dialog::backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(2px);
-        }
-    `;
-    document.head.appendChild(styleSheet);
 
     const container = document.createElement("div");
     container.style = `
-        display: flex; 
-        flex-wrap: wrap; 
-        justify-content: center; 
-        align-items: start; 
-        width: 100%; 
-        height: 100%;
-        gap: 10px;
+        display: flex; flex-wrap: wrap; justify-content: start; align-items: start; 
+        width: 100%; height: 100%;
     `;
     document.body.appendChild(dialog);
 
     const title = document.createElement("h3");
+    // title.textContent = "จำนวนเครื่องที่ต้องการ";
     title.textContent = `จำนวน ${device} ที่ต้องการ`;
-    title.style = `
-        width: 100%; 
-        text-align: center; 
-        margin: 0 0 15px 0; 
-        color: #333;
-        font-size: 1.3rem;
-    `;
+    title.style = "width: 100%; text-align: center; margin: 5px;";
     container.appendChild(title);
 
     const input = document.createElement("input");
     input.type = "text";
     input.id = "unit";
     input.style = `
-        width: 100%; 
-        margin: 0 0 15px 0; 
-        border-radius: 12px; 
-        padding: 12px; 
-        border: 2px solid #e0e0e0; 
-        outline: none; 
-        box-sizing: border-box; 
-        font-size: 1.2rem; 
-        text-align: center; 
-        font-weight: bold; 
-        color: #333;
-        transition: all 0.3s ease;
+        width: 100%; margin: 5px; border-radius: 5px; padding: 5px; border: 1px solid #ccc; 
+        outline: none; box-sizing: border-box; font-size: 1rem; text-align: center; 
+        font-weight: bold; color: #333;
     `;
-    input.addEventListener("focus", function () {
-        this.style.borderColor = "#4CAF50";
-        this.style.boxShadow = "0 0 0 3px rgba(76, 175, 80, 0.2)";
-    });
-    input.addEventListener("blur", function () {
-        this.style.borderColor = "#e0e0e0";
-        this.style.boxShadow = "none";
-    });
     input.addEventListener("keypress", function (e) {
         if (e.which === 13) document.getElementById("confirm").click();
     });
     container.appendChild(input);
 
-    const buttonsContainer = document.createElement("div");
-    buttonsContainer.style = `
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-        width: 100%;
-        margin-bottom: 15px;
-    `;
-
     for (let i = 0; i < 30; i++) {
         const button = document.createElement("button");
         button.textContent = i + 1;
-        button.style = `
-            margin: 0; 
-            width: 45px; 
-            height: 45px;
-            border-radius: 12px;
-            border: 2px solid #e0e0e0;
-            background-color: #ffffff;
-            color: #333;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        `;
-        button.addEventListener("mouseover", function () {
-            if (!this.classList.contains("is-selected")) {
-                this.style.borderColor = "#4CAF50";
-                this.style.transform = "translateY(-2px)";
-            }
-        });
-        button.addEventListener("mouseout", function () {
-            if (!this.classList.contains("is-selected")) {
-                this.style.borderColor = "#e0e0e0";
-                this.style.transform = "translateY(0)";
-            }
-        });
+        button.style = "margin: 5px; width: 35px; border-radius: 5px;";
         button.addEventListener("click", function () {
-            buttonsContainer.querySelectorAll("button").forEach((btn) => {
+            container.querySelectorAll("button:not(#confirm)").forEach((btn) => {
                 btn.classList.remove("is-selected");
-                btn.style.backgroundColor = "#ffffff";
-                btn.style.borderColor = "#e0e0e0";
-                btn.style.color = "#333";
-                btn.style.transform = "translateY(0)";
+                btn.style.backgroundColor = "white";
             });
-            this.classList.add("is-selected");
-            this.style.backgroundColor = "#4CAF50";
-            this.style.borderColor = "#4CAF50";
-            this.style.color = "#ffffff";
-            input.value = this.textContent;
-            input.style.borderColor = "#4CAF50";
-            input.style.boxShadow = "0 0 0 3px rgba(76, 175, 80, 0.2)";
+            button.classList.add("is-selected");
+            button.style.backgroundColor = "#e9b33b";
+            input.value = button.textContent;
         });
-        buttonsContainer.appendChild(button);
+        container.appendChild(button);
     }
-    container.appendChild(buttonsContainer);
 
     const confirmButton = document.createElement("button");
     confirmButton.id = "confirm";
     confirmButton.textContent = `ยืนยันเบิก ${device}`;
-    confirmButton.style = `
-        margin: 5px 0 0 0; 
-        width: 100%; 
-        border-radius: 12px; 
-        background-color: #dc362e;
-        color: white;
-        font-size: 1.1rem;
-        font-weight: bold;
-        padding: 12px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(220, 54, 46, 0.2);
-    `;
-    confirmButton.addEventListener("mouseover", function () {
-        this.style.backgroundColor = "#c62828";
-        this.style.boxShadow = "0 6px 10px rgba(220, 54, 46, 0.3)";
-        this.style.transform = "translateY(-2px)";
-    });
-    confirmButton.addEventListener("mouseout", function () {
-        this.style.backgroundColor = "#dc362e";
-        this.style.boxShadow = "0 4px 6px rgba(220, 54, 46, 0.2)";
-        this.style.transform = "translateY(0)";
-    });
-    confirmButton.addEventListener("click", function () {
-        this.style.animation = "pulseButton 0.3s";
-    });
-
+    confirmButton.style = "margin: 5px; width: 100%; border-radius: 5px; background-color: #dc362e;";
     confirmButton.addEventListener("click", async function () {
         const unitValue = input.value;
         if (unitValue && !isNaN(unitValue) && Number(unitValue) !== 0) {
@@ -603,49 +272,9 @@ function req_unit(e) {
     });
     container.appendChild(confirmButton);
 
-    // Add close button in corner
-    const closeButton = document.createElement("button");
-    closeButton.innerHTML = "×";
-    closeButton.style = `
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background-color: #f0f0f0;
-        border: none;
-        font-size: 1.5rem;
-        line-height: 1;
-        cursor: pointer;
-        color: #666;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0;
-        transition: all 0.2s ease;
-    `;
-    closeButton.addEventListener("mouseover", function () {
-        this.style.backgroundColor = "#e0e0e0";
-        this.style.color = "#333";
-    });
-    closeButton.addEventListener("mouseout", function () {
-        this.style.backgroundColor = "#f0f0f0";
-        this.style.color = "#666";
-    });
-    closeButton.addEventListener("click", function () {
-        dialog.close();
-    });
-
-    dialog.appendChild(closeButton);
     dialog.appendChild(container);
     document.body.appendChild(dialog);
     dialog.showModal();
-
-    // Focus on input after modal is shown
-    setTimeout(() => {
-        input.focus();
-    }, 100);
 }
 async function distributeBaxter() {
     let codeInput = document.getElementsByName("code")[0];
@@ -838,7 +467,7 @@ function tweakPageAssetDoc() {
             {
                 value: "ใบเสนอราคา",
                 index_no: "6",
-            },
+            },  
             {
                 value: "Spec รุ่น เครื่องมือและอุปกรณ์ครบถ้วนตามใบเสนอราคา",
                 index_no: "7",
@@ -910,7 +539,7 @@ function tweakPageAssetDoc() {
                 // Set the value of the hidden input field
                 document.querySelector('input[name="doc_description"]').value = selectedOption.value;
                 document.querySelector('input[name="number"]').value = index_no;
-            } else {
+            }else{
                 // Clear the value of the hidden input field
                 document.querySelector('input[name="number"]').value = "";
                 document.querySelector('input[name="doc_description"]').value = "";
