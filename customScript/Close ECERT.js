@@ -1,31 +1,10 @@
-let url = new URL(window.location.href);
-let searchParams = new URLSearchParams(url.search);
-let page = searchParams.get('page');
-let previousDate = localStorage.getItem('previousDate') || '';
+// let url = new URL(window.location.href);
+// let searchParams = new URLSearchParams(new URL(window.location.href).search);
+// let page = new URLSearchParams(new URL(window.location.href).search).get('page');
+// let previousDate = localStorage.getItem('previousDate') || '';
 
 // Page-specific initialization
-if (page == 'pm-form') {
-    // // PM DATA
-    // let arr = [
-    //     "tr55acd89d101-recheck-pass",
-    //     "tr55acd89d102-recheck-pass",
-    //     "tr55acd89d103-recheck-pass",
-    //     "tr55acd89d104-recheck-pass",
-    //     "tr55acd89d106-recheck-pass",
-    //     "tr55acd89d106-recheck-pass",
-    //     "tr55acd89d107-recheck-pass",
-    //     "tr55acd89d108-recheck-pass",
-    //     "tr55acd8ae101-recheck-pass",
-    //     "tr55acd8c0101-recheck-pass",
-    //     "tr55acd8c0102-recheck-none",
-    //     "tr55acd8c0103-recheck-none",
-    //     "tr55acd8c0104-recheck-none",
-    //     "tr55acd89d105-recheck-none"
-    // ];
-    // arr.forEach(id => {
-    //     $('#' + id).click();
-    // });
-    // setSameValue();
+if (new URLSearchParams(new URL(window.location.href).search).get('page') == 'pm-form') {
     let form_name = $('#show-form-name').text().trim();
     let standard_select = $('select[id$="std_code"]');
     console.log("🚀 ~ form_name:", form_name);
@@ -60,11 +39,10 @@ if (page == 'pm-form') {
             alert('ไม่พบข้อมูลการสอบเทียบของ ' + form_name + ' ในระบบ กรุณาตรวจสอบอีกครั้ง');
             break;
     }
-} else if (page == 'cal-form') {
+} else if (new URLSearchParams(new URL(window.location.href).search).get('page') == 'cal-form') {
     // CALIBRATION DATA
     let form_name = $('#show-form-name').text().trim();
     let standard_select = $('select[id$="_standard_code"]');
-    console.log("🚀 ~ form_name:", form_name);
     switch (form_name) {
         case "FLOW METER":
             $(standard_select[0]).select2("val", "G5-BMEPYT3-023");
@@ -100,7 +78,7 @@ if (page == 'pm-form') {
             alert('ไม่พบข้อมูลการสอบเทียบของ ' + form_name + ' ในระบบ กรุณาตรวจสอบอีกครั้ง');
             break;
     }
-} else if (page == 'plan-equipments') {
+} else if (new URLSearchParams(new URL(window.location.href).search).get('page') == 'plan-equipments') {
     async function waitForEle(selector) {
         return new Promise(resolve => {
             const interval = setInterval(() => {
@@ -117,32 +95,65 @@ if (page == 'pm-form') {
             await waitForEle('#QuickSearchResultBox .modal-body div[style*="color:#0000FF"]');
             let code = $('#QuickSearchResultBox .modal-body div[style*="color:#0000FF"]')[0].textContent.trim();
             $('#QuickSearchResultBox').attr('data-code', code);
+            let cal_data = processDeviceCode(code);
+            console.log("🚀 ~ cal_data:", cal_data)
+            let selectCalFormBtn = $('#QuickSearchResultBox .modal-footer button:contains("กรอกข้อมูล CAL")');
+            let selectPMFormBtn = $('#QuickSearchResultBox .modal-footer button:contains("กรอกข้อมูล PM")');
+            let [cal_eid,,cal_plan] = selectCalFormBtn.attr('onclick').split('(')[1].split(')')[0].split(',').map(s => Number(s.trim()))
+            const windowWidth = window.screen.width;
+            const windowHeight = window.screen.height;
+            const width = Math.floor(windowWidth / 2);
+            const height = windowHeight;
+            let w1 = window.open(`/?page=cal-form&eid=${cal_eid}&plan=${cal_plan}&form=${cal_data.data.form_cal.split('#')[1]}`, '_blank',
+                `width=${width},height=${height},left=0,top=0`);
+            w1.onload = function () {
+                let customScript = localStorage.getItem('customScriptEcert');
+                if (customScript) {
+                    let script = document.createElement('script');
+                    script.textContent = customScript;
+                    w1.document.body.appendChild(script);
+                }
+            }
+    
+            let [pm_eid,,pm_plan] = selectPMFormBtn.attr('onclick').split('(')[1].split(')')[0].split(',').map(s => Number(s.trim()))
+           let w2 =  window.open(`/?page=pm-form&eid=${pm_eid}&plan=${pm_plan}&form=${cal_data.data.form_pm.split('#')[1]}`, '_blank',
+                `width=${width},height=${height},left=${width},top=0`);
+            w2.onload = function () {
+                let customScript = localStorage.getItem('customScriptEcert');
+                if (customScript) {
+                    let script = document.createElement('script');
+                    script.textContent = customScript;
+                    w2.document.body.appendChild(script);
+                }
+            }
+            $('#QuickSearchResultBox').modal('hide');
         }
+        
 
-        await waitForEle('#SelectWorkForm');
-        let code = $('#QuickSearchResultBox').data('code');
-        let form_category = $('#QuickSearchResultBox .modal-title').text().trim() == 'เลือก Form Cal' ? 'form_cal' : 'form_pm';
-        console.log("🚀 ~ code:", code);
-        console.log("🚀 ~ form_category:", form_category);
-
-        const { processedCode, data } = processDeviceCode(code);
-        if (!processedCode) {
-            return alert('ไม่พบข้อมูลการสอบเทียบของ ' + code + ' ในระบบ กรุณาตรวจสอบอีกครั้ง');
-        }
-
-        let option = $('#select_work_form_id option:contains("' + data[form_category] + '")');
-        if (option.length > 0) {
-            $('#select_work_form_id').select2("val", option.val());
-        } else {
-            return alert('ไม่พบข้อมูลการสอบเทียบของ ' + code + ' ในระบบ กรุณาตรวจสอบอีกครั้ง');
-        }
-        $('#select_work_form_id').closest('form').find('.btn-primary').click();
+        // await waitForEle('#SelectWorkForm');
+        // let code = $('#QuickSearchResultBox').data('code');
+        // let form_category = $('#QuickSearchResultBox .modal-title').text().trim() == 'เลือก Form Cal' ? 'form_cal' : 'form_pm';
+        // const { processedCode, data } = processDeviceCode(code);
+        // console.log("🚀 ~ data:", data)
+        // console.log("🚀 ~ processedCode:", processedCode)
+        // if (!processedCode) {
+        //     return alert('ไม่พบข้อมูลการสอบเทียบของ ' + code + ' ในระบบ กรุณาตรวจสอบอีกครั้ง');
+        // }
+        // data.form_cal = data.form_cal.split('#')[0];
+        // data.form_pm = data.form_pm.split('#')[0];
+        // let option = $('#select_work_form_id option:contains("' + data[form_category] + '")');
+        // if (option.length > 0) {
+        //     $('#select_work_form_id').select2("val", option.val());
+        // } else {
+        //     return alert('ไม่พบข้อมูลการสอบเทียบของ ' + code + ' ในระบบ กรุณาตรวจสอบอีกครั้ง');
+        // }
+        // $('#select_work_form_id').closest('form').find('.btn-primary').click();
     });
 }
 
 // Helper functions
 function processDeviceCode(code) {
-    code = code.replace('PYT3D_', '').replace('PYT3_', '').replace('D_', '');
+    code = code.replace('PYT3D_', '').replace('PYT3_', '').replace('D_', '').replace('T_', '').replace('PYT3T_', '').trim();
     const hasUnderscore = code.indexOf('_') !== -1;
     let suffix = hasUnderscore ? code.padStart(7, '0') : code.padStart(5, '0');
 
@@ -151,7 +162,7 @@ function processDeviceCode(code) {
         'PYT3D_' + suffix,
         'PYT3T_' + suffix
     ];
-    console.log("🚀 ~ codeCandidates:", codeCandidates);
+    console.log("🚀 ~ processDeviceCode ~ codeCandidates:", codeCandidates)
 
     const calData = JSON.parse(localStorage.getItem('calData')) || {};
     for (let candidate of codeCandidates) {
@@ -165,6 +176,11 @@ function processDeviceCode(code) {
 
 function getDeviceCode() {
     let code = $('#work_equipment_code').val();
+    let name = $('#work_equipment_name').val();
+    console.log("🚀 ~ getDeviceCode ~ name:", name)
+    if(name.indexOf('MODULE, ') !== -1) {
+        code = code.replace('_1', '');
+    }
     const { processedCode, data } = processDeviceCode(code);
     return { code: processedCode, data };
 }
@@ -188,14 +204,13 @@ function setupDatepicker(data) {
 }
 
 function setupLocationInfo(data, fieldId) {
+    console.log("🚀 ~ setupLocationInfo ~ data:", data)
     if (data.location_dept) {
         $(fieldId).val('พบที่ :  ' + data.location_dept + (data.location_detail ? (' (' + data.location_detail + ')') : ''));
     }
 }
 
 function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue = false) {
-    console.log("🚀 ~ setupCalibrationForm ~ ids:", ids);
-    console.log("🚀 ~ setupCalibrationForm ~ data:", data);
     if (data.checklist && data.checklist.length > 0) {
         data.checklist.forEach((item, index) => {
             console.log("🚀 ~ setupCalibrationForm ~ item:", item);
@@ -212,8 +227,35 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
 
         $('#' + ids[0] + '_col1').trigger('keyup');
     }
+    let decimal = 0
+    switch (data.form_cal) {
+        case 'FLOW METER':
+            decimal = 2;
+            break;
+        case 'ASPIRATOR, EMERGENCY (SUCTION PUMP)':
+            decimal = 2;
+            break;
+        case 'EKG RECORDER':
+            decimal = 0;
+            break;
+        case 'NIBP MONITOR':
+            decimal = 0;
+            break;
+        case 'PULSE OXIMETER':
+            decimal = 0;
+            break;
+        case 'SUCTION REGULATOR':
+            decimal = 2;
+            break;
+        case 'SPHYGMOMANOMETER':
+            decimal = 1;
+            break;
+        default:
+            decimal = 2;
+            break;
+    }
 
-    setupInputHandlers(ids, 0, useSameValue);
+    setupInputHandlers(ids, decimal, useSameValue);
     data.checklist.forEach((item, index) => {
         if (index < ids.length) {
             $('#' + ids[index] + '_col2').val(item[1]).trigger('keyup').trigger('blur');
@@ -252,13 +294,9 @@ function setupInputHandlers(ids, decimal = 2, useSameValue = false) {
                 $('#' + id + ('_col4')).val(values[2]).trigger('blur');
                 $('#' + id + ('_col5')).val(values[3]).trigger('blur');
             }
-            // timer = setTimeout(() => {
-            // }, 500);
         });
     });
 
-    // document.activeElement.blur();
-    // $('#' + ids[0] + '_col2').focus();
     setSameValue();
 }
 
@@ -308,9 +346,9 @@ function setCalEKG() {
 
     const { code, data } = getDeviceCode();
     console.log("🚀 ~ code:", code);
-
+    console.log("🚀 ~ data:", data);
     if (code) {
-        setupCalibrationForm(ids, data, null, true);
+        setupCalibrationForm(ids, {checklist: data.checklist.hr}, null, true);
         setupDatepicker(data);
         setupLocationInfo(data, '#table55c0764e_notetext');
     }
@@ -420,7 +458,7 @@ function setPMFlowMeter() {
     const { code, data } = getDeviceCode()
     if (code) {
         setupDatepicker(data)
-        setupLocationInfo(data, 'table55ac99d7_notetext')
+        setupLocationInfo(data, '#table55ac99d7_notetext')
     }
     setSameValue();
 }
