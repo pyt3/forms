@@ -843,7 +843,7 @@ def closePM(row, self_call=False):
     # Early returns for no-work or already-closed cases
     if row['DATE-PM'] == 'nan' or row['DATE-PM'] == '':
         return {"status": 'ok', 'text': 'No PM Work', 'nosave': True}
-    if row['PM-CLOSED'] != 'nan':
+    if row['PM-CLOSED'].lower() == 'success':
         return {"status": 'done', 'text': row['PM-CLOSED'], 'nosave': True}
     
     # Check session and login if needed
@@ -959,7 +959,7 @@ def closeCAL(row, self_call=False):
     # Early returns for no-work or already-closed cases
     if row['DATE-CAL'] == 'nan' or row['DATE-CAL'] == '':
         return {"status": 'ok', 'text': 'No CAL Work', 'nosave': True}
-    if row['CAL-CLOSED'] != 'nan':
+    if row['CAL-CLOSED'].lower() == 'success':
         return {"status": 'done', 'text': row['CAL-CLOSED'], 'nosave': True}
     
     # Check session and login if needed
@@ -1067,12 +1067,10 @@ def attachFilePM(file_name_list, row):
     # Early returns for no-work, already-attached, or no-need cases
     if row['DATE-PM'] == 'nan' or row['DATE-PM'] == '':
         return {"status": 'ok', 'text': 'No PM Work', 'nosave': True}
-    if row['PM-ATTACH-STATUS'] != 'nan':
-        return {"status": 'done', 'text': row['PM-ATTACH-STATUS'], 'nosave': True}
     if row['ATTACH-FILE-PM'] != 'yes':
         return {"status": 'ok', 'text': 'No need to attach PM file', 'nosave': True}
-    if row['PM-STATUS'].lower() == 'success':
-        return {"status": 'done', 'text': 'Already attached PM file', 'nosave': True}
+    if row['PM-ATTACH-STATUS'].lower() == 'success':
+        return {"status": 'done', 'text': row['PM-ATTACH-STATUS'], 'nosave': True}
     
     # Check session and login if needed
     if cookies['PHPSESSID'] is None:
@@ -1247,12 +1245,10 @@ def attachFileCAL(file_name_list, row):
     # Early returns for no-work, already-attached, or no-need cases
     if row['DATE-CAL'] == 'nan' or row['DATE-CAL'] == '':
         return {"status": 'ok', 'text': 'No CAL Work', 'nosave': True}
-    if row['CAL-ATTACH-STATUS'] != 'nan':
+    if row['CAL-ATTACH-STATUS'].lower() == 'success':
         return {"status": 'done', 'text': row['CAL-ATTACH-STATUS'], 'nosave': True}
     if row['ATTACH-FILE-CAL'] != 'yes':
         return {"status": 'ok', 'text': 'No need to attach CAL file', 'nosave': True}
-    if row['CAL-STATUS'].lower() == 'success':
-        return {"status": 'done', 'text': 'Already attached CAL file', 'nosave': True}
     
     # Check session and login if needed
     if cookies['PHPSESSID'] is None:
@@ -1418,7 +1414,20 @@ screenshot = False
 
 def read_file(option=None):
     global SEARCH_KEY
-    print('[yellow]Select the SEARCH field[/yellow] [light blue][1]ID CODE[/light blue] [light blue][2]Item no.[/light blue] : ', end='')
+    # Create a stylish selection prompt
+    console = Console()
+    console.print(Panel(
+        "[bold yellow]Select the search field to use:[/bold yellow]\n\n"
+        "  [bold cyan]1[/bold cyan] [white]|[/white] [bold magenta]ID CODE[/bold magenta]    - Search by equipment identification code\n"
+        "  [bold cyan]2[/bold cyan] [white]|[/white] [bold magenta]ITEM NO.[/bold magenta]   - Search by item number in database",
+        title="[bold white]🔍 Search Configuration[/bold white]",
+        border_style="cyan",
+        expand=False,
+        padding=(1, 2)
+    ))
+    
+    # Add sparkles for fabulousness
+    console.print("[bold yellow]✨ Enter your selection (1/2):[/bold yellow] ", end="")
     SEARCH_KEY = input()
     if SEARCH_KEY == '1':
         SEARCH_KEY = ['ID CODE', 's_sap_code']
@@ -1445,10 +1454,10 @@ def read_file(option=None):
         shutil.copy(excel_path, backup_path)
         
         # Pre-count statistics for display (only once, not in the loop)
-        pass_pm = sum(1 for x in df['PM-CLOSED'] if str(x).lower() == 'nan')
-        pass_cal = sum(1 for x in df['CAL-CLOSED'] if str(x).lower() == 'nan')
-        attach_pm = sum(1 for x in df['PM-ATTACH-STATUS'] if str(x).lower() == 'nan')
-        attach_cal = sum(1 for x in df['CAL-ATTACH-STATUS'] if str(x).lower() == 'nan')
+        pass_pm = sum(1 for x in df['PM-CLOSED'] if str(x).lower() != 'success')
+        pass_cal = sum(1 for x in df['CAL-CLOSED'] if str(x).lower() != 'success')
+        attach_pm = sum(1 for x in df['PM-ATTACH-STATUS'] if str(x).lower() != 'success')
+        attach_cal = sum(1 for x in df['CAL-ATTACH-STATUS'] if str(x).lower() != 'success')
         
         # Display statistics table
         table = Table(title=f'Total Medical Devices Found: {len(df)} devices', 
@@ -1493,24 +1502,51 @@ def read_file(option=None):
             print(init_text)
             showmenu()
             return
-        # Confirm with user
-        print(f'\n[red]Do you want to start the process? (Y/N): [/red]', end='')
+        
+        # Sparkly confirmation prompt
+        console.print("[bold red]✨ Do you want to proceed? (Y/N):[/bold red] ", end="")
         if input().lower() != 'y':
-            print("[red]Cancel[/red]")
+            console.print("[bold red]Operation cancelled by user[/bold red]")
+            time.sleep(1)
             os.system('cls' if os.name == 'nt' else 'clear')
             print(init_text)
             showmenu()
             return
         
-        # Screenshot option
-        print(f'\n[red]Do you want to save screenshots? (Y/N): [/red]', end='')
+        # Screenshot option with fancy prompt
+        screenshot_panel = Panel(
+            "[bold cyan]Screenshots can help with:[/bold cyan]\n\n"
+            "  • [yellow]Documenting successful operations[/yellow]\n"
+            "  • [yellow]Troubleshooting failed tasks[/yellow]\n"
+            "  • [yellow]Providing evidence of completion[/yellow]",
+            title="[bold white]📸 Screenshot Option[/bold white]",
+            border_style="blue",
+            expand=False,
+            padding=(1, 2)
+        )
+        console.print(screenshot_panel)
+        
+        console.print("[bold blue]✨ Save screenshots of completed tasks? (Y/N):[/bold blue] ", end="")
         global screenshot
         screenshot = input().lower() == 'y'
-        if screenshot and not os.path.exists(os.path.join(root_dir, 'SCREENSHOT')):
-            os.makedirs(os.path.join(root_dir, 'SCREENSHOT'))
+        
+        if screenshot:
+            screenshot_dir = os.path.join(root_dir, 'SCREENSHOT')
+            if not os.path.exists(screenshot_dir):
+                os.makedirs(screenshot_dir)
+                console.print(f"[green]Created screenshot directory at: [/green][blue]{screenshot_dir}[/blue]")
+            else:
+                console.print(f"[green]Screenshots will be saved to: [/green][blue]{screenshot_dir}[/blue]")
             
-        # Start processing
-        init_text = pyfiglet.figlet_format("Start Process...")
+        # Countdown animation
+        console.print("\n[bold magenta]Starting process in:[/bold magenta]")
+        for i in range(3, 0, -1):
+            console.print(f"[bold yellow]{i}...[/bold yellow]")
+            time.sleep(0.5)
+            
+        # Start processing with fabulous header
+        init_text = pyfiglet.figlet_format("Start Process...", font="slant")
+        console.print(f"[bold rainbow]{init_text}[/bold rainbow]")
         print(init_text)
         start_time = time.time()
         
@@ -2368,8 +2404,13 @@ def showmenu():
         # copy to clipboard
         pyperclip.copy(script_text)
         logging.info('User selected menu #1')
-        print(
-            '\n[green]Script for downloading ECERT files copied successfully[/green]')
+        console.print(Panel(
+            Align.center("[bold green]✓ Script copied to clipboard successfully! ✓[/bold green]\n"
+                 "[italic yellow]You can now paste it in the browser console on the ECERT page[/italic yellow]"),
+            title="[bold white]Download Tool Ready[/bold white]",
+            border_style="green",
+            padding=(1, 2)
+        ))
         logging.info('Script for downloading ECERT files copied successfully')
         print('\nPress any key to return to the main menu: ', end='')
         input()
