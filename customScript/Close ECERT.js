@@ -83,7 +83,9 @@ function handleCalForm() {
 
 // Helper functions
 function processDeviceCode(code) {
-    code = code.replace('PYT3D_', '').replace('PYT3_', '').replace('D_', '').replace('T_', '').replace('PYT3T_', '').trim();
+    console.log('Original device code:', code);
+    code = code.replace('PYT3D_', '').replace('PYT3T_', '').trim().replace('PYT3_', '').replace('D_', '').replace('T_', '')
+    console.log('Processing device code:', code);
     const hasUnderscore = code.indexOf('_') !== -1;
     let suffix = hasUnderscore ? code.padStart(7, '0') : code.padStart(5, '0');
 
@@ -557,3 +559,5 @@ function setupQuickSearchModal() {
         }
     });
 }
+
+$('.project-context h1').append('     😊 With Custom Script 😁')
