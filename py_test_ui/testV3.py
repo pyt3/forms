@@ -9,14 +9,20 @@ from PIL import Image
 from html2image import Html2Image
 import requests
 from bs4 import BeautifulSoup
+import winreg
 import threading
 from datetime import datetime
 import json
 from concurrent.futures import ThreadPoolExecutor
 import pyfiglet
 import urllib3
+from urllib.parse import urlparse
 from queue import Queue
 import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from rich import print, pretty
 from rich.progress import track, Progress, BarColumn
 from rich.table import Table
@@ -2317,6 +2323,39 @@ def re_init_app():
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
 
+def check_default_browser():
+    """Check the default browser on Windows"""
+    try:
+        # Query the registry for the default browser
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice") as key:
+            prog_id = winreg.QueryValueEx(key, "ProgId")[0]
+            
+        # Get the browser name from ProgId
+        browser_names = {
+            'ChromeHTML': 'Google Chrome',
+            'FirefoxURL': 'Mozilla Firefox',
+            'MSEdgeHTM': 'Microsoft Edge',
+            'IE.HTTP': 'Internet Explorer',
+            'OperaStable': 'Opera',
+            'BraveHTML': 'Brave Browser'
+        }
+        
+        browser = browser_names.get(prog_id, f"Unknown ({prog_id})")
+        print(f"🌐 Default Browser: {browser}")
+        return browser
+        
+    except Exception as e:
+        print(f"❌ Could not determine default browser: {e}")
+        return None
+    
+def inject_javascript_if_domain_matches(driver, js_code, target_domain):
+    current_url = driver.current_url
+    parsed_url = urlparse(current_url)
+    if parsed_url.netloc and parsed_url.netloc.endswith(target_domain) or parsed_url.netloc == target_domain:
+        print(f"Injecting JS into: {current_url}")
+        driver.execute_script(js_code)
+    else:
+        print(f"Skipping JS injection for: {current_url} (not in {target_domain})")
 
 def showmenu():
     last_run_date = confdata.get('Last run')
@@ -2401,22 +2440,79 @@ def showmenu():
         # print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
         script_text = open(os.path.join(dir_path, 'SOURCE',
                                         'download cert.txt'), encoding='utf-8').read()
-        # copy to clipboard
-        pyperclip.copy(script_text)
-        logging.info('User selected menu #1')
+        sweetAlert2_text = requests.get('https://cdn.jsdelivr.net/npm/sweetalert2@11')
+        if sweetAlert2_text.status_code == 200:
+            script_text =sweetAlert2_text.text + script_text
+        from selenium import webdriver
+        from selenium.webdriver.chrome.service import Service as ChromeService
+        driver = None
+        default_browser = check_default_browser()
+        if default_browser is None:
+            console.print("[red]❌ Could not determine default browser. Please set it manually.[/red]")
+            return
+        if default_browser == 'Google Chrome':
+            from webdriver_manager.chrome import ChromeDriverManager
+            service = ChromeService(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service)
+        elif default_browser == 'Mozilla Firefox':
+            from webdriver_manager.firefox import GeckoDriverManager
+            service = ChromeService(GeckoDriverManager().install())
+            driver = webdriver.Firefox(service=service)
+        elif default_browser == 'Microsoft Edge':
+            from webdriver_manager.microsoft import EdgeChromiumDriverManager
+            service = ChromeService(EdgeChromiumDriverManager().install())
+            driver = webdriver.Edge(service=service)
+
+        domain = 'necert.nhealth-asia.com/'
+        
+        driver.get(f'https://{domain}')
+        try:
+            WebDriverWait(driver, 1000).until(
+                EC.presence_of_element_located((By.ID, 'plans_equipments_wrapper'))
+            )  
+        except TimeoutException:
+            console.print("[red]❌ Login form not found. Please check the website URL.[/red]")
+            driver.quit()
+            return
+        # Inject JavaScript to set cookies
+        driver.execute_script(script_text)
+
+        
+
+
         console.print(Panel(
-            Align.center("[bold green]✓ Script copied to clipboard successfully! ✓[/bold green]\n"
-                 "[italic yellow]You can now paste it in the browser console on the ECERT page[/italic yellow]"),
-            title="[bold white]Download Tool Ready[/bold white]",
+            Align.center("[bold green]✓ Script executed in browser! ✓[/bold green]\n"
+                 "[italic yellow]Download should start automatically. Check your downloads folder.[/italic yellow]"),
+            title="[bold white]Download Tool Activated[/bold white]",
             border_style="green",
             padding=(1, 2)
         ))
-        logging.info('Script for downloading ECERT files copied successfully')
-        print('\nPress any key to return to the main menu: ', end='')
+
+        # Keep browser open until user decides to close
+        console.print("\n[bold magenta]Press Enter to close the browser and return to main menu...[/bold magenta]")
         input()
+        driver.quit()
+
+        logging.info('ECERT download script executed successfully')
         os.system('cls' if os.name == 'nt' else 'clear')
         print(init_text)
         showmenu()
+        # copy to clipboard
+        # pyperclip.copy(script_text)
+        # logging.info('User selected menu #1')
+        # console.print(Panel(
+        #     Align.center("[bold green]✓ Script copied to clipboard successfully! ✓[/bold green]\n"
+        #          "[italic yellow]You can now paste it in the browser console on the ECERT page[/italic yellow]"),
+        #     title="[bold white]Download Tool Ready[/bold white]",
+        #     border_style="green",
+        #     padding=(1, 2)
+        # ))
+        # logging.info('Script for downloading ECERT files copied successfully')
+        # print('\nPress any key to return to the main menu: ', end='')
+        # input()
+        # os.system('cls' if os.name == 'nt' else 'clear')
+        # print(init_text)
+        # showmenu()
     elif menu == '2':
         logging.info('User selected menu #2')
         change_file_name()
