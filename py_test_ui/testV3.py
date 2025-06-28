@@ -477,6 +477,9 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
                 
                 # Extract image link if available
                 img_link = ''
+                if len(cols) < 2:
+                    print("[red]Row does not have enough columns, skipping...[/red]")
+                    continue
                 if cols[1].find('a') is not None:
                     img_link = 'https://nsmart.nhealth-asia.com/MTDPDB01/' + cols[1].find('a').get('href')
                 
@@ -2322,6 +2325,7 @@ def re_init_app():
     load_calibrator_list()
     os.system('cls' if os.name == 'nt' else 'clear')
     print(init_text)
+    showmenu()
 
 def check_default_browser():
     """Check the default browser on Windows"""
@@ -2357,40 +2361,229 @@ def inject_javascript_if_domain_matches(driver, js_code, target_domain):
     else:
         print(f"Skipping JS injection for: {current_url} (not in {target_domain})")
 
-def showmenu():
-    last_run_date = confdata.get('Last run')
-    today = datetime.now()
-    if (last_run_date != today.strftime('%d/%m/%Y')):
-        re_init_app()
-    # menu
+def _get_script_directory():
+    """Get the directory path for scripts based on whether we're running as exe or script."""
+    return os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.realpath(__file__))
+
+def _create_browser_driver(browser_name, console):
+    """Create and configure WebDriver for the specified browser."""
+    try:
+        # Import webdriver components here to avoid early import issues
+        from selenium import webdriver
+        
+        if browser_name == 'Google Chrome':
+            try:
+                from webdriver_manager.chrome import ChromeDriverManager
+                from selenium.webdriver.chrome.options import Options as ChromeOptions
+                from selenium.webdriver.chrome.service import Service as ChromeService
+                
+                options = ChromeOptions()
+                options.add_argument("--log-level=3")
+                options.add_argument("--silent")
+                options.add_argument("--disable-logging")
+                options.add_argument("--disable-dev-shm-usage")
+                options.add_argument("--start-maximized")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-gpu")
+                options.add_experimental_option("excludeSwitches", ["enable-logging"])
+                options.add_experimental_option('useAutomationExtension', False)
+                
+                console.print("[cyan]Installing Chrome driver...[/cyan]")
+                service = ChromeService(ChromeDriverManager().install())
+                console.print("[green]✓ Chrome driver installed successfully[/green]")
+                return webdriver.Chrome(service=service, options=options)
+                
+            except Exception as e:
+                console.print(f"[red]❌ Chrome driver error: {e}[/red]")
+                return None
+            
+        elif browser_name == 'Mozilla Firefox':
+            try:
+                from webdriver_manager.firefox import GeckoDriverManager
+                from selenium.webdriver.firefox.options import Options as FirefoxOptions
+                from selenium.webdriver.firefox.service import Service as FirefoxService
+                
+                options = FirefoxOptions()
+                options.add_argument("--log-level=3")
+                options.add_argument("--start-maximized")
+                options.set_preference("devtools.console.stdout.content", False)
+                options.set_preference("browser.dom.window.dump.enabled", False)
+                
+                console.print("[cyan]Installing Firefox driver...[/cyan]")
+                service = FirefoxService(GeckoDriverManager().install())
+                console.print("[green]✓ Firefox driver installed successfully[/green]")
+                return webdriver.Firefox(service=service, options=options)
+                
+            except Exception as e:
+                console.print(f"[red]❌ Firefox driver error: {e}[/red]")
+                return None
+            
+        elif browser_name == 'Microsoft Edge':
+            try:
+                from webdriver_manager.microsoft import EdgeChromiumDriverManager
+                from selenium.webdriver.edge.options import Options as EdgeOptions
+                from selenium.webdriver.edge.service import Service as EdgeService
+                
+                options = EdgeOptions()
+                options.add_argument("--log-level=3")
+                options.add_argument("--silent")
+                options.add_argument("--disable-logging")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--start-maximized")
+                options.add_argument("--disable-gpu")
+                options.add_experimental_option("excludeSwitches", ["enable-logging"])
+                options.add_experimental_option('useAutomationExtension', False)
+                
+                console.print("[cyan]Installing Edge driver...[/cyan]")
+                service = EdgeService(EdgeChromiumDriverManager().install())
+                console.print("[green]✓ Edge driver installed successfully[/green]")
+                return webdriver.Edge(service=service, options=options)
+                
+            except Exception as e:
+                console.print(f"[red]❌ Edge driver error: {e}[/red]")
+                return None
+        else:
+            console.print(f"[red]❌ Unsupported browser: {browser_name}[/red]")
+            return None
+            
+    except ImportError as e:
+        console.print(f"[red]❌ WebDriver import error: {e}[/red]")
+        console.print("[yellow]Please install required packages:[/yellow]")
+        console.print("[yellow]pip install selenium webdriver-manager[/yellow]")
+        return None
+    except Exception as e:
+        console.print(f"[red]❌ Unexpected error creating {browser_name} driver: {e}[/red]")
+        return None
+
+def _handle_ecert_download():
+    """Handle ECERT file download functionality."""
     console = Console()
+    dir_path = _get_script_directory()
     
-    # Create a centered, stylized header with borders
-    # header = Panel(
-    #     "[bold cyan]CES Assistant Menu[/bold cyan]",
-    #     border_style="blue",
-    #     expand=False,
-    #     padding=(1, 10)
-    # )
-    # console.print(header)
+    # Import selenium components at the beginning
+    try:
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.common.exceptions import TimeoutException
+    except ImportError as e:
+        console.print(f"[red]❌ Selenium not installed or import error: {e}[/red]")
+        console.print("[yellow]Please install selenium: pip install selenium[/yellow]")
+        return False
     
-    header2_text = (
-        "[dim]• Session ID: " + cookies['PHPSESSID'][:8] + "...[/dim]\n"
-        f"[dim]• User: {confdata['USERNAME']} | Site: {login_site}[/dim]\n"
+    # Load and prepare script
+    script_path = os.path.join(dir_path, 'SOURCE', 'download cert.txt')
+    try:
+        with open(script_path, encoding='utf-8') as f:
+            script_text = f.read()
+    except FileNotFoundError:
+        console.print("[red]❌ Download script file not found.[/red]")
+        return False
+    
+    # Add SweetAlert2 library
+    try:
+        sweetAlert2_response = requests.get('https://cdn.jsdelivr.net/npm/sweetalert2@11', timeout=5)
+        if sweetAlert2_response.status_code == 200:
+            script_text = sweetAlert2_response.text + script_text
+    except requests.RequestException:
+        console.print("[yellow]⚠️ Could not load SweetAlert2 library. Continuing without it.[/yellow]")
+    
+    # Check default browser and create driver
+    default_browser = check_default_browser()
+    if default_browser is None:
+        console.print("[red]❌ Could not determine default browser. Copying script to clipboard instead.[/red]")
+        pyperclip.copy(script_text)
+        console.print(Panel(
+            Align.center("[bold green]✓ Script copied to clipboard! ✓[/bold green]\n"
+                "[italic yellow]Paste it in the browser console on the ECERT page[/italic yellow]"),
+            title="[bold white]Download Tool Ready[/bold white]",
+            border_style="green",
+            padding=(1, 2)
+        ))
+        input("\nPress Enter to continue...")
+        return False
+    
+    driver = _create_browser_driver(default_browser, console)
+    if driver is None:
+        console.print("[red]❌ Failed to create browser driver. Copying script to clipboard instead.[/red]")
+        pyperclip.copy(script_text)
+        console.print(Panel(
+            Align.center("[bold green]✓ Script copied to clipboard! ✓[/bold green]\n"
+                "[italic yellow]Paste it in the browser console on the ECERT page[/italic yellow]"),
+            title="[bold white]Download Tool Ready[/bold white]",
+            border_style="green",
+            padding=(1, 2)
+        ))
+        input("\nPress Enter to continue...")
+        return False
+    
+    try:
+        # Navigate to target domain
+        domain = 'necert.nhealth-asia.com/'
+        driver.get(f'https://{domain}')
+        
+        # Wait for page to load
+        WebDriverWait(driver, 3000).until(
+            EC.presence_of_element_located((By.ID, 'plans_equipments_wrapper'))
+        )
+        
+        # Execute the script
+        driver.execute_script(script_text)
+        
+        console.print(Panel(
+            Align.center("[bold green]✓ Script executed in browser! ✓[/bold green]\n"
+                "[italic yellow]Download should start automatically. Check your downloads folder.[/italic yellow]"),
+            title="[bold white]Download Tool Activated[/bold white]",
+            border_style="green",
+            padding=(1, 2)
+        ))
+        
+        console.print("\n[bold magenta]Press Enter to close the browser and return to main menu...[/bold magenta]")
+        input()
+        
+    except TimeoutException:
+        console.print("[red]❌ Page load timeout. Please check the website URL.[/red]")
+    except Exception as e:
+        console.print(f"[red]❌ Error during browser automation: {e}[/red]")
+    finally:
+        driver.quit()
+    
+    return True
+
+def _display_menu_header(console):
+    """Display the menu header with session information."""
+    session_id = cookies.get('PHPSESSID', 'None')[:8] + "..." if cookies.get('PHPSESSID') else 'None'
+    
+    header_text = (
+        f"[dim]• Session ID: {session_id}[/dim]\n"
+        f"[dim]• User: {confdata.get('USERNAME', 'Unknown')} | Site: {login_site}[/dim]\n"
         f"[dim]• Last run: {confdata.get('Last run', 'Never')}[/dim]"
     )
     
-    header2 = Panel(
-        header2_text,
+    header_panel = Panel(
+        header_text,
         title="[bold white]Session Info[/bold white]",
         border_style="dim",
         expand=False,
         padding=(1, 1)
     )
-    console.print(header2)
-    # Create a two-column layout for the menu options
-    main_table = Table(
-        show_header=True, 
+    console.print(header_panel)
+
+def _create_menu_table():
+    """Create and populate the main menu table."""
+    menu_options = [
+        ("[1]", "[bold magenta]Download ECERT Files[/bold magenta] (Execute download script)"),
+        ("[2]", "[bold green]Process & Rename Report Files[/bold green] (Extract data)"),
+        ("[3]", "[bold blue]Close PM & CAL Jobs[/bold blue] (Complete task records)"),
+        ("[4]", "[bold orange1]Attach PM & CAL Files[/bold orange1] (Link documents)"),
+        ("[5]", "[bold red]Complete Full Process[/bold red] (Close jobs + attach files)"),
+        ("[6]", "[bold cyan]Get Equipment Database[/bold cyan] (Export to Excel)"),
+        ("[7]", "[bold yellow]Reinitialize Application[/bold yellow] (Reset session)")
+    ]
+    
+    table = Table(
+        show_header=True,
         header_style="bold yellow",
         box=box.ROUNDED,
         expand=True,
@@ -2398,152 +2591,77 @@ def showmenu():
         padding=(0, 1)
     )
     
-    main_table.add_column("Option", justify="center", style="yellow", no_wrap=True)
-    main_table.add_column("Description", style="cyan")
+    table.add_column("Option", justify="center", style="yellow", no_wrap=True)
+    table.add_column("Description", style="cyan")
     
-    # Add rows with improved descriptions
-    main_table.add_row("[1]", "[bold magenta]Download ECERT Files[/bold magenta] (Copy script to clipboard)")
-    main_table.add_row("[2]", "[bold green]Process & Rename Report Files[/bold green] (Extract data)")
-    main_table.add_row("[3]", "[bold blue]Close PM & CAL Jobs[/bold blue] (Complete task records)")
-    main_table.add_row("[4]", "[bold orange1]Attach PM & CAL Files[/bold orange1] (Link documents)")
-    main_table.add_row("[5]", "[bold red]Complete Full Process[/bold red] (Close jobs + attach files)")
-    main_table.add_row("[6]", "[bold cyan]Get Equipment Database[/bold cyan] (Export to Excel)")
-    main_table.add_row("[7]", "[bold yellow]Reinitialize[/bold yellow] Application (Reset session)")
+    for option, description in menu_options:
+        table.add_row(option, description)
     
-    # Add visual styles and information
-    panel = Panel(
-        main_table,
+    return Panel(
+        table,
         title="[bold white]Available Functions[/bold white]",
         border_style="green",
         expand=False,
         padding=(1, 1)
     )
-    console.print(panel)
-    
-    # Add helpful footer information
-    
-    # Input prompt with more visual indication
-    console.print(
-        "\n[bold purple]>>> Enter your selection (1-7):[/bold purple]", 
-        end=" "
-    )
-    menu = input()
-    if menu == '1':
-        dir_path = ''
-        if getattr(sys, 'frozen', False):
-            dir_path = os.path.dirname(sys.executable)
-        else:
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-        # open file "download cert.txt" at SOURCE folder in notepad
-        # os.system('notepad.exe "' + os.path.join(dir_path,
-        #           'SOURCE', 'download cert.txt') + '"')
-        # print('[green]เปิดสคริปต์สำหรับดาวน์โหลดไฟล์ ECERT[/green]')
-        script_text = open(os.path.join(dir_path, 'SOURCE',
-                                        'download cert.txt'), encoding='utf-8').read()
-        sweetAlert2_text = requests.get('https://cdn.jsdelivr.net/npm/sweetalert2@11')
-        if sweetAlert2_text.status_code == 200:
-            script_text =sweetAlert2_text.text + script_text
-        from selenium import webdriver
-        from selenium.webdriver.chrome.service import Service as ChromeService
-        driver = None
-        default_browser = check_default_browser()
-        if default_browser is None:
-            console.print("[red]❌ Could not determine default browser. Please set it manually.[/red]")
-            return
-        if default_browser == 'Google Chrome':
-            from webdriver_manager.chrome import ChromeDriverManager
-            service = ChromeService(ChromeDriverManager().install())
-            driver = webdriver.Chrome(service=service)
-        elif default_browser == 'Mozilla Firefox':
-            from webdriver_manager.firefox import GeckoDriverManager
-            service = ChromeService(GeckoDriverManager().install())
-            driver = webdriver.Firefox(service=service)
-        elif default_browser == 'Microsoft Edge':
-            from webdriver_manager.microsoft import EdgeChromiumDriverManager
-            service = ChromeService(EdgeChromiumDriverManager().install())
-            driver = webdriver.Edge(service=service)
 
-        domain = 'necert.nhealth-asia.com/'
-        
-        driver.get(f'https://{domain}')
-        try:
-            WebDriverWait(driver, 1000).until(
-                EC.presence_of_element_located((By.ID, 'plans_equipments_wrapper'))
-            )  
-        except TimeoutException:
-            console.print("[red]❌ Login form not found. Please check the website URL.[/red]")
-            driver.quit()
-            return
-        # Inject JavaScript to set cookies
-        driver.execute_script(script_text)
+def _clear_screen_and_return():
+    """Clear screen and return to main menu."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(init_text)
+    showmenu()
 
-        
-
-
-        console.print(Panel(
-            Align.center("[bold green]✓ Script executed in browser! ✓[/bold green]\n"
-                 "[italic yellow]Download should start automatically. Check your downloads folder.[/italic yellow]"),
-            title="[bold white]Download Tool Activated[/bold white]",
-            border_style="green",
-            padding=(1, 2)
-        ))
-
-        # Keep browser open until user decides to close
-        console.print("\n[bold magenta]Press Enter to close the browser and return to main menu...[/bold magenta]")
-        input()
-        driver.quit()
-
-        logging.info('ECERT download script executed successfully')
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print(init_text)
-        showmenu()
-        # copy to clipboard
-        # pyperclip.copy(script_text)
-        # logging.info('User selected menu #1')
-        # console.print(Panel(
-        #     Align.center("[bold green]✓ Script copied to clipboard successfully! ✓[/bold green]\n"
-        #          "[italic yellow]You can now paste it in the browser console on the ECERT page[/italic yellow]"),
-        #     title="[bold white]Download Tool Ready[/bold white]",
-        #     border_style="green",
-        #     padding=(1, 2)
-        # ))
-        # logging.info('Script for downloading ECERT files copied successfully')
-        # print('\nPress any key to return to the main menu: ', end='')
-        # input()
-        # os.system('cls' if os.name == 'nt' else 'clear')
-        # print(init_text)
-        # showmenu()
-    elif menu == '2':
-        logging.info('User selected menu #2')
-        change_file_name()
-        showmenu()
-    elif menu == '6':
-        logging.info('User selected menu #6')
-        get_equipment_file()
-        showmenu()
-
-    elif menu == '7':
-        logging.info('User selected menu #7')
+def showmenu():
+    """Display main menu and handle user selection."""
+    # Check if re-initialization is needed
+    last_run_date = confdata.get('Last run')
+    today = datetime.now()
+    if last_run_date != today.strftime('%d/%m/%Y'):
         re_init_app()
-        showmenu()
-    else:
+        return
+    
+    console = Console()
+    
+    # Display menu components
+    _display_menu_header(console)
+    menu_panel = _create_menu_table()
+    console.print(menu_panel)
+    
+    # Get user selection
+    console.print("\n[bold purple]>>> Enter your selection (1-7):[/bold purple] ", end="")
+    menu_choice = input().strip()
+    
+    # Handle menu selections
+    menu_handlers = {
+        '1': lambda: (_handle_ecert_download(), logging.info('User selected menu #1')),
+        '2': lambda: (change_file_name(), logging.info('User selected menu #2')),
+        '6': lambda: (get_equipment_file(), logging.info('User selected menu #6')),
+        '7': lambda: (re_init_app(), logging.info('User selected menu #7'))
+    }
+    
+    if menu_choice in menu_handlers:
+        handler, log_action = menu_handlers[menu_choice]()
+        if menu_choice != '7':  # Don't return to menu for reinitialize
+            _clear_screen_and_return()
+    elif menu_choice in ['3', '4', '5']:
+        # Handle options that require additional setup
         load_empList()
         load_calibrator_list()
         load_tool_list('none')
-
-        if menu == '3':
+        
+        if menu_choice == '3':
             logging.info('User selected menu #3')
             read_file('close_pm_cal')
-        elif menu == '4':
+        elif menu_choice == '4':
             logging.info('User selected menu #4')
             read_file('attach_pm_cal')
-        elif menu == '5':
+        elif menu_choice == '5':
             logging.info('User selected menu #5')
             read_file()
-
-        else:
-            print('Menu not found')
-            showmenu()
+    else:
+        console.print("[red]❌ Invalid selection. Please choose 1-7.[/red]")
+        time.sleep(1)
+        showmenu()
 
 
 try:
