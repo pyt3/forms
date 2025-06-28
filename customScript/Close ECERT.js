@@ -84,7 +84,7 @@ function handleCalForm() {
 // Helper functions
 function processDeviceCode(code) {
     console.log('Original device code:', code);
-    code = code.replace('PYT3D_', '').replace('PYT3T_', '').trim().replace('PYT3_', '').replace('D_', '').replace('T_', '')
+    code = code.replace('PYT3D_', '').replace('PYT3T_', '').replace('PYT3_', '').replace('D_', '').replace('T_', '').trim()
     console.log('Processing device code:', code);
     const hasUnderscore = code.indexOf('_') !== -1;
     let suffix = hasUnderscore ? code.padStart(7, '0') : code.padStart(5, '0');
@@ -98,10 +98,14 @@ function processDeviceCode(code) {
     const calData = JSON.parse(localStorage.getItem('calData')) || {};
     for (let candidate of codeCandidates) {
         if (calData[candidate]) {
-            return { processedCode: candidate, data: calData[candidate] || {} };
+            if (calData[candidate].date && calData[candidate].date !== '') {
+                return { processedCode: candidate, data: calData[candidate] || {} };
+            }
+            alert('พบข้อมูลการสอบเทียบของ ' + candidate + ' แต่ไม่มีวันที่สอบเทียบ กรุณาตรวจสอบอีกครั้ง');
+            return { processedCode: null, data: {} };
         }
     }
-
+    alert('ไม่พบข้อมูลการสอบเทียบของ ' + code + ' ในข้อมูลการสอบเทียบ กรุณาตรวจสอบอีกครั้ง');
     return { processedCode: null, data: {} };
 }
 
@@ -522,7 +526,7 @@ function setupQuickSearchModal() {
             let code = $('#QuickSearchResultBox .modal-body div[style*="color:#0000FF"]')[0].textContent.trim();
             $('#QuickSearchResultBox').attr('data-code', code);
             let cal_data = processDeviceCode(code);
-            
+            console.log('cal_data:', cal_data);
             let selectCalFormBtn = $('#QuickSearchResultBox .modal-footer button:contains("กรอกข้อมูล CAL")');
             let selectPMFormBtn = $('#QuickSearchResultBox .modal-footer button:contains("กรอกข้อมูล PM")');
             
