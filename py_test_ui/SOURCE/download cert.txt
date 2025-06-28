@@ -2,7 +2,9 @@
 (() => {
   let params = new URLSearchParams(window.location.search)
   console.log('Script loaded successfully');
-  if (!params.has('page') || params.get('page') == 'pm-certificate-pdf' || !params.get('id')) return false
+  // https://necert.nhealth-asia.com/?page=plan-equipments&id=7200&eq_list=wait-approved
+
+  if (!params.has('page') || !params.get('id')) return false
   let length_opts = document.querySelectorAll('[name="plans_equipments_length"] option')
   if (length_opts[length_opts.length - 1].value == 100) {
     let len = Array.from(document.querySelectorAll('.widget-body')[0].getElementsByTagName('section')).find(e => e.innerText.includes('จำนวน')).nextElementSibling.innerHTML.trim()
@@ -13,10 +15,17 @@
     document.querySelectorAll('[name="plans_equipments_length"]')[0].appendChild(new_opt)
     document.querySelectorAll('[name="plans_equipments_length"]')[0].value = len
     document.querySelectorAll('[name="plans_equipments_length"]')[0].dispatchEvent(new Event('change'))
-    $('.ColVis').append('<button class="btn btn-primary btn-sm" id="download-cert-btn">Download Cert</button>')
-    document.getElementById('download-cert-btn').addEventListener('click', function() {
-      download_cert(this)
-    })
+    if (params.get('eq_list') == 'wait-approved') {
+      $('.ColVis').append('<button class="btn btn-primary btn-sm" id="approve-cert-btn">Approve Cert</button>')
+      document.getElementById('approve-cert-btn').addEventListener('click', function () {
+        approve_cert(this)
+      })
+    } else {
+      $('.ColVis').append('<button class="btn btn-primary btn-sm" id="download-cert-btn">Download Cert</button>')
+      document.getElementById('download-cert-btn').addEventListener('click', function () {
+        download_cert(this)
+      })
+    }
   }
   // $('.nhealth-skin #header').attr('style', 'background: #198754 !important')
   showAlert({
@@ -37,7 +46,7 @@
   function isSwalAvailable() {
     return typeof Swal !== 'undefined' && Swal.fire
   }
-  
+
   function showAlert(options) {
     if (isSwalAvailable()) {
       return Swal.fire(options)
@@ -56,7 +65,146 @@
       }
     }
   }
-  
+
+  var count = 0
+
+  //...existing code...
+
+  // Concurrency control function for parallel downloads with optimizations
+  async function downloadWithConcurrency(urls, maxConcurrent, btn, totalLen) {
+    const results = []
+    let currentIndex = 0
+    let completed = 0
+
+    // Pre-sort URLs to potentially improve caching (group by type)
+    const sortedUrls = urls.sort((a, b) => {
+      const aType = a.pdf_link.includes('pm-cert') ? 'pm' : 'cal'
+      const bType = b.pdf_link.includes('pm-cert') ? 'pm' : 'cal'
+      return aType.localeCompare(bType)
+    })
+
+    // Function to process a single download
+    const processDownload = async () => {
+      while (currentIndex < sortedUrls.length) {
+        const index = currentIndex++
+        const item = sortedUrls[index]
+        const { name, pdf_link } = item
+
+        let success = false
+        let try_attempt = DOWNLOAD_CONFIG.retryAttempts
+
+        while (!success && try_attempt > 0) {
+          try {
+            await getPDF(pdf_link, name, totalLen, btn, index)
+            success = true
+            completed++
+
+            // Update UI less frequently for better performance
+            if (completed % DOWNLOAD_CONFIG.uiUpdateFrequency === 0 || completed === totalLen) {
+              $(btn).text(`Downloading ${completed}/${totalLen}`)
+            }
+
+          } catch (error) {
+            console.log(`Error downloading ${name}, retrying... (${4 - try_attempt}/3)`)
+            await new Promise(resolve => setTimeout(resolve, DOWNLOAD_CONFIG.retryDelay))
+            try_attempt--
+          }
+        }
+        $(btn).text(`Downloading ${completed}/${totalLen}`)
+
+        if (!success) {
+          console.error(`Failed to download ${name} after all attempts`)
+        }
+      }
+    }
+
+    // Start concurrent downloads
+    const promises = Array(Math.min(maxConcurrent, sortedUrls.length))
+      .fill(null)
+      .map(() => processDownload())
+
+    await Promise.all(promises)
+
+    // Final UI update
+    $(btn).removeClass('btn-danger').addClass('btn-primary').text('Download Cert')
+    showAlert({
+      icon: 'success',
+      title: 'ดาวน์โหลดเสร็จสิ้น',
+      text: `ดาวน์โหลด ${completed}/${totalLen} ไฟล์เสร็จสิ้น`,
+      confirmButtonText: 'ปิด',
+    })
+  }
+  async function getPDF(url, name, len, btn, index = 0) {
+    let res
+    try {
+      // Use fetch with optimized headers and timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+
+      res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/pdf,*/*',
+          'Cache-Control': 'no-cache'
+        },
+        signal: controller.signal
+      })
+
+      clearTimeout(timeoutId)
+
+    } catch (e) {
+      console.log('Fetch failed for:', name, e.message);
+      throw new Error(`Fetch failed for ${name}: ${e.message}`)
+    }
+
+    if (!res.ok || res.status != 200) {
+      throw new Error(`HTTP ${res.status} for ${name}`)
+    }
+
+    // Stream the response for better memory management
+    let blob
+    try {
+      blob = await res.blob()
+    } catch (e) {
+      throw new Error(`Blob creation failed for ${name}`)
+    }
+
+    if (!blob || blob.size === 0) {
+      throw new Error(`Empty or invalid blob for ${name}`)
+    }
+
+    // Validate PDF content more efficiently
+    if (blob.type && !blob.type.includes('pdf') && blob.size < 1000) {
+      throw new Error(`Invalid PDF content for ${name}`)
+    }
+
+    // Create object URL and download immediately
+    const objectUrl = URL.createObjectURL(blob)
+
+    try {
+      // Use more efficient approach for downloading
+      const a = document.createElement('a')
+      a.href = objectUrl
+      a.download = name
+      a.style.display = 'none'
+
+      // Append, click and remove in one flow to minimize DOM operations
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    } finally {
+      // Always clean up the object URL
+      URL.revokeObjectURL(objectUrl)
+    }
+
+    // Light throttling only for very large batches to prevent browser overload
+    if (index > 0 && index % DOWNLOAD_CONFIG.throttleBatch === 0) {
+      await new Promise(resolve => setTimeout(resolve, DOWNLOAD_CONFIG.throttleDelay))
+    }
+
+    return true
+  }
+
   async function download_cert(btn) {
     // let option = prompt('กดเลขเมนูที่ต้องการ\n\nดาวน์โหลดไฟล์ทั้งหมด[1]\nดาวน์โหลดเฉพาะไฟล์ที่อนุมัติแล้ว[2]', '')
     showAlert({
@@ -83,7 +231,7 @@
       for (let tr of tbody_rows) {
         let td8 = tr.getElementsByTagName('td')[8]
         let td9 = tr.getElementsByTagName('td')[9]
-  
+
         for (td of [td8, td9]) {
           if (option == 'approved' && !td.innerText.toLowerCase().includes('approved')) continue
           let code = tr.getElementsByTagName('td')[1].innerText
@@ -113,147 +261,66 @@
       console.log(`Found ${approved_pdf_urls_length} PDF links to download.`);
       // Reset counter for this download session
       count = 0
-  
+
       // Download with optimized concurrency control
       await downloadWithConcurrency(approved_pdf_urls, DOWNLOAD_CONFIG.maxConcurrent, btn, approved_pdf_urls_length)
     })
   }
-  var count = 0
-  
-  //...existing code...
-  
-  // Concurrency control function for parallel downloads with optimizations
-  async function downloadWithConcurrency(urls, maxConcurrent, btn, totalLen) {
-    const results = []
-    let currentIndex = 0
-    let completed = 0
-  
-    // Pre-sort URLs to potentially improve caching (group by type)
-    const sortedUrls = urls.sort((a, b) => {
-      const aType = a.pdf_link.includes('pm-cert') ? 'pm' : 'cal'
-      const bType = b.pdf_link.includes('pm-cert') ? 'pm' : 'cal'
-      return aType.localeCompare(bType)
-    })
-  
-    // Function to process a single download
-    const processDownload = async () => {
-      while (currentIndex < sortedUrls.length) {
-        const index = currentIndex++
-        const item = sortedUrls[index]
-        const { name, pdf_link } = item
-  
-        let success = false
-        let try_attempt = DOWNLOAD_CONFIG.retryAttempts
-  
-        while (!success && try_attempt > 0) {
-          try {
-            await getPDF(pdf_link, name, totalLen, btn, index)
-            success = true
-            completed++
-  
-            // Update UI less frequently for better performance
-            if (completed % DOWNLOAD_CONFIG.uiUpdateFrequency === 0 || completed === totalLen) {
-              $(btn).text(`Downloading ${completed}/${totalLen}`)
-            }
-  
-          } catch (error) {
-            console.log(`Error downloading ${name}, retrying... (${4 - try_attempt}/3)`)
-            await new Promise(resolve => setTimeout(resolve, DOWNLOAD_CONFIG.retryDelay))
-            try_attempt--
-          }
+
+  async function approve_cert(btn) {
+    $(btn).removeClass('btn-primary').addClass('btn-danger').text('Approving')
+    let table = document.getElementById('plans_equipments')
+    let tbody_rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr')
+    let approved_pdf_urls = []
+    let i = 0
+    for (let tr of tbody_rows) {
+      let td8 = tr.getElementsByTagName('td')[8]
+      let td9 = tr.getElementsByTagName('td')[9]
+      // Collect all approval tasks first
+      const approvalTasks = [];
+
+      for (const td of [td8, td9]) {
+        const a = td.getElementsByTagName('a');
+        if (a.length === 0) continue;
+        
+        const href = a[0].getAttribute('href');
+        const form = href.split('page=')[1].split('&')[0];
+        
+        if (form !== 'pm-cert' && form !== 'cal-cert') {
+          console.warn(`Skipping unknown form type: ${form}`);
+          continue;
         }
-        $(btn).text(`Downloading ${completed}/${totalLen}`)
-  
-        if (!success) {
-          console.error(`Failed to download ${name} after all attempts`)
-        }
+        
+        const hos = href.split('hos=')[1];
+        const id = href.split('id=')[1].split('&')[0];
+        
+        approvalTasks.push({
+          hos,
+          type: form === 'pm-cert' ? 'pm' : 'cal',
+          id
+        });
       }
+
+      // Process approvals in batches of 2 for better performance
+      const batchSize = 2;
+      for (let j = 0; j < approvalTasks.length; j += batchSize) {
+        const batch = approvalTasks.slice(j, j + batchSize);
+        
+        await Promise.all(batch.map(task => {
+          return new Promise(resolve => {
+            ApproveWork(task.hos, task.type, task.id);
+            $(btn).text(`Approving ${Math.min(i + j + batch.length, tbody_rows.length)}/${tbody_rows.length}`);
+            resolve();
+          });
+        }));
+        
+        // Update UI after each batch
+      }
+
+      i += approvalTasks.length - 1; // Adjust counter for the main loop
+      i++
     }
-  
-    // Start concurrent downloads
-    const promises = Array(Math.min(maxConcurrent, sortedUrls.length))
-      .fill(null)
-      .map(() => processDownload())
-  
-    await Promise.all(promises)
-  
-    // Final UI update
-    $(btn).removeClass('btn-danger').addClass('btn-primary').text('Download Cert')
-    showAlert({
-      icon: 'success',
-      title: 'ดาวน์โหลดเสร็จสิ้น',
-      text: `ดาวน์โหลด ${completed}/${totalLen} ไฟล์เสร็จสิ้น`,
-      confirmButtonText: 'ปิด',
-    })
+
   }
-  async function getPDF(url, name, len, btn, index = 0) {
-    let res
-    try {
-      // Use fetch with optimized headers and timeout
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
-  
-      res = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/pdf,*/*',
-          'Cache-Control': 'no-cache'
-        },
-        signal: controller.signal
-      })
-  
-      clearTimeout(timeoutId)
-  
-    } catch (e) {
-      console.log('Fetch failed for:', name, e.message);
-      throw new Error(`Fetch failed for ${name}: ${e.message}`)
-    }
-  
-    if (!res.ok || res.status != 200) {
-      throw new Error(`HTTP ${res.status} for ${name}`)
-    }
-  
-    // Stream the response for better memory management
-    let blob
-    try {
-      blob = await res.blob()
-    } catch (e) {
-      throw new Error(`Blob creation failed for ${name}`)
-    }
-  
-    if (!blob || blob.size === 0) {
-      throw new Error(`Empty or invalid blob for ${name}`)
-    }
-  
-    // Validate PDF content more efficiently
-    if (blob.type && !blob.type.includes('pdf') && blob.size < 1000) {
-      throw new Error(`Invalid PDF content for ${name}`)
-    }
-  
-    // Create object URL and download immediately
-    const objectUrl = URL.createObjectURL(blob)
-  
-    try {
-      // Use more efficient approach for downloading
-      const a = document.createElement('a')
-      a.href = objectUrl
-      a.download = name
-      a.style.display = 'none'
-  
-      // Append, click and remove in one flow to minimize DOM operations
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-    } finally {
-      // Always clean up the object URL
-      URL.revokeObjectURL(objectUrl)
-    }
-  
-    // Light throttling only for very large batches to prevent browser overload
-    if (index > 0 && index % DOWNLOAD_CONFIG.throttleBatch === 0) {
-      await new Promise(resolve => setTimeout(resolve, DOWNLOAD_CONFIG.throttleDelay))
-    }
-  
-    return true
-  }
+
 })()
