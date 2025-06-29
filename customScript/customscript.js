@@ -138,6 +138,10 @@ function initTextArea() {
     textArea.placeholder = "รหัสเครื่องที่ต้องการ" + method_text;
     textArea.value = waiting_to_recieve.join("\n");
     textArea.autofocus = true;
+    setTimeout(function(){
+            document.activeElement.blur();
+            textArea.focus()
+    },1000)
 
     // Add focus and blur events for interactive styling
     textArea.addEventListener("focus", function () {
