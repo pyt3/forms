@@ -276,6 +276,12 @@
     for (let tr of tbody_rows) {
       let td8 = tr.getElementsByTagName('td')[8]
       let td9 = tr.getElementsByTagName('td')[9]
+      let td10 = tr.getElementsByTagName('td')[10]
+      if(!td10 || !td10.innerText.includes('PASS')) {
+        console.warn(`Skipping row ${i + 1} as it does not have a valid PASS status.`);
+        i++;
+        continue;
+      }
       // Collect all approval tasks first
       const approvalTasks = [];
 
