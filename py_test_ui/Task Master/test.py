@@ -1,7 +1,6 @@
 import base64
 from io import BytesIO
 import re
-import numpy as np
 import openpyxl
 import pandas as pd
 import os
@@ -15,10 +14,9 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 import pyfiglet
 import urllib3
-from queue import Queue
 import time
 from rich import print, pretty
-from rich.progress import track, Progress
+from rich.progress import Progress
 from rich.table import Table
 from rich.console import Console
 import sys
@@ -27,7 +25,6 @@ import shutil
 import calendar
 import pyperclip
 import fitz
-from pypdf import PdfReader, PdfWriter
 import random
 
 # # set cmd to support utf-8
