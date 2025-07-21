@@ -9,7 +9,10 @@ from PIL import Image
 from html2image import Html2Image
 import requests
 from bs4 import BeautifulSoup
-import winreg
+try:
+    import winreg
+except ImportError:
+    winreg = None
 import threading
 from datetime import datetime
 import json
@@ -933,19 +936,18 @@ def closePM(row, self_call=False):
         
         # Submit form
         post_url = f'https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain07.php?{a_href}&ccsForm=main_jobs%3AEdit'
-        response = requests.post(post_url, headers=headers, cookies=cookies, data=form_data, verify=False, timeout=10)
+        response = requests.post(post_url, headers=headers, cookies=cookies, data=form_data, verify=False)
         response.raise_for_status()
         response.encoding = "tis-620"
         
         soup = BeautifulSoup(response.text, "lxml")
         result_table = soup.find('table', {'class': 'Record'})
-        
-        if not result_table:
-            return {"status": 'fail', 'text': 'Fail to close PM'}
+        error_tr = soup.find('tr', {'class': 'Error'})
+        if error_tr:
+            print(f"[red]Error in PM close: {error_tr.text.strip()}[/red]")
         
         result_tr = result_table.find('tr', {'class': 'Total'})
         result_td = result_tr.find('td')
-        
         if result_td.text.strip() == 'PM status : Completed-send equipment back':
             # Take screenshot if enabled
             if screenshot:
@@ -1036,7 +1038,7 @@ def closeCAL(row, self_call=False):
         
         # Submit form
         post_url = f'https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_1.php?{a_href}&ccsForm=caliber_jobs_tech%3AEdit'
-        response = requests.post(post_url, headers=headers, cookies=cookies, data=form_data, verify=False, timeout=10)
+        response = requests.post(post_url, headers=headers, cookies=cookies, data=form_data, verify=False)
         response.raise_for_status()
         response.encoding = "tis-620"
         
