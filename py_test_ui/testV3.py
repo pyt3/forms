@@ -871,7 +871,7 @@ def closePM(row, self_call=False):
     try:
         # Use timeout to prevent hanging requests
         response = requests.get(
-            url, headers=headers, cookies=cookies, verify=False, timeout=10
+            url, headers=headers, cookies=cookies, verify=False
         )
         response.raise_for_status()
         response.encoding = "tis-620"
@@ -986,7 +986,7 @@ def closeCAL(row, self_call=False):
     try:
         # Use timeout to prevent hanging requests
         response = requests.get(
-            url, headers=headers, cookies=cookies, verify=False, timeout=10
+            url, headers=headers, cookies=cookies, verify=False
         )
         response.raise_for_status()
         response.encoding = "tis-620"
@@ -1107,7 +1107,7 @@ def attachFilePM(file_name_list, row):
     try:
         # Use timeout to prevent hanging requests
         response = requests.get(
-            url, headers=headers, cookies=cookies, verify=False, timeout=10
+            url, headers=headers, cookies=cookies, verify=False
         )
         response.raise_for_status()
         response.encoding = "tis-620"
@@ -1128,7 +1128,7 @@ def attachFilePM(file_name_list, row):
         a_href = tr.find('a')['href'].split('?')[1]
         attach_url = f"https://nsmart.nhealth-asia.com/MTDPDB01/pm/maintain08.php?{a_href}&ccsForm=Maindocattache1"
         response = requests.get(
-            attach_url, headers=headers, cookies=cookies, verify=False, timeout=10
+            attach_url, headers=headers, cookies=cookies, verify=False
         )
         response.raise_for_status()
         response.encoding = "tis-620"
@@ -1157,7 +1157,7 @@ def attachFilePM(file_name_list, row):
                     # Get delete form
                     del_url = f"https://nsmart.nhealth-asia.com/MTDPDB01/pm/{url}"
                     del_response = requests.get(
-                        del_url, headers=headers, cookies=cookies, verify=False, timeout=10
+                        del_url, headers=headers, cookies=cookies, verify=False
                     )
                     del_response.raise_for_status()
                     del_response.encoding = "tis-620"
@@ -1185,7 +1185,7 @@ def attachFilePM(file_name_list, row):
                     # Submit delete request
                     del_post_url = f"https://nsmart.nhealth-asia.com/MTDPDB01/pm/{url}&ccsForm=Maindocattache1%3AEdit"
                     del_response = requests.post(
-                        del_post_url, headers=headers, cookies=cookies, data=form_data, verify=False, timeout=10
+                        del_post_url, headers=headers, cookies=cookies, data=form_data, verify=False
                     )
                     del_response.raise_for_status()
                     
@@ -1285,7 +1285,7 @@ def attachFileCAL(file_name_list, row):
     try:
         # Use timeout to prevent hanging requests
         response = requests.get(
-            url, headers=headers, cookies=cookies, verify=False, timeout=10
+            url, headers=headers, cookies=cookies, verify=False
         )
         response.raise_for_status()
         response.encoding = "tis-620"
@@ -1306,7 +1306,7 @@ def attachFileCAL(file_name_list, row):
         a_href = tr.find('a')['href'].split('?')[1]
         attach_url = f"https://nsmart.nhealth-asia.com/MTDPDB01/caliber/caliber03_5.php?{a_href}&ccsForm=caliber_jobs_tech%3AEdit"
         response = requests.get(
-            attach_url, headers=headers, cookies=cookies, verify=False, timeout=10
+            attach_url, headers=headers, cookies=cookies, verify=False
         )
         response.raise_for_status()
         response.encoding = "tis-620"
@@ -1335,7 +1335,7 @@ def attachFileCAL(file_name_list, row):
                     # Get delete form
                     del_url = f"https://nsmart.nhealth-asia.com/MTDPDB01/caliber/{url}"
                     del_response = requests.get(
-                        del_url, headers=headers, cookies=cookies, verify=False, timeout=10
+                        del_url, headers=headers, cookies=cookies, verify=False
                     )
                     del_response.raise_for_status()
                     del_response.encoding = "tis-620"
@@ -1363,7 +1363,7 @@ def attachFileCAL(file_name_list, row):
                     # Submit delete request
                     del_post_url = f"https://nsmart.nhealth-asia.com/MTDPDB01/caliber/{url}&ccsForm=Caliberdocattache1%3AEdit"
                     del_response = requests.post(
-                        del_post_url, headers=headers, cookies=cookies, data=form_data, verify=False, timeout=10
+                        del_post_url, headers=headers, cookies=cookies, data=form_data, verify=False
                     )
                     del_response.raise_for_status()
                     
