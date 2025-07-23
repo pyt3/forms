@@ -1413,7 +1413,13 @@ ${update}
         function doneTyping() {
             console.log(jobid);
             let update = $("#update").val();
+            if(update === '#get_userID'){localStorage
+                $('#update').val(liff.getDecodedIDToken().sub)
+                localStorage.removeItem('updateText' + jobid)
+                return;
+            }
             localStorage.setItem('updateText' + jobid, update)
+            
         }
         function updateCount(updateText) {
             $('#char-count').html(updateText.length + '/5000')
