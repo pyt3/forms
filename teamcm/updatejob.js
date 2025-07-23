@@ -75,7 +75,7 @@ $(document).ready(async () => {
             }
 
             // return console.log("🚀 !! new_url:", new_url)
-            
+
             return window.open(new_url, '_self')
         }
 
@@ -940,9 +940,9 @@ async function initialData() {
         $.LoadingOverlay("hide");
     }
 
-    $('#share-line-btn').click(async() => {
+    $('#share-line-btn').click(async () => {
         let work_detail = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
-        if (work_detail && work_detail != null){
+        if (work_detail && work_detail != null) {
             let flex = {
                 "type": "carousel",
                 "contents": [
@@ -1318,9 +1318,9 @@ ${update}
     $('#summary-btn').click(function () {
         let url
         if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
-           url = new URL('line://app/' + liff_id)
-        }else{
-              url = new URL('https://liff.line.me/' + liff_id)
+            url = new URL('line://app/' + liff_id)
+        } else {
+            url = new URL('https://liff.line.me/' + liff_id)
         }
         url.searchParams.set('code', code)
         url.searchParams.set('jobid', jobid)
@@ -1363,9 +1363,15 @@ $('#edit-request').click(() => {
     })
 })
 function doneTyping() {
-    console.log(jobid);
     let update = $("#update").val();
+    if (update === '#get_userID') {
+        console.log("🚀 !! user id request")
+        $('#update').val(liff.getDecodedIDToken().sub)
+        localStorage.removeItem('updateText' + jobid)
+        return;
+    }
     localStorage.setItem('updateText' + jobid, update)
+
 }
 function updateCount(updateText) {
     $('#char-count').html(updateText.length + '/5000')
