@@ -51,6 +51,7 @@ const depts_array = [
     "WARD 14",
     "WARD 15",
     "WARD 17",
+    "WARD 20",
     "WARD 7",
     "WARD 8",
     "WARD 9",
