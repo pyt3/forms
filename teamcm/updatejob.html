@@ -1413,6 +1413,7 @@ ${update}
         function doneTyping() {
             console.log(jobid);
             let update = $("#update").val();
+            console.log("🚀 !! update:", update); 
             if(update === '#get_userID'){
                 $('#update').val(liff.getDecodedIDToken().sub)
                 localStorage.removeItem('updateText' + jobid)
