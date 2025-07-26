@@ -15,7 +15,7 @@ if (page === 'pm-form') {
 function handlePMForm() {
     const form_name = $('#show-form-name').text().trim();
     const standard_select = $('select[id$="std_code"]');
-    
+
     const pmHandlers = {
         "FLOW METER": setPMFlowMeter,
         "ASPIRATOR, EMERGENCY (SUCTION PUMP)": setPMAspirator,
@@ -41,7 +41,7 @@ function handlePMForm() {
 function handleCalForm() {
     const form_name = $('#show-form-name').text().trim();
     const standard_select = $('select[id$="_standard_code"]');
-    
+
     const calHandlers = {
         "FLOW METER": () => {
             $(standard_select[0]).select2("val", "G5-BMEPYT3-023");
@@ -74,7 +74,7 @@ function handleCalForm() {
             setCalSphygmomanometer();
         },
         "THERMOMETER, HYGRO (MED)": () => {
-            $(standard_select[0]).select2("val", "G5-BMEPYT3_025");
+            standard_select.select2("val", "G5-BMEPYT3_025");
             setCalThermoHygroMeter();//24
         }
     };
@@ -118,7 +118,7 @@ function processDeviceCode(code) {
 function getDeviceCode() {
     let code = $('#work_equipment_code').val();
     let name = $('#work_equipment_name').val();
-    if(name.indexOf('MODULE, ') !== -1) {
+    if (name.indexOf('MODULE, ') !== -1) {
         code = code.replace('_1', '');
     }
     return processDeviceCode(code);
@@ -148,9 +148,13 @@ function setupLocationInfo(data, fieldId) {
 }
 
 function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue = false) {
+    console.log('Setting up calibration form with IDs:', ids, 'and data:', data);
     if (data.checklist && data.checklist.length > 0) {
         data.checklist.forEach((item, index) => {
+            console.log('item:', item);
             if (index < ids.length) {
+                console.log('#' + ids[index] + '_col1');
+                console.log('Setting value for:', ids[index] + '_col1', 'with item[0]:', item[0]);
                 $('#' + ids[index] + '_col1').val(item[0]);
             }
         });
@@ -163,7 +167,7 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
 
         $('#' + ids[0] + '_col1').trigger('keyup');
     }
-    
+
     const decimalMap = {
         'FLOW METER': 2,
         'ASPIRATOR, EMERGENCY (SUCTION PUMP)': 2,
@@ -174,24 +178,24 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
         'SPHYGMOMANOMETER': 1,
         'THERMOMETER, HYGRO (MED)': 1,
     };
-    
+
     const decimal = decimalMap[data.form_cal] || 2;
     setupInputHandlers(ids, decimal, useSameValue);
-    
+
     data.checklist.forEach((item, index) => {
         if (index < ids.length) {
             $('#' + ids[index] + '_col2').val(item[1]).trigger('keyup').trigger('blur');
         }
     });
-    
-    setSameValue();
+
+    setSameValue(data.temp, data.humid);
 }
 
 function setupInputHandlers(ids, decimal = 2, useSameValue = false) {
     ids.forEach(id => {
         $('#' + id + '_col2').off('input').on('keyup', function (event) {
             const value = this.value;
-            
+
             if (event.keyCode == 13) {
                 let row = $(this).closest('tr');
                 let nextRowInput = row.next().next().find('input[id$="_col2"]');
@@ -204,10 +208,10 @@ function setupInputHandlers(ids, decimal = 2, useSameValue = false) {
             }
 
             if (value) {
-                const values = useSameValue ? 
-                    [value, value, value, value] : 
+                const values = useSameValue ?
+                    [value, value, value, value] :
                     generateFourValuesWithSameMean(value, decimal);
-                
+
                 $('#' + id + '_col3').val(values[1]).trigger('blur');
                 $('#' + id + '_col4').val(values[2]).trigger('blur');
                 $('#' + id + '_col5').val(values[3]).trigger('blur');
@@ -246,7 +250,7 @@ function setCalEKG() {
     const { processedCode, data } = getDeviceCode();
 
     if (processedCode) {
-        setupCalibrationForm(ids, {checklist: data.checklist.hr}, null, true);
+        setupCalibrationForm(ids, { checklist: data.checklist.hr }, null, true);
         setupDatepicker(data);
         setupLocationInfo(data, '#table55c0764e_notetext');
     }
@@ -262,21 +266,21 @@ function setCalNIBP() {
 
     const { processedCode, data } = getDeviceCode();
     if (!processedCode) return;
-    
+
     data.checklist.sys = data.checklist['sys-dia'].map(item => {
         return item.map(value => Number(value.split('/')[0]));
     });
-    
+
     data.checklist.dia = data.checklist['sys-dia'].map(item => {
         return item.map(value => Number(value.split('/')[1]));
     });
-    
+
     Object.keys(ids).forEach(key => {
         if (data.checklist[key] && data.checklist[key].length > 0) {
             setupCalibrationForm(ids[key], { checklist: data.checklist[key] }, null, true);
         }
     });
-    
+
     setupDatepicker(data);
     setupLocationInfo(data, '#table55c07988_notetext');
 }
@@ -328,15 +332,14 @@ function setCalThermoHygroMeter() {
         humidity: ["tr55a6215c1"]
     };
     const { processedCode, data } = getDeviceCode();
-    data.checklist ={
-        temperature: [data.temp_std],
-        humidity: [data.humid_std]
+    data.checklist = {
+        temperature: [[data.temp_std, data.temp]],
+        humidity: [[data.humid_std, data.humid]]
     }
-
-    if (processedCode){
+    if (processedCode) {
         Object.keys(ids).forEach(key => {
             if (data.checklist[key] && data.checklist[key].length > 0) {
-                setupCalibrationForm(ids[key], { checklist: data.checklist[key] }, 0.1, false)
+                setupCalibrationForm(ids[key], { checklist: data.checklist[key], form_cal: data.form_cal.split('#')[0] }, null, false);
             }
         });
         setupDatepicker(data);
@@ -353,7 +356,7 @@ function setPMFlowMeter() {
         "tr55acd8c0104-recheck-none", "tr55acd89d105-recheck-none"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         setupDatepicker(data);
@@ -373,7 +376,7 @@ function setPMAspirator() {
         "tr55acdba8104-recheck-none"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         setupDatepicker(data);
@@ -394,7 +397,7 @@ function setPMEKG() {
         "tr55acd209103-recheck-none", "tr55acd209104-recheck-none"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         setupDatepicker(data);
@@ -414,7 +417,7 @@ function setPMNIBP() {
         "tr55ace1b9101-recheck-pass", "tr55ace1b9102-recheck-none", "tr55ace1b9103-recheck-none", "tr55ace1b9104-recheck-none"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         if (data?.checklist?.ground !== undefined) {
@@ -432,7 +435,7 @@ function setPMNIBP() {
 function setPMModule() {
     const checkboxIds = ["tr55acd91e101-recheck-pass"];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         setupDatepicker(data);
@@ -451,7 +454,7 @@ function setPMSpO2() {
         "tr55acd441101-recheck-pass", "tr55acd441102-recheck-none", "tr55acd441103-recheck-none", "tr55acd441104-recheck-none"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         setupDatepicker(data);
@@ -469,7 +472,7 @@ function setPMSuctionRegulator() {
         "tr55acdcc3104-recheck-none"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         setupDatepicker(data);
@@ -487,7 +490,7 @@ function setPMSphygmomanometer() {
         "tr55acdb25103-recheck-none", "tr55acdb25104-recheck-none"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
-    
+
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         if (data?.checklist?.leakage !== undefined) {
@@ -497,6 +500,31 @@ function setPMSphygmomanometer() {
         setupLocationInfo(data, '#table55ac99d7_notetext');
     }
     setSameValue();
+}
+
+function setPMThermoHygroMeter() {
+    const checkboxIds = [
+        "tr55ace186102-recheck-pass",
+        "tr55ace186105-recheck-pass",
+        "tr55ace186110-recheck-none",
+        "tr55ace186112-recheck-pass",
+        "tr55ace186113-recheck-pass",
+        "tr55ace186114-recheck-pass",
+        "tr55ace186115-recheck-none",
+        "tr55ace1a3103-recheck-pass",
+        "tr599e3d841-recheck-none",
+        "tr55ace1b2101-recheck-pass",
+        "tr55ace1b2102-recheck-none",
+        "tr55ace1b2103-recheck-none",
+        "tr55ace1b2104-recheck-none"
+    ]
+    checkboxIds.forEach(id => $('#' + id).click());
+    const { processedCode, data } = getDeviceCode();
+    if (processedCode) {
+        setupDatepicker(data);
+        setupLocationInfo(data, '#table55ac99d7_notetext');
+    }
+    setSameValue(data.temp, data.humid);
 }
 
 // Utility functions
@@ -512,7 +540,7 @@ function generateFourValuesWithSameMean(initialValue, preferDecimalPlaces = 2) {
         2: 0.08,
         3: 0.008
     };
-    
+
     const difference = differenceMap[preferDecimalPlaces] || 0.08;
 
     const value2 = (initialValue - difference + Math.random() * (difference * 2)).toFixed(preferDecimalPlaces);
@@ -522,9 +550,9 @@ function generateFourValuesWithSameMean(initialValue, preferDecimalPlaces = 2) {
     return [initialValue, value2, value3, value4];
 }
 
-function setSameValue() {
-    document.getElementById('work_temperature').value = 25;
-    document.getElementById('work_humidity').value = 55;
+function setSameValue(temp, humid) {
+    document.getElementById('work_temperature').value = temp || 25;
+    document.getElementById('work_humidity').value = humid || 50;
 }
 
 function updateDate(selectedDate, month = 6) {
@@ -546,7 +574,7 @@ function setupQuickSearchModal() {
             }, 100);
         });
     }
-    
+
     $('#QuickSearchResultBox').on('shown.bs.modal', async function () {
         let title = $('#QuickSearchResultBox .modal-title').text().trim();
         if (title === 'ข้อมูลเครื่องมือแพทย์') {
@@ -557,13 +585,13 @@ function setupQuickSearchModal() {
             console.log('cal_data:', cal_data);
             let selectCalFormBtn = $('#QuickSearchResultBox .modal-footer button:contains("กรอกข้อมูล CAL")');
             let selectPMFormBtn = $('#QuickSearchResultBox .modal-footer button:contains("กรอกข้อมูล PM")');
-            
-            let [cal_eid,,cal_plan] = selectCalFormBtn.attr('onclick').split('(')[1].split(')')[0].split(',').map(s => Number(s.trim()));
-            
+
+            let [cal_eid, , cal_plan] = selectCalFormBtn.attr('onclick').split('(')[1].split(')')[0].split(',').map(s => Number(s.trim()));
+
             const windowWidth = window.screen.width;
             const windowHeight = window.screen.height;
             const width = Math.floor(windowWidth / 2);
-            
+
             let w1 = window.open(`/?page=cal-form&eid=${cal_eid}&plan=${cal_plan}&form=${cal_data.data.form_cal.split('#')[1]}`, '_blank',
                 `width=${width},height=${windowHeight},left=0,top=0`);
             w1.onload = function () {
@@ -574,8 +602,8 @@ function setupQuickSearchModal() {
                     w1.document.body.appendChild(script);
                 }
             };
-    
-            let [pm_eid,,pm_plan] = selectPMFormBtn.attr('onclick').split('(')[1].split(')')[0].split(',').map(s => Number(s.trim()));
+
+            let [pm_eid, , pm_plan] = selectPMFormBtn.attr('onclick').split('(')[1].split(')')[0].split(',').map(s => Number(s.trim()));
             let w2 = window.open(`/?page=pm-form&eid=${pm_eid}&plan=${pm_plan}&form=${cal_data.data.form_pm.split('#')[1]}`, '_blank',
                 `width=${width},height=${windowHeight},left=${width},top=0`);
             w2.onload = function () {
@@ -586,7 +614,7 @@ function setupQuickSearchModal() {
                     w2.document.body.appendChild(script);
                 }
             };
-            
+
             $('#QuickSearchResultBox').modal('hide');
         }
     });
