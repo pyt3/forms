@@ -27,7 +27,8 @@ function handlePMForm() {
         "PM MODULE": setPMModule,
         "PULSE OXIMETER": setPMSpO2,
         "SUCTION REGULATOR": setPMSuctionRegulator,
-        "SPHYGMOMANOMETER": setPMSphygmomanometer
+        "SPHYGMOMANOMETER": setPMSphygmomanometer,
+        "THERMOMETER, HYGRO (MED)": setPMThermoHygroMeter, //357
     };
 
     if (pmHandlers[form_name]) {
@@ -71,6 +72,10 @@ function handleCalForm() {
         "SPHYGMOMANOMETER": () => {
             standard_select.select2("val", "G5-BMEPYT3-013");
             setCalSphygmomanometer();
+        },
+        "THERMOMETER, HYGRO (MED)": () => {
+            $(standard_select[0]).select2("val", "G5-BMEPYT3_025");
+            setCalThermoHygroMeter();//24
         }
     };
 
@@ -96,6 +101,7 @@ function processDeviceCode(code) {
     ];
 
     const calData = JSON.parse(localStorage.getItem('calData')) || {};
+
     for (let candidate of codeCandidates) {
         if (calData[candidate]) {
             if (calData[candidate].date && calData[candidate].date !== '') {
@@ -165,7 +171,8 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
         'NIBP MONITOR': 0,
         'PULSE OXIMETER': 0,
         'SUCTION REGULATOR': 2,
-        'SPHYGMOMANOMETER': 1
+        'SPHYGMOMANOMETER': 1,
+        'THERMOMETER, HYGRO (MED)': 1,
     };
     
     const decimal = decimalMap[data.form_cal] || 2;
@@ -307,12 +314,33 @@ function setCalSuctionRegulator() {
 function setCalSphygmomanometer() {
     const ids = ["tr55a4d1cd6", "tr55a4d20a7", "tr55a4d2158", "tr55a4d21d9"];
     const { processedCode, data } = getDeviceCode();
-    
     if (processedCode) {
         data.checklist = data.checklist.pressure;
         setupCalibrationForm(ids, data);
         setupDatepicker(data);
         setupLocationInfo(data, '#table55a5cab3_notetext');
+    }
+}
+
+function setCalThermoHygroMeter() {
+    const ids = {
+        temperature: ["tr55a5fea24"],
+        humidity: ["tr55a6215c1"]
+    };
+    const { processedCode, data } = getDeviceCode();
+    data.checklist ={
+        temperature: [data.temp_std],
+        humidity: [data.humid_std]
+    }
+
+    if (processedCode){
+        Object.keys(ids).forEach(key => {
+            if (data.checklist[key] && data.checklist[key].length > 0) {
+                setupCalibrationForm(ids[key], { checklist: data.checklist[key] }, 0.1, false)
+            }
+        });
+        setupDatepicker(data);
+        setupLocationInfo(data, '#table55c0800d_notetext');
     }
 }
 
