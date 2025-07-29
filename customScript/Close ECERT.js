@@ -340,6 +340,7 @@ function setCalThermoHygroMeter() {
         Object.keys(ids).forEach(key => {
             if (data.checklist[key] && data.checklist[key].length > 0) {
                 setupCalibrationForm(ids[key], { checklist: data.checklist[key], form_cal: data.form_cal.split('#')[0] }, null, false);
+                setSameValue(data.checklist.temperature[0][1],data.checklist.humidity[0][1])
             }
         });
         setupDatepicker(data);
