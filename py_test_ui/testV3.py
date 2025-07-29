@@ -26,6 +26,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium import webdriver
 from rich import print, pretty
 from rich.progress import track, Progress, BarColumn
 from rich.table import Table
