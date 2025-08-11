@@ -269,35 +269,38 @@
             liff.ready.then(async () => {
                 checkRegist()
                 const fetchTelegramConstants = (retries = 5) => {
-                    $.ajax({
-                        url: script_url,
-                        type: 'POST',
-                        data: {
-                            opt: 'gettelegram'
-                        },
-                        timeout: 5000,
-                        success: function(res) {
-                            tg_const = res;
-                            console.log("Successfully retrieved telegram constants");
-                        },
-                        error: function() {
-                            if (retries > 0) {
-                                console.log(`Failed to get telegram constants, retrying... (${5-retries+1}/5)`);
-                                setTimeout(() => fetchTelegramConstants(retries - 1), 1000);
-                            } else {
-                                console.error("Failed to get telegram constants after 5 retries");
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: 'ไม่สามารถเชื่อมต่อกับ Telegram ได้',
-                                    text: 'คุณอาจไม่สามารถส่งรูปภาพได้',
-                                    confirmButtonText: 'ตกลง'
-                                });
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: script_url,
+                            type: 'POST',
+                            data: {
+                                opt: 'gettelegram'
+                            },
+                            timeout: 10000,
+                            success: function (res) {
+                                tg_const = res;
+                                console.log("Successfully retrieved telegram constants");
+                                resolve(tg_const);
+                            },
+                            error: function () {
+                                if (retries > 0) {
+                                    console.log(`Failed to get telegram constants, retrying... (${5 - retries + 1}/5)`);
+                                    setTimeout(() => fetchTelegramConstants(retries - 1), 1000);
+                                } else {
+                                    console.error("Failed to get telegram constants after 5 retries");
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'ไม่สามารถเชื่อมต่อกับ Telegram ได้',
+                                        text: 'คุณอาจไม่สามารถส่งรูปภาพได้',
+                                        confirmButtonText: 'ตกลง'
+                                    });
+                                }
                             }
-                        }
+                        });
                     });
                 };
 
-                fetchTelegramConstants();
+                await fetchTelegramConstants();
                 profile = await liff.getProfile()
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
