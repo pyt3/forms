@@ -235,7 +235,8 @@
                     title: 'หมายเลข UPS',
                     inputPlaceholder: 'กรุณาระบุหมายเลข UPS',
                     customClass: {
-                        input: 'text-center'
+                        input: 'text-center',
+                        popup: 'rounded-4'
                     },
                     showCancelButton: true,
                     confirmButtonText: 'ตกลง',
@@ -269,6 +270,17 @@
             liff.ready.then(async () => {
                 checkRegist()
                 const fetchTelegramConstants = (retries = 5) => {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'กำลังโหลดข้อมูล...',
+                        allowOutsideClick: false,
+                        customClass: {
+                            popup: 'rounded-4'
+                        },
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
                     return new Promise((resolve, reject) => {
                         $.ajax({
                             url: script_url,
@@ -276,10 +288,11 @@
                             data: {
                                 opt: 'gettelegram'
                             },
-                            timeout: 10000,
+                            timeout: 30000,
                             success: function (res) {
                                 tg_const = res;
                                 console.log("Successfully retrieved telegram constants");
+                                Swal.close();
                                 resolve(tg_const);
                             },
                             error: function () {
@@ -289,6 +302,9 @@
                                 } else {
                                     console.error("Failed to get telegram constants after 5 retries");
                                     Swal.fire({
+                                        customClass: {
+                                            popup: 'rounded-4'
+                                        },
                                         icon: 'warning',
                                         title: 'ไม่สามารถเชื่อมต่อกับ Telegram ได้',
                                         text: 'คุณอาจไม่สามารถส่งรูปภาพได้',
@@ -304,6 +320,9 @@
                 profile = await liff.getProfile()
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
+                        customClass: {
+                            popup: 'rounded-4'
+                        },
                         title: 'เนื่องจากเป็น Line ' + profile.displayName + ' กรุณาระบุชื่อของคุณ',
                         html: '<div container-fluid><div class="row"><div class="col-12"><select id="name-onc" class="form-select">' +
                             '<option value="" selected disabled>เลือกชื่อของคุณ</option>' +
@@ -344,6 +363,9 @@
                             $('#displayName').text(profile.displayName).attr('data-name', result.value.toUpperCase())
                             $('.navbar .container-fluid').show(400)
                             Swal.fire({
+                                customClass: {
+                                    popup: 'rounded-4'
+                                },
                                 title: 'สวัสดีคุณ ' + result.value,
                                 text: 'ทำรายการต่อได้ครับ',
                                 showConfirmButton: false,
@@ -462,6 +484,9 @@
                     $('.loader').fadeOut(500)
                     if (!res) {
                         Swal.fire({
+                            customClass: {
+                                popup: 'rounded-4'
+                            },
                             icon: 'error',
                             title: 'กรุณาลงทะเบียนก่อนใช้งาน',
                             allowOutsideClick: false,
@@ -481,6 +506,9 @@
             var end = $('#end').val()
             if (code == '' && checkcode(code)) {
                 Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     icon: 'error',
                     title: 'กรุณากรอกรหัสเครื่อง',
                     showConfirmButton: false,
@@ -490,6 +518,9 @@
             }
             if (start == '' || start == null) {
                 Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     icon: 'error',
                     title: 'กรุณาเลือกแผนกต้นทาง',
                     showConfirmButton: false,
@@ -499,6 +530,9 @@
             }
             if (end == '' || end == null) {
                 Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     icon: 'error',
                     title: 'กรุณาเลือกแผนกปลายทาง',
                     showConfirmButton: false,
@@ -508,6 +542,9 @@
             }
             if ($('#telegram-files')[0].files.length == 0) {
                 Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     icon: 'error',
                     title: 'กรุณาเลือกรูปภาพ',
                     showConfirmButton: false,
@@ -528,6 +565,9 @@
             }
             if (start == end) {
                 return Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     title: 'กรุณาระบุห้องต้นทาง และปลายทาง',
                     html: `<div class="container-fluid"><div class="row"><div class="col-12"><label for="start-room">ห้องต้นทาง</label><input id="start-room" class="form-control"></div><div class="col-12"><label for="end-room">ห้องปลายทาง</label><input id="end-room" class="form-control"></div></div></div>`,
                     showCancelButton: true,
@@ -564,6 +604,9 @@
                     div.find('.row').append($(end_room_html))
                 }
                 return Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     html: div[0].outerHTML,
                     showCancelButton: true,
                     confirmButtonText: 'บันทึกเลย',
@@ -613,6 +656,9 @@
             if (this.files.length == 0) return
             // compress file
             Swal.fire({
+                customClass: {
+                    popup: 'rounded-4'
+                },
                 icon: 'info',
                 title: 'กำลังบีบอัดไฟล์ภาพ',
                 allowOutsideClick: false,
@@ -690,6 +736,9 @@
             if (success_all >= 6) {
                 setTimeout(() => {
                     Swal.fire({
+                        customClass: {
+                            popup: 'rounded-4'
+                        },
                         icon: 'success',
                         title: 'บันทึกข้อมูลสำเร็จ',
                         confirmButtonText: 'ตกลง',
@@ -709,6 +758,9 @@
 
             $('.img-grid-col').eq(eq).append($('<img>', { src: fileurl }).on('click', function () {
                 Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     imageUrl: fileurl,
                     imageWidth: '100%',
                     imageHeight: '100%',
@@ -721,6 +773,9 @@
 
         async function sendPost(data) {
             Swal.fire({
+                customClass: {
+                    popup: 'rounded-4'
+                },
                 icon: 'info',
                 title: 'กำลังบันทึกข้อมูล',
                 html: '<div class="container-fluid"><div class="row">' +
@@ -893,6 +948,9 @@
                 }, 200);
             }).catch(err => {
                 Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
                     text: 'กรุณาลองใหม่อีกครั้ง\n\n' + err,
@@ -1005,6 +1063,9 @@
                     }).catch(err => {
                         console.log(err)
                         Swal.fire({
+                            customClass: {
+                                popup: 'rounded-4'
+                            },
                             icon: 'error',
                             title: 'ไม่สามารถดึงข้อมูลผู้ใช้ได้',
                             text: 'กรุณาลองใหม่อีกครั้ง',
