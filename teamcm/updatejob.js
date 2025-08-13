@@ -1210,6 +1210,7 @@ async function initialData() {
                     }
                 ]
             }
+            console.log("🚀 !! flex:", flex);
             liff.shareTargetPicker([{
                 type: 'flex',
                 altText: 'สรุปงาน ' + work_detail.workorder + ' ' + work_detail.code,
