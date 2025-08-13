@@ -850,15 +850,17 @@ async function initialData() {
                 $('#open-sign').parent().removeClass('d-none')
             }
             if (data.status) {
-                switch (data.status) {
-                    case "Waiting":
+                switch (true) {
+                    case data.status === "Waiting":
                         $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
                         break
-                    case "Return equipment back":
+                    case data.status ==="Return equipment back":
                         $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
                         break
-                    default:
+                    case data.status === "":
                         $('#work-status').html('ยังไม่รับงาน')
+                    default:
+                        $('#work-status').html(data.status)
                 }
                 $('#work-status').parent().removeClass('d-none')
             }
