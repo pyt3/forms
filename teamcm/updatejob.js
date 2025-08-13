@@ -1134,7 +1134,7 @@ async function initialData() {
                                 },
                                 {
                                     "type": "text",
-                                    "text": work_detail.date || '-',
+                                    "text": work_detail.date ? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') : '-',
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "adjustMode": "shrink-to-fit",
@@ -2088,7 +2088,7 @@ async function updateData(update_data) {
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": work_detail.date || '-',
+                                    "text": work_detail.date? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') : '-',
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "adjustMode": "shrink-to-fit",
