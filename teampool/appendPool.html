@@ -808,6 +808,21 @@
                             });
                             formData.append(file.name, file); // Attach the file to the FormData
                         });
+                        media[0].caption = `
+<b>เครื่อง ${data.e_name}</b> (${data.code})
+
+ได้ถูกย้ายจาก
+
+👉 <i>${data.start}</i>
+
+ไปยัง
+
+👉 <i>${data.end}</i>
+
+โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
+
+<a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
+                        media[0].parse_mode = "HTML"
 
                         // Attach media to FormData
                         formData.append("chat_id", tg_const.chatId); // Add chat_id
@@ -875,10 +890,10 @@
 
 <a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
                                 tg_caption = msg
-                                if (tg_msg_id && tg_caption && !tg_sent) {
-                                    tg_sent = true
-                                    sendTelegram(tg_msg_id, tg_caption, data)
-                                }
+                                // if (tg_msg_id && tg_caption && !tg_sent) {
+                                //     tg_sent = true
+                                //     sendTelegram(tg_msg_id, tg_caption, data)
+                                // }
                                 resolve(msg)
                             } else {
                                 $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
