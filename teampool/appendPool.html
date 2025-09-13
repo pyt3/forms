@@ -293,7 +293,6 @@
                                 tg_const = res;
                                 console.log(tg_const);
                                 console.log("Successfully retrieved telegram constants");
-                                $('.loader').fadeOut(500)
                                 resolve(tg_const);
                             },
                             error: function () {
@@ -316,9 +315,10 @@
                         });
                     });
                 };
-
+                
                 await fetchTelegramConstants();
                 profile = await liff.getProfile()
+                $('.loader').fadeOut(500)
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
                         customClass: {
