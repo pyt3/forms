@@ -468,7 +468,7 @@
 
             if (regist?.uid == uid && regist?.name != null && regist?.name != '' && regist?.telegram_id) {
                 // $.LoadingOverlay('hide')
-                $('.loader').fadeOut(500)
+                // $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase())
                 return
             }
@@ -826,7 +826,7 @@
                         media[0].parse_mode = "HTML"
 
                         // Attach media to FormData
-                        formData.append("chat_id", tg_const.chatId); // Add chat_id
+                        formData.append("chat_id", tg_const.chatId.toString()); // Add chat_id
                         formData.append("media", JSON.stringify(media)); // Add media array
 
                         // Send images as a media group
