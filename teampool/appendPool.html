@@ -835,9 +835,8 @@
                         }
 
                         // Send images as a media group
-                        $.ajax({
+                        $.post({
                             url: sendMediaUrl,
-                            type: 'POST',
                             data: formData,
                             contentType: false,
                             processData: false,
