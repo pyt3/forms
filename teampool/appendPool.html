@@ -808,6 +808,7 @@
                             });
                             formData.append(file.name, file); // Attach the file to the FormData
                         });
+                          let regist = JSON.parse(localStorage.getItem('regist') || '{}')
                         media[0].caption = `
 <b>เครื่อง ${data.e_name}</b> (${data.code})
 
@@ -819,7 +820,7 @@
 
 👉 <i>${data.end}</i>
 
-โดย <a href="tg://user?id=${regist.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
+โดย <a href="tg://user?id=${regist?.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
 
 <a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
                         media[0].parse_mode = "HTML"
