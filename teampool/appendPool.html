@@ -140,15 +140,14 @@
 </head>
 
 <body>
-    <!-- <div class="fixed-top">
+    <div class="fixed-top">
         <div class="loader bg-light">
             <div class="wrapper">
                 <div class="text">LOADING</div>
                 <div class="box"></div>
             </div>
         </div>
-
-    </div> -->
+    </div>
     <nav class="navbar">
         <div class="container-fluid" style="display: none">
             <a class="navbar-brand d-flex align-items-center" href="#">
@@ -268,19 +267,20 @@
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
+
                 checkRegist()
                 const fetchTelegramConstants = (retries = 5) => {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'กำลังโหลดข้อมูล...',
-                        allowOutsideClick: false,
-                        customClass: {
-                            popup: 'rounded-4'
-                        },
-                        didOpen: () => {
-                            Swal.showLoading()
-                        }
-                    })
+                    // Swal.fire({
+                    //     icon: 'info',
+                    //     title: 'กำลังโหลดข้อมูล...',
+                    //     allowOutsideClick: false,
+                    //     customClass: {
+                    //         popup: 'rounded-4'
+                    //     },
+                    //     didOpen: () => {
+                    //         Swal.showLoading()
+                    //     }
+                    // })
                     return new Promise((resolve, reject) => {
                         $.ajax({
                             url: script_url,
@@ -293,7 +293,7 @@
                                 tg_const = res;
                                 console.log(tg_const);
                                 console.log("Successfully retrieved telegram constants");
-                                Swal.close();
+                                $('.loader').fadeOut(500)
                                 resolve(tg_const);
                             },
                             error: function () {
@@ -853,7 +853,7 @@
                                 }
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
-                                console.error("Error sending images:", errorThrown);
+                                console.log("Error sending images:", errorThrown);
                                 reject(errorThrown);
                             }
                         });
