@@ -800,7 +800,8 @@
                     if (files.length > 0) {
                         const media = [];
                         const formData = new FormData();
-                        const sendMediaUrl = `https://api.telegram.org/bot7600446984:AAG9sMZ1TGpTdyrz4bArK2VVlMOnbo9jJMY/sendMediaGroup`;
+                        const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
+                        console.logs("Preparing to send media group to Telegram:", sendMediaUrl);
                         Array.from(files).forEach((file) => {
                             media.push({
                                 type: "photo",  // Set the type of media
@@ -826,7 +827,7 @@
                         media[0].parse_mode = "HTML"
 
                         // Attach media to FormData
-                        formData.append("chat_id", -1002311428529); // Add chat_id
+                        formData.append("chat_id", tg_const.chatId.toString()); // Add chat_id
                         formData.append("media", JSON.stringify(media)); // Add media array
                         console.log("Sending media:", media);
                         console.log("FormData entries:");
