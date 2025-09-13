@@ -828,12 +828,16 @@
                         // Attach media to FormData
                         formData.append("chat_id", tg_const.chatId.toString()); // Add chat_id
                         formData.append("media", JSON.stringify(media)); // Add media array
+                        console.log("Sending media:", media);
+                        console.log("FormData entries:");
+                        for (let pair of formData.entries()) {
+                            console.log(pair[0] + ': ', pair[1]);
+                        }
 
                         // Send images as a media group
                         $.ajax({
                             url: sendMediaUrl,
                             type: 'POST',
-                            method: 'POST',
                             data: formData,
                             contentType: false,
                             processData: false,
