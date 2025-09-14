@@ -216,7 +216,7 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
+        // var vConsole = new window.VConsole();
     </script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
@@ -267,7 +267,6 @@
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
-
                 checkRegist()
                 const fetchTelegramConstants = (retries = 5) => {
                     // Swal.fire({
@@ -291,8 +290,8 @@
                             timeout: 30000,
                             success: function (res) {
                                 tg_const = res;
-                                console.log(tg_const);
                                 console.log("Successfully retrieved telegram constants");
+                                // Swal.close();
                                 resolve(tg_const);
                             },
                             error: function () {
@@ -315,7 +314,7 @@
                         });
                     });
                 };
-                
+
                 await fetchTelegramConstants();
                 profile = await liff.getProfile()
                 $('.loader').fadeOut(500)
@@ -468,7 +467,7 @@
 
             if (regist?.uid == uid && regist?.name != null && regist?.name != '' && regist?.telegram_id) {
                 // $.LoadingOverlay('hide')
-                // $('.loader').fadeOut(500)
+                $('.loader').fadeOut(500)
                 $('#displayName').attr('data-name', regist.name.toUpperCase())
                 return
             }
@@ -801,7 +800,6 @@
                         const media = [];
                         const formData = new FormData();
                         const sendMediaUrl = `https://api.telegram.org/bot${tg_const.token}/sendMediaGroup`;
-                        console.log("Preparing to send media group to Telegram:", sendMediaUrl);
                         Array.from(files).forEach((file) => {
                             media.push({
                                 type: "photo",  // Set the type of media
@@ -809,35 +807,15 @@
                             });
                             formData.append(file.name, file); // Attach the file to the FormData
                         });
-                          let regist = JSON.parse(localStorage.getItem('regist') || '{}')
-                        media[0].caption = `
-<b>เครื่อง ${data.e_name}</b> (${data.code})
-
-ได้ถูกย้ายจาก
-
-👉 <i>${data.start}</i>
-
-ไปยัง
-
-👉 <i>${data.end}</i>
-
-โดย <a href="tg://user?id=${regist?.telegram_id}">@${data.name == "" ? liff.getDecodedIDToken().name : data.name}</a>
-
-<a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
-                        media[0].parse_mode = "HTML"
 
                         // Attach media to FormData
-                        formData.append("chat_id", tg_const.chatId.toString()); // Add chat_id
+                        formData.append("chat_id", tg_const.chatId); // Add chat_id
                         formData.append("media", JSON.stringify(media)); // Add media array
-                        console.log("Sending media:", media);
-                        console.log("FormData entries:");
-                        for (let pair of formData.entries()) {
-                            console.log(pair[0] + ': ', pair[1]);
-                        }
 
                         // Send images as a media group
-                        $.post({
+                        $.ajax({
                             url: sendMediaUrl,
+                            type: 'POST',
                             data: formData,
                             contentType: false,
                             processData: false,
@@ -858,9 +836,7 @@
                                 }
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
-                                console.log(jqXHR);
-                                console.log(textStatus);
-                                console.log("Error sending images:", errorThrown);
+                                console.error("Error sending images:", errorThrown);
                                 reject(errorThrown);
                             }
                         });
@@ -898,10 +874,10 @@
 
 <a href="https://lin.ee/9Ganv2I">บันทึกเพิ่ม</a>`
                                 tg_caption = msg
-                                // if (tg_msg_id && tg_caption && !tg_sent) {
-                                //     tg_sent = true
-                                //     sendTelegram(tg_msg_id, tg_caption, data)
-                                // }
+                                if (tg_msg_id && tg_caption && !tg_sent) {
+                                    tg_sent = true
+                                    sendTelegram(tg_msg_id, tg_caption, data)
+                                }
                                 resolve(msg)
                             } else {
                                 $('#status-gsheet').html('<i class="bi bi-x-circle-fill text-danger"></i>บันทึกลง Google Sheet')
