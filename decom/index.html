@@ -464,24 +464,26 @@
                     }
                 })
                 // show pdf in new tab
-                let base64 =  data.pdf.base64
+                let base64 = data.pdf.base64
                 let type = data.pdf.type
                 let dataurl = 'data:' + type + ';base64,' + base64
                 let blob = base64ToBlob(base64, type)
                 let blobUrl = URL.createObjectURL(blob) + '#toolbar=1&view=fit'
-                $('#download-from-search-btn').attr('href', blobUrl).attr('target',  '_blank').parent().removeClass('d-none')
+                $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('d-none')
 
             })
 
         })
-        function base64ToBlob(base64, type){{
-            let binary = atob(base64)
-            let array = []
-            for (let i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i))
+        function base64ToBlob(base64, type) {
+            {
+                let binary = atob(base64)
+                let array = []
+                for (let i = 0; i < binary.length; i++) {
+                    array.push(binary.charCodeAt(i))
+                }
+                return new Blob([new Uint8Array(array)], { type: type })
             }
-            return new Blob([new Uint8Array(array)], {type: type})
-        }}
+        }
         $('.form-check').parent().on('mouseover', function () {
             $(this).addClass('bg-primary-subtle shadow-sm')
         })
@@ -704,12 +706,12 @@
         }
         $('#myForm').submit(async function () {
             event.preventDefault()
-            if($('#e_decom_by').val() == '' || $('#e_decom_by').val() == null){
+            if ($('#e_decom_by').val() == '' || $('#e_decom_by').val() == null) {
                 return Swal.fire({
                     icon: 'warning',
                     title: 'กรุณาระบุชื่อผู้ทำการ Decom',
                     confirmButtonText: 'ตกลง'
-                }).then(()=>{
+                }).then(() => {
                     setTimeout(() => {
                         $('#e_decom_by').focus()
                     }, 500);
@@ -896,19 +898,24 @@
                     }
                     // read data from clipboard
                     if (!document.hasFocus()) return
-                    navigator.clipboard.readText().then(clipText => {
-                        // check if data is json
-                        try {
-                            let obj = JSON.parse(clipText)
-                            if (!obj.page) return
-                            clearInterval(checkdata)
-                            $('#input-json').val(clipText)
-                            $('#input-json-btn').click()
-                            // delete data from clipboard
-                            navigator.clipboard.writeText('')
-                        } catch (error) {
-                        }
-                    })
+                    try {
+                        navigator.clipboard.readText().then(clipText => {
+                            // check if data is json
+                            try {
+                                let obj = JSON.parse(clipText)
+                                if (!obj.page) return
+                                clearInterval(checkdata)
+                                $('#input-json').val(clipText)
+                                $('#input-json-btn').click()
+                                // delete data from clipboard
+                                navigator.clipboard.writeText('')
+                            } catch (error) {
+                            }
+                        })
+                    } catch (e) {
+                        console.log('Clipboard read failed:', e)
+                        clearInterval(checkdata)
+                    }
                 }, 1000);
             }).catch(err => {
                 // Fallback for older browsers
@@ -929,12 +936,12 @@
         }
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
-            if(!json_text || json_text == '') {
+            if (!json_text || json_text == '') {
                 // Check if clipboard API is available and page has permission
                 if (navigator.clipboard && navigator.clipboard.readText) {
                     navigator.clipboard.readText().then(clipText => {
                         json_text = clipText
-                        if(!json_text || json_text == '') {
+                        if (!json_text || json_text == '') {
                             return Swal.fire({
                                 icon: 'warning',
                                 title: 'ไม่มีข้อมูล',
@@ -1022,7 +1029,7 @@
                 }
             }
         }
-        
+
         function fillValue(id, value) {
             if (!value || value == '') return
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
