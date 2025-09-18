@@ -286,18 +286,13 @@ const AssetDataExtractor = {
     const windows = {};
     
     try {
-      // Reset state for new extraction
-      AppState.completedTasks = 0;
-      AppState.data = {};
-      
       await Promise.all([
         this.extractJobHistory(parameter, windows),
         this.extractImages(parameter, windows),
         this.extractDepreciation(parameter, windows)
       ]);
       
-      // Note: finalizeExtraction will be called automatically by checkCompletion
-      // when all tasks are completed, so we don't call it here
+      await this.finalizeExtraction(windows);
     } catch (error) {
       console.error("❌ Data extraction failed:", error);
       this.closeWindows(windows);
