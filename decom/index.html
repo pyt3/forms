@@ -917,12 +917,11 @@
                         //     clearInterval(checkdata)
                         // })
                         let items = await navigator.clipboard.readText()
-                        console.log(items);
                         if (!items || items == '') return
                         // check if data is json
                         try {
                             let obj = JSON.parse(items)
-                            console.log(obj);
+                            if(!obj.hasOwnProperty('id')) return
                             clearInterval(checkdata)
                             $('#input-json').val(items)
                             $('#input-json-btn').click()
