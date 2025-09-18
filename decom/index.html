@@ -930,28 +930,61 @@
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
             if(!json_text || json_text == '') {
-                try{
+                // Check if clipboard API is available and page has permission
+                if (navigator.clipboard && navigator.clipboard.readText) {
                     navigator.clipboard.readText().then(clipText => {
                         json_text = clipText
                         if(!json_text || json_text == '') {
                             return Swal.fire({
                                 icon: 'warning',
                                 title: 'ไม่มีข้อมูล',
-                                text: 'กรุณาวางข้อมูลจากหน้า Add Update',
+                                text: 'กรุณาวางข้อมูลจากหน้า Add Update หรือใส่ข้อมูลในช่องด้านบน',
                                 confirmButtonText: 'ตกลง'
                             })
                         }
-                        processJson(json_text)
+                        try {
+                            let obj = JSON.parse(json_text)
+                            processJsonData(obj)
+                        } catch (e) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ข้อมูลไม่ถูกต้อง',
+                                text: 'ข้อมูลที่วางไม่ใช่ JSON ที่ถูกต้อง',
+                                confirmButtonText: 'ตกลง'
+                            })
+                        }
+                    }).catch(e => {
+                        console.log('Clipboard read failed:', e)
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'ไม่สามารถอ่านคลิปบอร์ดได้',
+                            text: 'กรุณาวางข้อมูลในช่องด้านบนแทน หรือตรวจสอบว่าเบราว์เซอร์อนุญาตให้เข้าถึงคลิปบอร์ด',
+                            confirmButtonText: 'ตกลง'
+                        })
                     })
-                }catch(e){}
-                return Swal.fire({
-                    icon: 'warning',
-                    title: 'ไม่มีข้อมูล',
-                    text: 'กรุณาวางข้อมูลจากหน้า Add Update',
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ไม่มีข้อมูล',
+                        text: 'กรุณาวางข้อมูลจากหน้า Add Update ในช่องด้านบน',
+                        confirmButtonText: 'ตกลง'
+                    })
+                }
+                return
+            }
+            try {
+                let obj = JSON.parse(json_text)
+                processJsonData(obj)
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ข้อมูลไม่ถูกต้อง',
+                    text: 'ข้อมูลที่ใส่ไม่ใช่ JSON ที่ถูกต้อง',
                     confirmButtonText: 'ตกลง'
                 })
             }
-            let obj = JSON.parse(json_text)
+        })
+        function processJsonData(obj) {
             console.log("🚀 !! obj:", obj)
             fillValue('e_name', obj.name)
             fillValue('dept', obj.dept)
@@ -969,22 +1002,27 @@
             $('#input-json').val('')
             $('#autoFillOffCanvas').offcanvas('hide')
             if (obj.imgs) {
-                let imgs = JSON.parse(obj.imgs)
-                if (imgs.length > 0) {
-                    $('#imgs_row, #head_imgs_row').remove()
-                    let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
-                    let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
-                    head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
-                    imgs.forEach(img => {
-                        let col = $('<div>').addClass('col-2')
-                        let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
-                        col.append(imgEle)
-                        row.append(col)
-                    })
-                    $('#e_name').closest('section').append(head_row).append(row)
+                try {
+                    let imgs = JSON.parse(obj.imgs)
+                    if (imgs.length > 0) {
+                        $('#imgs_row, #head_imgs_row').remove()
+                        let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
+                        let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
+                        head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
+                        imgs.forEach(img => {
+                            let col = $('<div>').addClass('col-2')
+                            let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
+                            col.append(imgEle)
+                            row.append(col)
+                        })
+                        $('#e_name').closest('section').append(head_row).append(row)
+                    }
+                } catch (e) {
+                    console.log('Error parsing images:', e)
                 }
             }
-        })
+        }
+        
         function fillValue(id, value) {
             if (!value || value == '') return
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
