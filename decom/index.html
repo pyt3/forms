@@ -418,23 +418,6 @@
             $('#dept').append(depts_array.sort().map(dept => {
                 return `<option value="${dept}">${dept}</option>`
             }).join())
-            $('#autoFillOffCanvas').on('shown.bs.offcanvas', function () {
-                setInterval(() => {
-                    console.log('Checking clipboard for JSON data...')
-                    try{
-                        navigator.clipboard.readText().then(text => {
-                            try {
-                                let json = JSON.parse(text)
-                                if (json.hasOwnProperty('e_name') && json.hasOwnProperty('e_hospital_code')) {
-                                    $('#input-json').val(text)
-                                    $('#input-json-btn').click()
-                                }
-                            } catch (e) {}
-                        })
-                    }catch(e){}
-                    // check for data in clipboard
-                }, 500);
-            })
         })
         $('#search-form').submit(function () {
             event.preventDefault()
@@ -905,28 +888,42 @@
                 })
                 console.groupEnd()
                 let starttime = new Date()
-                let checkdata = setInterval(() => {
-                    // if interval more than 10 sec, clear interval
-                    if (new Date() - starttime > (1000 * 60 * 5)) {
-                        clearInterval(checkdata)
-                        return
-                    }
-                    // read data from clipboard
-                    if (!document.hasFocus()) return
-                    navigator.clipboard.readText().then(clipText => {
-                        // check if data is json
-                        try {
-                            let obj = JSON.parse(clipText)
-                            if (!obj.page) return
-                            clearInterval(checkdata)
-                            $('#input-json').val(clipText)
-                            $('#input-json-btn').click()
-                            // delete data from clipboard
-                            navigator.clipboard.writeText('')
-                        } catch (error) {
-                        }
-                    })
-                }, 1000);
+                // let checkdata = setInterval(() => {
+                //     // if interval more than 10 sec, clear interval
+                //     if (new Date() - starttime > (1000 * 60 * 5)) {
+                //         clearInterval(checkdata)
+                //         return
+                //     }
+                //     // read data from clipboard
+                //     if (!document.hasFocus()) return
+                //     navigator.clipboard.readText().then(clipText => {
+                //         // check if data is json
+                //         try {
+                //             let obj = JSON.parse(clipText)
+                //             if (!obj.page) return
+                //             clearInterval(checkdata)
+                //             $('#input-json').val(clipText)
+                //             $('#input-json-btn').click()
+                //             // delete data from clipboard
+                //             navigator.clipboard.writeText('')
+                //         } catch (error) {
+                //         }
+                //     })
+                // }, 1000);
+                $('#json-input').on('click', function () {
+                    try{
+                        navigator.clipboard.readText().then(clipText => {
+                            try{
+                                let obj = JSON.parse(clipText)
+                                if (!obj.page) return
+                                $('#input-json').val(clipText)
+                                $('#input-json-btn').click()
+                                // delete data from clipboard
+                                // navigator.clipboard.writeText('')
+                            }catch(e){}
+                        })
+                    }catch(e){}
+                })
             }).catch(err => {
                 // Fallback for older browsers
                 $('#console-code')[0].select()
