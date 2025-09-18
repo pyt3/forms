@@ -421,16 +421,18 @@
             $('#autoFillOffCanvas').on('shown.bs.offcanvas', function () {
                 setInterval(() => {
                     console.log('Checking clipboard for JSON data...')
+                    try{
+                        navigator.clipboard.readText().then(text => {
+                            try {
+                                let json = JSON.parse(text)
+                                if (json.hasOwnProperty('e_name') && json.hasOwnProperty('e_hospital_code')) {
+                                    $('#input-json').val(text)
+                                    $('#input-json-btn').click()
+                                }
+                            } catch (e) {}
+                        })
+                    }catch(e){}
                     // check for data in clipboard
-                    navigator.clipboard.readText().then(text => {
-                        try {
-                            let json = JSON.parse(text)
-                            if (json.hasOwnProperty('e_name') && json.hasOwnProperty('e_hospital_code')) {
-                                $('#input-json').val(text)
-                                $('#input-json-btn').click()
-                            }
-                        } catch (e) {}
-                    })
                 }, 500);
             })
         })
