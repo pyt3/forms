@@ -936,6 +936,7 @@
         }
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
+            clearInterval()
             if (!json_text || json_text == '') {
                 // Check if clipboard API is available and page has permission
                 if (navigator.clipboard && navigator.clipboard.readText) {
