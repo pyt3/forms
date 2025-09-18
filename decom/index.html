@@ -916,23 +916,20 @@
                         //     console.log('Clipboard read failed:', e)
                         //     clearInterval(checkdata)
                         // })
-                        let items = await navigator.clipboard.read()()
+                        let items = await navigator.clipboard.readText()()
                         consloe.log(items);
-                        for (const item of items) {
-                            if (item.types.includes('text/plain')) {
-                                const blob = await item.getType('text/plain');
-                                const text = await blob.text();
-                                try {
-                                    let obj = JSON.parse(text)
-                                    if (!obj.page) return
-                                    clearInterval(checkdata)
-                                    $('#input-json').val(text)
-                                    $('#input-json-btn').click()
-                                    // delete data from clipboard
-                                    navigator.clipboard.writeText('')
-                                } catch (error) {
-                                }
-                            }
+                        if (!items || items == '') return
+                        // check if data is json
+                        try {
+                            let obj = JSON.parse(items)
+                            console.log(obj);
+                            if (!obj.page) return
+                            clearInterval(checkdata)
+                            $('#input-json').val(items)
+                            $('#input-json-btn').click()
+                            // delete data from clipboard
+                            navigator.clipboard.writeText('')
+                        } catch (error) {
                         }
                     } catch (e) {
                         console.log('Clipboard read failed:', e)
