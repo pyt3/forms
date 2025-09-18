@@ -50,7 +50,7 @@ const copy = async (e) => {
         document.body.removeChild(modal);
       }
     });
-  }
+  };
   try {
     await navigator.clipboard.writeText(e);
     console.log("Copied to clipboard using Clipboard API");
