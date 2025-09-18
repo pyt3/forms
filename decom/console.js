@@ -8,7 +8,6 @@ let newwindow, newwindow2, newwindow3, focusWindow;
 const copy = async (e) => {
   console.log("Copying to clipboard...");
   const showSuccess = () => {
-    // Create modern modal
     const modal = document.createElement('div');
     modal.style.cssText = `
       position: fixed;
@@ -42,12 +41,10 @@ const copy = async (e) => {
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
 
-    // Auto close after 2 seconds
     setTimeout(() => {
       document.body.removeChild(modal);
     }, 2000);
 
-    // Close on click
     modal.addEventListener('click', () => {
       if (document.body.contains(modal)) {
         document.body.removeChild(modal);
@@ -55,13 +52,11 @@ const copy = async (e) => {
     });
   }
   try {
-    // Try modern Clipboard API first
     await navigator.clipboard.writeText(e);
     console.log("Copied to clipboard using Clipboard API");
     showSuccess();
   } catch (err) {
     console.warn("Clipboard API failed, falling back to execCommand", err);
-    // Fallback to execCommand method
     let textarea = document.createElement("textarea");
     textarea.value = e;
     document.body.appendChild(textarea);
