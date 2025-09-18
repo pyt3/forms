@@ -890,7 +890,7 @@
                 })
                 console.groupEnd()
                 let starttime = new Date()
-                let checkdata = setInterval(() => {
+                let checkdata = setInterval(async ) => {
                     // if interval more than 10 sec, clear interval
                     if (new Date() - starttime > (1000 * 60 * 5)) {
                         clearInterval(checkdata)
@@ -900,22 +900,40 @@
                     console.log(document.hasFocus());
                     if (!document.hasFocus()) return
                     try {
-                        navigator.clipboard.readText().then(clipText => {
-                            // check if data is json
-                            try {
-                                let obj = JSON.parse(clipText)
-                                if (!obj.page) return
-                                clearInterval(checkdata)
-                                $('#input-json').val(clipText)
-                                $('#input-json-btn').click()
-                                // delete data from clipboard
-                                navigator.clipboard.writeText('')
-                            } catch (error) {
+                        // navigator.clipboard.readText().then(clipText => {
+                        //     // check if data is json
+                        //     try {
+                        //         let obj = JSON.parse(clipText)
+                        //         if (!obj.page) return
+                        //         clearInterval(checkdata)
+                        //         $('#input-json').val(clipText)
+                        //         $('#input-json-btn').click()
+                        //         // delete data from clipboard
+                        //         navigator.clipboard.writeText('')
+                        //     } catch (error) {
+                        //     }
+                        // }).catch(e => {
+                        //     console.log('Clipboard read failed:', e)
+                        //     clearInterval(checkdata)
+                        // })
+                        let items = await navigator.clipboard.read()()
+                        consloe.log(items);
+                        for (const item of items) {
+                            if (item.types.includes('text/plain')) {
+                                const blob = await item.getType('text/plain');
+                                const text = await blob.text();
+                                try {
+                                    let obj = JSON.parse(text)
+                                    if (!obj.page) return
+                                    clearInterval(checkdata)
+                                    $('#input-json').val(text)
+                                    $('#input-json-btn').click()
+                                    // delete data from clipboard
+                                    navigator.clipboard.writeText('')
+                                } catch (error) {
+                                }
                             }
-                        }).catch(e => {
-                            console.log('Clipboard read failed:', e)
-                            clearInterval(checkdata)
-                        })
+                        }
                     } catch (e) {
                         console.log('Clipboard read failed:', e)
                         clearInterval(checkdata)
