@@ -413,7 +413,7 @@
             });
             form_pdf_bytes = await fetch('../teampm/formDecom v-2.pdf').then(res => res.arrayBuffer())
             font_bytes = await fetch('../teampm/THSarabun.ttf').then(res => res.arrayBuffer())
-            let text = await fetch('./console.js').then(res => res.text())
+            let text = await fetch('./console.js?version='+Date.now()).then(res => res.text())
             $('#console-code').val(text)
             $('#dept').append(depts_array.sort().map(dept => {
                 return `<option value="${dept}">${dept}</option>`
@@ -464,24 +464,26 @@
                     }
                 })
                 // show pdf in new tab
-                let base64 =  data.pdf.base64
+                let base64 = data.pdf.base64
                 let type = data.pdf.type
                 let dataurl = 'data:' + type + ';base64,' + base64
                 let blob = base64ToBlob(base64, type)
                 let blobUrl = URL.createObjectURL(blob) + '#toolbar=1&view=fit'
-                $('#download-from-search-btn').attr('href', blobUrl).attr('target',  '_blank').parent().removeClass('d-none')
+                $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('d-none')
 
             })
 
         })
-        function base64ToBlob(base64, type){{
-            let binary = atob(base64)
-            let array = []
-            for (let i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i))
+        function base64ToBlob(base64, type) {
+            {
+                let binary = atob(base64)
+                let array = []
+                for (let i = 0; i < binary.length; i++) {
+                    array.push(binary.charCodeAt(i))
+                }
+                return new Blob([new Uint8Array(array)], { type: type })
             }
-            return new Blob([new Uint8Array(array)], {type: type})
-        }}
+        }
         $('.form-check').parent().on('mouseover', function () {
             $(this).addClass('bg-primary-subtle shadow-sm')
         })
@@ -704,12 +706,12 @@
         }
         $('#myForm').submit(async function () {
             event.preventDefault()
-            if($('#e_decom_by').val() == '' || $('#e_decom_by').val() == null){
+            if ($('#e_decom_by').val() == '' || $('#e_decom_by').val() == null) {
                 return Swal.fire({
                     icon: 'warning',
                     title: 'กรุณาระบุชื่อผู้ทำการ Decom',
                     confirmButtonText: 'ตกลง'
-                }).then(()=>{
+                }).then(() => {
                     setTimeout(() => {
                         $('#e_decom_by').focus()
                     }, 500);
@@ -874,47 +876,140 @@
     <script>
         function copy() {
             let str = $('#console-code').val()
-            $('#console-code')[0].select()
-            document.execCommand("copy")
-            let Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: false
-            })
-            Toast.fire({
-                icon: 'success',
-                title: 'คัดลอกสำเร็จ'
-            })
-            console.groupEnd()
-            let starttime = new Date()
-            let checkdata = setInterval(() => {
-                // if interval more than 10 sec, clear interval
-                if (new Date() - starttime > (1000 * 60 * 5)) {
-                    clearInterval(checkdata)
-                    return
-                }
-                // read data from clipboard
-                if (!document.hasFocus()) return
-                navigator.clipboard.readText().then(clipText => {
-                    // check if data is json
-                    try {
-                        let obj = JSON.parse(clipText)
-                        if (!obj.page) return
-                        clearInterval(checkdata)
-                        $('#input-json').val(clipText)
-                        $('#input-json-btn').click()
-                        // delete data from clipboard
-                        navigator.clipboard.writeText('')
-                    } catch (error) {
-                    }
+            navigator.clipboard.writeText(str).then(() => {
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: false
                 })
-            }, 1000);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'คัดลอกสำเร็จ'
+                })
+                console.groupEnd()
+                let starttime = new Date()
+                let checkdata = setInterval(async () => {
+                    // if interval more than 10 sec, clear interval
+                    if (new Date() - starttime > (1000 * 60 * 5)) {
+                        clearInterval(checkdata)
+                        return
+                    }
+                    // read data from clipboard
+                    console.log(document.hasFocus());
+                    if (!document.hasFocus()) return
+                    try {
+                        // navigator.clipboard.readText().then(clipText => {
+                        //     // check if data is json
+                        //     try {
+                        //         let obj = JSON.parse(clipText)
+                        //         if (!obj.page) return
+                        //         clearInterval(checkdata)
+                        //         $('#input-json').val(clipText)
+                        //         $('#input-json-btn').click()
+                        //         // delete data from clipboard
+                        //         navigator.clipboard.writeText('')
+                        //     } catch (error) {
+                        //     }
+                        // }).catch(e => {
+                        //     console.log('Clipboard read failed:', e)
+                        //     clearInterval(checkdata)
+                        // })
+                        let items = await navigator.clipboard.readText()
+                        if (!items || items == '') return
+                        // check if data is json
+                        try {
+                            let obj = JSON.parse(items)
+                            if(!obj.hasOwnProperty('id')) return
+                            clearInterval(checkdata)
+                            $('#input-json').val(items)
+                            $('#input-json-btn').click()
+                            // delete data from clipboard
+                            navigator.clipboard.writeText('')
+                        } catch (error) {
+                        }
+                    } catch (e) {
+                        console.log('Clipboard read failed:', e)
+                        clearInterval(checkdata)
+                    }
+                }, 1000);
+            }).catch(err => {
+                // Fallback for older browsers
+                $('#console-code')[0].select()
+                document.execCommand("copy")
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: false
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'คัดลอกสำเร็จ'
+                })
+            })
         }
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
-            let obj = JSON.parse(json_text)
+            clearInterval()
+            if (!json_text || json_text == '') {
+                // Check if clipboard API is available and page has permission
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    navigator.clipboard.readText().then(clipText => {
+                        json_text = clipText
+                        if (!json_text || json_text == '') {
+                            return Swal.fire({
+                                icon: 'warning',
+                                title: 'ไม่มีข้อมูล',
+                                text: 'กรุณาวางข้อมูลจากหน้า Add Update หรือใส่ข้อมูลในช่องด้านบน',
+                                confirmButtonText: 'ตกลง'
+                            })
+                        }
+                        try {
+                            let obj = JSON.parse(json_text)
+                            processJsonData(obj)
+                        } catch (e) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ข้อมูลไม่ถูกต้อง',
+                                text: 'ข้อมูลที่วางไม่ใช่ JSON ที่ถูกต้อง',
+                                confirmButtonText: 'ตกลง'
+                            })
+                        }
+                    }).catch(e => {
+                        console.log('Clipboard read failed:', e)
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'ไม่สามารถอ่านคลิปบอร์ดได้',
+                            text: 'กรุณาวางข้อมูลในช่องด้านบนแทน หรือตรวจสอบว่าเบราว์เซอร์อนุญาตให้เข้าถึงคลิปบอร์ด',
+                            confirmButtonText: 'ตกลง'
+                        })
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ไม่มีข้อมูล',
+                        text: 'กรุณาวางข้อมูลจากหน้า Add Update ในช่องด้านบน',
+                        confirmButtonText: 'ตกลง'
+                    })
+                }
+                return
+            }
+            try {
+                let obj = JSON.parse(json_text)
+                processJsonData(obj)
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ข้อมูลไม่ถูกต้อง',
+                    text: 'ข้อมูลที่ใส่ไม่ใช่ JSON ที่ถูกต้อง',
+                    confirmButtonText: 'ตกลง'
+                })
+            }
+        })
+        function processJsonData(obj) {
             console.log("🚀 !! obj:", obj)
             fillValue('e_name', obj.name)
             fillValue('dept', obj.dept)
@@ -932,22 +1027,27 @@
             $('#input-json').val('')
             $('#autoFillOffCanvas').offcanvas('hide')
             if (obj.imgs) {
-                let imgs = JSON.parse(obj.imgs)
-                if (imgs.length > 0) {
-                    $('#imgs_row, #head_imgs_row').remove()
-                    let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
-                    let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
-                    head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
-                    imgs.forEach(img => {
-                        let col = $('<div>').addClass('col-2')
-                        let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
-                        col.append(imgEle)
-                        row.append(col)
-                    })
-                    $('#e_name').closest('section').append(head_row).append(row)
+                try {
+                    let imgs = JSON.parse(obj.imgs)
+                    if (imgs.length > 0) {
+                        $('#imgs_row, #head_imgs_row').remove()
+                        let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
+                        let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
+                        head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
+                        imgs.forEach(img => {
+                            let col = $('<div>').addClass('col-2')
+                            let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
+                            col.append(imgEle)
+                            row.append(col)
+                        })
+                        $('#e_name').closest('section').append(head_row).append(row)
+                    }
+                } catch (e) {
+                    console.log('Error parsing images:', e)
                 }
             }
-        })
+        }
+
         function fillValue(id, value) {
             if (!value || value == '') return
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
