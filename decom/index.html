@@ -910,20 +910,6 @@
                 //         }
                 //     })
                 // }, 1000);
-                $('#input-json').one('click', function () {
-                    try{
-                        navigator.clipboard.readText().then(clipText => {
-                            try{
-                                let obj = JSON.parse(clipText)
-                                if (!obj.page) return
-                                $('#input-json').val(clipText)
-                                $('#input-json-btn').click()
-                                // delete data from clipboard
-                                // navigator.clipboard.writeText('')
-                            }catch(e){}
-                        })
-                    }catch(e){}
-                })
             }).catch(err => {
                 // Fallback for older browsers
                 $('#console-code')[0].select()
@@ -943,6 +929,28 @@
         }
         $('#input-json-btn').click(function () {
             let json_text = $('#input-json').val()
+            if(!json_text || json_text == '') {
+                try{
+                    navigator.clipboard.readText().then(clipText => {
+                        json_text = clipText
+                        if(!json_text || json_text == '') {
+                            return Swal.fire({
+                                icon: 'warning',
+                                title: 'ไม่มีข้อมูล',
+                                text: 'กรุณาวางข้อมูลจากหน้า Add Update',
+                                confirmButtonText: 'ตกลง'
+                            })
+                        }
+                        processJson(json_text)
+                    })
+                }catch(e){}
+                return Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่มีข้อมูล',
+                    text: 'กรุณาวางข้อมูลจากหน้า Add Update',
+                    confirmButtonText: 'ตกลง'
+                })
+            }
             let obj = JSON.parse(json_text)
             console.log("🚀 !! obj:", obj)
             fillValue('e_name', obj.name)
