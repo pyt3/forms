@@ -300,7 +300,7 @@ const AssetDataExtractor = {
   },
 
   async extractJobHistory(parameter, windows) {
-    if(!parameter) return
+    if(!parameter) return;
     return new Promise((resolve) => {
       windows.history = window.open(
         `//nsmart.nhealth-asia.com/MTDPDB01/asset_jobs_hist.php?${parameter}&jobs_m_dept_tech_job_statPage=50`,
@@ -340,7 +340,7 @@ const AssetDataExtractor = {
   },
 
   async extractImages(parameter, windows) {
-    if(!parameter) return
+    if(!parameter) return;
     return new Promise((resolve) => {
       windows.images = window.open(
         `//nsmart.nhealth-asia.com/MTDPDB01/asset_picture.php?${parameter}`,
@@ -383,7 +383,7 @@ const AssetDataExtractor = {
   },
 
   async extractDepreciation(parameter, windows) {
-    if(!parameter) return
+    if(!parameter) return;
     return new Promise((resolve) => {
       windows.depreciation = window.open(
         `//nsmart.nhealth-asia.com/MTDPDB01/asset_mast_depre.php?${parameter}`,
