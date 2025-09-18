@@ -1,18 +1,18 @@
-// Equipment Management System - Console Script
+
 console.clear();
 console.group("Equipment Data Extractor - START");
 
 const currentPage = location.origin + location.pathname;
 console.log("🚀 Current page:", currentPage);
 
-// Global state management
+
 const AppState = {
   data: {},
   completedTasks: 0,
   totalTasks: 3
 };
 
-// Utility functions
+
 const Utils = {
   async copyToClipboard(text) {
     try {
@@ -25,20 +25,20 @@ const Utils = {
       }
       return true;
     } catch (err) {
-      // console.error("❌ Failed to copy to clipboard:", err);
+      
       this.createCopyButton(text);
       return false;
     }
   },
 
   createCopyButton(text) {
-    // Remove any existing modal
+    
     const existingModal = document.getElementById('copy-modal');
     if (existingModal) {
       existingModal.remove();
     }
 
-    // Show copy modal immediately
+    
     this.showCopyModal(text);
     console.log("📋 Copy modal displayed with copy button");
   },
@@ -46,7 +46,7 @@ const Utils = {
 
 
   showCopyModal(text) {
-    // Create modal overlay
+    
     const modal = document.createElement('div');
     modal.id = 'copy-modal';
     modal.style.cssText = `
@@ -62,7 +62,7 @@ const Utils = {
       align-items: center;
     `;
 
-    // Create modal content
+    
     const modalContent = document.createElement('div');
     modalContent.style.cssText = `
       background: white;
@@ -133,13 +133,13 @@ const Utils = {
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
 
-    // Get elements
+    
     const textarea = document.getElementById('copy-data-textarea');
     const copyBtn = document.getElementById('copy-data-btn');
     const selectAllBtn = document.getElementById('select-all-btn');
     const closeBtn = document.getElementById('close-modal');
 
-    // Copy button functionality
+    
     copyBtn.onclick = async () => {
       try {
         if (navigator.clipboard && window.isSecureContext) {
@@ -151,7 +151,7 @@ const Utils = {
           }, 1500);
           console.log("✅ Data copied successfully from modal");
         } else {
-          // Fallback copy method
+          
           textarea.select();
           const success = document.execCommand('copy');
           if (success) {
@@ -181,7 +181,7 @@ const Utils = {
       }
     };
 
-    // Select all button functionality
+    
     selectAllBtn.onclick = () => {
       textarea.focus();
       textarea.select();
@@ -194,7 +194,7 @@ const Utils = {
       console.log("📝 Text selected - You can now press Ctrl+C to copy");
     };
 
-    // Close modal functionality
+    
     const closeModal = () => {
       modal.remove();
     };
@@ -204,7 +204,7 @@ const Utils = {
       if (e.target === modal) closeModal();
     };
 
-    // Add hover effects
+    
     [copyBtn, selectAllBtn, closeBtn].forEach(btn => {
       btn.onmouseover = () => {
         btn.style.transform = 'translateY(-1px)';
@@ -216,13 +216,13 @@ const Utils = {
       };
     });
 
-    // Auto-select the textarea content initially
+    
     setTimeout(() => {
       textarea.focus();
       textarea.select();
     }, 100);
 
-    // Auto-close after 2 minutes if still open
+    
     setTimeout(() => {
       if (document.getElementById('copy-modal')) {
         modal.remove();
@@ -266,7 +266,7 @@ const Utils = {
   }
 };
 
-// Page handlers
+
 const PageHandlers = {
   isAssetMasterPage() {
     return currentPage.toLowerCase().includes("//nsmart.nhealth-asia.com/mtdpdb01/asset_mast_record.php");
@@ -276,7 +276,7 @@ const PageHandlers = {
     return currentPage.toLowerCase().includes("//nsmart.nhealth-asia.com/mtdpdb01/jobs/bjoba_05.php");
   }
 };
-// Asset data extraction handlers
+
 const AssetDataExtractor = {
   async extractData() {
     const parameter = location.href.split("?")[1];
@@ -443,7 +443,7 @@ const AssetDataExtractor = {
     AppState.completedTasks++;
     console.log(`✅ Task completed: ${AppState.completedTasks}/${AppState.totalTasks}`);
     
-    // Only finalize when exactly reaching the total tasks (prevents multiple calls)
+    
     if (AppState.completedTasks === AppState.totalTasks) {
       console.log("🎯 All tasks completed, finalizing extraction...");
       this.finalizeExtraction(windows);
@@ -455,8 +455,24 @@ const AssetDataExtractor = {
       const success = await Utils.copyToClipboard(JSON.stringify(AppState.data));
       if (success) {
         console.log("%c🎉 EXTRACTION COMPLETE - Data copied successfully!", "font-size: 20px; color: green;");
+        
+        if (AppState.data && AppState.data.job_no && AppState.data.page === "closejob") {
+          const idCode = document.querySelectorAll("th").length > 0 ? Array.from(document.querySelectorAll("th")).find(header => header.innerText === "ID CODE").nextElementSibling.innerText.trim() : null;
+          if (idCode) {
+            window.open(
+              `https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?s_code=&s_sap_code=${idCode}`,
+              "_self"
+            );
+          }
+        }
       } else {
         console.log("%c⚠️ EXTRACTION COMPLETE - Click the copy button to get your data!", "font-size: 18px; color: orange;");
+        if (AppState.data && AppState.data.job_no && AppState.data.page === "closejob") {
+          const idCode = document.querySelectorAll("th").length > 0 ? Array.from(document.querySelectorAll("th")).find(header => header.innerText === "ID CODE").nextElementSibling.innerText.trim() : null;
+          if (idCode) {
+            console.log(`🔗 Navigation link: https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?s_code=&s_sap_code=${idCode}`);
+          }
+        }
       }
     } catch (error) {
       console.error("❌ Final copy failed:", error);
@@ -476,14 +492,14 @@ const AssetDataExtractor = {
   }
 };
 
-// Main execution logic
+
 if (PageHandlers.isAssetMasterPage()) {
   AssetDataExtractor.extractData();
 } else if (PageHandlers.isJobPage()) {
   JobManager.handleJobPage();
 }
 
-// Job management handlers
+
 const JobManager = {
   async handleJobPage() {
     const jobStatus = document.getElementsByName("job_status")[0].value;
@@ -500,30 +516,25 @@ const JobManager = {
     try {
       const noteContent = document.getElementsByName("note")[0].value;
       const headers = document.querySelectorAll("th");
-      
       let workOrderNo = "";
       let idCode = "";
       
-      // Extract work order number
       headers.forEach(header => {
         if (header.innerText === "Work order no.") {
           workOrderNo = header.nextElementSibling.innerText.trim();
         }
       });
       
-      // Extract ID code
       headers.forEach(header => {
         if (header.innerText === "ID CODE") {
           idCode = header.nextElementSibling.innerText.trim();
         }
       });
       
-      // Parse pricing information
       const priceText = noteContent.split("\n")[4].split(" ")[2].trim().replace(",", "");
       const totalPrice = Number(priceText);
       const basePrice = (totalPrice / 1.07).toFixed(2);
       const vatAmount = (totalPrice - basePrice).toFixed(2);
-      
       const jobData = {
         page: "closejob",
         quatation: noteContent.split("\n")[1].split(":")[1].trim(),
@@ -534,20 +545,10 @@ const JobManager = {
         job_no: workOrderNo,
       };
       
-      const copySuccess = await Utils.copyToClipboard(JSON.stringify(jobData));
+      AppState.data = jobData;
       
-      if (copySuccess) {
-        console.log("✅ Job data copied successfully");
-        // Navigate to asset master list
-        window.open(
-          `https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?s_code=&s_sap_code=${idCode}`,
-          "_self"
-        );
-      } else {
-        console.log("⚠️ Job data ready - Use the copy button, then navigate manually");
-        // Still provide the navigation link in console for manual access
-        console.log(`🔗 Navigation link: https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?s_code=&s_sap_code=${idCode}`);
-      }
+      await AssetDataExtractor.finalizeExtraction({});
+      
       
     } catch (error) {
       console.error("❌ Failed to process completed job:", error);
@@ -556,19 +557,19 @@ const JobManager = {
 
   setupJobForm() {
     try {
-      // Set service contract option
+      
       this.selectOption('select[name="bec_id"] option', "12-Service contract");
       
-      // Set job output type
+      
       this.setRadioButton('input[name="jobout_type"]', "2");
       
-      // Set up dates
+      
       this.setupJobDates();
       
-      // Set job result
+      
       this.selectOption('select[name="job_result"] option', "Self repair");
       
-      // Set default note template
+      
       document.getElementsByName("note")[0].value = 
         "- \n- ใบเสนอราคาเลขที่: \n- จำนวน  ครั้ง ระยะวลา   ปี\n- เข้าทำเดือน: \n- ราคาทั้งสิ้น  บาท";
         
@@ -605,18 +606,18 @@ const JobManager = {
     const timeParts = dateArray[1].split(":");
     const baseDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
     
-    // Set job date and assign date
+    
     document.querySelectorAll('input[name="jobdate"]')[0].value = reqDateValue;
     document.querySelectorAll('input[name="assign_date"]')[0].value = reqDateValue;
     
-    // Set arrival date (2 minutes after request)
+    
     const arrivalDate = Utils.addMinutes(baseDate, 2);
     document.querySelectorAll('input[name="arrive_date"]')[0].value = Utils.formatDate(arrivalDate);
     
-    // Set actual start date
+    
     document.querySelectorAll('input[name="act_dstart"]')[0].value = Utils.formatDate(arrivalDate);
     
-    // Set actual finish date (4 minutes after request)
+    
     const finishDate = Utils.addMinutes(baseDate, 4);
     document.querySelectorAll('input[name="act_dfin"]')[0].value = Utils.formatDate(finishDate);
   }
