@@ -911,6 +911,9 @@
                                 navigator.clipboard.writeText('')
                             } catch (error) {
                             }
+                        }).catch(e => {
+                            console.log('Clipboard read failed:', e)
+                            clearInterval(checkdata)
                         })
                     } catch (e) {
                         console.log('Clipboard read failed:', e)
