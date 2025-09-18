@@ -420,6 +420,7 @@
             }).join())
             $('#autoFillOffCanvas').on('shown.bs.offcanvas', function () {
                 setInterval(() => {
+                    console.log('Checking clipboard for JSON data...')
                     // check for data in clipboard
                     navigator.clipboard.readText().then(text => {
                         try {
