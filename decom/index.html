@@ -896,21 +896,19 @@
                     }
                     // read data from clipboard
                     if (!document.hasFocus()) return
-                    // navigator.clipboard.readText().then(clipText => {
-                    //     // check if data is json
-                    //     try {
-                    //         let obj = JSON.parse(clipText)
-                    //         if (!obj.page) return
-                    //         clearInterval(checkdata)
-                    //         $('#input-json').val(clipText)
-                    //         $('#input-json-btn').click()
-                    //         // delete data from clipboard
-                    //         navigator.clipboard.writeText('')
-                    //     } catch (error) {
-                    //     }
-                    // })
-                    clearInterval(checkdata)
-                    $('#input-json-btn').click()
+                    navigator.clipboard.readText().then(clipText => {
+                        // check if data is json
+                        try {
+                            let obj = JSON.parse(clipText)
+                            if (!obj.page) return
+                            clearInterval(checkdata)
+                            $('#input-json').val(clipText)
+                            $('#input-json-btn').click()
+                            // delete data from clipboard
+                            navigator.clipboard.writeText('')
+                        } catch (error) {
+                        }
+                    })
                 }, 1000);
             }).catch(err => {
                 // Fallback for older browsers
