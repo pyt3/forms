@@ -897,6 +897,7 @@
                         return
                     }
                     // read data from clipboard
+                    console.log(document.hasFocus());
                     if (!document.hasFocus()) return
                     try {
                         navigator.clipboard.readText().then(clipText => {
