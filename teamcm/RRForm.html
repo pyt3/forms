@@ -1236,7 +1236,7 @@
             })
             console.groupEnd()
             let starttime = new Date()
-            let checkdata = setInterval(() => {
+            let checkdata = setInterval(async () => {
                 // if interval more than 10 sec, clear interval
                 if (new Date() - starttime > (1000 * 60 * 5)) {
                     clearInterval(checkdata)
@@ -1244,19 +1244,24 @@
                 }
                 // read data from clipboard
                 if (!document.hasFocus()) return
-                navigator.clipboard.readText().then(clipText => {
+                try {
+                    let items = await navigator.clipboard.readText()
+                    if (!items || items == '') return
                     // check if data is json
                     try {
-                        let obj = JSON.parse(clipText)
-                        if (!obj.page) return
+                        let obj = JSON.parse(items)
+                        if (!obj.hasOwnProperty('id')) return
                         clearInterval(checkdata)
-                        $('#input-json').val(clipText)
+                        $('#input-json').val(items)
                         $('#input-json-btn').click()
                         // delete data from clipboard
                         navigator.clipboard.writeText('')
                     } catch (error) {
                     }
-                })
+                } catch (e) {
+                    console.log('Clipboard read failed:', e)
+                    clearInterval(checkdata)
+                }
             }, 1000);
         }
 
@@ -1284,17 +1289,6 @@
                         $('#e_name').closest('section').append(head_row).append(row)
                     }
                 }
-                // fillValue('e_name', obj.name)
-                // fillValue('dept', obj.dept)
-                // fillValue('e_manufacturer', obj.brand)
-                // fillValue('e_date', obj.recieve_date)
-                // fillValue('e_hospital_code', obj.hos_id)
-                // fillValue('e_brand/model', ['/', obj.brand, obj.model])
-                // fillValue('e_brand/distributor', obj.sup_sale)
-                // fillValue('e_sn', obj.sn_no)
-                // fillValue('e_code', obj.id)
-                // fillValue('e_price', obj.price)
-                // fillValue('rr_vender', obj.rr_vender)
             } else if (obj.page == 'closejob') {
                 fillValue('rr_no', obj.quatation)
                 fillValue('rr_price', obj.base_price)
@@ -1314,7 +1308,6 @@
                     return v ? v : ''
                 })
                 return fillValue(id, value.join(chain))
-
             }
             if (!value || value == '') value = 'N/A'
             $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
