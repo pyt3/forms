@@ -40,7 +40,7 @@ const copy = async (e) => {
 
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
-
+    console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
     setTimeout(() => {
       document.body.removeChild(modal);
     }, 2000);
@@ -198,6 +198,9 @@ if (
     newwindow.close();
     newwindow2.close();
     newwindow3.close();
-    await copy(JSON.stringify(t));
+    setTimeout(async() => {
+      window.focus()
+      await copy(JSON.stringify(t));
+    }, 500);
   });
 } 
