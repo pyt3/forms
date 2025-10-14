@@ -350,16 +350,23 @@
                 </section>
                 <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
                     <div class="row justify-content-center align-items-start">
-                        <div class="col-md-6 mt-3 text-center">
+                        <div class="col-md-4 mt-3 text-center">
                             <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
                             <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
                                 class="form-control file">
                             <iframe class="mt-2" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
-                        <div class="col-md-6 mt-3 text-center">
+                        <div class="col-md-4 mt-3 text-center">
                             <label for="2-file-quatation">ไฟล์ใบเสนอราคา</label>
                             <input type="file" name="2-file-quatation" id="2-file-quatation" accept="application/pdf"
+                                class="form-control file">
+                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
+                        </div>
+                          <div class="col-md-4 mt-3 text-center">
+                            <label for="3-file-other">ไฟล์เพิ่มเติม</label>
+                            <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf"
                                 class="form-control file">
                             <iframe class="mt-2" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
@@ -688,7 +695,7 @@
                     scrollTop: $(iframe).offset().top
                 }, 500);
                 pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                $('#1-file-nsmart, #2-file-quatation').change()
+                $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
 
             })
 
@@ -917,17 +924,17 @@
         var PDFDocument = PDFLib.PDFDocument;
         var StandardFonts = PDFLib.StandardFonts;
         var pdfFiles = []
-        $('#1-file-nsmart, #2-file-quatation').on('dragover', function (e) {
+        $('#1-file-nsmart, #2-file-quatation, #3-file-other').on('dragover', function (e) {
             e.preventDefault()
             e.stopPropagation()
             $(this).addClass('text-bg-info')
         })
-        $('#1-file-nsmart, #2-file-quatation').on('dragleave', function (e) {
+        $('#1-file-nsmart, #2-file-quatation, #3-file-other').on('dragleave', function (e) {
             e.preventDefault()
             e.stopPropagation()
             $(this).removeClass('text-bg-info')
         })
-        $('#1-file-nsmart, #2-file-quatation').on('drop', function (e) {
+        $('#1-file-nsmart, #2-file-quatation, #3-file-other').on('drop', function (e) {
             e.preventDefault()
             e.stopPropagation()
             $(this).removeClass('from-control-lg')
@@ -939,7 +946,7 @@
             renderNsmartFile(file, $(this))
         })
 
-        $('#1-file-nsmart, #2-file-quatation').on('change', function (e) {
+        $('#1-file-nsmart, #2-file-quatation, #3-file-other').on('change', function (e) {
             let files = e.target.files
             let file = files[0]
             if (!file) return;
@@ -1065,7 +1072,7 @@
             $('form input, form select, form textarea').not('input[type="search"]').each(function () {
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
-                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept', 'cause_of_fail'].includes(_this.prop('id'))) return
+                if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', '3-file-other', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept', 'cause_of_fail'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'rr-cm' || _this.prop('id') == 'rr-contract') {
                     let v = _this.find('option:selected').val()
                     if (v == '') return
@@ -1181,7 +1188,7 @@
                     scrollTop: $(iframe).offset().top
                 }, 500);
                 pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                $('#1-file-nsmart, #2-file-quatation').change()
+                $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
 
             })
             // $('#a-download').attr('href', pdfDataUri)
