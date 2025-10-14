@@ -258,6 +258,24 @@
             border-color: var(--primary-light);
         }
 
+        /* Invalid input styles */
+        .form-group input.is-invalid,
+        .form-group input:invalid:not(:placeholder-shown) {
+            border-color: var(--danger-color);
+            background-color: #fef2f2;
+        }
+
+        .form-group input.is-invalid:focus,
+        .form-group input:invalid:not(:placeholder-shown):focus {
+            outline: none;
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-group input.is-invalid+.input-icon {
+            color: var(--danger-color);
+        }
+
         .form-group {
             position: relative;
         }
@@ -520,6 +538,16 @@
 
         .checklist-table td:last-child input::placeholder {
             color: #d1d5db;
+        }
+
+        .checklist-table td:last-child input.is-invalid {
+            border-color: var(--danger-color);
+            background: #fef2f2;
+        }
+
+        .checklist-table td:last-child input.is-invalid:focus {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
         }
 
         .mandatory {
@@ -980,6 +1008,16 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        .reminder-input-wrapper input.is-invalid {
+            border-color: var(--danger-color);
+            background: #fef2f2;
+        }
+
+        .reminder-input-wrapper input.is-invalid:focus {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
         .quick-date-buttons {
             display: flex;
             gap: 8px;
@@ -1259,6 +1297,7 @@
                 padding: 8px 10px;
                 font-size: 12px;
             }
+
         }
 
         @media print {
@@ -1318,6 +1357,8 @@
                 page-break-inside: avoid;
                 page-break-after: auto;
             }
+
+          
         }
 
         /* Loading Animation */
@@ -1346,6 +1387,61 @@
             from {
                 opacity: 0;
                 transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Shake animation for invalid inputs */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .shake {
+            animation: shake infinite ease-in-out;
+        }
+
+        /* Error message styling */
+        .error-message {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .error-message i {
+            font-size: 11px;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
             }
 
             to {
@@ -1467,7 +1563,7 @@
                             <div class="input-with-search">
                                 <div style="position: relative; flex: 1;">
                                     <input type="text" id="meCode" name="meCode"
-                                        placeholder="ระบุรหัสเครื่องมือ PYT3_xxxxx">
+                                        placeholder="ระบุรหัสเครื่องมือ PYT3_xxxxx" required>
                                     <i class="fas fa-tools input-icon"></i>
                                 </div>
                                 <button type="button" class="btn-search" onclick="searchPreviousData()">
@@ -1550,6 +1646,40 @@
                             </label>
                             <input type="text" id="invoiceNo" name="invoiceNo" placeholder="ระบุเลขที่ Invoice">
                             <i class="fas fa-receipt input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="form-group">
+                            <label for="recorder">
+                                <i class="fas fa-user-edit"></i>
+                                ผู้บันทึก
+                            </label>
+                            <input type="text" id="recorder" name="recorder" placeholder="ระบุชื่อผู้บันทึก"
+                                list="recorderList" autocomplete="on" required>
+                            <i class="fas fa-user-edit input-icon"></i>
+                            <datalist id="recorderList">
+                                <option value="" selected disabled>เลือกชื่อ</option>
+                                <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                                <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                                <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                                <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                                <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                                <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                                <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                                <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                                <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                                <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                                <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                                <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                                <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
+                                <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                                <option value="SOM KONKAEW">SOM KONKAEW</option>
+                                <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
+                                <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
+                                <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
+                                <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
+                                <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
+                            </datalist>
                         </div>
                     </div>
                 </div>
@@ -1657,7 +1787,7 @@
 
                 <div
                     style="display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 40px;">
-                    <button type="submit" class="btn-submit">
+                    <button type="button" class="btn-submit" id="acceptanceFormSubmitButton">
                         <i class="fas fa-save"></i>
                         ยืนยันและบันทึกข้อมูล
                     </button>
@@ -1704,7 +1834,7 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9gJp3t1vHLSpGZF7rGDPq9M8xY6eThFJsOvRBStYAVIW4tA3VzgU80awM_22C5P0/exec'
 
         // Search for previous data by meCode
-        async function searchPreviousData() {
+        async function searchPreviousData(isAutoSearch = false) {
             const meCode = document.getElementById('meCode').value.trim();
             console.log('Searching for ME Code:', meCode);
             if (!meCode) {
@@ -1720,19 +1850,33 @@
             }
 
             // Show loading
-            Swal.fire({
-                title: 'กำลังค้นหาข้อมูล...',
-                html: `กำลังค้นหาข้อมูลของ <strong>${meCode}</strong>`,
-                allowOutsideClick: false,
-                customClass: { popup: 'rounded-3' },
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            if (!isAutoSearch) {
+                Swal.fire({
+                    title: 'กำลังค้นหาข้อมูล...',
+                    html: `กำลังค้นหาข้อมูลของ <strong>${meCode}</strong>`,
+                    allowOutsideClick: false,
+                    customClass: { popup: 'rounded-3' },
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            } else {
+                NProgress.start();
+                NProgress.inc()
+                Swal.fire({
+                    title: 'กำลังโหลดข้อมูล...',
+                    html: `กำลังโหลดข้อมูลของ <strong>${meCode}</strong>`,
+                    allowOutsideClick: false,
+                    customClass: { popup: 'rounded-3' },
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            }
 
             try {
                 $.get(SCRIPT_URL, { action: 'searchByMeCode', meCode: meCode }, function (response) {
-                    handleSearchResponse(response, meCode);
+                    handleSearchResponse(response, meCode, isAutoSearch);
                 });
             } catch (error) {
                 console.error('Error initiating search:', error);
@@ -1741,14 +1885,17 @@
         }
 
         // Handle search response
-        function handleSearchResponse(response, meCode) {
+        function handleSearchResponse(response, meCode, isAutoSearch) {
+            NProgress.done();
             console.log('Search response:', response);
             Swal.close();
             if (response.success && response.data) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'พบข้อมูล',
-                    html: `
+                if (!isAutoSearch) {
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'พบข้อมูล',
+                        html: `
                         <div style="text-align: left; padding: 15px; background: #f9fafb; border-radius: 8px; margin-top: 10px;">
                             <div style="margin-bottom: 10px;"><strong>รหัส:</strong> ${meCode}</div>
                             <div style="margin-bottom: 10px;"><strong>เครื่อง:</strong> ${response.data.equipment || '-'}</div>
@@ -1759,17 +1906,22 @@
                             </div>
                         </div>
                     `,
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#10b981',
-                    customClass: { popup: 'rounded-3' }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Scroll to form
-                        fillFormWithData(response.data);
-                        // Show PDF button
-                        showPDFButton();
-                    }
-                });
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#10b981',
+                        customClass: { popup: 'rounded-3' }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Scroll to form
+                            fillFormWithData(response.data);
+                            // Show PDF button
+                            showPDFButton();
+                        }
+                    });
+                } else {
+                    fillFormWithData(response.data);
+                    // Show PDF button
+                    showPDFButton();
+                }
             } else {
                 Swal.fire({
                     icon: 'info',
@@ -1784,19 +1936,39 @@
 
         // Fill form with retrieved data
         function fillFormWithData(data) {
+            console.log('Filling form with data:', data);
             // Store UUID for updates
             if (data.uuid) {
                 localStorage.setItem('formUUID', data.uuid);
             }
 
-            if (data.manufacturer) document.getElementById('manufacturer').value = data.manufacturer;
-            if (data.vendor) document.getElementById('vendor').value = data.vendor;
-            if (data.date) document.getElementById('date').value = data.date;
-            if (data.equipment) document.getElementById('equipment').value = data.equipment;
-            if (data.model) document.getElementById('model').value = data.model;
-            if (data.serialNumber) document.getElementById('serialNumber').value = data.serialNumber;
-            if (data.quotationNo) document.getElementById('quotationNo').value = data.quotationNo;
-            if (data.invoiceNo) document.getElementById('invoiceNo').value = data.invoiceNo;
+            // clear existing values
+            $('input').each(function () {
+                if (this.type == 'radio') {
+                    this.checked = false;
+                } else {
+                    this.value = '';
+                }
+            });
+
+            if (data.date) {
+                const dateInput = document.getElementById('date');
+                dateInput.value = data.date;
+                if (dateInput._flatpickr) {
+                    dateInput._flatpickr.setDate(data.date)
+                    $(dateInput).trigger('input');
+                }
+            }
+            if(data.me_code) $('#meCode').val(data.me_code).trigger('input');
+            if (data.manufacturer) $('#manufacturer').val(data.manufacturer).trigger('input');
+            if (data.vendor) $('#vendor').val(data.vendor).trigger('input');
+            if (data.date) $('#date').val(data.date).trigger('input');
+            if (data.equipment) $('#equipment').val(data.equipment).trigger('input');
+            if (data.model) $('#model').val(data.model).trigger('input');
+            if (data.serial_number) $('#serialNumber').val(data.serial_number).trigger('input');
+            if (data.quotation_no) $('#quotationNo').val(data.quotation_no).trigger('input');
+            if (data.invoice_no) $('#invoiceNo').val(data.invoice_no).trigger('input');
+            if (data.recorder) $('#recorder').val(data.recorder).trigger('input');
 
             data.checklist_data = JSON.parse(data.checklist_data || '[]');
             console.log(data.checklist_data);
@@ -1809,12 +1981,16 @@
 
                     if (item.status === 'มี' && presentRadio) {
                         presentRadio.checked = true;
+                        $(presentRadio).trigger('input');
                     } else if (item.status === 'ไม่มี' && absentRadio) {
                         absentRadio.checked = true;
+                        $(absentRadio).trigger('input');
                     }
 
+                    // Fill remark if available
                     if (item.remark && remarkInput) {
                         remarkInput.value = item.remark;
+                        $(remarkInput).trigger('input');
                     }
                 });
 
@@ -1825,14 +2001,14 @@
             // Fill reminder if available
             if (data.reminder) {
                 if (data.reminder.date) {
-                    document.getElementById('reminderDate').value = data.reminder.date;
                     const reminderDateInput = document.getElementById('reminderDate');
                     if (reminderDateInput._flatpickr) {
                         reminderDateInput._flatpickr.setDate(data.reminder.date);
                     }
+                    $('#reminderDate').trigger('input');
                 }
                 if (data.reminder.note) {
-                    document.getElementById('reminderNote').value = data.reminder.note;
+                    $('#reminderNote').val(data.reminder.note).trigger('input');
                 }
             }
 
@@ -1854,10 +2030,22 @@
             { no: 2, document: "Medical Equipment Assessment Form (FP-BME-NHS-00-033/3)", mandatory: true },
             { no: 3, document: "Acceptance Test Reports (FP-BME-NHS-00-026/3)", mandatory: true },
             { no: 4, document: "Certificate & License for Device (ใบตรวจรับรองการสอบเทียบเครื่อง)", mandatory: true },
-            { no: 5, document: "สำเนาหนังสือรับรองประกอบการนำเข้าเครื่องมือแพทย์", mandatory: true },
-            { no: 6, document: "เอกสารรับรองการควบคุมมาตรฐาน (FDA, อย., มอก.)", mandatory: false },
+            { no: 5, document: "สำเนาหนังสือรับรองประกอบการนำเข้าเครื่องมือแพทย์ เอกสารรับรองการควบคุมมาตรฐาน (FDA, อย., มอก.)", mandatory: true },
+            {
+                no: 6, document: "ใบเสนอราคา เลขที่ (ระบุเลขที่ของใบเสนอราคา)", mandatory: true, addi_input: {
+                    type: 'text',
+                    placeholder: 'ระบุเลขที่ใบเสนอราคา',
+                    label: 'เลขที่ใบเสนอราคา'
+                }
+            },
             { no: 7, document: "Spec รุ่น เครื่องมือและอุปกรณ์ครบถ้วนตามใบเสนอราคา", mandatory: true },
-            { no: 8, document: "Invoice เลขที่ (ระบุเลขที่ของใบแจ้งหนี้)", mandatory: true },
+            {
+                no: 8, document: "Invoice เลขที่ (ระบุเลขที่ของใบแจ้งหนี้)", mandatory: true, addi_input: {
+                    type: 'text',
+                    placeholder: 'ระบุเลขที่ Invoice',
+                    label: 'เลขที่ Invoice'
+                }
+            },
             { no: 9, document: "หนังสือแต่งตั้งตัวแทนจำหน่าย", mandatory: false },
             { no: 10, document: "Certificate Engineer (ใบรับรองการอบรมของวิศวกร)", mandatory: false },
             { no: 11, document: "Tester's Certificates (ใบรับรองการสอบเทียบเครื่องมือที่ใช้ในการทดสอบ)", mandatory: false },
@@ -1895,6 +2083,7 @@
             }, 500);
         }
 
+        // Clear reminder inputs
         function clearReminder() {
             document.getElementById('reminderDate').value = '';
             document.getElementById('reminderNote').value = '';
@@ -1916,6 +2105,7 @@
             });
         }
 
+        // Format date to Thai locale
         function formatThaiDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
@@ -1952,7 +2142,9 @@
 
                 row.innerHTML = `
                     <td data-number="${item.no}" class="text-center"></td>
-                    <td>${mandatoryMark}${item.document}</td>
+                    <td>
+                        ${mandatoryMark}${item.document}
+                    </td>
                     <td>
                         <div class="radio-wrapper">
                             <input type="radio" name="item_${item.no}" value="present" 
@@ -1971,6 +2163,14 @@
                     </td>
                 `;
                 tbody.appendChild(row);
+            });
+
+            // Add event listeners to all inputs in the checklist table
+            const checklistInputs = tbody.querySelectorAll('input');
+            checklistInputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    this.classList.remove('is-invalid', 'shake');
+                });
             });
         }
 
@@ -2055,8 +2255,75 @@
         }
 
         // Form submission handler
-        document.getElementById('acceptanceForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+        document.getElementById('acceptanceFormSubmitButton').addEventListener('click', function (e) {
+
+            const form = document.getElementById('acceptanceForm');
+
+            if (form.checkValidity()) {
+                event.stopPropagation();
+                console.log('Form is valid, submitting...');
+                e.preventDefault(); // Prevent default form submission
+                submitForm();
+            } else {
+                // Add was-validated class to form
+                form.classList.add('was-validated');
+
+                // Find all invalid inputs
+                const invalidInputs = form.querySelectorAll('input:invalid');
+                let firstInvalid = null;
+
+                console.log('Found', invalidInputs.length, 'invalid inputs');
+
+                invalidInputs.forEach((input, index) => {
+                    console.log('Invalid input:', input.id || input.name, input);
+
+                    // Add is-invalid and shake classes
+                    input.classList.add('is-invalid');
+                    input.classList.add('shake');
+
+                    // Track first invalid input
+                    if (index === 0) {
+                        firstInvalid = input;
+                    }
+                });
+
+                // Scroll to first invalid input
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Focus on first invalid input after scroll
+                    setTimeout(() => {
+                        firstInvalid.focus();
+                    }, 500);
+                }
+
+
+                // Remove shake class after animation
+                setTimeout(() => {
+                    invalidInputs.forEach(input => {
+                        input.classList.remove('shake');
+                    });
+                }, 5000);
+            }
+        });
+
+        function submitForm() {
+            let meCode = $('#meCode').val().trim();
+            // allow only me code that start with "PYT3" or "DEMO"
+            if (!meCode.startsWith("PYT3") && !meCode.startsWith("DEMO")) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'รหัสเครื่องมือไม่ถูกต้อง',
+                    text: 'รหัสเครื่องมือจะต้องขึ้นต้นด้วย "PYT3" หรือ "DEMO".',
+                    confirmButtonText: 'ตกลง'
+                }).then(() => {
+                    document.getElementById('meCode').focus();
+                });
+                return;
+            }
 
             const submitBtn = document.querySelector('.btn-submit');
             submitBtn.classList.add('loading');
@@ -2112,8 +2379,10 @@
                     note: document.getElementById('reminderNote').value
                 },
                 checklist: [],
+                recorder: document.getElementById('recorder').value,
                 uuid: formUUID
             };
+
 
             // Collect checklist data
             checklistItems.forEach(item => {
@@ -2121,12 +2390,14 @@
                 const absentRadio = document.getElementById(`absent_${item.no}`);
                 const remark = document.getElementById(`remark_${item.no}`).value;
 
-                formData.checklist.push({
+                const checklistEntry = {
                     no: item.no,
                     document: item.document,
                     status: presentRadio.checked ? 'มี' : (absentRadio.checked ? 'ไม่มี' : 'ไม่ระบุ'),
                     remark: remark
-                });
+                };
+
+                formData.checklist.push(checklistEntry);
             });
             formData.checklist = JSON.stringify(formData.checklist);
             formData.reminder = JSON.stringify(formData.reminder);
@@ -2167,6 +2438,9 @@
                     }).then(() => {
                         // Show PDF button after successful submission
                         showPDFButton();
+                        $('input').each(function () {
+                            localStorage.removeItem('acceptance_record_' + this.name);
+                        });
                     });
                 } else {
                     Swal.fire({
@@ -2192,22 +2466,7 @@
                     customClass: { popup: 'rounded-3' }
                 });
             });
-        });
-
-        // Initialize flatpickr for date input
-
-
-        // Add shake animation CSS
-        const shakeKeyframes = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-        `;
-        const style = document.createElement('style');
-        style.textContent = shakeKeyframes;
-        document.head.appendChild(style);
+        }
 
         // Generate table on page load
         document.addEventListener('DOMContentLoaded', function () {
@@ -2254,28 +2513,32 @@
                         searchPreviousData();
                     }
                 });
+                $(meCodeInput).on('input', function () {
+                    this.value = this.value.toUpperCase();
+                });
             }
 
-            // Add form field animations and validation
-            const inputs = document.querySelectorAll('input[type="text"], input[type="date"]');
-            inputs.forEach(input => {
-                input.addEventListener('focus', function () {
-                    this.parentElement.classList.add('focused');
+            handleRemainData()
+            $('input').each(function () {
+                // Add focus and blur animations
+                $(this).on('focus', function () {
+                    $(this).parent().addClass('focused');
                 });
-                input.addEventListener('blur', function () {
-                    this.parentElement.classList.remove('focused');
+                $(this).on('blur', function () {
+                    $(this).parent().removeClass('focused');
                 });
 
-                // Auto-save to localStorage
-                input.addEventListener('input', _.debounce(function () {
-                    localStorage.setItem(this.id, this.value);
+                // Remove invalid class on input
+                $(this).on('input', function () {
+                    $(this).removeClass('is-invalid shake');
+                    // Remove error message if exists
+                    $(this).siblings('.error-message').remove();
+                });
+
+                // Auto-save to localStorage with debounce
+                $(this).on('input', _.debounce(function () {
+                    localStorage.setItem('acceptance_record_' + this.name, this.value);
                 }, 500));
-
-                // Restore from localStorage
-                const savedValue = localStorage.getItem(input.id);
-                if (savedValue) {
-                    input.value = savedValue;
-                }
             });
 
             // Initialize stats
@@ -2294,7 +2557,79 @@
             document.querySelectorAll('.mandatory').forEach(elem => {
                 elem.title = 'รายการบังคับ - ต้องมีเอกสารนี้';
             });
+
+            let params = new URLSearchParams(window.location.search);
+            if (params.get('meCode')) {
+                document.getElementById('meCode').value = params.get('meCode');
+                searchPreviousData(true);
+            }
         });
+
+        // Handle remaining unsaved data
+        function handleRemainData() {
+            let inputs = $('input').toArray();
+
+            let hasRemainData = inputs.filter(input => {
+                const savedValue = localStorage.getItem('acceptance_record_' + input.name);
+                return savedValue && savedValue.trim() !== '';
+            }).length > 0;
+            if (hasRemainData) {
+                Swal.fire({
+                    title: 'พบข้อมูลที่ยังไม่ได้บันทึก',
+                    text: 'ระบบพบว่ามีข้อมูลที่คุณกรอกไว้ก่อนหน้านี้แต่ยังไม่ได้บันทึก ต้องการกู้คืนข้อมูลเหล่านั้นหรือไม่?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'กู้คืนข้อมูล',
+                    cancelButtonText: 'ไม่ต้องการ',
+                    confirmButtonColor: '#10b981',
+                    cancelButtonColor: '#ef4444',
+                    customClass: { popup: 'rounded-3' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Restore data from localStorage
+                        inputs.forEach(input => {
+                            const savedValue = localStorage.getItem('acceptance_record_' + input.name);
+                            if (savedValue) {
+                                if (input.type === 'radio') {
+                                    if (input.value === savedValue) {
+                                        input.checked = true;
+                                        $(input).trigger('input');
+                                    }
+                                } else if(input._flatpickr) {
+                                    input._flatpickr.setDate(savedValue);
+                                    $(input).trigger('input');
+                                } else {
+                                    input.value = savedValue;
+                                    $(input).trigger('input');
+                                }
+                            }
+                        });
+                        updateStats();
+                    } else {
+
+                        Swal.fire({
+                            icon: 'question',
+                            title: 'ล้างข้อมูลที่ยังไม่ได้บันทึก',
+                            text: 'คุณเลือกที่จะไม่กู้คืนข้อมูลที่ยังไม่ได้บันทึก ข้อมูลเหล่านั้นจะถูกล้างออกจากระบบ',
+                            showCancelButton: true,
+                            confirmButtonText: 'ล้างข้อมูล',
+                            cancelButtonText: 'ไม่ต้องการ',
+                            confirmButtonColor: '#ef4444',
+                            customClass: { popup: 'rounded-3' }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Clear saved data
+                                inputs.forEach(input => {
+                                    localStorage.removeItem('acceptance_record_' + input.name);
+                                });
+                            } else {
+                                handleRemainData()
+                            }
+                        });
+                    }
+                });
+            }
+        }
 
         // Show PDF button
         function showPDFButton() {
@@ -2362,33 +2697,40 @@
         // Fill PDF form with data
         async function fillPDFForm() {
             const pdfDocCopy = await PDFLib.PDFDocument.load(await pdfDoc.save());
+            pdfDocCopy.registerFontkit(fontkit);
+            const [font, symbolFont] = await Promise.all([
+                pdfDocCopy.embedFont(fontBytes, { subset: true }),
+                pdfDocCopy.embedFont(StandardFonts.ZapfDingbats, { subset: true })
+            ]);
             const form = pdfDocCopy.getForm();
 
             try {
                 // Get form data
                 const formData = {
-                    meCode: document.getElementById('meCode').value.trim(),
+                    me_code: "CODE: " + document.getElementById('meCode').value.trim(),
                     manufacturer: document.getElementById('manufacturer').value,
                     vendor: document.getElementById('vendor').value,
-                    date: document.getElementById('date').value,
+                    date: moment(document.getElementById('date').value).format('DD/MM/YYYY'),
                     equipment: document.getElementById('equipment').value,
                     model: document.getElementById('model').value,
-                    serialNumber: document.getElementById('serialNumber').value,
-                    quotationNo: document.getElementById('quotationNo').value,
-                    invoiceNo: document.getElementById('invoiceNo').value
+                    serial_number: document.getElementById('serialNumber').value,
+                    quotation_no: document.getElementById('quotationNo').value,
+                    invoice_no: document.getElementById('invoiceNo').value,
+                    recorder: document.getElementById('recorder').value
                 };
 
                 // Fill PDF fields (adjust field names based on your PDF)
                 const fieldMappings = {
-                    'meCode': formData.meCode,
+                    'me_code': formData.me_code,
                     'manufacturer': formData.manufacturer,
                     'vendor': formData.vendor,
                     'date': formData.date,
                     'equipment': formData.equipment,
                     'model': formData.model,
-                    'serialNumber': formData.serialNumber,
-                    'quotationNo': formData.quotationNo,
-                    'invoiceNo': formData.invoiceNo
+                    'serial_number': formData.serial_number,
+                    'quotation_no': formData.quotation_no,
+                    'invoice_no': formData.invoice_no,
+                    'recorder': formData.recorder
                 };
 
                 // Try to fill each field
@@ -2397,6 +2739,7 @@
                         const field = form.getTextField(fieldName);
                         if (field && fieldMappings[fieldName]) {
                             field.setText(String(fieldMappings[fieldName]));
+                            field.updateAppearances(font);
                         }
                     } catch (e) {
                         console.warn(`Field ${fieldName} not found or error:`, e.message);
@@ -2411,13 +2754,15 @@
 
                     // Try to fill checkbox fields (adjust field names based on your PDF)
                     try {
+                        let checkBox
                         if (presentRadio && presentRadio.checked) {
-                            const checkBox = form.getCheckBox(`check_${item.no}_present`);
-                            if (checkBox) checkBox.check();
+                            checkBox = form.getTextField(`item_${item.no}_present`);
+                            if (checkBox) checkBox.setText('✓')
                         } else if (absentRadio && absentRadio.checked) {
-                            const checkBox = form.getCheckBox(`check_${item.no}_absent`);
-                            if (checkBox) checkBox.check();
+                            checkBox = form.getTextField(`item_${item.no}_absent`);
+                            if (checkBox) checkBox.setText('✓')
                         }
+                        checkBox.updateAppearances(symbolFont)
                     } catch (e) {
                         console.warn(`Checkbox field for item ${item.no} not found`);
                     }
@@ -2427,6 +2772,7 @@
                         if (remark) {
                             const remarkField = form.getTextField(`remark_${item.no}`);
                             if (remarkField) remarkField.setText(remark);
+                            remarkField.updateAppearances(font);
                         }
                     } catch (e) {
                         console.warn(`Remark field for item ${item.no} not found`);
@@ -2474,19 +2820,33 @@
         var PDFDocument = PDFLib.PDFDocument;
         var StandardFonts = PDFLib.StandardFonts;
         var pdfFiles = []
+        var fontBytes = []
+        var font, symbolFont
         $(document).ready(async function () {
             NProgress.done();
             initPdfLib()
         });
 
-        function initPdfLib() {
-            console.log('Initializing PDFLib...');
-            // Load the PDF file
-            const url = './invent_form.pdf'
-            fetch(url).then(res => res.arrayBuffer()).then(async (data) => {
-                console.log('PDF file loaded');
-                pdfDoc = await PDFDocument.load(data);
+        async function initPdfLib() {
+            try {
+                console.log('Initializing PDFLib...');
+
+                // Load PDF and font in parallel
+                const [pdfData, fontData] = await Promise.all([
+                    fetch('./invent_form.pdf').then(res => res.arrayBuffer()),
+                    fetch('../teampm/NotoSansThai_Condensed-Medium.ttf').then(res => res.arrayBuffer())
+                ]);
+
+                fontBytes = fontData;
+                pdfDoc = await PDFDocument.load(pdfData);
+
                 const form = pdfDoc.getForm();
+                pdfDoc.registerFontkit(fontkit);
+                // Embed fonts in parallel
+                // [font, symbolFont] = await Promise.all([
+                //     pdfDoc.embedFont(fontBytes, { subset: true }),
+                //     pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
+                // ]);
 
                 // Get all fields in the PDF
                 const fields = form.getFields();
@@ -2495,7 +2855,18 @@
                     const name = field.getName();
                     console.log(`${type}: ${name}`);
                 });
-            });
+
+                console.log('PDFLib initialized successfully');
+            } catch (error) {
+                console.error('Error initializing PDFLib:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถโหลดไฟล์ PDF ได้',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#ef4444'
+                });
+            }
         }
     </script>
 </body>
