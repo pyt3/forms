@@ -2099,13 +2099,13 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // Scroll to form
-                            fillFormWithData(response.data);
+                            fillFormWithData(response.data, false);
                             // Show PDF button
                             showPDFButton();
                         }
                     });
                 } else {
-                    fillFormWithData(response.data);
+                    fillFormWithData(response.data, false);
                     // Show PDF button
                     showPDFButton();
                 }
@@ -2122,7 +2122,8 @@
         }
 
         // Fill form with retrieved data
-        function fillFormWithData(data) {
+        function fillFormWithData(data, saveToLocalStorage = true) {
+            window.saveToLocalStorage = saveToLocalStorage;
             console.log('Filling form with data:', data);
             // Store UUID for updates
             if (data.uuid) {
@@ -2746,6 +2747,7 @@
 
                 // Auto-save to localStorage with debounce
                 $(this).on('input', _.debounce(function () {
+                    if(!window.saveToLocalStorage) return;
                     if (this.name === 'reminderToggle' && this.checked === false) {
                         // If reminder is toggled off, clear reminder data
                         document.getElementById('reminderDate').value = '';
