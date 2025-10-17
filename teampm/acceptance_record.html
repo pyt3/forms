@@ -2975,11 +2975,21 @@
         var fontBytes = []
         var font, symbolFont
         $(document).ready(async function () {
-            NProgress.done();
-            if(liff.isInClient()){
-                return liff.openWindow({url: window.location.href, external: true});
-            }
-            initPdfLib()
+            liff.init({
+                liffId: "1657539607-n2P0PgA6"
+            })
+            liff.ready.then(() => {
+                console.log('LIFF initialized');
+                NProgress.done();
+    
+                if(liff.isInClient()){
+                    liff.openWindow({url: window.location.href, external: true});
+                    liff.close()
+                }
+                initPdfLib()
+            }).catch(err => {
+                console.error('LIFF initialization failed', err);
+            });
         });
 
         async function initPdfLib() {
