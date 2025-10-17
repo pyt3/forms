@@ -942,9 +942,16 @@
         .reminder-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
-            margin-bottom: 20px;
             position: relative;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .reminder-header:hover {
+            background: rgba(59, 130, 246, 0.05);
         }
 
         .reminder-header i {
@@ -959,9 +966,62 @@
             color: var(--text-dark);
         }
 
+        /* Toggle Switch Styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+            margin: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-switch input:focus + .toggle-slider {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
         .reminder-content {
             display: grid;
             gap: 20px;
+            animation: slideDown 0.3s ease;
         }
 
         .reminder-input-group {
@@ -1358,7 +1418,7 @@
                 page-break-after: auto;
             }
 
-          
+
         }
 
         /* Loading Animation */
@@ -1740,10 +1800,16 @@
                 <!-- Reminder Section -->
                 <div class="reminder-section">
                     <div class="reminder-header">
-                        <i class="fas fa-bell"></i>
-                        <h4>ตั้งค่าการแจ้งเตือน</h4>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-bell"></i>
+                            <h4>ตั้งค่าการแจ้งเตือน</h4>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="reminderToggle" onchange="toggleReminderContent()" name="reminderToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
-                    <div class="reminder-content">
+                    <div class="reminder-content mt-3" id="reminderContent" style="display: none;">
                         <div class="reminder-input-group">
                             <div class="reminder-input-wrapper">
                                 <label for="reminderDate">
@@ -1777,7 +1843,7 @@
                                     onclick="clearReminder()">ล้าง</button>
                             </div>
                         </div>
-                        <div class="reminder-note">
+                        <div class="reminder-note mt-3">
                             <i class="fas fa-info-circle"></i>
                             <span>ระบบจะแจ้งเตือนในวันที่กำหนดเพื่อติดตามความคืบหน้า</span>
                         </div>
@@ -1946,7 +2012,11 @@
             $('input').each(function () {
                 if (this.type == 'radio') {
                     this.checked = false;
-                } else {
+                } 
+                else if( this.type == 'checkbox') {
+                    this.checked = false;
+                }
+                else {
                     this.value = '';
                 }
             });
@@ -1959,7 +2029,7 @@
                     $(dateInput).trigger('input');
                 }
             }
-            if(data.me_code) $('#meCode').val(data.me_code).trigger('input');
+            if (data.me_code) $('#meCode').val(data.me_code).trigger('input');
             if (data.manufacturer) $('#manufacturer').val(data.manufacturer).trigger('input');
             if (data.vendor) $('#vendor').val(data.vendor).trigger('input');
             if (data.date) $('#date').val(data.date).trigger('input');
@@ -2001,6 +2071,7 @@
             // Fill reminder if available
             if (data.reminder) {
                 if (data.reminder.date) {
+                    $('#reminderToggle').prop('checked', true);
                     const reminderDateInput = document.getElementById('reminderDate');
                     if (reminderDateInput._flatpickr) {
                         reminderDateInput._flatpickr.setDate(data.reminder.date);
@@ -2103,6 +2174,18 @@
                 timer: 1500,
                 customClass: { popup: 'rounded-3' }
             });
+        }
+
+        // Toggle reminder content visibility
+        function toggleReminderContent() {
+            const reminderContent = document.getElementById('reminderContent');
+            const toggleSwitch = document.getElementById('reminderToggle');
+            
+            if (toggleSwitch.checked) {
+                reminderContent.style.display = 'block';
+            } else {
+                reminderContent.style.display = 'none';
+            }
         }
 
         // Format date to Thai locale
@@ -2508,7 +2591,7 @@
             const meCodeInput = document.getElementById('meCode');
             if (meCodeInput) {
                 meCodeInput.addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' || e.keyCode === 13) {
                         e.preventDefault();
                         searchPreviousData();
                     }
@@ -2537,7 +2620,16 @@
 
                 // Auto-save to localStorage with debounce
                 $(this).on('input', _.debounce(function () {
-                    localStorage.setItem('acceptance_record_' + this.name, this.value);
+                    if(this.name === 'reminderToggle' && this.checked === false) {
+                        // If reminder is toggled off, clear reminder data
+                        document.getElementById('reminderDate').value = '';
+                        document.getElementById('reminderNote').value = '';
+                        localStorage.removeItem('acceptance_record_reminderDate');
+                        localStorage.removeItem('acceptance_record_reminderNote');
+                        return;
+
+                    }
+                    localStorage.setItem('acceptance_record_' + this.name, this.type === 'checkbox' ? this.checked : this.value);
                 }, 500));
             });
 
@@ -2568,11 +2660,20 @@
         // Handle remaining unsaved data
         function handleRemainData() {
             let inputs = $('input').toArray();
-
-            let hasRemainData = inputs.filter(input => {
+            let remainData = inputs.reduce((acc, input) => {
                 const savedValue = localStorage.getItem('acceptance_record_' + input.name);
-                return savedValue && savedValue.trim() !== '';
-            }).length > 0;
+                acc[input.name] = savedValue;
+                return acc;
+            }, {});
+            if(remainData['reminderToggle'] && remainData['reminderToggle'] === 'false' || (remainData['reminderToggle'] === 'true' && (!remainData['reminderDate'] && !remainData['reminderNote']))) {
+                delete remainData['reminderToggle'];
+                delete remainData['reminderDate'];
+                delete remainData['reminderNote'];
+                localStorage.removeItem('acceptance_record_reminderDate');
+                localStorage.removeItem('acceptance_record_reminderNote');
+                localStorage.removeItem('acceptance_record_reminderToggle');
+            }
+            let hasRemainData = Object.values(remainData).some(value => value !== null && value !== undefined && value !== '');
             if (hasRemainData) {
                 Swal.fire({
                     title: 'พบข้อมูลที่ยังไม่ได้บันทึก',
@@ -2595,7 +2696,17 @@
                                         input.checked = true;
                                         $(input).trigger('input');
                                     }
-                                } else if(input._flatpickr) {
+                                } else if(input.type ==='checkbox'){
+                                    if(savedValue === 'true'){
+                                        input.checked = true;
+                                        
+                                    } else {
+                                        input.checked = false;
+                                    }
+                                    toggleReminderContent();
+                                    $(input).trigger('input');
+                                }
+                                else if (input._flatpickr) {
                                     input._flatpickr.setDate(savedValue);
                                     $(input).trigger('input');
                                 } else {
@@ -2868,6 +2979,11 @@
                 });
             }
         }
+    </script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        var vConsole = new window.VConsole();
     </script>
 </body>
 
