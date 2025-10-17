@@ -1034,15 +1034,15 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .toggle-switch input:checked + .toggle-slider {
+        .toggle-switch input:checked+.toggle-slider {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         }
 
-        .toggle-switch input:checked + .toggle-slider:before {
+        .toggle-switch input:checked+.toggle-slider:before {
             transform: translateX(24px);
         }
 
-        .toggle-switch input:focus + .toggle-slider {
+        .toggle-switch input:focus+.toggle-slider {
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
@@ -1837,7 +1837,8 @@
                             <h4>ตั้งค่าการแจ้งเตือน</h4>
                         </div>
                         <label class="toggle-switch">
-                            <input type="checkbox" id="reminderToggle" onchange="toggleReminderContent()" name="reminderToggle">
+                            <input type="checkbox" id="reminderToggle" onchange="toggleReminderContent()"
+                                name="reminderToggle">
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -2045,8 +2046,8 @@
                 $(this).removeClass('auto-filled');
                 if (this.type == 'radio') {
                     this.checked = false;
-                } 
-                else if( this.type == 'checkbox') {
+                }
+                else if (this.type == 'checkbox') {
                     this.checked = false;
                 }
                 else {
@@ -2213,7 +2214,7 @@
         function toggleReminderContent() {
             const reminderContent = document.getElementById('reminderContent');
             const toggleSwitch = document.getElementById('reminderToggle');
-            
+
             if (toggleSwitch.checked) {
                 reminderContent.style.display = 'block';
             } else {
@@ -2657,7 +2658,7 @@
 
                 // Auto-save to localStorage with debounce
                 $(this).on('input', _.debounce(function () {
-                    if(this.name === 'reminderToggle' && this.checked === false) {
+                    if (this.name === 'reminderToggle' && this.checked === false) {
                         // If reminder is toggled off, clear reminder data
                         document.getElementById('reminderDate').value = '';
                         document.getElementById('reminderNote').value = '';
@@ -2666,7 +2667,7 @@
                         return;
 
                     }
-                    if(this.name === 'meCode') return // do not save meCode to localStorage
+                    if (this.name === 'meCode') return // do not save meCode to localStorage
                     localStorage.setItem('acceptance_record_' + this.name, this.type === 'checkbox' ? this.checked : this.value);
                 }, 500));
             });
@@ -2703,7 +2704,7 @@
                 acc[input.name] = savedValue;
                 return acc;
             }, {});
-            if(remainData['reminderToggle'] && remainData['reminderToggle'] === 'false' || (remainData['reminderToggle'] === 'true' && (!remainData['reminderDate'] && !remainData['reminderNote']))) {
+            if (remainData['reminderToggle'] && remainData['reminderToggle'] === 'false' || (remainData['reminderToggle'] === 'true' && (!remainData['reminderDate'] && !remainData['reminderNote']))) {
                 delete remainData['reminderToggle'];
                 delete remainData['reminderDate'];
                 delete remainData['reminderNote'];
@@ -2734,10 +2735,10 @@
                                         input.checked = true;
                                         $(input).trigger('input');
                                     }
-                                } else if(input.type ==='checkbox'){
-                                    if(savedValue === 'true'){
+                                } else if (input.type === 'checkbox') {
+                                    if (savedValue === 'true') {
                                         input.checked = true;
-                                        
+
                                     } else {
                                         input.checked = false;
                                     }
@@ -2939,23 +2940,24 @@
                 // show download button
                 $('#downloadFileContainer').removeClass('d-none').find('button').off('click').on('click', function () {
                     const a = document.createElement('a');
-                    a.href = url;
+                    a.href = url
                     a.download = `Acceptance_Checklist_${formData.meCode || 'ME'}.pdf`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                 });
 
-                 if (window.innerWidth < 768) {
+                if (window.innerWidth < 768) {
                     window.open(url + '#toolbar=1?openExternalBrowser=true', '_blank')
-                    return
+                } else {
+
+                    // Also show preview in iframe
+                    const iframe = document.getElementById('pdf');
+                    iframe.src = url;
+                    iframe.style.display = 'block';
+
                 }
 
-
-                // Also show preview in iframe
-                const iframe = document.getElementById('pdf');
-                iframe.src = url;
-                iframe.style.display = 'block';
                 setTimeout(() => {
                     $('#downloadFileContainer')[0].scrollIntoView({ behavior: 'smooth' });
                 }, 1000);
