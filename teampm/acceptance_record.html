@@ -2204,6 +2204,10 @@
                 if (data.reminder.note) {
                     $('#reminderNote').val(data.reminder.note).trigger('input').addClass('auto-filled');
                 }
+                
+                if (data.reminder.date || data.reminder.note) {
+                    toggleReminderContent();
+                }
             }
 
             // Visual feedback
@@ -2216,7 +2220,9 @@
                     }, 500);
                 }
             });
-            window.saveToLocalStorage = true;
+            setTimeout(() => {
+              window.saveToLocalStorage = true;  
+            }, 800);
         }
 
         // Checklist items data
@@ -2465,6 +2471,11 @@
         document.getElementById('acceptanceFormSubmitButton').addEventListener('click', function (e) {
 
             const form = document.getElementById('acceptanceForm');
+
+            if($('#reminderDate').val().trim() == '' && $('#reminderNote').val().trim() == '') {
+                $('#reminderToggle').prop('checked', false);
+                toggleReminderContent();
+            }
 
             if (form.checkValidity()) {
                 event.stopPropagation();
@@ -2748,6 +2759,7 @@
 
                 // Auto-save to localStorage with debounce
                 $(this).on('input', _.debounce(function () {
+                    console.log(window.saveToLocalStorage);
                     if(!window.saveToLocalStorage) return;
                     if (this.name === 'reminderToggle' && this.checked === false) {
                         // If reminder is toggled off, clear reminder data
