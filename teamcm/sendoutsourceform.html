@@ -9,31 +9,54 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <base target="_top">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="./manifest/manifest.json">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
-        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
-    <!-- icon -->
-    <link rel="icon" href="./icons/outsource-icon.png" type="image/x-icon" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-        integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.8/b-3.0.2/r-3.0.2/datatables.min.css" rel="stylesheet">
-    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.8/b-3.0.2/r-3.0.2/datatables.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
     <link rel="stylesheet"
         href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.3.4/datatables.min.css" rel="stylesheet"
+        integrity="sha384-i0jVPhw/X00l5EPvMOBv0lcGYXlSQGOqNYpMK/406rxta9oBump0IZJIHzvtf3+H" crossorigin="anonymous">
+
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.3.4/datatables.min.js"
+        integrity="sha384-jVoHjtunWKmr2zpSki5PSXfFYRsTQQm1uk4wpf45zuYxast668XkB2fJL8PjloNc"
+        crossorigin="anonymous"></script>
+
     <style>
+        :root {
+            --primary-color: #8165b2;
+            --primary-dark: #6b4fa3;
+            --primary-light: #9a82c4;
+            --secondary-color: #10b981;
+            --secondary-dark: #059669;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -41,11 +64,30 @@
         }
 
         body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Prompt', sans-serif;
-            background-color: #d8c2ff;
-            /* background-color: #D3D3D3; */
+            font-family: 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, #8165b2 0%, #d8c2ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container-fluid {
+            position: relative;
+            z-index: 1;
         }
 
         #sticker {
@@ -60,46 +102,671 @@
         .nsmart-img:active {
             cursor: grabbing;
         }
+
+        /* Modern Header Styles */
+        header .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
+            box-shadow: var(--shadow-lg);
+            padding: 15px 20px;
+            border-radius: 0 0 20px 20px;
+        }
+
+        header .container-fluid.d-flex {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.6s ease;
+        }
+
+        header .h1 {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Form Container Styles */
+        #myForm section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            animation: slideUp 0.6s ease;
+        }
+
+        #myForm section:hover {
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Section Headers */
+        .col-12.d-flex.align-items-center.mt-3 {
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .col-12.d-flex.align-items-center.mt-3 h4 {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Input Styles */
+        .form-control,
+        .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(129, 101, 178, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover,
+        .form-select:hover {
+            border-color: var(--primary-light);
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        #table-equipment {
+            margin-bottom: 0;
+        }
+
+        #table-equipment thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        #table-equipment thead th {
+            background: black;
+            color: white;
+            padding: 12px 16px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            border: none;
+        }
+
+        #table-equipment tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        #table-equipment tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        #table-equipment tbody td {
+            padding: 12px 16px;
+            vertical-align: middle;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Button Styles */
+        .btn {
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-dark {
+            background: linear-gradient(135deg, var(--text-dark) 0%, #374151 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-dark:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-warning:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+            color: white;
+            padding: 14px 40px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Offcanvas Styles */
+        .offcanvas-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        .offcanvas-body {
+            background: var(--bg-light);
+        }
+
+        .offcanvas-body .form-control,
+        .offcanvas-body textarea {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .offcanvas-body .form-control:focus,
+        .offcanvas-body textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(129, 101, 178, 0.1);
+        }
+
+        /* Download Link */
+        #a-download {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        #a-download:hover {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* PDF iframe */
+        #pdf {
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            border: none;
+        }
+
+        /* Alert Styles */
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            color: var(--text-dark);
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+            color: var(--text-dark);
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .bg-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
+        }
+
+        /* Stats Card */
+        .card {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        #empty-state {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Required Field Indicator */
+        .text-danger {
+            color: var(--danger-color);
+        }
+
+        /* Small helper text */
+        small.text-muted {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            #myForm section {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+
+            header .container-fluid.d-flex {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
     <title>RR Form</title>
 </head>
 
 <body>
     <header>
-        <nav class="navbar" style="background-color: #8165b2;">
+        <nav class="navbar">
             <div class="container-fluid">
-                <img width="30" height="30" src="./icons/outsource-icon.png" alt="trash" />
-                <button class="btn btn-sm btn-warning d-none" id="install-btn"><i
-                        class="bi bi-file-arrow-down-fill"></i>
-                    Install</button>
+                <div class="d-flex align-items-center gap-2">
+                    <img width="30" height="30" src="./icons/outsource-icon.png" alt="outsource" />
+                    <span class="text-white fw-bold">บันทึกรายการส่งซ่อมภายนอก</span>
+                </div>
+                <button class="btn btn-sm btn-warning d-none" id="install-btn">
+                    <i class="bi bi-file-arrow-down-fill"></i>
+                    Install
+                </button>
             </div>
         </nav>
         <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
             <div class="col-auto">
-                <img width="80" src="./icons/outsource-icon.png" alt="repair" />
+                <img width="80" src="./icons/outsource-icon.png" alt="outsource" />
             </div>
 
             <div class="col text-center">
-                <h4 class="h1 fw-bold text-dark">บันทึกรายการส่งซ่อมภายนอก</h4>
+                <h1 class="h1 fw-bold">บันทึกรายการส่งซ่อมภายนอก</h1>
+                <p class="text-muted mt-2">Outsource Repair Record Form</p>
             </div>
         </div>
     </header>
     <main>
-        <div class="container-fluid">
+        <div class="container-fluid m-0 p-0">
             <form id="myForm" class="mt-3 mb-5">
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                <section>
                     <div class="row justify-content-start">
                         <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/retro/32/user.png" alt="icon" width="32">
-                            <h4 class="fw-bold">&nbsp;รายละเอียดบริษัท</h4>
+                            <i class="fas fa-clipboard-list" style="color: var(--primary-color); font-size: 24px;"></i>
+                            <h4 class="fw-bold ms-2 mb-0">ข้อมูลการส่งซ่อม</h4>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="vender-name">ชื่อบริษัท</label>
-                            <input type="text" name="vender-name" id="vender-name" class="form-control">
+                        <div class="col-md-6 mt-3">
+                            <label for="vender-name">
+                                <i class="fas fa-truck-medical"></i>
+                                บริษัทรับซ่อม / Repair Vendor
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="vender-name" id="vender-name" class="form-control"
+                                placeholder="กรอกชื่อบริษัทที่จะส่งซ่อม" list="venderList" required />
+                            <datalist id="venderList">
+                                <option>3G Med Supplies Co.,Ltd.</option>
+                                <option>3M Health Care</option>
+                                <option>3M. Thailand Co.,Ltd.</option>
+                                <option>A.P.Tac (Thailand) Co.,Ltd.</option>
+                                <option>Abbott Laboratories Co., Ltd.</option>
+                                <option>Abbott Medical (Thailand) Co., Ltd.</option>
+                                <option>Accord Corporation Limited</option>
+                                <option>Acteon (Thailand) Ltd.</option>
+                                <option>Advance Medical Esthetics (Thailand) Co.,Ltd.</option>
+                                <option>AEC Healthcare Co.,Ltd.</option>
+                                <option>Aesthetics By Ampex Co.,Ltd.</option>
+                                <option>Afta Service and Supply Co.,Ltd.</option>
+                                <option>Air Liquide (Thailand) Co.,Ltd.</option>
+                                <option>Alcon Laboratories (Thailand) Limited</option>
+                                <option>Align Technology (Thailand) Co.,Ltd.</option>
+                                <option>Allwell Life Co.,Ltd</option>
+                                <option>Asia Health Plus Co.,Ltd.</option>
+                                <option>Asras Medical Co.,Ltd.</option>
+                                <option>Astraco Medical Networks ltd.</option>
+                                <option>Audimed Co., Ltd.</option>
+                                <option>B Braun</option>
+                                <option>Bangkok Unitrade Co.,Ltd.</option>
+                                <option>Bausch &amp; Lomb (Thailand) LTD.</option>
+                                <option>Bawmed U.K (Asia) Co.,Ltd.</option>
+                                <option>Baxter Healthcare (Thailand) Co., Ltd.</option>
+                                <option>Beamed Co., Ltd.</option>
+                                <option>Becton dickinson (thailand) Ltd.</option>
+                                <option>Bemepro Co., Ltd.</option>
+                                <option>Berlin Germany Import </option>
+                                <option>Better Life Med Care</option>
+                                <option>Better Medical Care Co.,Ltd.</option>
+                                <option>Bio active Co.,Ltd.</option>
+                                <option>Bio Plus Medical Company Limited</option>
+                                <option>Bioactive Inter Co.,Ltd.</option>
+                                <option>Biosensors Interventional Technologies Pte Ltd</option>
+                                <option>BJH Healthcare Co., Ltd.</option>
+                                <option>BJH Medical</option>
+                                <option>Boston Scientrfic</option>
+                                <option>BTL Medical Technologies Ltd.</option>
+                                <option>C.R.M. Healthcare Co.,Ltd.</option>
+                                <option>Cardinal Health (Thailand) Co.,Ltd.</option>
+                                <option>CardioScan (Thailand) Co., Ltd.</option>
+                                <option>Carestream Health (Thailand) Co., Ltd.</option>
+                                <option>Carl Zeiss Co., Ltd.</option>
+                                <option>Chumroen Medical Products Co.,Ltd.</option>
+                                <option>Circlife Co,Ltd.</option>
+                                <option>CMC Biotech co.,ltd.</option>
+                                <option>Connect Diagnostics Co.,Ltd.</option>
+                                <option>Cook Medical (Thailand) Co., Ltd.</option>
+                                <option>Cosmed Aesthetic Co., Ltd.</option>
+                                <option>Covidien (Thailand) Ltd.</option>
+                                <option>Crystal Calibration Sale And Service</option>
+                                <option>D MED Hearing center Co.,Ltd.</option>
+                                <option>DDS Innotech Co., Ltd.</option>
+                                <option>Dental Vision (Thailand) Co.Ltd</option>
+                                <option>Dent-Mate Co.,Ltd.</option>
+                                <option>Dentsply Sirona(Thailand) Co.,Ltd.</option>
+                                <option>Device Innovation Co.,Ltd.</option>
+                                <option>Dextrous Engineering Co.,Ltd.</option>
+                                <option>Diamond Medical Co., Ltd.</option>
+                                <option>Dkk Device Co., Ltd.</option>
+                                <option>DKSH</option>
+                                <option>Doctor Calibration Co., Ltd.</option>
+                                <option>Double U Tech Co.,Ltd.</option>
+                                <option>Drager Medical (Thailand) Company Limited</option>
+                                <option>DS All Co.,Ltd.</option>
+                                <option>E for L Aim Public Company Limited</option>
+                                <option>Earth Line Co.,LTD&nbsp;</option>
+                                <option>Easmed Co.,Ltd.</option>
+                                <option>Econtech Supply Co., Ltd.</option>
+                                <option>Edwards Lifesciences(Thailand) Ltd.</option>
+                                <option>Eminence International limites</option>
+                                <option>Empire Scientifique Co.,Ltd.</option>
+                                <option>Endomed (1990) Co,.Ltd</option>
+                                <option>Endomed Service Co., Ltd.</option>
+                                <option>Endoscope &amp; Service Ltd., Part.</option>
+                                <option>Enovations Co.,ltd</option>
+                                <option>Enraf-Nonius Medical Equipment Co.,Ltd.</option>
+                                <option>Equip Healthcare Co., Ltd</option>
+                                <option>EQUIP HEALTHCARE CO.,LTD</option>
+                                <option>Erawan Hi-Tech Co.,Ltd.</option>
+                                <option>Esco Lifesciences (Thailand) Co., Ltd.</option>
+                                <option>Euroscan Co.,Ltd.</option>
+                                <option>EVA Genesis Co,Ltd.</option>
+                                <option>Expert Technology Development Co.,Ltd.</option>
+                                <option>Famme Works Co.,Ltd.</option>
+                                <option>Filtech Enterprise 1994 Public Co.,Ltd.</option>
+                                <option>Fresenius Medical Care (Thailand) Ltd.</option>
+                                <option>Fujifilm (Thailand) Co., Ltd.</option>
+                                <option>Future Medical Supply Co., Ltd.</option>
+                                <option>Gateway Health Co.,Ltd.</option>
+                                <option>GE Healthcare</option>
+                                <option>Getinge (Thailand) Co.,ltd</option>
+                                <option>Getz Healthcare (Thailand) Co.,Ltd.</option>
+                                <option>Gibthai Co.,Ltd.</option>
+                                <option>Global Healthy Care Co.,Ltd.</option>
+                                <option>Grand Medical Co.,Ltd.</option>
+                                <option>Grandee International Co.,Ltd.</option>
+                                <option>Growth Supply Medical Co., Ltd.</option>
+                                <option>Hairmax (Thailand) Co., Ltd.</option>
+                                <option>Hausen Bernstein Co., Ltd.</option>
+                                <option>Histocenter (Thailand) Co.,Ltd.</option>
+                                <option>Hollywood International Co.,Ltd.</option>
+                                <option>Hospitop Equipment Company Limited</option>
+                                <option>HYPERBARIC TECHNOLOGIES CO.,LTD.</option>
+                                <option>Ideewell Co.,Ltd.</option>
+                                <option>Idenmed Co., Ltd</option>
+                                <option>IDS MED Systems (Thailand) </option>
+                                <option>InBody (Thailand) Co.,Ltd.</option>
+                                <option>Infinite Med Co.,Ltd.</option>
+                                <option>Ingenious Technology Co., Ltd.</option>
+                                <option>Innotech Surgical Co.,Ltd.</option>
+                                <option>Innovative Imaging Systems Co.,Ltd.</option>
+                                <option>Integrated Medical Service Co.,Ltd.</option>
+                                <option>Inter Medical Co.,Ltd.</option>
+                                <option>Interpharma Medtech Co., Ltd.</option>
+                                <option>Intime Medical Co., Ltd.</option>
+                                <option>JF Advance med co.,ltd</option>
+                                <option>Johnson &amp; Johnson (Thailand) Ltd. &nbsp;</option>
+                                <option>JPP CARE CO.,LTD</option>
+                                <option>JS Unitech Co.,Ltd.</option>
+                                <option>K.Performance Co.,Ltd</option>
+                                <option>KAINATIC MMS Enterprise Co.,LTD</option>
+                                <option>Kosin Medical Supply</option>
+                                <option>KP5</option>
+                                <option>Lab Leader Co.,Ltd.</option>
+                                <option>LABIVF (Thailand) Co.,Ltd.</option>
+                                <option>Labotron Co., Ltd.</option>
+                                <option>Laser Engineer Co.,Ltd.</option>
+                                <option>Lasermed Co., Ltd.</option>
+                                <option>Linde (Thailand) Public Company Limited</option>
+                                <option>Livanova (Thailand) co. ltd</option>
+                                <option>LivaNova (Thailand) Co.,Ltd.</option>
+                                <option>Louis T. leonowens (Thailand) ltd.</option>
+                                <option>Luck Asia Intertrade Co.,Ltd</option>
+                                <option>Lundal (Thailand) Co.,Ltd.</option>
+                                <option>M D C (Thailand) Co.,Ltd.</option>
+                                <option>M.I.Calibration System Co.,Ltd.</option>
+                                <option>Maquet (Thailand) Co.,Ltd.</option>
+                                <option>Marathon (Thailand) Co.,Ltd.</option>
+                                <option>Maroongroge Co., Ltd</option>
+                                <option>Martha Group Co.,Ltd.</option>
+                                <option>Matsunaga (Thailand) Co.,Ltd.</option>
+                                <option>Max Power System Co.,Ltd.</option>
+                                <option>MD Healthcare Company Limited (Thailand)</option>
+                                <option>Medeze NK Co., Ltd.</option>
+                                <option>Medfocus.Co.,Ltd.</option>
+                                <option>Medi Hub Asia Co.,Ltd.</option>
+                                <option>Medica Healthcare Co.,Ltd.</option>
+                                <option>Medical Appliance Center Co.,Ltd.</option>
+                                <option>Medical Intensive Care Co.,Ltd.</option>
+                                <option>Medical Solution Co., Ltd</option>
+                                <option>Medicare (thailand) Co.,Ltd.</option>
+                                <option>Medicool Co.,Ltd.</option>
+                                <option>Mediplex (Thailand) Co., Ltd.</option>
+                                <option>Meditime Co., Ltd.</option>
+                                <option>Meditop Co., Ltd.</option>
+                                <option>Med-one Co.,Ltd.</option>
+                                <option>Medtech Asia Co., Ltd.</option>
+                                <option>Medtech Medical (Thailand) Co.,Ltd.</option>
+                                <option>Medtronic (Thailand) limited</option>
+                                <option>Metta Medtech Co.,Ltd.</option>
+                                <option>Mind Medical Care Co.,Ltd.</option>
+                                <option>Modem Brands Co.,Ltd</option>
+                                <option>Modernform Health&amp;Care</option>
+                                <option>MP Group (Thailand) Co.,Ltd.</option>
+                                <option>Muffin Co.,Ltd.</option>
+                                <option>N Health</option>
+                                <option>Namwiwat Engineering (1992) Co., Ltd.</option>
+                                <option>Nephrocare (Thailand) Co., Ltd.</option>
+                                <option>New Eye Co.,Ltd.</option>
+                                <option>New Lifemed Co.,Ltd.</option>
+                                <option>Nikkiso Medical </option>
+                                <option>Noble Med Co.,Ltd.</option>
+                                <option>Novatec Healthcare Co.,Ltd</option>
+                                <option>Novatec Healthcare Co.,Ltd.</option>
+                                <option>NSP Solution Co.,Ltd.</option>
+                                <option>Num Tech Med Co.,Ltd</option>
+                                <option>Olympus Thailand</option>
+                                <option>Omnimed Co.,Ltd</option>
+                                <option>Originator Co.,Ltd.</option>
+                                <option>Otto Bock South East Asia Co., Ltd.</option>
+                                <option>P.Diagnostics Co.,Ltd.</option>
+                                <option>P.P.A. Medical Group Co.,Ltd.</option>
+                                <option>Paramount Bed (Thailand) Co., Ltd.</option>
+                                <option>PCL Holding Co.,Ltd.</option>
+                                <option>Peakmed Co., Ltd.</option>
+                                <option>Phar Trillion Co., Ltd.</option>
+                                <option>Philips (Thailand) ltd.</option>
+                                <option>Phoenix Excel Co.,Ltd.</option>
+                                <option>Photo Bio Care Co.,Ltd.</option>
+                                <option>Pisces medical Co., Ltd.</option>
+                                <option>POF Eternity Co.,Ltd</option>
+                                <option>POF Technology Co.,Ltd.</option>
+                                <option>Power Stainless Steel Co., Ltd.</option>
+                                <option>PP Systems Co., Ltd.</option>
+                                <option>Prapatsorn Engineering Supply Co.,Ltd</option>
+                                <option>Premiers Medical Co.,Ltd.</option>
+                                <option>Prime Medical Co.,Ltd</option>
+                                <option>PRO OPTIK CO.,LTD.</option>
+                                <option>PSE Medical Co.,Ltd.</option>
+                                <option>Quantum Healthcare (Thailand) Co., Ltd.</option>
+                                <option>R.X. Co.,Ltd</option>
+                                <option>R.X. Co.,Ltd.</option>
+                                <option>Rapport Co., Ltd</option>
+                                <option>Rehab Medical Co.,Ltd.</option>
+                                <option>Ricco service&amp;Supply Co.,Ltd.</option>
+                                <option>Roche Diagnnostics (Thailand) Ltd.</option>
+                                <option>S.D.Tantavade (1988) Co.,Ltd.</option>
+                                <option>S.K. Medical and Engineering Co.,Ltd.</option>
+                                <option>S.M.J Inter Product Co.,Ltd.</option>
+                                <option>Saintmed Co.,Ltd.</option>
+                                <option>Salyaveth Co., Ltd.</option>
+                                <option>Science Engineer International Co., Ltd.</option>
+                                <option>Sei Medical Public Company Limited</option>
+                                <option>Siam Hearing Co.,Ltd.</option>
+                                <option>Siam Hospital Supply Co., Ltd.</option>
+                                <option>Siam Inter National Medical Equipment Co.,Ltd.</option>
+                                <option>Siam SCI Co.,Ltd.</option>
+                                <option>Siam Steel Internaltion PLC.</option>
+                                <option>Siamdent Co.,Ltd </option>
+                                <option>Siamwork Technology Co.,Ltd.</option>
+                                <option>Siemens Healthcare</option>
+                                <option>Smart Technology and Products Co.,Ltd.</option>
+                                <option>SMD rise Public Co., Ltd.</option>
+                                <option>SMIT Medical Limited</option>
+                                <option>Smith+Nephew Co.,Ltd.</option>
+                                <option>Sodexo Thailand</option>
+                                <option>Solta Medical (Thailand) Co., Ltd.</option>
+                                <option>Solventum (Thailand) Ltd.</option>
+                                <option>Spacemed </option>
+                                <option>Spacemed Co.,Ltd.</option>
+                                <option>Spiro Med Co.,Ltd.</option>
+                                <option>SPK Plenties Star Co., Ltd.</option>
+                                <option>Straumann Group (Thailand) Co.,Ltd.</option>
+                                <option>Supreme Products </option>
+                                <option>SW Healthcare Co., Ltd.</option>
+                                <option>Sysmex (Thailand) Co., Ltd.</option>
+                                <option>Tawan Mcweis Co.,Ltd.</option>
+                                <option>Tech Ace Co.,Ltd.</option>
+                                <option>Technology Promotion Association (Thailand-Japan)</option>
+                                <option>Teo Hong Silom Co.,Ltd.</option>
+                                <option>TEQ Co.,Ltd.</option>
+                                <option>Terumo (Thailand) Co., Ltd.</option>
+                                <option>Thai GL Co.,Ltd</option>
+                                <option>Thai IP Co., Ltd.</option>
+                                <option>Thai Otsuka Pharmaceutical Co., Ltd.</option>
+                                <option>Thai Ur Kang Interntional Co.,Ltd.</option>
+                                <option>Thanes Science Co.,Ltd.</option>
+                                <option>The Winner Associate Co.,Ltd.</option>
+                                <option>TMS Solution (Thailand) Co., Ltd.</option>
+                                <option>TNS Meditronics Co., Ltd.</option>
+                                <option>Topcon Instruments (Thailand) Co.,Ltd.</option>
+                                <option>Transmedic (Thailand) Co.,Ltd.</option>
+                                <option>Treat Med Co.,Ltd.</option>
+                                <option>UB (THAILAND) CO., LTD.</option>
+                                <option>UDom Medical Equiment</option>
+                                <option>Ufam clinique Co.,Ltd.</option>
+                                <option>Unitech Healthcare Co.,Ltd.</option>
+                                <option>United BMEC (Thai) Co.,Ltd.</option>
+                                <option>V R P Dent Co.,Ltd.</option>
+                                <option>V.S. Engineering Co.,Ltd.</option>
+                                <option>Valor Health Co.,Ltd.</option>
+                                <option>Vayo Trade Center Co.,Ltd.</option>
+                                <option>Vivacare Medical Ltd.</option>
+                                <option>Warm Link Co., Ltd.</option>
+                                <option>Watech Co.,Ltd.</option>
+                                <option>Wellgate A.D.Tech Co.,Ltd.</option>
+                                <option>World Medical Service &amp; Part</option>
+                                <option>Xovic Co., Ltd.</option>
+                                <option>Zenas Technology Company Limited.</option>
+                                <option>Zepper Instruments Co.,ltd</option>
+                                <option>Zest-Med Co.,Ltd.</option>
+                                <option>Zimmer Biomet (Thailand) Co.,Ltd.</option>
+                                <option>Z-medic Co., Ltd.</option>
+                                <option>Zuelling pharma Co.,Ltd.</option>
+                            </datalist>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="sender-name">ชื่อผู้ส่ง</label>
-                            <select name="sender-name" id="sender-name" class="form-select">
+                        <div class="col-md-6 mt-3">
+                            <label for="sender-name">
+                                <i class="fas fa-user-pen"></i>
+                                ผู้บันทึกข้อมูล / Recorder
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input list="recorderList" name="sender-name" id="sender-name" class="form-control"
+                                placeholder="เลือกหรือกรอกชื่อผู้บันทึก" required>
+                            <datalist id="recorderList">
                                 <option value="" selected disabled>เลือกชื่อ</option>
                                 <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
                                 <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
@@ -120,30 +787,39 @@
                                 <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
                                 <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
                                 <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
-                            </select>
+                                <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
+                            </datalist>
                         </div>
-
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
+                <section>
                     <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/fluency/48/list.png" alt="icon" width="32">
-                            <h4 class="fw-bold">&nbsp;รายละเอียดเครื่องมือ</h4>
+                        <div class="col-12 d-flex align-items-center justify-content-between mt-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-toolbox" style="color: var(--primary-color); font-size: 24px;"></i>
+                                <h4 class="fw-bold ms-2 mb-0">รายการเครื่องมือส่งซ่อม</h4>
+                            </div>
+                            <span class="badge bg-primary" id="equipment-count">0 รายการ</span>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 table-responsive">
+                        <div class="col-12 mt-3" id="empty-state" style="display: none;">
+                            <div class="text-center py-5">
+                                <i class="fas fa-inbox" style="font-size: 64px; color: var(--text-light); opacity: 0.3;"></i>
+                                <p class="text-muted mt-3">ยังไม่มีรายการเครื่องมือ<br>คลิกปุ่ม "เพิ่มรายการ" เพื่อเริ่มต้น</p>
+                            </div>
+                        </div>
+                        <div class="col-12 table-responsive mt-3" id="table-container">
                             <table id="table-equipment" class="table table-sm table-striped table-bordered table-hover">
                                 <thead class="table-primary">
                                     <tr>
-                                        <th>#</th>
-                                        <th>ชื่อ</th>
-                                        <th>รหัส</th>
-                                        <th>S/N</th>
-                                        <th>สาเหตุ</th>
-                                        <th>จำนวน</th>
-                                        <th>#</th>
+                                        <th style="width: 50px;">#</th>
+                                        <th>ชื่อเครื่องมือ</th>
+                                        <th style="width: 120px;">รหัส ME</th>
+                                        <th style="width: 120px;">S/N</th>
+                                        <th style="width: 200px;">สาเหตุการส่งซ่อม</th>
+                                        <th style="width: 80px;">จำนวน</th>
+                                        <th style="width: 80px;">ลบ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,24 +828,28 @@
                         </div>
                     </div>
                     <div class="row justify-content-center">
-                        <div class="col-md-3">
-                            <button class="btn w-100 btn-dark btn-sm mt-3" id="add-more-btn" type="button">
-                                <i class="bi bi-plus-circle"></i> เพิ่มรายการ</button>
+                        <div class="col-md-4">
+                            <button class="btn w-100 btn-dark mt-3" id="add-more-btn" type="button">
+                                <i class="fas fa-plus-circle"></i> เพิ่มรายการเครื่องมือ
+                            </button>
                         </div>
                     </div>
-
 
                 </section>
                 <div class="row justify-content-center">
                     <div class="col-md-4 mt-3 text-center">
-                        <button type="submit" class="btn btn-warning shadow d-none" style="min-width: 200px;"><img
-                                height="24" src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" />
-                            สร้างไฟล์</button>
+                        <button type="submit" class="btn btn-warning shadow d-none" id="submit-btn">
+                            <i class="fas fa-file-pdf"></i>
+                            สร้างเอกสารส่งซ่อม
+                        </button>
                     </div>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-4 mt-3 mb-4 text-center">
-                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
+                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">
+                            <i class="fas fa-download"></i>
+                            ดาวน์โหลด
+                        </a>
                     </div>
                 </div>
             </form>
@@ -184,39 +864,68 @@
     <div class="offcanvas offcanvas-end" data-bs-backdrop="static" tabindex="-1" id="offcanvasForm"
         aria-labelledby="offcanvasFormLabel">
         <div class="offcanvas-header text-bg-primary">
-            <h5 class="offcanvas-title" id="offcanvasFormLabel">รายการเครื่องมือ</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <h5 class="offcanvas-title" id="offcanvasFormLabel">
+                <i class="fas fa-toolbox me-2"></i>
+                เพิ่มเครื่องมือส่งซ่อม
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
         </div>
         <div class="offcanvas-body bg-body-tertiary">
+            <div class="alert alert-warning d-flex align-items-start gap-2 mb-3">
+                <i class="fas fa-exclamation-triangle mt-1"></i>
+                <small>กรอกข้อมูลให้ครบถ้วน สามารถเพิ่มได้สูงสุด 7 รายการ</small>
+            </div>
             <div class="row gap-2">
                 <div class="col-12">
-                    <label for="e_name">ชื่อเครื่องมือ</label>
-                    <textarea type="text" id="e_name" class="form-control" rows="3"></textarea>
+                    <label for="e_name">
+                        <i class="fas fa-stethoscope"></i>
+                        ชื่อเครื่องมือ
+                        <span class="text-danger">*</span>
+                    </label>
+                    <textarea type="text" id="e_name" class="form-control" rows="3" required
+                        placeholder="ระบุชื่อเครื่องมือทางการแพทย์"></textarea>
                 </div>
                 <!-- code -->
                 <div class="col-12">
-                    <label for="e_code">รหัสเครื่องมือ</label>
-                    <input type="text" id="e_code" class="form-control">
+                    <label for="e_code">
+                        <i class="fas fa-barcode"></i>
+                        รหัส
+                    </label>
+                    <input type="text" id="e_code" class="form-control" placeholder="PYT3_XXXXX">
                 </div>
                 <!-- sn -->
                 <div class="col-12">
-                    <label for="e_sn">Serial Number</label>
-                    <input type="text" id="e_sn" class="form-control">
+                    <label for="e_sn">
+                        <i class="fas fa-hashtag"></i>
+                        Serial Number (S/N)
+                    </label>
+                    <input type="text" id="e_sn" class="form-control" placeholder="S/N ของเครื่องมือ">
                 </div>
                 <!-- cause of failure -->
                 <div class="col-12">
-                    <label for="e_cause">สาเหตุที่เสีย</label>
-                    <textarea type="text" id="e_cause" class="form-control" rows="3"></textarea>
+                    <label for="e_cause">
+                        <i class="fas fa-wrench"></i>
+                        สาเหตุการส่งซ่อม
+                        <span class="text-danger">*</span>
+                    </label>
+                    <textarea type="text" id="e_cause" class="form-control" rows="3" required
+                        placeholder="อธิบายอาการเสีย หรือสาเหตุที่ต้องส่งซ่อม"></textarea>
                 </div>
                 <!-- จำนวน -->
                 <div class="col-12">
-                    <label for="e_qty">จำนวน</label>
-                    <input type="number" id="e_qty" class="form-control" inputmode="numeric" value="1" min="1">
+                    <label for="e_qty">
+                        <i class="fas fa-boxes"></i>
+                        จำนวน
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" id="e_qty" class="form-control" inputmode="numeric" value="1" min="1" max="100" required>
                 </div>
                 <!-- add -->
                 <div class="col-12">
                     <button class="btn btn-dark w-100 mt-3" id="save-equipment-btn" type="button">
-                        <i class="bi bi-plus-circle"></i> เพิ่ม</button>
+                        <i class="fas fa-check-circle"></i> บันทึกรายการ
+                    </button>
                 </div>
             </div>
         </div>
@@ -251,12 +960,13 @@
             pdfDoc = await PDFDocument.load(form_pdf_bytes)
             font_bytes = await fetch('../teampm/THSarabun.ttf').then(res => res.arrayBuffer())
             renderTable()
-            $('#sender-name').select2({
-                theme: 'bootstrap-5',
-                width: '100%'
-            })
-            $('#sender-name').val(localStorage.getItem('sender-name')).trigger('change')
-            $('#vender-name').val(localStorage.getItem('vender-name'))
+            updateStats()
+            
+            // Restore saved values
+            $('#sender-name').val(localStorage.getItem('sender-name') || '')
+            $('#vender-name').val(localStorage.getItem('vender-name') || '')
+            
+            // Auto-save on input
             $('#sender-name, #vender-name').on('input', function () {
                 localStorage.setItem('sender-name', $('#sender-name').val())
                 localStorage.setItem('vender-name', $('#vender-name').val())
@@ -268,11 +978,48 @@
         })
 
         $('#save-equipment-btn').click(function () {
-            let e_name = $('#e_name').val()
-            let e_code = $('#e_code').val()
-            let e_sn = $('#e_sn').val()
-            let e_cause = $('#e_cause').val()
+            let e_name = $('#e_name').val().trim()
+            let e_code = $('#e_code').val().trim()
+            let e_sn = $('#e_sn').val().trim()
+            let e_cause = $('#e_cause').val().trim()
             let e_qty = $('#e_qty').val()
+
+            // Validation
+            if (!e_name) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกชื่อเครื่องมือ',
+                    text: 'ชื่อเครื่องมือเป็นข้อมูลที่จำเป็น',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#8165b2'
+                })
+                $('#e_name').focus()
+                return
+            }
+
+            if (!e_cause) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกสาเหตุการส่งซ่อม',
+                    text: 'สาเหตุการส่งซ่อมเป็นข้อมูลที่จำเป็น',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#8165b2'
+                })
+                $('#e_cause').focus()
+                return
+            }
+
+            if (equipments.length >= 7) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เพิ่มรายการไม่ได้',
+                    text: 'สามารถเพิ่มรายการได้สูงสุด 7 รายการเท่านั้น',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#ef4444'
+                })
+                return
+            }
+
             equipments.push({
                 e_name,
                 e_code,
@@ -282,7 +1029,16 @@
             })
             localStorage.setItem('equipments', JSON.stringify(equipments))
             renderTable()
+            updateStats()
             $('#offcanvasForm').offcanvas('hide')
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'เพิ่มรายการสำเร็จ',
+                text: `เพิ่ม "${e_name}" เรียบร้อยแล้ว`,
+                timer: 1500,
+                showConfirmButton: false
+            })
         })
 
         function renderTable() {
@@ -292,11 +1048,18 @@
             } else {
                 equipments = []
             }
+            
+            // Toggle visibility based on equipment count
             if (equipments.length > 0) {
-                $('form button[type="submit"]').removeClass('d-none')
+                $('#submit-btn').removeClass('d-none')
+                $('#empty-state').hide()
+                $('#table-container').show()
             } else {
-                $('#form button[type="submit"]').addClass('d-none')
+                $('#submit-btn').addClass('d-none')
+                $('#empty-state').show()
+                $('#table-container').hide()
             }
+            
             $('#table-equipment').DataTable({
                 destroy: true,
                 data: equipments,
@@ -352,21 +1115,97 @@
         }
 
         function removeEquipment(index) {
-            equipments.splice(index, 1)
-            localStorage.setItem('equipments', JSON.stringify(equipments))
-            renderTable()
+            Swal.fire({
+                title: 'ยืนยันการลบ',
+                text: `ต้องการลบรายการ "${equipments[index].e_name}" หรือไม่?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    equipments.splice(index, 1)
+                    localStorage.setItem('equipments', JSON.stringify(equipments))
+                    renderTable()
+                    updateStats()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบรายการสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    })
+                }
+            })
+        }
+
+        function updateStats() {
+            const totalItems = equipments.length
+            $('#equipment-count').text(`${totalItems} รายการ`)
         }
 
         $('#myForm').submit(async function (e) {
             event.preventDefault()
+            
+            // Validate form
+            let vender_name = $('#vender-name').val().trim()
+            let sender_name = $('#sender-name').val().trim()
+            
+            if (!vender_name) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกชื่อบริษัทรับซ่อม',
+                    text: 'ข้อมูลนี้จำเป็นสำหรับการสร้างเอกสาร',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#8165b2'
+                })
+                $('#vender-name').focus()
+                return
+            }
+            
+            if (!sender_name) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกชื่อผู้บันทึก',
+                    text: 'ข้อมูลนี้จำเป็นสำหรับการสร้างเอกสาร',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#8165b2'
+                })
+                $('#sender-name').focus()
+                return
+            }
+            
+            if (equipments.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่มีรายการเครื่องมือ',
+                    text: 'กรุณาเพิ่มรายการเครื่องมือที่ต้องการส่งซ่อมอย่างน้อย 1 รายการ',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#8165b2'
+                })
+                return
+            }
+            
+            // Show loading
+            Swal.fire({
+                title: 'กำลังสร้างเอกสาร...',
+                text: 'กรุณารอสักครู่',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            
             if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
             pdfDoc.registerFontkit(fontkit);
             const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
             const symbol = await pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
             var signature, e_img
-            let vender_name = $('#vender-name').val()
-            let sender_name = $('#sender-name').val()
+            // Use existing variables from validation above
+            vender_name = $('#vender-name').val()
+            sender_name = $('#sender-name').val()
             let [date, month, year] = new Date().toLocaleString('en-GB', {
                 day: 'numeric',
                 month: 'long',
@@ -394,9 +1233,18 @@
             var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
             Swal.fire({
                 icon: 'success',
-                title: 'สร้างไฟล์เสร็จสิ้น',
-                timer: 2000,
-                showConfirmButton: false,
+                title: 'สร้างเอกสารสำเร็จ!',
+                html: `
+                    <p>สร้างเอกสารส่งซ่อมเรียบร้อยแล้ว</p>
+                    <div class="mt-3">
+                        <strong>บริษัท:</strong> ${vender_name}<br>
+                        <strong>รายการ:</strong> ${equipments.length} รายการ<br>
+                        <strong>จำนวนรวม:</strong> ${equipments.reduce((sum, item) => sum + parseInt(item.e_qty || 0), 0)} ชิ้น
+                    </div>
+                `,
+                confirmButtonText: 'ดูเอกสาร',
+                confirmButtonColor: '#8165b2',
+                timer: 3000
             }).then(async () => {
                 localStorage.removeItem('equipments')
                 localStorage.removeItem('vender-name')
@@ -441,67 +1289,22 @@
             );
         }
     </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker/service-worker.js').then(registration => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
-
-        let deferredPrompt;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the mini-infobar from appearing on mobile
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            deferredPrompt = e;
-            showInstallPromotion();
-            console.log('beforeinstallprompt fired');
-        });
-
-        function showInstallPromotion() {
-            $('#install-btn').removeClass('d-none').on('click', () => {
-                Swal.fire({
-                    title: 'ติดตั้งแอพลิเคชั่น',
-                    iconHtml: '<img src="https://img.icons8.com/external-sbts2018-outline-color-sbts2018/58/external-install-basic-ui-elements-2.3-sbts2018-outline-color-sbts2018.png" width="58" />',
-                    customClass: {
-                        icon: 'border-0'
-                    },
-                    text: 'คุณสามารถติดตั้งแอพบนมือถือของคุณเพื่อใช้งานได้ดีขึ้น',
-                    showCancelButton: true,
-                    confirmButtonText: 'ติดตั้ง',
-                    cancelButtonText: 'ยกเลิก',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        deferredPrompt.prompt();
-                        // Wait for the user to respond to the prompt
-                        deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('User accepted the A2HS prompt');
-                            } else {
-                                console.log('User dismissed the A2HS prompt');
-                            }
-                            deferredPrompt = null;
-                        });
-                    }
-                })
-            });
-
-
-        }
-
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/th.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/th.js"></script>
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        var vConsole = new window.VConsole();
+    </script>
 </body>
 
 </html>
