@@ -273,12 +273,7 @@
             top: 50%;
             transform: translateY(-50%);
         }
-
-        /* Radio and checkbox auto-filled */
-        input[type="radio"].auto-filled:checked,
-        input[type="checkbox"].auto-filled:checked {
-            accent-color: #3b82f6;
-        }
+      
 
         /* Remark input auto-filled */
         .remark-input.auto-filled {
@@ -2667,7 +2662,6 @@
                         return;
 
                     }
-                    if (this.name === 'meCode') return // do not save meCode to localStorage
                     localStorage.setItem('acceptance_record_' + this.name, this.type === 'checkbox' ? this.checked : this.value);
                 }, 500));
             });
@@ -2712,6 +2706,7 @@
                 localStorage.removeItem('acceptance_record_reminderNote');
                 localStorage.removeItem('acceptance_record_reminderToggle');
             }
+            if(Object.keys(remainData).length === 0 || Object.keys(remainData).length === 1 && remainData['meCode']) return; // No data to restore
             let hasRemainData = Object.values(remainData).some(value => value !== null && value !== undefined && value !== '');
             if (hasRemainData) {
                 Swal.fire({
