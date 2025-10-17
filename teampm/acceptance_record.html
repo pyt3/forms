@@ -2629,6 +2629,7 @@
                         return;
 
                     }
+                    if(this.name === 'meCode') return // do not save meCode to localStorage
                     localStorage.setItem('acceptance_record_' + this.name, this.type === 'checkbox' ? this.checked : this.value);
                 }, 500));
             });
