@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Data Test</title>
+</head>
+<body>
+    <h1>Signature Data Format Test</h1>
+    <button onclick="testSignatureFormat()">Test Signature Data Format</button>
+    <pre id="output"></pre>
+
+    <script>
+        function testSignatureFormat() {
+            // Simulate the signature data structure from the form
+            const signatures = {
+                sender: {
+                    coordinates: JSON.stringify({
+                        points: [
+                            {"time": 1234567890, "x": 100, "y": 50, "pressure": 0.5},
+                            {"time": 1234567891, "x": 101, "y": 51, "pressure": 0.6}
+                        ],
+                        width: 400,
+                        height: 200,
+                        penColor: "#1212ff"
+                    }),
+                    dataURL: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAGAk+o8owAAAABJRU5ErkJggg=="
+                },
+                receiver: {
+                    coordinates: JSON.stringify({
+                        points: [
+                            {"time": 1234567892, "x": 200, "y": 100, "pressure": 0.7},
+                            {"time": 1234567893, "x": 201, "y": 101, "pressure": 0.8}
+                        ],
+                        width: 400,
+                        height: 200,
+                        penColor: "#1212ff"
+                    }),
+                    dataURL: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAGAk+o8owAAAABJRU5ErkJggg=="
+                }
+            };
+
+            // Test the form data preparation
+            const formData = {
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString('th-TH'),
+                venderName: "Test Company",
+                senderName: "Test User",
+                contactPerson: "John Doe",
+                vendorAddress: "123 Test Street",
+                contactPhone: "02-123-4567",
+                equipmentCount: 1,
+                totalQuantity: 2,
+                senderSignatureCoordinates: signatures.sender?.coordinates ? JSON.parse(signatures.sender.coordinates) : null,
+                receiverSignatureCoordinates: signatures.receiver?.coordinates ? JSON.parse(signatures.receiver.coordinates) : null,
+                senderSignature: signatures.sender?.dataURL || '',
+                receiverSignature: signatures.receiver?.dataURL || '',
+                equipments: [
+                    {
+                        no: 1,
+                        name: "Test Equipment",
+                        code: "TEST001",
+                        sn: "SN123456",
+                        cause: "Test repair",
+                        quantity: 1
+                    }
+                ]
+            };
+
+            const output = document.getElementById('output');
+            output.textContent = JSON.stringify(formData, null, 2);
+
+            console.log('Form Data:', formData);
+            console.log('Sender Signature Coordinates Format:', typeof formData.senderSignatureCoordinates);
+            console.log('Sender Signature Coordinates:', formData.senderSignatureCoordinates);
+            console.log('Receiver Signature Coordinates Format:', typeof formData.receiverSignatureCoordinates);
+            console.log('Receiver Signature Coordinates:', formData.receiverSignatureCoordinates);
+        }
+    </script>
+</body>
+</html>
