@@ -7,6 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base target="_top">
     <meta charset="UTF-8">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
@@ -155,17 +156,20 @@
 
         /* Input Styles */
         .form-control,
-        .form-select {
+        .form-select,
+        textarea.form-control {
             border: 2px solid var(--border-color);
             border-radius: 10px;
             padding: 12px 16px;
             font-size: 14px;
             transition: all 0.3s ease;
             background-color: #fff;
+            resize: vertical;
         }
 
         .form-control:focus,
-        .form-select:focus {
+        .form-select:focus,
+        textarea.form-control:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(129, 101, 178, 0.1);
@@ -173,8 +177,14 @@
         }
 
         .form-control:hover,
-        .form-select:hover {
+        .form-select:hover,
+        textarea.form-control:hover {
             border-color: var(--primary-light);
+        }
+
+        /* Phone input specific styling */
+        input[type="tel"] {
+            font-family: monospace, 'Noto Sans Thai', sans-serif;
         }
 
         label {
@@ -433,6 +443,124 @@
                 justify-content: center;
             }
         }
+
+        /* Signature Section Styles */
+        .signature-box-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .signature-display-box {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signature-display-box:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #fff 0%, rgba(106, 27, 154, 0.05) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(106, 27, 154, 0.15);
+        }
+
+        .signature-display-box.has-signature {
+            border: 2px solid var(--success-color);
+            background: linear-gradient(135deg, #fff 0%, rgba(40, 167, 69, 0.05) 100%);
+        }
+
+        .signature-placeholder {
+            text-align: center;
+            color: #999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .signature-placeholder i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .signature-placeholder span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .signature-info {
+            text-align: center;
+        }
+
+        .signature-preview-canvas {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 6px;
+        }
+
+        /* Signature Modal Styles */
+        .signature-modal .modal-body {
+            padding: 30px;
+        }
+
+        .signature-canvas-container {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .signature-canvas {
+            border-radius: 6px;
+            cursor: crosshair;
+            max-width: 100%;
+            max-height: 300px;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .signature-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .signature-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .signature-instruction {
+            background: linear-gradient(135deg, rgba(106, 27, 154, 0.1) 0%, rgba(106, 27, 154, 0.05) 100%);
+            border: 1px solid rgba(106, 27, 154, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .signature-instruction i {
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
     </style>
     <title>RR Form</title>
 </head>
@@ -471,7 +599,7 @@
                             <i class="fas fa-clipboard-list" style="color: var(--primary-color); font-size: 24px;"></i>
                             <h4 class="fw-bold ms-2 mb-0">ข้อมูลการส่งซ่อม</h4>
                         </div>
-                        <div class="col-md-6 mt-3">
+                        <div class="col-12 mt-3">
                             <label for="vender-name">
                                 <i class="fas fa-truck-medical"></i>
                                 บริษัทรับซ่อม / Repair Vendor
@@ -758,7 +886,36 @@
                                 <option>Zuelling pharma Co.,Ltd.</option>
                             </datalist>
                         </div>
+                    
                         <div class="col-md-6 mt-3">
+                            <label for="contact-person">
+                                <i class="fas fa-address-card"></i>
+                                บุคคลที่ติดต่อ
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="contact-person" id="contact-person" class="form-control"
+                                placeholder="ชื่อผู้ติดต่อของบริษัทรับซ่อม" required>
+                        </div>
+                         <div class="col-md-6 mt-3">
+                            <label for="contact-phone">
+                                <i class="fas fa-phone"></i>
+                                เบอร์โทรศัพท์
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="tel" name="contact-phone" id="contact-phone" class="form-control"
+                                placeholder="หมายเลขโทรศัพท์" pattern="[0-9\-\s\+\(\)]+" required>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label for="vendor-address">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ที่อยู่บริษัท
+                                <span class="text-danger">*</span>
+                            </label>
+                            <textarea name="vendor-address" id="vendor-address" class="form-control" rows="3"
+                                placeholder="ที่อยู่ของบริษัทรับซ่อม" required></textarea>
+                        </div>
+                       
+                            <div class="col-md-6 mt-3">
                             <label for="sender-name">
                                 <i class="fas fa-user-pen"></i>
                                 ผู้บันทึกข้อมูล / Recorder
@@ -789,6 +946,22 @@
                                 <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
                                 <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
                             </datalist>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label for="remarks">
+                                <i class="fas fa-comment-dots"></i>
+                                หมายเหตุ / Remarks
+                            </label>
+                            <textarea name="remarks" id="remarks" class="form-control" rows="3"
+                                placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"></textarea>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="alert alert-info d-flex align-items-start gap-2 mb-0" style="border-left: 4px solid var(--primary-color);">
+                                <i class="fas fa-info-circle mt-1" style="color: var(--primary-color);"></i>
+                                <div>
+                                    <strong>คำแนะนำ:</strong> กรอกข้อมูลบริษัทที่จะรับซ่อมให้ครบถ้วน พร้อมข้อมูลติดต่อ จากนั้นคลิก "เพิ่มรายการ" เพื่อเพิ่มรายละเอียดเครื่องมือที่ต้องการส่งซ่อม (สูงสุด 7 รายการ)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -836,6 +1009,63 @@
                     </div>
 
                 </section>
+                
+                <!-- Signature Section -->
+                <section>
+                    <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <i class="fas fa-signature" style="color: var(--primary-color); font-size: 24px;"></i>
+                            <h4 class="fw-bold ms-2 mb-0">ลายเซ็นยืนยัน</h4>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="signature-box-wrapper">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-hand-holding-medical"></i>
+                                    ผู้ส่งเครื่อง / Sender
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="signature-display-box" id="sender-signature-display" onclick="openSignatureModal('sender')">
+                                    <div class="signature-placeholder">
+                                        <i class="fas fa-pen-nib"></i>
+                                        <span>คลิกเพื่อเซ็นชื่อ</span>
+                                    </div>
+                                    <canvas id="sender-signature-preview" style="display: none;"></canvas>
+                                </div>
+                                <div class="signature-info mt-2 d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">กดที่กรอบเพื่อเซ็นชื่อยืนยันการส่งเครื่องมือ</small>
+                                    <button type="button" class="btn btn-sm btn-outline-danger d-none" id="clear-sender-signature" onclick="clearSignature('sender')">
+                                        <i class="fas fa-trash-alt"></i> ลบ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="signature-box-wrapper">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    ผู้รับเครื่อง / Receiver
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="signature-display-box" id="receiver-signature-display" onclick="openSignatureModal('receiver')">
+                                    <div class="signature-placeholder">
+                                        <i class="fas fa-pen-nib"></i>
+                                        <span>คลิกเพื่อเซ็นชื่อ</span>
+                                    </div>
+                                    <canvas id="receiver-signature-preview" style="display: none;"></canvas>
+                                </div>
+                                <div class="signature-info mt-2 d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">กดที่กรอบเพื่อเซ็นชื่อยืนยันการรับเครื่องมือ</small>
+                                    <button type="button" class="btn btn-sm btn-outline-danger d-none" id="clear-receiver-signature" onclick="clearSignature('receiver')">
+                                        <i class="fas fa-trash-alt"></i> ลบ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
                 <div class="row justify-content-center">
                     <div class="col-md-4 mt-3 text-center">
                         <button type="submit" class="btn btn-warning shadow d-none" id="submit-btn">
@@ -859,6 +1089,53 @@
         </div>
 
     </main>
+
+    <!-- Signature Modal -->
+    <div class="modal fade signature-modal" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title signature-title" id="signatureModalLabel">
+                        <i class="fas fa-signature"></i>
+                        <span id="signature-modal-title">ลายเซ็นยืนยัน</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Signature Instructions -->
+                    <div class="signature-instruction">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>คำแนะนำ:</strong> กรุณาเซ็นชื่อในกรอบด้านล่าง ใช้เมาส์หรือสัมผัสหน้าจอเพื่อวาดลายเซ็น
+                    </div>
+                    
+                    <!-- Canvas Container -->
+                    <div class="signature-canvas-container">
+                        <canvas id="signatureCanvas" class="signature-canvas"></canvas>
+                    </div>
+                    
+                    <!-- Signature Controls -->
+                    <div class="signature-controls">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary" id="clearSignature">
+                                <i class="fas fa-eraser"></i>
+                                ลบลายเซ็น
+                            </button>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i>
+                                ยกเลิก
+                            </button>
+                            <button type="button" class="btn btn-primary" id="saveSignature">
+                                <i class="fas fa-save"></i>
+                                บันทึกลายเซ็น
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="offcanvas offcanvas-end" data-bs-backdrop="static" tabindex="-1" id="offcanvasForm"
@@ -931,6 +1208,9 @@
         </div>
     </div>
     <script>
+        // Google Apps Script URL for saving data to Google Sheets
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
+        
         var form_pdf_bytes, font_bytes
         var pdfDoc
         var PDFDocument = PDFLib.PDFDocument;
@@ -955,6 +1235,222 @@
             $('#e_name').focus()
 
         })
+        // Signature functionality
+        let signaturePad;
+        let currentSignatureType = '';
+        let signatures = {
+            sender: null,
+            receiver: null
+        };
+
+        // Resize canvas to fit container
+        function resizeCanvas() {
+            const canvas = document.getElementById('signatureCanvas');
+            const container = document.querySelector('.signature-canvas-container');
+            
+            if (canvas && container) {
+                const containerRect = container.getBoundingClientRect();
+                const maxWidth = Math.min(650, containerRect.width - 40); // 40px for padding
+                const maxHeight = 300;
+                
+                // Set canvas size
+                canvas.width = maxWidth;
+                canvas.height = maxHeight;
+                
+                // Update CSS for proper display
+                canvas.style.width = maxWidth + 'px';
+                canvas.style.height = maxHeight + 'px';
+                
+                // Reinitialize signature pad if it exists
+                if (signaturePad) {
+                    signaturePad.clear();
+                }
+            }
+        }
+
+        // Initialize signature pad
+        function initializeSignaturePad() {
+            const canvas = document.getElementById('signatureCanvas');
+            
+            // Set canvas size to fit the container
+            resizeCanvas();
+            
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgba(255,255,255,1)',
+                penColor: '#1212ff', // Bright blue pen color
+                minWidth: 1,
+                maxWidth: 3,
+                throttle: 16
+            });
+
+            // Clear signature button
+            document.getElementById('clearSignature').addEventListener('click', function() {
+                signaturePad.clear();
+            });
+
+            // Save signature button
+            document.getElementById('saveSignature').addEventListener('click', function() {
+                if (signaturePad.isEmpty()) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ไม่พบลายเซ็น',
+                        text: 'กรุณาเซ็นชื่อก่อนบันทึก',
+                        confirmButtonColor: '#6a1b9a'
+                    });
+                    return;
+                }
+
+                // Save signature as coordinate data (minimal storage)
+                const coordinateData = {
+                    points: signaturePad.toData(),
+                    width: document.getElementById('signatureCanvas').offsetWidth,
+                    height: document.getElementById('signatureCanvas').offsetHeight,
+                    penColor: '#1212ff'
+                };
+                const signatureData = signaturePad.toDataURL();
+                signatures[currentSignatureType] = {
+                    coordinates: JSON.stringify(coordinateData),
+                    dataURL: signatureData
+                };
+
+                // Update preview
+                updateSignaturePreview(currentSignatureType, signatureData);
+
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('signatureModal'));
+                modal.hide();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกสำเร็จ',
+                    text: 'ลายเซ็นถูกบันทึกเรียบร้อยแล้ว',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            });
+        }
+
+        // Open signature modal
+        function openSignatureModal(type) {
+            currentSignatureType = type;
+            
+            // Update modal title
+            const titles = {
+                sender: 'ลายเซ็นผู้ส่งเครื่อง',
+                receiver: 'ลายเซ็นผู้รับเครื่อง'
+            };
+            document.getElementById('signature-modal-title').textContent = titles[type];
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('signatureModal'));
+            modal.show();
+            
+            // Initialize signature pad when modal is shown
+            setTimeout(() => {
+                // Always resize canvas when modal opens
+                resizeCanvas();
+                
+                if (!signaturePad) {
+                    initializeSignaturePad();
+                } else {
+                    signaturePad.clear();
+                    // Load existing signature if available
+                    if (signatures[type]) {
+                        if (signatures[type].coordinates) {
+                            // Load from coordinate data
+                            const coordData = JSON.parse(signatures[type].coordinates);
+                            signaturePad.fromData(coordData.points);
+                        } else {
+                            // Fallback to dataURL for backward compatibility
+                            const signatureData = signatures[type].dataURL || signatures[type];
+                            signaturePad.fromDataURL(signatureData);
+                        }
+                    }
+                }
+            }, 300);
+        }
+
+        // Update signature preview
+        function updateSignaturePreview(type, signatureData) {
+            const displayBox = document.getElementById(`${type}-signature-display`);
+            const placeholder = displayBox.querySelector('.signature-placeholder');
+            const preview = displayBox.querySelector(`#${type}-signature-preview`);
+            const clearButton = document.getElementById(`clear-${type}-signature`);
+            
+            if (signatureData) {
+                // Hide placeholder and show signature
+                placeholder.style.display = 'none';
+                preview.style.display = 'block';
+                displayBox.classList.add('has-signature');
+                clearButton.classList.remove('d-none');
+                
+                // Draw signature on preview canvas
+                const ctx = preview.getContext('2d');
+                const img = new Image();
+                img.onload = function() {
+                    preview.width = displayBox.offsetWidth - 20;
+                    preview.height = displayBox.offsetHeight - 20;
+                    ctx.clearRect(0, 0, preview.width, preview.height);
+                    ctx.drawImage(img, 0, 0, preview.width, preview.height);
+                };
+                // Handle both old format (string) and new format (object)
+                img.src = signatureData.dataURL || signatureData;
+            } else {
+                // Show placeholder and hide signature
+                placeholder.style.display = 'flex';
+                preview.style.display = 'none';
+                displayBox.classList.remove('has-signature');
+                clearButton.classList.add('d-none');
+            }
+        }
+
+        // Validate signatures
+        function validateSignatures() {
+            const errors = [];
+            
+            if (!signatures.sender || (!signatures.sender.coordinates && !signatures.sender.dataURL && !signatures.sender)) {
+                errors.push('กรุณาเซ็นชื่อผู้ส่งเครื่อง');
+            }
+            
+            if (!signatures.receiver || (!signatures.receiver.coordinates && !signatures.receiver.dataURL && !signatures.receiver)) {
+                errors.push('กรุณาเซ็นชื่อผู้รับเครื่อง');
+            }
+            
+            return errors;
+        }
+
+        // Clear signature
+        function clearSignature(type) {
+            signatures[type] = null;
+            updateSignaturePreview(type, null);
+        }
+
+        // Recreate signature from coordinate data
+        function recreateSignatureFromCoordinates(coordinateData) {
+            const canvas = document.createElement('canvas');
+            const coordData = JSON.parse(coordinateData);
+            
+            canvas.width = coordData.width;
+            canvas.height = coordData.height;
+            
+            const tempPad = new SignaturePad(canvas, {
+                backgroundColor: 'rgba(255,255,255,1)',
+                penColor: coordData.penColor || '#1212ff'
+            });
+            
+            tempPad.fromData(coordData.points);
+            return canvas.toDataURL();
+        }
+
+        // Handle window resize for signature previews
+        window.addEventListener('resize', function() {
+            ['sender', 'receiver'].forEach(type => {
+                if (signatures[type]) {
+                    updateSignaturePreview(type, signatures[type]);
+                }
+            });
+        });
+
         $(document).ready(async function () {
             form_pdf_bytes = await fetch('./outsourceForm.pdf').then(res => res.arrayBuffer())
             pdfDoc = await PDFDocument.load(form_pdf_bytes)
@@ -963,15 +1459,37 @@
             updateStats()
             
             // Restore saved values
-            $('#sender-name').val(localStorage.getItem('sender-name') || '')
-            $('#vender-name').val(localStorage.getItem('vender-name') || '')
+            const savedFields = ['sender-name', 'vender-name', 'contact-person', 'vendor-address', 'contact-phone']
+            savedFields.forEach(field => {
+                const value = localStorage.getItem(field)
+                if (value) $(`#${field}`).val(value)
+            })
             
             // Auto-save on input
-            $('#sender-name, #vender-name').on('input', function () {
-                localStorage.setItem('sender-name', $('#sender-name').val())
-                localStorage.setItem('vender-name', $('#vender-name').val())
+            savedFields.forEach(field => {
+                $(`#${field}`).on('input', function () {
+                    localStorage.setItem(field, $(this).val())
+                })
             })
         })
+
+        // Function to save data to Google Sheets
+        async function saveData(formData) {
+            try {
+                const response = await $.ajax({
+                    url: GOOGLE_SCRIPT_URL,
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData)
+                })
+           
+                return response.success;
+            } catch (error) {
+                console.error('Error connecting to Google Sheets:', error)
+                return false
+            }
+        }
 
         $('#add-more-btn').click(function () {
             $('#offcanvasForm').offcanvas('show')
@@ -1151,29 +1669,31 @@
             // Validate form
             let vender_name = $('#vender-name').val().trim()
             let sender_name = $('#sender-name').val().trim()
+            let contact_person = $('#contact-person').val().trim()
+            let vendor_address = $('#vendor-address').val().trim()
+            let contact_phone = $('#contact-phone').val().trim()
             
-            if (!vender_name) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'กรุณากรอกชื่อบริษัทรับซ่อม',
-                    text: 'ข้อมูลนี้จำเป็นสำหรับการสร้างเอกสาร',
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#8165b2'
-                })
-                $('#vender-name').focus()
-                return
-            }
+            // Validation
+            const validationChecks = [
+                { field: vender_name, name: 'ชื่อบริษัทรับซ่อม', focus: '#vender-name' },
+                { field: sender_name, name: 'ชื่อผู้บันทึก', focus: '#sender-name' },
+                { field: contact_person, name: 'บุคคลที่ติดต่อ', focus: '#contact-person' },
+                { field: vendor_address, name: 'ที่อยู่บริษัท', focus: '#vendor-address' },
+                { field: contact_phone, name: 'เบอร์โทรศัพท์', focus: '#contact-phone' }
+            ]
             
-            if (!sender_name) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'กรุณากรอกชื่อผู้บันทึก',
-                    text: 'ข้อมูลนี้จำเป็นสำหรับการสร้างเอกสาร',
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#8165b2'
-                })
-                $('#sender-name').focus()
-                return
+            for (let check of validationChecks) {
+                if (!check.field) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: `กรุณากรอก${check.name}`,
+                        text: 'ข้อมูลนี้จำเป็นสำหรับการสร้างเอกสาร',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#8165b2'
+                    })
+                    $(check.focus).focus()
+                    return
+                }
             }
             
             if (equipments.length === 0) {
@@ -1187,15 +1707,66 @@
                 return
             }
             
+            // Validate signatures
+            const signatureErrors = validateSignatures();
+            if (signatureErrors.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ลายเซ็นไม่ครบถ้วน',
+                    html: signatureErrors.join('<br>'),
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#8165b2'
+                })
+                return
+            }
+            
             // Show loading
             Swal.fire({
-                title: 'กำลังสร้างเอกสาร...',
+                title: 'กำลังสร้างเอกสารและบันทึกข้อมูล...',
                 text: 'กรุณารอสักครู่',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading()
                 }
             })
+            
+            // Prepare data for Google Sheets
+            const formData = {
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString('th-TH'),
+                venderName: vender_name,
+                senderName: sender_name,
+                contactPerson: contact_person,
+                vendorAddress: vendor_address,
+                contactPhone: contact_phone,
+                equipmentCount: equipments.length,
+                totalQuantity: equipments.reduce((sum, item) => sum + parseInt(item.e_qty || 0), 0),
+                senderSignatureCoordinates: signatures.sender?.coordinates ? JSON.parse(signatures.sender.coordinates) : null,
+                receiverSignatureCoordinates: signatures.receiver?.coordinates ? JSON.parse(signatures.receiver.coordinates) : null,
+                equipments: equipments.map((eq, index) => ({
+                    no: index + 1,
+                    name: eq.e_name,
+                    code: eq.e_code,
+                    sn: eq.e_sn,
+                    cause: eq.e_cause,
+                    quantity: eq.e_qty
+                }))
+            }
+
+            console.log('Form Data to be saved:', formData);
+            
+            // Save to Google Sheets
+            const saveSuccess = await saveData(formData)
+            
+            if (!saveSuccess) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่สามารถบันทึกข้อมูลได้',
+                    text: 'ระบบจะสร้างเอกสาร PDF ต่อไป แต่ข้อมูลอาจไม่ได้บันทึกใน Google Sheets',
+                    confirmButtonText: 'ดำเนินการต่อ',
+                    confirmButtonColor: '#8165b2'
+                })
+            }
             
             if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
@@ -1215,9 +1786,87 @@
 
             form.getTextField('vender_name').setText(toTitleCase(vender_name))
             form.getTextField('sender_name').setText(toTitleCase(sender_name))
+            
+            // Add contact information if fields exist in PDF form
+            try {
+                if ($('#contact-person').val()) {
+                    const contactField = form.getTextField('contact_person')
+                    if (contactField) contactField.setText(toTitleCase($('#contact-person').val()))
+                }
+            } catch (e) { console.log('Contact person field not found in PDF') }
+            
+            try {
+                if ($('#vendor-address').val()) {
+                    const addressField = form.getTextField('vendor_address')
+                    if (addressField) addressField.setText($('#vendor-address').val())
+                }
+            } catch (e) { console.log('Vendor address field not found in PDF') }
+            
+            try {
+                if ($('#contact-phone').val()) {
+                    const phoneField = form.getTextField('contact_phone')
+                    if (phoneField) phoneField.setText($('#contact-phone').val())
+                }
+            } catch (e) { console.log('Contact phone field not found in PDF') }
             form.getTextField('date').setText(date)
             form.getTextField('month').setText(month)
             form.getTextField('year').setText(year)
+            
+            // Add signatures to PDF
+            if (signatures.sender) {
+                try {
+                    let senderSignatureData;
+                    if (signatures.sender.coordinates) {
+                        // Recreate from coordinate data
+                        senderSignatureData = recreateSignatureFromCoordinates(signatures.sender.coordinates);
+                    } else {
+                        // Use existing dataURL
+                        senderSignatureData = signatures.sender.dataURL || signatures.sender;
+                    }
+                    
+                    const senderSignatureImage = await pdfDoc.embedPng(senderSignatureData)
+                    const pages = pdfDoc.getPages()
+                    const firstPage = pages[0]
+                    const { width, height } = firstPage.getSize()
+                    
+                    // Add sender signature (adjust coordinates as needed)
+                    firstPage.drawImage(senderSignatureImage, {
+                        x: 100,
+                        y: 150,
+                        width: 120,
+                        height: 60,
+                    })
+                } catch (error) {
+                    console.warn('Error adding sender signature:', error)
+                }
+            }
+            
+            if (signatures.receiver) {
+                try {
+                    let receiverSignatureData;
+                    if (signatures.receiver.coordinates) {
+                        // Recreate from coordinate data
+                        receiverSignatureData = recreateSignatureFromCoordinates(signatures.receiver.coordinates);
+                    } else {
+                        // Use existing dataURL
+                        receiverSignatureData = signatures.receiver.dataURL || signatures.receiver;
+                    }
+                    
+                    const receiverSignatureImage = await pdfDoc.embedPng(receiverSignatureData)
+                    const pages = pdfDoc.getPages()
+                    const firstPage = pages[0]
+                    
+                    // Add receiver signature (adjust coordinates as needed)
+                    firstPage.drawImage(receiverSignatureImage, {
+                        x: 350,
+                        y: 150,
+                        width: 120,
+                        height: 60,
+                    })
+                } catch (error) {
+                    console.warn('Error adding receiver signature:', error)
+                }
+            }
             console.log(equipments);
             equipments.forEach((e, i) => {
                 form.getTextField(`num${i}`).setText(toTitleCase((i + 1).toString()))
@@ -1238,17 +1887,19 @@
                     <p>สร้างเอกสารส่งซ่อมเรียบร้อยแล้ว</p>
                     <div class="mt-3">
                         <strong>บริษัท:</strong> ${vender_name}<br>
+                        <strong>ผู้ติดต่อ:</strong> ${$('#contact-person').val()}<br>
                         <strong>รายการ:</strong> ${equipments.length} รายการ<br>
-                        <strong>จำนวนรวม:</strong> ${equipments.reduce((sum, item) => sum + parseInt(item.e_qty || 0), 0)} ชิ้น
+                        <strong>จำนวนรวม:</strong> ${equipments.reduce((sum, item) => sum + parseInt(item.e_qty || 0), 0)} ชิ้น<br>
+                        <strong>สถานะบันทึก:</strong> ${saveSuccess ? '<span style="color: green;">✓ บันทึกใน Google Sheets แล้ว</span>' : '<span style="color: orange;">⚠ ไม่สามารถบันทึกใน Google Sheets</span>'}
                     </div>
                 `,
                 confirmButtonText: 'ดูเอกสาร',
                 confirmButtonColor: '#8165b2',
-                timer: 3000
+                timer: 4000
             }).then(async () => {
-                localStorage.removeItem('equipments')
-                localStorage.removeItem('vender-name')
-                localStorage.removeItem('sender-name')
+                // Clear form data after successful submission
+                const fieldsToRemove = ['equipments', 'vender-name', 'sender-name', 'contact-person', 'vendor-address', 'contact-phone']
+                fieldsToRemove.forEach(field => localStorage.removeItem(field))
                 var iframe = document.getElementById('pdf')
                 // open pdf in new small window
                 var blob = new Blob([pdfBytes], { type: 'application/pdf' })
@@ -1280,6 +1931,13 @@
 
         })
 
+        // Handle window resize for responsive canvas
+        $(window).resize(function() {
+            if (signaturePad) {
+                resizeCanvas();
+            }
+        });
+
         function toTitleCase(str) {
             return str.replace(
                 /\w\S*/g,
@@ -1300,6 +1958,7 @@
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.0.10/dist/signature_pad.umd.min.js"></script>
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
