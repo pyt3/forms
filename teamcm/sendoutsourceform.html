@@ -69,7 +69,7 @@
             background: linear-gradient(135deg, #8165b2 0%, #d8c2ff 100%);
             min-height: 100vh;
             padding: 20px;
-            /* position: relative; */
+            position: relative;
         }
 
         body::before {
@@ -575,7 +575,7 @@
             color: darkblue;
             /* background-color: darkgrey; */
             /* max-width: 600px; */
-            padding: 10px;  
+            padding: 10px;
             border-radius: 10px
         }
     </style>
@@ -935,12 +935,12 @@
                         <div class="col-md-6 mt-3">
                             <label for="sender-name">
                                 <i class="fas fa-user-pen"></i>
-                                ผู้บันทึกข้อมูล / Recorder
+                                ชื่อผู้ส่งเครื่องออก
                                 <span class="text-danger">*</span>
                             </label>
-                            <input list="recorderList" name="sender-name" id="sender-name" class="form-control"
-                                placeholder="เลือกหรือกรอกชื่อผู้บันทึก" required>
-                            <datalist id="recorderList">
+                            <input list="senderList" name="sender-name" id="sender-name" class="form-control"
+                                placeholder="เลือกหรือกรอกชื่อผู้ส่งเครื่องออก" required>
+                            <datalist id="senderList">
                                 <option value="" selected disabled>เลือกชื่อ</option>
                                 <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
                                 <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
@@ -964,6 +964,16 @@
                                 <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
                             </datalist>
                         </div>
+                        <div class="col-md-6 mt-3">
+                            <label for="receive-out-name">
+                                <i class="fas fa-user-pen"></i>
+                                ชื่อผู้รับเครื่องออก
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input name="receive-out-name" id="receive-out-name" class="form-control"
+                                placeholder="เลือกหรือกรอกชื่อผู้รับเครื่องออก" required>
+                        </div>
+
                         <div class="col-12 mt-3">
                             <label for="remarks">
                                 <i class="fas fa-comment-dots"></i>
@@ -1045,7 +1055,7 @@
                             <div class="signature-box-wrapper">
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-hand-holding-medical"></i>
-                                    ผู้ส่งเครื่อง / Sender
+                                    ผู้ส่งเครื่องออก
                                     <span class="text-danger">*</span>
                                 </label>
                                 <div class="signature-display-box" id="sender-signature-display"
@@ -1054,14 +1064,7 @@
                                         <i class="fas fa-pen-nib"></i>
                                         <span>คลิกเพื่อเซ็นชื่อ</span>
                                     </div>
-                                   <img id="sender-signature-preview" style="display: none;" />
-                                </div>
-                                <div class="signature-info mt-2 d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">กดที่กรอบเพื่อเซ็นชื่อยืนยันการส่งเครื่องมือ</small>
-                                    <button type="button" class="btn btn-sm btn-outline-danger d-none"
-                                        id="clear-sender-signature" onclick="clearSignature('sender')">
-                                        <i class="fas fa-trash-alt"></i> ลบ
-                                    </button>
+                                    <img id="sender-signature-preview" style="display: none;" class="img-fluid p-2" />
                                 </div>
                             </div>
                         </div>
@@ -1069,7 +1072,7 @@
                             <div class="signature-box-wrapper">
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-clipboard-check"></i>
-                                    ผู้รับเครื่อง / Receiver
+                                    ผู้รับเครื่องออก
                                     <span class="text-danger">*</span>
                                 </label>
                                 <div class="signature-display-box" id="receiver-signature-display"
@@ -1078,23 +1081,103 @@
                                         <i class="fas fa-pen-nib"></i>
                                         <span>คลิกเพื่อเซ็นชื่อ</span>
                                     </div>
-                                      <img id="receiver-signature-preview" style="display: none;" />
+                                    <img id="receiver-signature-preview" style="display: none;" class="img-fluid p-2" />
                                 </div>
-                                <div class="signature-info mt-2 d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">กดที่กรอบเพื่อเซ็นชื่อยืนยันการรับเครื่องมือ</small>
-                                    <button type="button" class="btn btn-sm btn-outline-danger d-none"
-                                        id="clear-receiver-signature" onclick="clearSignature('receiver')">
-                                        <i class="fas fa-trash-alt"></i> ลบ
-                                    </button>
+                            </div>
+                        </div>
+                        <div class="col-12 text-center mt-4">
+                            <!-- save sending data -->
+                            <button type="button" class="btn btn-primary d-none" id="save-sending-data">
+                                <i class="fas fa-save"></i> บันทึกข้อมูลการส่งซ่อม
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <!-- Return Equipment Section -->
+                <section>
+                    <div class="row justify-content-start">
+                        <div class="col-12 d-flex align-items-center mt-3">
+                            <i class="fas fa-undo-alt" style="color: var(--secondary-color); font-size: 24px;"></i>
+                            <h4 class="fw-bold ms-2 mb-0">การรับเครื่องคืน</h4>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6 mt-3">
+                            <label for="return-date">
+                                <i class="fas fa-calendar-check"></i>
+                                วันที่รับเครื่องคืน
+                            </label>
+                            <input type="date" name="return-date" id="return-date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mt-3">
+                            <label for="return-receiver-name">
+                                <i class="fas fa-user-check"></i>
+                                ชื่อผู้รับเครื่องคืน
+                            </label>
+                            <input list="senderList" name="return-receiver-name" id="return-receiver-name"
+                                class="form-control" placeholder="เลือกหรือกรอกชื่อผู้รับเครื่องคืน">
+
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label for="return-sender-name">
+                                <i class="fas fa-user-tag"></i>
+                                ชื่อผู้ส่งเครื่องคืน
+                            </label>
+                            <input type="text" name="return-sender-name" id="return-sender-name" class="form-control"
+                                placeholder="กรอกชื่อผู้ส่งเครื่องคืน">
+                        </div>
+                        <div class="col-12 mt-3">
+                            <label for="return-remarks">
+                                <i class="fas fa-comment-medical"></i>
+                                หมายเหตุ / Return Remarks
+                            </label>
+                            <textarea name="return-remarks" id="return-remarks" class="form-control" rows="3"
+                                placeholder="หมายเหตุเกี่ยวกับการรับเครื่องคืน (ถ้ามี)"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="signature-box-wrapper">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-signature"></i>
+                                    ลายเซ็นผู้รับเครื่องคืน / Return Receiver Signature
+                                </label>
+                                <div class="signature-display-box" id="return-receiver-signature-display"
+                                    onclick="openSignatureModal('return-receiver')">
+                                    <div class="signature-placeholder">
+                                        <i class="fas fa-pen-nib"></i>
+                                        <span>คลิกเพื่อเซ็นชื่อ</span>
+                                    </div>
+                                    <img id="return-receiver-signature-preview" style="display: none;"
+                                        class="img-fluid p-2" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="signature-box-wrapper">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-signature"></i>
+                                    ลายเซ็นผู้ส่งเครื่องคืน / Return Sender Signature
+                                </label>
+                                <div class="signature-display-box" id="return-sender-signature-display"
+                                    onclick="openSignatureModal('return-sender')">
+                                    <div class="signature-placeholder">
+                                        <i class="fas fa-pen-nib"></i>
+                                        <span>คลิกเพื่อเซ็นชื่อ</span>
+                                    </div>
+                                    <img id="return-sender-signature-preview" style="display: none;"
+                                        class="img-fluid p-2" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-
-                <div class="row justify-content-center">
+                
+                <!-- <div class="row justify-content-center">
                     <div class="col-md-4 mt-3 text-center">
-                        <button type="submit" class="btn btn-warning shadow d-none" id="submit-btn">
+                        <button type="submit" class="btn btn-warning shadow" id="submit-btn">
                             <i class="fas fa-file-pdf"></i>
                             สร้างเอกสารส่งซ่อม
                         </button>
@@ -1107,7 +1190,7 @@
                             ดาวน์โหลด
                         </a>
                     </div>
-                </div>
+                </div> -->
             </form>
             <div class="container-fluid">
                 <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
@@ -1219,7 +1302,6 @@
         var StandardFonts = PDFLib.StandardFonts;
         var pdfFiles = []
         var equipments = []
-        var time_in = 817
         $('#offcanvasForm').on('hidden.bs.offcanvas', function () {
             $('#e_name, #e_code, #e_sn, #e_cause, #e_qty').val('')
         }).on('shown.bs.offcanvas', function () {
@@ -1242,7 +1324,9 @@
         let currentSignatureType = '';
         let signatures = {
             sender: null,
-            receiver: null
+            receiver: null,
+            returnReceiver: null,
+            returnSender: null
         };
 
         $(document).ready(async function () {
@@ -1282,6 +1366,75 @@
             $('#open-sign').click(function () {
                 openSignatureModal('sender')
             })
+
+            $('#add-more-btn').click(function () {
+                console.log('Add more button clicked')
+                $('#offcanvasForm').offcanvas('show')
+            })
+
+            $('#save-equipment-btn').click(function () {
+                let e_name = $('#e_name').val().trim()
+                let e_code = $('#e_code').val().trim()
+                let e_sn = $('#e_sn').val().trim()
+                let e_cause = $('#e_cause').val().trim()
+                let e_qty = $('#e_qty').val()
+
+                // Validation
+                if (!e_name) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'กรุณากรอกชื่อเครื่องมือ',
+                        text: 'ชื่อเครื่องมือเป็นข้อมูลที่จำเป็น',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#8165b2'
+                    })
+                    $('#e_name').focus()
+                    return
+                }
+
+                if (!e_cause) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'กรุณากรอกสาเหตุการส่งซ่อม',
+                        text: 'สาเหตุการส่งซ่อมเป็นข้อมูลที่จำเป็น',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#8165b2'
+                    })
+                    $('#e_cause').focus()
+                    return
+                }
+
+                if (equipments.length >= 7) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เพิ่มรายการไม่ได้',
+                        text: 'สามารถเพิ่มรายการได้สูงสุด 7 รายการเท่านั้น',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#ef4444'
+                    })
+                    return
+                }
+
+                equipments.push({
+                    e_name,
+                    e_code,
+                    e_sn,
+                    e_cause,
+                    e_qty
+                })
+                localStorage.setItem('equipments', JSON.stringify(equipments))
+                renderTable()
+                updateStats()
+                $('#offcanvasForm').offcanvas('hide')
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'เพิ่มรายการสำเร็จ',
+                    text: `เพิ่ม "${e_name}" เรียบร้อยแล้ว`,
+                    timer: 1500,
+                    showConfirmButton: false
+                })
+            })
         })
 
         // Function to open the signature modal
@@ -1290,10 +1443,11 @@
 
             $('#signatureModal').modal('show')
             $('#signatureparent').removeClass('d-none')
-           
+
         }
 
         function previewSignature(type, restrictEdit = false) {
+            console.log(type)
             let signature = signatures[type];
             console.log('Previewing signature for', type, signature);
             if (!signature) return;
@@ -1303,7 +1457,7 @@
             imgPreview.src = svgSrc;
             imgPreview.style.display = 'block';
             displayBox.querySelector('.signature-placeholder').style.display = 'none';
-            if(restrictEdit) {
+            if (restrictEdit) {
                 $(`#${type}-signature-display`).off('click').removeAttr('onclick');
             }
 
@@ -1327,73 +1481,9 @@
             }
         }
 
-        $('#add-more-btn').click(function () {
-            $('#offcanvasForm').offcanvas('show')
-        })
 
-        $('#save-equipment-btn').click(function () {
-            let e_name = $('#e_name').val().trim()
-            let e_code = $('#e_code').val().trim()
-            let e_sn = $('#e_sn').val().trim()
-            let e_cause = $('#e_cause').val().trim()
-            let e_qty = $('#e_qty').val()
 
-            // Validation
-            if (!e_name) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'กรุณากรอกชื่อเครื่องมือ',
-                    text: 'ชื่อเครื่องมือเป็นข้อมูลที่จำเป็น',
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#8165b2'
-                })
-                $('#e_name').focus()
-                return
-            }
 
-            if (!e_cause) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'กรุณากรอกสาเหตุการส่งซ่อม',
-                    text: 'สาเหตุการส่งซ่อมเป็นข้อมูลที่จำเป็น',
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#8165b2'
-                })
-                $('#e_cause').focus()
-                return
-            }
-
-            if (equipments.length >= 7) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'เพิ่มรายการไม่ได้',
-                    text: 'สามารถเพิ่มรายการได้สูงสุด 7 รายการเท่านั้น',
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#ef4444'
-                })
-                return
-            }
-
-            equipments.push({
-                e_name,
-                e_code,
-                e_sn,
-                e_cause,
-                e_qty
-            })
-            localStorage.setItem('equipments', JSON.stringify(equipments))
-            renderTable()
-            updateStats()
-            $('#offcanvasForm').offcanvas('hide')
-
-            Swal.fire({
-                icon: 'success',
-                title: 'เพิ่มรายการสำเร็จ',
-                text: `เพิ่ม "${e_name}" เรียบร้อยแล้ว`,
-                timer: 1500,
-                showConfirmButton: false
-            })
-        })
 
         function renderTable() {
             let data = localStorage.getItem('equipments')
@@ -1405,11 +1495,11 @@
 
             // Toggle visibility based on equipment count
             if (equipments.length > 0) {
-                $('#submit-btn').removeClass('d-none')
+                $('#save-sending-data').removeClass('d-none')
                 $('#empty-state').hide()
                 $('#table-container').show()
             } else {
-                $('#submit-btn').addClass('d-none')
+                $('#save-sending-data').addClass('d-none')
                 $('#empty-state').show()
                 $('#table-container').hide()
             }
@@ -1499,7 +1589,7 @@
             $('#equipment-count').text(`${totalItems} รายการ`)
         }
 
-        $('#myForm').submit(async function (e) {
+        $('#save-sending-data').click(async function (e) {
             event.preventDefault()
 
             // Validate form
@@ -3201,7 +3291,7 @@
                         , 'image': function (data) {
                             /*this = canvas elem */
                             var imagestring = this.toDataURL().replace('#000000', 'darkblue')
-                                console.log(imagestring)
+                            console.log(imagestring)
                             if (typeof imagestring === 'string' &&
                                 imagestring.length > 4 &&
                                 imagestring.slice(0, 5) === 'data:' &&
