@@ -2513,7 +2513,7 @@ jQuery(document).ready(function ($) {
 
     }).appendTo($tools)
 
-    $('<div class="col-6"><button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm w-100" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i> บันทึก</button></div>').bind('click', async function (e) {
+    $('<div class="col-6 text-center"><button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm w-100 text-center" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i> บันทึก</button></div>').bind('click', async function (e) {
 
         var data = $sigdiv.jSignature('getData', 'image')
         let dataUrl = data[0] + ',' + data[1]
