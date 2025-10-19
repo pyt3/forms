@@ -2094,6 +2094,7 @@
 
         // Handle search response
         function handleSearchResponse(response, meCode, isAutoSearch) {
+            localStorage.removeItem('acceptance_record_meCode');
             NProgress.done();
             console.log('Search response:', response);
             Swal.close();
@@ -2765,6 +2766,8 @@
                     }
                 });
                 $(meCodeInput).on('input', function () {
+                    // allow only A-Z, 0-9 and underscore, convert to uppercase
+                    this.value = this.value.replace(/[^A-Za-z0-9_]/g, '');
                     this.value = this.value.toUpperCase();
                 });
             }
