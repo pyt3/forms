@@ -16,73 +16,133 @@
 //     })
 // }
 async function getIncubatorTableData(session) {
-    // if (session) {
-    //     return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
-    //         
-    //         if (querySnapshot.docs.length > 0) {
-    //             user = querySnapshot.docs[0].data()
-    //             getDefibTableData()
-    //         }
-    //     });
-    // } else {
-    let ref, ref2, ref3, ref4
-    let now = new Date()
-    let before30days = now.setDate(now.getDate() - 30)
-    let promises, resultData
+    // let ref, ref2, ref3, ref4
+    // let now = new Date()
+    // let before30days = now.setDate(now.getDate() - 30)
+    // let promises, resultData
 
-    console.log("🚀 ~ user", user)
-    if (user.level == 'director') {
-        if (user.site == 'all') {
-            ref = firestore.collection('PYT3')
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref2 = firestore.collection("PYT2")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref3 = firestore.collection("PYT1")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref4 = firestore.collection("PLP")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
-        } else {
-            ref = firestore.collection(client)
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            promises = await Promise.all([ref.get()])
-        }
-        resultData = getResult(promises).flat()
-        resultData = resultData.sort((a, b) => b.time - a.time)
-        tabledata = resultData
-        createIncubatorTable(resultData)
-    } else if (user.level == 'manager') {
-        ref = firestore.collection(client)
-            .where('form', '==', 'incubator')
-            .where('e_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        ref2 = firestore.collection(client)
-            .where('form', '==', 'incubator')
-            .where('rec_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        promises = await Promise.all([ref.get(), ref2.get()])
-        resultData = getResult(promises).flat()
-        resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-        resultData = resultData.sort((a, b) => b.time - a.time)
-        tabledata = resultData
-        createIncubatorTable(resultData)
-    }
-    $('#admin-div').show()
+    // console.log("🚀 ~ user", user)
+    // if (user.level == 'director') {
+    //     if (user.site == 'all') {
+    //         ref = firestore.collection('PYT3')
+    //             .where('form', '==', 'incubator')
+    //             .where('time', '>=', before30days)
+    //             .orderBy('time', 'desc')
+    //         ref2 = firestore.collection("PYT2")
+    //             .where('form', '==', 'incubator')
+    //             .where('time', '>=', before30days)
+    //             .orderBy('time', 'desc')
+    //         ref3 = firestore.collection("PYT1")
+    //             .where('form', '==', 'incubator')
+    //             .where('time', '>=', before30days)
+    //             .orderBy('time', 'desc')
+    //         ref4 = firestore.collection("PLP")
+    //             .where('form', '==', 'incubator')
+    //             .where('time', '>=', before30days)
+    //             .orderBy('time', 'desc')
+    //         promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
+    //     } else {
+    //         ref = firestore.collection(client)
+    //             .where('form', '==', 'incubator')
+    //             .where('time', '>=', before30days)
+    //             .orderBy('time', 'desc')
+    //         promises = await Promise.all([ref.get()])
+    //     }
+    //     resultData = getResult(promises).flat()
+    //     resultData = resultData.sort((a, b) => b.time - a.time)
+    //     tabledata = resultData
+    //     createIncubatorTable(resultData)
+    // } else if (user.level == 'manager') {
+    //     ref = firestore.collection(client)
+    //         .where('form', '==', 'incubator')
+    //         .where('e_dept', '==', user.name)
+    //         .where('time', '>=', before30days)
+    //         .orderBy('time', 'desc')
+    //         .limit(40)
+    //     ref2 = firestore.collection(client)
+    //         .where('form', '==', 'incubator')
+    //         .where('rec_dept', '==', user.name)
+    //         .where('time', '>=', before30days)
+    //         .orderBy('time', 'desc')
+    //         .limit(40)
+    //     promises = await Promise.all([ref.get(), ref2.get()])
+    //     resultData = getResult(promises).flat()
+    //     resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
+    //     resultData = resultData.sort((a, b) => b.time - a.time)
+    //     tabledata = resultData
+    //     createIncubatorTable(resultData)
     // }
+    // $('#admin-div').show()
+
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const buildQuery = ({ collection, form = 'incubator', filters = [], limit }) => {
+        let query = firestore.collection(collection)
+            .where('form', '==', form)
+            .where('time', '>=', thirtyDaysAgo)
+            .orderBy('time', 'desc');
+
+        filters.forEach(([field, op, value]) => {
+            query = query.where(field, op, value);
+        });
+
+        if (typeof limit === 'number') {
+            query = query.limit(limit);
+        }
+
+        return query;
+    };
+
+    const buildTable = (snapshots, dedupe = false) => {
+        let records = getResult(snapshots).flat();
+
+        if (dedupe) {
+            const seen = new Set();
+            records = records.filter(item => {
+                if (seen.has(item.time)) return false;
+                seen.add(item.time);
+                return true;
+            });
+        }
+
+        records.sort((a, b) => b.time - a.time);
+        tabledata = records;
+        createIncubatorTable(records);
+    };
+
+    try {
+        if (user.level === 'director' || user.level === 'demo') {
+            const sources = user.site === 'all'
+                ? [
+                    { collection: 'PYT3' },
+                    { collection: 'PYT2' },
+                    { collection: 'PYT1' },
+                    { collection: 'PLP' },
+                    { collection: 'SNH' },
+                    { collection: 'DEMO' },
+                    { collection: 'PLS' }
+                ]
+                : [{ collection: client }];
+
+            const snapshots = await Promise.all(
+                sources.map(cfg => buildQuery(cfg).get())
+            );
+
+            buildTable(snapshots);
+        } else if (user.level === 'manager') {
+            const snapshots = await Promise.all(
+                [
+                    { collection: client, filters: [['e_dept', '==', user.name]], limit: 40 },
+                    { collection: client, filters: [['rec_dept', '==', user.name]], limit: 40 }
+                ].map(cfg => buildQuery(cfg).get())
+            );
+
+            buildTable(snapshots, true);
+        }
+    } catch (error) {
+        console.error('getIncubatorTableData failed', error);
+    } finally {
+        $('#admin-div').show();
+    }
 }
 
 function get_id(url) {
