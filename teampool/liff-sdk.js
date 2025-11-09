@@ -4526,7 +4526,7 @@
                       nn(
                         ""
                           .concat("https://liffsdk.line-scdn.net/xlt", "/")
-                          .concat(e.languages[t])+ "v="+ new Date().getTime(),
+                          .concat(e.languages[t])+ "?v="+ new Date().getTime(),
                         {
                           method: "GET",
                           headers: { Accept: "application/json" },
