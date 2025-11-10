@@ -308,17 +308,16 @@
                     new Promise((resolve) => {
                         $.getJSON(script_url, function (data) {
                             history_code = data;
-                            NProgress.done();
+                            console.log("Successfully retrieved history codes");
                             resolve(data);
                         }).fail(() => {
-                            NProgress.done();
                             resolve(null);
                         });
                     }),
                     checkRegist(),
                     fetchTelegramConstants()
                 ]);
-
+                console.log("Successfully retrieved all initialization data");
                 profile = await liff.getProfile()
                 $('.loader').fadeOut(500)
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
@@ -381,6 +380,8 @@
                 $('#profile').attr('src', profile.pictureUrl)
                 $('#displayName').text(profile.displayName)
                 $('.navbar .container-fluid').show(400)
+                console.log("User profile updated");
+                NProgress.done();
             })
             $('select option').each(function () {
                 $(this).val($(this).text().trim())
@@ -504,7 +505,8 @@
                     // $.LoadingOverlay('hide')
                     // $('.loader').fadeOut(500)
                     $('#displayName').attr('data-name', regist.name.toUpperCase())
-                    return
+                    console.log("User registration found in local storage");
+                    resolve()
                 }
                 $.ajax({
                     method: 'POST',
@@ -529,9 +531,12 @@
                             }).then(() => {
                                 liff.closeWindow()
                             })
+                            console.log("No user registration found, redirecting to registration");
                             reject()
                         } else {
                             localStorage.setItem('regist', JSON.stringify(res))
+                            $('#displayName').attr('data-name', res.name.toUpperCase())
+                            console.log("User registration found from server");
                             resolve()
                         }
                     }
