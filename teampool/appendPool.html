@@ -615,17 +615,17 @@
             </div>
         </div>
     </div>
-    <nav class="navbar">
-        <div class="container-fluid" style="display: none">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
-                    alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
-                &nbsp; <div>
-                    <span id="displayName">Team PM</span>
-                </div>
-            </a>
-        </div>
-    </nav>
+    <div class="container-fluid mt-4" style="display: none">
+         <div class="px-4 pb-4 pt-1">
+             <a class="navbar-brand d-flex align-items-center" href="#">
+                 <img src="https://www.appdisqus.com/wp-content/uploads/2015/02/despicable_me_2_minions-1920x1080.jpg"
+                     alt="profile" id="profile" class="rounded-circle border d-inline-block align-text-top">
+                 &nbsp; <div>
+                     <span id="displayName">Team PM</span>
+                 </div>
+             </a>
+         </div>
+    </div>
     <div class="container-fluid h-100 d-flex justify-content-center align-items-center">
         <div class="px-4 pb-4 pt-1">
             <div class="row justify-content-center">
@@ -727,13 +727,10 @@
             liff.init({
                 liffId: '1660749495-G5e9Av6r',
                 // liffId: '1660749495-A2gmPQNb',
-                // withLoginOnExternalBrowser: true
+                withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
-                if (!liff.isLoggedIn()) {
-                    liff.login()
-                    return;
-                }
+
                 const fetchTelegramConstants = (retries = 5) => {
                     return new Promise((resolve, reject) => {
                         $.ajax({
