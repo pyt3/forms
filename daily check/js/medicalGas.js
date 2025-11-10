@@ -145,34 +145,39 @@ $(document).ready(() => {
         console.log("🚀 ~ profile:", profile)
         console.log(liff.getDecodedIDToken().sub);
         $('#line-display').attr('src', profile.pictureUrl).show(200)
+        $('#main-div').show()
 
         // Update progress for data loading
         $('#loading-progress-bar').css('width', '60%');
         $('#loading-percent').text('60%');
         $('#loading-status').text('กำลังโหลดข้อมูล...');
 
-        $('#share-btn').click(() => {
-            let last_flex = localStorage.getItem('last_flex')
-            if (last_flex == null) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'ไม่พบข้อมูลล่าสุด',
-                    text: 'กรุณาทำการบันทึกข้อมูลก่อนแชร์',
-                })
-                return
-            }
-            // Share the last_flex data
-            console.log("Sharing last_flex data:", last_flex)
-            liff.shareTargetPicker(JSON.parse(last_flex))
-                .then(function (res) {
-                    if (res) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'แชร์ข้อมูลสำเร็จ',
-                        })
-                    }
-                })
-        })
+        let last_flex = localStorage.getItem('last_flex')
+        if (!last_flex) {
+            $('#share-btn').hide()
+        } else {
+            $('#share-btn').click(() => {
+                if (last_flex == null) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ไม่พบข้อมูลล่าสุด',
+                        text: 'กรุณาทำการบันทึกข้อมูลก่อนแชร์',
+                    })
+                    return
+                }
+                // Share the last_flex data
+                console.log("Sharing last_flex data:", last_flex)
+                liff.shareTargetPicker(JSON.parse(last_flex))
+                    .then(function (res) {
+                        if (res) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'แชร์ข้อมูลสำเร็จ',
+                            })
+                        }
+                    })
+            })
+        }
 
         Promise.all([getLastSaved(), getHistory()]).then(() => {
             // Update progress to 100%
