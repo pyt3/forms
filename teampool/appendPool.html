@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
         integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css">
     <script src="../teampm/main const.js"></script>
     <style>
         * {
@@ -227,6 +228,8 @@
             document.querySelector('.select2-search__field').focus();
         });
         $(document).ready(function () {
+            NProgress.start();
+            NProgress.inc()
             $('#end').append($('#start option').not(':first-child').clone())
             $('#ups').click(function () {
                 Swal.fire({
@@ -255,31 +258,14 @@
                 $('#code').val('SCOPE')
             })
 
-            // $.LoadingOverlay('show')
-            $.getJSON(script_url, function (data) {
-                history_code = data
-
-            })
-
             liff.init({
                 liffId: '1660749495-G5e9Av6r',
                 // liffId: '1660749495-A2gmPQNb',
                 withLoginOnExternalBrowser: true
             })
             liff.ready.then(async () => {
-                checkRegist()
+
                 const fetchTelegramConstants = (retries = 5) => {
-                    // Swal.fire({
-                    //     icon: 'info',
-                    //     title: 'กำลังโหลดข้อมูล...',
-                    //     allowOutsideClick: false,
-                    //     customClass: {
-                    //         popup: 'rounded-4'
-                    //     },
-                    //     didOpen: () => {
-                    //         Swal.showLoading()
-                    //     }
-                    // })
                     return new Promise((resolve, reject) => {
                         $.ajax({
                             url: script_url,
@@ -291,13 +277,14 @@
                             success: function (res) {
                                 tg_const = res;
                                 console.log("Successfully retrieved telegram constants");
-                                // Swal.close();
                                 resolve(tg_const);
                             },
                             error: function () {
                                 if (retries > 0) {
                                     console.log(`Failed to get telegram constants, retrying... (${5 - retries + 1}/5)`);
-                                    setTimeout(() => fetchTelegramConstants(retries - 1), 1000);
+                                    setTimeout(() => {
+                                        fetchTelegramConstants(retries - 1).then(resolve).catch(reject);
+                                    }, 1000);
                                 } else {
                                     console.error("Failed to get telegram constants after 5 retries");
                                     Swal.fire({
@@ -309,13 +296,29 @@
                                         text: 'คุณอาจไม่สามารถส่งรูปภาพได้',
                                         confirmButtonText: 'ตกลง'
                                     });
+                                    resolve(null); // Resolve with null to not block other operations
                                 }
                             }
                         });
                     });
                 };
 
-                await fetchTelegramConstants();
+                // Run all initialization tasks in parallel
+                await Promise.all([
+                    new Promise((resolve) => {
+                        $.getJSON(script_url, function (data) {
+                            history_code = data;
+                            NProgress.done();
+                            resolve(data);
+                        }).fail(() => {
+                            NProgress.done();
+                            resolve(null);
+                        });
+                    }),
+                    checkRegist(),
+                    fetchTelegramConstants()
+                ]);
+
                 profile = await liff.getProfile()
                 $('.loader').fadeOut(500)
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
@@ -392,112 +395,147 @@
 
         })
         function initHistory_code() {
-            //setup before functions
-            var typingTimer;                //timer identifier
-            var doneTypingInterval = 500;  //time in ms, 0.5 seconds for example
-            var $input = $('#code');
-            //on keyup, start the countdown
-            $input.on('keyup', function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(doneTyping, doneTypingInterval);
-            });
-            //on keydown, clear the countdown 
-            $input.on('keydown', function () {
-                clearTimeout(typingTimer);
-            });
-            //user is "finished typing," do something
-            function doneTyping() {
-                let code = $('#code').val().toUpperCase()
-                let his = _.pickBy(history_code, (v, k) => {
-                    return k.includes(code)
-                })
+            const $input = $('#code');
+            const $start = $('#start');
+            const $end = $('#end');
+            const $swapButton = $('.bi-arrow-down-up');
+            const $swapParent = $swapButton.parent();
+            const $divStart = $('#div-start');
+            const $divEnd = $('#div-end');
+            const DEBOUNCE_DELAY = 500;
+            const ANIMATION_DURATION = 500;
+            
+            let typingTimer;
 
-                if (_.size(his) > 0) {
-                    his = _.values(his)[0]
-                    $('#start').val(his.start).change()
-                    $('#end').val(his.end).change()
-                    $('.bi-arrow-down-up').parent().show(200)
-                } else {
-                    $('.bi-arrow-down-up').parent().hide(200)
-                    $('#start').val('').change()
-                    $('#end').val('').change()
+            // Debounced lookup function
+            const lookupHistory = () => {
+                const code = $input.val().toUpperCase().trim();
+                
+                if (!code) {
+                    resetFields();
+                    return;
                 }
-            }
-            $('.bi-arrow-down-up').click(function () {
-                // $(this).removeClass('animate__animated animate__bounceIn')
-                $('#div-start').addClass('animate__animated animate__backOutRight animate__faster')
-                $('#div-end').addClass('animate__animated animate__backOutLeft animate__faster')
+
+                // Find matching history entry
+                const matchingEntry = Object.entries(history_code).find(([key]) => 
+                    key.includes(code)
+                );
+
+                if (matchingEntry) {
+                    const [, data] = matchingEntry;
+                    $start.val(data.start).trigger('change');
+                    $end.val(data.end).trigger('change');
+                    $swapParent.show(200);
+                } else {
+                    resetFields();
+                }
+            };
+
+            // Reset fields helper
+            const resetFields = () => {
+                $swapParent.hide(200);
+                $start.val('').trigger('change');
+                $end.val('').trigger('change');
+            };
+
+            // Input event handlers with debouncing
+            $input.on('input', () => {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(lookupHistory, DEBOUNCE_DELAY);
+            });
+
+            // Swap animation handler
+            $swapButton.on('click', function() {
+                const $this = $(this);
+                
+                // Add exit animations
+                $divStart.addClass('animate__animated animate__backOutRight animate__faster');
+                $divEnd.addClass('animate__animated animate__backOutLeft animate__faster');
+
                 setTimeout(() => {
-                    let start = $('#start').val()
-                    let end = $('#end').val()
-                    $('#start').val(end).change()
-                    $('#end').val(start).change()
-                    $('#div-start').removeClass('animate__animated animate__backOutRight')
-                    $('#div-end').removeClass('animate__animated animate__backOutLeft')
-                    $('#div-start').addClass('animate__animated animate__backInLeft animate__faster')
-                    $('#div-end').addClass('animate__animated animate__backInRight animate__faster')
-                }, 500);
-                // rotate element 360 degrees in 1 second
-                $(this).animate({ borderSpacing: -360 }, {
-                    step: function (now, fx) {
-                        $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
-                        $(this).css('-moz-transform', 'rotate(' + now + 'deg)');
-                        $(this).css('transform', 'rotate(' + now + 'deg)');
-                    },
-                    duration: 'slow'
-                }, 'linear');
-            })
+                    // Swap values
+                    const startVal = $start.val();
+                    const endVal = $end.val();
+                    $start.val(endVal).trigger('change');
+                    $end.val(startVal).trigger('change');
+
+                    // Remove exit animations and add entry animations
+                    $divStart
+                        .removeClass('animate__backOutRight')
+                        .addClass('animate__backInLeft');
+                    $divEnd
+                        .removeClass('animate__backOutLeft')
+                        .addClass('animate__backInRight');
+                }, ANIMATION_DURATION);
+
+                // Rotate icon animation with CSS transform
+                $this.css({
+                    transition: 'transform 0.6s linear',
+                    transform: 'rotate(-360deg)'
+                });
+                
+                setTimeout(() => {
+                    $this.css({
+                        transition: '',
+                        transform: ''
+                    });
+                }, 600);
+            });
         }
         async function checkRegist() {
-            let uid = await getUID()
-            let regist = localStorage.getItem('regist')
-            if (regist != null) {
-                try {
-                    regist = JSON.parse(regist)
-                } catch (e) {
+            return new Promise(async (resolve, reject) => {
+                let uid = await getUID()
+                let regist = localStorage.getItem('regist')
+                if (regist != null) {
+                    try {
+                        regist = JSON.parse(regist)
+                    } catch (e) {
+                        regist = {
+                            uid: null
+                        }
+                    }
+                } else {
                     regist = {
                         uid: null
                     }
                 }
-            } else {
-                regist = {
-                    uid: null
-                }
-            }
 
-            if (regist?.uid == uid && regist?.name != null && regist?.name != '' && regist?.telegram_id) {
-                // $.LoadingOverlay('hide')
-                // $('.loader').fadeOut(500)
-                $('#displayName').attr('data-name', regist.name.toUpperCase())
-                return
-            }
-            $.ajax({
-                method: 'POST',
-                url: script_url,
-                data: {
-                    opt: 'checkRegist',
-                    uid: uid
-                },
-                success: function (res) {
-
+                if (regist?.uid == uid && regist?.name != null && regist?.name != '' && regist?.telegram_id) {
                     // $.LoadingOverlay('hide')
-                    $('.loader').fadeOut(500)
-                    if (!res) {
-                        Swal.fire({
-                            customClass: {
-                                popup: 'rounded-4'
-                            },
-                            icon: 'error',
-                            title: 'กรุณาลงทะเบียนก่อนใช้งาน',
-                            allowOutsideClick: false,
-                            confirmButtonText: 'ตกลง'
-                        }).then(() => {
-                            liff.closeWindow()
-                        })
-                    } else {
-                        localStorage.setItem('regist', JSON.stringify(res))
-                    }
+                    // $('.loader').fadeOut(500)
+                    $('#displayName').attr('data-name', regist.name.toUpperCase())
+                    return
                 }
+                $.ajax({
+                    method: 'POST',
+                    url: script_url,
+                    data: {
+                        opt: 'checkRegist',
+                        uid: uid
+                    },
+                    success: function (res) {
+
+                        // $.LoadingOverlay('hide')
+                        $('.loader').fadeOut(500)
+                        if (!res) {
+                            Swal.fire({
+                                customClass: {
+                                    popup: 'rounded-4'
+                                },
+                                icon: 'error',
+                                title: 'กรุณาลงทะเบียนก่อนใช้งาน',
+                                allowOutsideClick: false,
+                                confirmButtonText: 'ตกลง'
+                            }).then(() => {
+                                liff.closeWindow()
+                            })
+                            reject()
+                        } else {
+                            localStorage.setItem('regist', JSON.stringify(res))
+                            resolve()
+                        }
+                    }
+                })
             })
         }
         $('#submit-btn').click(async function () {
@@ -1085,6 +1123,7 @@
     <script src="https://fastly.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
 </body>
 
 </html>
