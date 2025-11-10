@@ -36,11 +36,25 @@
         }
 
         body {
-            background-color: #FF8604;
+            background: linear-gradient(135deg, #FF8604 0%, #ff9e3d 100%);
+            min-height: 100vh;
             width: 100vw;
-            font-family: 'Abril Fatface', cursive;
-            font-family: 'Cedarville Cursive', cursive;
             font-family: 'Mitr', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         img#profile {
@@ -306,6 +320,270 @@
         .progress-item span {
             font-weight: 500;
             flex: 1;
+        }
+
+        /* Main Container Styles */
+        .container-fluid.h-100 {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .container-fluid > div {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* Header Title */
+        .col.h4 {
+            background: linear-gradient(135deg, #FF8604 0%, #ff6b00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        /* Form Labels */
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Modern Input & Select Styles */
+        .form-control,
+        .form-select {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            font-family: 'Mitr', sans-serif;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #FF8604;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 134, 4, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover,
+        .form-select:hover {
+            border-color: #ff9e3d;
+            background: white;
+        }
+
+        /* Badge Buttons */
+        .badge {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .badge.text-bg-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .badge.text-bg-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .badge.text-bg-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Swap Button */
+        .btn-success.rounded-circle {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+            border: none;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-success.rounded-circle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        /* File Input */
+        input[type="file"].form-control {
+            padding: 14px;
+            cursor: pointer;
+        }
+
+        input[type="file"].form-control::file-selector-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #FF8604 0%, #ff6b00 100%);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 12px;
+        }
+
+        input[type="file"].form-control::file-selector-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 134, 4, 0.3);
+        }
+
+        /* Submit Button */
+        .btn-warning {
+            background: linear-gradient(135deg, #FF8604 0%, #ff6b00 100%) !important;
+            border: none;
+            color: white !important;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 134, 4, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 134, 4, 0.4);
+        }
+
+        .btn-warning:active {
+            transform: translateY(0);
+        }
+
+        /* Image Grid */
+        .img-grid-col img {
+            margin-top: 8px;
+            vertical-align: middle;
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .img-grid-col img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: transparent;
+            padding: 20px 0;
+        }
+
+        .navbar .container-fluid {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #FF8604;
+        }
+
+        img#profile {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        img#profile:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 134, 4, 0.3);
+        }
+
+        /* Select2 Custom Styles */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 2px solid #e5e7eb !important;
+            border-radius: 12px !important;
+            background: #f9fafb !important;
+            min-height: 46px !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #FF8604 !important;
+            box-shadow: 0 0 0 4px rgba(255, 134, 4, 0.1) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 2px solid #FF8604 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background-color: #FF8604 !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container-fluid > div {
+                padding: 24px;
+                border-radius: 16px;
+            }
+
+            .col.h4 {
+                font-size: 24px;
+            }
+
+            .btn-warning {
+                width: 100% !important;
+            }
+        }
+
+        /* Animation for row items */
+        .row.g-3 > div {
+            animation: slideInUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+
+        .row.g-3 > div:nth-child(1) { animation-delay: 0.1s; }
+        .row.g-3 > div:nth-child(2) { animation-delay: 0.2s; }
+        .row.g-3 > div:nth-child(3) { animation-delay: 0.3s; }
+        .row.g-3 > div:nth-child(4) { animation-delay: 0.4s; }
+        .row.g-3 > div:nth-child(5) { animation-delay: 0.5s; }
+        .row.g-3 > div:nth-child(6) { animation-delay: 0.6s; }
+        .row.g-3 > div:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
