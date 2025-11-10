@@ -17,79 +17,75 @@ const getResult = function (promises) {
     })
 }
 async function getDefibTableData(session) {
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const buildQuery = ({ collection, form = 'defibrillator', filters = [], limit }) => {
+        let query = firestore.collection(collection)
+            .where('form', '==', form)
+            .where('time', '>=', thirtyDaysAgo)
+            .orderBy('time', 'desc');
 
-    // if (session) {
+        filters.forEach(([field, op, value]) => {
+            query = query.where(field, op, value);
+        });
 
-    //     firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
-    //         if (querySnapshot.docs.length > 0) {
-    //             client = querySnapshot.docs[0].data().site.toUpperCase()
-    //             user = querySnapshot.docs[0].data()
-
-    //             getDefibTableData()
-    //         } else {
-    //             $('#signout-btn').click()
-    //             localStorage.removeItem('session')
-    //             location.reload()
-    //         }
-    //     });
-    // } else {
-    let ref, ref2, ref3, ref4
-    let now = new Date()
-    let before30days = now.setDate(now.getDate() - 30)
-    let promises, resultData
-
-    if (user.level == 'director' || user.level == 'demo') {
-        if (user.site == 'all') {
-            ref = firestore.collection('PYT3')
-                .where('form', '==', 'defibrillator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref2 = firestore.collection("PYT2")
-                .where('form', '==', 'defibrillator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref3 = firestore.collection("PYT1")
-                .where('form', '==', 'defibrillator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref4 = firestore.collection("PLP")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
-        } else {
-            ref = firestore.collection(client)
-                .where('form', '==', 'defibrillator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            promises = await Promise.all([ref.get()])
+        if (typeof limit === 'number') {
+            query = query.limit(limit);
         }
-        resultData = getResult(promises).flat()
-        resultData = resultData.sort((a, b) => b.time - a.time)
-        tabledata = resultData
-        createDefibTable(resultData)
-    } else if (user.level == 'manager') {
-        ref = firestore.collection(client)
-            .where('form', '==', 'defibrillator')
-            .where('e_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        ref2 = firestore.collection(client)
-            .where('form', '==', 'defibrillator')
-            .where('rec_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        promises = await Promise.all([ref.get(), ref2.get()])
-        resultData = getResult(promises).flat()
-        resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-        resultData = resultData.sort((a, b) => b.time - a.time)
-        tabledata = resultData
-        createDefibTable(resultData)
+
+        return query;
+    };
+
+    const buildTable = (snapshots, dedupe = false) => {
+        let records = getResult(snapshots).flat();
+
+        if (dedupe) {
+            const seen = new Set();
+            records = records.filter(item => {
+                if (seen.has(item.time)) return false;
+                seen.add(item.time);
+                return true;
+            });
+        }
+
+        records.sort((a, b) => b.time - a.time);
+        tabledata = records;
+        createDefibTable(records);
+    };
+
+    try {
+        if (user.level === 'director' || user.level === 'demo') {
+            const sources = user.site === 'all'
+                ? [
+                    { collection: 'PYT3' },
+                    { collection: 'PYT2' },
+                    { collection: 'PYT1' },
+                    { collection: 'PLP'},
+                    { collection: 'SNH' },
+                    { collection: 'DEMO' },
+                    { collection: 'PLS' }
+                ]
+                : [{ collection: client }];
+
+            const snapshots = await Promise.all(
+                sources.map(cfg => buildQuery(cfg).get())
+            );
+
+            buildTable(snapshots);
+        } else if (user.level === 'manager') {
+            const snapshots = await Promise.all(
+                [
+                    { collection: client, filters: [['e_dept', '==', user.name]], limit: 40 },
+                    { collection: client, filters: [['rec_dept', '==', user.name]], limit: 40 }
+                ].map(cfg => buildQuery(cfg).get())
+            );
+
+            buildTable(snapshots, true);
+        }
+    } catch (error) {
+        console.error('getDefibTableData failed', error);
+    } finally {
+        $('#admin-div').show();
     }
-    $('#admin-div').show()
-    // }
 }
 var defibtable
 function get_id(url) {
