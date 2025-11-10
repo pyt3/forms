@@ -93,7 +93,6 @@ $(document).ready(() => {
         })
     })
 
-
     setInterval(function () {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
@@ -140,31 +139,54 @@ $(document).ready(() => {
         $('#loading-progress-bar').css('width', '30%');
         $('#loading-percent').text('30%');
         $('#loading-status').text('กำลังเชื่อมต่อ LINE...');
-        
+
         console.log('liff init success');
         let profile = await liff.getProfile()
         console.log("🚀 ~ profile:", profile)
         console.log(liff.getDecodedIDToken().sub);
         $('#line-display').attr('src', profile.pictureUrl).show(200)
-        
+
         // Update progress for data loading
         $('#loading-progress-bar').css('width', '60%');
         $('#loading-percent').text('60%');
         $('#loading-status').text('กำลังโหลดข้อมูล...');
-        
+
+        $('#share-btn').click(() => {
+            let last_flex = localStorage.getItem('last_flex')
+            if (last_flex == null) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่พบข้อมูลล่าสุด',
+                    text: 'กรุณาทำการบันทึกข้อมูลก่อนแชร์',
+                })
+                return
+            }
+            // Share the last_flex data
+            console.log("Sharing last_flex data:", last_flex)
+            liff.shareTargetPicker(JSON.parse(last_flex))
+                .then(function (res) {
+                    if (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'แชร์ข้อมูลสำเร็จ',
+                        })
+                    }
+                })
+        })
+
         Promise.all([getLastSaved(), getHistory()]).then(() => {
             // Update progress to 100%
             $('#loading-progress-bar').css('width', '100%');
             $('#loading-percent').text('100%');
             $('#loading-status').text('โหลดข้อมูลเสร็จสิ้น');
-            
+
             setTimeout(() => {
                 // Hide loading screen
                 $('#loading-screen').addClass('hide');
                 setTimeout(() => {
                     $('#loading-screen').remove();
                 }, 500);
-                
+
                 $('#header-text').addClass('animate__animated animate__rubberBand')
                 $('#main-form').addClass('animate__animated animate__backInUp').show()
                 $('#remark-div').addClass('animate__animated animate__fadeInRight').show()
@@ -763,7 +785,7 @@ function sendMessage(obj, img_id) {
             ]
         }
     }
-    liff.shareTargetPicker([
+    let message_json = JSON.stringify([
         {
             type: 'text',
             text: 'ข้อมูลการตรวจเช็คแก็สประจำวัน ' + moment().format('DD/MM/YYYY')
@@ -774,6 +796,8 @@ function sendMessage(obj, img_id) {
             contents: message
         }
     ])
+    localStorage.setItem('last_flex', message_json)
+    liff.shareTargetPicker(message_json)
         .then(function (res) {
             if (res) {
                 // succeeded in sending a message through TargetPicker
