@@ -18,87 +18,64 @@ const getResult_temp = function (promises) {
     })
 }
 async function getTemperatureTableData(session) {
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const baseFilters = [['form', '==', 'temperature']];
+    const tempCollections = ['PYT3', 'PYT2', 'PYT1', 'PLP', 'SNH', 'DEMO', 'PLS'];
 
-    // if (session) {
-    //     return firestore.collection(client).where('sessionid', '==', session.sessionid).get().then(function (querySnapshot) {
-    //         
-    //         if (querySnapshot.docs.length > 0) {
-    //             user = querySnapshot.docs[0].data()
-    //             getTemperatureTableData()
-    //         }
-    //     });
-    // } else {
-    let ref, ref2, ref3, ref4
-    let now = new Date()
-    let before30days = now.setDate(now.getDate() - 30)
-    let promises, resultData
+    const buildQuery = (collection, extraFilters = [], limit) => {
+        let ref = firestore.collection(collection);
+        [...baseFilters, ...extraFilters].forEach(([field, op, value]) => {
+            ref = ref.where(field, op, value);
+        });
+        ref = ref.where('time', '>=', thirtyDaysAgo).orderBy('time', 'desc');
+        return limit ? ref.limit(limit) : ref;
+    };
 
-    if (user.level == 'director') {
-        if (user.site == 'all') {
-            console.log("🚀 ~ user.site", user.site)
-            ref = firestore.collection('PYT3')
-                .where('form', '==', 'temperature')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref2 = firestore.collection("PYT2")
-                .where('form', '==', 'temperature')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref3 = firestore.collection("PYT1")
-                .where('form', '==', 'temperature')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            ref4 = firestore.collection("PLP")
-                .where('form', '==', 'incubator')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            promises = await Promise.all([ref.get(), ref2.get()], ref3.get(), ref4.get())
-        } else {
-            ref = firestore.collection(client)
-                .where('form', '==', 'temperature')
-                .where('time', '>=', before30days)
-                .orderBy('time', 'desc')
-            promises = await Promise.all([ref.get()])
-        }
-        resultData = getResult_temp(promises).flat()
-        resultData = resultData.sort((a, b) => b.time - a.time)
-        tabledata = resultData
-        createTemperatureTable(resultData)
-    } else if (user.level == 'manager') {
-        ref = firestore.collection(client)
-            .where('form', '==', 'temperature')
-            .where('e_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        ref2 = firestore.collection(client)
-            .where('form', '==', 'temperature')
-            .where('rec_dept', '==', user.name)
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        ref3 = firestore.collection(client)
-            .where('form', '==', 'temperature')
-            .where('e_dept', '==', user.name.toUpperCase())
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        ref4 = firestore.collection(client)
-            .where('form', '==', 'temperature')
-            .where('rec_dept', '==', user.name.toUpperCase())
-            .where('time', '>=', before30days)
-            .orderBy('time', 'desc')
-            .limit(40)
-        promises = await Promise.all([ref.get(), ref2.get(), ref3.get(), ref4.get()])
-        resultData = getResult_temp(promises).flat()
-        resultData = resultData.filter((v, i, a) => a.findIndex(v2 => (v2.time === v.time)) === i)
-        resultData = resultData.sort((a, b) => b.time - a.time)
-        tabledata = resultData
-        createTemperatureTable(resultData)
+    const directorQueries = () => (
+        user.site === 'all'
+            ? tempCollections.map(col => buildQuery(col))
+            : [buildQuery(client)]
+    );
 
+    const managerQueries = () => {
+        const uniqueDepts = new Set([user.name, user.name?.toUpperCase?.()].filter(Boolean));
+        const deptKeys = ['e_dept', 'rec_dept'];
+        const queries = [];
+        uniqueDepts.forEach(dept => {
+            deptKeys.forEach(key => queries.push(buildQuery(client, [[key, '==', dept]], 40)));
+        });
+        return queries;
+    };
+
+    const queries = user.level === 'director'
+        ? directorQueries()
+        : user.level === 'manager'
+            ? managerQueries()
+            : [];
+
+    if (!queries.length) {
+        tabledata = [];
+        createTemperatureTable([]);
+        $('#admin-div').show();
+        return;
     }
-    $('#admin-div').show()
 
+    const snapshots = await Promise.all(queries.map(q => q.get()));
+    let resultData = getResult_temp(snapshots).flat();
+
+    if (user.level === 'manager') {
+        const seen = new Set();
+        resultData = resultData.filter(row => {
+            if (seen.has(row.time)) return false;
+            seen.add(row.time);
+            return true;
+        });
+    }
+
+    resultData.sort((a, b) => b.time - a.time);
+    tabledata = resultData;
+    createTemperatureTable(resultData);
+    $('#admin-div').show();
 }
 function get_id(url) {
     let regex1 = /https:\/\/drive.google.com|\/open|\/uc|\/file|\/d|export|download|\?id|\/view|usp|=sharing/g
