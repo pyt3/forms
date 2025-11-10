@@ -81,7 +81,7 @@ $(document).ready(() => {
                     success(result) {
                         let reader = new FileReader();
                         reader.onload = function (e) {
-                            showConversionPreview(e.target.result, file.name,file.type)
+                            showConversionPreview(e.target.result, file.name, file.type)
                         }
                         reader.readAsDataURL(result);
                     },
@@ -98,21 +98,6 @@ $(document).ready(() => {
         let timenow = moment().format('DD MMMM YYYY HH:mm:ss')
         $('.timenow').html(timenow);
     }, 1000);
-
-    $.when(getHistory()).done(function () {
-        $.LoadingOverlay("hide");
-        $('#header-text').addClass('animate__animated animate__rubberBand')
-        $('#main-form').addClass('animate__animated animate__backInUp').show()
-        $('#remark-div').addClass('animate__animated animate__fadeInRight').show()
-        $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD").attr('width', '100%')
-        let width = $('iframe').width()
-        let height = width * 1.4167
-        $('iframe').height(height)
-        setTimeout(() => {
-            $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
-
-        }, 1000);
-    })
 
     const tabEl = document.querySelector('button[data-bs-toggle="tab"]')
     tabEl.addEventListener('shown.bs.tab', event => {
@@ -151,14 +136,47 @@ $(document).ready(() => {
         withLoginOnExternalBrowser: true,
     })
     liff.ready.then(async () => {
-        $.LoadingOverlay("show");
+        // Update loading screen progress
+        $('#loading-progress-bar').css('width', '30%');
+        $('#loading-percent').text('30%');
+        $('#loading-status').text('กำลังเชื่อมต่อ LINE...');
+        
         console.log('liff init success');
         let profile = await liff.getProfile()
         console.log("🚀 ~ profile:", profile)
         console.log(liff.getDecodedIDToken().sub);
         $('#line-display').attr('src', profile.pictureUrl).show(200)
-        $.when(getLastSaved()).done(function () {
-            $.LoadingOverlay("hide");
+        
+        // Update progress for data loading
+        $('#loading-progress-bar').css('width', '60%');
+        $('#loading-percent').text('60%');
+        $('#loading-status').text('กำลังโหลดข้อมูล...');
+        
+        Promise.all([getLastSaved(), getHistory()]).then(() => {
+            // Update progress to 100%
+            $('#loading-progress-bar').css('width', '100%');
+            $('#loading-percent').text('100%');
+            $('#loading-status').text('โหลดข้อมูลเสร็จสิ้น');
+            
+            setTimeout(() => {
+                // Hide loading screen
+                $('#loading-screen').addClass('hide');
+                setTimeout(() => {
+                    $('#loading-screen').remove();
+                }, 500);
+                
+                $('#header-text').addClass('animate__animated animate__rubberBand')
+                $('#main-form').addClass('animate__animated animate__backInUp').show()
+                $('#remark-div').addClass('animate__animated animate__fadeInRight').show()
+                $('iframe').first().attr('src', "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD").attr('width', '100%')
+                let width = $('iframe').width()
+                let height = width * 1.4167
+                $('iframe').height(height)
+                setTimeout(() => {
+                    $('#header-text').removeClass('animate__rubberBand animate__delay-1s')
+
+                }, 1000);
+            }, 500);
         })
     })
         .catch((err) => {
@@ -248,43 +266,47 @@ $('#remark-btn').click(() => {
 })
 
 function getLastSaved() {
-    let obj = {
-        opt: 'get_last'
-    }
-    return $.ajax({
-        url: script_url,
-        data: obj,
-        type: 'GET',
-        success: function (res) {
-            console.log(res)
-            if (res.status == 'success') {
-                let data = res.data
-                Object.keys(data).forEach(key => {
-                    if (key.length < 1) return
-                    if (!$('#' + key)) return
-                    if ($('#' + key).is(':checkbox')) {
-                        // if (data[key] == '✓') {
-                        //     $('#' + key).prop('checked', true).val('✓')
-                        // } else {
-                        //     $('#' + key).prop('checked', false).val('')
-                        // }
-                        return
+    return new Promise(main_resolve => {
+        let obj = {
+            opt: 'get_last'
+        }
+        $.ajax({
+            url: script_url,
+            data: obj,
+            type: 'GET',
+            success: function (res) {
+                console.log(res)
+                if (res.status == 'success') {
+                    let data = res.data
+                    Object.keys(data).forEach(key => {
+                        if (key.length < 1) return
+                        if (!$('#' + key)) return
+                        if ($('#' + key).is(':checkbox')) {
+                            // if (data[key] == '✓') {
+                            //     $('#' + key).prop('checked', true).val('✓')
+                            // } else {
+                            //     $('#' + key).prop('checked', false).val('')
+                            // }
+                            return
+                        }
+                        $('#' + key).attr('placeholder', data[key])
+                    })
+                    console.log(localStorage.getItem('user'));
+                    if (localStorage.getItem('user') != null) {
+                        $('#name').val(localStorage.getItem('user') || "")
+                    } else {
+                        $('#name').val("")
                     }
-                    $('#' + key).attr('placeholder', data[key])
-                })
-                console.log(localStorage.getItem('user'));
-                if (localStorage.getItem('user') != null) {
-                    $('#name').val(localStorage.getItem('user') || "")
+                    main_resolve()
                 } else {
-                    $('#name').val("")
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'ไม่สามารถดึงข้อมูลล่าสุดได้'
+                    })
+                    main_resolve()
                 }
-            } else {
-                Toast.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถดึงข้อมูลล่าสุดได้'
-                })
-            }
-        },
+            },
+        })
     })
 }
 
@@ -310,28 +332,31 @@ function autoSave() {
     console.log(obj)
 }
 function getHistory() {
-    $('#name').val(localStorage.getItem('user'))
-    let history = localStorage.getItem('history')
-    if (history != null) {
-        let obj = JSON.parse(history)
-        console.log("🚀 ~ obj:", obj)
-        Object.keys(obj).forEach(key => {
-            // if (key == 'vaccuum-pressure') {
-            //     $(`[name="${key}"]`).prop('checked', true)
-            //     return
-            // }
-            if ($(`[name="${key}"]`).is(':checkbox')) {
-                if (obj[key] == '✓') {
-                    $(`[name="${key}"]`).prop('checked', true)
+    return new Promise(main_resolve => {
+        $('#name').val(localStorage.getItem('user'))
+        let history = localStorage.getItem('history')
+        if (history != null) {
+            let obj = JSON.parse(history)
+            console.log("🚀 ~ obj:", obj)
+            Object.keys(obj).forEach(key => {
+                // if (key == 'vaccuum-pressure') {
+                //     $(`[name="${key}"]`).prop('checked', true)
+                //     return
+                // }
+                if ($(`[name="${key}"]`).is(':checkbox')) {
+                    if (obj[key] == '✓') {
+                        $(`[name="${key}"]`).prop('checked', true)
+                    } else {
+                        $(`[name="${key}"]`).prop('checked', false)
+                    }
+                    return
                 } else {
-                    $(`[name="${key}"]`).prop('checked', false)
+                    $(`[name="${key}"]`).val(obj[key])
                 }
-                return
-            } else {
-                $(`[name="${key}"]`).val(obj[key])
-            }
-        })
-    }
+            })
+        }
+        main_resolve()
+    })
 }
 
 
