@@ -837,6 +837,7 @@ function sendMessage(obj, img_id) {
             }
         })
         .catch(function (error) {
+            console.log(`Error sending message: ${error}`);
             Swal.fire({
                 icon: 'error',
                 title: 'เกิดข้อผิดพลาดในการส่งข้อมูล',
