@@ -790,7 +790,7 @@ function sendMessage(obj, img_id) {
             ]
         }
     }
-    let message_json = JSON.stringify([
+    let message_json = [
         {
             type: 'text',
             text: 'ข้อมูลการตรวจเช็คแก็สประจำวัน ' + moment().format('DD/MM/YYYY')
@@ -800,8 +800,8 @@ function sendMessage(obj, img_id) {
             altText: 'Liquid O2',
             contents: message
         }
-    ])
-    localStorage.setItem('last_flex', message_json)
+    ]
+    localStorage.setItem('last_flex', JSON.stringify(message_json))
     liff.shareTargetPicker(message_json)
         .then(function (res) {
             if (res) {
