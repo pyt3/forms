@@ -9,7 +9,6 @@ window.addEventListener("load", function () {
 });
 // const liff_id = '1655873446-3xe866Ql'
 const liff_id = '1661543046-a1pJexbX' // use
-// const liff_id = '1661543046-86kpRl4E' // test
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
 const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
@@ -132,7 +131,7 @@ $(document).ready(async () => {
     // console.log("🚀 !! alert_height:", alert_height)
     // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
 })
-var jobid, wo, current_user
+var jobid, wo, current_code, current_user, contactList = []
 async function initialData() {
 
     let url = new URL(window.location.href);
@@ -214,7 +213,7 @@ async function initialData() {
         width: '100%'
     })
     let code = url.searchParams.get("code");
-    console.log("🚀 !! code:", code)
+    console.log("🚀 !! codeaaaa:", code)
     let action = url.searchParams.get("action");
     let updateText = localStorage.getItem('updateText' + jobid)
     if (updateText != null) {
@@ -282,7 +281,7 @@ async function initialData() {
                     case data.status === "Waiting":
                         $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
                         break
-                    case data.status ==="Return equipment back":
+                    case data.status === "Return equipment back":
                         $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
                         break
                     case data.status === "":
@@ -621,31 +620,6 @@ async function initialData() {
                     "backgroundColor": "#cfe2ff"
                 })
             }
-            if (update_data.vendor_phone && update_data && update_data.vendor_phone.replace(/\s/g, '') != '') {
-                flex.body.contents[2].contents.push({
-                    "type": "text",
-                    "text": "📞ติดต่อ " + update_data.vendor_phone,
-                    "action": {
-                        "type": "uri",
-                        "label": "ติดต่อ " + update_data.vendor_phone,
-                        "uri": "tel:" + update_data.vendor_phone.replace(/-/g, '').replace(/ /g, '')
-                    },
-                    "contents": [
-                        {
-                            "type": "span",
-                            "text": "📞ติดต่อ"
-                        },
-                        {
-                            "type": "span",
-                            "text": " " + update_data.vendor_phone,
-                            "color": "#006aff",
-                            "decoration": "underline"
-                        }
-                    ],
-                    "scaling": true,
-                    "wrap": true
-                })
-            }
             let carousel = {
                 type: 'carousel',
                 contents: [flex]
@@ -707,31 +681,6 @@ async function initialData() {
                         }
                     }
                     console.log(r)
-                    if (r.vendor_phone && r.vendor_phone != '' && r.vendor_phone.replace(/\s/g, '') != '') {
-                        his_flex.body.contents[0].contents.push({
-                            "type": "text",
-                            "text": "📞ติดต่อ " + r.vendor_phone,
-                            "action": {
-                                "type": "uri",
-                                "label": "ติดต่อ " + r.vendor_phone,
-                                "uri": "tel:" + r.vendor_phone.replace(/-/g, '').replace(/ /g, '')
-                            },
-                            "contents": [
-                                {
-                                    "type": "span",
-                                    "text": "📞ติดต่อ"
-                                },
-                                {
-                                    "type": "span",
-                                    "text": " " + r.vendor_phone,
-                                    "color": "#006aff",
-                                    "decoration": "underline"
-                                }
-                            ],
-                            "scaling": true,
-                            "wrap": true
-                        })
-                    }
                     carousel.contents.push(his_flex)
                 })
             }
@@ -838,6 +787,17 @@ async function initialData() {
                 })
             }
             data = data.data()
+            current_code = data.code.split('_')[1]
+            contactList = await firestore.collection('contactData/').doc(current_code).get().then(doc => {
+                let d = doc.data()
+                if (d && d.vendor_contact_list && Array.isArray(d.vendor_contact_list)) {
+                    return d.vendor_contact_list
+                } else {
+                    return []
+                }
+            })
+            console.log('current_code', current_code)
+            renderContact()
             if (data.signature && data.workorder) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
                 $('#open-sign')
@@ -854,7 +814,7 @@ async function initialData() {
                     case data.status === "Waiting":
                         $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
                         break
-                    case data.status ==="Return equipment back":
+                    case data.status === "Return equipment back":
                         $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
                         break
                     case data.status === "":
@@ -923,8 +883,6 @@ async function initialData() {
             }
             if (!data.code) $('#code').removeAttr('readonly').attr('placeholder', 'ระบุรหัส').attr('required', true)
             else $('#code').val(data.code)
-            console.log("🚀 !! data.code:", data.code)
-            $('#vendor_phone').val(data.vendor_phone || '')
             wo = data.wo || data.workorder
             $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
             if (data.image) {
@@ -2092,7 +2050,7 @@ async function updateData(update_data) {
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": work_detail.date? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') : '-',
+                                    "text": work_detail.date ? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') : '-',
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "adjustMode": "shrink-to-fit",
@@ -2446,6 +2404,170 @@ async function receivejob() {
         })
     }
 }
+function renderContact() {
+    let ul = $('<ul></ul>').addClass('list-group list-group-flush')
+    if (contactList.length == 0) {
+        $('#vendor-contact-list').html('<div class="text-black-50 text-center py-3">ไม่มีรายชื่อผู้ติดต่อ</div>')
+        return
+    }
+    contactList.forEach((contact, index) => {
+        console.log("🚀 !! contact:", contact)
+        let [name, phone, role] = contact.split('|').map(x => x.trim())
+        console.log(name, phone, role)
+        let contactCard = $(`
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="fw-semibold">${name}</div>
+                                            <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill">${role}</span>
+                                        </div>
+                                        <div class="text-muted small">
+                                            <a href="tel:${phone}" class="text-decoration-none">
+                                                <i class="bi bi-telephone-fill me-1"></i>${phone}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-1">
+                                        <div class="btn-group rounded-pill">
+                                            <button class="btn btn-sm btn-warning edit-contact" data-index="${index}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete-contact" data-index="${index}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            `)
+        ul.append(contactCard)
+    })
+
+    $('#vendor-contact-list').empty()
+    $('#vendor-contact-list').append(ul)
+    // Add delete functionality
+    $(document).on('click', '.delete-contact', function () {
+        Swal.fire({
+            title: 'ลบรายชื่อผู้ติดต่อ',
+            text: 'คุณแน่ใจหรือไม่ว่าต้องการลบรายชื่อนี้?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            customClass: {
+                popup: 'rounded-4'
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let index = $(this).data('index')
+                contactList.splice(index, 1)
+                console.log("🚀 !! contactList:", contactList)
+                firestore.collection('contactData/').doc(current_code).set({
+                    vendor_contact_list: contactList
+                }, { merge: true }).then(() => {
+                    renderContact()
+                });
+            }
+        })
+
+    })
+
+    // Add edit functionality
+    $(document).on('click', '.edit-contact', function () {
+        let index = $(this).data('index')
+        let contact = contactList[index]
+        let [currentName, currentPhone, currentRole] = contact.split('|').map(x => x.trim())
+
+        Swal.fire({
+            title: 'แก้ไขรายชื่อผู้ติดต่อ',
+            html:
+                `<input id="edit-contact-name" class="form-control mb-3 form-control-lg" placeholder="ชื่อ" value="${currentName}">` +
+                `<input id="edit-contact-phone" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์" value="${currentPhone}">` +
+                '<select id="edit-contact-role" class="form-select mb-3 form-control-lg" placeholder="ประเภท">' +
+                '<option value="" disabled>เลือกประเภท</option>' +
+                `<option value="เซลล์" ${currentRole === 'เซลล์' ? 'selected' : ''}>เซลล์</option>` +
+                `<option value="ช่างซ่อม" ${currentRole === 'ช่างซ่อม' ? 'selected' : ''}>ช่างซ่อม</option>` +
+                `<option value="ช่าง PM" ${currentRole === 'ช่าง PM' ? 'selected' : ''}>ช่าง PM</option>` +
+                `<option value="ช่างซ่อม+PM" ${currentRole === 'ช่างซ่อม+PM' ? 'selected' : ''}>ช่างซ่อม+PM</option>` +
+                `<option value="specialist" ${currentRole === 'specialist' ? 'selected' : ''}>specialist</option>` +
+                '</select>',
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'บันทึก',
+            cancelButtonText: 'ยกเลิก',
+            customClass: {
+                popup: 'rounded-4'
+            },
+            preConfirm: () => {
+                const name = document.getElementById('edit-contact-name').value.trim();
+                const phone = document.getElementById('edit-contact-phone').value.trim();
+                const role = document.getElementById('edit-contact-role').value;
+                if (!name || !phone || !role) {
+                    Swal.showValidationMessage('กรุณากรอกชื่อ เบอร์โทรศัพท์ และเลือกประเภทให้ครบถ้วน');
+                    return false;
+                }
+                return { name, phone, role };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { name, phone, role } = result.value;
+                const contactEntry = `${name} | ${phone} | ${role}`;
+                contactList[index] = contactEntry;
+                firestore.collection('contactData/').doc(current_code).set({
+                    vendor_contact_list: contactList
+                }, { merge: true }).then(() => {
+                    renderContact();
+                });
+            }
+        })
+    })
+
+}
+
+function addContact() {
+    Swal.fire({
+        title: 'เพิ่มรายชื่อผู้ติดต่อ',
+        html:
+            '<input id="contact-name" class="form-control mb-3 form-control-lg" placeholder="ชื่อ">' +
+            '<input id="contact-phone" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์">' +
+            '<select id="contact-role" class="form-select mb-3 form-control-lg" placeholder="ประเภท">' +
+            '<option selected value="" disabled>เลือกประเภท</option>' +
+            '<option value="เซลล์">เซลล์</option>' +
+            '<option value="ช่างซ่อม">ช่างซ่อม</option>' +
+            '<option value="ช่าง PM">ช่าง PM</option>' +
+            '<option value="ช่างซ่อม+PM">ช่างซ่อม+PM</option>' +
+            '<option value="specialist">specialist</option>' +
+            '</select>',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'เพิ่ม',
+        cancelButtonText: 'ยกเลิก',
+        customClass: {
+            popup: 'rounded-4'
+        },
+        preConfirm: () => {
+            const name = document.getElementById('contact-name').value.trim();
+            const phone = document.getElementById('contact-phone').value.trim();
+            const role = document.getElementById('contact-role').value;
+            if (!name || !phone || !role) {
+                Swal.showValidationMessage('กรุณากรอกชื่อ เบอร์โทรศัพท์ และเลือกประเภทให้ครบถ้วน');
+                return false;
+            }
+            return { name, phone, role };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const { name, phone, role } = result.value;
+            const contactEntry = `${name} | ${phone} | ${role}`;
+            contactList.push(contactEntry);
+            firestore.collection('contactData/').doc(current_code).set({
+                vendor_contact_list: contactList
+            }, { merge: true }).then(() => {
+                renderContact();
+            });
+        }
+    })
+}
+
 jQuery(document).ready(function ($) {
 
     var topics = {};
@@ -4116,7 +4238,7 @@ jQuery(document).ready(function ($) {
     })();
 /** @preserve
 jSignature v2 jSignature's custom "base30" format export and import plugins.
-
+ 
 */
 /**
 Copyright (c) 2011 Willow Systems Corp http://willow-systems.com
@@ -4350,7 +4472,7 @@ MIT License <http://www.opensource.org/licenses/mit-license.php>
 }).call(typeof window !== 'undefined' ? window : this);
 /** @license
 jSignature v2 SVG export plugin.
-
+ 
 */
 /**
 Copyright (c) 2012 Willow Systems Corp http://willow-systems.com
@@ -4847,7 +4969,7 @@ MIT License <http://www.opensource.org/licenses/mit-license.php>
 })();
 /** @license
 jSignature v2 jSignature's Undo Button and undo functionality plugin
-
+ 
 */
 /**
 Copyright (c) 2011 Willow Systems Corp http://willow-systems.com
