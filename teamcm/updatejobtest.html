@@ -298,13 +298,23 @@
                             class="bi bi-caret-right-fill"></i></button>
                 </div>
                 <div class="col-12 px-3 pb-3 mobile">
-                    <label for="vendor_phone" class="fw-semibold">เบอร์โทรติดต่อ <span
-                            class="text-muted">(ถ้ามี)</span></label>
-                    <input name="vendor_phone" id="vendor_phone" class="form-control" placeholder="กรอกข้อมูลอัพเดท">
+                    <label for="vendor_phone" class="fw-semibold d-flex justify-content-between">
+                        รายชื่อผู้ติดต่อ
+                        <div>
+                            <button class="btn btn-sm btn-link text-decoration-none" id="add-vendor-contact-btn"
+                                onclick="addContact()">
+                                <i class="bi bi-plus-lg me-1"></i>เพิ่มรายชื่อ
+                            </button>
+                        </div>
+                    </label>
+                    <!-- <input name="vendor_phone" id="vendor_phone" class="form-control" placeholder="กรอกข้อมูลอัพเดท"> -->
+                    <div id="vendor-contact-list" class="p-3 border rounded-3 bg-light-subtle"></div>
                 </div>
                 <div class="col-12 px-3 pb-3 mobile">
-                    <label for="name" class="fw-semibold">ชื่อผู้กรอก</label>
-                   <select name="name" id="name" class="form-select">
+                    <label for="name" class="fw-semibold form-label">
+                        <i class="bi bi-person-fill me-2"></i>
+                        ชื่อผู้กรอก</label>
+                    <select name="name" id="name" class="form-select rounded-3">
                         <option value="" selected disabled>ชื่อผู้กรอก</option>
                         <optgroup label="PYT1">
                             <option value="BOONYANON MEETO">BOONYANON MEETO</option>
@@ -527,6 +537,7 @@
         script.defer = true;
         document.body.appendChild(script);
     </script>
+   
 </body>
 
 </html>
