@@ -209,7 +209,7 @@ async function initialData() {
     $.LoadingOverlay("hide");
     $('#name optgroup').not('[label="' + user_site + '"]').remove()
     $('#name').select2({
-        theme: 'bootstrap-5',
+        theme: 'tailwindcss-3',
         width: '100%'
     })
     let code = url.searchParams.get("code");
