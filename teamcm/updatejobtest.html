@@ -14,58 +14,58 @@
     <script>
         tailwind.config = {
             theme: {
-            extend: {
-                fontFamily: {
-                'prompt': ['Prompt', 'sans-serif'],
-                },
-                colors: {
-                primary: {
-                    50: '#eff6ff',
-                    100: '#dbeafe',
-                    200: '#bfdbfe',
-                    300: '#93c5fd',
-                    400: '#60a5fa',
-                    500: '#3b82f6',
-                    600: '#2563eb',
-                    700: '#1d4ed8',
-                    800: '#1e40af',
-                    900: '#1e3a8a',
-                },
-                success: {
-                    50: '#f0fdf4',
-                    100: '#dcfce7',
-                    200: '#bbf7d0',
-                    300: '#86efac',
-                    400: '#4ade80',
-                    500: '#22c55e',
-                    600: '#16a34a',
-                    700: '#15803d',
-                    800: '#166534',
-                    900: '#14532d',
+                extend: {
+                    fontFamily: {
+                        'prompt': ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        success: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(-5%)' },
+                            '50%': { transform: 'translateY(0)' }
+                        }
+                    }
                 }
-                },
-                animation: {
-                'fade-in': 'fadeIn 0.5s ease-in-out',
-                'slide-up': 'slideUp 0.5s ease-out',
-                'bounce-gentle': 'bounceGentle 2s infinite',
-                },
-                keyframes: {
-                fadeIn: {
-                    '0%': { opacity: '0', transform: 'translateY(10px)' },
-                    '100%': { opacity: '1', transform: 'translateY(0)' }
-                },
-                slideUp: {
-                    '0%': { opacity: '0', transform: 'translateY(20px)' },
-                    '100%': { opacity: '1', transform: 'translateY(0)' }
-                },
-                bounceGentle: {
-                    '0%, 100%': { transform: 'translateY(-5%)' },
-                    '50%': { transform: 'translateY(0)' }
-                }
-                }
-            }
             },
-            
+
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
@@ -84,7 +84,7 @@
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  
+
     <style>
         /* Loading animation styles */
         .loader {
@@ -317,6 +317,83 @@
             width: 300px;
             height: 300px;
         }
+
+        /* Enhanced animations for summary section */
+        .prose {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Spin animation for loading states */
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Enhanced button hover effects */
+        .btn-enhanced {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        .btn-enhanced:hover::before {
+            left: 100%;
+        }
+
+        /* Pulse animation for important elements */
+        .pulse-soft {
+            animation: pulseSoft 2s infinite;
+        }
+
+        @keyframes pulseSoft {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Smooth transitions for containers */
+        .transition-smooth {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
     <title>อัพเดทงาน</title>
 </head>
@@ -324,7 +401,7 @@
 <body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 font-prompt min-h-screen">
     <!-- Loading Screen -->
     <div
-        class="fixed inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900 flex items-center justify-center z-50 load-bar">
+        class="fixed inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center z-50 load-bar">
         <div class="relative">
             <div class="loader"></div>
             <div class="loader"></div>
@@ -557,7 +634,7 @@
                                     <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
                                     <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
                                     <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
-    
+
                                 </optgroup>
                                 <optgroup label="PTP">
                                     <option value="Apisith Sektaweelarp">Apisith Sektaweelarp</option>
@@ -645,8 +722,78 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Action Buttons -->
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <button class="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all btn-ripple" id="submit">
+                                <i class="bi bi-check-circle-fill mr-2"></i>ยืนยัน
+                            </button>
+                            <button class="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all btn-ripple" id="summary-btn">
+                                <i class="bi bi-file-text-fill mr-2"></i>สรุปงาน
+                            </button>
+                            <button class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-all btn-ripple" id="share-line-btn">
+                                <i class="bi bi-line mr-2"></i>Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Summary Section -->
+        <div class="max-w-4xl mx-auto mt-6 space-y-6 hidden" id="summary-container">
+            <!-- Summary Content Card -->
+            <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
+                data-aos="fade-up">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="bi bi-file-text-fill text-2xl"></i>
+                        <h2 class="text-lg font-semibold">สรุปงาน</h2>
+                    </div>
+                </div>
 
+                <!-- Content -->
+                <div class="p-6">
+                    <!-- Summary Display -->
+                    <div class="hidden mb-6" id="summary-content">
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 select-all">
+                            <div class="prose max-w-none">
+                                <div id="summary" class="text-gray-800 whitespace-pre-wrap leading-relaxed"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-4">
+                        <!-- More Update Button -->
+                        <div class="flex justify-center">
+                            <button class="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium" id="more-update-btn">
+                                <i class="bi bi-plus-circle mr-2"></i>
+                                อัพเดทเพิ่ม
+                            </button>
+                        </div>
+
+                        <!-- Mobile Only Warning -->
+                        <div class="hidden" id="mobile-only-warning">
+                            <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-xl p-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-exclamation-triangle-fill text-amber-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-amber-800 font-medium">ข้อจำกัดการใช้งาน</h3>
+                                        <p class="text-amber-700 text-sm mt-1">
+                                            อัพเดทข้อมูลในแอพไลน์ในโทรศัพท์มือถือเท่านั้น
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
     <!-- Signature Modal -->
     <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
@@ -726,6 +873,7 @@
         script.defer = true;
         document.body.appendChild(script);
     </script>
+   
 
 </body>
 

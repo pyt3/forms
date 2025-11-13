@@ -7,14 +7,110 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
     NProgress.done();
 });
-const liff_id = '1655873446-3xe866Ql'
-// const liff_id = '1661543046-a1pJexbX' // use
+// const liff_id = '1655873446-3xe866Ql'
+const liff_id = '1661543046-a1pJexbX' // use
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
 const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
 var job_detail
 let update_data, tg_thread_id
 let chat_id = '-1002300341036'
+const sweetalert_custom_class = {
+    popup: 'rounded-xl',
+    confirmButton: 'px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all',
+    cancelButton: 'px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg transition-all',
+    icon: 'text-2xl border-0',
+}
+
+// Enhanced UX Functions
+function enhanceButtonInteractions() {
+    // Add enhanced hover effects to buttons
+    $('.btn-ripple').each(function () {
+        if (!$(this).hasClass('btn-enhanced')) {
+            $(this).addClass('btn-enhanced');
+        }
+    });
+
+    // Add click feedback
+    $('.btn-enhanced').off('click.feedback').on('click.feedback', function (e) {
+        const btn = $(this);
+        btn.addClass('transform scale-95');
+        setTimeout(() => {
+            btn.removeClass('transform scale-95');
+        }, 150);
+    });
+}
+
+function addSummaryEnhancements() {
+    // Add copy functionality to summary
+    $('#summary').off('click.copy').on('click.copy', function () {
+        let text = $(this).html();
+        // First replace hr and br tags with newlines
+        text = text.replace(/<hr class="my-3">/gi, '\n--------------------\n');
+        text = text.replace(/<br\s*\/?>/gi, '\n');
+        // Then strip all remaining HTML tags
+        text = text.replace(/<[^>]+>/g, '');
+        // Decode HTML entities
+        text = $('<textarea/>').html(text).text();
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('คัดลอกข้อความเรียบร้อย', 'success');
+            }).catch(() => {
+                showToast('ไม่สามารถคัดลอกได้', 'error');
+            });
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('คัดลอกข้อความเรียบร้อย', 'success');
+            } catch (err) {
+                showToast('ไม่สามารถคัดลอกได้', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+    });
+
+    // Add tooltip
+    $('#summary').attr('title', 'คลิกเพื่อคัดลอกข้อความ').addClass('cursor-pointer');
+}
+
+function showToast(message, type = 'info') {
+    const toastClass = type === 'success' ? 'bg-green-500' :
+        type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+
+    const toast = $(`
+                <div class="fixed top-4 right-4 z-50 ${toastClass} text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
+                    <div class="flex items-center space-x-2">
+                        <i class="bi ${type === 'success' ? 'bi-check-circle' : type === 'error' ? 'bi-x-circle' : 'bi-info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                </div>
+            `);
+
+    $('body').append(toast);
+
+    // Animate in
+    setTimeout(() => {
+        toast.removeClass('translate-x-full');
+    }, 100);
+
+    // Animate out
+    setTimeout(() => {
+        toast.addClass('translate-x-full');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
+
 $(document).ready(async () => {
     // $('.load-bar').fadeOut(500)
     moment.locale('th')
@@ -22,6 +118,10 @@ $(document).ready(async () => {
         liffId: liff_id,
     })
     liff.ready.then(async () => {
+        // Initialize UX enhancements
+        enhanceButtonInteractions();
+        addSummaryEnhancements();
+
         // if (!liff.isInClient()) {
         //     if (liff.getOS() != 'ios') {
         //         if (liff.getContext().type != 'group') {
@@ -95,9 +195,9 @@ $(document).ready(async () => {
         }
 
         if (await getUID() == 'U798fc2c46a2efd7013b12eac4dac408a') {
-            $('#developer').removeClass('d-none')
+            $('#developer').removeClass('hidden')
         } else {
-            $('#developer').addClass('d-none')
+            $('#developer').addClass('hidden')
         }
         const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
         firestore = defaultProject.firestore();
@@ -125,7 +225,7 @@ $(document).ready(async () => {
 
     $('#open-sign').click(function () {
         $('#signatureModal').modal('show')
-        $('#signatureparent').removeClass('d-none')
+        $('#signatureparent').removeClass('hidden')
     })
     // let alert_height = $('#image').parents('.alert').height()
     // console.log("🚀 !! alert_height:", alert_height)
@@ -142,10 +242,7 @@ async function initialData() {
             icon: 'error',
             title: 'ไม่พบข้อมูล',
             text: 'ไม่พบข้อมูล',
-            customClass: {
-
-                popup: 'rounded-4'
-            },
+            customClass: sweetalert_custom_class
         })
         return liff.closeWindow()
     }
@@ -179,10 +276,7 @@ async function initialData() {
             allowOutsideClick: false,
             allowEscapeKey: false,
             confirmButtonText: 'ยืนยัน',
-            customClass: {
-
-                popup: 'rounded-4'
-            },
+            customClass: sweetalert_custom_class,
             inputValidator: (value) => {
                 return new Promise((resolve) => {
                     if (value) {
@@ -218,60 +312,77 @@ async function initialData() {
     }
     $("#code").val(code);
     $("#request-no").val(jobid);
-    $(".has-code").removeClass("d-none")
+    $(".has-code").removeClass("hidden")
     $('#name').val(localStorage.getItem('name') || '').trigger('change')
     $('#name').change(function () {
         console.log($(this).val());
         localStorage.setItem('name', $(this).val())
     })
     if (code) {
-        $('#history-btn').removeClass('d-none')
+        $('#history-btn').removeClass('hidden')
         $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
     } else {
-        $('#history-btn').addClass('d-none')
+        $('#history-btn').addClass('hidden')
     }
     if (action == 'summary') {
-        $('.mobile').addClass('d-none')
-        $('#update-section').addClass('d-none')
-        $('button[id="submit"]').addClass('d-none')
-        $('button[id="summary-btn"]').addClass('d-none')
+        $('.mobile').addClass('hidden')
+        $('#update-section').addClass('hidden')
+        $('button[id="submit"]').addClass('hidden')
+        $('button[id="summary-btn"]').addClass('hidden')
         $('#edit-request').hide()
         $('input').attr('readonly', true)
-        $('#summary').parent().removeClass('d-none')
-        $('#summary').parents('.row').find('.col-md-4').first().removeClass('d-none').addClass('d-none')
-        $('#summary').parents('.container').removeClass('d-none')
-        $('#request-no').parents('.container').removeClass('d-none')
+        $('#summary-container').removeClass('hidden')
+        $('#summary-content').removeClass('hidden')
         if (!liff.isInClient()) {
-            $('#more-update-btn').addClass('d-none')
-            $('#mobile-only-warning').removeClass('d-none')
+            $('#more-update-btn').addClass('hidden')
+            $('#mobile-only-warning').removeClass('hidden')
         }
         firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
             data = data.docs.map(doc => doc.data()).sort((a, b) => a.timestamp - b.timestamp)
             let msg
-            if (data.length == 0) msg = 'ยังไม่มีการอัพเดทงาน'
-            else msg = data.map(r => {
-                r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
-                return r
-            }).map(d => {
-                return `${d.timestamp}<br>${d.update.replace(/\n\n/g, '\n').replace(/\n/g, '<br>')}<br>#${d.name}`
-            }).join('<br><br>-----------------------------------<br>')
-            $('#summary').html(msg)
-            $('#summary').parent().removeClass('d-none').focus()
-            $.LoadingOverlay("hide");
-            $('.load-bar').fadeOut(500)
+            if (data.length == 0) {
+                msg = `<div class="text-center py-8">
+                                   <i class="bi bi-inbox text-4xl text-gray-300 mb-3"></i>
+                                   <p class="text-gray-500">ยังไม่มีการอัพเดทงาน</p>
+                               </div>`
+            } else {
+                msg = data.map(r => {
+                    r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                    return r
+                }).map(d => {
+                    return `${d.timestamp}<br>${d.update.replace(/\n/g, '<br>')}<br><span class="text-sm text-gray-500"># ${d.name}</span><br>`
+                }).join('<hr class="my-3"><br>')
+            }
+
+            // Add loading animation
+            $('#summary').html('<div class="text-center py-4"><i class="bi bi-arrow-clockwise animate-spin text-2xl text-blue-500"></i></div>');
+
+            setTimeout(() => {
+                $('#summary').html(msg);
+                $('#summary-content').removeClass('hidden');
+                // Add smooth scroll to summary with improved timing
+                setTimeout(() => {
+                    const summaryElement = document.getElementById('summary-content');
+                    if (summaryElement) {
+                        summaryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 500);
+                $.LoadingOverlay("hide");
+                $('.load-bar').fadeOut(500);
+            }, 800);
         })
         firestore.collection('jobdata/').doc(jobid).get().then(data => {
             data = data.data()
             console.log("🚀 ~ firestore.collection ~ data:", data)
             if (data.signature) {
-                $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
+                $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
                 $('#open-sign')
                     .find('.text-primary')
                     .removeClass('text-primary fs-5 fw-bold')
                     .addClass('text-danger')
                     .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
             }
-            $('#open-sign').parent().removeClass('d-none')
+            $('#open-sign').parent().removeClass('hidden')
             if (data.status) {
                 switch (true) {
                     case data.status === "Waiting":
@@ -285,7 +396,7 @@ async function initialData() {
                     default:
                         $('#work-status').html(data.status)
                 }
-                $('#work-status').parent().removeClass('d-none')
+                $('#work-status').parent().removeClass('hidden')
             }
             $('#code').val(data.code)
             if (!data.name && !data.reciever) {
@@ -296,7 +407,7 @@ async function initialData() {
             else $('#reciever').html("&nbsp;รับงานโดย:<br>" + (data.name || data.reciever))
             $('#code').val(data.code)
             wo = data.wo || data.workorder
-            $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
+            $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('hidden')
             if (data.image) {
                 $('#image').attr('src', data.image).css('opacity', 1)
             } else {
@@ -327,11 +438,24 @@ async function initialData() {
         //     },
         // })
         $('#more-update-btn').click(() => {
+            // Add loading state
+            const btn = $('#more-update-btn');
+            const originalText = btn.html();
+            btn.html('<i class="bi bi-arrow-clockwise animate-spin mr-2"></i>กำลังโหลด...')
+                .prop('disabled', true)
+                .removeClass('hover:scale-105')
+                .addClass('opacity-75 cursor-not-allowed');
+
+            // Prepare URL
             let url = new URL('line://app/' + liff_id)
             url.searchParams.set('code', code)
             url.searchParams.set('jobid', jobid)
             url.searchParams.set('action', 'update')
-            window.open(url, '_self')
+
+            // Add slight delay for better UX
+            setTimeout(() => {
+                window.open(url, '_self')
+            }, 300);
         })
         $.LoadingOverlay("hide");
     }
@@ -342,10 +466,7 @@ async function initialData() {
             text: 'กำลังดึงข้อมูลรายชื่อห้องแชท',
             showConfirmButton: false,
             allowOutsideClick: false,
-            customClass: {
-
-                popup: 'rounded-4'
-            },
+            customClass: sweetalert_custom_class,
             didOpen: () => {
                 Swal.showLoading()
             }
@@ -692,10 +813,7 @@ async function initialData() {
                     title: 'แชร์สรุปงานสำเร็จ',
                     timer: 1500,
                     showConfirmButton: false,
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class
                 }).then(() => {
                     liff.closeWindow()
                 })
@@ -705,10 +823,7 @@ async function initialData() {
                     icon: 'error',
                     title: 'แชร์สรุปงานไม่สำเร็จ',
                     text: 'ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class
                 })
             })
         })
@@ -737,10 +852,7 @@ async function initialData() {
                     confirmButtonText: 'ยืนยัน',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class,
                     inputValidator: (value) => {
                         return new Promise((resolve) => {
                             if (value) {
@@ -762,10 +874,7 @@ async function initialData() {
                             confirmButtonText: 'ยืนยัน',
                             allowOutsideClick: false,
                             allowEscapeKey: false,
-                            customClass: {
-
-                                popup: 'rounded-4'
-                            },
+                            customClass: sweetalert_custom_class,
                         }).then(async (result) => {
                             if (result.isConfirmed) {
                                 let wo = result.value
@@ -804,7 +913,7 @@ async function initialData() {
             console.log('current_code', current_code)
             renderContact()
             if (data.signature && data.workorder) {
-                $('#user-sign').attr('src', data.signature).parent().removeClass('d-none')
+                $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
                 $('#open-sign')
                     .find('.text-primary')
                     .removeClass('text-primary fs-5 fw-bold')
@@ -812,7 +921,7 @@ async function initialData() {
                     .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
             }
             if (liff.isInClient() && data.workorder) {
-                $('#open-sign').parent().removeClass('d-none')
+                $('#open-sign').parent().removeClass('hidden')
             }
             if (data.status) {
                 switch (true) {
@@ -827,7 +936,7 @@ async function initialData() {
                     default:
                         $('#work-status').html(data.status)
                 }
-                $('#work-status').parent().removeClass('d-none')
+                $('#work-status').parent().removeClass('hidden')
             }
             job_detail = data.detail
             tg_thread_id = data.thread_id
@@ -867,10 +976,7 @@ async function initialData() {
                         showCancelButton: true,
                         showDenyButton: current_user.isAuthen ? true : false,
                         showConfirmButton: current_user.isAuthen ? false : true,
-                        customClass: {
-
-                            popup: 'rounded-4'
-                        },
+                        customClass: sweetalert_custom_class,
                         preConfirm: async (result) => {
                             return current_user.isAuthen ? "" : $('#receive-name').val()
                         }
@@ -889,21 +995,21 @@ async function initialData() {
             if (!data.code) $('#code').removeAttr('readonly').attr('placeholder', 'ระบุรหัส').attr('required', true)
             else $('#code').val(data.code)
             wo = data.wo || data.workorder
-            $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('d-none')
+            $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('hidden')
             if (data.image) {
                 $('#image').attr('src', data.image).css('opacity', 1)
             } else {
                 $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
             }
             if (data.code) {
-                $('#history-btn').removeClass('d-none')
+                $('#history-btn').removeClass('hidden')
                 $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + data.code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
             } else {
-                $('#history-btn').addClass('d-none')
+                $('#history-btn').addClass('hidden')
             }
         })
-        $('.container-fluid, .container').removeClass('d-none')
-        $('#more-update-btn').addClass('d-none')
+        $('.container-fluid, .container').removeClass('hidden')
+        $('#more-update-btn').addClass('hidden')
         $.LoadingOverlay("hide");
     }
 
@@ -1195,10 +1301,7 @@ async function initialData() {
                     title: 'แชร์สรุปงานสำเร็จ',
                     timer: 1500,
                     showConfirmButton: false,
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class
                 })
             }).catch((err) => {
                 $.LoadingOverlay("hide");
@@ -1206,10 +1309,7 @@ async function initialData() {
                     icon: 'error',
                     title: 'แชร์สรุปงานไม่สำเร็จ',
                     text: 'ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class
                 })
             })
         }
@@ -1238,20 +1338,14 @@ async function initialData() {
                 icon: 'error',
                 title: 'กรุณากรอกข้อมูลอัพเดท',
                 text: 'กรุณากรอกข้อมูลอัพเดท',
-                customClass: {
-
-                    popup: 'rounded-4'
-                },
+                customClass: sweetalert_custom_class
             })
         } else if (name == null || name == '') {
             Swal.fire({
                 icon: 'error',
                 title: 'กรุณาเลือกชื่อผู้กรอก',
                 text: 'กรุณาเลือกชื่อผู้กรอก',
-                customClass: {
-
-                    popup: 'rounded-4'
-                },
+                customClass: sweetalert_custom_class
             })
         } else {
             let text = `UPDATE<br>${wo ? ('WO.' + wo) : ''}<br>รหัส ${code}<br>วันที่ ${update_data.date} น.<br><br>${update}<br><br>#${name}`
@@ -1271,10 +1365,7 @@ ${update}
                 cancelButtonText: 'ยกเลิก',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                customClass: {
-
-                    popup: 'rounded-4'
-                },
+                customClass: sweetalert_custom_class,
             }).then(result => {
                 if (result.isConfirmed) {
                     updateData(update_data);
@@ -1317,10 +1408,7 @@ $('#edit-request').click(() => {
         allowEscapeKey: false,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        customClass: {
-
-            popup: 'rounded-4'
-        },
+        customClass: sweetalert_custom_class,
     }).then(result => {
         if (result.isConfirmed) {
             let url = new URL(window.location.href)
@@ -1342,8 +1430,15 @@ function doneTyping() {
 }
 function updateCount(updateText) {
     $('#char-count').html(updateText.length + '/5000')
-    if (updateText.length > 5000) $('#char-count').css('color', 'red')
-    else $('#char-count').css('color', '#7777')
+    const charCounter = $('#char-count');
+
+    if (updateText.length > 5000) {
+        charCounter.removeClass('text-gray-600').addClass('text-red-500 font-semibold pulse-soft');
+    } else if (updateText.length > 4000) {
+        charCounter.removeClass('text-red-500 text-gray-600 pulse-soft').addClass('text-amber-500 font-medium');
+    } else {
+        charCounter.removeClass('text-red-500 text-amber-500 font-semibold font-medium pulse-soft').addClass('text-gray-600');
+    }
 }
 async function updateData(update_data) {
     console.log(update_data)
@@ -1352,10 +1447,7 @@ async function updateData(update_data) {
         html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
         allowOutsideClick: false,
         allowEscapeKey: false,
-        customClass: {
-
-            popup: 'rounded-4'
-        },
+        customClass: sweetalert_custom_class,
         didOpen: () => {
             Swal.showLoading()
         }
@@ -2143,10 +2235,7 @@ async function updateData(update_data) {
                 didOpen: () => {
                     Swal.showLoading()
                 },
-                customClass: {
-                    popup: 'rounded-4',
-                    icon: 'border-0'
-                },
+                customClass: sweetalert_custom_class,
                 allowOutsideClick: false,
             })
         }
@@ -2160,10 +2249,7 @@ async function updateData(update_data) {
                         icon: 'success',
                         title: 'อัพเดทสำเร็จ',
                         text: 'อัพเดทสำเร็จ',
-                        customClass: {
-
-                            popup: 'rounded-4'
-                        },
+                        customClass: sweetalert_custom_class,
                         timer: 1500,
                     }).then(() => {
                         // if (liff.getDecodedIDToken().sub == 'U798fc2c46a2efd7013b12eac4dac408a') return
@@ -2174,9 +2260,7 @@ async function updateData(update_data) {
                         icon: 'warning',
                         title: 'เลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
                         text: 'กรุณาลองใหม่อีกครั้ง',
-                        customClass: {
-                            popup: 'rounded-4'
-                        },
+                        customClass: sweetalert_custom_class,
                         confirmButtonText: 'เลือกกลุ่ม',
                         showCancelButton: true,
                         cancelButtonText: 'ยกเลิก การอัพเดท',
@@ -2193,10 +2277,7 @@ async function updateData(update_data) {
                     title: 'มีข้อผิดพลาด',
                     html: 'มีข้อผิดพลาด<br>' + JSON.stringify(err) + '<br><small class="text-muted">โปรดส่งข้อความนี้ให้ผู้พัฒนา</small><br><br>' + JSON.stringify(carousel),
                     confirmButtonText: "ตกลง",
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class,
                     //showConfirmButton: false,
                 })
             })
@@ -2238,10 +2319,7 @@ async function getUID() {
                     title: 'ไม่สามารถดึงข้อมูลผู้ใช้ได้',
                     text: 'กรุณาลองใหม่อีกครั้ง',
                     confirmButtonText: 'ตกลง',
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class,
                 })
             })
         }
@@ -2297,10 +2375,7 @@ async function register(name) {
                 title: 'ยืนยันตัวตนสำเร็จ',
                 text: 'คุณสามารถรับงานได้แล้ว',
                 confirmButtonText: 'รับงาน',
-                customClass: {
-
-                    popup: 'rounded-4'
-                },
+                customClass: sweetalert_custom_class,
                 allowOutsideClick: false,
             }).then(async res => {
                 if (res.isConfirmed) {
@@ -2317,9 +2392,7 @@ async function receivejob() {
     const toast = Swal.mixin({
         toast: true,
         iconHtml: '<image src="https://img5.pic.in.th/file/secure-sv1/icons8-loading-infinity.gif" style="width: 50px; height: 50px;margin-start: 5px"/>',
-        customClass: {
-            icon: 'border-0'
-        },
+        customClass: sweetalert_custom_class,
         position: 'top',
         showConfirmButton: false,
         timer: 60000,
@@ -2355,10 +2428,7 @@ async function receivejob() {
                     title: 'รับงานสำเร็จ',
                     html: 'รับงานสำเร็จ<br>รับงานโดย:<br> ' + current_user.name.toUpperCase(),
                     confirmButtonText: 'ตกลง',
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class,
                     timer: 2000,
                 })
                 if (res.status_text == 'success') {
@@ -2375,7 +2445,7 @@ async function receivejob() {
                         let data = doc.data()
                         if (data.reciever == current_user.name.toUpperCase()) {
                             $('#reciever').html("&nbsp;รับงานโดย:<br> " + current_user.name.toUpperCase())
-                            $('#workorder').html('WO.' + data.wo).parents('.col-12').removeClass('d-none')
+                            $('#workorder').html('WO.' + data.wo).parents('.col-12').removeClass('hidden')
                             return
                         }
                     })
@@ -2386,10 +2456,7 @@ async function receivejob() {
                     icon: 'error',
                     title: 'รับงานไม่สำเร็จ',
                     html: 'รับงานไม่สำเร็จ<br>' + res.status_text,
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class,
                     confirmButtonText: 'ตกลง',
                     allowOutsideClick: false,
                 })
@@ -2399,10 +2466,7 @@ async function receivejob() {
         Swal.fire({
             icon: 'error',
             text: err,
-            customClass: {
-
-                popup: 'rounded-4'
-            },
+            customClass: sweetalert_custom_class,
             showConfirmButton: false,
             allowOutsideClick: false
         })
@@ -2457,9 +2521,7 @@ function renderContact() {
             showCancelButton: true,
             confirmButtonText: 'ลบ',
             cancelButtonText: 'ยกเลิก',
-            customClass: {
-                popup: 'rounded-4'
-            },
+            customClass: sweetalert_custom_class,
         }).then((result) => {
             if (result.isConfirmed) {
                 let index = $(this).data('index')
@@ -2498,9 +2560,7 @@ function renderContact() {
             showCancelButton: true,
             confirmButtonText: 'บันทึก',
             cancelButtonText: 'ยกเลิก',
-            customClass: {
-                popup: 'rounded-4'
-            },
+            customClass: sweetalert_custom_class,
             preConfirm: () => {
                 const name = document.getElementById('edit-contact-name').value.trim();
                 const phone = document.getElementById('edit-contact-phone').value.trim();
@@ -2545,9 +2605,7 @@ function addContact() {
         showCancelButton: true,
         confirmButtonText: 'เพิ่ม',
         cancelButtonText: 'ยกเลิก',
-        customClass: {
-            popup: 'rounded-4'
-        },
+        customClass: sweetalert_custom_class,
         preConfirm: () => {
             const name = document.getElementById('contact-name').value.trim();
             const phone = document.getElementById('contact-phone').value.trim();
@@ -2657,19 +2715,13 @@ jQuery(document).ready(function ($) {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             validationMessage: 'กรุณายืนยันลายเซ็น',
-            customClass: {
-
-                popup: 'rounded-4'
-            },
+            customClass: sweetalert_custom_class,
         }).then(result => {
             if (result.isConfirmed) {
                 Swal.fire({
                     title: 'กำลังบันทึกลายเซ็น',
                     html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
-                    customClass: {
-
-                        popup: 'rounded-4'
-                    },
+                    customClass: sweetalert_custom_class,
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading()
@@ -2694,10 +2746,7 @@ jQuery(document).ready(function ($) {
                                 icon: 'success',
                                 title: 'บันทึกลายเซ็นสำเร็จ',
                                 text: 'บันทึกลายเซ็นสำเร็จ',
-                                customClass: {
-
-                                    popup: 'rounded-4'
-                                },
+                                customClass: sweetalert_custom_class,
                                 timer: 1500,
                             })
                             $('#open-sign')
@@ -2706,7 +2755,7 @@ jQuery(document).ready(function ($) {
                                 .addClass('text-danger')
                                 .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
 
-                            $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
+                            $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('hidden')
                             $('#signature').jSignature('reset')
                             // close modal
                             $('#signatureModal').modal('hide')
@@ -2716,10 +2765,7 @@ jQuery(document).ready(function ($) {
                                 icon: 'error',
                                 title: 'บันทึกลายเซ็นไม่สำเร็จ',
                                 html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + res.status_text,
-                                customClass: {
-
-                                    popup: 'rounded-4'
-                                },
+                                customClass: sweetalert_custom_class,
                                 confirmButtonText: 'ตกลง',
                                 allowOutsideClick: false,
                             })
@@ -2731,10 +2777,7 @@ jQuery(document).ready(function ($) {
                             icon: 'error',
                             title: 'บันทึกลายเซ็นไม่สำเร็จ',
                             html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + JSON.stringify(err),
-                            customClass: {
-
-                                popup: 'rounded-4'
-                            },
+                            customClass: sweetalert_custom_class,
                             confirmButtonText: 'ตกลง',
                             allowOutsideClick: false,
                         })
