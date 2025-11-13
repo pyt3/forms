@@ -9,53 +9,82 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'prompt': ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        success: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(-5%)' },
+                            '50%': { transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsignature/libs/flashcanvas.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsignature/libs/modernizr.js"></script>
-    <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://fastly.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- icon -->
     <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
+    <!-- Bootstrap Icons for compatibility -->
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-        integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
-    <link rel="stylesheet"
-        href="https://fastly.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Prompt', sans-serif;
-            /* background-color: #e9b33b; */
-            /* background-color: #D3D3D3; */
-        }
-
-        #sticker {
-            width: 100%;
-            height: 100%;
-        }
-
-        .container {
-            max-width: 800px;
-        }
-
+        /* Loading animation styles */
         .loader {
             position: absolute;
             top: 50%;
@@ -65,8 +94,8 @@
             height: 100px;
             margin-left: -80px;
             margin-top: -50px;
-            border-radius: 5px;
-            background: #1e3f57;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             animation: dot1_ 3s cubic-bezier(0.55, 0.3, 0.24, 0.99) infinite;
         }
 
@@ -76,8 +105,8 @@
             height: 90px;
             margin-top: -45px;
             margin-left: -75px;
-            border-radius: 3px;
-            background: #3c517d;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             animation-name: dot2_;
         }
 
@@ -87,8 +116,8 @@
             height: 20px;
             margin-top: 50px;
             margin-left: -20px;
-            border-radius: 0 0 5px 5px;
-            background: #6bb2cd;
+            border-radius: 0 0 8px 8px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             animation-name: dot3_;
         }
 
@@ -162,7 +191,7 @@
                 height: 8px;
                 margin-left: -5px;
                 margin-top: 49px;
-                border-radius: 8px;
+                border-radius: 50%;
             }
 
             63%,
@@ -175,339 +204,472 @@
             }
         }
 
-        .load-bar {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        html.touch #scrollgrabber {
-            float: right;
-            width: 4%;
-            margin-right: 2%;
-            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAFCAAAAACh79lDAAAAAXNSR0IArs4c6QAAABJJREFUCB1jmMmQxjCT4T/DfwAPLgOXlrt3IwAAAABJRU5ErkJggs==)
-        }
-
-        html.borderradius #scrollgrabber {
-            border-radius: 1em;
-        }
-
+        /* Signature canvas styles */
         #signature {
-            border: 1px dotted black;
-            background-color: lightgrey;
-            border-radius: 4px;
+            border: 2px dashed #e5e7eb;
+            background: linear-gradient(45deg, #f9fafb 25%, transparent 25%),
+                linear-gradient(-45deg, #f9fafb 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #f9fafb 75%),
+                linear-gradient(-45deg, transparent 75%, #f9fafb 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border-radius: 12px;
             width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        #signature:hover {
+            border-color: #3b82f6;
+            background-color: #f0f9ff;
         }
 
         #signatureparent {
-            color: darkblue;
-            /* background-color: darkgrey; */
-            /* max-width: 600px; */
-            padding: 10px;
-            border-radius: 10px
+            color: #1e40af;
+            padding: 24px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #e0e7ff;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Glass morphism effect */
+        .glass {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Card hover effects */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Input focus effects */
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+
+        /* Button ripple effect */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ripple:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: width 0.6s, height 0.6s;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn-ripple:active:before {
+            width: 300px;
+            height: 300px;
         }
     </style>
     <title>อัพเดทงาน</title>
 </head>
 
-<body class="bg-body-tertiary">
-    <div class="load-bar">
-        <div class="container">
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 font-prompt min-h-screen">
+    <!-- Loading Screen -->
+    <div
+        class="fixed inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900 flex items-center justify-center z-50 load-bar">
+        <div class="relative">
             <div class="loader"></div>
             <div class="loader"></div>
             <div class="loader"></div>
         </div>
     </div>
-    <main>
-        <!-- <div class="container-fluid "> -->
-        <div class="container mx-auto m-0 mt-2 p-0 d-none">
-            <div class="row d-none" id="developer">
-                <div class="col-12">
-                    developer <i class="bi bi-person-fill"></i>
+
+    <main class="min-h-screen py-4 px-4 mb-4">
+        <!-- Container -->
+        <div class="max-w-4xl mx-auto space-y-6">
+            <!-- Developer Section -->
+            <div class="hidden" id="developer">
+                <div class="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 p-4">
+                    <div class="flex items-center space-x-2 text-indigo-600">
+                        <i class="bi bi-person-fill text-lg"></i>
+                        <span class="font-medium">Developer Mode</span>
+                    </div>
                 </div>
             </div>
-            <div class="row justify-content-between mx-1 mt-3 rounded-4 shadow-sm overflow-hidden border"
-                data-aos="fade-left">
-                <div class="col-12 bg-success bg-gradient text-white py-2 px-3">
-                    <span class="mb-0">Work Order: <span id="workorder" class="fw-bold"></span></span>
-                </div>
-                <div class="col-8 p-3">
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i>
-                        <small id="reciever"></small>
-                    </div>
 
-                    <div class="has-code mb-3">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light">Request No.</span>
-                            <input type="text" class="form-control" id="request-no" name="request-no" readonly>
-                            <button class="btn btn-warning" id="edit-request" title="Edit request number">
-                                <i class="bi bi-pencil-square"></i>
+            <!-- Work Order Header Card -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
+                data-aos="fade-down">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="bi bi-clipboard-check text-2xl"></i>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h2 class="text-lg font-semibold">Work Order:
+
+                                    <span id="workorder" class="font-mono font-bold">Loading...</span>
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Left side - Job details -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <!-- Status -->
+                            <div
+                                class="flex items-center space-x-3 p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                                <i class="bi bi-check-circle-fill text-emerald-500 text-xl"></i>
+                                <div class="text-sm text-emerald-700" id="reciever">Loading status...</div>
+                            </div>
+
+                            <!-- Request Number -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Request No.</label>
+                                <div class="flex space-x-2">
+                                    <input type="text" id="request-no"
+                                        class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all input-focus font-mono"
+                                        readonly>
+                                    <button id="edit-request"
+                                        class="px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-all btn-ripple"
+                                        title="Edit request number">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Code -->
+                            <div class="space-y-2 hidden has-code">
+                                <label class="text-sm font-medium text-gray-700">Code</label>
+                                <input type="text" id="code"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all input-focus font-mono"
+                                    readonly>
+                            </div>
+                        </div>
+
+                        <!-- Right side - Image and actions -->
+                        <div class="flex flex-col items-center space-y-4">
+                            <!-- Image -->
+                            <div
+                                class="relative w-full aspect-square max-w-xs rounded-2xl overflow-hidden border-2 border-gray-200">
+                                <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="Work order image"
+                                    id="image" class="w-full h-full object-cover transition-opacity duration-300">
+                                <div class="absolute inset-0 pointer-events-none"></div>
+                            </div>
+
+                            <!-- History Button -->
+                            <button id="history-btn"
+                                class="hidden w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-xl transition-all btn-ripple">
+                                <i class="bi bi-clock-history mr-2"></i>
+                                ประวัติซ่อม
                             </button>
                         </div>
                     </div>
 
-                    <div class="has-code d-none">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light">Code</span>
-                            <input type="text" class="form-control" id="code" name="code" readonly>
+                    <!-- Work Status -->
+                    <div class="mt-6 hidden">
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+                            <div id="work-status" class="font-semibold text-blue-700"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Work Update Section -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
+                data-aos="fade-up" id="update-section">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="bi bi-pencil-square text-2xl"></i>
+                        <h2 class="text-lg font-semibold">Work Update</h2>
                     </div>
                 </div>
 
-                <div class="col-4 p-3 d-flex align-items-center justify-content-center flex-column">
-                    <div class="position-relative rounded-3 overflow-hidden border shadow-sm mb-2"
-                        style="width: 100%; aspect-ratio: 1/1;">
-                        <img src="https://img.icons8.com/fluency/96/image--v1.png" alt="image" id="image"
-                            class="img-fluid w-100 h-100" style="object-fit: cover; transition: opacity 0.3s;">
+                <!-- Content -->
+                <div class="p-6 space-y-6">
+                    <!-- Signature Display -->
+                    <div class="text-center hidden">
+                        <img alt="signature" id="user-sign" class="max-h-24 mx-auto rounded-lg shadow-sm">
                     </div>
-                    <a class="btn btn-sm btn-primary w-100 d-none" id="history-btn" style="font-size: xx-small;">
-                        <i class="bi bi-clock-history me-1"></i>ประวัติซ่อม
-                    </a>
-                </div>
-                <div class="col-12 px-3 pb-3 d-none">
-                    <div class="alert alert-primary rounded-3 text-center fw-bold mb-0" id="work-status"></div>
-                </div>
-            </div>
-            <div class="row justify-content-center mx-1 mt-3 rounded-4 shadow-sm overflow-hidden border"
-                data-aos="fade-right" id="update-section">
-                <div class="col-12 bg-primary bg-gradient text-white py-2 px-3">
-                    <h6 class="mb-0">Work Update</h6>
-                </div>
-                <div class="col-12 text-center d-none">
-                    <img alt="sign" id="user-sign" style="max-height: 100px;" class="img-fluid">
-                </div>
-                <div class="col-12 text-center d-none">
-                    <button class="btn bg-white fw-bold fs-5 w-100 mt-3 border" id="open-sign">
-                        <div class="d-flex justify-content-center w-100">
-                            <img src="./signature-gif.gif" alt="sign" style="max-height: 50px;">
-                            <div class="ms-2 text-primary">เซ็นรับทราบ</div>
+
+                    <!-- Signature Button -->
+                    <div class="text-center hidden">
+                        <button id="open-sign"
+                            class="w-full bg-white hover:bg-gray-50 border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-xl p-6 transition-all group">
+                            <div class="flex items-center justify-center space-x-3">
+                                <img src="./signature-gif.gif" alt="sign"
+                                    class="h-12 group-hover:scale-110 transition-transform">
+                                <div class="text-blue-600 font-medium text-lg">เซ็นรับทราบ</div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Update Text Area -->
+                    <div class="space-y-2 mobile relative">
+                        <label for="update" class="block text-sm font-semibold text-gray-700">
+                            <i class="bi bi-chat-dots mr-2"></i>อัพเดทงาน
+                        </label>
+                        <div class="relative">
+                            <textarea name="update" id="update" rows="8" maxlength="5000"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none input-focus"
+                                placeholder="กรอกข้อมูลอัพเดท..."></textarea>
+                            <div class="absolute bottom-3 right-3 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
+                                id="char-count">
+                                0/5000
+                            </div>
                         </div>
+                        <button
+                            class="mt-2 px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm rounded-lg transition-all unicode-charactor"
+                            id="caret-right-fill">
+                            <i class="bi bi-caret-right-fill mr-1"></i>เพิ่มเครื่องหมาย
+                        </button>
+                    </div>
+
+                    <!-- Vendor Contact List -->
+                    <div class="space-y-2 mobile">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="bi bi-people mr-2"></i>รายชื่อผู้ติดต่อ
+                            </label>
+                            <button id="add-vendor-contact-btn" onclick="addContact()"
+                                class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-lg transition-all btn-ripple">
+                                <i class="bi bi-plus-lg mr-1"></i>เพิ่มรายชื่อ
+                            </button>
+                        </div>
+                        <div id="vendor-contact-list"
+                            class="bg-gray-50 border border-gray-200 rounded-xl p-4 min-h-[80px] transition-all">
+                            <!-- Contact list will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Name Selection -->
+                    <div class="space-y-2 mobile relative">
+                        <label for="name" class="block text-sm font-semibold text-gray-700">
+                            <i class="bi bi-person-fill mr-2"></i>ชื่อผู้กรอก
+                        </label>
+                        <div class="relative">
+                            <select name="name" id="name"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all input-focus bg-white appearance-none">
+                                <option value="" selected disabled>เลือกชื่อผู้กรอก</option>
+                                <optgroup label="PYT1">
+                                    <option value="BOONYANON MEETO">BOONYANON MEETO</option>
+                                    <option value="NARUEPON JIANVANITCHA">NARUEPON JIANVANITCHA</option>
+                                    <option value="CHATCHAI TAENGTONG">CHATCHAI TAENGTONG</option>
+                                    <option value="CHATCHAI ASIPONG">CHATCHAI ASIPONG</option>
+                                    <option value="NAPHONPHAT PUNYARITJAROEN">NAPHONPHAT PUNYARITJAROEN</option>
+                                    <option value="SORAWIT TONTARAWONGSA">SORAWIT TONTARAWONGSA</option>
+                                    <option value="SUPITCHAYA NAKMAI">SUPITCHAYA NAKMAI</option>
+                                    <option value="PATTAMAWADEE RAKNIM">PATTAMAWADEE RAKNIM</option>
+                                    <option value="WATCHAREEYA TARUAN">WATCHAREEYA TARUAN</option>
+                                    <option value="PHUSANISA PREMYING">PHUSANISA PREMYING</option>
+                                    <option value="JANJIRA CHAICHAMPA">JANJIRA CHAICHAMPA</option>
+                                </optgroup>
+                                <optgroup label="PYT2">
+                                    <option value="SOOKHSUN KHUNTA">SOOKHSUN KHUNTA</option>
+                                    <option value="PURIMPRACH SAKDASORASAP">PURIMPRACH SAKDASORASAP</option>
+                                    <option value="SOMPORN BOONROD">SOMPORN BOONROD</option>
+                                    <option value="CHANAKARN JIANVANITCHA">CHANAKARN JIANVANITCHA</option>
+                                    <option value="PAPHAWEETHANAPORN PLONGLA">PAPHAWEETHANAPORN PLONGLA</option>
+                                    <option value="KAMONTHIP CHIANGCHATURAT">KAMONTHIP CHIANGCHATURAT</option>
+                                    <option value="THITIKA JUNGPANICH">THITIKA JUNGPANICH</option>
+                                    <option value="SONGSAKROMJUN">SONGSAK ROMJUN</option>
+                                    <option value="CHALERMCHAT SATEANKTT">CHALERMCHAT SATEANKTT</option>
+                                    <option value="POTCHANAN PANPAN">POTCHANAN PANPAN</option>
+                                    <option value="PEERAPHAT BUTSRIRAK">PEERAPHAT BUTSRIRAK</option>
+                                    <option value="PAIJIT NAKRUNGSU">PAIJIT NAKRUNGSU</option>
+                                    <option value="BUNAPHOT PRAKOBSOOK">BUNAPHOT PRAKOBSOOK</option>
+                                    <option value="CHAYUTPHON NAVAPHON">CHAYUTPHON NAVAPHON</option>
+                                    <option value="SUPAWAT SOKLOM">SUPAWAT SOKLOM</option>
+                                    <option value="SARAN SONTIKUL">SARAN SONTIKUL</option>
+                                    <option value="VANICHAYA NUMAS">VANICHAYA NUMAS</option>
+                                    <option value="KASON SAEJONG">KASON SAEJONG</option>
+                                    <option value="KEERATI JUNCHALOEM">KEERATI JUNCHALOEM</option>
+                                    <option value="PANJAKAN TUNSAKUL">PANJAKAN TUNSAKUL</option>
+                                </optgroup>
+                                <optgroup label="PYT3">
+                                    <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
+                                    <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
+                                    <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
+                                    <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
+                                    <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
+                                    <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
+                                    <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
+                                    <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
+                                    <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
+                                    <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
+                                    <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
+                                    <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
+                                    <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
+                                    <option value="SOM KONKAEW">SOM KONKAEW</option>
+                                    <option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>
+                                    <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
+                                    <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
+                                    <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
+
+                                </optgroup>
+                                <optgroup label="PTP">
+                                    <option value="Apisith Sektaweelarp">Apisith Sektaweelarp</option>
+                                    <option value="Suwapa Phuakphan">Suwapa Phuakphan</option>
+                                    <option value="Supattra Kaewsuwan">Supattra Kaewsuwan</option>
+                                    <option value="Nattaporn Sawisith">Nattaporn Sawisith</option>
+                                    <option value="Suriya Sanglin">Suriya Sanglin</option>
+                                    <option value="Nattathida Archawapisit">Nattathida Archawapisit</option>
+                                    <option value="Chanathip Yodjaroen">Chanathip Yodjaroen</option>
+                                    <option value="Chalermchai Winthawamorn">Chalermchai Winthawamorn</option>
+                                    <option value="Wirat Arunjarern">Wirat Arunjarern</option>
+                                    <option value="Maytapohn Chokdurong">Maytapohn Chokdurong</option>
+                                    <option value="Chanakarn Jobsri">Chanakarn Jobsri</option>
+                                    <option value="Sarun Sirikarin">Sarun Sirikarin</option>
+                                    <option value="Suchanya Kaewkham">Suchanya Kaewkham</option>
+                                    <option value="Nuttawat Dilogkunanant">Nuttawat Dilogkunanant</option>
+                                    <option value="Raschanee Majanit">Raschanee Majanit</option>
+                                    <option value="Chanyaphat Thongmuang">Chanyaphat Thongmuang</option>
+                                    <option value="Wansiri Kaewsai">Wansiri Kaewsai</option>
+                                    <option value="Pathawee Nakphan">Pathawee Nakphan</option>
+                                    <option value="Panuchanart Duangpim">Panuchanart Duangpim</option>
+                                    <option value="Aiyaret Kitjachanchaikun">Aiyaret Kitjachanchaikun</option>
+                                    <option value="Sawwalauck Comewilai">Sawwalauck Comewilai</option>
+                                    <option value="Suphawat Ketman">Suphawat Ketman</option>
+                                    <option value="Thanyaporn Termsaithong">Thanyaporn Termsaithong</option>
+                                    <option value="Chalermporn Sabua">Chalermporn Sabua</option>
+                                    <option value="Thanapon Phonimdang">Thanapon Phonimdang</option>
+                                </optgroup>
+                                <optgroup label="PTN">
+                                    <option value="Tawan Kumoab">Tawan Kumoab</option>
+                                    <option value="Kunagorn Plypech">Kunagorn Plypech</option>
+                                    <option value="Manaphet Khemphet">Manaphet Khemphet</option>
+                                    <option value="Supachai Chanovanna">Supachai Chanovanna</option>
+                                    <option value="Kamonpan Yamee">Kamonpan Yamee</option>
+                                    <option value="Anurut Kumlert">Anurut Kumlert</option>
+                                    <option value="Nattawat Piboonsuntornwipat">Nattawat Piboonsuntornwipat</option>
+                                    <option value="Orawan Muang-On">Orawan Muang-On</option>
+                                    <option value="Sirikorn Sriprathum">Sirikorn Sriprathum</option>
+                                    <option value="Kuptain Rodkhom">Kuptain Rodkhom</option>
+                                </optgroup>
+                                <optgroup label="PLK">
+                                    <option value="Wirat Arunjarern">Wirat Arunjarern</option>
+                                    <option value="Chalermchai Winthawamorn">Chalermchai Winthawamorn</option>
+                                </optgroup>
+                                <optgroup label="PLC">
+                                    <option value="Sudarat Phantalee">Sudarat Phantalee</option>
+                                    <option value="Narumon Kunna">Narumon Kunna</option>
+                                    <option value="Thanaphol Ritjarung">Thanaphol Ritjarung</option>
+                                    <option value="Chaiwat Salaiwong">Chaiwat Salaiwong</option>
+                                </optgroup>
+                                <optgroup label="PLR">
+                                    <option value="Tawan Kumoab">Tawan Kumoab</option>
+                                    <option value="Chombongkoch Rattanavimon">Chombongkoch Rattanavimon</option>
+                                    <option value="Kunagorn Plypech">Kunagorn Plypech</option>
+                                    <option value="Kanrawee Sudwiwek">Kanrawee Sudwiwek</option>
+                                    <option value="Suttapon Jantermtor">Suttapon Jantermtor</option>
+                                    <option value="Apiwat Wadkian">Apiwat Wadkian</option>
+                                    <option value="Nutyawa Langlam">Nutyawa Langlam</option>
+                                </optgroup>
+                                <optgroup label="PLS">
+                                    <option value="Panya Sirithammajak">Panya Sirithammajak</option>
+                                    <option value="Wipada Phimsuphaporn">Wipada Phimsuphaporn</option>
+                                    <option value="Sitthinee Hommak">Sitthinee Hommak</option>
+                                    <option value="Tipkotchapon Sirithanasirapat">Tipkotchapon Sirithanasirapat</option>
+                                    <option value="Nattapoom Janwiset">Nattapoom Janwiset</option>
+                                    <option value="Phiengfah Muncharoensiri">Phiengfah Muncharoensiri</option>
+                                </optgroup>
+                                <optgroup label="PLD">
+                                    <option value="">Select value</option>
+                                    <option value="Tawan Kumoab">Tawan Kumoab</option>
+                                    <option value="Chombongkoch Rattanawimol">Chombongkoch Rattanawimol</option>
+                                    <option value="Kanokwan Sangthong">Kanokwan Sangthong</option>
+                                    <option value="Rattiya Chartpram">Rattiya Chartpram</option>
+                                    <option value="Kittipat Sukontarkoon">Kittipat Sukontarkoon</option>
+                                    <option value="Panya Sirithammajak">Panya Sirithammajak</option>
+                                </optgroup>
+                            </select>
+                            <!-- Custom dropdown arrow -->
+                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+
+    </main>
+    <!-- Signature Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+        id="signatureModal">
+        <div
+            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-hidden transform transition-all">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <i class="bi bi-pen text-2xl"></i>
+                        <h3 class="text-xl font-semibold">ลายเซ็นรับทราบ</h3>
+                    </div>
+                    <button class="text-white hover:text-gray-200 transition-colors p-1"
+                        onclick="closeSignatureModal()">
+                        <i class="bi bi-x-lg text-2xl"></i>
                     </button>
                 </div>
-                <div class="col-12 p-3 mobile" style="position:relative;">
-                    <label for="update" class="fw-semibold">อัพเดท</label>
-                    <textarea name="update" id="update" class="form-control" rows="8" maxlength="5000"
-                        placeholder="กรอกข้อมูลอัพเดท"></textarea>
-                    <span
-                        style="position: absolute;right: 20px;bottom: 5px;font-size: 0.7rem;color: #888;background-color: #33333333;border-radius: 5px;padding-left: 3px;padding-right: 3px;"
-                        id="char-count">0/5000</span>
-                    <button class="btn bg-secondary-subtle mt-2 btn-sm unicode-charactor" id="caret-right-fill"><i
-                            class="bi bi-caret-right-fill"></i></button>
-                </div>
-                <div class="col-12 px-3 pb-3 mobile">
-                    <label for="vendor_phone" class="fw-semibold d-flex justify-content-between">
-                        รายชื่อผู้ติดต่อ
-                        <div>
-                            <button class="btn btn-sm btn-link text-decoration-none" id="add-vendor-contact-btn"
-                                onclick="addContact()">
-                                <i class="bi bi-plus-lg me-1"></i>เพิ่มรายชื่อ
-                            </button>
-                        </div>
-                    </label>
-                    <!-- <input name="vendor_phone" id="vendor_phone" class="form-control" placeholder="กรอกข้อมูลอัพเดท"> -->
-                    <div id="vendor-contact-list" class="p-3 border rounded-3 bg-light-subtle"></div>
-                </div>
-                <div class="col-12 px-3 pb-3 mobile">
-                    <label for="name" class="fw-semibold form-label">
-                        <i class="bi bi-person-fill me-2"></i>
-                        ชื่อผู้กรอก</label>
-                    <select name="name" id="name" class="form-select rounded-3">
-                        <option value="" selected disabled>ชื่อผู้กรอก</option>
-                        <optgroup label="PYT1">
-                            <option value="BOONYANON MEETO">BOONYANON MEETO</option>
-                            <option value="NARUEPON JIANVANITCHA">NARUEPON JIANVANITCHA</option>
-                            <option value="CHATCHAI TAENGTONG">CHATCHAI TAENGTONG</option>
-                            <option value="CHATCHAI ASIPONG">CHATCHAI ASIPONG</option>
-                            <option value="NAPHONPHAT PUNYARITJAROEN">NAPHONPHAT PUNYARITJAROEN</option>
-                            <option value="SORAWIT TONTARAWONGSA">SORAWIT TONTARAWONGSA</option>
-                            <option value="SUPITCHAYA NAKMAI">SUPITCHAYA NAKMAI</option>
-                            <option value="PATTAMAWADEE RAKNIM">PATTAMAWADEE RAKNIM</option>
-                            <option value="WATCHAREEYA TARUAN">WATCHAREEYA TARUAN</option>
-                            <option value="PHUSANISA PREMYING">PHUSANISA PREMYING</option>
-                            <option value="JANJIRA CHAICHAMPA">JANJIRA CHAICHAMPA</option>
-                        </optgroup>
-                        <optgroup label="PYT2">
-                            <option value="SOOKHSUN KHUNTA">SOOKHSUN KHUNTA</option>
-                            <option value="PURIMPRACH SAKDASORASAP">PURIMPRACH SAKDASORASAP</option>
-                            <option value="SOMPORN BOONROD">SOMPORN BOONROD</option>
-                            <option value="CHANAKARN JIANVANITCHA">CHANAKARN JIANVANITCHA</option>
-                            <option value="PAPHAWEETHANAPORN PLONGLA">PAPHAWEETHANAPORN PLONGLA</option>
-                            <option value="KAMONTHIP CHIANGCHATURAT">KAMONTHIP CHIANGCHATURAT</option>
-                            <option value="THITIKA JUNGPANICH">THITIKA JUNGPANICH</option>
-                            <option value="SONGSAKROMJUN">SONGSAK ROMJUN</option>
-                            <option value="CHALERMCHAT SATEANKTT">CHALERMCHAT SATEANKTT</option>
-                            <option value="POTCHANAN PANPAN">POTCHANAN PANPAN</option>
-                            <option value="PEERAPHAT BUTSRIRAK">PEERAPHAT BUTSRIRAK</option>
-                            <option value="PAIJIT NAKRUNGSU">PAIJIT NAKRUNGSU</option>
-                            <option value="BUNAPHOT PRAKOBSOOK">BUNAPHOT PRAKOBSOOK</option>
-                            <option value="CHAYUTPHON NAVAPHON">CHAYUTPHON NAVAPHON</option>
-                            <option value="SUPAWAT SOKLOM">SUPAWAT SOKLOM</option>
-                            <option value="SARAN SONTIKUL">SARAN SONTIKUL</option>
-                            <option value="VANICHAYA NUMAS">VANICHAYA NUMAS</option>
-                            <option value="KASON SAEJONG">KASON SAEJONG</option>
-                            <option value="KEERATI JUNCHALOEM">KEERATI JUNCHALOEM</option>
-                            <option value="PANJAKAN TUNSAKUL">PANJAKAN TUNSAKUL</option>
-                        </optgroup>
-                        <optgroup label="PYT3">
-                            <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
-                            <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
-                            <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
-                            <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
-                            <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
-                            <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
-                            <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
-                            <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
-                            <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
-                            <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
-                            <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
-                            <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
-                            <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
-                            <option value="SOM KONKAEW">SOM KONKAEW</option>
-                            <option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>
-                            <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
-                            <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
-                            <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
-
-                        </optgroup>
-                        <optgroup label="PTP">
-                            <option value="Apisith Sektaweelarp">Apisith Sektaweelarp</option>
-                            <option value="Suwapa Phuakphan">Suwapa Phuakphan</option>
-                            <option value="Supattra Kaewsuwan">Supattra Kaewsuwan</option>
-                            <option value="Nattaporn Sawisith">Nattaporn Sawisith</option>
-                            <option value="Suriya Sanglin">Suriya Sanglin</option>
-                            <option value="Nattathida Archawapisit">Nattathida Archawapisit</option>
-                            <option value="Chanathip Yodjaroen">Chanathip Yodjaroen</option>
-                            <option value="Chalermchai Winthawamorn">Chalermchai Winthawamorn</option>
-                            <option value="Wirat Arunjarern">Wirat Arunjarern</option>
-                            <option value="Maytapohn Chokdurong">Maytapohn Chokdurong</option>
-                            <option value="Chanakarn Jobsri">Chanakarn Jobsri</option>
-                            <option value="Sarun Sirikarin">Sarun Sirikarin</option>
-                            <option value="Suchanya Kaewkham">Suchanya Kaewkham</option>
-                            <option value="Nuttawat Dilogkunanant">Nuttawat Dilogkunanant</option>
-                            <option value="Raschanee Majanit">Raschanee Majanit</option>
-                            <option value="Chanyaphat Thongmuang">Chanyaphat Thongmuang</option>
-                            <option value="Wansiri Kaewsai">Wansiri Kaewsai</option>
-                            <option value="Pathawee Nakphan">Pathawee Nakphan</option>
-                            <option value="Panuchanart Duangpim">Panuchanart Duangpim</option>
-                            <option value="Aiyaret Kitjachanchaikun">Aiyaret Kitjachanchaikun</option>
-                            <option value="Sawwalauck Comewilai">Sawwalauck Comewilai</option>
-                            <option value="Suphawat Ketman">Suphawat Ketman</option>
-                            <option value="Thanyaporn Termsaithong">Thanyaporn Termsaithong</option>
-                            <option value="Chalermporn Sabua">Chalermporn Sabua</option>
-                            <option value="Thanapon Phonimdang">Thanapon Phonimdang</option>
-                        </optgroup>
-                        <optgroup label="PTN">
-                            <option value="Tawan Kumoab">Tawan Kumoab</option>
-                            <option value="Kunagorn Plypech">Kunagorn Plypech</option>
-                            <option value="Manaphet Khemphet">Manaphet Khemphet</option>
-                            <option value="Supachai Chanovanna">Supachai Chanovanna</option>
-                            <option value="Kamonpan Yamee">Kamonpan Yamee</option>
-                            <option value="Anurut Kumlert">Anurut Kumlert</option>
-                            <option value="Nattawat Piboonsuntornwipat">Nattawat Piboonsuntornwipat</option>
-                            <option value="Orawan Muang-On">Orawan Muang-On</option>
-                            <option value="Sirikorn Sriprathum">Sirikorn Sriprathum</option>
-                            <option value="Kuptain Rodkhom">Kuptain Rodkhom</option>
-                        </optgroup>
-                        <optgroup label="PLK">
-                            <option value="Wirat Arunjarern">Wirat Arunjarern</option>
-                            <option value="Chalermchai Winthawamorn">Chalermchai Winthawamorn</option>
-                        </optgroup>
-                        <optgroup label="PLC">
-                            <option value="Sudarat Phantalee">Sudarat Phantalee</option>
-                            <option value="Narumon Kunna">Narumon Kunna</option>
-                            <option value="Thanaphol Ritjarung">Thanaphol Ritjarung</option>
-                            <option value="Chaiwat Salaiwong">Chaiwat Salaiwong</option>
-                        </optgroup>
-                        <optgroup label="PLR">
-                            <option value="Tawan Kumoab">Tawan Kumoab</option>
-                            <option value="Chombongkoch Rattanavimon">Chombongkoch Rattanavimon</option>
-                            <option value="Kunagorn Plypech">Kunagorn Plypech</option>
-                            <option value="Kanrawee Sudwiwek">Kanrawee Sudwiwek</option>
-                            <option value="Suttapon Jantermtor">Suttapon Jantermtor</option>
-                            <option value="Apiwat Wadkian">Apiwat Wadkian</option>
-                            <option value="Nutyawa Langlam">Nutyawa Langlam</option>
-                        </optgroup>
-                        <optgroup label="PLS">
-                            <option value="Panya Sirithammajak">Panya Sirithammajak</option>
-                            <option value="Wipada Phimsuphaporn">Wipada Phimsuphaporn</option>
-                            <option value="Sitthinee Hommak">Sitthinee Hommak</option>
-                            <option value="Tipkotchapon Sirithanasirapat">Tipkotchapon Sirithanasirapat</option>
-                            <option value="Nattapoom Janwiset">Nattapoom Janwiset</option>
-                            <option value="Phiengfah Muncharoensiri">Phiengfah Muncharoensiri</option>
-                        </optgroup>
-                        <optgroup label="PLD">
-                            <option value="">Select value</option>
-                            <option value="Tawan Kumoab">Tawan Kumoab</option>
-                            <option value="Chombongkoch Rattanawimol">Chombongkoch Rattanawimol</option>
-                            <option value="Kanokwan Sangthong">Kanokwan Sangthong</option>
-                            <option value="Rattiya Chartpram">Rattiya Chartpram</option>
-                            <option value="Kittipat Sukontarkoon">Kittipat Sukontarkoon</option>
-                            <option value="Panya Sirithammajak">Panya Sirithammajak</option>
-                        </optgroup>
-                    </select>
-                </div>
             </div>
 
-            <div class="row justify-content-center mx-1 mt-3 rounded-4 shadow-sm overflow-hidden border">
-                <!-- <div class="col-12 bg-warning bg-gradient text-dark py-2 px-3">
-                    <h5 class="mb-0 fw-bold">Actions</h5>
-                </div> -->
-                <div class="col-12 p-3">
-                    <div class="row justify-content-center g-3">
-                        <div class="col-md-4">
-                            <button class="w-100 btn btn-primary rounded-4 py-2" id="submit">
-                                <i class="bi bi-check-circle-fill me-2"></i>ยืนยัน
-                            </button>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="w-100 btn btn-danger rounded-4 py-2" id="summary-btn">
-                                <i class="bi bi-file-text-fill me-2"></i>สรุปงาน
-                            </button>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="w-100 btn btn-success rounded-4 py-2" id="share-line-btn">
-                                <i class="bi bi-line me-2"></i>Share
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container d-none">
-            <div class="row g-3 mt-3 mb-5 justify-content-center">
-
-                <div class="col-12 d-none m-3">
-                    <p class="user-select-all border p-3 rounded mt-3 bg-info-subtle" id="summary"></p>
-                </div>
-                <div class="col-md-4">
-                    <button class="btn btn-warning w-100" id="more-update-btn">อัพเดทเพิ่ม</button>
-                </div>
-                <div class="col-12 d-none" id="mobile-only-warning">
-                    <div class="alert alert-secondary text-center">
-                        <i class="bi bi-exclamation-triangle-fill"></i>&nbsp;อัพเดทข้อมูลในแอพไลน์
-                        ในโทรศัพท์มือถือเท่านั้น
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-fullscreen-xl-down">
-            <div class="modal-content" style="min-height: 100vh;">
-                <div class="modal-header bg-primary bg-gradient text-white">
-                    <h5 class="modal-title" id="signatureModalLabel">ลายเซ็นรับทราบ</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body m-1 p-0 h-100 align-items-center d-flex">
-                    <div id="signatureparent"
-                        class="d-none h-100 w-100 d-flex flex-column align-items-center justify-content-center">
-                        <div id="signature"></div>
-                        <div id="tools" align="center" class="row w-100"></div>
-                    </div>
+            <!-- Modal Body -->
+            <div class="p-6 h-96 overflow-y-auto">
+                <div id="signatureparent" class="hidden h-full flex flex-col items-center justify-center space-y-4">
+                    <div id="signature" class="w-full flex-1"></div>
+                    <div id="tools" class="flex justify-center space-x-4 w-full"></div>
                 </div>
             </div>
         </div>
@@ -515,9 +677,6 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-        crossorigin="anonymous"></script>
     <script src="//fastly.jsdelivr.net/npm/sweetalert2@11"></script>
     <script
         src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
@@ -528,16 +687,44 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/moment@2.29.4/locale/th.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // Modal functions for Tailwind (replacing Bootstrap modal)
+        function openSignatureModal() {
+            const modal = document.getElementById('signatureModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.getElementById('signatureparent').classList.remove('hidden');
+            // Trigger resize for signature canvas
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        }
+
+        function closeSignatureModal() {
+            const modal = document.getElementById('signatureModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Update modal event listeners
+        document.addEventListener('DOMContentLoaded', function () {
+            // Replace Bootstrap modal events
+            const openSignBtn = document.getElementById('open-sign');
+            if (openSignBtn) {
+                openSignBtn.addEventListener('click', openSignatureModal);
+            }
+        });
+    </script>
     <script>
         let script = document.createElement('script');
         script.src = './updatejob.js' + '?v=' + Date.now();
         script.defer = true;
         document.body.appendChild(script);
     </script>
-   
+
 </body>
 
 </html>
