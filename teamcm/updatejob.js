@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
     NProgress.done();
 });
-// const liff_id = '1655873446-3xe866Ql'
-const liff_id = '1661543046-a1pJexbX' // use
+const liff_id = '1655873446-3xe866Ql'
+// const liff_id = '1661543046-a1pJexbX' // use
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
 const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
@@ -208,10 +208,7 @@ async function initialData() {
     $('.load-bar').fadeOut(500)
     $.LoadingOverlay("hide");
     $('#name optgroup').not('[label="' + user_site + '"]').remove()
-    $('#name').select2({
-        theme: 'tailwindcss-3',
-        width: '100%'
-    })
+
     let code = url.searchParams.get("code");
     let action = url.searchParams.get("action");
     let updateText = localStorage.getItem('updateText' + jobid)
@@ -787,12 +784,12 @@ async function initialData() {
             }
             data = data.data()
             current_code = data.code.split('_')
-            if(current_code.length > 1) {
+            if (current_code.length > 1) {
                 current_code = current_code[1]
-            }else{
+            } else {
                 current_code = data.code
             }
-            if(current_code){
+            if (current_code) {
                 contactList = await firestore.collection('contactData/').doc(current_code).get().then(doc => {
                     let d = doc.data()
                     if (d && d.vendor_contact_list && Array.isArray(d.vendor_contact_list)) {
@@ -801,7 +798,7 @@ async function initialData() {
                         return []
                     }
                 })
-            }else{
+            } else {
                 contactList = []
             }
             console.log('current_code', current_code)
