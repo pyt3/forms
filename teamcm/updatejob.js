@@ -213,7 +213,6 @@ async function initialData() {
         width: '100%'
     })
     let code = url.searchParams.get("code");
-    console.log("🚀 !! codeaaaa:", code)
     let action = url.searchParams.get("action");
     let updateText = localStorage.getItem('updateText' + jobid)
     if (updateText != null) {
@@ -793,14 +792,18 @@ async function initialData() {
             }else{
                 current_code = data.code
             }
-            contactList = await firestore.collection('contactData/').doc(current_code).get().then(doc => {
-                let d = doc.data()
-                if (d && d.vendor_contact_list && Array.isArray(d.vendor_contact_list)) {
-                    return d.vendor_contact_list
-                } else {
-                    return []
-                }
-            })
+            if(current_code){
+                contactList = await firestore.collection('contactData/').doc(current_code).get().then(doc => {
+                    let d = doc.data()
+                    if (d && d.vendor_contact_list && Array.isArray(d.vendor_contact_list)) {
+                        return d.vendor_contact_list
+                    } else {
+                        return []
+                    }
+                })
+            }else{
+                contactList = []
+            }
             console.log('current_code', current_code)
             renderContact()
             if (data.signature && data.workorder) {
