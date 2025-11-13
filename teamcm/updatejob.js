@@ -787,7 +787,12 @@ async function initialData() {
                 })
             }
             data = data.data()
-            current_code = data.code.split('_')[1]
+            current_code = data.code.split('_')
+            if(current_code.length > 1) {
+                current_code = current_code[1]
+            }else{
+                current_code = data.code
+            }
             contactList = await firestore.collection('contactData/').doc(current_code).get().then(doc => {
                 let d = doc.data()
                 if (d && d.vendor_contact_list && Array.isArray(d.vendor_contact_list)) {
