@@ -328,6 +328,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -343,6 +344,7 @@
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
@@ -362,12 +364,10 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
             transition: left 0.5s;
             z-index: -1;
         }
@@ -382,9 +382,12 @@
         }
 
         @keyframes pulseSoft {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.7;
             }
@@ -526,9 +529,9 @@
                         <button id="open-sign"
                             class="w-full bg-white hover:bg-gray-50 border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-xl p-6 transition-all group">
                             <div class="flex items-center justify-center space-x-3">
-                                <img src="./signature-gif.gif" alt="sign"
+                                <img src="./signature-gif.gif" alt="sign" id="sign-icon"
                                     class="h-12 group-hover:scale-110 transition-transform">
-                                <div class="text-blue-600 font-medium text-lg">เซ็นรับทราบ</div>
+                                <div class="text-blue-600 font-medium text-lg" id="sign-label">เซ็นรับทราบ</div>
                             </div>
                         </button>
                     </div>
@@ -725,13 +728,19 @@
                     <!-- Action Buttons -->
                     <div class="space-y-3">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <button class="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all btn-ripple" id="submit">
+                            <button
+                                class="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all btn-ripple"
+                                id="submit">
                                 <i class="bi bi-check-circle-fill mr-2"></i>ยืนยัน
                             </button>
-                            <button class="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all btn-ripple" id="summary-btn">
+                            <button
+                                class="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all btn-ripple"
+                                id="summary-btn">
                                 <i class="bi bi-file-text-fill mr-2"></i>สรุปงาน
                             </button>
-                            <button class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-all btn-ripple" id="share-line-btn">
+                            <button
+                                class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-all btn-ripple"
+                                id="share-line-btn">
                                 <i class="bi bi-line mr-2"></i>Share
                             </button>
                         </div>
@@ -757,7 +766,8 @@
                 <div class="p-6">
                     <!-- Summary Display -->
                     <div class="hidden mb-6" id="summary-content">
-                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 select-all">
+                        <div
+                            class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 select-all">
                             <div class="prose max-w-none">
                                 <div id="summary" class="text-gray-800 whitespace-pre-wrap leading-relaxed"></div>
                             </div>
@@ -768,7 +778,9 @@
                     <div class="space-y-4">
                         <!-- More Update Button -->
                         <div class="flex justify-center">
-                            <button class="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium" id="more-update-btn">
+                            <button
+                                class="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
+                                id="more-update-btn">
                                 <i class="bi bi-plus-circle mr-2"></i>
                                 อัพเดทเพิ่ม
                             </button>
@@ -776,7 +788,8 @@
 
                         <!-- Mobile Only Warning -->
                         <div class="hidden" id="mobile-only-warning">
-                            <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-xl p-4">
+                            <div
+                                class="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-xl p-4">
                                 <div class="flex items-center space-x-3">
                                     <div class="flex-shrink-0">
                                         <i class="bi bi-exclamation-triangle-fill text-amber-500 text-xl"></i>
@@ -796,29 +809,24 @@
         </div>
     </main>
     <!-- Signature Modal -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
-        id="signatureModal">
-        <div
-            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-hidden transform transition-all">
-            <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <i class="bi bi-pen text-2xl"></i>
-                        <h3 class="text-xl font-semibold">ลายเซ็นรับทราบ</h3>
-                    </div>
-                    <button class="text-white hover:text-gray-200 transition-colors p-1"
-                        onclick="closeSignatureModal()">
+    <div id="signatureModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm" aria-labelledby="signatureModalLabel" aria-hidden="true">
+        <div class="relative w-full h-full max-w-screen">
+            <div class="bg-white h-full flex flex-col">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 flex items-center justify-between flex-shrink-0">
+                    <h5 class="text-lg font-semibold" id="signatureModalLabel">ลายเซ็นรับทราบ</h5>
+                    <button type="button" onclick="closeSignatureModal()" class="text-white hover:text-gray-200 transition-colors" aria-label="Close">
                         <i class="bi bi-x-lg text-2xl"></i>
                     </button>
                 </div>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="p-6 h-96 overflow-y-auto">
-                <div id="signatureparent" class="hidden h-full flex flex-col items-center justify-center space-y-4">
-                    <div id="signature" class="w-full flex-1"></div>
-                    <div id="tools" class="flex justify-center space-x-4 w-full"></div>
+                <!-- Body -->
+                <div class="flex-1 p-4 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-full">
+                        <div id="signatureparent" class="hidden w-full flex flex-col items-center justify-center gap-4">
+                            <div id="signature" class="w-full aspect-[4/1]"></div>
+                            <div id="tools" class="flex flex-wrap gap-2 w-full justify-center flex-shrink-0"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -874,7 +882,6 @@
         document.body.appendChild(script);
     </script>
    
-
 </body>
 
 </html>

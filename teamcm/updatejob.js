@@ -914,11 +914,13 @@ async function initialData() {
             renderContact()
             if (data.signature && data.workorder) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
-                $('#open-sign')
-                    .find('.text-primary')
-                    .removeClass('text-primary fs-5 fw-bold')
-                    .addClass('text-danger')
-                    .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                // $('#open-sign')
+                //     .find('.text-primary')
+                //     .removeClass('text-primary fs-5 fw-bold')
+                //     .addClass('text-danger')
+                //     .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                $('#sign-icon').remove()
+                $('#sign-label').html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
             }
             if (liff.isInClient() && data.workorder) {
                 $('#open-sign').parent().removeClass('hidden')
@@ -2697,7 +2699,7 @@ jQuery(document).ready(function ($) {
 
     }).appendTo($tools)
 
-    $('<div class="col-6 text-center"><button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm w-100 text-center" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i> บันทึก</button></div>').bind('click', async function (e) {
+    $('<div class="col-6 text-center"><button type="button" value="Submit" class="px-4 py-2 mt-4 text-white bg-green-600 rounded-lg shadow-sm hover:bg-green-700 transition-colors duration-200 min-w-[50px] w-full"><i class="bi bi-check-lg"></i> บันทึก</button></div>').bind('click', async function (e) {
 
         var data = $sigdiv.jSignature('getData', 'image')
         let dataUrl = data[0] + ',' + data[1]
@@ -2749,17 +2751,20 @@ jQuery(document).ready(function ($) {
                                 customClass: sweetalert_custom_class,
                                 timer: 1500,
                             })
-                            $('#open-sign')
-                                .find('.text-primary')
-                                .removeClass('text-primary fs-5 fw-bold')
-                                .addClass('text-danger')
-                                .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                            // $('#open-sign')
+                            //     .find('.text-primary')
+                            //     .removeClass('text-primary text-xl font-bold')
+                            //     .addClass('text-red-600')
+                            //     .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                            $('#sign-icon').remove()
+                            $('#sign-label').html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
 
                             $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('hidden')
                             $('#signature').jSignature('reset')
                             // close modal
                             $('#signatureModal').modal('hide')
                         }
+
                         else {
                             Swal.fire({
                                 icon: 'error',
@@ -2786,34 +2791,9 @@ jQuery(document).ready(function ($) {
             }
         })
 
-        // $.getJSON(scriptUrl + '?mode=signature&jobid=' + $('#workorder').html().replace('WO.', '') + '&data=' + encodeURIComponent(dataUrl), function (res) {
-        //     console.log(res)
-        //     if (res.status == 'success') {
-        //         Swal.fire({
-        //             icon: 'success',
-        //             title: 'บันทึกลายเซ็นสำเร็จ',
-        //             text: 'บันทึกลายเซ็นสำเร็จ',
-        //             timer: 1500,
-        //         })
-        //         $('#open-sign').parent().addClass('d-none')
-        //         $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
-        //         $('#signature').jSignature('reset')
-        //         // close modal
-        //         $('#signatureModal').modal('hide')
-        //     }
-        //     else {
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'บันทึกลายเซ็นไม่สำเร็จ',
-        //             html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + res.status_text,
-        //             confirmButtonText: 'ตกลง',
-        //             allowOutsideClick: false,
-        //         })
-        //     }
-        // })
-
     }).appendTo($tools)
-    $('<div class="col-6"><button type="button" value="" class="btn bg-info-subtle btn-sm mt-4 shadow shadow-sm w-100" style="min-width:50px;"><i class="bi bi-trash3-fill"></i> ล้างทั้งหมด</button></div>').bind('click', function (e) {
+
+    $('<div class="col-6 text-center"><button type="button" value="" class="px-4 py-2 mt-4 text-white bg-red-600 rounded-lg shadow-sm hover:bg-red-700 transition-colors duration-200 min-w-[50px] w-full"><i class="bi bi-trash3-fill"></i> ล้างทั้งหมด</button></div>').bind('click', function (e) {
         $sigdiv.jSignature('reset')
     }).appendTo($tools)
 
@@ -5128,7 +5108,7 @@ MIT License <http://www.opensource.org/licenses/mit-license.php>
                         oursettings = function () {
                             // this === jSignatureInstance 
                             var undoButtonSytle = 'position:absolute;display:none;margin:0 !important;top:auto'
-                                , $undoButton = $('<button type="button" value="ยกเลิกเส้นสุดท้าย" class="btn btn-sm mb-2" style="' + undoButtonSytle + '"><i class="bi bi-arrow-counterclockwise"></i> ยกเลิกเส้นสุดท้าย</button>')
+                                , $undoButton = $('<button type="button" value="ยกเลิกเส้นสุดท้าย" class="absolute hidden mx-0 top-auto px-3 py-1.5 mb-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm transition-colors duration-200" style="' + undoButtonSytle + '"><i class="bi bi-arrow-counterclockwise mr-1"></i> ยกเลิกเส้นสุดท้าย</button>')
                                     .appendTo(this.$controlbarLower)
 
                             // this centers the button against the canvas.

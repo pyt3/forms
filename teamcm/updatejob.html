@@ -328,6 +328,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -343,6 +344,7 @@
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
@@ -362,12 +364,10 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
             transition: left 0.5s;
             z-index: -1;
         }
@@ -382,9 +382,12 @@
         }
 
         @keyframes pulseSoft {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.7;
             }
@@ -526,9 +529,9 @@
                         <button id="open-sign"
                             class="w-full bg-white hover:bg-gray-50 border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-xl p-6 transition-all group">
                             <div class="flex items-center justify-center space-x-3">
-                                <img src="./signature-gif.gif" alt="sign"
+                                <img src="./signature-gif.gif" alt="sign" id="sign-icon"
                                     class="h-12 group-hover:scale-110 transition-transform">
-                                <div class="text-blue-600 font-medium text-lg">เซ็นรับทราบ</div>
+                                <div class="text-blue-600 font-medium text-lg" id="sign-label">เซ็นรับทราบ</div>
                             </div>
                         </button>
                     </div>
@@ -725,13 +728,19 @@
                     <!-- Action Buttons -->
                     <div class="space-y-3">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <button class="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all btn-ripple" id="submit">
+                            <button
+                                class="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all btn-ripple"
+                                id="submit">
                                 <i class="bi bi-check-circle-fill mr-2"></i>ยืนยัน
                             </button>
-                            <button class="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all btn-ripple" id="summary-btn">
+                            <button
+                                class="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all btn-ripple"
+                                id="summary-btn">
                                 <i class="bi bi-file-text-fill mr-2"></i>สรุปงาน
                             </button>
-                            <button class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-all btn-ripple" id="share-line-btn">
+                            <button
+                                class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-all btn-ripple"
+                                id="share-line-btn">
                                 <i class="bi bi-line mr-2"></i>Share
                             </button>
                         </div>
@@ -757,7 +766,8 @@
                 <div class="p-6">
                     <!-- Summary Display -->
                     <div class="hidden mb-6" id="summary-content">
-                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 select-all">
+                        <div
+                            class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 select-all">
                             <div class="prose max-w-none">
                                 <div id="summary" class="text-gray-800 whitespace-pre-wrap leading-relaxed"></div>
                             </div>
@@ -768,7 +778,9 @@
                     <div class="space-y-4">
                         <!-- More Update Button -->
                         <div class="flex justify-center">
-                            <button class="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium" id="more-update-btn">
+                            <button
+                                class="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
+                                id="more-update-btn">
                                 <i class="bi bi-plus-circle mr-2"></i>
                                 อัพเดทเพิ่ม
                             </button>
@@ -776,7 +788,8 @@
 
                         <!-- Mobile Only Warning -->
                         <div class="hidden" id="mobile-only-warning">
-                            <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-xl p-4">
+                            <div
+                                class="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-xl p-4">
                                 <div class="flex items-center space-x-3">
                                     <div class="flex-shrink-0">
                                         <i class="bi bi-exclamation-triangle-fill text-amber-500 text-xl"></i>
@@ -796,29 +809,24 @@
         </div>
     </main>
     <!-- Signature Modal -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
-        id="signatureModal">
-        <div
-            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-hidden transform transition-all">
-            <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <i class="bi bi-pen text-2xl"></i>
-                        <h3 class="text-xl font-semibold">ลายเซ็นรับทราบ</h3>
-                    </div>
-                    <button class="text-white hover:text-gray-200 transition-colors p-1"
-                        onclick="closeSignatureModal()">
+    <div id="signatureModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm" aria-labelledby="signatureModalLabel" aria-hidden="true">
+        <div class="relative w-full h-full max-w-screen">
+            <div class="bg-white h-full flex flex-col">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 flex items-center justify-between flex-shrink-0">
+                    <h5 class="text-lg font-semibold" id="signatureModalLabel">ลายเซ็นรับทราบ</h5>
+                    <button type="button" onclick="closeSignatureModal()" class="text-white hover:text-gray-200 transition-colors" aria-label="Close">
                         <i class="bi bi-x-lg text-2xl"></i>
                     </button>
                 </div>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="p-6 h-96 overflow-y-auto">
-                <div id="signatureparent" class="hidden h-full flex flex-col items-center justify-center space-y-4">
-                    <div id="signature" class="w-full flex-1"></div>
-                    <div id="tools" class="flex justify-center space-x-4 w-full"></div>
+                <!-- Body -->
+                <div class="flex-1 p-4 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-full">
+                        <div id="signatureparent" class="hidden w-full flex flex-col items-center justify-center gap-4">
+                            <div id="signature" class="w-full aspect-[4/1]"></div>
+                            <div id="tools" class="flex flex-wrap gap-2 w-full justify-center flex-shrink-0"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -901,14 +909,14 @@
         // Enhanced UX Functions
         function enhanceButtonInteractions() {
             // Add enhanced hover effects to buttons
-            $('.btn-ripple').each(function() {
+            $('.btn-ripple').each(function () {
                 if (!$(this).hasClass('btn-enhanced')) {
                     $(this).addClass('btn-enhanced');
                 }
             });
 
             // Add click feedback
-            $('.btn-enhanced').off('click.feedback').on('click.feedback', function(e) {
+            $('.btn-enhanced').off('click.feedback').on('click.feedback', function (e) {
                 const btn = $(this);
                 btn.addClass('transform scale-95');
                 setTimeout(() => {
@@ -919,7 +927,7 @@
 
         function addSummaryEnhancements() {
             // Add copy functionality to summary
-            $('#summary').off('click.copy').on('click.copy', function() {
+            $('#summary').off('click.copy').on('click.copy', function () {
                 let text = $(this).html();
                 // First replace hr and br tags with newlines
                 text = text.replace(/<hr class="my-3">/gi, '\n--------------------\n');
@@ -928,7 +936,7 @@
                 text = text.replace(/<[^>]+>/g, '');
                 // Decode HTML entities
                 text = $('<textarea/>').html(text).text();
-                
+
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(text).then(() => {
                         showToast('คัดลอกข้อความเรียบร้อย', 'success');
@@ -958,9 +966,9 @@
         }
 
         function showToast(message, type = 'info') {
-            const toastClass = type === 'success' ? 'bg-green-500' : 
-                              type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-            
+            const toastClass = type === 'success' ? 'bg-green-500' :
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+
             const toast = $(`
                 <div class="fixed top-4 right-4 z-50 ${toastClass} text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
                     <div class="flex items-center space-x-2">
@@ -971,7 +979,7 @@
             `);
 
             $('body').append(toast);
-            
+
             // Animate in
             setTimeout(() => {
                 toast.removeClass('translate-x-full');
@@ -1229,10 +1237,10 @@
                             return `${d.timestamp}<br>${d.update.replace(/\n/g, '<br>')}<br><span class="text-sm text-gray-500"># ${d.name}</span><br>`
                         }).join('<hr class="my-3"><br>')
                     }
-                    
+
                     // Add loading animation
                     $('#summary').html('<div class="text-center py-4"><i class="bi bi-arrow-clockwise animate-spin text-2xl text-blue-500"></i></div>');
-                    
+
                     setTimeout(() => {
                         $('#summary').html(msg);
                         $('#summary-content').removeClass('hidden');
@@ -1321,13 +1329,13 @@
                         .prop('disabled', true)
                         .removeClass('hover:scale-105')
                         .addClass('opacity-75 cursor-not-allowed');
-                    
+
                     // Prepare URL
                     let url = new URL('line://app/' + liff_id)
                     url.searchParams.set('code', code)
                     url.searchParams.set('jobid', jobid)
                     url.searchParams.set('action', 'update')
-                    
+
                     // Add slight delay for better UX
                     setTimeout(() => {
                         window.open(url, '_self')
@@ -1790,11 +1798,13 @@
                     renderContact()
                     if (data.signature && data.workorder) {
                         $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
-                        $('#open-sign')
-                            .find('.text-primary')
-                            .removeClass('text-primary fs-5 fw-bold')
-                            .addClass('text-danger')
-                            .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                        // $('#open-sign')
+                        //     .find('.text-primary')
+                        //     .removeClass('text-primary fs-5 fw-bold')
+                        //     .addClass('text-danger')
+                        //     .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                        $('#sign-icon').remove()
+                        $('#sign-label').html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
                     }
                     if (liff.isInClient() && data.workorder) {
                         $('#open-sign').parent().removeClass('hidden')
@@ -2307,7 +2317,7 @@ ${update}
         function updateCount(updateText) {
             $('#char-count').html(updateText.length + '/5000')
             const charCounter = $('#char-count');
-            
+
             if (updateText.length > 5000) {
                 charCounter.removeClass('text-gray-600').addClass('text-red-500 font-semibold pulse-soft');
             } else if (updateText.length > 4000) {
@@ -3573,7 +3583,7 @@ ${update}
 
             }).appendTo($tools)
 
-            $('<div class="col-6 text-center"><button type="button" value="Submit" class="btn btn-sm mt-4 shadow shadow-sm w-100 text-center" style="background-color: #00C000; min-width:50px; color:#fff"><i class="bi bi-check-lg"></i> บันทึก</button></div>').bind('click', async function (e) {
+            $('<div class="col-6 text-center"><button type="button" value="Submit" class="px-4 py-2 mt-4 text-white bg-green-600 rounded-lg shadow-sm hover:bg-green-700 transition-colors duration-200 min-w-[50px] w-full"><i class="bi bi-check-lg"></i> บันทึก</button></div>').bind('click', async function (e) {
 
                 var data = $sigdiv.jSignature('getData', 'image')
                 let dataUrl = data[0] + ',' + data[1]
@@ -3625,17 +3635,20 @@ ${update}
                                         customClass: sweetalert_custom_class,
                                         timer: 1500,
                                     })
-                                    $('#open-sign')
-                                        .find('.text-primary')
-                                        .removeClass('text-primary fs-5 fw-bold')
-                                        .addClass('text-danger')
-                                        .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                                    // $('#open-sign')
+                                    //     .find('.text-primary')
+                                    //     .removeClass('text-primary text-xl font-bold')
+                                    //     .addClass('text-red-600')
+                                    //     .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                                    $('#sign-icon').remove()
+                                    $('#sign-label').html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
 
                                     $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('hidden')
                                     $('#signature').jSignature('reset')
                                     // close modal
                                     $('#signatureModal').modal('hide')
                                 }
+
                                 else {
                                     Swal.fire({
                                         icon: 'error',
@@ -3662,34 +3675,9 @@ ${update}
                     }
                 })
 
-                // $.getJSON(scriptUrl + '?mode=signature&jobid=' + $('#workorder').html().replace('WO.', '') + '&data=' + encodeURIComponent(dataUrl), function (res) {
-                //     console.log(res)
-                //     if (res.status == 'success') {
-                //         Swal.fire({
-                //             icon: 'success',
-                //             title: 'บันทึกลายเซ็นสำเร็จ',
-                //             text: 'บันทึกลายเซ็นสำเร็จ',
-                //             timer: 1500,
-                //         })
-                //         $('#open-sign').parent().addClass('d-none')
-                //         $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('d-none')
-                //         $('#signature').jSignature('reset')
-                //         // close modal
-                //         $('#signatureModal').modal('hide')
-                //     }
-                //     else {
-                //         Swal.fire({
-                //             icon: 'error',
-                //             title: 'บันทึกลายเซ็นไม่สำเร็จ',
-                //             html: 'บันทึกลายเซ็นไม่สำเร็จ<br>' + res.status_text,
-                //             confirmButtonText: 'ตกลง',
-                //             allowOutsideClick: false,
-                //         })
-                //     }
-                // })
-
             }).appendTo($tools)
-            $('<div class="col-6"><button type="button" value="" class="btn bg-info-subtle btn-sm mt-4 shadow shadow-sm w-100" style="min-width:50px;"><i class="bi bi-trash3-fill"></i> ล้างทั้งหมด</button></div>').bind('click', function (e) {
+
+            $('<div class="col-6 text-center"><button type="button" value="" class="px-4 py-2 mt-4 text-white bg-red-600 rounded-lg shadow-sm hover:bg-red-700 transition-colors duration-200 min-w-[50px] w-full"><i class="bi bi-trash3-fill"></i> ล้างทั้งหมด</button></div>').bind('click', function (e) {
                 $sigdiv.jSignature('reset')
             }).appendTo($tools)
 
@@ -6004,7 +5992,7 @@ ${update}
                                 oursettings = function () {
                                     // this === jSignatureInstance 
                                     var undoButtonSytle = 'position:absolute;display:none;margin:0 !important;top:auto'
-                                        , $undoButton = $('<button type="button" value="ยกเลิกเส้นสุดท้าย" class="btn btn-sm mb-2" style="' + undoButtonSytle + '"><i class="bi bi-arrow-counterclockwise"></i> ยกเลิกเส้นสุดท้าย</button>')
+                                        , $undoButton = $('<button type="button" value="ยกเลิกเส้นสุดท้าย" class="absolute hidden mx-0 top-auto px-3 py-1.5 mb-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm transition-colors duration-200" style="' + undoButtonSytle + '"><i class="bi bi-arrow-counterclockwise mr-1"></i> ยกเลิกเส้นสุดท้าย</button>')
                                             .appendTo(this.$controlbarLower)
 
                                     // this centers the button against the canvas.
