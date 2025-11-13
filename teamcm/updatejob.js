@@ -1359,7 +1359,6 @@ async function updateData(update_data) {
     await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
         update: update_data.update,
         name: update_data.name,
-        vendor_phone: update_data.vendor_phone,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         code: update_data.code,
     }).then(async (docRef) => {
