@@ -1224,7 +1224,6 @@ async function initialData() {
             jobid: jobid,
             update: update,
             name: name,
-            vendor_phone: $('#vendor_phone').val(),
             image: $('#image').attr('src'),
             date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }),
             // thread_id: tg_thread_id
