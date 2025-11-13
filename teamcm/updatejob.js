@@ -1342,6 +1342,7 @@ function updateCount(updateText) {
     else $('#char-count').css('color', '#7777')
 }
 async function updateData(update_data) {
+    console.log(update_data)
     Swal.fire({
         title: 'กำลังอัพเดทข้อมูล',
         html: 'รอสักครู่ กรุณาอย่าปิดหน้านี้',
