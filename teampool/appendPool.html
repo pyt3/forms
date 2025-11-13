@@ -333,7 +333,7 @@
             background: white;
             border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            /* box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); */
             animation: fadeInUp 0.6s ease;
         }
 
@@ -729,6 +729,7 @@
                 // liffId: '1660749495-A2gmPQNb',
                 withLoginOnExternalBrowser: true
             })
+            // $('.loader').fadeOut(500)
             liff.ready.then(async () => {
 
                 const fetchTelegramConstants = (retries = 5) => {
@@ -968,11 +969,12 @@
 
             // Swap animation handler
             $swapButton.on('click', function() {
+                console.log("Swap button clicked");
                 const $this = $(this);
                 
                 // Add exit animations
-                $divStart.addClass('animate__animated animate__backOutRight animate__faster');
-                $divEnd.addClass('animate__animated animate__backOutLeft animate__faster');
+                $divStart.slideUp(ANIMATION_DURATION);
+                $divEnd.slideUp(ANIMATION_DURATION);
 
                 setTimeout(() => {
                     // Swap values
@@ -982,12 +984,8 @@
                     $end.val(startVal).trigger('change');
 
                     // Remove exit animations and add entry animations
-                    $divStart
-                        .removeClass('animate__backOutRight')
-                        .addClass('animate__backInLeft');
-                    $divEnd
-                        .removeClass('animate__backOutLeft')
-                        .addClass('animate__backInRight');
+                    $divStart.slideDown(ANIMATION_DURATION);
+                    $divEnd.slideDown(ANIMATION_DURATION);
                 }, ANIMATION_DURATION);
 
                 // Rotate icon animation with CSS transform
@@ -1354,6 +1352,7 @@
                 }
             })
             console.time('sendPost')
+            return;
             let result_name, mediagroup_id
             let files = $('#telegram-files')[0].files;
             let tg_msg_id, tg_caption, tg_sent = false
