@@ -846,35 +846,6 @@
     <script src="https://fastly.jsdelivr.net/npm/moment@2.29.4/locale/th.js"></script>
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-    <script>
-        // Modal functions for Tailwind (replacing Bootstrap modal)
-        function openSignatureModal() {
-            const modal = document.getElementById('signatureModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.getElementById('signatureparent').classList.remove('hidden');
-            // Trigger resize for signature canvas
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
-        }
-
-        function closeSignatureModal() {
-            const modal = document.getElementById('signatureModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // Update modal event listeners
-        document.addEventListener('DOMContentLoaded', function () {
-            // Replace Bootstrap modal events
-            const openSignBtn = document.getElementById('open-sign');
-            if (openSignBtn) {
-                openSignBtn.addEventListener('click', openSignatureModal);
-            }
-        });
-    </script>
     <script>
         let script = document.createElement('script');
         script.src = './updatejob.js' + '?v=' + Date.now();

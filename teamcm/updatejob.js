@@ -224,7 +224,6 @@ $(document).ready(async () => {
     })
 
     $('#open-sign').click(function () {
-        $('#signatureModal').modal('show')
         $('#signatureparent').removeClass('hidden')
     })
     // let alert_height = $('#image').parents('.alert').height()
@@ -376,11 +375,13 @@ async function initialData() {
             console.log("🚀 ~ firestore.collection ~ data:", data)
             if (data.signature) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
-                $('#open-sign')
-                    .find('.text-primary')
-                    .removeClass('text-primary fs-5 fw-bold')
-                    .addClass('text-danger')
-                    .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                // $('#open-sign')
+                // .find('.text-primary')
+                // .removeClass('text-primary fs-5 fw-bold')
+                // .addClass('text-danger')
+                // .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+                $('#sign-icon').remove()
+                $('#sign-label').html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
             }
             $('#open-sign').parent().removeClass('hidden')
             if (data.status) {
@@ -2632,6 +2633,39 @@ function addContact() {
     })
 }
 
+// Modal functions for Tailwind (replacing Bootstrap modal)
+function openSignatureModal() {
+    const modal = document.getElementById('signatureModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.getElementById('signatureparent').classList.remove('hidden');
+    // Trigger resize for signature canvas
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 100);
+}
+
+function closeSignatureModal() {
+    const modal = document.getElementById('signatureModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+function closeSignatureModal() {
+    const modal = document.getElementById('signatureModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+// Update modal event listeners
+document.addEventListener('DOMContentLoaded', function () {
+    // Replace Bootstrap modal events
+    const openSignBtn = document.getElementById('open-sign');
+    if (openSignBtn) {
+        openSignBtn.addEventListener('click', openSignatureModal);
+    }
+});
+
 jQuery(document).ready(function ($) {
 
     var topics = {};
@@ -2762,7 +2796,7 @@ jQuery(document).ready(function ($) {
                             $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('hidden')
                             $('#signature').jSignature('reset')
                             // close modal
-                            $('#signatureModal').modal('hide')
+                            closeSignatureModal()
                         }
 
                         else {
