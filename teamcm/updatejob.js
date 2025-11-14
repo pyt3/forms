@@ -224,7 +224,7 @@ $(document).ready(async () => {
     })
 
     $('#open-sign').click(function () {
-        $('#signatureModal').modal('show')
+        // $('#signatureModal').modal('show')
         $('#signatureparent').removeClass('hidden')
     })
     // let alert_height = $('#image').parents('.alert').height()
