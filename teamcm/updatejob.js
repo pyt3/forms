@@ -1,4 +1,4 @@
-// var vConsole = new VConsole();
+var vConsole = new VConsole();
 AOS.init();
 document.addEventListener("DOMContentLoaded", function () {
     NProgress.start();
