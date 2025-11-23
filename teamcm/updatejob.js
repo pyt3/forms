@@ -216,17 +216,6 @@ $(document).ready(async () => {
         document.getElementById('update').value = msg + z;
     })
 
-    $('#signatureModal').on('shown.bs.modal', function () {
-        setTimeout(() => {
-            // trig window resize
-            window.dispatchEvent(new Event('resize'));
-        }, 100);
-    })
-
-    $('#open-sign').click(function () {
-        $('#signatureModal').modal('show')
-        $('#signatureparent').removeClass('hidden')
-    })
     // let alert_height = $('#image').parents('.alert').height()
     // console.log("🚀 !! alert_height:", alert_height)
     // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
@@ -2762,7 +2751,7 @@ jQuery(document).ready(function ($) {
                             $('#user-sign').attr('src', 'data:' + dataUrl).parent().removeClass('hidden')
                             $('#signature').jSignature('reset')
                             // close modal
-                            $('#signatureModal').modal('hide')
+                            closeSignatureModal()
                         }
 
                         else {
