@@ -1004,7 +1004,7 @@ async function initialData() {
         $.LoadingOverlay("hide");
     }
 
-    $('#share-line-btn').click(async () => {
+    $('.share-line-btn').click(async () => {
         let work_detail = await firestore.collection('jobdata/').doc(jobid).get().then(doc => doc.data())
         if (work_detail && work_detail != null) {
             let flex = {
