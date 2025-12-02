@@ -1198,7 +1198,7 @@ async function initialData() {
                                 },
                                 {
                                     "type": "text",
-                                    "text": work_detail.date ? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') : '-',
+                                    "text": work_detail.date ? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') + '   (' + moment(work_detail.date.toDate()).fromNow() + ')' : 'ยังไม่มีการอัพเดท',
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "adjustMode": "shrink-to-fit",
@@ -2474,30 +2474,28 @@ function renderContact() {
         let [name, phone, role] = contact.split('|').map(x => x.trim())
         console.log(name, phone, role)
         let contactCard = $(`
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="fw-semibold">${name}</div>
-                                            <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill">${role}</span>
-                                        </div>
-                                        <div class="text-muted small">
-                                            <a href="tel:${phone}" class="text-decoration-none">
-                                                <i class="bi bi-telephone-fill me-1"></i>${phone}
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex gap-1">
-                                        <div class="btn-group rounded-pill">
-                                            <button class="btn btn-sm btn-warning edit-contact" data-index="${index}">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger delete-contact" data-index="${index}">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </li>
-                            `)
+            <li class="flex justify-between items-center py-3 px-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+            <div class="flex-grow">
+                <div class="flex items-center gap-2 mb-1">
+                <div class="font-semibold text-gray-900">${name}</div>
+                <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">${role}</span>
+                </div>
+                <div class="text-sm text-gray-600">
+                <a href="tel:${phone}" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline decoration-1 transition-colors cursor-pointer">
+                    <i class="bi bi-telephone-fill"></i>${phone}
+                </a>
+                </div>
+            </div>
+            <div class="flex gap-1 bg-gray-100 rounded-lg p-1">
+                <button class="edit-contact p-2 bg-white hover:bg-amber-500 hover:text-white text-amber-600 rounded-md transition-all shadow-sm" data-index="${index}" title="แก้ไข">
+                <i class="bi bi-pencil"></i>
+                </button>
+                <button class="delete-contact p-2 bg-white hover:bg-red-500 hover:text-white text-red-600 rounded-md transition-all shadow-sm" data-index="${index}" title="ลบ">
+                <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            </li>
+        `)
         ul.append(contactCard)
     })
 
