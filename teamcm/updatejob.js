@@ -1198,7 +1198,7 @@ async function initialData() {
                                 },
                                 {
                                     "type": "text",
-                                    "text": work_detail.date ? moment(work_detail.date).format('DD/MM/YYYY HH:mm') : '-',
+                                    "text": work_detail.date ? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') : '-',
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "adjustMode": "shrink-to-fit",
