@@ -18,7 +18,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-    <script src='https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js'></script>
+    <!-- v5 -->
+    <!-- <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script> -->
     <style>
         * {
             margin: 0;
@@ -670,7 +671,7 @@
             }
         }
 
-        async function getUID(){
+        async function getUID() {
             return await new Promise(async resolve => {
                 if (liff.getDecodedIDToken()) {
                     resolve(liff.getDecodedIDToken().sub)
@@ -957,16 +958,16 @@
         const canvas = document.getElementById('canvas');
         const snap = document.getElementById('snap');
         var worker
-        (async () => {
-            worker = await Tesseract.createWorker();
-            await worker.loadLanguage('eng');
-            await worker.initialize('eng');
-            await worker.setParameters({
-                tessedit_char_whitelist: '_PYTBDEM0123456789',
-                // tessedit_ocr_engine_mode: 'OEM_TESSERACT_LSTM_COMBINED',
-            });
-            console.log("worker ready")
-        })();
+        // (async () => {
+        //     worker = await Tesseract.createWorker();
+        //     await worker.loadLanguage('eng');
+        //     await worker.initialize('eng');
+        //     await worker.setParameters({
+        //         tessedit_char_whitelist: '_PYTBDEM0123456789',
+        //         // tessedit_ocr_engine_mode: 'OEM_TESSERACT_LSTM_COMBINED',
+        //     });
+        //     console.log("worker ready")
+        // })();
 
         // Get access to the camera
 
