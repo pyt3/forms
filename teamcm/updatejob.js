@@ -340,7 +340,7 @@ async function initialData() {
                     return r
                 }).map(d => {
                     return `${d.timestamp}<br>${d.update.replace(/\n/g, '<br>')}<br><span class="text-sm text-gray-500"># ${d.name}</span><br>`
-                }).join('<hr class="my-3"><br>')
+                }).join('<hr class="my-3">')
             }
 
             // Add loading animation
