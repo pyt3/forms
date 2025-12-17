@@ -14,6 +14,7 @@ try:
 except ImportError:
     winreg = None
 import threading
+import subprocess
 from datetime import datetime
 import json
 from concurrent.futures import ThreadPoolExecutor
@@ -2332,6 +2333,20 @@ def re_init_app():
 
 def check_default_browser():
     """Check the default browser on Windows"""
+    # Check if winreg is available (Windows only)
+    if winreg is None:
+        # the sysem is linux
+        # get default browser from xdg-settings
+
+        try:
+            result = subprocess.run(['xdg-settings', 'get', 'default-web-browser'], capture_output=True, text=True)
+            browser = result.stdout.strip()
+            print(f"🌐 Default Browser: {browser}")
+            return browser
+        except Exception as e:
+            print(f"❌ Could not determine default browser: {e}")
+            return None
+    
     try:
         # Query the registry for the default browser
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice") as key:
@@ -2444,6 +2459,54 @@ def _create_browser_driver(browser_name, console):
                 
             except Exception as e:
                 console.print(f"[red]❌ Edge driver error: {e}[/red]")
+                return None
+        
+        elif browser_name == 'brave-browser.desktop':
+            try:
+                from selenium.webdriver.chrome.options import Options as ChromeOptions
+                from selenium.webdriver.chrome.service import Service as ChromeService
+                import platform
+                
+                options = ChromeOptions()
+                
+                # Set Brave binary location based on OS
+                if platform.system() == 'Windows':
+                    options.binary_location = "C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe"
+                elif platform.system() == 'Linux':
+                    # Common Brave paths on Linux
+                    brave_paths = [
+                        '/usr/bin/brave-browser',
+                        '/usr/bin/brave',
+                        '/snap/bin/brave',
+                        '/usr/local/bin/brave-browser',
+                        '/usr/local/bin/brave'
+                    ]
+                    for path in brave_paths:
+                        if os.path.exists(path):
+                            options.binary_location = path
+                            break
+                elif platform.system() == 'Darwin':  # macOS
+                    options.binary_location = "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+                
+                options.add_argument("--log-level=3")
+                options.add_argument("--silent")
+                options.add_argument("--disable-logging")
+                options.add_argument("--disable-dev-shm-usage")
+                options.add_argument("--start-maximized")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-gpu")
+                options.add_experimental_option("excludeSwitches", ["enable-logging"])
+                options.add_experimental_option('useAutomationExtension', False)
+                
+                console.print("[cyan]Setting up Brave driver...[/cyan]")
+                # Let Selenium Manager handle the driver automatically
+                # It will download the correct version for the browser
+                driver = webdriver.Chrome(options=options)
+                console.print("[green]✓ Brave driver setup successfully[/green]")
+                return driver
+                
+            except Exception as e:
+                console.print(f"[red]❌ Brave driver error: {e}[/red]")
                 return None
         else:
             console.print(f"[red]❌ Unsupported browser: {browser_name}[/red]")
