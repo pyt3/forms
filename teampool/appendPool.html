@@ -1123,7 +1123,8 @@
                 // uid: 'test',
                 // displayName: 'yeah'
                 uid: await getUID(),
-                displayName: profile.displayName
+                displayName: profile.displayName,
+                uuid: crypto.randomUUID()
             }
             if (start == end) {
                 return Swal.fire({
@@ -1413,7 +1414,7 @@
                         url: script_url,
                         type: 'POST',
                         data: data,
-                        timeout: 10000,
+                        timeout: 20000,
                         success: function (res) {
                             if (res.status == 'success') {
                                 success_all++
@@ -1480,7 +1481,8 @@
                         end: data.end,
                         name: $('#displayName').attr('data-name'),
                         ['start-room']: data['start-room'],
-                        ['end-room']: data['end-room']
+                        ['end-room']: data['end-room'],
+                        uuid: data.uuid
                     }, (res) => {
                         if (res.status == 'success') {
                             $('#status-nsmart').html('<i class="bi bi-check-circle-fill text-success"></i>บันทึกลง Job Consult').removeClass('text-muted').addClass('text-success')
