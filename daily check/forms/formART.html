@@ -1785,6 +1785,7 @@
                                 $('#' + key).attr('placeholder', data[key])
                                 if (key.indexOf('-lot') > -1) $('#' + key).val(data[key])
                             })
+                            sessionStorage.setItem('dailycheck_app', data['tg'])
                             console.log(localStorage.getItem('user'));
                             if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
                                 $('#name').val(localStorage.getItem('user') || "")
@@ -2165,7 +2166,6 @@ ASTEC SCA 165DS
 
         function sendTelegram(obj) {
             let message
-            let token = '7333807165:AAGQoFbZdpIIiFoh-vhF0aaKjqgSP0foiEY'
             let chat_id = '-1002471345058'
             let message_thread_id
             let parse_mode = 'HTML'
@@ -2386,7 +2386,7 @@ ${obj['andrology-incubator-name']}`
             }
 
             $.ajax({
-                url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+                url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app') + '/sendMessage',
                 type: 'POST',
                 data: {
                     chat_id: chat_id,
