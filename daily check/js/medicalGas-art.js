@@ -776,6 +776,7 @@ const checkDone = () => {
                     icon: 'border-0',
                 },
             }).then(() => {
+                // localStorage.removeItem('history')
                 liff.closeWindow()
             })
         }, 200);
