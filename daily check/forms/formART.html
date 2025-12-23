@@ -2401,6 +2401,7 @@ ${obj['andrology-incubator-name']}`
                     },
                     success: function (res) {
                         console.log(res)
+                        success_all += 1
                         checkDone()
                         resolve(res)
                     },
@@ -2531,7 +2532,9 @@ ${obj['andrology-incubator-name']}`
                                 delete obj[$(obj.form).attr('id')]
                                 localStorage.setItem('history', JSON.stringify(obj))
                             }
+                            success_all += 1
                             checkDone()
+                            resolve(res)
                         } else {
                             reject(res)
                         }
