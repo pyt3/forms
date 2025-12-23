@@ -2400,6 +2400,8 @@ ${obj['andrology-incubator-name']}`
                         parse_mode: parse_mode,
                     },
                     success: function (res) {
+                        console.log(res)
+                        checkDone()
                         resolve(res)
                     },
                     error: function (err) {
@@ -2518,7 +2520,7 @@ ${obj['andrology-incubator-name']}`
                     data: obj,
                     type: 'POST',
                     success: function (res) {
-
+                        console.log(res)
                         if (res.status) {
                             $(obj.form).trigger('reset')
                             $(obj.form).removeClass('was-validated')
