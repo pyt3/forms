@@ -2389,6 +2389,7 @@ ${obj['andrology-incubator-name']}`
                 type: 'POST',
                 data: {
                     chat_id: chat_id,
+                    message_thread_id: message_thread_id,
                     text: message,
                     parse_mode: parse_mode,
                 },
@@ -2489,13 +2490,13 @@ ${obj['andrology-incubator-name']}`
                     success: function (res) {
                         
                         if (res.status) {
-                            $(form).trigger('reset')
-                            $(form).removeClass('was-validated')
+                            $(obj.form).trigger('reset')
+                            $(obj.form).removeClass('was-validated')
                             // scroll to top
                             let history = localStorage.getItem('history')
                             if (history != null) {
                                 let obj = JSON.parse(history)
-                                delete obj[$(form).attr('id')]
+                                delete obj[$(obj.form).attr('id')]
                                 localStorage.setItem('history', JSON.stringify(obj))
                             }
                             checkDone()
