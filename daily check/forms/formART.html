@@ -1592,6 +1592,11 @@
             position: 'top-end',
             showConfirmButton: false,
             timer: 1500,
+            customClass: {
+                popup: 'rounded-4',
+                icon: 'border-0',
+
+            },
         })
 
         $(document).ready(() => {
@@ -1615,7 +1620,7 @@
 
             $('#offcanvas-menu').find('.nav-link').on('shown.bs.tab', function (e) {
                 let target = $(this).attr('data-bs-target')
-                
+
                 $(target).addClass('animate__slideInLeft animate__faster')
                 setTimeout(() => {
                     $(target).removeClass('animate__slideInLeft animate__faster')
@@ -1662,8 +1667,8 @@
                 $.LoadingOverlay("show");
                 console.log('liff init success');
                 let profile = await liff.getProfile()
-                
-                
+
+
                 $('#line-display').attr('src', profile.pictureUrl).show(200)
                 $.LoadingOverlay("hide");
                 let now = new Date()
@@ -1717,12 +1722,12 @@
                     }
                     $('#' + $(inp).attr('id')).removeClass('border-danger border-2')
                 }
-                
+
             }
             Object.keys(section_alerts).forEach(sec_id => {
                 let alert_text = ''
                 Object.keys(section_alerts[sec_id]).forEach(id => {
-                    
+
                     // alert_text += `<span class="alert alert-danger" style="font-size: 0.9rem">${section_alerts[sec_id][id].label} ${section_alerts[sec_id][id].text}</span>`
                     alert_text += `<div class="col-12">
                                         <div class="alert alert-danger p-1 py-2 ps-2 mb-1 d-flex align-items-center justify-content-between" role="alert" style="font-size: 0.8rem">
@@ -1745,7 +1750,7 @@
 
                     let sec_id = $(this).data('alert-id').split('-').slice(0, -1).join('-')
                     delete section_alerts[sec_id][$(this).data('alert-id')]
-                    
+
                 })
             })
         }
@@ -1761,7 +1766,7 @@
             Promise.all(forms.map(a => {
                 $.ajax(a.url, {
                     success: function (res) {
-                        
+
                         if (res.status == 'success') {
                             let data = res.data
                             Object.keys(data).forEach(key => {
@@ -1869,7 +1874,7 @@
             }
             atsave[form.attr('id')] = obj
             localStorage.setItem('history', JSON.stringify(atsave))
-            
+
         }
 
         function getHistory() {
@@ -1877,11 +1882,11 @@
             let history = localStorage.getItem('history')
             if (history != null) {
                 let obj = JSON.parse(history)
-                
+
                 Object.keys(obj).forEach(key => {
-                    
+
                     Object.keys(obj[key]).forEach(k => {
-                        
+
                         if ($('[name="' + k + '"]').is(':checkbox')) {
                             if (obj[key][k] == '✓') {
                                 $('#' + k).prop('checked', true).val('✓')
@@ -1890,7 +1895,7 @@
                             }
                             return
                         } else if ($('[name="' + k + '"]').is(':radio')) {
-                            
+
                             if (obj[key][k] && obj[key][k] != '') {
                                 // find radio with value
                                 $(`[name="${k}"][value="${obj[key][k]}"]`).click()
@@ -2433,7 +2438,7 @@ ${obj['andrology-incubator-name']}`
 
         let success_all = 0
         const checkDone = () => {
-            
+
             if (success_all >= 2) {
                 setTimeout(() => {
                     $('html, body').animate({
@@ -2445,7 +2450,12 @@ ${obj['andrology-incubator-name']}`
                         confirmButtonText: 'ตกลง',
                         timer: 800,
                         allowOutsideClick: false,
-                        timerProgressBar: true
+                        timerProgressBar: true,
+                        customClass: {
+                            popup: 'rounded-4',
+                            icon: 'border-0',
+
+                        },
                     }).then(() => {
                         liff.closeWindow()
                     })
@@ -2460,10 +2470,10 @@ ${obj['andrology-incubator-name']}`
             data.forEach(a => {
                 obj[a.name] = a.value.toString()
             })
-            
+
             obj.opt = 'submittest'
             obj.form = $(form).attr('id')
-            
+
             // $.LoadingOverlay("show");
             localStorage.setItem('user', $(form).find('.name')[0].value)
             Swal.fire({
@@ -2472,6 +2482,11 @@ ${obj['andrology-incubator-name']}`
                 html: 'กรุณารอสักครู่',
                 didOpen: () => {
                     Swal.showLoading()
+                },
+                customClass: {
+                    popup: 'rounded-4',
+                    icon: 'border-0',
+
                 },
                 allowOutsideClick: () => !Swal.isLoading(),
             })
@@ -2488,7 +2503,7 @@ ${obj['andrology-incubator-name']}`
                     data: obj,
                     type: 'POST',
                     success: function (res) {
-                        
+
                         if (res.status) {
                             $(obj.form).trigger('reset')
                             $(obj.form).removeClass('was-validated')
