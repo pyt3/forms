@@ -2427,13 +2427,22 @@ ${obj['andrology-incubator-name']}`
     </script>
     <script>
         const retryRequest = (fn, retries = 3) => {
-            return fn().catch(err => {
+            // return fn().catch(err => {
+            //     if (retries > 0) {
+            //         return retryRequest(fn, retries - 1);
+            //     } else {
+            //         throw err;
+            //     }
+            // });
+            try {
+                return fn()
+            } catch (err) {
                 if (retries > 0) {
                     return retryRequest(fn, retries - 1);
                 } else {
                     throw err;
                 }
-            });
+            }
         };
 
         let success_all = 0
