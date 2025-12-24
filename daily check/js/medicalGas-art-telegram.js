@@ -494,7 +494,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
             default: return
         }
         $.ajax({
-            url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app', res['tg']) + '/sendMessage',
+            url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app') + '/sendMessage',
             type: 'POST',
             data: {
                 chat_id: chat_id,
@@ -525,7 +525,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                 console.error("Error sending message:", res.description);
                 if (res.description == 'Bad Request: message thread not found') {
                     $.ajax({
-                        url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app', res['tg']) + '/sendMessage',
+                        url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app') + '/sendMessage',
                         type: 'POST',
                         data: {
                             chat_id: chat_id,
@@ -587,7 +587,7 @@ function sendTelegram_confirm(obj) {
         }
         let message = `${form} Daily Check for ${moment().format('DD/MM/YYYY')} ${obj.shift} has been submitted!!`
         $.ajax({
-            url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app', res['tg']) + '/sendMessage',
+            url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app') + '/sendMessage',
             type: 'POST',
             data: {
                 chat_id: tg.initDataUnsafe.user.id,
