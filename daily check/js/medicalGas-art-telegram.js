@@ -195,7 +195,6 @@ function getLastSaved() {
             })
         });
     })).then((res) => {
-        console.log(res);
         res.filter(e => e != false).forEach(r => {
             let data = r.data
             Object.keys(data).forEach(key => {
