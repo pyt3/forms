@@ -187,7 +187,7 @@ function getLastSaved() {
             $.ajax(a.url, {
                 success: function (res) {
                     if (res.status == 'success') {
-                        resolve(res.data)
+                        resolve(res)
                     } else {
                         resolve(false)
                     }
@@ -195,8 +195,8 @@ function getLastSaved() {
             })
         });
     })).then((res) => {
-        res.filter(e => e != false).forEach(data => {
-            console.log(data);
+        res.filter(e => e != false).forEach(r => {
+            let data = r.data
             Object.keys(data).forEach(key => {
                 if (key.length < 1) return
                 if (!$("[name='" + key + "']")) return
