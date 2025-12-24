@@ -225,7 +225,7 @@ function getLastSaved() {
                 $('#name').val("")
             }
         })
-        sessionStorage.setItem('dailycheck_app', res['tg'])
+        sessionStorage.setItem('dailycheck_app', res[0]['tg'])
         Swal.close()
     })
     // return $.ajax({
@@ -516,6 +516,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                 }
             },
             success: function (res) {
+                console.log("Message sent successfully:", res);
                 success_all++
                 checkDone()
                 resolve(res)
@@ -595,6 +596,7 @@ function sendTelegram_confirm(obj) {
                 parse_mode: parse_mode,
             },
             success: function (res) {
+                console.log("Confirmation message sent successfully:", res);
                 success_all++
                 checkDone()
                 resolve(res)
@@ -707,6 +709,7 @@ function saveToSheet(obj) {
                         delete obj[$(form).attr('id')]
                         localStorage.setItem('history', JSON.stringify(obj))
                     }
+                    console.log("Data saved successfully:", res);
                     success_all++
                     checkDone()
                 } else {
