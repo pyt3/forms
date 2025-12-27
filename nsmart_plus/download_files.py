@@ -1,8 +1,6 @@
 import os
 import re
 import sys
-import requests
-import pyperclip
 from utils import get_script_directory
 from browser import check_default_browser
 from browser import create_browser_driver
@@ -16,7 +14,8 @@ from rich.align import Align
 from rich.panel import Panel
 from rich.console import Console
 
-def nsmartPlus_FileUpload():
+def nsmartFileDownload():
+    showBrowser = input("\nShow Browser (y/n)? ")
     console = Console()
     dir_path = get_script_directory()
 
@@ -44,7 +43,7 @@ def nsmartPlus_FileUpload():
         input("\nPress Enter to continue...")
         return False
 
-    driver = create_browser_driver(default_browser, console)
+    driver = create_browser_driver(default_browser, console, show_browser=(showBrowser.lower() == 'y'))
     if not driver:
         console.print("[red]❌ Failed to create browser driver. Copying script to clipboard instead.[/red]")
         input("\nPress Enter to continue...")
@@ -55,7 +54,7 @@ def nsmartPlus_FileUpload():
         page_size = 100
         master_page = 1
         extra_path = "s_branchid=00052&s_dept=0005202&s_sub_dept=000520200002"
-        driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage=&asset_masterPageSize={page_size}&{extra_path}", console)
+        driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage=&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart')
         if not driver:
             console.print("[red]❌ Browser driver is not available. Exiting.[/red]")
             return False
@@ -73,7 +72,7 @@ def nsmartPlus_FileUpload():
             #     return False
             # process_table(driver, domain, console)
             if i > 1:
-                driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage={i}&asset_masterPageSize={page_size}&{extra_path}", console)
+                driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage={i}&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart')
             process_table(driver, domain, console)
 
     except TimeoutException:
@@ -100,8 +99,11 @@ def get_last_page(driver, console):
         console.print("[red]❌ Timeout while fetching the last page number.[/red]")
     return None
 
-
+global isstart
+isstart = False
 def process_table(driver, domain, console):
+    import time
+    global isstart
     try:
         table = WebDriverWait(driver, 2000).until(
             EC.presence_of_element_located((By.XPATH, "/html/body/table[3]/tbody/tr/td/table/tbody/tr/td/table"))
@@ -112,13 +114,19 @@ def process_table(driver, domain, console):
             if len(cols) < 2:
                 continue
             asset_code = cols[3].text.strip()
+            # if asset_code == "353584" and not isstart:
+            #     isstart = True
+            # if not isstart:
+            #     continue
             asset_url = cols[3].find_element(By.TAG_NAME, "a").get_attribute("href")
             get_asset_files(domain, asset_code, asset_url, console, driver)
+            # wait a bit between assets to avoid overwhelming the server
+            time.sleep(2)
     except TimeoutException:
         console.print("[red]❌ Timeout while processing the table.[/red]")
 
 def __main__():
-    nsmartPlus_FileUpload()
+    nsmartFileDownload()
     
 if __name__ == "__main__":
     __main__()
