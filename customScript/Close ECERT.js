@@ -19,6 +19,7 @@ function handlePMForm() {
     const pmHandlers = {
         "FLOW METER": setPMFlowMeter,
         "ASPIRATOR, EMERGENCY (SUCTION PUMP)": setPMAspirator,
+        "ASPIRATOR, EMERGENCY (SUCTION PUMP) (MED)": setPMAspirator,
         "EKG RECORDER": setPMEKG,
         "NIBP MONITOR": () => {
             $(standard_select[0]).select2("val", "G5-BMEPYT3-027");
@@ -48,6 +49,10 @@ function handleCalForm() {
             setCalFlowMeter();
         },
         "ASPIRATOR, EMERGENCY (SUCTION PUMP)": () => {
+            $(standard_select[0]).select2("val", "G5-BMEPYT3-022");
+            setCalAspirator();
+        },
+        "ASPIRATOR, EMERGENCY (SUCTION PUMP) (MED)": () => {
             $(standard_select[0]).select2("val", "G5-BMEPYT3-022");
             setCalAspirator();
         },
