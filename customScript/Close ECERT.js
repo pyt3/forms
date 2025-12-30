@@ -94,6 +94,7 @@ function handleCalForm() {
 // Helper functions
 function processDeviceCode(code) {
     console.log('Original device code:', code);
+    $("button:contains('"+code+"')").removeClass('btn-info').addClass('btn-warning');
     code = code.replace('PYT3D_', '').replace('PYT3T_', '').replace('PYT3_', '').replace('D_', '').replace('T_', '').trim()
     console.log('Processing device code:', code);
     const hasUnderscore = code.indexOf('_') !== -1;
@@ -160,14 +161,14 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
             if (index < ids.length) {
                 console.log('#' + ids[index] + '_col1');
                 console.log('Setting value for:', ids[index] + '_col1', 'with item[0]:', item[0]);
-                $('#' + ids[index] + '_col1').val(item[0]);
+                $('#' + ids[index] + '_col1').val(item[0]).trigger('keyup').trigger('blur').trigger('change');
             }
         });
 
         if (toleranceFieldId) {
             let max_value = Math.max(...data.checklist.map(item => Number(item[0])));
             if (max_value == 500) max_value = 750;
-            $(toleranceFieldId).val(max_value).trigger('keyup');
+            $(toleranceFieldId).val(max_value).trigger('keyup').trigger('blur').trigger('change');
         }
 
         $('#' + ids[0] + '_col1').trigger('keyup');
@@ -345,7 +346,7 @@ function setCalThermoHygroMeter() {
         Object.keys(ids).forEach(key => {
             if (data.checklist[key] && data.checklist[key].length > 0) {
                 setupCalibrationForm(ids[key], { checklist: data.checklist[key], form_cal: data.form_cal.split('#')[0] }, null, false);
-                setSameValue(data.checklist.temperature[0][1],data.checklist.humidity[0][1])
+                setSameValue(data.checklist.temperature[0][1], data.checklist.humidity[0][1])
             }
         });
         setupDatepicker(data);
@@ -581,11 +582,15 @@ function setupQuickSearchModal() {
         });
     }
 
+
+
     $('#QuickSearchResultBox').on('shown.bs.modal', async function () {
+
         let title = $('#QuickSearchResultBox .modal-title').text().trim();
         if (title === 'ข้อมูลเครื่องมือแพทย์') {
             await waitForElement('#QuickSearchResultBox .modal-body div[style*="color:#0000FF"]');
             let code = $('#QuickSearchResultBox .modal-body div[style*="color:#0000FF"]')[0].textContent.trim();
+            
             $('#QuickSearchResultBox').attr('data-code', code);
             let cal_data = processDeviceCode(code);
             console.log('cal_data:', cal_data);
