@@ -26,7 +26,7 @@ function handlePMForm() {
             setPMNIBP();
         },
         "PM MODULE (MED)": setPMModule,
-        "PULSE OXIMETER": setPMSpO2,
+        "PULSE OXIMETER (MED)": setPMSpO2,
         "SUCTION REGULATOR": setPMSuctionRegulator,
         "SPHYGMOMANOMETER": setPMSphygmomanometer,
         "THERMOMETER, HYGRO (MED)": setPMThermoHygroMeter, //357
@@ -66,7 +66,7 @@ function handleCalForm() {
             });
             setCalNIBP();
         },
-        "PULSE OXIMETER": () => {
+        "PULSE OXIMETER (MED)": () => {
             standard_select.select2("val", "G5-BMEPYT3-013");
             setCalSpO2();
         },
