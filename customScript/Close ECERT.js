@@ -21,11 +21,11 @@ function handlePMForm() {
         "ASPIRATOR, EMERGENCY (SUCTION PUMP)": setPMAspirator,
         "ASPIRATOR, EMERGENCY (SUCTION PUMP) (MED)": setPMAspirator,
         "EKG RECORDER": setPMEKG,
-        "NIBP MONITOR": () => {
+        "NIBP MONITOR (MED)": () => {
             $(standard_select[0]).select2("val", "G5-BMEPYT3-027");
             setPMNIBP();
         },
-        "PM MODULE": setPMModule,
+        "PM MODULE (MED)": setPMModule,
         "PULSE OXIMETER": setPMSpO2,
         "SUCTION REGULATOR": setPMSuctionRegulator,
         "SPHYGMOMANOMETER": setPMSphygmomanometer,
@@ -60,7 +60,7 @@ function handleCalForm() {
             $(standard_select[0]).select2("val", "G5-BMEPYT3-013");
             setCalEKG();
         },
-        "NIBP MONITOR": () => {
+        "NIBP MONITOR (MED)": () => {
             standard_select.toArray().slice(0, 4).forEach(select => {
                 $(select).select2("val", "G5-BMEPYT3-013");
             });
