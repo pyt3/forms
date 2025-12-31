@@ -27,7 +27,7 @@ function handlePMForm() {
         },
         "PM MODULE (MED)": setPMModule,
         "PULSE OXIMETER (MED)": setPMSpO2,
-        "SUCTION REGULATOR": setPMSuctionRegulator,
+        "SUCTION REGULATOR (MED)": setPMSuctionRegulator,
         "SPHYGMOMANOMETER": setPMSphygmomanometer,
         "THERMOMETER, HYGRO (MED)": setPMThermoHygroMeter, //357
     };
@@ -70,7 +70,7 @@ function handleCalForm() {
             standard_select.select2("val", "G5-BMEPYT3-013");
             setCalSpO2();
         },
-        "SUCTION REGULATOR": () => {
+        "SUCTION REGULATOR (MED)": () => {
             standard_select.select2("val", "G5-BMEPYT3-022");
             setCalSuctionRegulator();
         },
