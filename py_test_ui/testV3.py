@@ -483,6 +483,7 @@ def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_
                 # Extract image link if available
                 img_link = ''
                 if len(cols) < 2:
+                    print(cols)
                     print("[red]Row does not have enough columns, skipping...[/red]")
                     continue
                 if cols[1].find('a') is not None:
