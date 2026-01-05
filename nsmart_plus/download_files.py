@@ -14,8 +14,14 @@ from rich.align import Align
 from rich.panel import Panel
 from rich.console import Console
 
-def nsmartFileDownload():
-    showBrowser = input("\nShow Browser (y/n)? ")
+def nsmartFileDownload(show_browser=False, config_manager=None):
+    """
+    Download files from NSmart system.
+    
+    Args:
+        show_browser (bool): Whether to show the browser window
+        config_manager: ConfigManager instance for credentials
+    """
     console = Console()
     dir_path = get_script_directory()
 
@@ -43,7 +49,7 @@ def nsmartFileDownload():
         input("\nPress Enter to continue...")
         return False
 
-    driver = create_browser_driver(default_browser, console, show_browser=(showBrowser.lower() == 'y'))
+    driver = create_browser_driver(default_browser, console, show_browser=show_browser, config_manager=config_manager)
     if not driver:
         console.print("[red]❌ Failed to create browser driver. Copying script to clipboard instead.[/red]")
         input("\nPress Enter to continue...")
@@ -54,7 +60,7 @@ def nsmartFileDownload():
         page_size = 100
         master_page = 1
         extra_path = "s_branchid=00052&s_dept=0005202&s_sub_dept=000520200002"
-        driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage=&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart')
+        driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage=&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart', config_manager)
         if not driver:
             console.print("[red]❌ Browser driver is not available. Exiting.[/red]")
             return False
@@ -72,8 +78,8 @@ def nsmartFileDownload():
             #     return False
             # process_table(driver, domain, console)
             if i > 1:
-                driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage={i}&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart')
-            process_table(driver, domain, console)
+                driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage={i}&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart', config_manager)
+            process_table(driver, domain, console, config_manager)
 
     except TimeoutException:
         console.print("[red]❌ Page load timeout. Please check the website URL.[/red]")
@@ -101,7 +107,7 @@ def get_last_page(driver, console):
 
 global isstart
 isstart = False
-def process_table(driver, domain, console):
+def process_table(driver, domain, console, config_manager=None):
     import time
     global isstart
     try:
@@ -119,14 +125,17 @@ def process_table(driver, domain, console):
             # if not isstart:
             #     continue
             asset_url = cols[3].find_element(By.TAG_NAME, "a").get_attribute("href")
-            get_asset_files(domain, asset_code, asset_url, console, driver)
+            get_asset_files(domain, asset_code, asset_url, console, driver, config_manager)
             # wait a bit between assets to avoid overwhelming the server
             time.sleep(2)
     except TimeoutException:
         console.print("[red]❌ Timeout while processing the table.[/red]")
 
 def __main__():
-    nsmartFileDownload()
+    # When run standalone, ask for browser visibility
+    show_browser_input = input("\nShow Browser (y/n)? ")
+    show_browser = show_browser_input.lower() == 'y'
+    nsmartFileDownload(show_browser=show_browser)
     
 if __name__ == "__main__":
     __main__()

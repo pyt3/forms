@@ -16,10 +16,10 @@ login_page_keyword = {
 }
 
 # Helper function to handle repetitive navigation and table extraction logic
-def navigate_and_extract_table(driver, url, table_xpath, id_xpath, console):
+def navigate_and_extract_table(driver, url, table_xpath, id_xpath, console, config_manager=None):
     driver.execute_script("window.open('');")
     driver.switch_to.window(driver.window_handles[-1])
-    driver = go_to_page(driver, url, console)
+    driver = go_to_page(driver, url, console, config_manager=config_manager)
     if driver is None:
         console.print(f"[red]❌ Failed to load page: {url}[/red]")
         driver.close()
@@ -54,7 +54,7 @@ def check_default_browser():
         return 'firefox'
     elif 'edge' in name:
         return 'edge'
-    elif 'brave' in name:
+    elif 'brave' in name or 'xdg-open' in name:
         return 'brave'
     # On Windows, try to detect from registry if webbrowser fails
     if sys.platform.startswith('win'):
@@ -81,12 +81,19 @@ def check_default_browser():
         return 'firefox'
     elif 'edge' in browser_env:
         return 'edge'
-    elif 'brave' in browser_env:
+    elif 'brave' in browser_env or 'brave-browser' in browser_env:
         return 'brave'
     return None
     
-def create_browser_driver(browser_name, console, show_browser=False):
-    """Create and return a Selenium WebDriver for the specified browser."""
+def create_browser_driver(browser_name, console, show_browser=False, config_manager=None):
+    """Create and return a Selenium WebDriver for the specified browser.
+    
+    Args:
+        browser_name: Name of the browser
+        console: Rich console for output
+        show_browser: Whether to show the browser window
+        config_manager: ConfigManager instance for credentials
+    """
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service as ChromeService
     from selenium.webdriver.firefox.service import Service as FirefoxService
@@ -127,8 +134,16 @@ def create_browser_driver(browser_name, console, show_browser=False):
         console.print(f"[red]❌ WebDriver error: {e}[/red]")
         return None
     
-def go_to_page(driver, url, console, login_key=None):
-    """Navigate the driver to the specified URL."""
+def go_to_page(driver, url, console, login_key=None, config_manager=None):
+    """Navigate the driver to the specified URL.
+    
+    Args:
+        driver: Selenium WebDriver instance
+        url: Target URL
+        console: Rich console for output
+        login_key: Key to identify login type ('nsmart' or 'nsmart+')
+        config_manager: ConfigManager instance for credentials
+    """
     try:
         driver.get(url)
         
@@ -142,30 +157,49 @@ def go_to_page(driver, url, console, login_key=None):
         if login_key and login_page_keyword.get(login_key) in driver.current_url:
             console.print("[yellow]⚠️  Redirected to login page[/yellow]")
             if login_key == 'nsmart':
+                # Get credentials from config manager or use defaults
+                if config_manager:
+                    creds = config_manager.get_nsmart_credentials()
+                    username = creds['username'] or 'PYT34DARANPHOP'
+                    password = creds['password'] or '577199'
+                else:
+                    username = 'PYT34DARANPHOP'
+                    password = '577199'
+                
                 # Wait for page to load
                 WebDriverWait(driver, 3000).until(
                     EC.presence_of_element_located((By.NAME, 'user'))
                 )
                 
                 # fill login form
-                driver.find_element(By.NAME, 'user').send_keys('PYT34DARANPHOP')
-                driver.find_element(By.NAME, 'pass').send_keys('577199')
+                driver.find_element(By.NAME, 'user').send_keys(username)
+                driver.find_element(By.NAME, 'pass').send_keys(password)
                 driver.find_element(By.NAME, 'pass').send_keys('\n')  # Press Enter to submit
                 WebDriverWait(driver, 3000).until(
                     EC.url_changes("https://nsmart.nhealth-asia.com/mtdpdb01/index.php")
                 )
                 print("Logged in, current URL:", driver.current_url)
-                return go_to_page(driver, url, console, login_key)
+                
+                return go_to_page(driver, url, console, login_key, config_manager)
             elif login_key == 'nsmart+':
+                # Get credentials from config manager or use defaults
+                if config_manager:
+                    creds = config_manager.get_nsmart_plus_credentials()
+                    username = creds['username'] or 'nhbml.pyt3@nhealth-asia.com'
+                    password = creds['password'] or 'Nhlabpt3*'
+                else:
+                    username = 'nhbml.pyt3@nhealth-asia.com'
+                    password = 'Nhlabpt3*'
+                
                 # Wait for page to load
                 WebDriverWait(driver, 10000).until(
                     EC.presence_of_element_located((By.XPATH,'//*[@id="nhealth-sidebar-layout"]/div[2]/div/div[1]/div/div/div/div/form/div/div[2]/div/div/span/input'))
                 )
                 
                 # fill login form
-                driver.find_element(By.XPATH,'//*[@id="nhealth-sidebar-layout"]/div[2]/div/div[1]/div/div/div/div/form/div/div[2]/div/div/span/input').send_keys('nhbml.pyt3@nhealth-asia.com')
+                driver.find_element(By.XPATH,'//*[@id="nhealth-sidebar-layout"]/div[2]/div/div[1]/div/div/div/div/form/div/div[2]/div/div/span/input').send_keys(username)
                 
-                driver.find_element(By.XPATH,'//*[@id="nhealth-sidebar-layout"]/div[2]/div/div[1]/div/div/div/div/form/div/div[3]/div/div/span/div/input').send_keys('Nhlabpt3*')
+                driver.find_element(By.XPATH,'//*[@id="nhealth-sidebar-layout"]/div[2]/div/div[1]/div/div/div/div/form/div/div[3]/div/div/span/div/input').send_keys(password)
                 driver.find_element(By.XPATH,'//*[@id="nhealth-sidebar-layout"]/div[2]/div/div[1]/div/div/div/div/form/div/div[3]/div/div/span/div/input').send_keys('\n')  # Press Enter to submit
                 WebDriverWait(driver, 5000).until(
                     EC.presence_of_all_elements_located((By.XPATH, '//*[@id="nhealth-sidebar-layout"]/div[1]/div/div[3]/div[2]/button[2]'))
@@ -183,7 +217,7 @@ def go_to_page(driver, url, console, login_key=None):
         return None
 
     
-def get_asset_files(domain, asset_code, asset_url, console, driver):
+def get_asset_files(domain, asset_code, asset_url, console, driver, config_manager=None):
     import re
     import requests
     asset_image_page = asset_url.replace("asset_mast_record.php", "asset_picture.php")
@@ -204,7 +238,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver):
             else:
                 return href
     
-    driver, table, id_code = navigate_and_extract_table(driver, asset_image_page, image_table_xpath, image_id_xpath, console)
+    driver, table, id_code = navigate_and_extract_table(driver, asset_image_page, image_table_xpath, image_id_xpath, console, config_manager)
     if table is None or id_code is None:
         return
    
@@ -234,7 +268,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver):
     img_tasks = [task for task in img_tasks if task]
     if img_tasks:
         with ThreadPoolExecutor(max_workers=8) as executor:
-            futures = [executor.submit(download_nsmart_files, src, path, name, console) for src, path, name in img_tasks]
+            futures = [executor.submit(download_nsmart_files, src, path, name, console, config_manager) for src, path, name in img_tasks]
             for future in as_completed(futures):
                 # Optionally handle results or exceptions here
                 try:
@@ -248,7 +282,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver):
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
     
-    driver, table, id_code = navigate_and_extract_table(driver, document_page, document_table_xpath, document_id_xpath, console)
+    driver, table, id_code = navigate_and_extract_table(driver, document_page, document_table_xpath, document_id_xpath, console, config_manager)
     if table is None or id_code is None:
         return
     footer_tr = table.find_elements(By.TAG_NAME, "tr")[-1]
@@ -277,7 +311,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver):
             doc_page_url = f"{document_page}&asset_docPage={doc_page}"
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
-            driver, table, id_code = navigate_and_extract_table(driver, doc_page_url, document_table_xpath, document_id_xpath, console)
+            driver, table, id_code = navigate_and_extract_table(driver, doc_page_url, document_table_xpath, document_id_xpath, console, config_manager)
             if table is None or id_code is None:
                 return
 
@@ -291,7 +325,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver):
         doc_tasks = [task for task in doc_tasks if task]
         if doc_tasks:
             with ThreadPoolExecutor(max_workers=8) as executor:
-                futures = [executor.submit(download_nsmart_files, url, path, name, console) for url, path, name in doc_tasks]
+                futures = [executor.submit(download_nsmart_files, url, path, name, console, config_manager) for url, path, name in doc_tasks]
                 for future in as_completed(futures):
                     try:
                         future.result()
@@ -301,7 +335,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver):
     driver.switch_to.window(driver.window_handles[0])
     
 
-def download_nsmart_files(url, folder_path, filename, console):
+def download_nsmart_files(url, folder_path, filename, console, config_manager=None):
     import requests
     import os
     import sys
@@ -314,8 +348,16 @@ def download_nsmart_files(url, folder_path, filename, console):
 
     filename = time.time().__str__() + "__" + filename
     encoded_url = url.replace(" ", "%20")
-    main_dir = get_script_directory()
-    folder_path = os.path.join(main_dir, folder_path.lstrip('/'))
+    
+    # Use source folder from config if available
+    if config_manager:
+        base_dir = config_manager.get_source_folder()
+        if not base_dir:
+            base_dir = get_script_directory()
+    else:
+        base_dir = get_script_directory()
+    
+    folder_path = os.path.join(base_dir, folder_path.lstrip('/'))
 
     if not os.path.exists(folder_path):
         try:
@@ -326,7 +368,7 @@ def download_nsmart_files(url, folder_path, filename, console):
                 return
 
     local_filename = os.path.join(folder_path, filename if filename else url.split('/')[-1])
-    log_path = os.path.join(main_dir, 'download_log.csv')
+    log_path = os.path.join(base_dir, 'download_log.csv')
     log_fields = ['timestamp', 'url', 'local_filename', 'status', 'error']
     log_row = {
         'timestamp': datetime.now().isoformat(),
