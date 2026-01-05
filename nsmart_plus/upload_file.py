@@ -16,16 +16,41 @@ from rich.console import Console
 import time
 import pyautogui
 
-def nsmartPlusFileUpload():
+def nsmartPlusFileUpload(show_browser=False, config_manager=None):
+    """
+    Upload files to NSmart+ system.
+    
+    Args:
+        show_browser (bool): Whether to show the browser window
+        config_manager: ConfigManager instance for credentials
+    """
     def wait_for_all_overlays_gone(driver, timeout=10):
         # Wait until no elements with that class are visible on the entire page
         WebDriverWait(driver, timeout).until(
             lambda d: len([el for el in d.find_elements(By.CLASS_NAME, 'overlay') if el.is_displayed()]) == 0
         )
-    showBrowser = input("\nShow Browser (y/n)? ")
     console = Console()
     dir_path = get_script_directory()
-
+    
+    # Get source folder from config or use default
+    if config_manager:
+        source_folder = config_manager.get_source_folder()
+        if not source_folder:
+            source_folder = os.path.join(dir_path, 'invent')
+    else:
+        source_folder = os.path.join(dir_path, 'invent')
+    
+    # check if source folder exists
+    if not os.path.exists(source_folder):
+        console.print(f"[red]❌ Source folder does not exist: {source_folder}[/red]")
+        return False
+    
+    # check if source folder is empty
+    if not any(os.scandir(source_folder)):
+        console.print(f"[red]❌ Source folder is empty: {source_folder}[/red]")
+        return False
+    
+    
     # Load uploaded IDs from log file
     upload_log_path = os.path.join(dir_path, 'uploaded_ids.log')
     uploaded_ids = set()
@@ -59,7 +84,7 @@ def nsmartPlusFileUpload():
         input("\nPress Enter to continue...")
         return False
 
-    driver = create_browser_driver(default_browser, console, show_browser=(showBrowser.lower() == 'y'))
+    driver = create_browser_driver(default_browser, console, show_browser=show_browser, config_manager=config_manager)
     if not driver:
         console.print("[red]❌ Failed to create browser driver. Copying script to clipboard instead.[/red]")
         input("\nPress Enter to continue...")
@@ -67,7 +92,7 @@ def nsmartPlusFileUpload():
 
     try:
         domain = "https://nsmartplus.nhealth-asia.com/"
-        driver = go_to_page(driver, "https://nsmartplus.nhealth-asia.com/serviceportal/asset-management-list", console, 'nsmart+')
+        driver = go_to_page(driver, "https://nsmartplus.nhealth-asia.com/serviceportal/asset-management-list", console, 'nsmart+', config_manager)
         if not driver:
             console.print("[red]❌ Browser driver is not available. Exiting.[/red]")
             return False
@@ -81,7 +106,6 @@ def nsmartPlusFileUpload():
             EC.presence_of_element_located((By.CLASS_NAME, 'nhealth-sidebar-layout-header'))
         )
        
-        source_folder = 'D:/github/forms-1/nsmart_plus/invent/'
         for root, dirs, files in os.walk(source_folder):
             for dir_name in dirs:
                 id = dir_name.strip()
@@ -363,7 +387,10 @@ def process_table(driver, domain, console):
         console.print("[red]❌ Timeout while processing the table.[/red]")
 
 def __main__():
-    nsmartPlusFileUpload()
+    # When run standalone, ask for browser visibility
+    show_browser_input = input("\nShow Browser (y/n)? ")
+    show_browser = show_browser_input.lower() == 'y'
+    nsmartPlusFileUpload(show_browser=show_browser)
     
 if __name__ == "__main__":
     __main__()
