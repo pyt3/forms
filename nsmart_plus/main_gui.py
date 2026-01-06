@@ -13,7 +13,7 @@ from upload_file import nsmartPlusFileUpload
 
 
 class LogRedirector(io.StringIO):
-    """Redirects stdout/stderr to a tkinter text widget."""
+    """Redirects stdout/stderr to a tkinter text widget with color support."""
     
     def __init__(self, text_widget, tag="stdout"):
         super().__init__()
@@ -25,7 +25,27 @@ class LogRedirector(io.StringIO):
             self.text_widget.after(0, self._write, string)
     
     def _write(self, string):
-        self.text_widget.insert(tk.END, string)
+        # Determine color based on content and meaning
+        lower_string = string.lower()
+        tag = "stdout"
+        
+        # Error messages (highest priority)
+        if any(keyword in lower_string for keyword in ["error", "failed", "exception", "traceback", "crash"]) or "❌" in string:
+            tag = "error"
+        # Success messages
+        elif any(keyword in lower_string for keyword in ["success", "completed", "done", "finished", "uploaded", "downloaded"]) or "✓" in string or "✅" in string:
+            tag = "success"
+        # Warning messages
+        elif any(keyword in lower_string for keyword in ["warning", "caution", "attention", "skipped", "skipping"]) or "⚠️" in string or "⚡" in string:
+            tag = "warning"
+        # Section headers and important information
+        elif "===" in string or "---" in string:
+            tag = "section"
+        # Info messages
+        elif any(keyword in lower_string for keyword in ["downloading", "uploading", "processing", "connecting", "initializing", "starting", "info"]) or "ℹ️" in string or "📋" in string:
+            tag = "info"
+        
+        self.text_widget.insert(tk.END, string, tag)
         self.text_widget.see(tk.END)
         self.text_widget.update_idletasks()
     
@@ -281,6 +301,14 @@ class NSmartGUI:
         )
         self.download_log.pack(fill=BOTH, expand=True)
         
+        # Configure text tags for colors based on meaning
+        self.download_log.tag_configure("stdout", foreground="#00ff00")   # Standard - Green
+        self.download_log.tag_configure("error", foreground="#ff4444", font=("Consolas", 9, "bold"))   # Error - Red (bold)
+        self.download_log.tag_configure("success", foreground="#44ff44", font=("Consolas", 9, "bold")) # Success - Bright Green (bold)
+        self.download_log.tag_configure("warning", foreground="#ffaa00", font=("Consolas", 9, "bold")) # Warning - Orange (bold)
+        self.download_log.tag_configure("section", foreground="#00aaff", font=("Consolas", 9, "bold")) # Section - Cyan (bold)
+        self.download_log.tag_configure("info", foreground="#aaaaff")     # Info - Light Blue
+        
         # Clear button
         ttk.Button(
             main_container, 
@@ -339,6 +367,14 @@ class NSmartGUI:
             insertbackground="white"
         )
         self.upload_log.pack(fill=BOTH, expand=True)
+        
+        # Configure text tags for colors based on meaning
+        self.upload_log.tag_configure("stdout", foreground="#00ff00")   # Standard - Green
+        self.upload_log.tag_configure("error", foreground="#ff4444", font=("Consolas", 9, "bold"))   # Error - Red (bold)
+        self.upload_log.tag_configure("success", foreground="#44ff44", font=("Consolas", 9, "bold")) # Success - Bright Green (bold)
+        self.upload_log.tag_configure("warning", foreground="#ffaa00", font=("Consolas", 9, "bold")) # Warning - Orange (bold)
+        self.upload_log.tag_configure("section", foreground="#00aaff", font=("Consolas", 9, "bold")) # Section - Cyan (bold)
+        self.upload_log.tag_configure("info", foreground="#aaaaff")     # Info - Light Blue
         
         # Clear button
         ttk.Button(
