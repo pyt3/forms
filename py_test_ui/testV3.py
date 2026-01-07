@@ -1173,7 +1173,7 @@ def attachFilePM(file_name_list, row):
                     
                     # Prepare delete form data
                     form_data = {}
-                    for inp in del_form.findAll('input'):
+                    for inp in del_form.find_all('input'):
                         try:
                             form_data[inp['name']] = inp['value']
                         except KeyError:
@@ -1200,7 +1200,7 @@ def attachFilePM(file_name_list, row):
         
         # Prepare form data for file upload
         form_data = {}
-        for inp in form.findAll('input'):
+        for inp in form.find_all('input'):
             try:
                 form_data[inp['name']] = inp['value']
             except KeyError:
@@ -1351,7 +1351,7 @@ def attachFileCAL(file_name_list, row):
                     
                     # Prepare delete form data
                     form_data = {}
-                    for inp in del_form.findAll('input'):
+                    for inp in del_form.find_all('input'):
                         try:
                             form_data[inp['name']] = inp['value']
                         except KeyError:

@@ -218,7 +218,7 @@ def load_tool_list(href):
             print('No tools list found')
             exit()
         tools_list[confdata['SITE'].lower()] = {}
-        options = select.findAll('option')
+        options = select.find_all('option')
         for option in options:
             tools_list[confdata['SITE'].lower(
             )][option.text.strip().lower()] = option['value']
@@ -868,7 +868,7 @@ def attachFilePM(file_name_list, row):
     if file_count > 0:
         return {"status": 'ok', 'text': 'Already attached PM file'}
     form_data = {}
-    inputs = form.findAll('input')
+    inputs = form.find_all('input')
     emp_name = ''
     for input in inputs:
         try:
@@ -993,7 +993,7 @@ def attachFileCAL(file_name_list, row):
     if file_count > 0:
         return {"status": 'ok', 'text': 'Already attached CAL file'}
     form_data = {}
-    inputs = form.findAll('input')
+    inputs = form.find_all('input')
 
     inputs = [
         {'name': 'docno', 'value': file_count+1},

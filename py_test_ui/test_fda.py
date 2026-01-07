@@ -116,7 +116,7 @@ def test():
         response.encoding = "tis-620"
         soup = BeautifulSoup(response.text, "lxml")
         hardbreak = soup.find('span', {'class': 'hardbreak'})
-        table_rows = hardbreak.findAll('table')[1].find('table').findAll('tr')
+        table_rows = hardbreak.find_all('table')[1].find('table').find_all('tr')
         rows = []
         for row in table_rows:
             td = row.find('td')

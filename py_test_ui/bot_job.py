@@ -566,7 +566,7 @@ def attachFile(id, vender, date, dataurl):
         file_th = find_count_Header.find('th').text.strip().split(' ')[2]
         file_count = int(file_th)
     form_data = {}
-    inputs = form.findAll('input')
+    inputs = form.find_all('input')
     emp_name = ''
     for input in inputs:
         try:
@@ -677,7 +677,7 @@ def attachFileCAL(id, vender, date, dataurl):
         file_th = find_count_Header.find('th').text.strip().split(' ')[2]
         file_count = int(file_th)
     form_data = {}
-    inputs = form.findAll('input')
+    inputs = form.find_all('input')
     emp_name = ''
     for input in inputs:
         try:
@@ -814,10 +814,10 @@ def receivejob(name, jobid, detail):
 
         # serializeArray form to json
         form_data = {}
-        inputs = form.findAll('input')
+        inputs = form.find_all('input')
         for input in inputs:
             form_data[input['name']] = input['value']
-        selects = form.findAll('select')
+        selects = form.find_all('select')
         for select in selects:
             form_data[select['name']] = select.find(
                 'option', {'selected': True})['value']
@@ -906,14 +906,14 @@ def saveJobConsult(text, dept, code):
         return saveJobConsult(text, dept, code)
     # serializeArray form to json
     form_data = {}
-    inputs = form.findAll('input')
+    inputs = form.find_all('input')
     for input in inputs:
         form_data[input['name']] = input['value']
-    selects = form.findAll('select')
+    selects = form.find_all('select')
     for select in selects:
         form_data[select['name']] = select.find(
             'option', {'selected': True})['value']
-    textareas = form.findAll('textarea')
+    textareas = form.find_all('textarea')
     for textarea in textareas:
         form_data[textarea['name']] = textarea.text.strip()
     sub_dept_dict = {
@@ -1044,7 +1044,7 @@ def saveSignature(id, dataurl):
                 response.encoding = "tis-620"
                 soup = BeautifulSoup(response.text, "lxml")
                 print(soup.find_all('img'))
-                sign = soup.findAll('img')[0]['src']
+                sign = soup.find_all('img')[0]['src']
                 sign = 'https://nsmart.nhealth-asia.com/MTDPDB01/' + sign
                 print(sign)
                 print('save signature success {}'.format(id))
