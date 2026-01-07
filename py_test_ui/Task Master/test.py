@@ -264,7 +264,7 @@ def load_tool_list(href):
             print('No tools list found')
             exit()
         tools_list[confdata['SITE'].lower()] = {}
-        options = select.findAll('option')
+        options = select.find_all('option')
         for option in options:
             tools_list[confdata['SITE'].lower(
             )][option.text.strip().lower()] = option['value']
@@ -879,7 +879,7 @@ def attachFilePM(file_name_list, row):
                 del_form = del_form.find('form', {'name': 'Post'})
                 if del_form == None:
                     continue
-                inputs = del_form.findAll('input')
+                inputs = del_form.find_all('input')
                 form_data = {}
                 for inp in inputs:
                     try:
@@ -908,7 +908,7 @@ def attachFilePM(file_name_list, row):
             f'Delete old PM file: {len(file_count)} file(s) success {code}')
 
     form_data = {}
-    inputs = form.findAll('input')
+    inputs = form.find_all('input')
     if len(inputs) == 0:
         time.sleep(2)
         set_login()
@@ -1061,7 +1061,7 @@ def attachFileCAL(file_name_list, row):
                 del_form = del_form.find('form', {'name': 'Post'})
                 if del_form == None:
                     continue
-                inputs = del_form.findAll('input')
+                inputs = del_form.find_all('input')
                 form_data = {}
                 for inp in inputs:
                     try:
@@ -1090,7 +1090,7 @@ def attachFileCAL(file_name_list, row):
             f'Delete old CAL file: {len(file_count)} file(s) success {code}')
 
     form_data = {}
-    inputs = form.findAll('input')
+    inputs = form.find_all('input')
     if len(inputs) == 0:
         time.sleep(2)
         set_login()
