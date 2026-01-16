@@ -1198,7 +1198,8 @@ async function initialData() {
                                 },
                                 {
                                     "type": "text",
-                                    "text": work_detail.date ? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') + '   (' + moment(work_detail.date.toDate()).fromNow() + ')' : 'ยังไม่มีการอัพเดท',
+                                    "text": work_detail.date ? typeof work_detail.date === 'string' ? work_detail.date
+                                        : (moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') + '   (' + moment(work_detail.date.toDate()).fromNow() + ')') : 'ยังไม่มีการอัพเดท',
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "adjustMode": "shrink-to-fit",
@@ -2137,7 +2138,8 @@ async function updateData(update_data) {
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": work_detail.date ? moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') : '-',
+                                    "text": work_detail.date ? typeof work_detail.date === 'string' ? work_detail.date
+                                        : (moment(work_detail.date.toDate()).format('DD/MM/YYYY HH:mm') + '   (' + moment(work_detail.date.toDate()).fromNow() + ')') : 'ยังไม่มีการอัพเดท',
                                     "size": "xs",
                                     "color": "#bcbcbc",
                                     "adjustMode": "shrink-to-fit",
