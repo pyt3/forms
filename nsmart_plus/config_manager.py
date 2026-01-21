@@ -43,7 +43,8 @@ class ConfigManager:
             "SESSION_ID": "",
             "Last run": "",
             "PHPSESSID_Ecert": "",
-            "SOURCE_FOLDER": ""
+            "SOURCE_FOLDER": "",
+            "FILTER_URL": ""
         }
     
     def save_config(self):
@@ -95,3 +96,11 @@ class ConfigManager:
     def set_source_folder(self, folder_path):
         """Set source folder path."""
         self.config['SOURCE_FOLDER'] = folder_path
+
+    def get_filter_url(self):
+        """Get filter URL."""
+        return self.config.get('FILTER_URL', '')
+    
+    def set_filter_url(self, url):
+        """Set filter URL."""
+        self.config['FILTER_URL'] = url

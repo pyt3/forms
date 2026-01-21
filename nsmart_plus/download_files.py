@@ -58,9 +58,18 @@ def nsmartFileDownload(show_browser=False, config_manager=None):
     try:
         domain = "https://nsmart.nhealth-asia.com"
         page_size = 100
-        master_page = 1
-        extra_path = "s_branchid=00052&s_dept=0005202&s_sub_dept=000520200002"
-        driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage=&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart', config_manager)
+        
+        # Get filter URL from config
+        filter_url = config_manager.get_filter_url() if config_manager else ""
+        if not filter_url:
+            console.print("[yellow]⚠️ No filter URL configured. Please configure it in the settings.[/yellow]")
+            return
+        
+        # Add pagination parameters to the filter URL
+        separator = "&" if "?" in filter_url else "?"
+        first_page_url = f"{filter_url}{separator}asset_masterPage=&asset_masterPageSize={page_size}&s_a_status=1"
+        
+        driver = go_to_page(driver, first_page_url, console, 'nsmart', config_manager)
         if not driver:
             console.print("[red]❌ Browser driver is not available. Exiting.[/red]")
             return False
@@ -72,13 +81,9 @@ def nsmartFileDownload(show_browser=False, config_manager=None):
         console.print(f"[green]✅ Detected total pages: {last_page}[/green]")
 
         for i in range(1, last_page + 1):
-            # driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage={i}&asset_masterPageSize={page_size}&{extra_path}", console)
-            # if not driver:
-            #     console.print("[red]❌ Browser driver is not available. Exiting.[/red]")
-            #     return False
-            # process_table(driver, domain, console)
             if i > 1:
-                driver = go_to_page(driver, f"{domain}/mtdpdb01/asset_mast_list_new.php?asset_masterPage={i}&s_a_status=1&asset_masterPageSize={page_size}&{extra_path}", console, 'nsmart', config_manager)
+                page_url = f"{filter_url}{separator}asset_masterPage={i}&asset_masterPageSize={page_size}"
+                driver = go_to_page(driver, page_url, console, 'nsmart', config_manager)
             process_table(driver, domain, console, config_manager)
 
     except TimeoutException:
@@ -94,15 +99,21 @@ def nsmartFileDownload(show_browser=False, config_manager=None):
 
 def get_last_page(driver, console):
     try:
-        last_page_element = WebDriverWait(driver, 2000).until(
-            EC.presence_of_element_located((By.XPATH, "/html/body/table[3]/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[103]"))
+        table = WebDriverWait(driver, 2000).until(
+            EC.presence_of_element_located((By.XPATH, "/html/body/table[3]/tbody/tr/td/table/tbody/tr/td/table"))
         )
-        match = re.search(r"\d{1,}\s{1,}ท้าย", last_page_element.text.strip())
+        footer = table.find_element(By.CLASS_NAME, "Footer")
+        td = footer.find_element(By.TAG_NAME, "td")
+        last_page_element = td.text.strip()
+        match = re.search(r"\d{1,}\s{1,}ท้าย", last_page_element)
+        console.print(last_page_element)
         if match:
             return int(match.group(0).split()[0])
         console.print("[red]❌ Could not determine the last page number using the provided regex.[/red]")
     except TimeoutException:
         console.print("[red]❌ Timeout while fetching the last page number.[/red]")
+    except Exception as e:
+        console.print(f"[red]❌ Error while determining last page: {e}[/red]")
     return None
 
 global isstart

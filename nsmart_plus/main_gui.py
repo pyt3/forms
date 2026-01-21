@@ -194,6 +194,32 @@ class NSmartGUI:
         )
         info_label.grid(row=1, column=0, columnspan=3, sticky=W, pady=(5, 0))
         
+        # Filter URL section
+        filter_frame = ttk.Labelframe(
+            main_container, 
+            text="🔗 Filter URL", 
+            padding=20,
+            bootstyle="warning"
+        )
+        filter_frame.pack(fill=X, pady=(0, 20))
+        
+        ttk.Label(filter_frame, text="Filter URL:", font=("Segoe UI", 10)).grid(
+            row=0, column=0, sticky=W, pady=8, padx=(0, 10)
+        )
+        self.filter_url = ttk.Entry(filter_frame, width=60, font=("Segoe UI", 10))
+        self.filter_url.grid(row=0, column=1, sticky=EW, pady=8)
+        
+        filter_frame.columnconfigure(1, weight=1)
+        
+        # Info label for filter URL
+        filter_info_label = ttk.Label(
+            filter_frame,
+            text="ℹ️ URL with filters for asset list (used during download)",
+            font=("Segoe UI", 9),
+            bootstyle="secondary"
+        )
+        filter_info_label.grid(row=1, column=0, columnspan=2, sticky=W, pady=(5, 0))
+        
         # Buttons frame
         button_frame = ttk.Frame(main_container)
         button_frame.pack(fill=X, pady=(10, 0))
@@ -392,11 +418,13 @@ class NSmartGUI:
         nsmart_plus_user = self.nsmart_plus_username.get()
         nsmart_plus_pass = self.nsmart_plus_password.get()
         source_folder = self.source_folder.get()
+        filter_url = self.filter_url.get()
         
         # Update config manager
         self.config_manager.set_nsmart_credentials(nsmart_user, nsmart_pass)
         self.config_manager.set_nsmart_plus_credentials(nsmart_plus_user, nsmart_plus_pass)
         self.config_manager.set_source_folder(source_folder)
+        self.config_manager.set_filter_url(filter_url)
         
         # Save to file
         if self.config_manager.save_config():
@@ -430,6 +458,9 @@ class NSmartGUI:
         
         self.source_folder.delete(0, tk.END)
         self.source_folder.insert(0, self.config_manager.get_source_folder())
+        
+        self.filter_url.delete(0, tk.END)
+        self.filter_url.insert(0, self.config_manager.get_filter_url())
         
         self.status_bar.config(text="✓ Configuration loaded successfully")
     

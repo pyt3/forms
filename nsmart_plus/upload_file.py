@@ -29,6 +29,12 @@ def nsmartPlusFileUpload(show_browser=False, config_manager=None):
         WebDriverWait(driver, timeout).until(
             lambda d: len([el for el in d.find_elements(By.CLASS_NAME, 'overlay') if el.is_displayed()]) == 0
         )
+        
+    def LogID(log_path, id):
+        with open(upload_log_path, 'a', encoding='utf-8') as f:
+            f.write(id + '\n')
+        time.sleep(1)  # wait for a second to ensure the element is in view
+        
     console = Console()
     dir_path = get_script_directory()
     
@@ -37,6 +43,8 @@ def nsmartPlusFileUpload(show_browser=False, config_manager=None):
         source_folder = config_manager.get_source_folder()
         if not source_folder:
             source_folder = os.path.join(dir_path, 'invent')
+        else:
+            source_folder = os.path.join(source_folder, 'invent')
     else:
         source_folder = os.path.join(dir_path, 'invent')
     
@@ -174,159 +182,187 @@ def nsmartPlusFileUpload(show_browser=False, config_manager=None):
                             driver.find_element(By.ID, driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[1]/div[2]/div/div/div[5]/div[1]/div/div/div').get_attribute('id') + "_0").click()
                             time.sleep(.5)  # wait for status change to 
                             
-                            # # open attach Image panel
-                            # WebDriverWait(driver, 5000).until(
-                            #     EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[3]/div[1]/a/span'))
-                            # )
-                            # driver.execute_script("arguments[0].scrollIntoView(true);", driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[4]/div[1]/a/div/span'))
-                            # time.sleep(1)  # wait for a second to ensure the element is in view
-                            # WebDriverWait(driver, 5000).until(
-                            #     EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[1]/a/span'))
-                            # )
-                            # driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[1]/a/span').click()
+                            # open attach Image panel
+                            WebDriverWait(driver, 5000).until(
+                                EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[3]/div[1]/a/span'))
+                            )
+                            driver.execute_script("arguments[0].scrollIntoView(true);", driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[4]/div[1]/a/div/span'))
+                            time.sleep(1)  # wait for a second to ensure the element is in view
+                            WebDriverWait(driver, 5000).until(
+                                EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[1]/a/span'))
+                            )
+                            driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[1]/a/span').click()
                             
-                            # WebDriverWait(driver, 5000).until(
-                            #     EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button'))
-                            # )
-                            # WebDriverWait(driver, 5000).until(
-                            #     EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]'))
-                            # )
-                            # driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]').click()
-                            # time.sleep(1)  # wait for the file dialog to open
-                            # # Use pyautogui to handle the file upload dialog
-                            # pyautogui.hotkey('ctrl', 'l') 
-                            # time.sleep(0.5)
+                            WebDriverWait(driver, 5000).until(
+                                EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button'))
+                            )
+                            WebDriverWait(driver, 5000).until(
+                                EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]'))
+                            )
+                            
+                            if len(driver.find_elements(By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/table")) > 0:
+                                console.print(f"[red]❌ Alraedy uploaded images for asset ID: {id}, skipping upload.[/red]")
+                                break
+                            driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[8]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]').click()
+                            time.sleep(1)  # wait for the file dialog to open
+                            # Use pyautogui to handle the file upload dialog
+                            pyautogui.hotkey('ctrl', 'l') 
+                            time.sleep(0.5)
 
-                            # # 4. Type the custom directory and file name
+                            # 4. Type the custom directory and file name
                             # file_path = f"C:\\Users\\mak_r\\Downloads\\Phone Link\\invent\\invent\\{id.upper()}\\images\\"
-                            # pyautogui.hotkey('ctrl', 'a')  # select all text in the address bar
-                            # pyautogui.write(file_path)
-                            # pyautogui.sleep(.5)
-                            # pyautogui.hotkey('backspace')  # to ensure the path is set
-                            # pyautogui.press('enter')
+                            file_path = os.path.join(source_folder, id.upper(), 'images')
+                            if not os.path.exists(file_path):
+                                console.print(f"[red]❌ No images folder found for asset ID: {id}[/red]")
+                                LogID(upload_log_path, id)
+                                break
+                            no_images = len(os.listdir(file_path))
+                            if no_images == 0:
+                                console.print(f"[red]❌ No images found for asset ID: {id} in {file_path}[/red]")
+                                LogID(upload_log_path, id)
+                                break
+                            pyautogui.hotkey('ctrl', 'a')  # select all text in the address bar
+                            pyautogui.write(file_path)
+                            pyautogui.sleep(.5)
+                            pyautogui.hotkey('backspace')  # to ensure the path is set
+                            pyautogui.press('enter')
                             
-                            # pyautogui.sleep(.5)  # wait for the directory to open
+                            pyautogui.sleep(.5)  # wait for the directory to open
                             
-                            # if sys.platform.startswith('win'):
-                            #     for _ in range(5):
-                            #         pyautogui.press('tab')  # navigate to the file list
-                            # pyautogui.hotkey('ctrl', 'a') # select all files
-                            # pyautogui.sleep(0.5)
+                            if sys.platform.startswith('win'):
+                                for _ in range(5):
+                                    pyautogui.press('tab')  # navigate to the file list
+                            pyautogui.hotkey('ctrl', 'a') # select all files
+                            pyautogui.sleep(0.5)
                             
-                            # pyautogui.press('enter')  # press enter to confirm file selection
+                            pyautogui.press('enter')  # press enter to confirm file selection
                             
-                            # print("Waiting for upload to complete...")
-                            # time.sleep(.5)  # initial wait before checking for overlay
-                            # # wait for overlay to disappear
-                            # wait_for_all_overlays_gone(driver, timeout=180)
+                            print("Waiting for upload to complete...")
+                            time.sleep(.5)  # initial wait before checking for overlay
+                            # wait for overlay to disappear
+                            wait_for_all_overlays_gone(driver, timeout=180)
                                         
-                            # #open attach file panel
-                            # WebDriverWait(driver, 10).until(
-                            #     EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[1]/a/span'))
+                            #open attach file panel
+                            WebDriverWait(driver, 10).until(
+                                EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[1]/a/span'))
+                            )
+                            driver.execute_script("arguments[0].classList.remove('sticky');", driver.find_element(By.CLASS_NAME, 'nhealth-sidebar-layout-header'))
+                            driver.execute_script("arguments[0].scrollIntoView(true);", driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[1]/a/span'))
+                            time.sleep(1)  # wait for a second to ensure the element is in view
+                            driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[1]/a/span').click()
+                            print("Opening file upload dialog...")
+                            # WebDriverWait(driver, 5000).until(
+                            #     EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button'))
                             # )
-                            # driver.execute_script("arguments[0].classList.remove('sticky');", driver.find_element(By.CLASS_NAME, 'nhealth-sidebar-layout-header'))
-                            # driver.execute_script("arguments[0].scrollIntoView(true);", driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[1]/a/span'))
-                            # time.sleep(1)  # wait for a second to ensure the element is in view
-                            # driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[1]/a/span').click()
-                            # print("Opening file upload dialog...")
-                            # # WebDriverWait(driver, 5000).until(
-                            # #     EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button'))
-                            # # )
-                            # WebDriverWait(driver, 10).until(
-                            #     EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]'))
-                            # )
+                            WebDriverWait(driver, 10).until(
+                                EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]'))
+                            )
                             
-                            # driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]').click()
-                            # time.sleep(2)  # wait for the file dialog to open
-                            # # Use pyautogui to handle the file upload dialog
-                            # pyautogui.hotkey('ctrl', 'l') 
-                            # time.sleep(0.5)
-                            # # 4. Type the custom directory and file name
-                            # file_path = f"D:\\github\\forms-1\\nsmart_plus\\invent\\{id.upper()}\\documents\\"
-                            # pyautogui.hotkey('ctrl', 'a')  # select all text in the address bar
-                            # pyautogui.write(file_path)
-                            # pyautogui.sleep(.5)
-                            # pyautogui.hotkey('backspace')  # to ensure the path is set
-                            # pyautogui.press('enter')
-                            # pyautogui.sleep(.5)  # wait for the directory to open
-                            # if sys.platform.startswith('win'):
-                            #     for _ in range(5):
-                            #         pyautogui.press('tab')  # navigate to the file list
-                            # pyautogui.hotkey('ctrl', 'a') # select all files
-                            # pyautogui.sleep(0.5)
-                            # pyautogui.press('enter')  # press enter to confirm file selection
+                            if len(driver.find_elements(By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/table")) > 0:
+                                console.print(f"[red]❌ Alraedy uploaded images for asset ID: {id}, skipping upload.[/red]")
+                                break
                             
-                            # print("Files uploaded, processing document descriptions...")
-                            # time.sleep(.5)  # initial wait before checking for overlay
-                            # wait_for_all_overlays_gone(driver, timeout=180)
+                            driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[1]/div/div[1]/button/span[2]').click()
+                            time.sleep(2)  # wait for the file dialog to open
+                            # Use pyautogui to handle the file upload dialog
+                            pyautogui.hotkey('ctrl', 'l') 
+                            time.sleep(0.5)
+                            # 4. Type the custom directory and file name
+                            file_path = os.path.join(source_folder, id.upper(), 'documents')
+                            if not os.path.exists(file_path):
+                                LogID(upload_log_path, id)
+                                console.print(f"[yellow]No documents folder found for asset ID: {id}, skipping document upload.[/yellow]")
+                                break
                             
-                            # # remove scrollable from table container
-                            # # driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]').get_attribute('style').replace('max-height: 400px;', '')
+                            no_docs = len(os.listdir(file_path))
+                            if no_docs == 0:
+                                LogID(upload_log_path, id)
+                                console.print(f"[yellow]No documents found for asset ID: {id}, skipping document upload.[/yellow]")
+                                break
+                            pyautogui.hotkey('ctrl', 'a')  # select all text in the address bar
+                            pyautogui.write(file_path)
+                            pyautogui.sleep(.5)
+                            pyautogui.hotkey('backspace')  # to ensure the path is set
+                            pyautogui.press('enter')
+                            pyautogui.sleep(.5)  # wait for the directory to open
+                            if sys.platform.startswith('win'):
+                                for _ in range(5):
+                                    pyautogui.press('tab')  # navigate to the file list
+                            pyautogui.hotkey('ctrl', 'a') # select all files
+                            pyautogui.sleep(0.5)
+                            pyautogui.press('enter')  # press enter to confirm file selection
+                            
+                            print("Files uploaded, processing document descriptions...")
+                            time.sleep(.5)  # initial wait before checking for overlay
+                            wait_for_all_overlays_gone(driver, timeout=180)
+                            
+                            # remove scrollable from table container
+                            # driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]').get_attribute('style').replace('max-height: 400px;', '')
                             
                         
-                            # driver.execute_script("arguments[0].classList.remove('sticky');", driver.find_element(By.CLASS_NAME, 'nhealth-sidebar-layout-header'))
-                            # checklistItems =  { 
-                            #     1: "BME Report (FP-BME-NHS-00-026/2)",
-                            #     2: "Medical Equipment Assessment Form (FP-BME-NHS-00-033/3)",
-                            #     3: "Acceptance Test Reports (FP-BME-NHS-00-026/3)",
-                            #     4: "Certificate & License for Device (ใบตรวจรับรองการสอบเทียบเครื่อง)",
-                            #     5: "สำเนาหนังสือรับรองประกอบการนำเข้าเครื่องมือแพทย์ เอกสารรับรองการควบคุมมาตรฐาน (FDA, อย., มอก.)",
-                            #     6: "ใบเสนอราคา เลขที่ (ระบุเลขที่ของใบเสนอราคา)",
-                            #     7: "Spec รุ่น เครื่องมือและอุปกรณ์ครบถ้วนตามใบเสนอราคา",
-                            #     8: "Invoice เลขที่ (ระบุเลขที่ของใบแจ้งหนี้)", 
-                            #     9: "หนังสือแต่งตั้งตัวแทนจำหน่าย",
-                            #     10: "Certificate Engineer (ใบรับรองการอบรมของวิศวกร)",
-                            #     11: "Tester's Certificates (ใบรับรองการสอบเทียบเครื่องมือที่ใช้ในการทดสอบ)",
-                            #     12: "Schedule of maintenance with detail (แผนสอบเทียบและบำรุงรักษาพร้อมรายละเอียด)",
-                            #     13: "Service Manuals (ฉบับภาษาไทย และฉบับภาษาอังกฤษ)",
-                            #     14: "Operating Manuals (ฉบับภาษาไทย และฉบับภาษาอังกฤษ)",
-                            #     15: "Purchasing contract (สัญญาซื้อขาย) (หมายเหตุ: ใช้ในกรณีที่มีมูลค่าสูงกว่า 1 ล้านบาท)",
-                            #     16: "Service contract (สัญญาบริการหลังการขาย)",
-                            #     17: "รายงานกรมวิทย์ (เฉพาะเครื่องมือกลุ่มงานรังสี)",
-                            #     18: "Air waybill/Bill of Loading (เอกสารการขนส่งสินค้า)",
-                            #     19: "เอกสาร Training User (แบบลงทะเบียนเข้ารับการอบรม ฝ่ายแพทย์ FP-BME-NHS-00-026/5 และฝ่ายพยาบาล FP-BME-NHS-00-026/6)",
-                            #     20: "Network Document (เอกสาร Network)",
-                            #     21: "Value Analysis (เอกสารวิเคราะห์คุณค่าของเครื่อง)",
-                            #     22: "เอกสารยินยอมการเก็บรักษาข้อมูล (FP-BME-NHS-00-026/4)",
-                            # }
-                            # wait_for_all_overlays_gone(driver, timeout=120)
-                            # document_upload_table = WebDriverWait(driver, 2000).until(
-                            #     EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/table/tbody'))
-                            # )
-                            # row_count = len(document_upload_table.find_elements(By.TAG_NAME, "tr"))
-                            # print(f"Total files to process: {row_count}")
-                            # if row_count > 0:
-                            #     for i in range(row_count):
-                            #         # Re-fetch rows each iteration to avoid stale element reference
-                            #         rows = document_upload_table.find_elements(By.TAG_NAME, "tr")
-                            #         if i >= len(rows):
-                            #             break
-                            #         row = rows[i]
-                            #         cols = row.find_elements(By.TAG_NAME, "td")
-                            #         if len(cols) < 2:
-                            #             continue
-                            #         file_name = cols[3].text.strip()
-                            #         file_desc_index = file_name.split("__")[1].split(".")[0].split("_")[0]
-                            #         file_desc = checklistItems.get(int(file_desc_index), "Other Document")
-                            #         # Re-locate input before sending keys
-                            #         input_elem = row.find_element(By.TAG_NAME, "input")
-                            #         input_elem.send_keys(file_desc)
-                            #         console.print(f"[green]Uploaded file: {file_name}[/green]")
-                            #         # Wait until overlay disappears, but check if it still appears and wait longer if needed
-                            #         # time.sleep(1)  # wait for a second to ensure the element is in view
-                            #         # max_wait_time = 120  # seconds
-                            #         # start_time = time.time()
-                            #         # while True:
-                            #         #     try:
-                            #         #         WebDriverWait(driver, 5).until(
-                            #         #             EC.invisibility_of_element_located((By.CLASS_NAME, 'overlay'))
-                            #         #         )
-                            #         #         break  # overlay is gone
-                            #         #     except TimeoutException:
-                            #         #         if time.time() - start_time > max_wait_time:
-                            #         #             raise TimeoutException("Overlay did not disappear in time.")
-                            #         #         time.sleep(1)  # wait a bit and check again\
-                            #         # Break the loop after processing the first file (or row)
+                            driver.execute_script("arguments[0].classList.remove('sticky');", driver.find_element(By.CLASS_NAME, 'nhealth-sidebar-layout-header'))
+                            checklistItems =  { 
+                                1: "BME Report (FP-BME-NHS-00-026/2)",
+                                2: "Medical Equipment Assessment Form (FP-BME-NHS-00-033/3)",
+                                3: "Acceptance Test Reports (FP-BME-NHS-00-026/3)",
+                                4: "Certificate & License for Device (ใบตรวจรับรองการสอบเทียบเครื่อง)",
+                                5: "สำเนาหนังสือรับรองประกอบการนำเข้าเครื่องมือแพทย์ เอกสารรับรองการควบคุมมาตรฐาน (FDA, อย., มอก.)",
+                                6: "ใบเสนอราคา เลขที่ (ระบุเลขที่ของใบเสนอราคา)",
+                                7: "Spec รุ่น เครื่องมือและอุปกรณ์ครบถ้วนตามใบเสนอราคา",
+                                8: "Invoice เลขที่ (ระบุเลขที่ของใบแจ้งหนี้)", 
+                                9: "หนังสือแต่งตั้งตัวแทนจำหน่าย",
+                                10: "Certificate Engineer (ใบรับรองการอบรมของวิศวกร)",
+                                11: "Tester's Certificates (ใบรับรองการสอบเทียบเครื่องมือที่ใช้ในการทดสอบ)",
+                                12: "Schedule of maintenance with detail (แผนสอบเทียบและบำรุงรักษาพร้อมรายละเอียด)",
+                                13: "Service Manuals (ฉบับภาษาไทย และฉบับภาษาอังกฤษ)",
+                                14: "Operating Manuals (ฉบับภาษาไทย และฉบับภาษาอังกฤษ)",
+                                15: "Purchasing contract (สัญญาซื้อขาย) (หมายเหตุ: ใช้ในกรณีที่มีมูลค่าสูงกว่า 1 ล้านบาท)",
+                                16: "Service contract (สัญญาบริการหลังการขาย)",
+                                17: "รายงานกรมวิทย์ (เฉพาะเครื่องมือกลุ่มงานรังสี)",
+                                18: "Air waybill/Bill of Loading (เอกสารการขนส่งสินค้า)",
+                                19: "เอกสาร Training User (แบบลงทะเบียนเข้ารับการอบรม ฝ่ายแพทย์ FP-BME-NHS-00-026/5 และฝ่ายพยาบาล FP-BME-NHS-00-026/6)",
+                                20: "Network Document (เอกสาร Network)",
+                                21: "Value Analysis (เอกสารวิเคราะห์คุณค่าของเครื่อง)",
+                                22: "เอกสารยินยอมการเก็บรักษาข้อมูล (FP-BME-NHS-00-026/4)",
+                            }
+                            wait_for_all_overlays_gone(driver, timeout=120)
+                            document_upload_table = WebDriverWait(driver, 2000).until(
+                                EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[3]/div[9]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/table/tbody'))
+                            )
+                            row_count = len(document_upload_table.find_elements(By.TAG_NAME, "tr"))
+                            print(f"Total files to process: {row_count}")
+                            if row_count > 0:
+                                for i in range(row_count):
+                                    # Re-fetch rows each iteration to avoid stale element reference
+                                    rows = document_upload_table.find_elements(By.TAG_NAME, "tr")
+                                    if i >= len(rows):
+                                        break
+                                    row = rows[i]
+                                    cols = row.find_elements(By.TAG_NAME, "td")
+                                    if len(cols) < 2:
+                                        continue
+                                    file_name = cols[3].text.strip()
+                                    file_desc_index = file_name.split("__")[1].split(".")[0].split("_")[0]
+                                    file_desc = checklistItems.get(int(file_desc_index), "Other Document")
+                                    # Re-locate input before sending keys
+                                    input_elem = row.find_element(By.TAG_NAME, "input")
+                                    input_elem.send_keys(file_desc)
+                                    console.print(f"[green]Uploaded file: {file_name}[/green]")
+                                    # Wait until overlay disappears, but check if it still appears and wait longer if needed
+                                    # time.sleep(1)  # wait for a second to ensure the element is in view
+                                    # max_wait_time = 120  # seconds
+                                    # start_time = time.time()
+                                    # while True:
+                                    #     try:
+                                    #         WebDriverWait(driver, 5).until(
+                                    #             EC.invisibility_of_element_located((By.CLASS_NAME, 'overlay'))
+                                    #         )
+                                    #         break  # overlay is gone
+                                    #     except TimeoutException:
+                                    #         if time.time() - start_time > max_wait_time:
+                                    #             raise TimeoutException("Overlay did not disappear in time.")
+                                    #         time.sleep(1)  # wait a bit and check again\
+                                    # Break the loop after processing the first file (or row)
                             break;
                         except StaleElementReferenceException:
                             console.print("[yellow]⚠️ StaleElementReferenceException encountered, retrying...[/yellow]")
@@ -358,10 +394,9 @@ def nsmartPlusFileUpload(show_browser=False, config_manager=None):
                 WebDriverWait(driver, 5000).until(
                     EC.invisibility_of_element_located((By.CLASS_NAME, 'overlay'))
                 )
-                # Log the uploaded ID after successful upload
-                with open(upload_log_path, 'a', encoding='utf-8') as f:
-                    f.write(id + '\n')
-                time.sleep(1)  # wait for a second to ensure the element is in view
+                # Log the uploaded ID
+                LogID(upload_log_path, id)
+                
 
     except TimeoutException:
         console.print("[red]❌ Page load timeout. Please check the website URL.[/red]")
