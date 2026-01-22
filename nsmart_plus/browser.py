@@ -362,6 +362,8 @@ def download_nsmart_files(url, folder_path, filename, console, config_manager=No
     else:
         base_dir = get_script_directory()
     
+    # Normalize the base directory path
+    base_dir = os.path.normpath(base_dir)
     folder_path = os.path.join(base_dir, folder_path.lstrip('/'))
 
     if not os.path.exists(folder_path):
