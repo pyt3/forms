@@ -128,8 +128,14 @@ def nsmartPlusFileUpload(show_browser=False, config_manager=None):
                 WebDriverWait(driver, 5000).until(
                     EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/div/input'))
                 )
-                driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/div/input').clear()
-                driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/div/input').send_keys(id)
+                
+                if config_manager.getAssetIDType() == "ASSET_ID":
+                    driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/div/input').clear()
+                    driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/div/input').send_keys(id)
+                else:
+                    driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[3]/div/div/input').clear()
+                    driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[3]/div/div/input').send_keys(id)
+                    
                 driver.execute_script("arguments[0].scrollIntoView(true);", driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[4]/div[3]/div/div/input'))
                 time.sleep(1)  # wait for a second to ensure the element is in view
                 driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div/div/div[2]/div/button[1]').click()

@@ -223,6 +223,8 @@ def get_asset_files(domain, asset_code, asset_url, console, driver, config_manag
     asset_image_page = asset_url.replace("asset_mast_record.php", "asset_picture.php")
     image_table_xpath = "/html/body/p/table/tbody/tr[2]/td[1]/table/tbody/tr/td/table[2]"
     image_id_xpath = "/html/body/p/table/tbody/tr[1]/td/form/table/tbody/tr/td/table[2]/tbody/tr[1]/td[2]"
+    if config_manager.getAssetIDType() == "ASSET_SERIAL_NUMBER":
+        image_id_xpath = "/html/body/p/table/tbody/tr[1]/td/form/table/tbody/tr/td/table[2]/tbody/tr[2]/td[2]"
     def get_doc_url(href):
         # requests the document URL from the href link
         with requests.get(href, allow_redirects=True) as r:
@@ -279,10 +281,13 @@ def get_asset_files(domain, asset_code, asset_url, console, driver, config_manag
     document_page = asset_url.replace("asset_mast_record.php", "asset_doc.php")
     document_table_xpath = "/html/body/table[4]/tbody/tr[2]/td[1]/table/tbody/tr/td/table[2]"
     document_id_xpath = "/html/body/table[4]/tbody/tr[1]/td/form/table/tbody/tr/td/table[2]/tbody/tr[1]/td[2]"
+    
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
-    
+    image_id_code = id_code
     driver, table, id_code = navigate_and_extract_table(driver, document_page, document_table_xpath, document_id_xpath, console, config_manager)
+    if config_manager.getAssetIDType() == "ASSET_SERIAL_NUMBER":
+        id_code = image_id_code
     if table is None or id_code is None:
         return
     footer_tr = table.find_elements(By.TAG_NAME, "tr")[-1]

@@ -131,6 +131,8 @@ def process_table(driver, domain, console, config_manager=None):
             if len(cols) < 2:
                 continue
             asset_code = cols[3].text.strip()
+            if config_manager.getAssetIDType() == "ASSET_SN":
+                asset_code = cols[11].text.strip()
             # if asset_code == "353584" and not isstart:
             #     isstart = True
             # if not isstart:
