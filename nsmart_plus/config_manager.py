@@ -104,3 +104,11 @@ class ConfigManager:
     def set_filter_url(self, url):
         """Set filter URL."""
         self.config['FILTER_URL'] = url
+        
+    def getAssetIDType(self):
+        """Get Asset ID Type."""
+        return self.config.get('ASSET_ID_TYPE', 'ASSET_ID')  # Default to ASSET_ID
+    
+    def setAssetIDType(self, id_type):
+        """Set Asset ID Type."""
+        self.config['ASSET_ID_TYPE'] = id_type

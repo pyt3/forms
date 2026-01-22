@@ -12,6 +12,60 @@ from download_files import nsmartFileDownload
 from upload_file import nsmartPlusFileUpload
 
 
+class ScrollableFrame(ttk.Frame):
+    """A scrollable frame widget."""
+    
+    def __init__(self, container, *args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+        
+        # Create canvas and scrollbar
+        self.canvas = tk.Canvas(self, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.scrollable_frame = ttk.Frame(self.canvas)
+        
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        )
+        
+        self.canvas_frame = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Pack scrollbar and canvas
+        scrollbar.pack(side="right", fill="y")
+        self.canvas.pack(side="left", fill="both", expand=True)
+        
+        # Bind mouse wheel
+        self.canvas.bind("<Enter>", self._bind_mousewheel)
+        self.canvas.bind("<Leave>", self._unbind_mousewheel)
+        
+        # Bind canvas resize to adjust frame width
+        self.canvas.bind("<Configure>", self._on_canvas_configure)
+    
+    def _on_canvas_configure(self, event):
+        """Adjust the scrollable frame width to match canvas width."""
+        self.canvas.itemconfig(self.canvas_frame, width=event.width)
+    
+    def _bind_mousewheel(self, event):
+        """Bind mouse wheel to canvas."""
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        self.canvas.bind_all("<Button-4>", self._on_mousewheel)
+        self.canvas.bind_all("<Button-5>", self._on_mousewheel)
+    
+    def _unbind_mousewheel(self, event):
+        """Unbind mouse wheel from canvas."""
+        self.canvas.unbind_all("<MouseWheel>")
+        self.canvas.unbind_all("<Button-4>")
+        self.canvas.unbind_all("<Button-5>")
+    
+    def _on_mousewheel(self, event):
+        """Handle mouse wheel scrolling."""
+        if event.num == 4 or event.delta > 0:
+            self.canvas.yview_scroll(-1, "units")
+        elif event.num == 5 or event.delta < 0:
+            self.canvas.yview_scroll(1, "units")
+
+
 class LogRedirector(io.StringIO):
     """Redirects stdout/stderr to a tkinter text widget with color support."""
     
@@ -80,12 +134,14 @@ class NSmartGUI:
     
     def create_config_tab(self):
         """Create the configuration tab."""
-        config_frame = ttk.Frame(self.notebook, padding=20)
-        self.notebook.add(config_frame, text="⚙️  Configuration")
+        # Create scrollable frame
+        scrollable = ScrollableFrame(self.notebook)
+        self.notebook.add(scrollable, text="⚙️  Configuration")
         
         # Main container with padding
-        main_container = ttk.Frame(config_frame)
-        main_container.pack(fill=BOTH, expand=True)
+        main_container = scrollable.scrollable_frame
+        config_frame = ttk.Frame(main_container, padding=20)
+        config_frame.pack(fill=BOTH, expand=True)
         
         # Title
         title_label = ttk.Label(
@@ -220,6 +276,53 @@ class NSmartGUI:
         )
         filter_info_label.grid(row=1, column=0, columnspan=2, sticky=W, pady=(5, 0))
         
+        # Asset ID Type section
+        asset_id_frame = ttk.Labelframe(
+            main_container, 
+            text="🏷️ Asset ID Type", 
+            padding=20,
+            bootstyle="danger"
+        )
+        asset_id_frame.pack(fill=X, pady=(0, 20))
+        
+        ttk.Label(asset_id_frame, text="Select ID Type:", font=("Segoe UI", 10)).grid(
+            row=0, column=0, sticky=W, pady=8, padx=(0, 20)
+        )
+        
+        # Radio button variable
+        self.asset_id_type = tk.StringVar(value="ASSET_ID")
+        
+        # Radio buttons
+        radio_frame = ttk.Frame(asset_id_frame)
+        radio_frame.grid(row=0, column=1, sticky=W, pady=8)
+        
+        ttk.Radiobutton(
+            radio_frame,
+            text="Asset ID",
+            variable=self.asset_id_type,
+            value="ASSET_ID",
+            bootstyle="danger"
+        ).pack(side=LEFT, padx=(0, 20))
+        
+        ttk.Radiobutton(
+            radio_frame,
+            text="Asset Serial Number",
+            variable=self.asset_id_type,
+            value="ASSET_SERIAL_NUMBER",
+            bootstyle="danger"
+        ).pack(side=LEFT)
+        
+        # Info label for asset ID type
+        asset_id_info_label = ttk.Label(
+            asset_id_frame,
+            text="ℹ️ Choose whether to identify assets by code or number",
+            font=("Segoe UI", 9),
+            bootstyle="secondary"
+        )
+        asset_id_info_label.grid(row=1, column=0, columnspan=2, sticky=W, pady=(5, 0))
+        
+        asset_id_frame.columnconfigure(1, weight=1)
+        
         # Buttons frame
         button_frame = ttk.Frame(main_container)
         button_frame.pack(fill=X, pady=(10, 0))
@@ -277,12 +380,14 @@ class NSmartGUI:
     
     def create_download_tab(self):
         """Create the download files tab."""
-        download_frame = ttk.Frame(self.notebook, padding=15)
-        self.notebook.add(download_frame, text="⬇️  Download Files")
+        # Create scrollable frame
+        scrollable = ScrollableFrame(self.notebook)
+        self.notebook.add(scrollable, text="⬇️  Download Files")
         
         # Main container
-        main_container = ttk.Frame(download_frame)
-        main_container.pack(fill=BOTH, expand=True)
+        main_container = scrollable.scrollable_frame
+        download_frame = ttk.Frame(main_container, padding=15)
+        download_frame.pack(fill=BOTH, expand=True)
         
         # Title and controls
         control_frame = ttk.Frame(main_container)
@@ -345,12 +450,14 @@ class NSmartGUI:
     
     def create_upload_tab(self):
         """Create the upload files tab."""
-        upload_frame = ttk.Frame(self.notebook, padding=15)
-        self.notebook.add(upload_frame, text="⬆️  Upload Files")
+        # Create scrollable frame
+        scrollable = ScrollableFrame(self.notebook)
+        self.notebook.add(scrollable, text="⬆️  Upload Files")
         
         # Main container
-        main_container = ttk.Frame(upload_frame)
-        main_container.pack(fill=BOTH, expand=True)
+        main_container = scrollable.scrollable_frame
+        upload_frame = ttk.Frame(main_container, padding=15)
+        upload_frame.pack(fill=BOTH, expand=True)
         
         # Title and controls
         control_frame = ttk.Frame(main_container)
@@ -419,12 +526,14 @@ class NSmartGUI:
         nsmart_plus_pass = self.nsmart_plus_password.get()
         source_folder = self.source_folder.get()
         filter_url = self.filter_url.get()
+        asset_id_type = self.asset_id_type.get()
         
         # Update config manager
         self.config_manager.set_nsmart_credentials(nsmart_user, nsmart_pass)
         self.config_manager.set_nsmart_plus_credentials(nsmart_plus_user, nsmart_plus_pass)
         self.config_manager.set_source_folder(source_folder)
         self.config_manager.set_filter_url(filter_url)
+        self.config_manager.setAssetIDType(asset_id_type)
         
         # Save to file
         if self.config_manager.save_config():
@@ -461,6 +570,10 @@ class NSmartGUI:
         
         self.filter_url.delete(0, tk.END)
         self.filter_url.insert(0, self.config_manager.get_filter_url())
+        
+        # Load asset ID type
+        asset_id_type = self.config_manager.getAssetIDType()
+        self.asset_id_type.set(asset_id_type)
         
         self.status_bar.config(text="✓ Configuration loaded successfully")
     
