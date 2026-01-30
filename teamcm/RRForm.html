@@ -10,6 +10,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-orange': '#f05217',
+                        'brand-orange-dark': '#d94412',
+                        'brand-orange-light': '#ff6b35',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Keep Bootstrap for offcanvas compatibility -->
     <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
@@ -19,9 +37,11 @@
     <script src="https://fastly.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
     <!-- icon -->
     <link rel="icon" href="https://img.icons8.com/3d-fluency/94/maintenance.png" type="image/x-icon" />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="../teampm/main const.js"></script>
     <style>
         * {
@@ -31,11 +51,7 @@
         }
 
         body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Prompt', sans-serif;
-            background-color: #f05217;
-            /* background-color: #D3D3D3; */
+            font-family: 'Noto Sans Thai', sans-serif;
         }
 
         #sticker {
@@ -50,35 +66,117 @@
         .nsmart-img:active {
             cursor: grabbing;
         }
+
+        /* Smooth transitions */
+        input,
+        select,
+        textarea,
+        button {
+            transition: all 0.2s ease-in-out;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            transform: translateY(-1px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #f05217;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d94412;
+        }
+
+        /* Quill Editor Customization */
+        .ql-container {
+            font-family: 'Noto Sans Thai', sans-serif;
+            font-size: 14px;
+        }
+
+        .ql-editor {
+            min-height: 250px;
+            padding: 12px;
+            line-height: 1.6;
+        }
+
+        .ql-toolbar {
+            border: 1px solid #d1d5db;
+            background-color: #e0f2fe;
+        }
+
+        .ql-toolbar button,
+        .ql-toolbar button:hover,
+        .ql-toolbar select {
+            color: #1f2937;
+            border-radius: 4px;
+            padding: 4px 8px;
+        }
+
+        .ql-toolbar button:hover,
+        .ql-toolbar select:focus {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .ql-toolbar button.ql-active {
+            background-color: #3b82f6;
+            color: white;
+        }
     </style>
     <title>RR Form</title>
 </head>
 
-<body>
-    <header>
-        <nav class="navbar" style="background-color: #b9181b;">
-            <div class="container-fluid">
-                <img width="30" height="30" src="https://img.icons8.com/3d-fluency/94/maintenance.png" alt="trash" />
-                <form class="d-flex" role="search" id="search-form">
-                    <input class="form-control form-control-sm me-2" type="search" placeholder="กรอกรหัสเพื่อค้นหา"
-                        aria-label="Search" id="search-input">
-                    <button class="btn btn-sm btn-light" type="submit">Search</button>
-                </form>
+<body class="min-h-screen bg-body-tertiary">
+    <header class="sticky top-0 z-50 shadow-lg bg-gradient-to-br from-brand-orange to-brand-orange-dark">
+        <nav class="bg-brand-orange-dark shadow-md">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <img width="35" height="35" src="https://img.icons8.com/3d-fluency/94/maintenance.png"
+                            alt="maintenance" class="drop-shadow-lg" />
+                        <span class="text-white font-semibold text-lg hidden sm:block">RR Form</span>
+                    </div>
+                    <form class="flex items-center gap-2 flex-1 max-w-md ml-auto" role="search" id="search-form">
+                        <input class="flex-1 px-4 py-2 rounded-lg border-0 focus:ring-2 focus:ring-white 
+                                      text-sm placeholder-gray-400 shadow-sm" type="search"
+                            placeholder="กรอกรหัสเพื่อค้นหา" aria-label="Search" id="search-input">
+                        <button
+                            class="px-4 py-2 bg-white text-brand-orange-dark font-medium rounded-lg 
+                                       hover:bg-gray-100 active:scale-95 transition-all shadow-md flex justify-center items-center gap-2"
+                            type="submit">
+                            <i data-lucide="search"></i>
+                            ค้นหา
+                        </button>
+                    </form>
+                </div>
             </div>
         </nav>
-        <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
-            <div class="col-auto">
-                <img width="80" src="https://img.icons8.com/3d-fluency/94/maintenance.png" alt="repair" />
-            </div>
-
-            <div class="col text-center">
-                <h4 class="h1 fw-bold text-light">RR Form</h4>
+    </header>
+    <main class="container mx-auto px-4 pb-20 -mt-4">
+        <div class="py-8">
+            <div class="container mx-auto px-4 flex flex-col items-center justify-center">
+                <div class="flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4 
+                            hover:scale-110 transition-transform">
+                    <img width="50" src="https://img.icons8.com/3d-fluency/94/maintenance.png" alt="repair" />
+                </div>
+                <h1 class="text-4xl font-bold text-orange drop-shadow-lg tracking-wide">RR Form</h1>
+                <p class="text-black/80 mt-2 text-base">ฟอร์มรายงานการซ่อม</p>
             </div>
         </div>
-    </header>
-    <main>
-        <div class="container-fluid">
-            <form id="myForm" class="mt-3 mb-5">
+        <div class="max-w-7xl mx-auto">
+            <form id="myForm" class="space-y-6">
                 <!-- <section class="mt-4 m-2">
                     <div class="row">
                         <div class="col-md-4">
@@ -108,215 +206,336 @@
                         </div>
                     </div>
                 </section> -->
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
-                    <div class="row justify-content-between">
-                        <div class="col text-start d-none">
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div class="hidden">
                             <!-- download btn -->
-                            <a class="btn btn-primary" id="download-from-search-btn" type="button"><img width="30"
-                                    src="https://img.icons8.com/papercut/60/pdf.png" alt="opened-folder" />
-                                ดูไฟล์ PDF</a>
+                            <a class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg 
+                                      hover:bg-blue-700 active:scale-95 transition-all shadow-md"
+                                id="download-from-search-btn" type="button">
+                                <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                                <span>ดูไฟล์ PDF</span>
+                            </a>
                         </div>
-                        <div class="col text-end">
-                            <button class="btn btn-primary" id="auto-fill" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#autoFillOffCanvas" aria-controls="autoFillOffCanvas">Auto Fill</button>
+                        <div class="ml-auto">
+                            <button class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 
+                                           text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 
+                                           active:scale-95 transition-all shadow-md" id="auto-fill" type="button"
+                                data-bs-toggle="offcanvas" data-bs-target="#autoFillOffCanvas"
+                                aria-controls="autoFillOffCanvas">
+                                <i data-lucide="rocket" class="w-5 h-5"></i>
+                                Auto Fill
+                            </button>
                         </div>
                     </div>
-                    <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-defibrillator-medical-and-healthcare-flaticons-flat-flat-icons.png"
-                                alt="icon" width="50">
-                            <h4 class="fw-bold">&nbsp;รายละเอียดเครื่องมือ</h4>
+
+                    <div class="border-l-4 border-brand-orange pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="wrench" class="w-7 h-7 text-brand-orange"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">รายละเอียดเครื่องมือ</h2>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rr_no">เลข RR</label>
-                            <input type="text" name="rr_no" id="rr_no" class="form-control">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div class="space-y-2">
+                            <label for="rr_no" class="block text-sm font-medium text-gray-700">เลข RR</label>
+                            <input type="text" name="rr_no" id="rr_no" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="job_id">Work Order</label>
-                            <input type="text" name="job_id" id="job_id" class="form-control">
+                        <div class="space-y-2">
+                            <label for="job_id" class="block text-sm font-medium text-gray-700">Work Order</label>
+                            <input type="text" name="job_id" id="job_id" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_name">ชื่อเครื่องมือ</label>
-                            <input type="text" name="e_name" id="e_name" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_name" class="block text-sm font-medium text-gray-700">ชื่อเครื่องมือ</label>
+                            <input type="text" name="e_name" id="e_name" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_dept">แผนก</label>
-                            <select name="e_dept" id="e_dept" class="form-select">
-                                <option value="" disabled="" selected="">Select value</option>
+                        <div class="space-y-2">
+                            <label for="e_dept" class="block text-sm font-medium text-gray-700">แผนก</label>
+                            <select name="e_dept" id="e_dept" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                           focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                           transition-all shadow-sm hover:border-gray-400 bg-white">
+                                <option value="" disabled selected>เลือกแผนก</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_date">วันที่ซื้อ</label>
-                            <input type="text" name="e_date" id="e_date" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_date" class="block text-sm font-medium text-gray-700">วันที่ซื้อ</label>
+                            <input type="text" name="e_date" id="e_date" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_brand">ยี่ห้อ</label>
-                            <input type="text" name="e_brand" id="e_brand" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_brand" class="block text-sm font-medium text-gray-700">ยี่ห้อ</label>
+                            <input type="text" name="e_brand" id="e_brand" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_model">รุ่น</label>
-                            <input type="text" name="e_model" id="e_model" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_model" class="block text-sm font-medium text-gray-700">รุ่น</label>
+                            <input type="text" name="e_model" id="e_model" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_sn">เลขเครื่อง (SN)</label>
-                            <input type="text" name="e_sn" id="e_sn" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_sn" class="block text-sm font-medium text-gray-700">เลขเครื่อง (SN)</label>
+                            <input type="text" name="e_sn" id="e_sn" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_code">หมายเลขเครื่อง (ME Code)</label>
-                            <input type="text" name="e_code" id="e_code" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_code" class="block text-sm font-medium text-gray-700">หมายเลขเครื่อง (ME
+                                Code)</label>
+                            <input type="text" name="e_code" id="e_code" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_age">อายุเครื่อง</label>
-                            <input type="text" name="e_age" id="e_age" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_age" class="block text-sm font-medium text-gray-700">อายุเครื่อง</label>
+                            <input type="text" name="e_age" id="e_age" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_price">ราคาซื้อ <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="e_price" id="e_price" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_price" class="block text-sm font-medium text-gray-700">
+                                ราคาซื้อ <span class="text-gray-500 text-xs">(บาท)</span>
+                            </label>
+                            <input type="text" name="e_price" id="e_price" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-12"></div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_repair_price">ค่าซ่อมสะสม <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="e_repair_price" id="e_repair_price" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_repair_price" class="block text-sm font-medium text-gray-700">
+                                ค่าซ่อมสะสม <span class="text-gray-500 text-xs">(บาท)</span>
+                            </label>
+                            <input type="text" name="e_repair_price" id="e_repair_price" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_repair_percent">คิดเป็น % ของราคาซื้อ</label>
-                            <input type="text" name="e_repair_percent" id="e_repair_percent" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_repair_percent" class="block text-sm font-medium text-gray-700">
+                                คิดเป็น % ของราคาซื้อ
+                            </label>
+                            <input type="text" name="e_repair_percent" id="e_repair_percent" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400 bg-gray-50">
                         </div>
-                        <div class="col-12"></div>
-                        <div class="col-md-4 mt-3">
-                            <label for="consumable">ค่า Accessory & Consumable สะสม <span
-                                    class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="consumable" id="consumable" class="form-control">
+                        <div class="space-y-2">
+                            <label for="consumable" class="block text-sm font-medium text-gray-700">
+                                ค่า Accessory & Consumable สะสม <span class="text-gray-500 text-xs">(บาท)</span>
+                            </label>
+                            <input type="text" name="consumable" id="consumable" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="consumable_percent">คิดเป็น % ของราคาซื้อ</label>
-                            <input type="text" name="consumable_percent" id="consumable_percent" class="form-control">
+                        <div class="space-y-2">
+                            <label for="consumable_percent" class="block text-sm font-medium text-gray-700">
+                                คิดเป็น % ของราคาซื้อ
+                            </label>
+                            <input type="text" name="consumable_percent" id="consumable_percent" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400 bg-gray-50">
                         </div>
+                    </div>
 
-                        <div class="col-12 mt-3">
-                            <label for="failure">อาการเสีย</label>
-                            <input type="text" name="failure" id="failure" class="form-control">
+                    <div class="mt-6 space-y-5">
+                        <div class="space-y-2">
+                            <label for="failure" class="block text-sm font-medium text-gray-700">อาการเสีย</label>
+                            <input type="text" name="failure" id="failure" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-12 mt-3">
-                            <label for="result">ผลการตรวจเช็ค</label>
-                            <input type="text" name="result" id="result" class="form-control">
+                        <div class="space-y-2">
+                            <label for="result" class="block text-sm font-medium text-gray-700">ผลการตรวจเช็ค</label>
+                            <input type="text" name="result" id="result" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-12 mt-3">
-                            <label for="recommend">การดำเนินการ</label>
-                            <textarea rows="2" name="recommend" id="recommend" class="form-control"></textarea>
+                        <div class="space-y-2">
+                            <label for="recommend" class="block text-sm font-medium text-gray-700">การดำเนินการ</label>
+                            <textarea rows="3" name="recommend" id="recommend" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                             focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                             transition-all shadow-sm hover:border-gray-400 resize-y"></textarea>
                         </div>
-                        <div class="col-12 m-0 p-0">
-                            <div class="row m-0 p-0">
-                                <div class="col-md-4 mt-3">
-                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
-                                        id="e_img_div">
-                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
-                                            id="preview-img" />
-                                        &nbsp;รูปภาพเครื่อง
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mt-3 ">
-                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
-                                        id="e_img_code_div">
-                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
-                                            id="preview-img-code" />
-                                        &nbsp;รูปภาพโค้ด
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mt-3">
-                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
-                                        id="e_img_nameplate_div">
-                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
-                                            id="preview-img-nameplate" />
-                                        &nbsp;รูปภาพ Nameplate
-                                    </div>
-                                </div>
-                                <div class="col-12 text-end">
-                                    <button type="button"
-                                        class="btn btn-sm btn-outline-danger bg-danger-subtle mt-3 text-dark"
-                                        id="img-only-btn">สร้างเฉพาะรูปภาพ</button>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="group">
+                            <div class="relative rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-6 
+                                        border-2 border-dashed border-blue-300 hover:border-blue-500 
+                                        cursor-pointer transition-all hover:shadow-lg active:scale-95" id="e_img_div">
+                                <img id="preview-img" alt="preview"
+                                    class="absolute top-3 right-3 w-16 h-16 object-cover rounded-lg shadow-lg ring-2 ring-white hidden" />
+                                <div class="flex flex-col items-center justify-center space-y-2">
+                                    <i data-lucide="image" class="w-12 h-12 text-blue-500 drop-shadow-md"></i>
+                                    <span class="text-sm font-medium text-blue-700">รูปภาพเครื่อง</span>
+                                    <span class="text-xs text-blue-600">คลิกหรือลากไฟล์มาวาง</span>
                                 </div>
                             </div>
                         </div>
-                        <input type="file" name="e_img_file" id="e_img_file" hidden>
-
-                    </div>
-                </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
-                    <div class="row justify-content-start align-items-end">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/color/48/fail.png" alt=" icon" width="50">
-                            <h4 class="fw-bold">&nbsp;สาเหตุอาการเสีย</h4>
+                        <div class="group">
+                            <div class="relative rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-6 
+                                        border-2 border-dashed border-purple-300 hover:border-purple-500 
+                                        cursor-pointer transition-all hover:shadow-lg active:scale-95"
+                                id="e_img_code_div">
+                                <img id="preview-img-code" alt="preview"
+                                    class="absolute top-3 right-3 w-16 h-16 object-cover rounded-lg shadow-lg ring-2 ring-white hidden" />
+                                <div class="flex flex-col items-center justify-center space-y-2">
+                                    <i data-lucide="barcode" class="w-12 h-12 text-purple-500 drop-shadow-md"></i>
+                                    <span class="text-sm font-medium text-purple-700">รูปภาพโค้ด</span>
+                                    <span class="text-xs text-purple-600">คลิกหรือลากไฟล์มาวาง</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="cause_of_fail">เลือกสาเหตุ</label>
-                            <select name="cause_of_fail" id="cause_of_fail" class="form-select">
+                        <div class="group">
+                            <div class="relative rounded-xl bg-gradient-to-br from-green-50 to-green-100 p-6 
+                                        border-2 border-dashed border-green-300 hover:border-green-500 
+                                        cursor-pointer transition-all hover:shadow-lg active:scale-95"
+                                id="e_img_nameplate_div">
+                                <img id="preview-img-nameplate" alt="preview"
+                                    class="absolute top-3 right-3 w-16 h-16 object-cover rounded-lg shadow-lg ring-2 ring-white hidden" />
+                                <div class="flex flex-col items-center justify-center space-y-2">
+                                    <i data-lucide="badge-info" class="w-12 h-12 text-green-500 drop-shadow-md"></i>
+                                    <span class="text-sm font-medium text-green-700">รูปภาพ Nameplate</span>
+                                    <span class="text-xs text-green-600">คลิกหรือลากไฟล์มาวาง</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium
+                                       hover:bg-red-200 active:scale-95 transition-all shadow-sm
+                                       border border-red-300" id="img-only-btn">
+                            สร้างเฉพาะรูปภาพ
+                        </button>
+                    </div>
+
+                    <input type="file" name="e_img_file" id="e_img_file" hidden>
+                </section>
+
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow has-checkboxes">
+                    <div class="border-l-4 border-red-500 pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="bug" class="w-7 h-7 text-red-500"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">สาเหตุอาการเสีย</h2>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label for="cause_of_fail"
+                                class="block text-sm font-medium text-gray-700">เลือกสาเหตุ</label>
+                            <select name="cause_of_fail" id="cause_of_fail" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                           focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                           transition-all shadow-sm hover:border-gray-400 bg-white">
                                 <option value="" disabled selected>เลือก</option>
-                                <option value="cause_of_fail_user" id="cause_of_fail_user">
-                                    Users
-                                </option>
-                                <option value="cause_of_fail_other" id="cause_of_fail_other">
-                                    Other
-                                </option>
+                                <option value="cause_of_fail_user" id="cause_of_fail_user">Users</option>
+                                <option value="cause_of_fail_other" id="cause_of_fail_other">Other</option>
                             </select>
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
-                    <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/cotton/64/red-file--v2.png" alt="icon" width="50">
-                            <h4 class="fw-bold">&nbsp;รายละเอียดใบเสนอราคา</h4>
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow">
+                    <div class="border-l-4 border-red-600 pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="quote" class="w-7 h-7 text-red-600"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">รายละเอียดใบเสนอราคา</h2>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rr_vender">Vender</label>
-                            <input type="text" name="rr_vender" id="rr_vender" class="form-control">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div class="space-y-2">
+                            <label for="rr_vender" class="block text-sm font-medium text-gray-700">Vender</label>
+                            <input type="text" name="rr_vender" id="rr_vender" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="quatation_no">เลขใบเสนอราคา</label>
-                            <input type="text" name="quatation_no" id="quatation_no" class="form-control">
+                        <div class="space-y-2">
+                            <label for="quatation_no"
+                                class="block text-sm font-medium text-gray-700">เลขใบเสนอราคา</label>
+                            <input type="text" name="quatation_no" id="quatation_no" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rr_price">ราคาสินค้า/บริการ <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="rr_price" id="rr_price" class="form-control">
+                        <div class="space-y-2">
+                            <label for="rr_price" class="block text-sm font-medium text-gray-700">
+                                ราคาสินค้า/บริการ <span class="text-gray-500 text-xs">(บาท)</span>
+                            </label>
+                            <input type="text" name="rr_price" id="rr_price" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rr_vat">ภาษีมูลค่าเพิ่ม 7% <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="rr_vat" id="rr_vat" class="form-control">
+                        <div class="space-y-2">
+                            <label for="rr_vat" class="block text-sm font-medium text-gray-700">
+                                ภาษีมูลค่าเพิ่ม 7% <span class="text-gray-500 text-xs">(บาท)</span>
+                            </label>
+                            <input type="text" name="rr_vat" id="rr_vat" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rr_grand_price">ราคาทั้งสิ้น <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="rr_grand_price" id="rr_grand_price" class="form-control">
+                        <div class="space-y-2">
+                            <label for="rr_grand_price" class="block text-sm font-medium text-gray-700">
+                                ราคาทั้งสิ้น <span class="text-gray-500 text-xs">(บาท)</span>
+                            </label>
+                            <input type="text" name="rr_grand_price" id="rr_grand_price" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_current_repair_percent">คิดเป็น % ของราคาเครื่อง <span
-                                    class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="e_current_repair_percent" id="e_current_repair_percent"
-                                class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_current_repair_percent" class="block text-sm font-medium text-gray-700">
+                                คิดเป็น % ของราคาเครื่อง
+                            </label>
+                            <input type="text" name="e_current_repair_percent" id="e_current_repair_percent" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400 bg-gray-50">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="delivery">กำหนดส่งของ <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="delivery" id="delivery" class="form-control">
+                        <div class="space-y-2">
+                            <label for="delivery" class="block text-sm font-medium text-gray-700">
+                                กำหนดส่งของ <span class="text-gray-500 text-xs">(วัน)</span>
+                            </label>
+                            <input type="text" name="delivery" id="delivery" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="valadity">กำหนดยืนราคา <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="valadity" id="valadity" class="form-control">
+                        <div class="space-y-2">
+                            <label for="valadity" class="block text-sm font-medium text-gray-700">
+                                กำหนดยืนราคา <span class="text-gray-500 text-xs">(วัน)</span>
+                            </label>
+                            <input type="text" name="valadity" id="valadity" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="warranty">การรับประกัน <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="warranty" id="warranty" class="form-control">
+                        <div class="space-y-2">
+                            <label for="warranty" class="block text-sm font-medium text-gray-700">
+                                การรับประกัน <span class="text-gray-500 text-xs">(วัน)</span>
+                            </label>
+                            <input type="text" name="warranty" id="warranty" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400">
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
-                    <div class="row justify-content-start align-items-end">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/stickers/100/bank.png" alt=" icon" width="50">
-                            <h4 class="fw-bold">&nbsp;ประเภทของค่าใช้จ่ายที่นาเสนอให้ดำเนินการ</h4>
+
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow has-checkboxes">
+                    <div class="border-l-4 border-green-600 pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="banknote-arrow-up" class="w-7 h-7 text-green-600 drop-shadow"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">ประเภทของค่าใช้จ่ายที่นาเสนอให้ดำเนินการ</h2>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rr-cm">เลือกประเภทค่าใช้จ่าย</label>
-                            <select name="rr-cm" id="rr-cm" class="form-select">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label for="rr-cm"
+                                class="block text-sm font-medium text-gray-700">เลือกประเภทค่าใช้จ่าย</label>
+                            <select name="rr-cm" id="rr-cm" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                           focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                           transition-all shadow-sm hover:border-gray-400 bg-white">
                                 <option value="" disabled selected>เลือก</option>
                                 <option value="Accessory" id="Accessory">Accessory</option>
                                 <option value="Sparepart" id="Sparepart">Spare part</option>
@@ -324,21 +543,30 @@
                                 <option value="Other" id="Other">Other</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mt-3" style="display: none;">
-                            <input type="text" name="rr-cm-other" id="rr-cm-other" class="form-control"
+                        <div class="space-y-2" style="display: none;">
+                            <input type="text" name="rr-cm-other" id="rr-cm-other" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400"
                                 placeholder="กรอกข้อมูลกรณีเลือกอื่นๆ">
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
-                    <div class="row justify-content-start align-items-end">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/fluency/48/signing-a-document.png" alt=" icon" width="50">
-                            <h4 class="fw-bold">&nbsp;ประเภทสัญญาบริการของโรงพยาบาล</h4>
+
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow has-checkboxes">
+                    <div class="border-l-4 border-blue-600 pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="file-text" class="w-7 h-7 text-blue-600 drop-shadow"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">ประเภทสัญญาบริการของโรงพยาบาล</h2>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="rr-contract">เลือกประเภทสัญญา</label>
-                            <select name="rr-contract" id="rr-contract" class="form-select">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label for="rr-contract"
+                                class="block text-sm font-medium text-gray-700">เลือกประเภทสัญญา</label>
+                            <select name="rr-contract" id="rr-contract" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                           focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                           transition-all shadow-sm hover:border-gray-400 bg-white">
                                 <option value="" disabled selected>เลือก</option>
                                 <option value="contract_part_include" id="contract_part_include">สัญญาบริการรวมอะไหล่
                                 </option>
@@ -348,50 +576,206 @@
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
-                    <div class="row justify-content-center align-items-start">
-                        <div class="col-md-4 mt-3 text-center">
-                            <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
-                            <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
-                                class="form-control file">
-                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow">
+                    <div class="border-l-4 border-purple-600 pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="file-text" class="w-7 h-7 text-purple-600 drop-shadow"></i>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            <h2 class="text-2xl font-bold text-gray-800">ไฟล์เอกสารประกอบ</h2>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-3">
+                            <label for="1-file-nsmart" class="block text-sm font-medium text-gray-700 text-center">
+                                ไฟล์ใบงาน NSmart
+                            </label>
+                            <div class="relative">
+                                <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
+                                    class="file w-full px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 
+                                              hover:border-brand-orange focus:border-brand-orange focus:ring-2 
+                                              focus:ring-brand-orange/20 transition-all cursor-pointer
+                                              file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                                              file:text-sm file:font-semibold file:bg-brand-orange file:text-white
+                                              hover:file:bg-brand-orange-dark file:cursor-pointer">
+                            </div>
+                            <iframe class="mt-2 rounded-lg border border-gray-200 shadow-sm" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
-                        <div class="col-md-4 mt-3 text-center">
-                            <label for="2-file-quatation">ไฟล์ใบเสนอราคา</label>
-                            <input type="file" name="2-file-quatation" id="2-file-quatation" accept="application/pdf"
-                                class="form-control file">
-                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                        <div class="space-y-3">
+                            <label for="2-file-quatation" class="block text-sm font-medium text-gray-700 text-center">
+                                ไฟล์ใบเสนอราคา
+                            </label>
+                            <div class="relative">
+                                <input type="file" name="2-file-quatation" id="2-file-quatation"
+                                    accept="application/pdf" class="file w-full px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 
+                                              hover:border-brand-orange focus:border-brand-orange focus:ring-2 
+                                              focus:ring-brand-orange/20 transition-all cursor-pointer
+                                              file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                                              file:text-sm file:font-semibold file:bg-brand-orange file:text-white
+                                              hover:file:bg-brand-orange-dark file:cursor-pointer">
+                            </div>
+                            <iframe class="mt-2 rounded-lg border border-gray-200 shadow-sm" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
-                          <div class="col-md-4 mt-3 text-center">
-                            <label for="3-file-other">ไฟล์เพิ่มเติม</label>
-                            <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf"
-                                class="form-control file">
-                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                        <div class="space-y-3">
+                            <label for="3-file-other" class="block text-sm font-medium text-gray-700 text-center">
+                                ไฟล์เพิ่มเติม
+                            </label>
+                            <div class="relative">
+                                <input type="file" name="3-file-other" id="3-file-other" accept="application/pdf" class="file w-full px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 
+                                              hover:border-brand-orange focus:border-brand-orange focus:ring-2 
+                                              focus:ring-brand-orange/20 transition-all cursor-pointer
+                                              file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                                              file:text-sm file:font-semibold file:bg-brand-orange file:text-white
+                                              hover:file:bg-brand-orange-dark file:cursor-pointer">
+                            </div>
+                            <iframe class="mt-2 rounded-lg border border-gray-200 shadow-sm" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
                     </div>
                 </section>
-                <div class="row justify-content-center">
-                    <div class="col-md-4 mt-3 text-center">
-                        <button type="submit" class="btn btn-warning btn-lg shadow" style="min-width: 200px;"><img
-                                width="40" src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" />
-                            สร้างไฟล์</button>
-                    </div>
+
+                <div class="flex justify-center mt-8 pt-4 gap-3 items-center flex-wrap">
+                    <button type="submit" class="group relative inline-flex items-center gap-3 px-8 py-2 
+                                   bg-gradient-to-r from-yellow-400 to-yellow-500 
+                                   text-gray-800 font-bold text-lg rounded-xl 
+                                   hover:from-yellow-500 hover:to-yellow-600 
+                                   active:scale-95 transition-all shadow-2xl 
+                                   hover:shadow-yellow-500/50 min-w-[250px] justify-center">
+                        <i data-lucide="file-text" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
+                        <span class="group-hover:scale-110 transition-transform">สร้างไฟล์</span>
+
+                    </button>
+
+                    <button type="button" onclick="openEmailModal()" class="group relative inline-flex items-center gap-3 px-8 py-2 
+                                   bg-gradient-to-r from-blue-600 to-blue-700 
+                                   text-white font-bold text-lg rounded-xl 
+                                   hover:from-blue-700 hover:to-blue-800 
+                                   active:scale-95 transition-all shadow-2xl 
+                                   hover:shadow-blue-500/50 min-w-[250px] justify-center">
+                        <i data-lucide="mail" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
+                        <span class="group-hover:scale-110 transition-transform">ส่งอีเมล</span>
+                    </button>
                 </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-4 mt-3 mb-4 text-center">
-                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
-                    </div>
+
+                <div class="flex justify-center mt-4">
+                    <a id="a-download" target="_blank" style="display: none;" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white 
+                              font-semibold rounded-lg hover:bg-green-700 active:scale-95 
+                              transition-all shadow-lg">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                        ดาวน์โหลด
+                    </a>
                 </div>
             </form>
-            <div class="container-fluid">
-                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+
+            <div class="mt-6">
+                <iframe id="pdf" class="w-full rounded-2xl shadow-2xl border-4 border-white"
+                    style="height: calc(100vw * 1.4142); display: none;"></iframe>
             </div>
         </div>
-
     </main>
+
+    <!-- Email Modal -->
+    <div id="emailModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-2 md:p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-auto">
+            <!-- Modal Header -->
+            <div
+                class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-t-2xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="send" class="w-6 h-6"></i>
+                    <h2 class="text-xl font-bold">Send Email with PDF</h2>
+                </div>
+                <button onclick="closeEmailModal()" class="hover:bg-white/20 rounded-lg p-2 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="emailForm" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Sender Name -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Sender
+                            Name</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <select required id="from_name" name="from_name" type="text" placeholder="John Doe"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"></select>
+                        </div>
+                    </div>
+
+                    <!-- Receiver Email -->
+                    <div class="space-y-1 hidden">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Recipient
+                            Email</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input required id="to_email" name="to_email" type="email" placeholder="client@example.com"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                value="makrookyimyam@gmail.com">
+                        </div>
+                        <!-- value="Daranphop_yi@nhealth-asia.co.th"> -->
+                    </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Subject</label>
+                    <div class="relative">
+                        <i data-lucide="type" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input required id="subject" name="subject" type="text" placeholder="RR Form - Project Proposal"
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            readonly>
+                    </div>
+                </div>
+
+                <!-- Message with Rich Text Editor -->
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Message</label>
+                    <div id="toolbar-container"
+                        class="bg-slate-100 border border-slate-200 rounded-t-xl p-2 flex flex-wrap gap-1">
+                        <button type="button" class="ql-bold" title="Bold"></button>
+                        <button type="button" class="ql-italic" title="Italic"></button>
+                        <button type="button" class="ql-underline" title="Underline"></button>
+                        <div class="ql-formats">
+                            <select class="ql-header" title="Headers">
+                                <option selected>Normal</option>
+                                <option value="1">Heading 1</option>
+                                <option value="2">Heading 2</option>
+                                <option value="3">Heading 3</option>
+                            </select>
+                        </div>
+                        <div class="ql-formats">
+                            <button type="button" class="ql-list" value="bullet" title="Bullet List"></button>
+                            <button type="button" class="ql-list" value="ordered" title="Numbered List"></button>
+                        </div>
+                        <button type="button" class="ql-link" title="Link"></button>
+                        <button type="button" class="ql-clean" title="Remove Formatting"></button>
+                    </div>
+                    <div id="messageEditor"
+                        class="w-full bg-white border border-slate-200 rounded-b-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                        style="height: 250px; border-top: none;"></div>
+                    <textarea id="message" name="message" style="display: none;"></textarea>
+                </div>
+                <!-- status area -->
+
+
+                <!-- Footer / Status -->
+                <div class="flex flex-wrap items-center justify-between pt-4 gap-3 w-full sm:w-auto">
+                    <div id="statusArea" class="rounded-lg text-sm"></div>
+                    <button type="submit"
+                        class="flex-1 sm:flex-none px-4 py-2.5 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="external-link"></i>
+                        Send Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="autoFillOffCanvas"
         aria-labelledby="autoFillOffCanvasLabel">
@@ -403,8 +787,8 @@
                         <input name="console-code" id="console-code" class="form-control" readonly>
                     </div>
                     <div class="col-auto m-0">
-                        <button class="btn btn-warning" onclick="copy()"><span id="copy-icon"><img width="20"
-                                    src="https://img.icons8.com/cotton/64/documents.png"
+                        <button class="btn btn-warning flex justify-center items-center" onclick="copy()"><span
+                                id="copy-icon"><img width="20" src="https://img.icons8.com/cotton/64/documents.png"
                                     alt="documents" /></span>&nbsp;Copy</button>
                     </div>
                 </div>
@@ -415,8 +799,9 @@
                         placeholder="ข้อมูลจากหน้า Add Update"></textarea>
                 </div>
                 <div class="col-12">
-                    <button class="btn btn-primary w-100" id="input-json-btn"><img width="30"
-                            src="https://img.icons8.com/color/48/task--v1.png" alt="task--v1" /> กรอกฟอร์ม</button>
+                    <button class="btn btn-primary w-100 flex justify-center items-center" id="input-json-btn"><img
+                            width="30" src="https://img.icons8.com/color/48/task--v1.png" alt="task--v1" />
+                        กรอกฟอร์ม</button>
                 </div>
             </div>
         </div>
@@ -455,13 +840,28 @@
             $('#e_price, #e_repair_price').mask('#,##0.00', mask_options)
             $('#consumable').mask('#,##0.00', mask_options2)
             $('#rr_price, #rr_vat, #rr_grand_price').mask('#,##0.00', mask_options3)
-            $('#e_dept').append(depts_array.sort().map(dept => {
-                let opt = $('<option>', { text: dept, value: dept })
-                if (depts_id[dept] != undefined) {
-                    $(opt).attr('data-dept-id', depts_id[dept])
-                }
-                return $(opt).prop('outerHTML')
-            }).join(' '))
+            $('#e_dept')
+                .empty()
+                .append($('<option>', { text: 'เลือกแผนก', value: '', disabled: true, selected: true }))
+                .append(depts_array.sort().map(dept => {
+                    let opt = $('<option>', { text: dept, value: dept })
+                    if (depts_id[dept] != undefined) {
+                        $(opt).attr('data-dept-id', depts_id[dept])
+                    }
+                    return $(opt).prop('outerHTML')
+                }).join(' '))
+            $('#from_name')
+                .empty()
+                .append($('<option>', { text: 'เลือกชื่อผู้ส่ง', value: '', disabled: true, selected: true }))
+                .append(staff_name_array.sort().map(name => {
+                    let opt = $('<option>', { text: name, value: name })
+                    return $(opt).prop('outerHTML')
+                }).join(' ')).on('change', function () {
+                    localStorage.setItem('rr_email_sender_name', $(this).val())
+                })
+            if (localStorage.getItem('rr_email_sender_name')) {
+                $('#from_name').val(localStorage.getItem('rr_email_sender_name'))
+            }
 
         })
         $('#search-form').submit(function () {
@@ -476,8 +876,12 @@
                 text: 'กรุณารอสักครู่',
                 showConfirmButton: false,
                 allowOutsideClick: false,
+
                 didOpen: () => {
                     Swal.showLoading()
+                },
+                customClass: {
+                    popup: 'rounded-xl'
                 }
             })
             $.getJSON(scriptUrl + '?action=search&search=' + search, function (data) {
@@ -488,6 +892,9 @@
                         title: 'ไม่พบข้อมูล',
                         text: 'กรุณาตรวจสอบรหัสอีกครั้ง',
                         confirmButtonText: 'ตกลง',
+                        customClass: {
+                            popup: 'rounded-xl'
+                        }
                     })
                     return
                 }
@@ -495,6 +902,9 @@
                     icon: 'success',
                     title: 'พบข้อมูล',
                     timer: 1000,
+                    customClass: {
+                        popup: 'rounded-xl'
+                    }
                 })
                 Object.keys(data.data).forEach(key => {
                     let element = $('[name="' + key + '"]')
@@ -677,6 +1087,9 @@
                 title: 'สร้างไฟล์เสร็จสิ้น',
                 timer: 2000,
                 showConfirmButton: false,
+                customClass: {
+                    popup: 'rounded-xl'
+                }
             }).then(async () => {
                 var iframe = document.getElementById('pdf')
                 // open pdf in new small window
@@ -732,12 +1145,23 @@
         $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragover', function (e) {
             e.preventDefault()
             e.stopPropagation()
-            $(this).removeClass('bg-info-subtle').addClass('text-bg-info')
+            // $(this).removeClass('from-blue-50', 'to-blue-100', 'border-blue-300',
+            //     'from-purple-50', 'to-purple-100', 'border-purple-300',
+            //     'from-green-50', 'to-green-100', 'border-green-300')
+            //     .addClass('from-brand-orange', 'to-brand-orange-dark', 'border-brand-orange', 'scale-105')
         })
         $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragleave', function (e) {
             e.preventDefault()
             e.stopPropagation()
-            $(this).removeClass('text-bg-info').addClass('bg-info-subtle')
+            let id = $(this).attr('id')
+            $(this).removeClass('from-brand-orange', 'to-brand-orange-dark', 'border-brand-orange', 'scale-105')
+            if (id === 'e_img_div') {
+                $(this).addClass('from-blue-50', 'to-blue-100', 'border-blue-300')
+            } else if (id === 'e_img_code_div') {
+                $(this).addClass('from-purple-50', 'to-purple-100', 'border-purple-300')
+            } else if (id === 'e_img_nameplate_div') {
+                $(this).addClass('from-green-50', 'to-green-100', 'border-green-300')
+            }
         })
 
         $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('drop', function (e) {
@@ -747,6 +1171,7 @@
             $('#e_img_file').attr('data-id', dataID)
 
             let preview = $('#' + dataID + ' img')
+            console.log("🚀 !! preview:", preview)
             $('#' + dataID).LoadingOverlay('show')
             // check if file is url
             if (e.originalEvent.dataTransfer.getData('text/uri-list')) {
@@ -761,6 +1186,7 @@
 
 
                 preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
+                preview.removeClass('hidden')
                 // check if src is base64
                 if (preview.attr('src').includes('base64')) {
                     let base64 = preview.attr('src').split(',')[1]
@@ -796,6 +1222,7 @@
 
                     reader.onloadend = function (e) {
                         preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                        preview.removeClass('hidden')
                         setImageBytes(dataID, e.target.result)
                         $('#' + dataID).LoadingOverlay('hide')
 
@@ -863,6 +1290,9 @@
                     if (!value) {
                         return 'กรุณากรอกข้อมูล'
                     }
+                },
+                customClass: {
+                    popup: 'rounded-xl'
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -959,6 +1389,9 @@
                     icon: 'error',
                     title: 'กรุณาเลือกไฟล์ PDF',
                     text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
+                    customClass: {
+                        popup: 'rounded-xl'
+                    }
                 })
                 return
             }
@@ -967,6 +1400,9 @@
                     icon: 'error',
                     title: 'ไฟล์มีขนาดใหญ่เกินไป',
                     text: 'ไฟล์มีขนาดใหญ่เกิน 10 MB',
+                    customClass: {
+                        popup: 'rounded-xl'
+                    }
                 })
                 return
             }
@@ -998,6 +1434,55 @@
         }
 
         $('#myForm').submit(async function () {
+            event.preventDefault()
+            const { form_obj, pdfBytes, form_pdf_bytes } = await createPDF()
+            $.ajax({
+                url: scriptUrl,
+                type: 'POST',
+                data: {
+                    opt: 'save',
+                    form_obj: JSON.stringify(form_obj)
+                }
+            }).done(function (data) {
+                console.log(data);
+            })
+
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 2000,
+                showConfirmButton: false,
+                customClass: {
+                    popup: 'rounded-xl'
+                }
+            }).then(async () => {
+                var iframe = document.getElementById('pdf')
+                // open pdf in new small window
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&view=fitH'
+                let e_code = $('#e_code').val() ? $('#e_code').val() : 'no_code'
+                let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
+                let dept = $('#e_dept').val() ? $('#e_dept').val() : 'no_department'
+                let rr_no = $('#rr_no').val()
+                let name = 'RR_' + rr_no.split('_').slice(1).join('_') + '_' + e_name + ', ' + dept + '.pdf'
+                $(iframe).show(200)
+                $('#a-download').attr('href', url)
+                $('#a-download').attr('download', name).show()
+                // scroll to pdf
+                $('html, body').animate({
+                    scrollTop: $(iframe).offset().top
+                }, 500);
+                pdfDoc = await PDFDocument.load(form_pdf_bytes)
+                $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
+
+            })
+            // $('#a-download').attr('href', pdfDataUri)
+            // $('#a-download').attr('download', name).show()
+        })
+
+        async function createPDF() {
             const embedImage = async function (bytes, key) {
                 let preview, e_img
                 switch (key) {
@@ -1069,7 +1554,7 @@
                 if ($('#e_dept option:selected').data('dept-id') && $('#e_dept option:selected').data('dept-id') != '') form.getTextField('dept_no').setText($('#e_dept option:selected').data('dept-id').toString())
             }
 
-            $('form input, form select, form textarea').not('input[type="search"]').each(function () {
+            $('form#rr_form input, form#rr_form select, form#rr_form textarea').not('input[type="search"]').each(function () {
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
                 if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', '3-file-other', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept', 'cause_of_fail'].includes(_this.prop('id'))) return
@@ -1155,45 +1640,9 @@
                 form_obj[$(this).attr('name')] = $(this).val()
             })
             form_obj['pdfFile'] = pdfdatauri
-            $.ajax({
-                url: scriptUrl,
-                type: 'POST',
-                data: {
-                    opt: 'save',
-                    form_obj: JSON.stringify(form_obj)
-                }
-            })
-            $.LoadingOverlay("hide");
-            Swal.fire({
-                icon: 'success',
-                title: 'สร้างไฟล์เสร็จสิ้น',
-                timer: 2000,
-                showConfirmButton: false,
-            }).then(async () => {
-                var iframe = document.getElementById('pdf')
-                // open pdf in new small window
-                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
-                var url = URL.createObjectURL(blob)
-                iframe.src = url + '#toolbar=1&view=fitH'
-                let e_code = $('#e_code').val() ? $('#e_code').val() : 'no_code'
-                let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
-                let dept = $('#e_dept').val() ? $('#e_dept').val() : 'no_department'
-                let rr_no = $('#rr_no').val()
-                let name = 'RR_' + rr_no.split('_').slice(1).join('_') + '_' + e_name + ', ' + dept + '.pdf'
-                $(iframe).show(200)
-                $('#a-download').attr('href', url)
-                $('#a-download').attr('download', name).show()
-                // scroll to pdf
-                $('html, body').animate({
-                    scrollTop: $(iframe).offset().top
-                }, 500);
-                pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
+            return { form_obj, pdfBytes, form_pdf_bytes }
+        }
 
-            })
-            // $('#a-download').attr('href', pdfDataUri)
-            // $('#a-download').attr('download', name).show()
-        })
         function toTitleCase(str) {
             return str.replace(
                 /\w\S*/g,
@@ -1415,6 +1864,173 @@
             }
             return Number
         }
+
+        // Email Modal Functions
+        var quillEditor = null;
+
+        function openEmailModal() {
+            const modal = $('#emailModal');
+            modal.removeClass('hidden').addClass('flex');
+
+            $('#subject').val("ขออนุมัติ RR No. " + $('#rr_no').val())
+
+            // Initialize Quill editor on first open
+            if (!quillEditor) {
+                quillEditor = new Quill('#messageEditor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: '#toolbar-container'
+                    },
+                    placeholder: 'Type your message here...'
+                });
+                quillEditor.root.style.fontSize = '16px';
+            }
+            $('#from_name').on('change', function () {
+                if (quillEditor) {
+                    const delta = quillEditor.getContents();
+                    const ops = delta.ops;
+
+                    ops[ops.length - 1] = { insert: `\n${$('#from_name').val()}\n` }
+
+                    quillEditor.setContents(delta);
+                }
+            });
+
+            // Clear previous content
+            quillEditor.setContents([
+                { insert: 'เรียน หัวหน้าแผนกเครื่องมือแพทย์ คุณ' + supervisor_name + '\n\n', attributes: { bold: true } },
+                { insert: ' ' },
+                { insert: 'ตามที่ข้าพเจ้าได้ดำเนินการตรวจสอบและประเมินสภาพเครื่องมือแพทย์ที่มีปัญหาเรียบร้อยแล้ว ข้าพเจ้าขอเสนอรายงานการซ่อมแซม (RR) สำหรับเครื่องมือแพทย์ดังกล่าว โดยมีรายละเอียดดังนี้:\n\n' },
+                { insert: `ชื่อเครื่องมือแพทย์: ${$('#e_name').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `รหัสเครื่องมือแพทย์: ${$('#e_code').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `แผนกที่ใช้งาน: ${$('#e_dept').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `สาเหตุของปัญหา: ${$('#cause_of_fail').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `ข้อเสนอแนะในการซ่อมแซม: ${$('#recommend').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: '\nรายละเอียดเพิ่มเติมและไฟล์แนบ RR อยู่ในเอกสารที่แนบมานี้ กรุณาตรวจสอบและอนุมัติการซ่อมแซมตามความเหมาะสม\n\n' },
+                { insert: 'ขอแสดงความนับถือ\n', attributes: { italic: true } },
+                { insert: `${$('#from_name').val()}\n` }
+            ]);
+
+            // Re-initialize lucide icons for modal content
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+
+
+        }
+
+        function closeEmailModal() {
+            const modal = $('#emailModal');
+            modal.addClass('hidden').removeClass('flex');
+        }
+
+        // Handle email form submission
+        $('#emailForm').on('submit', async function (e) {
+            // 
+            e.preventDefault();
+
+            const statusArea = $('#statusArea');
+
+            try {
+                const from_name = $('#from_name').val();
+                const to_email = $('#to_email').val();
+                const subject = $('#subject').val();
+                const message = quillEditor ? quillEditor.root.innerHTML : $('#message').val();
+
+                if (!from_name || !to_email || !subject || !message) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Fields',
+                        text: 'Please fill all required fields',
+                        customClass: {
+                            popup: 'rounded-xl'
+                        }
+                    });
+                    return;
+                }
+                statusArea.html('<p class="text-sm text-blue-600 font-semibold flex items-center gap-2"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Sending email...</p>');
+                const { form_obj, pdfBytes, form_pdf_bytes } = await createPDF();
+                const code = $('#e_code').val() ? $('#e_code').val() : 'no_code';
+                const name = $('#e_name').val() ? $('#e_name').val() : 'no_name';
+                const dept = $('#e_dept').val() ? $('#e_dept').val() : 'no_department';
+                const rr_no = $('#rr_no').val();
+                const fileName = `RR_${rr_no.split('_').slice(1).join('_')}_${name}, ${dept}.pdf`;
+                const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+                console.log("🚀 !! pdfDataUri:", pdfDataUri)
+                // Get form data
+                const formData = {
+                    from_name: $('#from_name').val(),
+                    to_email: $('#to_email').val(),
+                    subject: $('#subject').val(),
+                    message: quillEditor ? quillEditor.root.innerHTML : $('#message').val(),
+                    pdf_data: pdfDataUri || null
+                };
+
+                // For demonstration, simulate API call
+                // Send email via Google Apps Script
+                await Promise.all([
+                    $.ajax({
+                        url: scriptUrl,
+                        type: 'POST',
+                        data: {
+                            opt: 'save',
+                            form_obj: JSON.stringify(form_obj)
+                        }
+                    }),
+                    $.ajax({
+                        url: scriptUrl,
+                        type: 'POST',
+                        data: {
+                            opt: 'sendEmail',
+                            from_name: formData.from_name,
+                            to_email: formData.to_email,
+                            subject: formData.subject,
+                            message: formData.message,
+                            pdf_data: formData.pdf_data,
+                            pdf_name: fileName
+                        }
+                    })
+                ]);
+
+                // Show success message
+                statusArea.html('<p class="text-sm text-green-600 font-semibold flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> Email sent successfully!</p>');
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+
+                // Reset form after 2 seconds
+                setTimeout(() => {
+                    emailForm[0].reset();
+                    closeEmailModal();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Email send error:', error);
+                statusArea.html('<p class="text-sm text-red-600 font-semibold flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i> Failed to send email</p>');
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } finally {
+                // Re-enable submit button
+                $('#emailForm button[type="submit"]').prop('disabled', false);
+            }
+        });
+
+        // Initialize lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Close modal on outside click
+        const emailModal = $('#emailModal');
+        if (emailModal.length) {
+            emailModal.on('click', function (e) {
+                if (e.target === this) {
+                    closeEmailModal();
+                }
+            });
+        }
     </script>
 
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
@@ -1425,6 +2041,9 @@
         src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/jquery-mask-plugin@1.14.16/dist/jquery.mask.min.js"></script>
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 </body>
 
 </html>
