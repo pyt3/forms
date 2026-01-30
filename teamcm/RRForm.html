@@ -221,8 +221,7 @@
                             <button class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 
                                            text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 
                                            active:scale-95 transition-all shadow-md" id="auto-fill" type="button"
-                                data-bs-toggle="offcanvas" data-bs-target="#autoFillOffCanvas"
-                                aria-controls="autoFillOffCanvas">
+                                onclick="autoFillProcess()">
                                 <i data-lucide="rocket" class="w-5 h-5"></i>
                                 Auto Fill
                             </button>
@@ -1672,11 +1671,91 @@
         }
     </script>
     <script>
-        function copy() {
+        let autoFillCheckInterval = null;
+
+        // New streamlined auto fill process
+        async function autoFillProcess() {
+            // Auto copy the code using modern clipboard API
             let str = $('#console-code').val()
 
-            // copy to clipboard
+            try {
+                await navigator.clipboard.writeText(str)
 
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: false
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Copied!'
+                })
+            } catch (err) {
+                // Fallback to old method if clipboard API fails
+                $('#console-code')[0].select()
+                document.execCommand("copy")
+
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: false
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Copied!'
+                })
+            }
+
+            // chaeck if document is blurred
+            // if (!document.hasFocus()) {
+            //     // Wait until document gains focus
+            //     window.addEventListener('focus', () => {
+            //         startAutoFillMonitoring();
+            //     }, { once: true });
+            //     return;
+            // }
+            $(document).one('visibilitychange', function () {
+                if (document.visibilityState !== 'visible') {
+                    console.log('Document is hidden, waiting for focus to start monitoring...');
+                    startAutoFillMonitoring();
+                }
+            });
+
+            // Start monitoring for pasted data
+
+            // startAutoFillMonitoring();
+        }
+
+        // Monitor clipboard for pasted data
+        function startAutoFillMonitoring() {
+            // Clear any existing interval
+            if (autoFillCheckInterval) {
+                clearInterval(autoFillCheckInterval)
+            }
+            autoFillCheckInterval = setInterval(async () => {
+                isDocumentFocused = document.hasFocus();
+                if (!isDocumentFocused) {
+                    return; // Skip checking if document is not focused
+                }
+                try {
+                    let clipboardText = await navigator.clipboard.readText()
+                    if (clipboardText && clipboardText.startsWith('{') && clipboardText.endsWith('}')) {
+                        clearInterval(autoFillCheckInterval)
+                        $('#input-json').val(clipboardText)
+                        $('#input-json-btn').click()
+                    }
+                } catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                }
+            }, 1000)
+        }
+
+        // Keep the old copy function for the manual copy button
+        function copy() {
             $('#console-code')[0].select()
             document.execCommand("copy")
             let Toast = Swal.mixin({
@@ -1690,35 +1769,6 @@
                 icon: 'success',
                 title: 'คัดลอกสำเร็จ'
             })
-            console.groupEnd()
-            let starttime = new Date()
-            let checkdata = setInterval(async () => {
-                // if interval more than 10 sec, clear interval
-                if (new Date() - starttime > (1000 * 60 * 5)) {
-                    clearInterval(checkdata)
-                    return
-                }
-                // read data from clipboard
-                if (!document.hasFocus()) return
-                try {
-                    let items = await navigator.clipboard.readText()
-                    if (!items || items == '') return
-                    // check if data is json
-                    try {
-                        let obj = JSON.parse(items)
-                        if (!obj.hasOwnProperty('id')) return
-                        clearInterval(checkdata)
-                        $('#input-json').val(items)
-                        $('#input-json-btn').click()
-                        // delete data from clipboard
-                        navigator.clipboard.writeText('')
-                    } catch (error) {
-                    }
-                } catch (e) {
-                    console.log('Clipboard read failed:', e)
-                    clearInterval(checkdata)
-                }
-            }, 1000);
         }
 
         $('#input-json-btn').click(function () {
