@@ -22,6 +22,7 @@ const depts_array = [
     "INTENSIVE CARE UNIT(ผู้ป่วยหนัก)",
     "LABOR ROOM(ห้องคลอด)",
     "LABORATORY",
+    "LASIK",
     "MARKETING",
     "NURSERY(เด็กอ่อน)",
     "NURSING DEPARTMENT",
@@ -58,8 +59,12 @@ const depts_array = [
     "WAREHOUSE",
     "X-RAY",
     "รับส่ง",
-    "ห้องเก็บของชั้น 19"
-]
+    "Select value",
+    "Biomolecular Laboratory",
+    "BME-PYT3",
+    "Central Sterile Supply (CSSD)",
+    "Laboratory Room (LAB)"
+];
 
 const depts_id = {
   "ANESTHESIA (วิสัญญี)": 244,

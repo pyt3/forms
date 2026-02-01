@@ -8,6 +8,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-orange': '#e3a42e',
+                        'brand-orange-dark': '#c28a1f',
+                        'brand-orange-light': '#f0c14b',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Keep Bootstrap for offcanvas compatibility -->
     <link href="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
@@ -17,9 +35,11 @@
     <script src="https://fastly.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
     <!-- icon -->
     <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="./main const.js"></script>
     <style>
         * {
@@ -29,11 +49,7 @@
         }
 
         body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Prompt', sans-serif;
-            background-color: #e9b33b;
-            /* background-color: #D3D3D3; */
+            font-family: 'Noto Sans Thai', sans-serif;
         }
 
         #sticker {
@@ -48,277 +64,406 @@
         .nsmart-img:active {
             cursor: grabbing;
         }
+
+        /* Smooth transitions */
+        input,
+        select,
+        textarea,
+        button {
+            transition: all 0.2s ease-in-out;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            transform: translateY(-1px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e3a42e;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c28a1f;
+        }
+
+        /* Quill Editor Customization */
+        .ql-container {
+            font-family: 'Noto Sans Thai', sans-serif;
+            font-size: 14px;
+        }
+
+        .ql-editor {
+            min-height: 250px;
+            padding: 12px;
+            line-height: 1.6;
+        }
+
+        .ql-toolbar {
+            border: 1px solid #d1d5db;
+            background-color: #e0f2fe;
+        }
+
+        .ql-toolbar button,
+        .ql-toolbar button:hover,
+        .ql-toolbar select {
+            color: #1f2937;
+            border-radius: 4px;
+            padding: 4px 8px;
+        }
+
+        .ql-toolbar button:hover,
+        .ql-toolbar select:focus {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .ql-toolbar button.ql-active {
+            background-color: #3b82f6;
+            color: white;
+        }
     </style>
     <title>PR Form</title>
 </head>
 
-<body>
-    <nav class="navbar" style="background-color: #db8114;">
-        <div class="container-fluid">
-            <img width="30" height="30" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" alt="trash" />
-            <div class="d-flex flex-column">
-                <form class="d-flex" role="search" id="search-form">
-                    <input class="form-control form-control-sm me-2" type="search" placeholder="กรอกรหัสเพื่อค้นหา"
-                        aria-label="Search" id="search-input">
-                    <button class="btn btn-sm btn-light" type="submit">Search</button>
-                </form>
-                <div class="d-none" id="extra-menu-btn">
-                    <button class="btn btn-sm btn-danger mt-2 w-100" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#extraOffCanvas" aria-controls="extraOffCanvas">Extra Menu</button>
+<body class="min-h-screen bg-body-tertiary">
+    <header class="sticky top-0 z-50 shadow-lg bg-gradient-to-br from-brand-orange to-brand-orange-dark">
+        <nav class="bg-brand-orange-dark shadow-md">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <img width="35" height="35" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png"
+                            alt="move-by-trolley" class="drop-shadow-lg" />
+                        <span class="text-white font-semibold text-lg hidden sm:block">PR Form</span>
+                    </div>
+                    <form class="flex items-center gap-2 flex-1 max-w-md ml-auto" role="search" id="search-form">
+                        <input class="flex-1 px-4 py-2 rounded-lg border-0 focus:ring-2 focus:ring-white 
+                                      text-sm placeholder-gray-400 shadow-sm" type="search"
+                            placeholder="กรอกรหัสเพื่อค้นหา" aria-label="Search" id="search-input">
+                        <button
+                            class="px-4 py-2 bg-white text-brand-orange-dark font-medium rounded-lg 
+                                       hover:bg-gray-100 active:scale-95 transition-all shadow-md flex justify-center items-center gap-2"
+                            type="submit">
+                            <i data-lucide="search"></i>
+                            ค้นหา
+                        </button>
+                    </form>
                 </div>
             </div>
-        </div>
-    </nav>
-    <header>
-        <div class="container-fluid d-flex flex-column align-items-center justify-content-center w-100 mt-4">
-            <div class="col-auto">
-                <img width="80" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" alt="move-by-trolley" />
-            </div>
-
-            <div class="col text-center">
-                <h4 class="h1 fw-bold text-light">PR Form</h4>
-            </div>
-        </div>
+        </nav>
     </header>
-    <main>
-        <div class="container-fluid">
-            <form id="myForm" class="mt-3 mb-5">
-                <section class="mt-4 m-2">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label for="name">ชื่อผู้กรอก</label>
-                            <select name="name" id="name" class="form-select">
-                                <option value="" selected disabled>ชื่อผู้กรอก</option>
-                                <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
-                                <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
-                                <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
-                                <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
-                                <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
-                                <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
-                                <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
-                                <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
-                                <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
-                                <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
-                                <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
-                                <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
-                                <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
-                                <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
-                                <option value="SOM KONKAEW">SOM KONKAEW</option>
-                                <option value="PATCHARAPORN JORNSAMER">PATCHARAPORN JORNSAMER</option>
-                                <option value="RATCHATA PIRIYAKITSAKUL">RATCHATA PIRIYAKITSAKUL</option>
-                                <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
-                                <option value="JIRASSAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
-                                <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
+    <main class="container mx-auto px-4 pb-20 -mt-4">
+        <div class="py-8">
+            <div class="container mx-auto px-4 flex flex-col items-center justify-center">
+                <div class="flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4 
+                            hover:scale-110 transition-transform">
+                    <img width="50" src="https://img.icons8.com/3d-fluency/94/move-by-trolley.png"
+                        alt="move-by-trolley" />
+                </div>
+                <h1 class="text-4xl font-bold text-orange drop-shadow-lg tracking-wide">PR Form</h1>
+                <p class="text-black/80 mt-2 text-base">ฟอร์มใบขออนุมัติซื้อ</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto">
+            <form id="myForm" class="space-y-6">
+                <section class="mt-4 mx-2 rounded-2xl bg-white p-6 shadow-xl">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="space-y-2">
+                            <label for="name" class="block text-sm font-medium text-gray-700">
+                                <i data-lucide="user" class="inline-block w-4 h-4 mr-1"></i>
+                                ชื่อผู้กรอก</label>
+                            <select name="name" id="name"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400 bg-white">
                             </select>
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
-                    <div class="row justify-content-between">
-                        <div class="col text-start d-none">
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow mx-2 mt-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div class="hidden">
                             <!-- download btn -->
-                            <a class="btn btn-primary" id="download-from-search-btn" type="button"><img width="30"
-                                    src="https://img.icons8.com/papercut/60/pdf.png" alt="opened-folder" />
+                            <a class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition-all shadow-md"
+                                id="download-from-search-btn" type="button">
+                                <i data-lucide="download" class="w-5 h-5"></i>
                                 ดูไฟล์ PDF</a>
                         </div>
-                        <div class="col text-end">
-                            <button class="btn btn-primary" id="auto-fill" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#autoFillOffCanvas" aria-controls="autoFillOffCanvas">Auto Fill</button>
+                        <div class="ml-auto">
+                            <button
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all shadow-md"
+                                id="auto-fill" type="button" onclick="autoFillProcess()">
+                                <i data-lucide="rocket" class="w-5 h-5"></i>
+                                Auto Fill
+                            </button>
                         </div>
                     </div>
-                    <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-defibrillator-medical-and-healthcare-flaticons-flat-flat-icons.png"
-                                alt="icon" width="50">
-                            <h4 class="fw-bold">&nbsp;รายละเอียดเครื่องมือ</h4>
+
+                    <div class="border-l-4 border-brand-orange pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="wrench" class="w-7 h-7 text-brand-orange"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">รายละเอียดเครื่องมือ</h2>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="job_id">Work Order</label>
-                            <input type="text" name="job_id" id="job_id" class="form-control">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="space-y-2">
+                            <label for="job_id" class="block text-sm font-medium text-gray-700">Work Order</label>
+                            <input type="text" name="job_id" id="job_id"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_name">ชื่อเครื่องมือ</label>
-                            <input type="text" name="e_name" id="e_name" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_name" class="block text-sm font-medium text-gray-700">ชื่อเครื่องมือ</label>
+                            <input type="text" name="e_name" id="e_name"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="dept">แผนก</label>
-                            <select name="dept" id="dept" class="form-select">
+                        <div class="space-y-2">
+                            <label for="dept" class="block text-sm font-medium text-gray-700">แผนก</label>
+                            <select name="dept" id="dept"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400 bg-white">
                                 <option value="" disabled selected>Select value</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_manufacturer">ผู้ผลิต</label>
-                            <input type="text" name="e_manufacturer" id="e_manufacturer" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_manufacturer" class="block text-sm font-medium text-gray-700">ผู้ผลิต</label>
+                            <input type="text" name="e_manufacturer" id="e_manufacturer"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_date">วันที่ซื้อ</label>
-                            <input type="text" name="e_date" id="e_date" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_date" class="block text-sm font-medium text-gray-700">วันที่ซื้อ</label>
+                            <input type="text" name="e_date" id="e_date"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_hospital_code">หมายเลขทรัพย์สิน</label>
-                            <input type="text" name="e_hospital_code" id="e_hospital_code" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_hospital_code"
+                                class="block text-sm font-medium text-gray-700">หมายเลขทรัพย์สิน</label>
+                            <input type="text" name="e_hospital_code" id="e_hospital_code"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_brand/model">ยี่ห้อ/รุ่น</label>
-                            <input type="text" name="e_brand/model" id="e_brand/model" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_brand/model"
+                                class="block text-sm font-medium text-gray-700">ยี่ห้อ/รุ่น</label>
+                            <input type="text" name="e_brand/model" id="e_brand/model"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_sn">เลขเครื่อง (SN)</label>
-                            <input type="text" name="e_sn" id="e_sn" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_sn" class="block text-sm font-medium text-gray-700">เลขเครื่อง (SN)</label>
+                            <input type="text" name="e_sn" id="e_sn"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_me_code">หมายเลขเครื่อง (ME Code)</label>
-                            <input type="text" name="e_me_code" id="e_me_code" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_me_code" class="block text-sm font-medium text-gray-700">หมายเลขเครื่อง (ME
+                                Code)</label>
+                            <input type="text" name="e_me_code" id="e_me_code"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="e_price">ราคาซื้อ <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="e_price" id="e_price" class="form-control">
+                        <div class="space-y-2">
+                            <label for="e_price" class="block text-sm font-medium text-gray-700">ราคาซื้อ <span
+                                    class="text-gray-500 text-xs">(บาท)</span></label>
+                            <input type="text" name="e_price" id="e_price"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-12 mt-3">
-                            <label for="pr_failure">อาการเสีย</label>
-                            <input type="text" name="pr_failure" id="pr_failure" class="form-control">
-                        </div>
-                        <div class="col-12 mt-3">
-                            <label for="pr_result">ผลการตรวจเช็ค</label>
-                            <input type="text" name="pr_result" id="pr_result" class="form-control">
-                        </div>
-                        <div class="col-12 mt-3">
-                            <label for="pr_recommend">การดำเนินการ</label>
-                            <input type="text" name="pr_recommend" id="pr_recommend" class="form-control">
-                        </div>
+                    </div>
 
-                        <div class="col-12 m-0 p-0">
-                            <div class="row m-0 p-0">
-                                <div class="col-md-4 mt-3">
-                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
-                                        id="e_img_div">
-                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
-                                            id="preview-img" />
-                                        &nbsp;รูปภาพเครื่อง
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mt-3 ">
-                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
-                                        id="e_img_code_div">
-                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
-                                            id="preview-img-code" />
-                                        &nbsp;รูปภาพโค้ด
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mt-3">
-                                    <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center btn"
-                                        id="e_img_nameplate_div">
-                                        <img height="40" src="https://img.icons8.com/fluency/48/image.png" alt="image"
-                                            id="preview-img-nameplate" />
-                                        &nbsp;รูปภาพ Nameplate
-                                    </div>
-                                </div>
-                                <div class="col-12 text-end">
-                                    <button type="button"
-                                        class="btn btn-sm btn-outline-danger bg-danger-subtle mt-3 text-dark"
-                                        id="img-only-btn">สร้างเฉพาะรูปภาพ</button>
+                    <div class="mt-6 space-y-5">
+                        <div class="space-y-2">
+                            <label for="pr_failure" class="block text-sm font-medium text-gray-700">อาการเสีย</label>
+                            <input type="text" name="pr_failure" id="pr_failure"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="pr_result" class="block text-sm font-medium text-gray-700">ผลการตรวจเช็ค</label>
+                            <input type="text" name="pr_result" id="pr_result"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="pr_recommend"
+                                class="block text-sm font-medium text-gray-700">การดำเนินการ</label>
+                            <input type="text" name="pr_recommend" id="pr_recommend"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
+                        </div>
+                    </div>
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="group">
+                            <div class="relative rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-6 
+                                                    border-2 border-dashed border-blue-300 hover:border-blue-500 
+                                                    cursor-pointer transition-all hover:shadow-lg active:scale-95"
+                                id="e_img_div">
+                                <img id="preview-img" alt="preview"
+                                    class="absolute top-3 right-3 w-16 h-16 object-cover rounded-lg shadow-lg ring-2 ring-white hidden" />
+                                <div class="flex flex-col items-center justify-center space-y-2">
+                                    <i data-lucide="image" class="w-12 h-12 text-blue-500 drop-shadow-md"></i>
+                                    <span class="text-sm font-medium text-blue-700">รูปภาพเครื่อง</span>
+                                    <span class="text-xs text-blue-600">คลิกหรือลากไฟล์มาวาง</span>
                                 </div>
                             </div>
                         </div>
-                        <input type="file" name="e_img_file" id="e_img_file" hidden>
+                        <div class="group">
+                            <div class="relative rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-6 
+                                                    border-2 border-dashed border-purple-300 hover:border-purple-500 
+                                                    cursor-pointer transition-all hover:shadow-lg active:scale-95"
+                                id="e_img_code_div">
+                                <img id="preview-img-code" alt="preview"
+                                    class="absolute top-3 right-3 w-16 h-16 object-cover rounded-lg shadow-lg ring-2 ring-white hidden" />
+                                <div class="flex flex-col items-center justify-center space-y-2">
+                                    <i data-lucide="barcode" class="w-12 h-12 text-purple-500 drop-shadow-md"></i>
+                                    <span class="text-sm font-medium text-purple-700">รูปภาพโค้ด</span>
+                                    <span class="text-xs text-purple-600">คลิกหรือลากไฟล์มาวาง</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="relative rounded-xl bg-gradient-to-br from-green-50 to-green-100 p-6 
+                                                    border-2 border-dashed border-green-300 hover:border-green-500 
+                                                    cursor-pointer transition-all hover:shadow-lg active:scale-95"
+                                id="e_img_nameplate_div">
+                                <img id="preview-img-nameplate" alt="preview"
+                                    class="absolute top-3 right-3 w-16 h-16 object-cover rounded-lg shadow-lg ring-2 ring-white hidden" />
+                                <div class="flex flex-col items-center justify-center space-y-2">
+                                    <i data-lucide="tag" class="w-12 h-12 text-green-500 drop-shadow-md"></i>
+                                    <span class="text-sm font-medium text-green-700">รูปภาพ Nameplate</span>
+                                    <span class="text-xs text-green-600">คลิกหรือลากไฟล์มาวาง</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="mt-4 flex justify-end">
+                        <button type="button"
+                            class="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-300 rounded-lg hover:bg-red-100 active:scale-95 transition-all"
+                            id="img-only-btn">สร้างเฉพาะรูปภาพ</button>
                     </div>
+                    <input type="file" name="e_img_file" id="e_img_file" hidden>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
-                    <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/cotton/64/red-file--v2.png" alt="icon" width="50">
-                            <h4 class="fw-bold">&nbsp;รายละเอียดใบเสนอราคา</h4>
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow mx-2 mt-4">
+                    <div class="border-l-4 border-brand-orange pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="file-text" class="w-7 h-7 text-brand-orange"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">รายละเอียดใบเสนอราคา</h2>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_vender">Vender</label>
-                            <input type="text" name="pr_vender" id="pr_vender" class="form-control">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="space-y-2">
+                            <label for="pr_vender" class="block text-sm font-medium text-gray-700">Vender</label>
+                            <input type="text" name="pr_vender" id="pr_vender"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_no">เลขใบเสนอราคา</label>
-                            <input type="text" name="pr_no" id="pr_no" class="form-control">
+                        <div class="space-y-2">
+                            <label for="pr_no" class="block text-sm font-medium text-gray-700">เลขใบเสนอราคา</label>
+                            <input type="text" name="pr_no" id="pr_no"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_price">ราคาสินค้า/บริการ <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="pr_price" id="pr_price" class="form-control">
+                        <div class="space-y-2">
+                            <label for="pr_price" class="block text-sm font-medium text-gray-700">ราคาสินค้า/บริการ
+                                <span class="text-gray-500 text-xs">(บาท)</span></label>
+                            <input type="text" name="pr_price" id="pr_price"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_vat">ภาษีมูลค่าเพิ่ม 7% <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="pr_vat" id="pr_vat" class="form-control">
+                        <div class="space-y-2">
+                            <label for="pr_vat" class="block text-sm font-medium text-gray-700">ภาษีมูลค่าเพิ่ม 7% <span
+                                    class="text-gray-500 text-xs">(บาท)</span></label>
+                            <input type="text" name="pr_vat" id="pr_vat"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_grand_price">ราคาทั้งสิ้น <span class="text-secondary">(บาท)</span></label>
-                            <input type="text" name="pr_grand_price" id="pr_grand_price" class="form-control">
+                        <div class="space-y-2">
+                            <label for="pr_grand_price" class="block text-sm font-medium text-gray-700">ราคาทั้งสิ้น
+                                <span class="text-gray-500 text-xs">(บาท)</span></label>
+                            <input type="text" name="pr_grand_price" id="pr_grand_price"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_cm_estimated_send">กำหนดส่งของ <span
-                                    class="text-secondary">(วัน)</span></label>
+                        <div class="space-y-2">
+                            <label for="pr_cm_estimated_send"
+                                class="block text-sm font-medium text-gray-700">กำหนดส่งของ <span
+                                    class="text-gray-500 text-xs">(วัน)</span></label>
                             <input type="text" name="pr_cm_estimated_send" id="pr_cm_estimated_send"
-                                class="form-control">
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_cm_standing">กำหนดยืนราคา <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="pr_cm_standing" id="pr_cm_standing" class="form-control">
+                        <div class="space-y-2">
+                            <label for="pr_cm_standing" class="block text-sm font-medium text-gray-700">กำหนดยืนราคา
+                                <span class="text-gray-500 text-xs">(วัน)</span></label>
+                            <input type="text" name="pr_cm_standing" id="pr_cm_standing"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_cm_waranty">การรับประกัน <span class="text-secondary">(วัน)</span></label>
-                            <input type="text" name="pr_cm_waranty" id="pr_cm_waranty" class="form-control">
+                        <div class="space-y-2">
+                            <label for="pr_cm_waranty" class="block text-sm font-medium text-gray-700">การรับประกัน
+                                <span class="text-gray-500 text-xs">(วัน)</span></label>
+                            <input type="text" name="pr_cm_waranty" id="pr_cm_waranty"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
-                    <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/stickers/100/bank.png" alt=" icon" width="50">
-                            <h4 class="fw-bold">&nbsp;ประเภทของค่าใช้จ่ายที่นาเสนอให้ดำเนินการ</h4>
+                <section
+                    class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow mx-2 mt-4 has-checkboxes">
+                    <div class="border-l-4 border-brand-orange pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="dollar-sign" class="w-7 h-7 text-brand-orange"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">ประเภทของค่าใช้จ่ายที่นาเสนอให้ดำเนินการ</h2>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr-cm">เลือกประเภทค่าใช้จ่าย</label>
-                            <select name="pr-cm" id="pr-cm" class="form-select">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="space-y-2">
+                            <label for="pr-cm"
+                                class="block text-sm font-medium text-gray-700">เลือกประเภทค่าใช้จ่าย</label>
+                            <select name="pr-cm" id="pr-cm"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400 bg-white">
                                 <option value="MAINTENANCE" id="pr_cm_maintenance" selected>MAINTENANCE</option>
                                 <option value="REPLACEMENT" id="pr_cm_replacement">REPLACEMENT</option>
                                 <option value="ส่งซ่อม" id="pr_cm_vender">ส่งซ่อม</option>
                                 <option value="Other" id="pr_cm_other">Other</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr_cm_maintenance_ea">จำนวน (ea)</label>
+                        <div class="space-y-2">
+                            <label for="pr_cm_maintenance_ea" class="block text-sm font-medium text-gray-700">จำนวน
+                                (ea)</label>
                             <input type="text" name="pr_cm_maintenance_ea" id="pr_cm_maintenance_ea"
-                                class="form-control" value="1">
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400"
+                                value="1">
                         </div>
-                        <div class="col-md-4 mt-3" style="display:none">
-                            <label for="pr_cm_other_text">ระบุ</label>
-                            <input type="text" name="pr_cm_other_text" id="pr_cm_other_text" class="form-control">
+                        <div class="space-y-2 hidden">
+                            <label for="pr_cm_other_text" class="block text-sm font-medium text-gray-700">ระบุ</label>
+                            <input type="text" name="pr_cm_other_text" id="pr_cm_other_text"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow has-checkboxes">
-                    <div class="row justify-content-start">
-                        <div class="col-12 d-flex align-items-center mt-3">
-                            <img src="https://img.icons8.com/color/48/engineer.png" alt=" icon" width="50">
-                            <h4 class="fw-bold">&nbsp;ความเห็นของทางแผนกวิศวกรรมการแพทย์</h4>
+                <section
+                    class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow mx-2 mt-4 has-checkboxes">
+                    <div class="border-l-4 border-brand-orange pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="settings" class="w-7 h-7 text-brand-orange"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">ความเห็นของทางแผนกวิศวกรรมการแพทย์</h2>
                         </div>
-                        <div class="col-12 m-0 p-0">
-                            <div class="row m-0 p-0">
-                                <div class="col col-md-4 mt-3">
-                                    <label for="pr-status">สถานะเครื่องมือ</label>
-                                    <select name="pr-status" id="pr-status" class="form-select">
-                                        <option value="Normal" id="pr_status_normal">ใช้งานได้ปกติ</option>
-                                        <option value="Waitpart" id="pr_status_waitpart">รออะไหล่</option>
-                                        <option value="Vender" id="pr_status_vender">ส่งซ่อมบริษัท</option>
-                                        <option value="Other" id="pr_status_other">อื่นๆ</option>
-                                    </select>
-                                </div>
-                                <div class="col-8 mt-3" style="display:none">
-                                    <label for="pr_status_other_text">ระบุ</label>
-                                    <input type="text" name="pr_status_other_text" id="pr_status_other_text"
-                                        class="form-control">
-                                </div>
-                            </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="space-y-2">
+                            <label for="pr-status"
+                                class="block text-sm font-medium text-gray-700">สถานะเครื่องมือ</label>
+                            <select name="pr-status" id="pr-status"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400 bg-white">
+                                <option value="Normal" id="pr_status_normal">ใช้งานได้ปกติ</option>
+                                <option value="Waitpart" id="pr_status_waitpart">รออะไหล่</option>
+                                <option value="Vender" id="pr_status_vender">ส่งซ่อมบริษัท</option>
+                                <option value="Other" id="pr_status_other">อื่นๆ</option>
+                            </select>
                         </div>
-                        <div class="col-md-4 mt-3">
-                            <label for="pr-process">การดำเนินการ</label>
-                            <select name="pr-process" id="pr-process" class="form-select">
+                        <div class="space-y-2 md:col-span-2 hidden">
+                            <label for="pr_status_other_text"
+                                class="block text-sm font-medium text-gray-700">ระบุ</label>
+                            <input type="text" name="pr_status_other_text" id="pr_status_other_text"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="pr-process" class="block text-sm font-medium text-gray-700">การดำเนินการ</label>
+                            <select name="pr-process" id="pr-process"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all shadow-sm hover:border-gray-400 bg-white">
                                 <option value="" selected></option>
                                 <option value="Waranty" id="pr_process_waranty">อยู่ในรับประกัน</option>
                                 <option value="Self" id="pr_process_self">ซ่อมเอง</option>
@@ -329,96 +474,230 @@
                         </div>
                     </div>
                 </section>
-                <section class="m-2 mt-4 rounded-2 bg-light p-4 shadow">
-                    <div class="row justify-content-center align-items-start">
-                        <div class="col-md-6 mt-3 text-center">
-                            <label for="1-file-nsmart">ไฟล์ใบงาน NSmart</label>
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow mx-2 mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <label for="1-file-nsmart"
+                                class="block text-sm font-medium text-gray-700 text-center">ไฟล์ใบงาน
+                                NSmart</label>
                             <input type="file" name="1-file-nsmart" accept="application/pdf" id="1-file-nsmart"
-                                class="form-control file">
-                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                class="file w-full px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 hover:border-brand-orange focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-orange file:text-white hover:file:bg-brand-orange-dark file:cursor-pointer">
+                            <iframe class="mt-2 rounded-lg border border-gray-200 shadow-sm" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
-                        <div class="col-md-6 mt-3 text-center">
-                            <label for="2-file-quatation">ไฟล์ใบเสนอราคา</label>
+                        <div class="space-y-3">
+                            <label for="2-file-quatation"
+                                class="block text-sm font-medium text-gray-700 text-center">ไฟล์ใบเสนอราคา</label>
                             <input type="file" name="2-file-quatation" id="2-file-quatation" accept="application/pdf"
-                                class="form-control file">
-                            <iframe class="mt-2" frameborder="0" notoolbar=1
+                                class="file w-full px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 hover:border-brand-orange focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-orange file:text-white hover:file:bg-brand-orange-dark file:cursor-pointer">
+                            <iframe class="mt-2 rounded-lg border border-gray-200 shadow-sm" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
                         </div>
                     </div>
                 </section>
-                <div class="row justify-content-center">
-                    <div class="col-md-4 mt-3 text-center">
-                        <button type="submit" class="btn btn-warning btn-lg shadow" style="min-width: 200px;"><img
-                                width="40" src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" />
-                            สร้างไฟล์</button>
-                    </div>
+                <div class="flex justify-center mt-8 pt-4 gap-3 items-center flex-wrap">
+                    <button type="submit" class="group relative inline-flex items-center gap-3 px-8 py-2 
+                                   bg-gradient-to-r from-yellow-400 to-yellow-500 
+                                   text-gray-800 font-bold text-lg rounded-xl 
+                                   hover:from-yellow-500 hover:to-yellow-600 
+                                   active:scale-95 transition-all shadow-2xl 
+                                   hover:shadow-yellow-500/50 min-w-[250px] justify-center">
+                        <i data-lucide="file-text" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
+                        <span class="group-hover:scale-110 transition-transform">สร้างไฟล์</span>
+                    </button>
+
+                    <button type="button" onclick="openEmailModal()" class="group relative inline-flex items-center gap-3 px-8 py-2 
+                                   bg-gradient-to-r from-blue-600 to-blue-700 
+                                   text-white font-bold text-lg rounded-xl 
+                                   hover:from-blue-700 hover:to-blue-800 
+                                   active:scale-95 transition-all shadow-2xl 
+                                   hover:shadow-blue-500/50 min-w-[250px] justify-center">
+                        <i data-lucide="mail" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
+                        <span class="group-hover:scale-110 transition-transform">ส่งอีเมล</span>
+                    </button>
                 </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-4 mt-3 mb-4 text-center">
-                        <a id="a-download" target="_blank" style="display: none;" class="fw-bold">ดาวน์โหลด</a>
-                    </div>
+
+                <div class="flex justify-center mt-4">
+                    <a id="a-download" target="_blank" style="display: none;" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white 
+                              font-semibold rounded-lg hover:bg-green-700 active:scale-95 
+                              transition-all shadow-lg">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                        ดาวน์โหลด
+                    </a>
                 </div>
             </form>
-            <div class="container-fluid">
-                <iframe id="pdf" style="width: 100%; height: calc(100vw *(1.4142)); display: none;"></iframe>
+
+            <div class="mt-6">
+                <iframe id="pdf" class="w-full rounded-2xl shadow-2xl border-4 border-white"
+                    style="height: calc(100vw * 1.4142); display: none;"></iframe>
             </div>
         </div>
-
     </main>
+
+    <!-- Email Modal -->
+    <div id="emailModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-2 md:p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-auto">
+            <!-- Modal Header -->
+            <div
+                class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-t-2xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="send" class="w-6 h-6"></i>
+                    <h2 class="text-xl font-bold">Send Email with PDF</h2>
+                </div>
+                <button onclick="closeEmailModal()" class="hover:bg-white/20 rounded-lg p-2 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="emailForm" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Sender Name -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Sender
+                            Name</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <select required id="from_name" name="from_name" type="text" placeholder="John Doe"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"></select>
+                        </div>
+                    </div>
+
+                    <!-- Receiver Email -->
+                    <div class="space-y-1 hidden">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Recipient
+                            Email</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input required id="to_email" name="to_email" type="email" placeholder="client@example.com"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                value="makrookyimyam@gmail.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Subject</label>
+                    <div class="relative">
+                        <i data-lucide="type" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input required id="subject" name="subject" type="text" placeholder="PR Form - Purchase Request"
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            readonly>
+                    </div>
+                </div>
+
+                <!-- Message with Rich Text Editor -->
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Message</label>
+                    <div id="toolbar-container"
+                        class="bg-slate-100 border border-slate-200 rounded-t-xl p-2 flex flex-wrap gap-1">
+                        <button type="button" class="ql-bold" title="Bold"></button>
+                        <button type="button" class="ql-italic" title="Italic"></button>
+                        <button type="button" class="ql-underline" title="Underline"></button>
+                        <div class="ql-formats">
+                            <select class="ql-header" title="Headers">
+                                <option selected>Normal</option>
+                                <option value="1">Heading 1</option>
+                                <option value="2">Heading 2</option>
+                                <option value="3">Heading 3</option>
+                            </select>
+                        </div>
+                        <div class="ql-formats">
+                            <button type="button" class="ql-list" value="bullet" title="Bullet List"></button>
+                            <button type="button" class="ql-list" value="ordered" title="Numbered List"></button>
+                        </div>
+                        <button type="button" class="ql-link" title="Link"></button>
+                        <button type="button" class="ql-clean" title="Remove Formatting"></button>
+                    </div>
+                    <div id="messageEditor"
+                        class="w-full bg-white border border-slate-200 rounded-b-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                        style="height: 250px; border-top: none;"></div>
+                    <textarea id="message" name="message" style="display: none;"></textarea>
+                </div>
+
+                <!-- Footer / Status -->
+                <div class="flex flex-wrap items-center justify-between pt-4 gap-3 w-full sm:w-auto">
+                    <div id="statusArea" class="rounded-lg text-sm"></div>
+                    <button type="submit"
+                        class="flex-1 sm:flex-none px-4 py-2.5 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="external-link"></i>
+                        Send Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="autoFillOffCanvas"
         aria-labelledby="autoFillOffCanvasLabel">
 
-        <div class="offcanvas-body container-fluid">
-            <div class="alert alert-info" role="alert">
-                <div class="row">
-                    <div class="col m-0">
-                        <input name="console-code" id="console-code" class="form-control" readonly>
+        <div class="offcanvas-body p-6">
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <input name="console-code" id="console-code"
+                            class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            readonly>
                     </div>
-                    <div class="col-auto m-0">
-                        <button class="btn btn-warning" onclick="copy()"><span id="copy-icon"><img width="20"
-                                    src="https://img.icons8.com/cotton/64/documents.png"
-                                    alt="documents" /></span>&nbsp;Copy</button>
+                    <div>
+                        <button
+                            class="px-4 py-2 bg-yellow-500 text-gray-800 font-medium rounded-lg hover:bg-yellow-600 active:scale-95 transition-all shadow-md flex items-center gap-2"
+                            onclick="copy()">
+                            <span id="copy-icon"><img width="20" src="https://img.icons8.com/cotton/64/documents.png"
+                                    alt="documents" /></span>
+                            Copy
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="row g-3">
-                <div class="col-12">
-                    <textarea name="input-json" id="input-json" class="form-control" rows="10"
-                        placeholder="ข้อมูลจากหน้า Add Update"></textarea>
+            <div class="space-y-4">
+                <div>
+                    <textarea name="input-json" id="input-json"
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+                        rows="10" placeholder="ข้อมูลจากหน้า Add Update"></textarea>
                 </div>
-                <div class="col-12">
-                    <button class="btn btn-primary w-100" id="input-json-btn"><img width="30"
-                            src="https://img.icons8.com/color/48/task--v1.png" alt="task--v1" /> กรอกฟอร์ม</button>
+                <div>
+                    <button
+                        class="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:scale-95 transition-all shadow-md flex items-center justify-center gap-2"
+                        id="input-json-btn">
+                        <img width="30" src="https://img.icons8.com/color/48/task--v1.png" alt="task--v1" />
+                        กรอกฟอร์ม
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="extraOffCanvas"
         aria-labelledby="extraOffCanvasLabel">
-        <div class="offcanvas-body container-fluid text-bg-dark">
-            <form id="merge-prmemo-pdf" class="row rounded border border-light m-1 p-1 py-3 g-3 needs-validation"
+        <div class="offcanvas-body p-6 bg-gray-900 text-white">
+            <form id="merge-prmemo-pdf" class="space-y-4 p-4 border border-gray-600 rounded-lg needs-validation"
                 novalidate>
-                <div class="div-12 text-center">
-                    <h5>รวมไฟล์ MEMO + PR</h5>
+                <div class="text-center">
+                    <h5 class="text-xl font-bold">รวมไฟล์ MEMO + PR</h5>
                 </div>
-                <div class="col-12">
-                    <label for="prmemo">เลือกไฟล์ PR</label>
-                    <input type="file" name="pr" id="pr" class="form-control form-control-sm" accept="application/pdf"
-                        required>
-                    <div class="invalid-feedback">กรุณาเลือกไฟล์ PR</div>
-                </div>
-                <div class="col-12">
-                    <label for="memo">เลือกไฟล์ Memo</label>
-                    <input type="file" name="memo" id="memo" class="form-control form-control-sm"
+                <div class="space-y-2">
+                    <label for="pr" class="block text-sm font-medium">เลือกไฟล์ PR</label>
+                    <input type="file" name="pr" id="pr"
+                        class="w-full px-3 py-2 text-sm rounded-lg border border-gray-600 bg-gray-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700"
                         accept="application/pdf" required>
-                    <div class="invalid-feedback">กรุณาเลือกไฟล์ Memo</div>
+                    <div class="invalid-feedback text-red-400">กรุณาเลือกไฟล์ PR</div>
                 </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-warning btn-sm w-100"><img height="20"
-                            src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" /> สร้างไฟล์</button>
-                    <div id="merge-download" class="my-3"></div>
+                <div class="space-y-2">
+                    <label for="memo" class="block text-sm font-medium">เลือกไฟล์ Memo</label>
+                    <input type="file" name="memo" id="memo"
+                        class="w-full px-3 py-2 text-sm rounded-lg border border-gray-600 bg-gray-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                        accept="application/pdf" required>
+                    <div class="invalid-feedback text-red-400">กรุณาเลือกไฟล์ Memo</div>
+                </div>
+                <div>
+                    <button type="submit"
+                        class="w-full px-4 py-2 bg-yellow-500 text-gray-800 font-semibold rounded-lg hover:bg-yellow-600 active:scale-95 transition-all shadow-md flex items-center justify-center gap-2">
+                        <img height="20" src="https://img.icons8.com/3d-fluency/94/pdf.png" alt="pdf" />
+                        สร้างไฟล์
+                    </button>
+                    <div id="merge-download" class="mt-4"></div>
                 </div>
             </form>
         </div>
@@ -435,6 +714,13 @@
             $('#dept').append(depts_array.sort().map(dept => {
                 return `<option value="${dept}">${dept}</option>`
             }).join())
+            $('#name, #from_name')
+                .empty()
+                .append($('<option>', { text: 'เลือกชื่อผู้กรอก', value: '', disabled: true, selected: true }))
+                .append(staff_name_array.sort().map(name => {
+                    let opt = $('<option>', { text: name, value: name })
+                    return $(opt).prop('outerHTML')
+                }).join(' '))
         })
 
         $('#search-form').submit(function () {
@@ -662,6 +948,7 @@
 
 
                 preview.attr('src', e.originalEvent.dataTransfer.getData('text/uri-list'))
+                preview.removeClass('hidden') // Show the preview image
                 // check if src is base64
                 if (preview.attr('src').includes('base64')) {
                     let base64 = preview.attr('src').split(',')[1]
@@ -677,6 +964,7 @@
             let file = e.originalEvent.dataTransfer.files[0]
             // convert file to src
             preview.attr('src', URL.createObjectURL(file))
+            preview.removeClass('hidden') // Show the preview image
             if (!file) {
                 return
             }
@@ -699,6 +987,7 @@
 
                     reader.onloadend = function (e) {
                         preview.attr('src', e.target.result).attr('data-type', file.type.split('/')[1])
+                        preview.removeClass('hidden') // Show the preview image
                         setImageBytes(dataID, e.target.result)
                         $('#' + dataID).LoadingOverlay('hide')
 
@@ -1069,11 +1358,83 @@
         }
     </script>
     <script>
-        function copy() {
+        let autoFillCheckInterval = null;
+
+        // New streamlined auto fill process
+        async function autoFillProcess() {
+            // Auto copy the code using modern clipboard API
             let str = $('#console-code').val()
 
-            // copy to clipboard
+            try {
+                await navigator.clipboard.writeText(str)
 
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: false
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Copied!'
+                })
+            } catch (err) {
+                // Fallback to old method if clipboard API fails
+                $('#console-code')[0].select()
+                document.execCommand("copy")
+
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: false
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Copied!'
+                })
+            }
+
+            // Check if document is blurred
+            $(document).one('visibilitychange', function () {
+                if (document.visibilityState !== 'visible') {
+                    console.log('Document is hidden, waiting for focus to start monitoring...');
+                    startAutoFillMonitoring();
+                }
+            });
+
+            // Start monitoring for pasted data
+            // startAutoFillMonitoring();
+        }
+
+        // Monitor clipboard for pasted data
+        function startAutoFillMonitoring() {
+            // Clear any existing interval
+            if (autoFillCheckInterval) {
+                clearInterval(autoFillCheckInterval)
+            }
+            autoFillCheckInterval = setInterval(async () => {
+                isDocumentFocused = document.hasFocus();
+                if (!isDocumentFocused) {
+                    return; // Skip checking if document is not focused
+                }
+                try {
+                    let clipboardText = await navigator.clipboard.readText()
+                    if (clipboardText && clipboardText.startsWith('{') && clipboardText.endsWith('}')) {
+                        clearInterval(autoFillCheckInterval)
+                        $('#input-json').val(clipboardText)
+                        $('#input-json-btn').click()
+                    }
+                } catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                }
+            }, 1000)
+        }
+
+        // Keep the old copy function for the manual copy button
+        function copy() {
             $('#console-code')[0].select()
             document.execCommand("copy")
             let Toast = Swal.mixin({
@@ -1087,30 +1448,6 @@
                 icon: 'success',
                 title: 'คัดลอกสำเร็จ'
             })
-            console.groupEnd()
-            let starttime = new Date()
-            let checkdata = setInterval(() => {
-                // if interval more than 10 sec, clear interval
-                if (new Date() - starttime > (1000 * 60 * 5)) {
-                    clearInterval(checkdata)
-                    return
-                }
-                // read data from clipboard
-                if (!document.hasFocus()) return
-                navigator.clipboard.readText().then(clipText => {
-                    // check if data is json
-                    try {
-                        let obj = JSON.parse(clipText)
-                        if (!obj.page) return
-                        clearInterval(checkdata)
-                        $('#input-json').val(clipText)
-                        $('#input-json-btn').click()
-                        // delete data from clipboard
-                        navigator.clipboard.writeText('')
-                    } catch (error) {
-                    }
-                })
-            }, 1000);
         }
 
         $('#input-json-btn').click(function () {
@@ -1132,12 +1469,12 @@
                     let imgs = JSON.parse(obj.imgs)
                     if (imgs.length > 0) {
                         $('#imgs_row, #head_imgs_row').remove()
-                        let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
-                        let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
-                        head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
+                        let head_row = $('<div>').addClass('grid grid-cols-12 mt-3 gap-3').attr('id', 'head_imgs_row')
+                        let row = $('<div>').addClass('grid grid-cols-12 mt-2 gap-3').attr('id', 'imgs_row')
+                        head_row.append($('<div>').addClass('col-span-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
                         imgs.forEach(img => {
-                            let col = $('<div>').addClass('col-2')
-                            let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
+                            let col = $('<div>').addClass('col-span-2')
+                            let imgEle = $('<img>').addClass('w-full h-auto nsmart-img').attr('src', img).attr('loading', 'lazy')
                             col.append(imgEle)
                             row.append(col)
                         })
@@ -1163,10 +1500,9 @@
                     return v ? v : ''
                 })
                 return fillValue(id, value.join(chain))
-
             }
             if (!value || value == '') value = 'N/A'
-            $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
+            $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
         }
 
         async function mergePRMrmo() {
@@ -1245,6 +1581,201 @@
     <script
         src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script>
+        // Email Modal Functions
+        var quillEditor = null;
+
+        function openEmailModal() {
+            const modal = $('#emailModal');
+            modal.removeClass('hidden').addClass('flex');
+
+            const jobId = $('#job_id').val() || 'N/A';
+            $('#subject').val("ขออนุมัติ PR - " + jobId);
+
+            // Initialize Quill editor on first open
+            if (!quillEditor) {
+                quillEditor = new Quill('#messageEditor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: '#toolbar-container'
+                    },
+                    placeholder: 'Type your message here...'
+                });
+                quillEditor.root.style.fontSize = '16px';
+            }
+
+            $('#from_name').on('change', function () {
+                if (quillEditor) {
+                    const delta = quillEditor.getContents();
+                    const ops = delta.ops;
+                    ops[ops.length - 1] = { insert: `\n${$('#from_name').val()}\n` }
+                    quillEditor.setContents(delta);
+                }
+            });
+
+            // Clear previous content and set default message
+            quillEditor.setContents([
+                { insert: 'เรียน หัวหน้าแผนกเครื่องมือแพทย์ คุณ' + supervisor_name + '\n\n', attributes: { bold: true } },
+                { insert: ' ' },
+                { insert: 'ตามที่ข้าพเจ้าได้ดำเนินการตรวจสอบเครื่องมือแพทย์และจัดทำใบขออนุมัติซื้อ (PR) สำหรับเครื่องมือแพทย์ดังกล่าว โดยมีรายละเอียดดังนี้:\n\n' },
+                { insert: `ชื่อเครื่องมือแพทย์: ${$('#e_name').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `รหัสเครื่องมือแพทย์: ${$('#e_me_code').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `แผนกที่ใช้งาน: ${$('#dept').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `อาการเสีย: ${$('#pr_failure').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `ผลการตรวจเช็ค: ${$('#pr_result').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `การดำเนินการ: ${$('#pr_recommend').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `Vender: ${$('#pr_vender').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `ราคาสินค้า/บริการ: ${$('#pr_price').val() || "-"} บาท\n`, attributes: { list: 'bullet' } },
+                { insert: '\nรายละเอียดเพิ่มเติมและไฟล์แนบ PR อยู่ในเอกสารที่แนบมานี้ กรุณาตรวจสอบและอนุมัติการซื้อตามความเหมาะสม\n\n' },
+                { insert: 'ขอแสดงความนับถือ\n', attributes: { italic: true } },
+                { insert: `${$('#from_name').val()}\n` }
+            ]);
+
+            // Re-initialize lucide icons for modal content
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        function closeEmailModal() {
+            const modal = $('#emailModal');
+            modal.addClass('hidden').removeClass('flex');
+        }
+
+        // Handle email form submission
+        $('#emailForm').on('submit', async function (e) {
+            e.preventDefault();
+
+            const statusArea = $('#statusArea');
+
+            try {
+                const from_name = $('#from_name').val();
+                const to_email = $('#to_email').val();
+                const subject = $('#subject').val();
+                const message = quillEditor ? quillEditor.root.innerHTML : $('#message').val();
+
+                if (!from_name || !to_email || !subject || !message) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Fields',
+                        text: 'Please fill all required fields',
+                        customClass: {
+                            popup: 'rounded-xl'
+                        }
+                    });
+                    return;
+                }
+
+                statusArea.html('<p class="text-sm text-blue-600 font-semibold flex items-center gap-2"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Sending email...</p>');
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+
+                const { form_obj, pdfBytes, form_pdf_bytes } = await createPDF();
+                const code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code';
+                const name = $('#e_name').val() ? $('#e_name').val() : 'no_name';
+                const dept = $('#dept').val() ? $('#dept').val() : 'no_department';
+                const jobId = $('#job_id').val() || 'PR';
+                const fileName = `PR_\${jobId}_\${name}, \${dept}.pdf`;
+                const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+
+                // Get form data
+                const formData = {
+                    from_name: $('#from_name').val(),
+                    to_email: $('#to_email').val(),
+                    subject: $('#subject').val(),
+                    message: quillEditor ? quillEditor.root.innerHTML : $('#message').val(),
+                    pdf_data: pdfDataUri || null
+                };
+
+                // Send email via Google Apps Script
+                await Promise.all([
+                    $.ajax({
+                        url: scriptUrl,
+                        type: 'POST',
+                        data: {
+                            opt: 'save',
+                            form_obj: JSON.stringify(form_obj)
+                        }
+                    }),
+                    $.ajax({
+                        url: scriptUrl,
+                        type: 'POST',
+                        data: {
+                            opt: 'sendEmail',
+                            from_name: formData.from_name,
+                            to_email: formData.to_email,
+                            subject: formData.subject,
+                            message: formData.message,
+                            pdf_data: formData.pdf_data,
+                            pdf_name: fileName
+                        }
+                    })
+                ]);
+
+                // Show success message
+                statusArea.html('<p class="text-sm text-green-600 font-semibold flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> Email sent successfully!</p>');
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+
+                // Reset form after 2 seconds
+                setTimeout(() => {
+                    emailForm[0].reset();
+                    closeEmailModal();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Email send error:', error);
+                statusArea.html('<p class="text-sm text-red-600 font-semibold flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i> Failed to send email</p>');
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } finally {
+                // Re-enable submit button
+                $('#emailForm button[type="submit"]').prop('disabled', false);
+            }
+        });
+
+        // Initialize lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Close modal on outside click
+        const emailModal = $('#emailModal');
+        if (emailModal.length) {
+            emailModal.on('click', function (e) {
+                if (e.target === this) {
+                    closeEmailModal();
+                }
+            });
+        }
+
+        // Populate sender name dropdown from name select
+        $(document).ready(function () {
+            const nameOptions = $('#name option').clone();
+            $('#from_name').append(nameOptions);
+
+            // Sync name field with from_name
+            $('#name').on('change', function () {
+                $('#from_name').val($(this).val());
+            });
+
+            // Store sender name in localStorage
+            $('#from_name').on('change', function () {
+                localStorage.setItem('pr_email_sender_name', $(this).val());
+            });
+
+            if (localStorage.getItem('pr_email_sender_name')) {
+                $('#from_name').val(localStorage.getItem('pr_email_sender_name'));
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -18,9 +18,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'brand-orange': '#f05217',
-                        'brand-orange-dark': '#d94412',
-                        'brand-orange-light': '#ff6b35',
+                        'brand-orange': '#dc2626',
+                        'brand-orange-dark': '#b91c1c',
+                        'brand-orange-light': '#ef4444',
                     }
                 }
             }
@@ -91,12 +91,12 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #f05217;
+            background: #dc2626;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #d94412;
+            background: #b91c1c;
         }
 
         /* Quill Editor Customization */
@@ -235,7 +235,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         <div class="space-y-2">
                             <label for="rr_no" class="block text-sm font-medium text-gray-700">เลข RR</label>
                             <input type="text" name="rr_no" id="rr_no" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
@@ -425,7 +425,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-2">
                             <label for="cause_of_fail"
                                 class="block text-sm font-medium text-gray-700">เลือกสาเหตุ</label>
@@ -447,7 +447,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         <div class="space-y-2">
                             <label for="rr_vender" class="block text-sm font-medium text-gray-700">Vender</label>
                             <input type="text" name="rr_vender" id="rr_vender" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
@@ -528,7 +528,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-2">
                             <label for="rr-cm"
                                 class="block text-sm font-medium text-gray-700">เลือกประเภทค่าใช้จ่าย</label>
@@ -559,7 +559,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-2">
                             <label for="rr-contract"
                                 class="block text-sm font-medium text-gray-700">เลือกประเภทสัญญา</label>
@@ -1783,12 +1783,12 @@
                     let imgs = JSON.parse(obj.imgs)
                     if (imgs.length > 0) {
                         $('#imgs_row, #head_imgs_row').remove()
-                        let head_row = $('<div>').addClass('row mt-3 g-3').attr('id', 'head_imgs_row')
-                        let row = $('<div>').addClass('row mt-2 g-3').attr('id', 'imgs_row')
-                        head_row.append($('<div>').addClass('col-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
+                        let head_row = $('<div>').addClass('grid grid-cols-12 mt-3 gap-3').attr('id', 'head_imgs_row')
+                        let row = $('<div>').addClass('grid grid-cols-12 mt-2 gap-3').attr('id', 'imgs_row')
+                        head_row.append($('<div>').addClass('col-span-12 text-center').append($('<h5>').text('ลากภาพใส่ช่องที่ต้องการ')))
                         imgs.forEach(img => {
-                            let col = $('<div>').addClass('col-2')
-                            let imgEle = $('<img>').addClass('img-fluid nsmart-img').attr('src', img).attr('loading', 'lazy')
+                            let col = $('<div>').addClass('col-span-2')
+                            let imgEle = $('<img>').addClass('w-full h-auto nsmart-img').attr('src', img).attr('loading', 'lazy')
                             col.append(imgEle)
                             row.append(col)
                         })
@@ -1816,7 +1816,7 @@
                 return fillValue(id, value.join(chain))
             }
             if (!value || value == '') value = 'N/A'
-            $('[id="' + id + '"]').val(value).addClass('bg-primary-subtle')
+            $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
         }
 
         // "use strict";
