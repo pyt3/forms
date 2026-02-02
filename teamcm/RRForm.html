@@ -1817,6 +1817,11 @@
             }
             if (!value || value == '') value = 'N/A'
             $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
+            if(['id', 'rr_price', 'rr_vat', 'rr_grand_price'].includes(id)){
+                $('#'+ $.escapeSelector(id)).trigger('keyup')
+            }else if($('#'+ $.escapeSelector(id)).is('select')){
+                $('#'+ $.escapeSelector(id)).trigger('change')
+            }
         }
 
         // "use strict";
