@@ -190,11 +190,11 @@
                 </section>
                 <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow mx-2 mt-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                        <div class="hidden">
+                        <div class="hidden" id="download-btn-container">
                             <!-- download btn -->
-                            <a class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition-all shadow-md"
+                            <a class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 active:scale-95 transition-all shadow-md"
                                 id="download-from-search-btn" type="button">
-                                <i data-lucide="download" class="w-5 h-5"></i>
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
                                 ดูไฟล์ PDF</a>
                         </div>
                         <div class="ml-auto">
@@ -570,7 +570,7 @@
                             Email</label>
                         <div class="relative">
                             <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input required id="to_email" name="to_email" type="email" placeholder="client@example.com"
+                            <input id="to_email" name="to_email" type="email" placeholder="client@example.com"
                                 class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                         </div>
                     </div>
@@ -740,7 +740,10 @@
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading()
-                }
+                },
+                customClass: {
+                    popup: 'rounded-xl',
+                },
             })
             $.getJSON(scriptUrl + '?action=search&search=' + search, function (data) {
                 console.log(data);
@@ -750,6 +753,9 @@
                         title: 'ไม่พบข้อมูล',
                         text: 'กรุณาตรวจสอบรหัสอีกครั้ง',
                         confirmButtonText: 'ตกลง',
+                        customClass: {
+                            popup: 'rounded-xl',
+                        },
                     })
                     return
                 }
@@ -757,6 +763,10 @@
                     icon: 'success',
                     title: 'พบข้อมูล',
                     timer: 1000,
+                    customClass: {
+                        popup: 'rounded-xl',
+                    },
+
                 })
                 Object.keys(data.data).forEach(key => {
                     let element = $('[name="' + key + '"]')
@@ -776,7 +786,7 @@
                 let dataurl = 'data:' + type + ';base64,' + base64
                 let blob = base64ToBlob(base64, type)
                 let blobUrl = URL.createObjectURL(blob) + '#toolbar=1&view=fit'
-                $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('d-none')
+                $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('hidden')
 
             })
         })
@@ -803,6 +813,7 @@
             }
         })
         $('#name').change(async function () {
+            if(!$(this).val()) return;
             let name = $(this).val()
             signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
 
@@ -863,6 +874,9 @@
                 title: 'สร้างไฟล์เสร็จสิ้น',
                 timer: 2000,
                 showConfirmButton: false,
+                customClass: {
+                    popup: 'rounded-xl',
+                },
             }).then(async () => {
                 var iframe = document.getElementById('pdf')
                 // open pdf in new small window
@@ -1029,7 +1043,10 @@
                     if (!value) {
                         return 'กรุณากรอกข้อมูล'
                     }
-                }
+                },
+                customClass: {
+                    popup: 'rounded-xl',
+                },
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('#' + key).val(result.value).parent().show()
@@ -1125,6 +1142,9 @@
                     icon: 'error',
                     title: 'กรุณาเลือกไฟล์ PDF',
                     text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
+                customClass: {
+                    popup: 'rounded-xl',
+                },
                 })
                 return
             }
@@ -1133,6 +1153,9 @@
                     icon: 'error',
                     title: 'ไฟล์มีขนาดใหญ่เกินไป',
                     text: 'ไฟล์มีขนาดใหญ่เกิน 10 MB',
+                customClass: {
+                    popup: 'rounded-xl',
+                },
                 })
                 return
             }
@@ -1180,6 +1203,9 @@
                 icon: 'success',
                 title: 'สร้างไฟล์เสร็จสิ้น',
                 timer: 1000,
+                customClass: {
+                    popup: 'rounded-xl',
+                },
                 showConfirmButton: false,
             }).then(async () => {
                 var iframe = document.getElementById('pdf')
@@ -1506,7 +1532,7 @@
                 return fillValue(id, value.join(chain))
             }
             if (!value || value == '') value = 'N/A'
-            if($('#' + $.escapeSelector(id)).is('select')) {
+            if ($('#' + $.escapeSelector(id)).is('select')) {
                 $('#' + $.escapeSelector(id)).trigger('change')
             }
             $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
