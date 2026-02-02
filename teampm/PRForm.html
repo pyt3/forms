@@ -1167,6 +1167,47 @@
         }
 
         $('#myForm').submit(async function () {
+            const { form_obj, pdfBytes, form_pdf_bytes } = await createPDF()
+            $.ajax({
+                url: scriptUrl,
+                type: 'POST',
+                data: {
+                    opt: 'save',
+                    form_obj: JSON.stringify(form_obj)
+                }
+            })
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'success',
+                title: 'สร้างไฟล์เสร็จสิ้น',
+                timer: 1000,
+                showConfirmButton: false,
+            }).then(async () => {
+                var iframe = document.getElementById('pdf')
+                // open pdf in new small window
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
+                var url = URL.createObjectURL(blob)
+                iframe.src = url + '#toolbar=1&view=fitH'
+                let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
+                let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
+                let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
+                let name = 'PR-' + e_code + '-' + e_name + '-' + dept + '.pdf'
+                $(iframe).show(200)
+                $('#a-download').attr('href', url)
+                $('#a-download').attr('download', name).show()
+                // scroll to pdf
+                $('html, body').animate({
+                    scrollTop: $(iframe).offset().top
+                }, 500);
+                pdfDoc = await PDFDocument.load(form_pdf_bytes)
+                $('#1-file-nsmart, #2-file-quatation').change()
+
+            })
+            // $('#a-download').attr('href', pdfDataUri)
+            // $('#a-download').attr('download', name).show()
+        })
+
+        async function createPDF() {
             const embedImage = async function (bytes, key) {
                 let preview, e_img
                 switch (key) {
@@ -1227,7 +1268,7 @@
             form.getTextField('BME').setText('แผนกวิศวกรรมการแพทย์ โรงพยาบาลพญาไท 3')
             form.getTextField('pr_date').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }).toLocaleUpperCase()))
             form.getTextField('pr_date_short').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' })))
-            $('form input').not('input[type="search"]').each(function () {
+            $('form#myForm input').not('input[type="search"]').each(function () {
                 let _this = $(this)
                 if (_this.val() == '') return
                 if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation'].includes(_this.prop('id'))) return
@@ -1290,45 +1331,9 @@
                 form_obj[$(this).attr('name')] = $(this).val()
             })
             form_obj['pdfFile'] = pdfdatauri
-            console.log("🚀 !! form_obj:", form_obj)
-            $.ajax({
-                url: scriptUrl,
-                type: 'POST',
-                data: {
-                    opt: 'save',
-                    form_obj: JSON.stringify(form_obj)
-                }
-            })
-            $.LoadingOverlay("hide");
-            Swal.fire({
-                icon: 'success',
-                title: 'สร้างไฟล์เสร็จสิ้น',
-                timer: 1000,
-                showConfirmButton: false,
-            }).then(async () => {
-                var iframe = document.getElementById('pdf')
-                // open pdf in new small window
-                var blob = new Blob([pdfBytes], { type: 'application/pdf' })
-                var url = URL.createObjectURL(blob)
-                iframe.src = url + '#toolbar=1&view=fitH'
-                let e_code = $('#e_me_code').val() ? $('#e_me_code').val() : 'no_code'
-                let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
-                let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
-                let name = 'PR-' + e_code + '-' + e_name + '-' + dept + '.pdf'
-                $(iframe).show(200)
-                $('#a-download').attr('href', url)
-                $('#a-download').attr('download', name).show()
-                // scroll to pdf
-                $('html, body').animate({
-                    scrollTop: $(iframe).offset().top
-                }, 500);
-                pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                $('#1-file-nsmart, #2-file-quatation').change()
+            return { form_obj, pdfBytes, form_pdf_bytes }
+        }
 
-            })
-            // $('#a-download').attr('href', pdfDataUri)
-            // $('#a-download').attr('download', name).show()
-        })
         function toTitleCase(str) {
             return str.replace(
                 /\w\S*/g,
