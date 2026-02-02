@@ -208,12 +208,17 @@
                 </section> -->
                 <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                        <div class="hidden" id="download-btn-container">
+                        <div class="hidden" id="download-btn-container" class="flex gap-2">
                             <!-- download btn -->
                             <a class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 active:scale-95 transition-all shadow-md"
                                 id="download-from-search-btn" type="button">
                                 <i data-lucide="file-text" class="w-5 h-5"></i>
                                 ดูไฟล์ PDF</a>
+                            <!-- resend email btn -->
+                            <a id="resend-email-btn"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 active:scale-95 transition-all shadow-md">
+                                <i data-lucide="mails" class="w-5 h-5"></i>
+                                ส่งอีเมลซ้ำ</a>
                         </div>
                         <div class="ml-auto">
                             <button class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 
@@ -878,7 +883,7 @@
                     Swal.showLoading()
                 },
                 customClass: {
-                    popup: 'rounded-xl'
+                    popup: 'rounded-2xl'
                 }
             })
             $.getJSON(scriptUrl + '?action=search&search=' + search, function (data) {
@@ -890,7 +895,7 @@
                         text: 'กรุณาตรวจสอบรหัสอีกครั้ง',
                         confirmButtonText: 'ตกลง',
                         customClass: {
-                            popup: 'rounded-xl'
+                            popup: 'rounded-2xl'
                         }
                     })
                     return
@@ -900,7 +905,7 @@
                     title: 'พบข้อมูล',
                     timer: 1000,
                     customClass: {
-                        popup: 'rounded-xl'
+                        popup: 'rounded-2xl'
                     }
                 })
                 Object.keys(data.data).forEach(key => {
@@ -922,7 +927,10 @@
                 let blob = base64ToBlob(base64, type)
                 let blobUrl = URL.createObjectURL(blob) + '#toolbar=1&view=fit'
                 $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('hidden')
-
+                $('#resend-email-btn').off('click').on('click', function () {
+                    window.emailMode = 'resend'
+                    openEmailModal()
+                })
             })
 
         })
@@ -948,7 +956,7 @@
             }
         })
         $('#name').change(async function () {
-            if(!$(this).val()) return;
+            if (!$(this).val()) return;
             let name = $(this).val()
             signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
 
@@ -1086,7 +1094,7 @@
                 timer: 2000,
                 showConfirmButton: false,
                 customClass: {
-                    popup: 'rounded-xl'
+                    popup: 'rounded-2xl'
                 }
             }).then(async () => {
                 var iframe = document.getElementById('pdf')
@@ -1290,7 +1298,7 @@
                     }
                 },
                 customClass: {
-                    popup: 'rounded-xl'
+                    popup: 'rounded-2xl'
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -1388,7 +1396,7 @@
                     title: 'กรุณาเลือกไฟล์ PDF',
                     text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
                     customClass: {
-                        popup: 'rounded-xl'
+                        popup: 'rounded-2xl'
                     }
                 })
                 return
@@ -1399,7 +1407,7 @@
                     title: 'ไฟล์มีขนาดใหญ่เกินไป',
                     text: 'ไฟล์มีขนาดใหญ่เกิน 10 MB',
                     customClass: {
-                        popup: 'rounded-xl'
+                        popup: 'rounded-2xl'
                     }
                 })
                 return
@@ -1452,7 +1460,7 @@
                 timer: 2000,
                 showConfirmButton: false,
                 customClass: {
-                    popup: 'rounded-xl'
+                    popup: 'rounded-2xl'
                 }
             }).then(async () => {
                 var iframe = document.getElementById('pdf')
@@ -1634,10 +1642,11 @@
             var pdfBytes = await pdfDoc.save()
             var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
             let form_obj = {}
-            $('#myForm input:not([type="file"]), select').each(function () {
+            $('#myForm input:not([type="file"]), #myForm select, #myForm textarea').each(function () {
                 form_obj[$(this).attr('name')] = $(this).val()
             })
             form_obj['pdfFile'] = pdfdatauri
+            $.LoadingOverlay("hide");
             return { form_obj, pdfBytes, form_pdf_bytes }
         }
 
@@ -1816,10 +1825,10 @@
             }
             if (!value || value == '') value = 'N/A'
             $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
-            if(['id', 'rr_price', 'rr_vat', 'rr_grand_price'].includes(id)){
-                $('#'+ $.escapeSelector(id)).trigger('keyup')
-            }else if($('#'+ $.escapeSelector(id)).is('select')){
-                $('#'+ $.escapeSelector(id)).trigger('change')
+            if (['id', 'rr_price', 'rr_vat', 'rr_grand_price'].includes(id)) {
+                $('#' + $.escapeSelector(id)).trigger('keyup')
+            } else if ($('#' + $.escapeSelector(id)).is('select')) {
+                $('#' + $.escapeSelector(id)).trigger('change')
             }
         }
 
@@ -1954,13 +1963,13 @@
             quillEditor.setContents([
                 { insert: 'เรียน หัวหน้าแผนกเครื่องมือแพทย์ คุณ' + supervisor_name + '\n\n', attributes: { bold: true } },
                 { insert: ' ' },
-                { insert: 'ตามที่ข้าพเจ้าได้ดำเนินการตรวจสอบและประเมินสภาพเครื่องมือแพทย์ที่มีปัญหาเรียบร้อยแล้ว ข้าพเจ้าขอเสนอรายงานการซ่อมแซม (RR) สำหรับเครื่องมือแพทย์ดังกล่าว โดยมีรายละเอียดดังนี้:\n\n' },
-                { insert: `ชื่อเครื่องมือแพทย์: ${$('#e_name').val() || "-"}\n`, attributes: { list: 'bullet' } },
-                { insert: `รหัสเครื่องมือแพทย์: ${$('#e_code').val() || "-"}\n`, attributes: { list: 'bullet' } },
-                { insert: `แผนกที่ใช้งาน: ${$('#e_dept').val() || "-"}\n`, attributes: { list: 'bullet' } },
-                { insert: `สาเหตุของปัญหา: ${$('#cause_of_fail').val() || "-"}\n`, attributes: { list: 'bullet' } },
-                { insert: `ข้อเสนอแนะในการซ่อมแซม: ${$('#recommend').val() || "-"}\n`, attributes: { list: 'bullet' } },
-                { insert: `ราคาประเมินการซ่อมแซม: ${$('#rr_grand_price').val() || "-"} บาท\n`, attributes: { list: 'bullet' } },
+                { insert: 'จากการดำเนินการตรวจสอบ และประเมินสภาพเครื่องมือแพทย์ที่มีปัญหาเรียบร้อยแล้ว ขออนุญาตเสนอรายการขออนุมัติซ่อมแซม (RR) สำหรับเครื่องมือแพทย์ดังกล่าว โดยมีรายละเอียดดังนี้:\n\n' },
+                { insert: `ชื่อเครื่องมือแพทย์:   ${$('#e_name').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `รหัสเครื่องมือแพทย์:   ${$('#e_code').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `แผนกที่ใช้งาน:   ${$('#e_dept').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `สาเหตุของปัญหา:   ${$('#result').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `ข้อเสนอแนะในการซ่อมแซม:   ${$('#recommend').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `ราคาประเมินการซ่อมแซม:   ${$('#rr_grand_price').val() || "-"} บาท\n`, attributes: { list: 'bullet' } },
                 { insert: '\nรายละเอียดเพิ่มเติมและไฟล์แนบ RR อยู่ในเอกสารที่แนบมานี้ กรุณาตรวจสอบและอนุมัติการซ่อมแซมตามความเหมาะสม\n\n' },
                 { insert: 'ขอแสดงความนับถือ\n', attributes: { italic: true } },
                 { insert: `${$('#from_name').val()}\n` }
@@ -1978,6 +1987,7 @@
         function closeEmailModal() {
             const modal = $('#emailModal');
             modal.addClass('hidden').removeClass('flex');
+            window.emailMode = null;
         }
 
         // Handle email form submission
@@ -1998,20 +2008,47 @@
                         title: 'Missing Fields',
                         text: 'Please fill all required fields',
                         customClass: {
-                            popup: 'rounded-xl'
+                            popup: 'rounded-2xl'
                         }
                     });
                     return;
                 }
                 statusArea.html('<p class="text-sm text-blue-600 font-semibold flex items-center gap-2"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Sending email...</p>');
-                const { form_obj, pdfBytes, form_pdf_bytes } = await createPDF();
+                let pdfDataUri, form_obj, pdfDoc;
+                if (window.emailMode === 'resend') {
+                    const pdf_blobUri = $('#download-from-search-btn').attr('href');
+                    const pdfArrayBuffer = await fetch(pdf_blobUri).then(res => res.arrayBuffer());
+                    pdfDoc = await PDFLib.PDFDocument.load(pdfArrayBuffer);
+                    pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+                    form_obj = $('#myForm input, #myForm select, #myForm textarea').toArray().reduce((obj, element) => {
+                        obj[element.name] = $(element).val();
+                        return obj;
+                    }, {});
+                    form_obj['pdfFile'] = pdfDataUri
+                } else {
+                    let pdf = await createPDF();
+                    console.log("🚀 !! pdf:", pdf)
+                    form_obj = pdf.form_obj;
+                    pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
+                    pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+                }
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Sending Email',
+                    text: 'Please wait...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    customClass: {
+                        popup: 'rounded-2xl'
+                    }
+                })
                 const code = $('#e_code').val() ? $('#e_code').val() : 'no_code';
                 const name = $('#e_name').val() ? $('#e_name').val() : 'no_name';
                 const dept = $('#e_dept').val() ? $('#e_dept').val() : 'no_department';
                 const rr_no = $('#rr_no').val();
                 const fileName = `RR_${rr_no.split('_').slice(1).join('_')}_${name}, ${dept}.pdf`;
-                const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
-                console.log("🚀 !! pdfDataUri:", pdfDataUri)
                 // Get form data
                 const formData = {
                     from_name: $('#from_name').val(),
@@ -2044,6 +2081,16 @@
                         }
                     })
                 ]);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Email Sent',
+                    text: 'The email has been sent successfully',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'rounded-2xl'
+                    }
+                })
 
                 // Show success message
                 statusArea.html('<p class="text-sm text-green-600 font-semibold flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> Email sent successfully!</p>');
@@ -2053,7 +2100,7 @@
 
                 // Reset form after 2 seconds
                 setTimeout(() => {
-                    emailForm[0].reset();
+                    $('#emailForm')[0].reset();
                     closeEmailModal();
                 }, 2000);
 
