@@ -208,14 +208,12 @@
                 </section> -->
                 <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                        <div class="hidden">
+                        <div class="hidden" id="download-btn-container">
                             <!-- download btn -->
-                            <a class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg 
-                                      hover:bg-blue-700 active:scale-95 transition-all shadow-md"
+                            <a class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 active:scale-95 transition-all shadow-md"
                                 id="download-from-search-btn" type="button">
-                                <i data-lucide="download-cloud" class="w-5 h-5"></i>
-                                <span>ดูไฟล์ PDF</span>
-                            </a>
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                                ดูไฟล์ PDF</a>
                         </div>
                         <div class="ml-auto">
                             <button class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 
@@ -713,9 +711,9 @@
                             Email</label>
                         <div class="relative">
                             <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input required id="to_email" name="to_email" type="email" placeholder="client@example.com"
+                            <input id="to_email" name="to_email" type="email" placeholder="client@example.com"
                                 class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                value="makrookyimyam@gmail.com">
+                                readonly>
                         </div>
                         <!-- value="Daranphop_yi@nhealth-asia.co.th"> -->
                     </div>
@@ -923,7 +921,7 @@
                 let dataurl = 'data:' + type + ';base64,' + base64
                 let blob = base64ToBlob(base64, type)
                 let blobUrl = URL.createObjectURL(blob) + '#toolbar=1&view=fit'
-                $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('d-none')
+                $('#download-from-search-btn').attr('href', blobUrl).attr('target', '_blank').parent().removeClass('hidden')
 
             })
 
@@ -950,6 +948,7 @@
             }
         })
         $('#name').change(async function () {
+            if(!$(this).val()) return;
             let name = $(this).val()
             signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
 
@@ -1961,6 +1960,7 @@
                 { insert: `แผนกที่ใช้งาน: ${$('#e_dept').val() || "-"}\n`, attributes: { list: 'bullet' } },
                 { insert: `สาเหตุของปัญหา: ${$('#cause_of_fail').val() || "-"}\n`, attributes: { list: 'bullet' } },
                 { insert: `ข้อเสนอแนะในการซ่อมแซม: ${$('#recommend').val() || "-"}\n`, attributes: { list: 'bullet' } },
+                { insert: `ราคาประเมินการซ่อมแซม: ${$('#rr_grand_price').val() || "-"} บาท\n`, attributes: { list: 'bullet' } },
                 { insert: '\nรายละเอียดเพิ่มเติมและไฟล์แนบ RR อยู่ในเอกสารที่แนบมานี้ กรุณาตรวจสอบและอนุมัติการซ่อมแซมตามความเหมาะสม\n\n' },
                 { insert: 'ขอแสดงความนับถือ\n', attributes: { italic: true } },
                 { insert: `${$('#from_name').val()}\n` }
@@ -1989,11 +1989,10 @@
 
             try {
                 const from_name = $('#from_name').val();
-                const to_email = $('#to_email').val();
                 const subject = $('#subject').val();
                 const message = quillEditor ? quillEditor.root.innerHTML : $('#message').val();
 
-                if (!from_name || !to_email || !subject || !message) {
+                if (!from_name || !subject || !message) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Missing Fields',
@@ -2016,7 +2015,6 @@
                 // Get form data
                 const formData = {
                     from_name: $('#from_name').val(),
-                    to_email: $('#to_email').val(),
                     subject: $('#subject').val(),
                     message: quillEditor ? quillEditor.root.innerHTML : $('#message').val(),
                     pdf_data: pdfDataUri || null
@@ -2039,7 +2037,6 @@
                         data: {
                             opt: 'sendEmail',
                             from_name: formData.from_name,
-                            to_email: formData.to_email,
                             subject: formData.subject,
                             message: formData.message,
                             pdf_data: formData.pdf_data,
