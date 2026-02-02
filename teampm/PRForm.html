@@ -571,8 +571,7 @@
                         <div class="relative">
                             <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <input required id="to_email" name="to_email" type="email" placeholder="client@example.com"
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                value="makrookyimyam@gmail.com">
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                         </div>
                     </div>
                 </div>
@@ -1507,6 +1506,9 @@
                 return fillValue(id, value.join(chain))
             }
             if (!value || value == '') value = 'N/A'
+            if($('#' + $.escapeSelector(id)).is('select')) {
+                $('#' + $.escapeSelector(id)).trigger('change')
+            }
             $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
         }
 
@@ -1634,7 +1636,7 @@
                 { insert: `ผลการตรวจเช็ค: ${$('#pr_result').val() || "-"}\n`, attributes: { list: 'bullet' } },
                 { insert: `การดำเนินการ: ${$('#pr_recommend').val() || "-"}\n`, attributes: { list: 'bullet' } },
                 { insert: `Vender: ${$('#pr_vender').val() || "-"}\n`, attributes: { list: 'bullet' } },
-                { insert: `ราคาสินค้า/บริการ: ${$('#pr_price').val() || "-"} บาท\n`, attributes: { list: 'bullet' } },
+                { insert: `ราคาสินค้า/บริการ: ${$('#pr_grand_price').val() || "-"} บาท\n`, attributes: { list: 'bullet' } },
                 { insert: '\nรายละเอียดเพิ่มเติมและไฟล์แนบ PR อยู่ในเอกสารที่แนบมานี้ กรุณาตรวจสอบและอนุมัติการซื้อตามความเหมาะสม\n\n' },
                 { insert: 'ขอแสดงความนับถือ\n', attributes: { italic: true } },
                 { insert: `${$('#from_name').val()}\n` }
@@ -1663,7 +1665,7 @@
                 const subject = $('#subject').val();
                 const message = quillEditor ? quillEditor.root.innerHTML : $('#message').val();
 
-                if (!from_name || !to_email || !subject || !message) {
+                if (!from_name || !subject || !message) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Missing Fields',
@@ -1691,10 +1693,10 @@
                 // Get form data
                 const formData = {
                     from_name: $('#from_name').val(),
-                    to_email: $('#to_email').val(),
                     subject: $('#subject').val(),
                     message: quillEditor ? quillEditor.root.innerHTML : $('#message').val(),
-                    pdf_data: pdfDataUri || null
+                    pdf_data: pdfDataUri || null,
+                    pdf_name: fileName
                 };
 
                 // Send email via Google Apps Script
@@ -1712,12 +1714,7 @@
                         type: 'POST',
                         data: {
                             opt: 'sendEmail',
-                            from_name: formData.from_name,
-                            to_email: formData.to_email,
-                            subject: formData.subject,
-                            message: formData.message,
-                            pdf_data: formData.pdf_data,
-                            pdf_name: fileName
+                            ...formData,
                         }
                     })
                 ]);
