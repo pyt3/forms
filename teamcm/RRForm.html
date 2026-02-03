@@ -1602,7 +1602,7 @@
             $.LoadingOverlay("show");
             event.preventDefault()
 
-            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
             let pdfFields = form.getFields().map(f => f.getName())
             pdfDoc.registerFontkit(fontkit);
@@ -1926,7 +1926,7 @@
             $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
             if (['id', 'rr_price', 'rr_vat', 'rr_grand_price'].includes(id)) {
                 $('#' + $.escapeSelector(id)).trigger('keyup')
-            } else if ($('#' + $.escapeSelector(id)).is('select')) {
+            } else if ($('#' + $.escapeSelector(id))) {
                 $('#' + $.escapeSelector(id)).trigger('change')
             }
         }
