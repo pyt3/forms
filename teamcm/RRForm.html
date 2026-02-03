@@ -1518,6 +1518,7 @@
 
             if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
+            let pdfFields = Object.keys(pdfFiles)
             pdfDoc.registerFontkit(fontkit);
             const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
             const symbol = await pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
@@ -1562,7 +1563,7 @@
 
             $('form#myForm input, form#myForm select, form#myForm textarea').not('input[type="search"]').each(function () {
                 let _this = $(this)
-                if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined) return
+                if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined || !pdfFields.includes(_this.prop('id'))) return
                 if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', '3-file-other', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept', 'cause_of_fail'].includes(_this.prop('id'))) return
                 if (_this.prop('id') == 'rr-cm' || _this.prop('id') == 'rr-contract') {
                     let v = _this.find('option:selected').val()

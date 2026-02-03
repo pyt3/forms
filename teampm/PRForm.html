@@ -1269,6 +1269,7 @@
             event.preventDefault()
 
             if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            let pdfFields = Object.keys(pdfFiles)
             var form = pdfDoc.getForm()
             pdfDoc.registerFontkit(fontkit);
             const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
@@ -1303,7 +1304,7 @@
             form.getTextField('pr_date_short').setText((new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' })))
             $('form#myForm input, form#myForm select, form#myForm textarea').not('input[type="search"]').each(function () {
                 let _this = $(this)
-                if (_this.val() == '') return
+                if (_this.val() == '' || !pdfFields.includes(_this.prop('id'))) return
                 if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation'].includes(_this.prop('id'))) return
                 if (['pr_price', 'pr_vat', 'pr_grand_price', 'pr_cm_vender'].includes(_this.prop('id'))) {
                     let value = Number(_this.val())
