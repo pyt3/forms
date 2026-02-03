@@ -601,7 +601,8 @@
                                               focus:ring-brand-orange/20 transition-all cursor-pointer
                                               file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
                                               file:text-sm file:font-semibold file:bg-brand-orange file:text-white
-                                              hover:file:bg-brand-orange-dark file:cursor-pointer">
+                                              hover:file:bg-brand-orange-dark file:cursor-pointer" multiple
+                                    accept="application/pdf">
                             </div>
                             <iframe class="mt-2 rounded-lg border border-gray-200 shadow-sm" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
@@ -632,7 +633,8 @@
                                               focus:ring-brand-orange/20 transition-all cursor-pointer
                                               file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
                                               file:text-sm file:font-semibold file:bg-brand-orange file:text-white
-                                              hover:file:bg-brand-orange-dark file:cursor-pointer">
+                                              hover:file:bg-brand-orange-dark file:cursor-pointer" multiple
+                                    accept="application/pdf">
                             </div>
                             <iframe class="mt-2 rounded-lg border border-gray-200 shadow-sm" frameborder="0" notoolbar=1
                                 style="display: none; width: 100%; height: calc(100vw *(1.4142/3.45));"></iframe>
@@ -1375,68 +1377,152 @@
             e.stopPropagation()
             $(this).removeClass('from-control-lg')
             let files = e.originalEvent.dataTransfer.files
-            let file = files[0]
-            if (!file) return;
+            if (!files || files.length === 0) return;
             // set files to $(this)
             $(this).prop('files', files)
-            renderNsmartFile(file, $(this))
+            renderNsmartFiles(files, $(this))
         })
 
         $('#1-file-nsmart, #2-file-quatation, #3-file-other').on('change', function (e) {
             let files = e.target.files
-            let file = files[0]
-            if (!file) return;
-            renderNsmartFile(file, $(this))
+            if (!files || files.length === 0) return;
+            renderNsmartFiles(files, $(this))
         })
 
-        function renderNsmartFile(file, ele) {
-            if (file.type != 'application/pdf') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณาเลือกไฟล์ PDF',
-                    text: 'ไฟล์ที่เลือกไม่ใช่ PDF',
-                    customClass: {
-                        popup: 'rounded-2xl'
-                    }
-                })
-                return
-            }
-            if (file.size > 10000000) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ไฟล์มีขนาดใหญ่เกินไป',
-                    text: 'ไฟล์มีขนาดใหญ่เกิน 10 MB',
-                    customClass: {
-                        popup: 'rounded-2xl'
-                    }
-                })
-                return
-            }
+        async function renderNsmartFiles(files, ele) {
             let obj = $(ele)
             let id = obj.attr('id')
-            let reader = new FileReader()
-            reader.onloadend = async function (e) {
-                if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                pdfFiles[id] = e.target.result
-                // load pdf
-                let pdf = await PDFDocument.load(e.target.result)
-                let pages = pdf.getPages().length
-                for (var i = 0; i < pages; i++) {
-                    let [page] = await pdfDoc.copyPages(pdf, [i])
-                    pdfDoc.insertPage(1, page)
+
+            // Validate all files first
+            for (let file of files) {
+                if (file.type != 'application/pdf') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณาเลือกไฟล์ PDF',
+                        text: `ไฟล์ "${file.name}" ไม่ใช่ PDF`,
+                        customClass: {
+                            popup: 'rounded-2xl'
+                        }
+                    })
+                    return
                 }
-                pdf = await pdf.save()
-                let iframe = $(obj).parent().find('iframe')[0]
-                var blob = new Blob([pdf], {
+                if (file.size > 10000000) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไฟล์มีขนาดใหญ่เกินไป',
+                        text: `ไฟล์ "${file.name}" มีขนาดใหญ่เกิน 10 MB`,
+                        customClass: {
+                            popup: 'rounded-2xl'
+                        }
+                    })
+                    return
+                }
+            }
+
+            // Initialize PDF document if not exists
+            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+
+            // Process all files
+            let allPdfBytes = []
+            for (let file of files) {
+                try {
+                    let fileBytes = await readFileAsArrayBuffer(file)
+                    allPdfBytes.push(fileBytes)
+                } catch (error) {
+                    console.error('Error reading file:', file.name, error)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `ไม่สามารถอ่านไฟล์ "${file.name}" ได้`,
+                        customClass: {
+                            popup: 'rounded-2xl'
+                        }
+                    })
+                    return
+                }
+            }
+
+            // Merge all PDFs
+            try {
+                // Store merged PDF bytes
+                pdfFiles[id] = allPdfBytes
+
+                // Create merged preview
+                let mergedPdf = await PDFDocument.create()
+                const a4Width = 595.28 // A4 width in points
+                const a4Height = 841.89 // A4 height in points
+
+                for (let pdfBytes of allPdfBytes) {
+                    let pdf = await PDFDocument.load(pdfBytes)
+                    let pages = pdf.getPages().length
+
+                    // Copy all pages from this PDF
+                    for (let i = 0; i < pages; i++) {
+                        let [page] = await pdfDoc.copyPages(pdf, [i])
+                        pdfDoc.insertPage(1, page)
+
+                        // Also add to merged preview with consistent A4 sizing
+                        let [copiedPage] = await mergedPdf.copyPages(pdf, [i])
+                        let originalWidth = copiedPage.getWidth()
+                        let originalHeight = copiedPage.getHeight()
+
+                        // Scale to fit A4 while maintaining aspect ratio
+                        let scaleX = a4Width / originalWidth
+                        let scaleY = a4Height / originalHeight
+                        let scale = Math.min(scaleX, scaleY)
+
+                        copiedPage.scale(scale, scale)
+                        mergedPdf.addPage(copiedPage)
+                    }
+                }
+
+                // Display merged PDF in iframe
+                let mergedBytes = await mergedPdf.save()
+                let iframe = $(obj).parents('.space-y-3').find('iframe')[0]
+                let blob = new Blob([mergedBytes], {
                     type: 'application/pdf'
                 })
-                var url = URL.createObjectURL(blob)
+                let url = URL.createObjectURL(blob)
                 iframe.src = url + '#toolbar=1&view=fitH'
-
                 $(iframe).show()
+                if (files.length > 1) {
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'รวมไฟล์สำเร็จ',
+                        text: `รวม ${files.length} ไฟล์เข้าด้วยกัน`,
+                        timer: 2000,
+                        showConfirmButton: false,
+                        customClass: {
+                            popup: 'rounded-2xl'
+                        }
+                    })
+                }
 
+            } catch (error) {
+                console.error('Error merging PDFs:', error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถรวมไฟล์ PDF ได้',
+                    customClass: {
+                        popup: 'rounded-2xl'
+                    }
+                })
             }
-            reader.readAsArrayBuffer(file);
+        }
+
+        function readFileAsArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                let reader = new FileReader()
+                reader.onloadend = function (e) {
+                    resolve(e.target.result)
+                }
+                reader.onerror = function (e) {
+                    reject(e)
+                }
+                reader.readAsArrayBuffer(file)
+            })
         }
 
         $('#myForm').submit(async function () {
@@ -1518,7 +1604,7 @@
 
             if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
-            let pdfFields = Object.keys(pdfFiles)
+            let pdfFields = form.getFields().map(f => f.getName())
             pdfDoc.registerFontkit(fontkit);
             const sarabun = await pdfDoc.embedFont(font_bytes, { subset: true })
             const symbol = await pdfDoc.embedFont(StandardFonts.ZapfDingbats, { subset: true })
@@ -1640,6 +1726,18 @@
                 // remove last page
                 pdfDoc.removePage(pdfDoc.getPages().length - 1)
             }
+
+             // scale all pages to fit A4
+            const a4Width = 595.28 // A4 width in points
+            const a4Height = 841.89 // A4 height in points
+            const pages = pdfDoc.getPages()
+            pages.forEach((page) => {
+                const { width, height } = page.getSize()
+                const scaleX = a4Width / width
+                const scaleY = a4Height / height
+                const scale = Math.min(scaleX, scaleY)
+                page.scale(scale, scale)
+            })
             var pdfBytes = await pdfDoc.save()
             var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
             let form_obj = {}
