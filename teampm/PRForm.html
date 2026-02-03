@@ -1366,7 +1366,7 @@
             $.LoadingOverlay("show");
             event.preventDefault()
 
-            if (!pdfDoc) pdfDoc = await PDFDocument.load(form_pdf_bytes)
+            pdfDoc = await PDFDocument.load(form_pdf_bytes)
             var form = pdfDoc.getForm()
             let pdfFields = form.getFields().map(f => f.getName())
             pdfDoc.registerFontkit(fontkit);
@@ -1468,6 +1468,7 @@
                 const scale = Math.min(scaleX, scaleY)
                 page.scale(scale, scale)
             })
+            
             var pdfBytes = await pdfDoc.save()
             var pdfdatauri = await pdfDoc.saveAsBase64({ dataUri: true })
             let form_obj = {}
@@ -1651,10 +1652,10 @@
                 return fillValue(id, value.join(chain))
             }
             if (!value || value == '') value = 'N/A'
-            if ($('#' + $.escapeSelector(id)).is('select')) {
+            $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
+            if ($('#' + $.escapeSelector(id))) {
                 $('#' + $.escapeSelector(id)).trigger('change')
             }
-            $('[id="' + id + '"]').val(value).removeClass('bg-white').addClass('bg-blue-50')
         }
 
         async function mergePRMrmo() {
