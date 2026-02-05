@@ -1390,6 +1390,7 @@
         })
 
         async function renderNsmartFiles(files, ele) {
+            console.log("render nsmart files")
             let obj = $(ele)
             let id = obj.attr('id')
 
@@ -1567,7 +1568,7 @@
                     scrollTop: $(iframe).offset().top
                 }, 500);
                 pdfDoc = await PDFDocument.load(form_pdf_bytes)
-                $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
+                // $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
 
             })
             // $('#a-download').attr('href', pdfDataUri)
@@ -1726,6 +1727,22 @@
                 // remove last page
                 pdfDoc.removePage(pdfDoc.getPages().length - 1)
             }
+
+            // add nsmartFiles pdfs
+            ['1-file-nsmart', '2-file-quatation', '3-file-other'].forEach(async (id) => {
+                if (pdfFiles[id] && pdfFiles[id].length > 0) {
+                    for (let fileBytes of pdfFiles[id]) {
+                        let pdf = await PDFDocument.load(fileBytes)
+                        let pages = pdf.getPages().length
+
+                        // Copy all pages from this PDF
+                        for (let i = 0; i < pages; i++) {
+                            let [page] = await pdfDoc.copyPages(pdf, [i])
+                            pdfDoc.addPage(page)
+                        }
+                    }
+                }
+            })
 
              // scale all pages to fit A4
             const a4Width = 595.28 // A4 width in points
