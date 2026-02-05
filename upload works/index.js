@@ -45,10 +45,50 @@ function initializeApp() {
     // Setup event listeners
     setupEventListeners();
 
+    // Initialize flatpickr for date range
+    initializeDatePickers();
+
     // Load initial dashboard
     loadDashboard();
 
     console.log('System initialized successfully!');
+}
+
+/**
+ * Initialize flatpickr date pickers for ECRI date range
+ */
+function initializeDatePickers() {
+    // Initialize start date picker
+    const startDatePicker = flatpickr('#upload-start-date', {
+        dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'd M Y',
+        onChange: function(selectedDates, dateStr, instance) {
+            // Update end date minimum to be after start date
+            if (selectedDates[0]) {
+                endDatePicker.set('minDate', selectedDates[0]);
+            }
+            validateUploadForm();
+        }
+    });
+
+    // Initialize end date picker
+    const endDatePicker = flatpickr('#upload-end-date', {
+        dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'd M Y',
+        onChange: function(selectedDates, dateStr, instance) {
+            // Update start date maximum to be before end date
+            if (selectedDates[0]) {
+                startDatePicker.set('maxDate', selectedDates[0]);
+            }
+            validateUploadForm();
+        }
+    });
+
+    // Store picker instances globally for later access
+    window.startDatePicker = startDatePicker;
+    window.endDatePicker = endDatePicker;
 }
 
 // ==================== UI FUNCTIONS ====================
@@ -144,10 +184,15 @@ function setupEventListeners() {
             $('#month-year-section').addClass('hidden');
             $('#week-section').removeClass('hidden');
 
-            // Set to current week
-            const today = new Date();
-            const weekStr = getWeekString(today);
-            $('#upload-week').val(weekStr);
+            // Set to last week (Monday to Sunday) using moment.js
+            const lastMonday = moment().subtract(1, 'week').startOf('isoWeek').toDate();
+            const lastSunday = moment().subtract(1, 'week').endOf('isoWeek').toDate();
+
+            // Set the dates in flatpickr
+            if (window.startDatePicker && window.endDatePicker) {
+                window.startDatePicker.setDate(lastMonday);
+                window.endDatePicker.setDate(lastSunday);
+            }
         } else {
             $('#month-year-section').removeClass('hidden');
             $('#week-section').addClass('hidden');
@@ -182,6 +227,10 @@ function setupEventListeners() {
         $(dropArea).removeClass('dragover');
         handleFilesSelect(e.dataTransfer.files);
     });
+
+    $('#history-team-filter, #history-year-filter').on('change', function () {
+        displayHistory(window.historyData, $('#history-team-filter').val(), $('#history-year-filter').val());
+    })
 }
 
 // ==================== FILE HANDLING ====================
@@ -293,8 +342,9 @@ function validateUploadForm() {
     let isValid = team && hasFiles;
 
     if (team === 'ECRI') {
-        const week = $('#upload-week').val();
-        isValid = isValid && week;
+        const startDate = $('#upload-start-date').val();
+        const endDate = $('#upload-end-date').val();
+        isValid = isValid && startDate && endDate;
     } else {
         const month = $('#upload-month').val();
         const year = $('#upload-year').val();
@@ -313,7 +363,16 @@ async function startUpload() {
     const team = $('#team-select').val();
     const month = $('#upload-month').val();
     const year = $('#upload-year').val();
-    const week = $('#upload-week').val();
+    const startDate = $('#upload-start-date').val();
+    const endDate = $('#upload-end-date').val();
+
+    // Create week string from date range for ECRI
+    let week = null;
+    if (team === 'ECRI' && startDate && endDate) {
+        moment.locale('en');
+        week = `${moment(startDate).format('DDMMM')}_${moment(endDate).format('DDMMM')}`.toUpperCase();
+        moment.locale('th');
+    }
 
     if (!team || selectedFiles.length === 0) {
         showAlert('error', 'กรุณาเลือกทีมและไฟล์');
@@ -328,8 +387,9 @@ async function startUpload() {
     updateProgress(0, 'กำลังเตรียมอัพโหลด...');
 
     try {
-        const { imageIds, folderId } = await uploadToGoogleDrive(selectedFiles);
+        const { imageIds, folderId } = await uploadToGoogleDrive(selectedFiles, team, year, month, week);
         Swal.fire({
+            icon: 'info',
             title: 'กำลังบันทึกข้อมูล...',
             allowOutsideClick: false,
             showConfirmButton: false,
@@ -349,6 +409,7 @@ async function startUpload() {
         })
         // Save submission metadata
         updateProgress(95, 'กำลังบันทึกข้อมูล...');
+        console.log('team: ', team, 'year:', year, 'month:', month, 'week:', week, 'folderId:', folderId);
         await saveSubmissionMetadata(team, year, month, week, 'https://drive.google.com/drive/folders/' + folderId);
 
         // Complete
@@ -371,60 +432,6 @@ async function startUpload() {
 }
 
 /**
- * Upload single file using base64 encoding
- */
-async function uploadSingleFile(file, team, year, month, week) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onload = async function (e) {
-            try {
-                const base64Data = e.target.result.split(',')[1];
-
-                const formData = new URLSearchParams();
-                formData.append('action', 'upload');
-                formData.append('team', team);
-                formData.append('fileName', file.name);
-                formData.append('fileData', base64Data);
-                formData.append('mimeType', file.type);
-
-                if (team === 'ECRI') {
-                    formData.append('week', week);
-                } else {
-                    formData.append('year', year);
-                    formData.append('month', month);
-                }
-
-                const response = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    if (result.data && result.data.folderUrl) {
-                        folderUrl = result.data.folderUrl;
-                    }
-                    resolve(result);
-                } else {
-                    reject(new Error(result.message || 'Upload failed'));
-                }
-
-            } catch (error) {
-                reject(error);
-            }
-        };
-
-        reader.onerror = function (error) {
-            reject(error);
-        };
-
-        reader.readAsDataURL(file);
-    });
-}
-
-/**
  * Save submission metadata to Google Sheets
  */
 async function saveSubmissionMetadata(team, year, month, week, folderUrl) {
@@ -432,13 +439,9 @@ async function saveSubmissionMetadata(team, year, month, week, folderUrl) {
     formData.append('action', 'saveSubmission');
     formData.append('team', team);
     formData.append('folderUrl', folderUrl);
-
-    if (team === 'ECRI') {
-        formData.append('week', week);
-    } else {
-        formData.append('year', year);
-        formData.append('month', month);
-    }
+    formData.append('week', week);
+    formData.append('year', year);
+    formData.append('month', month);
 
     const response = await fetch(CONFIG.API_URL, {
         method: 'POST',
@@ -562,20 +565,25 @@ function updateDashboardCards(data) {
         const $statusDiv = $(`#status-${team.toLowerCase()}`);
         let teamColor = CONFIG.TEAM_COLORS[team] || 'gray';
 
-        if (!data) {
+        // Helper for Pending/No Data state
+        const renderPending = () => {
             $statusDiv.html(`
-                <div class="flex flex-col h-full justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500 mb-1">สถานะปัจจุบัน</p>
-                        <p class="text-base font-medium text-gray-700">ยังไม่มีการส่งงาน</p>
-                    </div>
-                    <div class="mt-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            <i class="far fa-clock mr-1.5"></i> รอดำเนินการ
+                <div class="flex flex-col h-full justify-between items-center text-center">
+                    <div class="w-full flex-1 flex flex-col justify-center items-center py-3">
+                        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500 uppercase tracking-widest ring-1 ring-gray-200">
+                            <i class="fas fa-clock"></i> Pending
                         </span>
                     </div>
+                    
+                    <button disabled class="w-full py-2.5 bg-gray-50 text-gray-400 rounded-xl text-xs font-semibold cursor-not-allowed border border-gray-100 uppercase tracking-wide">
+                        No Files
+                    </button>
                 </div>
             `);
+        };
+
+        if (!data) {
+            renderPending();
             return;
         }
 
@@ -589,46 +597,23 @@ function updateDashboardCards(data) {
             const formattedTime = formatThaiDateTime(uploadTime)?.fromNow || '-';
 
             $statusDiv.html(`
-                <div class="flex flex-col h-full justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                             <p class="text-sm text-gray-500">สถานะล่าสุด</p>
-                             <span class="flex h-2 w-2 relative">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                             </span>
-                        </div>
-                        <p class="text-sm font-medium text-gray-900 mb-1">ส่งงานเรียบร้อยแล้ว</p>
-                        <p class="text-xs text-gray-500 flex items-center">
-                            <i class="far fa-clock mr-1.5 text-gray-400"></i> ${formattedTime}
+                <div class="flex flex-col h-full justify-between items-center text-center">
+                    <div class="w-full flex-1 flex flex-col justify-center items-center py-3">
+                        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-700 uppercase tracking-widest ring-1 ring-green-200 shadow-sm">
+                            <i class="fas fa-check"></i> Completed
+                        </span>
+                        <p class="text-[10px] text-gray-400 mt-2 font-medium flex items-center justify-center gap-1">
+                            <i class="far fa-clock"></i> ${formattedTime}
                         </p>
                     </div>
                     
-                    <div class="mt-4 flex items-center justify-between">
-                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 ring-1 ring-green-600/20">
-                            <i class="fas fa-check-circle mr-1.5"></i> Completed
-                        </span>
-                        <a href="${folderLink}" target="_blank" class="text-${teamColor}-600 hover:text-${teamColor}-800 text-sm font-medium flex items-center group">
-                            <span>Folder</span>
-                            <i class="fas fa-arrow-right ml-1 transform group-hover:translate-x-0.5 transition-transform"></i>
-                        </a>
-                    </div>
+                    <a href="${folderLink}" target="_blank" class="w-full py-2.5 bg-${teamColor}-50 hover:bg-${teamColor}-100 text-${teamColor}-600 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 uppercase tracking-wide group border border-${teamColor}-100">
+                        <i class="fas fa-folder-open group-hover:scale-110 transition-transform"></i> Open Folder
+                    </a>
                 </div>
             `);
         } else {
-            $statusDiv.html(`
-                <div class="flex flex-col h-full justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500 mb-1">สถานะปัจจุบัน</p>
-                        <p class="text-base font-medium text-gray-700">รอการส่งงาน</p>
-                    </div>
-                    <div class="mt-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20">
-                            <i class="fas fa-exclamation-circle mr-1.5"></i> Pending
-                        </span>
-                    </div>
-                </div>
-            `);
+            renderPending();
         }
     });
 }
@@ -725,10 +710,12 @@ function updateSummaryTable(data) {
  */
 async function loadHistory() {
     try {
+        $('.fa-sync-alt').addClass('animate-spin');
         const response = await fetch(`${CONFIG.API_URL}?action=getAllData`);
         const result = await response.json();
 
         if (result.success && result.data) {
+            window.historyData = result.data; // Store globally for filtering if needed
             displayHistory(result.data);
         } else {
             $('#history-tbody').html(`
@@ -743,18 +730,20 @@ async function loadHistory() {
     } catch (error) {
         console.error('History load error:', error);
         showAlert('error', 'ไม่สามารถโหลดประวัติได้');
+    } finally {
+        $('.fa-sync-alt').removeClass('animate-spin');
     }
 }
 
 /**
  * Display history table
  */
-function displayHistory(data) {
+function displayHistory(data, teamFilter = null, yearFilter = null) {
     const $tbody = $('#history-tbody');
     $tbody.empty();
 
     // Flatten data for history view
-    const historyItems = [];
+    let historyItems = [];
 
     data.forEach(row => {
         const year = row['ปี'];
@@ -778,6 +767,13 @@ function displayHistory(data) {
             }
         });
     });
+
+    if(teamFilter) {
+        historyItems = historyItems.filter(item => item.team === teamFilter);
+    }
+    if(yearFilter) {
+        historyItems = historyItems.filter(item => item.year == yearFilter);
+    }
 
     // Sort by timestamp descending
     historyItems.sort((a, b) => b.timestamp - a.timestamp);
@@ -818,7 +814,7 @@ function displayHistory(data) {
                 <td class="px-6 py-4">
                     <div class="text-sm text-gray-700">
                         <i class="far fa-calendar-alt text-gray-400 mr-2"></i>
-                        ${item.month} ${parseInt(item.year) + 543}
+                        ${item.month} ${parseInt(item.year)}
                     </div>
                 </td>
                 <td class="px-6 py-4">
@@ -871,11 +867,12 @@ function getWeekString(date) {
 /**
  * Upload files to Google Drive with progress tracking
  */
-async function uploadToGoogleDrive(f) {
+async function uploadToGoogleDrive(f, team, year, month, week) {
     if (f.length == 0) {
         return []
     }
     Swal.fire({
+        icon: 'info',
         title: 'กำลังอัพโหลดไฟล์',
         html: `
             <div class="w-full px-2">
@@ -887,7 +884,7 @@ async function uploadToGoogleDrive(f) {
                     <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
                         <div id="overallProgress" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 0%"></div>
                     </div>
-                    <div class="mt-3 text-xs text-gray-500 text-center">
+                    <div class="mt-3 text-sm text-gray-500 text-center">
                         <span id="uploadStatus" class="inline-flex items-center gap-2">
                             <i class="fas fa-circle-notch fa-spin text-blue-500"></i> กำลังเตรียมไฟล์...
                         </span>
@@ -912,10 +909,7 @@ async function uploadToGoogleDrive(f) {
             // Swal.showLoading() - Removed to use custom loader in HTML
         },
     })
-    const team = $('#team-select').val();
-    const month = $('#upload-month').val();
-    const year = $('#upload-year').val();
-    const week = $('#upload-week').val();
+    
     const { token, folderId } = await getUploadToken(team, year, month, week);
     console.log('Upload token and folder ID:', token, folderId);
 
@@ -940,7 +934,7 @@ async function uploadToGoogleDrive(f) {
             fr.readAsArrayBuffer(file);
             fr.onload = e => {
                 var id = "p" + ++i;
-                var div = $("<div>", { class: 'text-xs text-gray-700 truncate px-2 py-1 bg-gray-50 rounded-lg' });
+                var div = $("<div>", { class: 'text-sm text-gray-700 truncate px-2 py-1 bg-gray-50 rounded-lg' });
                 div.attr("id", id);
                 $("#progress").append(div);
                 $('#' + id).html('<span class="text-blue-500">กำลังเตรียม...</span> <span class="text-gray-600">' + fr.fileName + '</span>')
