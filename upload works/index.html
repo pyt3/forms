@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบส่งงาน - Work Submission System</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ResumableUploadForGoogleDrive -->
+    <script src="https://cdn.jsdelivr.net/gh/tanaikech/ResumableUploadForGoogleDrive_js@2.0.2/resumableupload_js.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .team-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23CBD5E0FF' stroke-width='2' stroke-dasharray='12%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+            border: none;
+        }
+
+        .upload-area.dragover {
+            background-color: #eff6ff;
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%233B82F6FF' stroke-width='2' stroke-dasharray='12%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+            transform: scale(1.01);
+        }
+
+        .file-item {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800 antialiased">
+    <!-- Header -->
+    <nav class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="bg-gradient-to-br from-blue-600 to-indigo-600 w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transform rotate-3">
+                        <i class="fas fa-file-upload text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1
+                            class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                            Work Submission</h1>
+                        <p class="text-xs text-gray-500 font-medium tracking-wide">SYSTEM MANAGEMENT</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <div class="hidden md:flex bg-gray-100 p-1 rounded-xl">
+                        <button onclick="showTab('dashboard')" id="tab-dashboard"
+                            class="tab-btn px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-white text-blue-600 shadow-sm">
+                            <i class="fas fa-chart-line mr-2"></i>Dashboard
+                        </button>
+                        <button onclick="showTab('upload')" id="tab-upload"
+                            class="tab-btn px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-500 hover:text-gray-900">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i>อัพโหลด
+                        </button>
+                        <button onclick="showTab('history')" id="tab-history"
+                            class="tab-btn px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-500 hover:text-gray-900">
+                            <i class="fas fa-history mr-2"></i>ประวัติ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Nav (Visible only on small screens) -->
+    <div class="md:hidden bg-white border-b border-gray-200 p-2 overflow-x-auto">
+        <div class="flex space-x-2 px-2">
+            <button onclick="showTab('dashboard')"
+                class="tab-btn-mobile flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium bg-blue-50 text-blue-600">Dashboard</button>
+            <button onclick="showTab('upload')"
+                class="tab-btn-mobile flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium text-gray-600">อัพโหลด</button>
+            <button onclick="showTab('history')"
+                class="tab-btn-mobile flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium text-gray-600">ประวัติ</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Tab -->
+    <div id="content-dashboard" class="tab-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Overview Dashboard</h2>
+                <p class="text-gray-500 mt-1">สรุปสถานะการส่งงานประจำเดือน</p>
+            </div>
+
+            <div class="flex flex-wrap gap-3 bg-white p-2 rounded-xl shadow-sm border border-gray-100">
+                <select id="month-selector"
+                    class="bg-gray-50 border-0 rounded-lg text-sm font-medium text-gray-600 py-2.5 px-4 focus:ring-2 focus:ring-blue-500 cursor-pointer hover:bg-gray-100 transition">
+                    <!-- JavaScript populated -->
+                </select>
+                <select id="year-selector"
+                    class="bg-gray-50 border-0 rounded-lg text-sm font-medium text-gray-600 py-2.5 px-4 focus:ring-2 focus:ring-blue-500 cursor-pointer hover:bg-gray-100 transition">
+                    <!-- JavaScript populated -->
+                </select>
+                <button onclick="loadDashboard()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-lg transition-colors shadow-sm">
+                    <i class="fas fa-sync-alt animate-spin-hover"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Team PM Card -->
+            <div
+                class="team-card group bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-4">
+                        <div
+                            class="bg-blue-50 text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Monthly</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">Team PM</h3>
+                    <p class="text-xs text-gray-500 mb-4">งาน Preventive Maintenance</p>
+                    <div id="status-pm" class="pt-4 border-t border-gray-100">
+                        <div class="animate-pulse h-4 bg-gray-100 rounded w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team CM Card -->
+            <div
+                class="team-card group bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-4">
+                        <div
+                            class="bg-green-50 text-green-600 w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-wrench"></i>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Monthly</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">Team CM</h3>
+                    <p class="text-xs text-gray-500 mb-4">งาน Corrective Maintenance</p>
+                    <div id="status-cm" class="pt-4 border-t border-gray-100">
+                        <div class="animate-pulse h-4 bg-gray-100 rounded w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Pool Card -->
+            <div
+                class="team-card group bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-4">
+                        <div
+                            class="bg-purple-50 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-swimming-pool"></i>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Monthly</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">Team Pool</h3>
+                    <p class="text-xs text-gray-500 mb-4">งานบริหารจัดการอุปกรณ์</p>
+                    <div id="status-pool" class="pt-4 border-t border-gray-100">
+                        <div class="animate-pulse h-4 bg-gray-100 rounded w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Card -->
+            <div
+                class="team-card group bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-4">
+                        <div
+                            class="bg-orange-50 text-orange-600 w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Monthly</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">Admin</h3>
+                    <p class="text-xs text-gray-500 mb-4">สรุปผลการดำเนินงานภาพรวม</p>
+                    <div id="status-admin" class="pt-4 border-t border-gray-100">
+                        <div class="animate-pulse h-4 bg-gray-100 rounded w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ECRI Weekly Report -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-red-50 rounded-bl-full -mr-10 -mt-10 opacity-50"></div>
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="bg-red-100 text-red-600 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">รายงาน ECRI (Weekly Report)</h3>
+                        <p class="text-gray-500">รายงานสรุปประจำสัปดาห์ (ต้องส่งภายในวันอังคาร)</p>
+                    </div>
+                </div>
+                <div id="status-ecri" class="w-full md:w-auto min-w-[200px] text-right">
+                    <div class="animate-pulse h-6 bg-gray-100 rounded"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Table -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-800">
+                    สถานะการส่งงานทั้งหมด
+                </h3>
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Latest Updates</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full" id="summary-table">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-100 text-left">
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Team Name
+                            </th>
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status
+                            </th>
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Submitted
+                                Date</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="summary-tbody" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                <div class="flex flex-col items-center justify-center">
+                                    <i class="fas fa-spinner fa-spin text-2xl text-blue-200 mb-2"></i>
+                                    <p>กำลังโหลดข้อมูล...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Tab -->
+    <div id="content-upload" class="tab-content hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-8 border-b border-gray-100 bg-gray-50/50">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-cloud-upload-alt text-blue-600 mr-2"></i>
+                    อัพโหลดงาน
+                </h2>
+                <p class="text-gray-500 mt-1 ml-9">กรุณาเลือกทีมและไฟล์ที่ต้องการส่ง</p>
+            </div>
+
+            <div class="p-8">
+                <!-- Team Selection -->
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">เลือกทีม / ประเภทงาน</label>
+                    <div class="relative">
+                        <select id="team-select"
+                            class="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all">
+                            <option value="">-- กรุณาเลือกทีม --</option>
+                            <option value="PM">Team PM - สรุปงาน PM (ส่งทุกสิ้นเดือน)</option>
+                            <option value="CM">Team CM - สรุปงานซ่อม (ส่งทุกสิ้นเดือน)</option>
+                            <option value="Pool">Team Pool - สรุปงาน Pool (ส่งทุกสิ้นเดือน)</option>
+                            <option value="Admin">Admin - สรุปผลการดำเนินงาน (ส่งทุกสิ้นเดือน)</option>
+                            <option value="ECRI">ECRI - รายงาน (ส่งไม่เกินวันอังคารทุกสัปดาห์)</option>
+                        </select>
+                        <div
+                            class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Month/Year Selection (hidden for ECRI) -->
+                <div id="month-year-section" class="mb-8 grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">เดือน</label>
+                        <div class="relative">
+                            <select id="upload-month"
+                                class="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all">
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                            <div
+                                class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">ปี</label>
+                        <div class="relative">
+                            <select id="upload-year"
+                                class="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all">
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                            <div
+                                class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week Selection (shown for ECRI only) -->
+                <div id="week-section" class="mb-8 hidden">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">สัปดาห์</label>
+                    <input type="week" id="upload-week"
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                </div>
+
+                <!-- File Upload Area -->
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">ไฟล์แนบ</label>
+                    <div id="drop-area"
+                        class="upload-area rounded-2xl p-10 text-center cursor-pointer group hover:bg-blue-50/50">
+                        <div
+                            class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-700 mb-2">ลากไฟล์วางที่นี่ หรือคลิกเพื่ออัพโหลด</h4>
+                        <p class="text-sm text-gray-400">รองรับไฟล์เอกสาร รูปภาพ และไฟล์อัดแน่น (ZIP/RAR)</p>
+                        <input type="file" id="file-input" multiple class="hidden">
+                    </div>
+                </div>
+
+                <!-- Selected Files List -->
+                <div id="file-list" class="mb-8 hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold text-gray-700">รายการไฟล์ที่เลือก</h3>
+                        <span class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-md" id="file-count-badge">0
+                            files</span>
+                    </div>
+                    <div id="file-items" class="space-y-3">
+                        <!-- Files will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Upload Progress -->
+                <div id="upload-progress" class="mb-8 hidden">
+                    <div class="flex justify-between text-sm font-medium text-gray-600 mb-2">
+                        <span id="progress-text">กำลังอัพโหลด...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                        <div id="progress-bar"
+                            class="progress-bar bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-4 pt-4 border-t border-gray-50">
+                    <button onclick="startUpload()" id="upload-btn"
+                        class="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transform active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
+                        <i class="fas fa-paper-plane mr-2"></i>ยืนยันการส่งงาน
+                    </button>
+                    <button onclick="clearForm()"
+                        class="px-6 py-3.5 bg-white text-gray-700 font-semibold rounded-xl border border-gray-200 hover:bg-gray-50 hover:text-red-500 hover:border-red-100 transition-all">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="alert-container" class="mt-6"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- History Tab -->
+    <div id="content-history" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div
+                class="px-8 py-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        ประวัติการส่งงาน
+                    </h2>
+                    <p class="text-gray-500 text-sm mt-1">ประวัติการส่งงานทั้งหมดในระบบ</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <select id="history-team-filter"
+                        class="bg-gray-50 border-0 rounded-lg text-sm font-medium text-gray-600 py-2 px-4 focus:ring-2 focus:ring-blue-500 cursor-pointer hover:bg-gray-100 transition">
+                        <option value="">ทุกทีม</option>
+                        <option value="PM">Team PM</option>
+                        <option value="CM">Team CM</option>
+                        <option value="Pool">Team Pool</option>
+                        <option value="Admin">Admin</option>
+                        <option value="ECRI">ECRI</option>
+                    </select>
+                    <select id="history-year-filter"
+                        class="bg-gray-50 border-0 rounded-lg text-sm font-medium text-gray-600 py-2 px-4 focus:ring-2 focus:ring-blue-500 cursor-pointer hover:bg-gray-100 transition">
+                        <option value="">ทุกปี</option>
+                        <!-- Will be populated by JavaScript -->
+                    </select>
+                    <button onclick="loadHistory()"
+                        class="bg-blue-50 text-blue-600 hover:bg-blue-100 p-2 rounded-lg transition-colors">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- History Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-100 text-left">
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Submitted
+                                Time</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Team</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Period
+                            </th>
+                            <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Files
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="bg-gray-50 rounded-full p-4 mb-3">
+                                        <i class="fas fa-history text-gray-300 text-2xl"></i>
+                                    </div>
+                                    <p>กำลังโหลดข้อมูล...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 bg-white border-t border-gray-100">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-500 font-medium">© 2026 Work Submission System</p>
+            <p class="text-xs text-gray-400 mt-2">Designed for internal use</p>
+        </div>
+    </footer>
+
+    <!-- Include main JavaScript -->
+    <script src="index.js"></script>
+</body>
+
+</html>
