@@ -1729,7 +1729,9 @@
             }
 
             // add nsmartFiles pdfs
-            ['1-file-nsmart', '2-file-quatation', '3-file-other'].forEach(async (id) => {
+            let nsmartFiles = ['1-file-nsmart', '2-file-quatation', '3-file-other']
+            for(let id of nsmartFiles){
+                console.log(id)
                 if (pdfFiles[id] && pdfFiles[id].length > 0) {
                     for (let fileBytes of pdfFiles[id]) {
                         let pdf = await PDFDocument.load(fileBytes)
@@ -1742,7 +1744,7 @@
                         }
                     }
                 }
-            })
+            }
 
              // scale all pages to fit A4
             const a4Width = 595.28 // A4 width in points
@@ -2143,6 +2145,7 @@
                     form_obj['pdfFile'] = pdfDataUri
                 } else {
                     let pdf = await createPDF();
+                    $.LoadingOverlay("hide");
                     console.log("🚀 !! pdf:", pdf)
                     form_obj = pdf.form_obj;
                     pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
