@@ -67,10 +67,14 @@ if (
       await newwindow2.navigator.clipboard.writeText(JSON.stringify(t));
       console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
       console.groupEnd();
-      newwindow.close();
-      newwindow2.close();
+      setTimeout(() => {
+        newwindow.close();
+        newwindow2.close();
+      }, 300);
     } else {
-      newwindow2.close();
+      setTimeout(() => {
+        newwindow2.close();
+      }, 200);
     }
   });
   new Promise((resolve, reject) => {
@@ -137,11 +141,15 @@ if (
           await newwindow3.navigator.clipboard.writeText(JSON.stringify(t));
           console.log("%c🚀 !! DONE คัดลอกเรียบร้อย", "font-size: 30px;");
           console.groupEnd();
-          newwindow.close();
-          newwindow2.close();
-          newwindow3.close();
+          setTimeout(() => {
+            newwindow.close();
+            newwindow2.close();
+            newwindow3.close();
+          }, 300);
         } else {
-          newwindow3.close();
+          setTimeout(() => {
+            newwindow3.close();
+          }, 200);
         }
       });
       return;
