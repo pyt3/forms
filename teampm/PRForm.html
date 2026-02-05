@@ -1862,7 +1862,7 @@
                     form_obj['pdfFile'] = pdfDataUri
                 } else {
                     let pdf = await createPDF();
-                    $.loadingOverlay("hide");
+                    $.LoadingOverlay("hide");
                     console.log("🚀 !! pdf:", pdf)
                     form_obj = pdf.form_obj;
                     pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
