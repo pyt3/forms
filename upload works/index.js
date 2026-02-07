@@ -124,7 +124,7 @@ function showTab(tabName) {
  */
 function populateMonthSelectors() {
     const selectors = ['#month-selector', '#upload-month', '#history-month-filter'];
-    const currentMonth = new Date().getMonth();
+    const displayMonth = new Date().getMonth() -1
 
     selectors.forEach(selector => {
         const $select = $(selector);
@@ -135,7 +135,7 @@ function populateMonthSelectors() {
                 .val(month[1])
                 .text(month[0]);
 
-            if (index === currentMonth) {
+            if (index === displayMonth) {
                 option.attr('selected', 'selected');
             }
 
@@ -149,8 +149,8 @@ function populateMonthSelectors() {
  */
 function populateYearSelectors() {
     const currentYear = new Date().getFullYear();
-    const startYear = currentYear - 2;
-    const endYear = currentYear + 1;
+    const startYear = currentYear - 10;
+    const endYear = currentYear;
 
     const selectors = ['#year-selector', '#upload-year', '#history-year-filter'];
 
