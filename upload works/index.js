@@ -1033,3 +1033,49 @@ window.clearForm = clearForm;
 window.removeFile = removeFile;
 window.loadHistory = loadHistory;
 window.getUploadToken = getUploadToken;
+/* ==================== TEAM SELECTION UI ==================== */
+
+window.selectTeam = function(team) {
+    $('#team-select').val(team).trigger('change');
+};
+
+function updateTeamCards(selectedTeam) {
+    // Reset all cards
+    $('.team-option').each(function() {
+        const id = $(this).attr('id');
+        const team = id.replace('card-', '');
+        let color = 'blue';
+        if(team === 'CM') color = 'green';
+        if(team === 'Pool') color = 'purple';
+        if(team === 'Admin') color = 'orange';
+        if(team === 'ECRI') color = 'red';
+        
+        // Remove active classes
+        $(this).removeClass(`ring-2 ring-offset-2 scale-105 shadow-md active-card ring-${color}-200 border-${color}-500 bg-${color}-50`);
+        $(this).addClass('bg-white border-gray-100 opacity-100');
+        $(this).find('.check-mark').removeClass('opacity-100');
+        $(this).find('.check-icon').removeClass('opacity-100');
+    });
+
+    // Dim others
+    if (selectedTeam) {
+        $('.team-option').not(`#card-${selectedTeam}`).addClass('opacity-60');
+    }
+
+    if (!selectedTeam) return;
+
+    // Highlight selected
+    const $selectedCard = $(`#card-${selectedTeam}`);
+    let color = 'blue';
+    if(selectedTeam === 'CM') color = 'green';
+    if(selectedTeam === 'Pool') color = 'purple';
+    if(selectedTeam === 'Admin') color = 'orange';
+    if(selectedTeam === 'ECRI') color = 'red';
+
+    $selectedCard.removeClass('bg-white border-gray-100');
+    $selectedCard.addClass(`ring-2 ring-offset-2 scale-105 shadow-md active-card`);
+    $selectedCard.addClass(`border-${color}-500 bg-${color}-50 ring-${color}-200`);
+    
+    $selectedCard.find('.check-mark').addClass('opacity-100');
+    $selectedCard.find('.check-icon').addClass('opacity-100');
+}
