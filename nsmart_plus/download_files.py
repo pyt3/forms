@@ -81,7 +81,7 @@ def nsmartFileDownload(show_browser=False, config_manager=None):
         console.print(f"[green]✅ Detected total pages: {last_page}[/green]")
 
         for i in range(1, last_page + 1):
-            if i > 1:
+            if i >= 1:
                 page_url = f"{filter_url}{separator}asset_masterPage={i}&asset_masterPageSize={page_size}"
                 driver = go_to_page(driver, page_url, console, 'nsmart', config_manager)
             process_table(driver, domain, console, config_manager)

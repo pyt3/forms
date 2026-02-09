@@ -243,7 +243,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver, config_manag
     driver, table, id_code = navigate_and_extract_table(driver, asset_image_page, image_table_xpath, image_id_xpath, console, config_manager)
     if table is None or id_code is None:
         return
-   
+    id_code = id_code.replace('PYT3', "PT3")
     rows = table.find_elements(By.TAG_NAME, "tr")[2:-1]  # Skip header row and last row
     console.print(f"[blue]🔍 Found {len(rows)} image rows for asset {asset_code}[/blue]")
     if not rows:
@@ -288,6 +288,7 @@ def get_asset_files(domain, asset_code, asset_url, console, driver, config_manag
     driver, table, id_code = navigate_and_extract_table(driver, document_page, document_table_xpath, document_id_xpath, console, config_manager)
     if config_manager.getAssetIDType() == "ASSET_SERIAL_NUMBER":
         id_code = image_id_code
+    id_code = id_code.replace('PYT3', "PT3")
     if table is None or id_code is None:
         return
     footer_tr = table.find_elements(By.TAG_NAME, "tr")[-1]
