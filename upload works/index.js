@@ -185,13 +185,13 @@ function setupEventListeners() {
             $('#week-section').removeClass('hidden');
 
             // Set to last week (Monday to Sunday) using moment.js
-            const lastMonday = moment().subtract(1, 'week').startOf('isoWeek').toDate();
-            const lastSunday = moment().subtract(1, 'week').endOf('isoWeek').toDate();
+            const lastSunday = moment().subtract(1, 'week').startOf('isoWeek').subtract(1, 'day').toDate();
+            const lastSaturday = moment(lastSunday).add(6, 'days').toDate();
 
             // Set the dates in flatpickr
             if (window.startDatePicker && window.endDatePicker) {
-                window.startDatePicker.setDate(lastMonday);
-                window.endDatePicker.setDate(lastSunday);
+                window.startDatePicker.setDate(lastSunday);
+                window.endDatePicker.setDate(lastSaturday);
             }
         } else {
             $('#month-year-section').removeClass('hidden');
