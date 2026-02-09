@@ -124,7 +124,7 @@ function showTab(tabName) {
  */
 function populateMonthSelectors() {
     const selectors = ['#month-selector', '#upload-month', '#history-month-filter'];
-    const displayMonth = new Date().getMonth() -1
+    const displayMonth = new Date().getMonth()
 
     selectors.forEach(selector => {
         const $select = $(selector);
