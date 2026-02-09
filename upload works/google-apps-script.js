@@ -210,6 +210,11 @@ function getMonthData(params) {
         for (let j = 0; j < headers.length; j++) {
           record[headers[j]] = rowData[j];
         }
+        if (String(params.team || '').trim().toUpperCase() === 'ECRI') {
+          const ecriStatus = getEcriWeeklyStatus(year, month);
+          record[`ลิ้งค์โฟลเดอร์ที่อัพโหลด Team ECRI`] = ecriStatus.exists ? record[`ลิ้งค์โฟลเดอร์ที่อัพโหลด Team ECRI`] : null;
+        }
+
         return createResponse(true, 'Month data retrieved', record);
       }
     }
@@ -220,6 +225,47 @@ function getMonthData(params) {
   } catch (error) {
     return createResponse(false, error.toString(), null);
   }
+}
+
+/**
+ * Check ECRI weekly folder for the current week and return percentage.
+ */
+function getEcriWeeklyStatus(year, month) {
+  const result = {
+    weekLabel: null,
+    exists: false
+  };
+
+  if (!year || !month) {
+    return result;
+  }
+
+  const now = new Date();
+  const currentYear = String(now.getFullYear());
+  const currentMonth = String(now.getMonth() + 1);
+
+  if (String(year).trim() !== currentYear || String(month).trim() !== currentMonth) {
+    return result;
+  }
+
+  const weekLabel = getWeekFolderName(now);
+  result.weekLabel = weekLabel;
+
+  const rootFolder = DriveApp.getFolderById(ROOT_FOLDER_ID);
+  const yearFolder = getFolderByName(rootFolder, String(year));
+  if (!yearFolder) return result;
+
+  const monthFolder = getFolderByName(yearFolder, String(month));
+  if (!monthFolder) return result;
+
+  const teamFolder = getFolderByName(monthFolder, 'ECRI');
+  if (!teamFolder) return result;
+
+  const weekFolder = getFolderByName(teamFolder, weekLabel);
+  if (!weekFolder) return result;
+
+  result.exists = true;
+  return result;
 }
 
 /**
@@ -352,6 +398,32 @@ function getOrCreateFolder(parentFolder, folderName) {
   } else {
     return parentFolder.createFolder(folderName);
   }
+}
+
+/**
+ * Get a folder by name without creating it.
+ */
+function getFolderByName(parentFolder, folderName) {
+  const folders = parentFolder.getFoldersByName(folderName);
+  return folders.hasNext() ? folders.next() : null;
+}
+
+/**
+ * Build ECRI weekly folder name like 01FEB_07FEB (Sunday to Saturday).
+ */
+function getWeekFolderName(date) {
+  const start = new Date(date);
+  const day = start.getDay();
+  start.setDate(start.getDate() - day);
+
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+
+  const tz = Session.getScriptTimeZone();
+  const startLabel = Utilities.formatDate(start, tz, 'ddMMM').toUpperCase();
+  const endLabel = Utilities.formatDate(end, tz, 'ddMMM').toUpperCase();
+
+  return `${startLabel}_${endLabel}`;
 }
 
 /**
