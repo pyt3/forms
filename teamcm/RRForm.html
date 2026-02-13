@@ -2145,11 +2145,46 @@
                     form_obj['pdfFile'] = pdfDataUri
                 } else {
                     let pdf = await createPDF();
+
+                    // add sender signature
+                    let sender_sign = await fetch('../img_sign/' + from_name.replace(/ /g, '_').toUpperCase() + '.png').then(res => {
+                        if (res.ok) return res.arrayBuffer();
+                        else return null;
+                    });
+                    console.log("🚀 !! sender_sign:", sender_sign)
+                    if(sender_sign) {
+                        pdfDoc = pdf.pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
+                        sender_sign = await pdfDoc.embedPng(sender_sign);
+                        const pages = pdfDoc.getPages()
+                        const firstPage = pages[0]
+                        const scaleFactor = 45 / sender_sign.height
+                        const { width, height } = sender_sign.scale(scaleFactor)
+                        firstPage.drawImage(sender_sign, {
+                            x: 50,
+                            y: 30,
+                            width: width,
+                            height: height,
+                        })
+                        // add sender name below signature
+                        firstPage.drawText(from_name, {
+                            x: 50,
+                            y: 25,
+                            size: 8,
+                            font: await pdfDoc.embedFont(StandardFonts.Helvetica),
+                            color: PDFLib.rgb(0, 0, 0),
+                        });
+                    }
                     $.LoadingOverlay("hide");
                     console.log("🚀 !! pdf:", pdf)
                     form_obj = pdf.form_obj;
                     pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
                     pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+                    // show preview in new tab (for test)
+                    const pdfBytes = await pdfDoc.save();
+                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    window.open(blobUrl, '_blank');
+                    return
                 }
                 Swal.fire({
                     icon: 'info',
