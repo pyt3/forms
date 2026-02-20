@@ -578,6 +578,23 @@
                         </div>
                     </div>
                 </section>
+                <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow has-checkboxes">
+                    <div class="border-l-4 border-blue-600 pl-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="user" class="w-7 h-7 text-blue-600 drop-shadow"></i>
+                            <h2 class="text-2xl font-bold text-gray-800">ชื่อผู้บันทึก</h2>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-2">
+                            <label for="rr-user" class="block text-sm font-medium text-gray-700">เลือกผู้บันทึก</label>
+                            <select name="rr-user" id="rr-user" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                           focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                           transition-all shadow-sm hover:border-gray-400 bg-white"></select>
+                        </div>
+                    </div>
+                </section>
                 <section class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-shadow">
                     <div class="border-l-4 border-purple-600 pl-4 mb-6">
                         <div class="flex items-center gap-3">
@@ -708,7 +725,7 @@
                         <div class="relative">
                             <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <select required id="from_name" name="from_name" type="text" placeholder="John Doe"
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"></select>
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" required></select>
                         </div>
                     </div>
 
@@ -854,17 +871,25 @@
                     }
                     return $(opt).prop('outerHTML')
                 }).join(' '))
-            $('#from_name')
+            $('#from_name, #rr-user')
                 .empty()
                 .append($('<option>', { text: 'เลือกชื่อผู้ส่ง', value: '', disabled: true, selected: true }))
                 .append(staff_name_array.sort().map(name => {
                     let opt = $('<option>', { text: name, value: name })
                     return $(opt).prop('outerHTML')
                 }).join(' ')).on('change', function () {
-                    localStorage.setItem('rr_email_sender_name', $(this).val())
+                    let id = $(this).attr('id')
+                    if (id == 'from_name') {
+                        localStorage.setItem('rr_email_sender_name', $(this).val())
+                    } else if (id == 'rr-user') {
+                        localStorage.setItem('rr_name', $(this).val())
+                    }
                 })
             if (localStorage.getItem('rr_email_sender_name')) {
                 $('#from_name').val(localStorage.getItem('rr_email_sender_name'))
+            }
+            if (localStorage.getItem('rr_name')) {
+                $('#rr-user').val(localStorage.getItem('rr_name'))
             }
 
         })
@@ -1528,7 +1553,53 @@
 
         $('#myForm').submit(async function () {
             event.preventDefault()
-            const { form_obj, pdfBytes, form_pdf_bytes } = await createPDF()
+            let { form_obj, pdfBytes, form_pdf_bytes } = await createPDF()
+            if(!$('#rr-user').val()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณาเลือกชื่อผู้ส่ง',
+                    text: 'เพื่อเพิ่มลายเซ็นต์ในเอกสาร',
+                    confirmButtonText: 'ตกลง',
+                    customClass: {
+                        popup: 'rounded-2xl'
+                    }
+                })
+                return
+            }
+            let userName = $('#rr-user').val()
+            // add sender signature
+            let sender_sign = await fetch('../img_sign/' + userName.replace(/ /g, '_').toUpperCase() + '.png').then(res => {
+                if (res.ok) return res.arrayBuffer();
+                else return null;
+            });
+            console.log("🚀 !! sender_sign:", sender_sign)
+            if (sender_sign) {
+                pdf = {
+                    pdfBytes: pdfBytes,
+                    form_pdf_bytes: form_pdf_bytes,
+                }
+                pdfDoc = pdf.pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
+                sender_sign = await pdfDoc.embedPng(sender_sign);
+                const pages = pdfDoc.getPages()
+                const firstPage = pages[0]
+                const scaleFactor = Math.min(45 / sender_sign.height, 100 / sender_sign.width)
+                const { width, height } = sender_sign.scale(scaleFactor)
+                firstPage.drawImage(sender_sign, {
+                    x: 50,
+                    y: 30,
+                    width: width,
+                    height: height,
+                })
+                // add sender name below signature
+                firstPage.drawText(userName, {
+                    x: 50,
+                    y: 25,
+                    size: 8,
+                    font: await pdfDoc.embedFont(StandardFonts.Helvetica),
+                    color: PDFLib.rgb(0, 0, 0),
+                });
+                pdfBytes = await pdfDoc.save()
+            }
             $.ajax({
                 url: scriptUrl,
                 type: 'POST',
@@ -1730,7 +1801,7 @@
 
             // add nsmartFiles pdfs
             let nsmartFiles = ['1-file-nsmart', '2-file-quatation', '3-file-other']
-            for(let id of nsmartFiles){
+            for (let id of nsmartFiles) {
                 console.log(id)
                 if (pdfFiles[id] && pdfFiles[id].length > 0) {
                     for (let fileBytes of pdfFiles[id]) {
@@ -1746,7 +1817,7 @@
                 }
             }
 
-             // scale all pages to fit A4
+            // scale all pages to fit A4
             const a4Width = 595.28 // A4 width in points
             const a4Height = 841.89 // A4 height in points
             const pages = pdfDoc.getPages()
@@ -2132,7 +2203,7 @@
                     return;
                 }
                 statusArea.html('<p class="text-sm text-blue-600 font-semibold flex items-center gap-2"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Sending email...</p>');
-                let pdfDataUri, form_obj, pdfDoc;
+                let pdfDataUri, form_obj, pdfDoc, pdf
                 if (window.emailMode === 'resend') {
                     const pdf_blobUri = $('#download-from-search-btn').attr('href');
                     const pdfArrayBuffer = await fetch(pdf_blobUri).then(res => res.arrayBuffer());
@@ -2143,43 +2214,50 @@
                         return obj;
                     }, {});
                     form_obj['pdfFile'] = pdfDataUri
+                    pdf = { pdfDoc, form_obj };
                 } else {
-                    let pdf = await createPDF();
+                    pdf = await createPDF();
 
-                    // add sender signature
-                    let sender_sign = await fetch('../img_sign/' + from_name.replace(/ /g, '_').toUpperCase() + '.png').then(res => {
-                        if (res.ok) return res.arrayBuffer();
-                        else return null;
-                    });
-                    console.log("🚀 !! sender_sign:", sender_sign)
-                    if(sender_sign) {
-                        pdfDoc = pdf.pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
-                        sender_sign = await pdfDoc.embedPng(sender_sign);
-                        const pages = pdfDoc.getPages()
-                        const firstPage = pages[0]
-                        const scaleFactor = 45 / sender_sign.height
-                        const { width, height } = sender_sign.scale(scaleFactor)
-                        firstPage.drawImage(sender_sign, {
-                            x: 50,
-                            y: 30,
-                            width: width,
-                            height: height,
-                        })
-                        // add sender name below signature
-                        firstPage.drawText(from_name, {
-                            x: 50,
-                            y: 25,
-                            size: 8,
-                            font: await pdfDoc.embedFont(StandardFonts.Helvetica),
-                            color: PDFLib.rgb(0, 0, 0),
-                        });
-                    }
-                    $.LoadingOverlay("hide");
-                    console.log("🚀 !! pdf:", pdf)
-                    form_obj = pdf.form_obj;
-                    pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
-                    pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
                 }
+                // add sender signature
+                let sender_sign = await fetch('../img_sign/' + from_name.replace(/ /g, '_').toUpperCase() + '.png').then(res => {
+                    if (res.ok) return res.arrayBuffer();
+                    else return null;
+                });
+                console.log("🚀 !! sender_sign:", sender_sign)
+                if (sender_sign) {
+                    pdfDoc = pdf.pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
+                    sender_sign = await pdfDoc.embedPng(sender_sign);
+                    const pages = pdfDoc.getPages()
+                    const firstPage = pages[0]
+                    const scaleFactor = Math.min(45 / sender_sign.height, 100 / sender_sign.width)
+                    const { width, height } = sender_sign.scale(scaleFactor)
+                    firstPage.drawImage(sender_sign, {
+                        x: 50,
+                        y: 30,
+                        width: width,
+                        height: height,
+                    })
+                    // add sender name below signature
+                    firstPage.drawText(from_name, {
+                        x: 50,
+                        y: 25,
+                        size: 8,
+                        font: await pdfDoc.embedFont(StandardFonts.Helvetica),
+                        color: PDFLib.rgb(0, 0, 0),
+                    });
+                }
+                $.LoadingOverlay("hide");
+                form_obj = pdf.form_obj;
+                pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
+                pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+
+                // show preview in new tab (for test)
+                // const pdfBytes = await pdfDoc.save();
+                // const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                // const blobUrl = URL.createObjectURL(blob);
+                // window.open(blobUrl, '_blank');
+                // return
                 Swal.fire({
                     icon: 'info',
                     title: 'Sending Email',
