@@ -2179,12 +2179,6 @@
                     form_obj = pdf.form_obj;
                     pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
                     pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
-                    // show preview in new tab (for test)
-                    const pdfBytes = await pdfDoc.save();
-                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                    const blobUrl = URL.createObjectURL(blob);
-                    window.open(blobUrl, '_blank');
-                    return
                 }
                 Swal.fire({
                     icon: 'info',
