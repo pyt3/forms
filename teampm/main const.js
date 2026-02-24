@@ -23,6 +23,7 @@ const depts_array = [
     "LABOR ROOM(ห้องคลอด)",
     "LABORATORY",
     "LASIK",
+    "LOVE LIFE CENTER (ศูนย์สุขภาพเพศ)",
     "MARKETING",
     "NURSERY(เด็กอ่อน)",
     "NURSING DEPARTMENT",
