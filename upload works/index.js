@@ -361,16 +361,17 @@ function validateUploadForm() {
  */
 async function startUpload() {
     const team = $('#team-select').val();
-    const month = $('#upload-month').val();
     const year = $('#upload-year').val();
     const startDate = $('#upload-start-date').val();
     const endDate = $('#upload-end-date').val();
+    let month = $('#upload-month').val();
 
     // Create week string from date range for ECRI
     let week = null;
     if (team === 'ECRI' && startDate && endDate) {
         moment.locale('en');
         week = `${moment(startDate).format('DDMMM')}_${moment(endDate).format('DDMMM')}`.toUpperCase();
+        month = moment(startDate).format('MM_MMM').toUpperCase();
         moment.locale('th');
     }
 
