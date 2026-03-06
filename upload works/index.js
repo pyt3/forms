@@ -63,7 +63,7 @@ function initializeDatePickers() {
         dateFormat: 'Y-m-d',
         altInput: true,
         altFormat: 'd M Y',
-        onChange: function(selectedDates, dateStr, instance) {
+        onChange: function (selectedDates, dateStr, instance) {
             // Update end date minimum to be after start date
             if (selectedDates[0]) {
                 endDatePicker.set('minDate', selectedDates[0]);
@@ -77,7 +77,7 @@ function initializeDatePickers() {
         dateFormat: 'Y-m-d',
         altInput: true,
         altFormat: 'd M Y',
-        onChange: function(selectedDates, dateStr, instance) {
+        onChange: function (selectedDates, dateStr, instance) {
             // Update start date maximum to be before end date
             if (selectedDates[0]) {
                 startDatePicker.set('maxDate', selectedDates[0]);
@@ -361,16 +361,17 @@ function validateUploadForm() {
  */
 async function startUpload() {
     const team = $('#team-select').val();
-    const month = $('#upload-month').val();
     const year = $('#upload-year').val();
     const startDate = $('#upload-start-date').val();
     const endDate = $('#upload-end-date').val();
+    let month = $('#upload-month').val();
 
     // Create week string from date range for ECRI
     let week = null;
     if (team === 'ECRI' && startDate && endDate) {
         moment.locale('en');
         week = `${moment(startDate).format('DDMMM')}_${moment(endDate).format('DDMMM')}`.toUpperCase();
+        month = moment(startDate).format('MM_MMM').toUpperCase();
         moment.locale('th');
     }
 
@@ -411,7 +412,7 @@ async function startUpload() {
         updateProgress(95, 'กำลังบันทึกข้อมูล...');
         console.log('team: ', team, 'year:', year, 'month:', month, 'week:', week, 'folderId:', folderId);
         await saveSubmissionMetadata(team, year, month, week, 'https://drive.google.com/drive/folders/' + folderId);
-
+        sendTelegramNotification(team, year, month, week, 'https://drive.google.com/drive/folders/' + folderId);
         // Complete
         updateProgress(100, 'อัพโหลดสำเร็จ!');
 
@@ -455,6 +456,22 @@ async function saveSubmissionMetadata(team, year, month, week, folderUrl) {
     }
 
     return result;
+}
+
+function sendTelegramNotification(team, year, month, week, folderUrl) {
+    const formData = new URLSearchParams();
+    formData.append('action', 'sendTelegramNotification');
+    formData.append('team', team);
+    formData.append('folderUrl', folderUrl);
+    formData.append('week', week);
+    formData.append('year', year);
+    formData.append('month', month);
+
+    fetch(CONFIG.API_URL, {
+        method: 'POST',
+        body: formData
+    });
+
 }
 
 /**
@@ -768,10 +785,10 @@ function displayHistory(data, teamFilter = null, yearFilter = null) {
         });
     });
 
-    if(teamFilter) {
+    if (teamFilter) {
         historyItems = historyItems.filter(item => item.team === teamFilter);
     }
-    if(yearFilter) {
+    if (yearFilter) {
         historyItems = historyItems.filter(item => item.year == yearFilter);
     }
 
@@ -909,7 +926,7 @@ async function uploadToGoogleDrive(f, team, year, month, week) {
             // Swal.showLoading() - Removed to use custom loader in HTML
         },
     })
-    
+
     const { token, folderId } = await getUploadToken(team, year, month, week);
     console.log('Upload token and folder ID:', token, folderId);
 
@@ -1035,21 +1052,21 @@ window.loadHistory = loadHistory;
 window.getUploadToken = getUploadToken;
 /* ==================== TEAM SELECTION UI ==================== */
 
-window.selectTeam = function(team) {
+window.selectTeam = function (team) {
     $('#team-select').val(team).trigger('change');
 };
 
 function updateTeamCards(selectedTeam) {
     // Reset all cards
-    $('.team-option').each(function() {
+    $('.team-option').each(function () {
         const id = $(this).attr('id');
         const team = id.replace('card-', '');
         let color = 'blue';
-        if(team === 'CM') color = 'green';
-        if(team === 'Pool') color = 'purple';
-        if(team === 'Admin') color = 'orange';
-        if(team === 'ECRI') color = 'red';
-        
+        if (team === 'CM') color = 'green';
+        if (team === 'Pool') color = 'purple';
+        if (team === 'Admin') color = 'orange';
+        if (team === 'ECRI') color = 'red';
+
         // Remove active classes
         $(this).removeClass(`ring-2 ring-offset-2 scale-105 shadow-md active-card ring-${color}-200 border-${color}-500 bg-${color}-50`);
         $(this).addClass('bg-white border-gray-100 opacity-100');
@@ -1067,15 +1084,15 @@ function updateTeamCards(selectedTeam) {
     // Highlight selected
     const $selectedCard = $(`#card-${selectedTeam}`);
     let color = 'blue';
-    if(selectedTeam === 'CM') color = 'green';
-    if(selectedTeam === 'Pool') color = 'purple';
-    if(selectedTeam === 'Admin') color = 'orange';
-    if(selectedTeam === 'ECRI') color = 'red';
+    if (selectedTeam === 'CM') color = 'green';
+    if (selectedTeam === 'Pool') color = 'purple';
+    if (selectedTeam === 'Admin') color = 'orange';
+    if (selectedTeam === 'ECRI') color = 'red';
 
     $selectedCard.removeClass('bg-white border-gray-100');
     $selectedCard.addClass(`ring-2 ring-offset-2 scale-105 shadow-md active-card`);
     $selectedCard.addClass(`border-${color}-500 bg-${color}-50 ring-${color}-200`);
-    
+
     $selectedCard.find('.check-mark').addClass('opacity-100');
     $selectedCard.find('.check-icon').addClass('opacity-100');
 }
