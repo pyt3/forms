@@ -44,6 +44,8 @@ function doPost(e) {
         return saveSubmissionData(e);
       case 'getUploadToken':
         return getUploadToken(e);
+      case 'sendTelegramNotification':
+        return sendTelegramNotification(e);
       default:
         return createResponse(false, 'Invalid action', null);
     }
@@ -126,6 +128,38 @@ function saveSubmissionData(e) {
   } catch (error) {
     return createResponse(false, error.toString(), null);
   }
+}
+
+function sendTelegramNotification(e) {
+  const chat_id = '1354847893';
+  const bot_token = '7372234796:AAHP2Wxs3jAZggbEG4K7glvFBhojDq-MSck';
+  let { team, folderUrl, week, year, month } = e.parameter;
+  const message = {
+    chat_id: chat_id,
+    text: `<b>📤 New Submission Received</b>\n\n<b>Team:</b> <code>${team}</code>\n<b>Period:</b> <code>${week && week !== null && week !== 'null' ? week : `${month}/${year}`}</code>`,
+    parse_mode: "HTML",
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "📁 Open Folder",
+            url: folderUrl
+          }
+        ]
+      ]
+    }
+  };
+
+  const url = `https://api.telegram.org/bot${bot_token}/sendMessage`;
+  const options = {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify(message)
+  };
+
+  UrlFetchApp.fetch(url, options);
+
+  return createResponse(true, 'Notification sent successfully', null);
 }
 
 // ==================== DATA RETRIEVAL FUNCTIONS ====================
