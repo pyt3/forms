@@ -35,6 +35,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://fastly.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easyqrcodejs@4.6.2/dist/easy.qrcode.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
@@ -734,7 +735,8 @@
                         <div class="relative">
                             <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <select required id="from_name" name="from_name" type="text" placeholder="John Doe"
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" required></select>
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                required></select>
                         </div>
                     </div>
 
@@ -1563,7 +1565,7 @@
         $('#myForm').submit(async function () {
             event.preventDefault()
             let { form_obj, pdfBytes, form_pdf_bytes } = await createPDF()
-            if(!$('#rr-user').val()) {
+            if (!$('#rr-user').val()) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'กรุณาเลือกชื่อผู้ส่ง',
@@ -1824,6 +1826,34 @@
                         }
                     }
                 }
+            }
+
+            // add small QR code of rr_no at bottom right of first page
+            const rr_no_for_qr = $('#rr_no').val();
+            let qrDataUrl = null;
+            if (rr_no_for_qr) {
+                qrDataUrl = await new Promise((resolve) => {
+                    const tempDiv = document.createElement('div');
+                    document.body.appendChild(tempDiv);
+                    new QRCode(tempDiv, {
+                        text: rr_no_for_qr,
+                        width: 50,
+                        height: 50,
+                        onRenderingEnd: function (qrCodeOptions, dataURL) {
+                            document.body.removeChild(tempDiv);
+                            resolve(dataURL);
+                        }
+                    });
+                });
+                let qrImage = await pdfDoc.embedPng(qrDataUrl)
+                const firstPage = pdfDoc.getPages()[0]
+                const { width, height } = firstPage.getSize()
+                firstPage.drawImage(qrImage, {
+                    x: width - 40,
+                    y: 10,
+                    width: 30,
+                    height: 30
+                })
             }
 
             // scale all pages to fit A4
@@ -2233,6 +2263,7 @@
                     if (res.ok) return res.arrayBuffer();
                     else return null;
                 });
+
                 console.log("🚀 !! sender_sign:", sender_sign)
                 if (sender_sign) {
                     pdfDoc = pdf.pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
@@ -2259,6 +2290,23 @@
                 $.LoadingOverlay("hide");
                 form_obj = pdf.form_obj;
                 pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
+
+                // draw QR code at bottom-right of first page
+                if (qrDataUrl) {
+                    const qrBytes = await fetch(qrDataUrl).then(r => r.arrayBuffer());
+                    const qrImage = await pdfDoc.embedPng(qrBytes);
+                    const firstPage = pdfDoc.getPages()[0];
+                    const { width: pageWidth } = firstPage.getSize();
+                    const qrSize = 55;
+                    const margin = 10;
+                    firstPage.drawImage(qrImage, {
+                        x: pageWidth - qrSize - margin,
+                        y: margin,
+                        width: qrSize,
+                        height: qrSize,
+                    });
+                }
+
                 pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
                 // show preview in new tab (for test)
@@ -2402,8 +2450,7 @@
                     <label for="nh_company_price" class="block text-sm font-medium text-gray-700">
                         ราคาจากบริษัท <span class="text-gray-400 text-xs">(ก่อนรวม VAT)</span>
                     </label>
-                    <input type="number" id="nh_company_price" min="0" step="0.01" placeholder="0.00"
-                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300
+                    <input type="number" id="nh_company_price" min="0" step="0.01" placeholder="0.00" class="w-full px-4 py-2.5 rounded-lg border border-gray-300
                                focus:ring-2 focus:ring-blue-500 focus:border-transparent
                                transition-all shadow-sm text-right">
                 </div>
@@ -2411,15 +2458,13 @@
                     <label for="nh_nhealth_price" class="block text-sm font-medium text-gray-700">
                         ราคาจาก NHealth <span class="text-gray-400 text-xs">(ก่อนรวม VAT)</span>
                     </label>
-                    <input type="number" id="nh_nhealth_price" min="0" step="0.01" placeholder="0.00"
-                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300
+                    <input type="number" id="nh_nhealth_price" min="0" step="0.01" placeholder="0.00" class="w-full px-4 py-2.5 rounded-lg border border-gray-300
                                focus:ring-2 focus:ring-blue-500 focus:border-transparent
                                transition-all shadow-sm text-right">
                 </div>
                 <div class="space-y-2">
                     <label for="nh_qty" class="block text-sm font-medium text-gray-700">จำนวน</label>
-                    <input type="number" id="nh_qty" min="1" step="1" value="1" placeholder="1"
-                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300
+                    <input type="number" id="nh_qty" min="1" step="1" value="1" placeholder="1" class="w-full px-4 py-2.5 rounded-lg border border-gray-300
                                focus:ring-2 focus:ring-blue-500 focus:border-transparent
                                transition-all shadow-sm text-right">
                 </div>
@@ -2443,8 +2488,7 @@
             </div>
             <!-- Modal Footer -->
             <div class="px-6 pb-6 flex justify-end">
-                <button onclick="closeNHealthCalcModal()"
-                    class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium
+                <button onclick="closeNHealthCalcModal()" class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium
                            hover:bg-gray-200 active:scale-95 transition-all">
                     ปิด
                 </button>
