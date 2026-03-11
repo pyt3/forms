@@ -2290,7 +2290,21 @@
                 $.LoadingOverlay("hide");
                 form_obj = pdf.form_obj;
                 pdfDoc = pdfDoc || await PDFLib.PDFDocument.load(pdf.pdfBytes);
-
+                const rr_no_for_qr = $('#rr_no').val();
+                let qrDataUrl = null;
+                qrDataUrl = await new Promise((resolve) => {
+                    const tempDiv = document.createElement('div');
+                    document.body.appendChild(tempDiv);
+                    new QRCode(tempDiv, {
+                        text: rr_no_for_qr,
+                        width: 50,
+                        height: 50,
+                        onRenderingEnd: function (qrCodeOptions, dataURL) {
+                            document.body.removeChild(tempDiv);
+                            resolve(dataURL);
+                        }
+                    });
+                });
                 // draw QR code at bottom-right of first page
                 if (qrDataUrl) {
                     const qrBytes = await fetch(qrDataUrl).then(r => r.arrayBuffer());
