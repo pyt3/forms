@@ -1436,6 +1436,41 @@ $('#edit-request').click(() => {
         }
     })
 })
+
+$('#edit-workorder').click(() => {
+    Swal.fire({
+        input: 'text',
+        inputLabel: 'Work order',
+        inputPlaceholder: 'Work order',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        customClass: sweetalert_custom_class,
+        inputValidator: (value) => {
+            return new Promise((resolve) => {
+                let url = new URL(window.location.href)
+                //    find document with workorder and get jobid
+                firestore.collection('jobdata/').where('workorder', '==', value).get().then(querySnapshot => {
+                    if (!querySnapshot.empty) {
+                        let doc = querySnapshot.docs[0]
+                        url.searchParams.set('jobid', doc.id)
+                        window.open(url, '_self')
+                        resolve()
+                    } else {
+                        resolve('ไม่พบงานที่ตรงกับ Work order นี้')
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    resolve('เกิดข้อผิดพลาดในการค้นหางาน')
+                })
+            })
+        }
+    })
+})
 function doneTyping() {
     let update = $("#update").val();
     if (update === '#get_userID') {
