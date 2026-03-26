@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
     NProgress.done();
 });
-// const liff_id = '1655873446-3xe866Ql'
+// const liff_id = '1655873446-MpmBPPzl'
 const liff_id = '1661543046-a1pJexbX' // use
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
@@ -1365,18 +1365,45 @@ ${update}
             })
         }
     })
-    $('#summary-btn').click(function () {
-        let url
-        if (liff.getOS() == 'ios' && liff.getContext().type == 'external') {
-            url = new URL('line://app/' + liff_id)
-        } else {
-            url = new URL('https://liff.line.me/' + liff_id)
+    $('#summary-btn').click(async function (e) {
+        e.preventDefault();
+        // Hide update section, show summary section
+        $('.mobile').addClass('hidden');
+        $('#update-section').addClass('hidden');
+        $('button[id="submit"]').addClass('hidden');
+        $('button[id="summary-btn"]').addClass('hidden');
+        $('#edit-request').hide();
+        $('input').attr('readonly', true);
+        $('#summary-container').removeClass('hidden');
+        $('#summary-content').removeClass('hidden');
+        $.LoadingOverlay("show");
+        // Fetch summary data from Firestore (same as action == 'summary')
+        try {
+            // Get updates
+            let updates = await firestore.collection('jobdata/').doc(jobid).collection('update').get();
+            let summaryHtml = '';
+            if (!updates.empty) {
+                updates.forEach(doc => {
+                    let data = doc.data();
+                    if (data && data.update) {
+                        summaryHtml += `<div class="mb-2">${data.update.replace(/\n/g, '<br>')}</div>`;
+                    }
+                });
+            } else {
+                summaryHtml = 'ยังไม่มีสรุปงาน';
+            }
+            $('#summary').html(summaryHtml);
+            $('#summary').parent().removeClass('d-none').focus();
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'สรุปงานไม่สำเร็จ',
+                text: 'สรุปงานไม่สำเร็จ',
+                customClass: sweetalert_custom_class
+            });
         }
-        url.searchParams.set('code', code)
-        url.searchParams.set('jobid', jobid)
-        url.searchParams.set('action', 'summary')
-        window.open(url, '_self')
-    })
+        $.LoadingOverlay("hide");
+    });
     // listen on user finish typing on update field
     let typingTimer;
     let doneTypingInterval = 800;
