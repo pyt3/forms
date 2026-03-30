@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+        <!-- Flatpickr CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <!-- Flatpickr JS -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily CES Schedule Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/th.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 pb-20">
+
+    <!-- Header -->
+    <nav class="bg-white border-b sticky top-0 z-10 px-4 py-3 shadow-sm">
+        <div class="max-w-2xl mx-auto flex justify-between items-center px-2 md:px-8">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <i data-lucide="calendar" class="lucide lucide-calendar" style="width:20px;height:20px;"></i>
+                </div>
+                <div>
+                    <h1 class="text-md font-bold leading-none text-blue-900">ตารางเวร CES</h1>
+                    <p id="header-date" class="text-[10px] text-slate-500 mt-1 uppercase tracking-tight">Phayathai 3 •
+                        --</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div id="update-date"
+                    class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded font-bold border border-blue-100">
+                    UPDATE: --/--/--
+                </div>
+                <button id="table-view-btn"
+                    class="flex flex-row items-center gap-1 text-slate-400 opacity-60 px-2 py-1 rounded-md border border-slate-200 hover:bg-slate-50 transition-all"
+                    style="font-size:12px;">
+                    <i data-lucide="table" class="lucide lucide-table" style="width:18px;height:18px;"></i>
+                    <span class="font-bold uppercase">Table View</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto p-2 md:p-6">
+
+        <!-- Date Control Card -->
+        <div class="bg-white rounded-3xl shadow-sm p-6 mb-6 border border-slate-100">
+            <div class="flex items-center justify-between mb-4 md:mb-6">
+                <div class="flex flex-col items-center gap-1">
+                    <input id="day-picker" class="text-center border border-slate-200 rounded px-2 py-1 w-32 font-bold text-lg" readonly style="background:white;cursor:pointer;" />
+                    <div class="text-sm font-semibold text-slate-400 mt-1 uppercase">มีนาคม 2569</div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div
+                class="flex flex-col md:flex-row justify-between items-center bg-slate-50 rounded-2xl p-2 md:p-4 gap-2 md:gap-0">
+                <div
+                    class="text-center flex-1 border-b md:border-b-0 md:border-r border-slate-200 pb-2 md:pb-0 md:pr-2">
+                    <div id="stat-on" class="text-blue-600 font-bold text-lg md:text-xl leading-none">0</div>
+                    <div class="text-[9px] md:text-xs text-slate-400 font-bold mt-1 uppercase">ทำงาน</div>
+                </div>
+                <div
+                    class="text-center flex-1 border-b md:border-b-0 md:border-r border-slate-200 pb-2 md:pb-0 md:pr-2">
+                    <div id="stat-off" class="text-red-500 font-bold text-lg md:text-xl leading-none">0</div>
+                    <div class="text-[9px] md:text-xs text-slate-400 font-bold mt-1 uppercase">หยุด</div>
+                </div>
+                <div class="text-center flex-1">
+                    <div id="stat-onc" class="text-yellow-500 font-bold text-lg md:text-xl leading-none">0</div>
+                    <div class="text-[9px] md:text-xs text-slate-400 font-bold mt-1 uppercase">On Call</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule Container (Rendered via JS) -->
+        <div id="schedule-container">
+            <!-- Team blocks will be inserted here -->
+        </div>
+        <!-- Table View Container (hidden by default) -->
+        <div id="table-view-container" class="hidden mt-4"></div>
+    </main>
+
+
+
+    <script>
+                // Flatpickr setup
+                let isMonthView = false;
+                let flatpickrInstance = null;
+
+                function setupFlatpickr() {
+                    if (flatpickrInstance) flatpickrInstance.destroy();
+                    const input = document.getElementById('day-picker');
+                    if (!input) return;
+                    if (isMonthView) {
+                        flatpickrInstance = flatpickr(input, {
+                            dateFormat: 'F Y',
+                            defaultDate: new Date(2026, 2, 1),
+                            plugins: [new monthSelectPlugin({
+                                shorthand: true,
+                                dateFormat: 'F Y',
+                                altFormat: 'F Y'
+                            })],
+                            onChange: function(selectedDates, dateStr, instance) {
+                                // Change month
+                                const d = selectedDates[0];
+                                if (d) {
+                                    currentMonth = d.getMonth();
+                                    currentYear = d.getFullYear();
+                                    renderTableView();
+                                }
+                            }
+                        });
+                    } else {
+                        flatpickrInstance = flatpickr(input, {
+                            dateFormat: 'd/m/Y',
+                            defaultDate: new Date(2026, 2, currentDay),
+                            onChange: function(selectedDates, dateStr, instance) {
+                                const d = selectedDates[0];
+                                if (d) {
+                                    currentDay = d.getDate();
+                                    renderDashboard();
+                                }
+                            }
+                        });
+                    }
+                }
+
+                // Flatpickr month select plugin
+                // CDN: https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js';
+                document.head.appendChild(script);
+        // Render Lucide icons
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.lucide) lucide.createIcons();
+        });
+
+        // Set update date and header month using moment.js
+        document.addEventListener('DOMContentLoaded', function () {
+            moment.locale('th');
+            // Example: use today as update date, or replace with your actual update date
+            const updateDate = moment();
+            // Format: D/M/YY (e.g., 5/3/26)
+            document.getElementById('update-date').innerText = 'UPDATE: ' + updateDate.format('D/M/YY');
+
+            // Set header month and year in Thai (e.g., 'Phayathai 3 • มีนาคม 2569')
+            const buddhistYear = updateDate.year() + 543;
+            const monthName = updateDate.format('MMMM');
+            document.getElementById('header-date').innerText = `Phayathai 3 • ${monthName} ${buddhistYear}`;
+        });
+
+
+        let currentDay = new Date().getDate();
+        if (currentDay > 31) currentDay = 1;
+
+        async function renderDashboard() {
+                        isMonthView = false;
+                        setupFlatpickr();
+            const tableContainer = document.getElementById('table-view-container');
+            const scheduleContainer = document.getElementById('schedule-container');
+            scheduleContainer.classList.remove('hidden');
+            tableContainer.classList.add('hidden');
+            const displayDayElem = document.getElementById('display-day');
+            if (displayDayElem) displayDayElem.innerText = currentDay;
+            const container = document.getElementById('schedule-container');
+            container.innerHTML = '';
+            const staffData = await fetchStaffData(); // ในอนาคตให้เปลี่ยนเป็นการดึงข้อมูลจริงจาก Sheet
+            console.log("🚀 ~ renderDashboard ~ staffData:", staffData)
+            const teams = [...new Set(staffData.map(s => s.team))];
+            let onCount = 0, offCount = 0, oncCount = 0;
+
+            teams.forEach(teamName => {
+                const teamMembers = staffData.filter(s => s.team === teamName);
+
+                let teamHtml = `
+                    <div class="mb-8 w-full">
+                        <div class="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 border-b-2 border-slate-200 pb-1">${teamName}</span>
+                        </div>
+                        <div class="grid gap-2 md:gap-3">
+                `;
+
+                teamMembers.forEach(m => {
+                    const status = m.roles[currentDay] || 'ON';
+                    if (status === 'ON') onCount++;
+                    else if (status === 'OFF') offCount++;
+                    else if (status === 'ONC') oncCount++;
+
+                    let statusClass = "bg-blue-600 text-white";
+                    let statusLabel = "08:00 - 17:00";
+
+                    if (status === 'OFF') {
+                        statusClass = "bg-red-600 text-white";
+                        statusLabel = "DAY OFF";
+                    } else if (status === 'ONC') {
+                        statusClass = "bg-yellow-500 text-black font-bold";
+                        statusLabel = "24 HOURS";
+                    }
+
+                    teamHtml += `
+                        <div class="bg-white p-2 md:p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row items-center md:items-center justify-between gap-2 md:gap-0">
+                            <div class="flex items-center gap-2 md:gap-4 w-full md:w-auto">
+                                <div class="w-10 h-10 rounded-xl ${status === 'OFF' ? 'bg-slate-50' : 'bg-blue-50'} flex items-center justify-center">
+                                    <i data-lucide="user" class="lucide lucide-user text-slate-400" style="width:24px;height:24px;"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm md:text-base font-bold text-slate-700">${m.name}</div>
+                                    <div class="text-[10px] md:text-xs text-slate-400 font-medium tracking-wider uppercase">ID: ${m.id}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] md:text-xs px-2 py-1 rounded-md border uppercase font-black ${statusClass}">${status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                teamHtml += `</div></div>`;
+                container.innerHTML += teamHtml;
+            });
+
+            // Update Stats
+            document.getElementById('stat-on').innerText = onCount;
+            document.getElementById('stat-off').innerText = offCount;
+            document.getElementById('stat-onc').innerText = oncCount;
+            // Re-render Lucide icons after updating HTML
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Table View rendering
+        async function renderTableView() {
+                        isMonthView = true;
+                        setupFlatpickr();
+            const tableContainer = document.getElementById('table-view-container');
+            const scheduleContainer = document.getElementById('schedule-container');
+            tableContainer.innerHTML = '';
+            const staffData = await fetchStaffData();
+            // Group by team
+            const teams = [...new Set(staffData.map(s => s.team))];
+            // Define team background colors
+            const teamBgColors = [
+                'bg-white', // Back Office
+                'bg-lime-100', // Team CM
+                'bg-pink-100', // Team POOL
+                'bg-blue-100', // Team PM
+                'bg-slate-100',
+            ];
+            let html = `<div class="overflow-x-auto w-full">
+                <table class="min-w-full text-[11px] md:text-xs border border-slate-400">
+                    <thead class="bg-slate-300 text-slate-900">
+                        <tr>
+                            <th class="p-2 border border-slate-400 font-bold">Team</th>
+                            <th class="p-2 border border-slate-400 font-bold">Name</th>
+                            <th class="p-2 border border-slate-400 font-bold">ID</th>
+                            ${Array.from({length: 31}, (_, i) => `<th class='p-1 border border-slate-400 font-bold text-center'>${i+1}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            let rowIdx = 0;
+            teams.forEach((team, tIdx) => {
+                const members = staffData.filter(m => m.team === team);
+                const bg = teamBgColors[tIdx % teamBgColors.length];
+                members.forEach((m, mIdx) => {
+                    html += `<tr class="${bg}">
+                        <td class="p-2 border border-slate-400 font-bold text-left ${mIdx === 0 ? '' : 'opacity-60'}">${mIdx === 0 ? team : ''}</td>
+                        <td class="p-2 border border-slate-400 text-left">${m.name}</td>
+                        <td class="p-2 border border-slate-400 text-center">${m.id}</td>
+                        ${Array.from({length: 31}, (_, d) => {
+                            const status = m.roles[d+1] || '';
+                            let statusClass = '';
+                            if (status === 'ON') statusClass = 'bg-white text-blue-600';
+                            else if (status === 'OFF') statusClass = 'bg-red-600 text-white';
+                            else if (status === 'ONC') statusClass = 'bg-yellow-400 text-black font-bold';
+                            else if (status) statusClass = 'bg-orange-200 text-black';
+                            return `<td class="p-1 border border-slate-400 text-center ${statusClass}">${status}</td>`;
+                        }).join('')}
+                    </tr>`;
+                    rowIdx++;
+                });
+            });
+            html += '</tbody></table></div>';
+            tableContainer.innerHTML = html;
+            // Show table, hide schedule
+            tableContainer.classList.remove('hidden');
+            scheduleContainer.classList.add('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Toggle view logic
+        let isTableView = false;
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableBtn = document.getElementById('table-view-btn');
+            if (tableBtn) {
+                tableBtn.addEventListener('click', async function () {
+                    isTableView = !isTableView;
+                    console.log("🚀 ~ isTableView:", isTableView)
+                    const btnSpan = tableBtn.querySelector('span');
+                    const btnIcon = tableBtn.querySelector('i');
+                    if (isTableView) {
+                        await renderTableView();
+                        tableBtn.classList.remove('text-slate-400', 'opacity-60');
+                        tableBtn.classList.add('text-blue-600');
+                        if (btnSpan) btnSpan.innerText = 'Day View';
+                        if (btnIcon) btnIcon.setAttribute('data-lucide', 'layout');
+                        if (window.lucide) lucide.createIcons();
+                    } else {
+                        await renderDashboard();
+                        tableBtn.classList.add('text-slate-400', 'opacity-60');
+                        tableBtn.classList.remove('text-blue-600');
+                        if (btnSpan) btnSpan.innerText = 'Month View';
+                        if (btnIcon) btnIcon.setAttribute('data-lucide', 'table');
+                        if (window.lucide) lucide.createIcons();
+                    }
+                });
+            }
+        });
+        // Initialize
+        window.onload = renderDashboard;
+        function changeDay(delta) {
+            currentDay += delta;
+            if (currentDay < 1) currentDay = 31;
+            if (currentDay > 31) currentDay = 1;
+            renderDashboard();
+        }
+
+        function fetchStaffData() {
+            if (window.staffData) {
+                console.log("🚀 ~ fetchStaffData ~ using cached data:", window.staffData)
+                return Promise.resolve(window.staffData);
+            }
+            const api_url = 'https://script.google.com/macros/s/AKfycbzQbUMPo9UqEFL_gxV8TGChVx0otN0nO1WSRdGBcvp_Ablv0rI3kNoFeI76ZBd9L3EA/exec';
+            return fetch(api_url)
+                .then(response => response.json())
+                .then(json => {
+                    console.log("🚀 ~ fetchStaffData ~ json:", json)
+                    // Assuming the API returns an array of staff objects
+                    window.staffData = json.data || []; // Store in global variable for debugging
+                    return window.staffData;
+                })
+                .catch(error => {
+                    console.error('Error fetching staff data:', error);
+                    return [];
+                });
+        }
+
+        // Initialize
+        window.onload = renderDashboard;
+    </script>
+</body>
+
+</html>
