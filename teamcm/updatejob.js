@@ -325,6 +325,9 @@ async function initialData() {
         if (!liff.isInClient()) {
             $('#more-update-btn').addClass('hidden')
             $('#mobile-only-warning').removeClass('hidden')
+        }else{
+            $('#more-update-btn').removeClass('hidden')
+            $('#mobile-only-warning').addClass('hidden')
         }
         firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
             data = data.docs.map(doc => doc.data()).sort((a, b) => a.timestamp - b.timestamp)
@@ -1380,6 +1383,9 @@ ${update}
         if (!liff.isInClient()) {
             $('#more-update-btn').addClass('hidden')
             $('#mobile-only-warning').removeClass('hidden')
+        }else{
+            $('#more-update-btn').removeClass('hidden')
+            $('#mobile-only-warning').addClass('hidden')
         }
         const jobid = new URLSearchParams(window.location.search).get('jobid')
         firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
