@@ -1368,40 +1368,118 @@ ${update}
     $('#summary-btn').click(async function (e) {
         e.preventDefault();
         // Hide update section, show summary section
-        $('.mobile').addClass('hidden');
-        $('#update-section').addClass('hidden');
-        $('button[id="submit"]').addClass('hidden');
-        $('button[id="summary-btn"]').addClass('hidden');
-        $('#edit-request').hide();
-        $('input').attr('readonly', true);
-        $('#summary-container').removeClass('hidden');
-        $('#summary-content').removeClass('hidden');
         $.LoadingOverlay("show");
-        // Fetch summary data from Firestore (same as action == 'summary')
-        try {
-            // Get updates
-            let updates = await firestore.collection('jobdata/').doc(jobid).collection('update').get();
-            let summaryHtml = '';
-            if (!updates.empty) {
-                updates.forEach(doc => {
-                    let data = doc.data();
-                    if (data && data.update) {
-                        summaryHtml += `<div class="mb-2">${data.update.replace(/\n/g, '<br>')}</div>`;
-                    }
-                });
-            } else {
-                summaryHtml = 'ยังไม่มีสรุปงาน';
-            }
-            $('#summary').html(summaryHtml);
-            $('#summary').parent().removeClass('d-none').focus();
-        } catch (err) {
-            Swal.fire({
-                icon: 'error',
-                title: 'สรุปงานไม่สำเร็จ',
-                text: 'สรุปงานไม่สำเร็จ',
-                customClass: sweetalert_custom_class
-            });
+        $('.mobile').addClass('hidden')
+        $('#update-section').addClass('hidden')
+        $('button[id="submit"]').addClass('hidden')
+        $('button[id="summary-btn"]').addClass('hidden')
+        $('#edit-request').hide()
+        $('input').attr('readonly', true)
+        $('#summary-container').removeClass('hidden')
+        $('#summary-content').removeClass('hidden')
+        if (!liff.isInClient()) {
+            $('#more-update-btn').addClass('hidden')
+            $('#mobile-only-warning').removeClass('hidden')
         }
+        const jobid = new URLSearchParams(window.location.search).get('jobid')
+        firestore.collection('jobdata/').doc(jobid).collection('update').get().then(data => {
+            data = data.docs.map(doc => doc.data()).sort((a, b) => a.timestamp - b.timestamp)
+            let msg
+            if (data.length == 0) {
+                msg = `<div class="text-center py-8">
+                                   <i class="bi bi-inbox text-4xl text-gray-300 mb-3"></i>
+                                   <p class="text-gray-500">ยังไม่มีการอัพเดทงาน</p>
+                               </div>`
+            } else {
+                msg = data.map(r => {
+                    r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
+                    return r
+                }).map(d => {
+                    return `${d.timestamp}<br>${d.update.replace(/\n/g, '<br>')}<br><span class="text-sm text-gray-500"># ${d.name}</span><br>`
+                }).join('<hr class="my-3">')
+            }
+
+            // Add loading animation
+            $('#summary').html('<div class="text-center py-4"><i class="bi bi-arrow-clockwise animate-spin text-2xl text-blue-500"></i></div>');
+
+            setTimeout(() => {
+                $('#summary').html(msg);
+                $('#summary-content').removeClass('hidden');
+                // Add smooth scroll to summary with improved timing
+                setTimeout(() => {
+                    const summaryElement = document.getElementById('summary-content');
+                    if (summaryElement) {
+                        summaryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 500);
+                $.LoadingOverlay("hide");
+                $('.load-bar').fadeOut(500);
+            }, 800);
+        })
+        firestore.collection('jobdata/').doc(jobid).get().then(data => {
+            data = data.data()
+            console.log("🚀 ~ firestore.collection ~ data:", data)
+            if (data.signature) {
+                $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
+                $('#open-sign')
+                    .find('.text-primary')
+                    .removeClass('text-primary fs-5 fw-bold')
+                    .addClass('text-danger')
+                    .html('<i class="bi bi-arrow-counterclockwise"></i>&nbsp;แก้ไขลายเซ็น')
+            }
+            $('#open-sign').parent().removeClass('hidden')
+            if (data.status) {
+                switch (true) {
+                    case data.status === "Waiting":
+                        $('#work-status').html('<i class="bi bi-hourglass-split"></i>&nbsp;กำลังดำเนินการ')
+                        break
+                    case data.status === "Return equipment back":
+                        $('#work-status').html('<i class="bi bi-check-circle-fill"></i>&nbsp;Return equipment back')
+                        break
+                    case data.status === "":
+                        $('#work-status').html('ยังไม่รับงาน')
+                    default:
+                        $('#work-status').html(data.status)
+                }
+                $('#work-status').parent().removeClass('hidden')
+            }
+            $('#code').val(data.code)
+            if (!data.name && !data.reciever) {
+                $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
+                $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
+                $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
+            }
+            else $('#reciever').html("&nbsp;รับงานโดย:<br>" + (data.name || data.reciever))
+            $('#code').val(data.code)
+            wo = data.wo || data.workorder
+            $('#workorder').html(data.wo || data.workorder || 'ยังไม่มี').parents('.col-12').removeClass('hidden')
+            if (data.image) {
+                $('#image').attr('src', data.image).css('opacity', 1)
+            } else {
+                $('#image').attr('src', 'https://img.icons8.com/fluency/96/image--v1.png').css('opacity', 0.5)
+            }
+        })
+
+        $('#more-update-btn').click(() => {
+            // Add loading state
+            const btn = $('#more-update-btn');
+            const originalText = btn.html();
+            btn.html('<i class="bi bi-arrow-clockwise animate-spin mr-2"></i>กำลังโหลด...')
+                .prop('disabled', true)
+                .removeClass('hover:scale-105')
+                .addClass('opacity-75 cursor-not-allowed');
+
+            // Prepare URL
+            let url = new URL('line://app/' + liff_id)
+            url.searchParams.set('code', code)
+            url.searchParams.set('jobid', jobid)
+            url.searchParams.set('action', 'update')
+
+            // Add slight delay for better UX
+            setTimeout(() => {
+                window.open(url, '_self')
+            }, 300);
+        })
         $.LoadingOverlay("hide");
     });
     // listen on user finish typing on update field
