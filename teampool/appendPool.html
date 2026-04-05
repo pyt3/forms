@@ -571,11 +571,11 @@
 
         .asset-suggestion-list {
             display: none;
-            position: absolute;
-            top: calc(100% + 8px);
+            position: fixed;
+            top: 0;
             left: 0;
-            right: 0;
-            z-index: 2000;
+            width: 0;
+            z-index: 99999;
             overflow: hidden;
             border-radius: 16px;
             border: 1px solid rgba(255, 134, 4, 0.18);
@@ -1472,6 +1472,22 @@
             $('#asset-suggestion-list').hide().empty()
         }
 
+        function positionAssetSuggestions() {
+            const $list = $('#asset-suggestion-list')
+            const input = $('#code')[0]
+
+            if (!input || !$list.is(':visible')) {
+                return
+            }
+
+            const rect = input.getBoundingClientRect()
+            $list.css({
+                top: rect.bottom + 8,
+                left: rect.left,
+                width: rect.width
+            })
+        }
+
         function setActiveAssetSuggestion(index) {
             currentAssetSuggestionIndex = index
             $('#asset-suggestion-list .asset-suggestion-item').removeClass('active')
@@ -1506,6 +1522,7 @@
             }).join('')
 
             $list.html('<div class="asset-suggestion-scroll">' + html + '</div>').show()
+            positionAssetSuggestions()
         }
 
         function applySelectedAsset(asset) {
@@ -1651,7 +1668,7 @@
             })
 
             $(document).off('click.assetCatalog').on('click.assetCatalog', function (event) {
-                if (!$(event.target).closest('.code-field-wrapper').length) {
+                if (!$(event.target).closest('.code-field-wrapper, #asset-suggestion-list').length) {
                     hideAssetSuggestions()
                 }
             })
@@ -1994,6 +2011,7 @@
         $(document).ready(function () {
             NProgress.start();
             NProgress.inc()
+            $('#asset-suggestion-list').appendTo('body')
             $('#end').append($('#start option').not(':first-child').clone())
             loadAssetCatalogFromStorage()
             ensureAssetCatalogFromBundledFile()
@@ -2212,6 +2230,9 @@
             })
             $('select').select2({
                 theme: 'bootstrap-5'
+            })
+            $(window).on('resize.assetCatalog scroll.assetCatalog', function () {
+                positionAssetSuggestions()
             })
             initHistory_code()
             $('#start, #end').append(depts_array.sort().map(dept => {
