@@ -394,6 +394,7 @@
 
         .code-field-wrapper {
             position: relative;
+            z-index: 120;
         }
 
         .asset-import-status {
@@ -574,12 +575,17 @@
             top: calc(100% + 8px);
             left: 0;
             right: 0;
-            z-index: 30;
+            z-index: 2000;
             overflow: hidden;
             border-radius: 16px;
             border: 1px solid rgba(255, 134, 4, 0.18);
             background: white;
             box-shadow: 0 18px 35px rgba(17, 24, 39, 0.14);
+        }
+
+        .asset-preview-card {
+            position: relative;
+            z-index: 1;
         }
 
         .asset-suggestion-scroll {
@@ -1484,8 +1490,8 @@
             currentAssetSuggestionIndex = -1
 
             const html = items.map((item, index) => {
-                item.serial = item.serial ? ("SN: " + item.serial) : ''
-                const metaParts = [item.brand, item.model, item.serial].filter(Boolean)
+                let serial = item.serial ? ("SN: " + item.serial) : ''
+                const metaParts = [item.brand, item.model, serial].filter(Boolean)
 
                 return `
                     <button type="button" class="asset-suggestion-item" data-index="${index}">
