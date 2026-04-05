@@ -384,6 +384,382 @@
             background: white;
         }
 
+        .code-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .code-field-wrapper {
+            position: relative;
+        }
+
+        .asset-import-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.75);
+            color: #7c2d12;
+            border: 1px solid rgba(255, 134, 4, 0.2);
+        }
+
+        .asset-import-status.ready {
+            background: rgba(34, 197, 94, 0.12);
+            color: #166534;
+            border-color: rgba(34, 197, 94, 0.22);
+        }
+
+        .asset-import-status.empty {
+            background: rgba(255, 255, 255, 0.78);
+            color: #9a3412;
+        }
+
+        .asset-import-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            border-radius: 999px;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(17, 24, 39, 0.18);
+            transition: all 0.25s ease;
+        }
+
+        .asset-import-btn:hover {
+            transform: translateY(-1px);
+            color: white;
+            box-shadow: 0 10px 20px rgba(17, 24, 39, 0.24);
+        }
+
+        .asset-import-modal .modal-content {
+            border: none;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(17, 24, 39, 0.24);
+        }
+
+        .asset-import-modal .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+        }
+
+        .asset-import-modal .modal-title {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .asset-import-modal .modal-body {
+            padding: 20px 24px;
+            background: #fff;
+        }
+
+        .asset-import-modal .modal-footer {
+            padding: 16px 24px 24px;
+            border-top: 1px solid #f1f5f9;
+            background: #fff;
+        }
+
+        .asset-import-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .asset-import-picker-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #FF8604 0%, #ff6b00 100%);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(255, 134, 4, 0.24);
+        }
+
+        .asset-import-picker-btn:hover {
+            color: white;
+        }
+
+        .asset-import-current {
+            margin-bottom: 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .asset-import-current strong {
+            color: #111827;
+        }
+
+        .asset-import-pending {
+            display: none;
+        }
+
+        .asset-import-pending.ready {
+            display: block;
+        }
+
+        .asset-import-loading {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: #fff7ed;
+            color: #9a3412;
+            font-size: 13px;
+        }
+
+        .asset-import-loading.active {
+            display: inline-flex;
+        }
+
+        .asset-helper-text {
+            min-height: 20px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .asset-preview-card {
+            margin-top: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 134, 4, 0.18);
+            background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+            box-shadow: 0 10px 24px rgba(255, 134, 4, 0.08);
+        }
+
+        .asset-preview-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #7c2d12;
+        }
+
+        .asset-preview-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .asset-preview-meta strong {
+            color: #111827;
+        }
+
+        .asset-suggestion-list {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            z-index: 30;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 134, 4, 0.18);
+            background: white;
+            box-shadow: 0 18px 35px rgba(17, 24, 39, 0.14);
+        }
+
+        .asset-suggestion-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .asset-suggestion-item {
+            display: block;
+            width: 100%;
+            padding: 12px 14px;
+            text-align: left;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+            background: transparent;
+            transition: background 0.2s ease;
+        }
+
+        .asset-suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .asset-suggestion-item:hover,
+        .asset-suggestion-item.active {
+            background: #fff7ed;
+        }
+
+        .asset-suggestion-code {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .asset-suggestion-name {
+            margin-top: 4px;
+            font-size: 13px;
+            color: #7c2d12;
+        }
+
+        .asset-suggestion-meta {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .asset-import-preview {
+            max-height: 52vh;
+            padding-right: 4px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .import-diff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .import-diff-card {
+            padding: 14px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+        }
+
+        .import-diff-card strong {
+            display: block;
+            font-size: 24px;
+            line-height: 1;
+            color: #111827;
+        }
+
+        .import-diff-card span {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .asset-import-warning {
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: #fff7ed;
+            border: 1px solid rgba(255, 134, 4, 0.2);
+            color: #9a3412;
+            font-size: 13px;
+        }
+
+        .asset-import-warning.danger {
+            background: #fef2f2;
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #991b1b;
+        }
+
+        .asset-import-details {
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: white;
+            overflow: hidden;
+        }
+
+        .asset-import-details summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            cursor: pointer;
+            list-style: none;
+            background: #f8fafc;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .asset-import-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .asset-import-details[open] summary {
+            background: #fff7ed;
+        }
+
+        .asset-import-count {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .asset-import-table-wrap {
+            overflow-x: auto;
+        }
+
+        .asset-import-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .asset-import-table th,
+        .asset-import-table td {
+            padding: 10px 12px;
+            border-top: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .asset-import-table th {
+            background: #fafafa;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .asset-import-empty,
+        .asset-import-footnote {
+            padding: 12px 14px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .asset-import-change {
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
+        .asset-import-change:last-child {
+            margin-bottom: 0;
+        }
+
+        .asset-import-file-meta {
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
         /* Badge Buttons */
         .badge {
             padding: 10px 20px;
@@ -559,6 +935,24 @@
             .btn-warning {
                 width: 100% !important;
             }
+
+            .code-label-row {
+                align-items: flex-start;
+            }
+
+            .asset-import-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .asset-import-picker-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .asset-preview-meta {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Animation for row items */
@@ -634,15 +1028,33 @@
                 </div>
             </div>
             <div class="row g-3 justify-content-center">
-                <div class="col-md-6">
-                    <label for="code">รหัสเครื่อง</label>
-                    <input type="text" class="form-control text-center" id="code" name="code">
-                </div>
                 <div class="col-md-12">
                     <div class="d-flex gap-2">
-                        <span class="badge text-bg-primary btn" id="scope">Scope</span>
                         <span class="badge text-bg-primary btn" id="ups">UPS</span>
-
+    
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="code-label-row">
+                        <label for="code" class="mb-0">รหัสเครื่อง</label>
+                        <button type="button" class="btn btn-sm asset-import-btn d-none mb-3" id="asset-import-btn">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                            Import Excel
+                        </button>
+                    </div>
+                    <div class="code-field-wrapper">
+                        <input type="text" class="form-control text-center" id="code" name="code" autocomplete="off"
+                            spellcheck="false">
+                        <div class="asset-suggestion-list" id="asset-suggestion-list"></div>
+                    </div>
+                    <div class="asset-preview-card d-none" id="asset-preview-card">
+                        <div class="asset-preview-title" id="asset-preview-name"></div>
+                        <div class="asset-preview-meta">
+                            <span><strong>ID:</strong> <span id="asset-preview-code"></span></span>
+                            <span><strong>Brand:</strong> <span id="asset-preview-brand"></span></span>
+                            <span><strong>Model:</strong> <span id="asset-preview-model"></span></span>
+                            <span><strong>SN:</strong> <span id="asset-preview-serial"></span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6" id="div-start">
@@ -680,16 +1092,882 @@
         </div>
     </div>
 
+    <div class="modal fade asset-import-modal" id="asset-import-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title">Import Asset Master</h5>
+                        <div class="small text-muted">อ่านเฉพาะคอลัมน์ E, G, I, J, K แล้วแสดง diff ก่อนยืนยัน</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="asset-import-toolbar">
+                        <span class="asset-import-status empty" id="asset-status-badge">
+                            <i class="bi bi-database-exclamation"></i>
+                            ยังไม่มี Asset Master
+                        </span>
+                        <button type="button" class="asset-import-picker-btn" id="asset-import-picker-btn">
+                            <i class="bi bi-file-earmark-spreadsheet"></i>
+                            เลือกไฟล์ Excel
+                        </button>
+                    </div>
+                    <input type="file" id="asset-import-file" class="d-none" accept=".xlsx,.xls">
+                    <div class="asset-helper-text mt-0" id="asset-helper-text">นำเข้า Asset Master จาก Excel เพื่อเปิด autocomplete ของรหัสเครื่อง</div>
+                    <div class="asset-import-current" id="asset-import-current"></div>
+                    <div class="asset-import-loading" id="asset-import-loading">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>กำลังอ่านไฟล์และเตรียมรายการเปรียบเทียบ...</span>
+                    </div>
+                    <div class="asset-import-pending" id="asset-import-pending"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-warning" id="asset-import-confirm-btn" disabled>ยืนยัน import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
         // var vConsole = new window.VConsole();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
         var script_url = 'https://script.google.com/macros/s/AKfycbzDtTiaRWBRWbtArS2Y9Lk5tzWOfBL5sRY8VOqYyBCySbvqobvsiqbN0NuLVcSndm0CzQ/exec'
         var profile
         var tg_const
         var history_code = {}
+        const ASSET_CATALOG_STORAGE_KEY = 'teampool_asset_catalog_v1'
+        const ASSET_CATALOG_META_STORAGE_KEY = 'teampool_asset_catalog_meta_v1'
+        const ASSET_IMPORT_ALLOWED_USER_IDS = new Set([
+            'Uc4e4aba9e69fe19d188a7d812d2f028c',
+            'Ua55431b2d9be5d104c316ccb8ef54e81'
+        ])
+        const ASSET_IMPORT_FIELD_INDEX = Object.freeze({
+            name: 4,
+            code: 6,
+            brand: 8,
+            model: 9,
+            serial: 10
+        })
+        const ASSET_SUGGESTION_LIMIT = 8
+        const ASSET_PREVIEW_LIMIT = 12
+        let assetCatalog = []
+        let assetCatalogMeta = null
+        let assetCatalogLookup = new Map()
+        let assetCatalogCodeLookup = new Map()
+        let currentAssetSuggestions = []
+        let currentAssetSuggestionIndex = -1
+        let pendingAssetImport = null
+        let assetImportModal = null
+        let assetCatalogBootstrapPromise = null
+
+        function escapeHtml(value) {
+            return $('<div>').text(value == null ? '' : String(value)).html()
+        }
+
+        function normalizeWhitespace(value) {
+            return String(value == null ? '' : value).replace(/\s+/g, ' ').trim()
+        }
+
+        function normalizeAssetCode(value) {
+            return normalizeWhitespace(value).toUpperCase()
+        }
+
+        function normalizeSearchKey(value) {
+            return normalizeAssetCode(value).replace(/[^A-Z0-9]/g, '')
+        }
+
+        function createCompactAssetRecord(record) {
+            return {
+                code: normalizeAssetCode(record.code),
+                name: normalizeWhitespace(record.name),
+                brand: normalizeWhitespace(record.brand),
+                model: normalizeWhitespace(record.model),
+                serial: normalizeWhitespace(record.serial)
+            }
+        }
+
+        function enrichAssetRecord(record) {
+            const compact = createCompactAssetRecord(record)
+            const searchText = [compact.code, compact.name, compact.brand, compact.model, compact.serial]
+                .filter(Boolean)
+                .join(' ')
+
+            return Object.assign({}, compact, {
+                codeKey: normalizeSearchKey(compact.code),
+                searchKey: normalizeSearchKey(searchText)
+            })
+        }
+
+        function setAssetCatalog(records, meta) {
+            assetCatalog = (records || [])
+                .map(enrichAssetRecord)
+                .filter(item => item.code)
+                .sort((left, right) => left.code.localeCompare(right.code, 'en'))
+            assetCatalogMeta = meta || null
+            assetCatalogLookup = new Map()
+            assetCatalogCodeLookup = new Map()
+
+            assetCatalog.forEach(item => {
+                assetCatalogLookup.set(item.code, item)
+                if (item.codeKey) {
+                    assetCatalogCodeLookup.set(item.codeKey, item)
+                }
+            })
+
+            updateAssetCatalogStatus()
+            syncAssetPreviewByInput($('#code').val())
+        }
+
+        function loadAssetCatalogFromStorage() {
+            try {
+                const rawCatalog = localStorage.getItem(ASSET_CATALOG_STORAGE_KEY)
+                const rawMeta = localStorage.getItem(ASSET_CATALOG_META_STORAGE_KEY)
+                const records = rawCatalog ? JSON.parse(rawCatalog) : []
+                const meta = rawMeta ? JSON.parse(rawMeta) : null
+                setAssetCatalog(Array.isArray(records) ? records : [], meta)
+            } catch (error) {
+                console.error('Failed to load asset catalog', error)
+                setAssetCatalog([], null)
+            }
+        }
+
+        async function ensureAssetCatalogFromBundledFile() {
+            if (assetCatalog.length) {
+                return assetCatalog
+            }
+
+            if (assetCatalogBootstrapPromise) {
+                return assetCatalogBootstrapPromise
+            }
+
+            assetCatalogBootstrapPromise = (async () => {
+                try {
+                    const response = await fetch('./export_asset_branch.xlsx', {
+                        cache: 'no-store'
+                    })
+
+                    if (!response.ok) {
+                        throw new Error('Unable to fetch bundled asset catalog')
+                    }
+
+                    const buffer = await response.arrayBuffer()
+                    const parsed = parseAssetWorkbookBuffer(buffer, 'export_asset_branch.xlsx')
+
+                    if (!parsed.records.length) {
+                        return assetCatalog
+                    }
+
+                    persistAssetCatalog(parsed.records, {
+                        importedAt: new Date().toISOString(),
+                        sourceName: 'export_asset_branch.xlsx',
+                        sheetName: parsed.sheetName,
+                        count: parsed.records.length,
+                        sourceType: 'bundled-default',
+                        stats: {
+                            unchanged: 0,
+                            added: parsed.records.length,
+                            updated: 0,
+                            removed: 0,
+                            duplicates: parsed.duplicates.length,
+                            skipped: parsed.skipped.length
+                        }
+                    })
+                } catch (error) {
+                    console.warn('Bundled asset catalog bootstrap skipped', error)
+                } finally {
+                    assetCatalogBootstrapPromise = null
+                }
+
+                return assetCatalog
+            })()
+
+            return assetCatalogBootstrapPromise
+        }
+
+        function persistAssetCatalog(records, meta) {
+            const compactRecords = records.map(createCompactAssetRecord)
+            localStorage.setItem(ASSET_CATALOG_STORAGE_KEY, JSON.stringify(compactRecords))
+            localStorage.setItem(ASSET_CATALOG_META_STORAGE_KEY, JSON.stringify(meta || {}))
+            setAssetCatalog(compactRecords, meta)
+        }
+
+        function formatAssetDate(value) {
+            if (!value) return ''
+
+            try {
+                return new Date(value).toLocaleString('th-TH', {
+                    dateStyle: 'short',
+                    timeStyle: 'short'
+                })
+            } catch (error) {
+                return value
+            }
+        }
+
+        function updateAssetCatalogStatus() {
+            const $badge = $('#asset-status-badge')
+            const $helper = $('#asset-helper-text')
+            const $current = $('#asset-import-current')
+
+            if (!assetCatalog.length) {
+                $badge.removeClass('ready').addClass('empty').html('<i class="bi bi-database-exclamation"></i>ยังไม่มี Asset Master')
+                $helper.text('นำเข้า Asset Master จาก Excel เพื่อเปิด autocomplete ของรหัสเครื่อง')
+                $current.html('<strong>สถานะปัจจุบัน:</strong> ยังไม่มีข้อมูล catalog ที่พร้อมใช้บนอุปกรณ์นี้')
+                return
+            }
+
+            const importedAt = assetCatalogMeta && assetCatalogMeta.importedAt ? formatAssetDate(assetCatalogMeta.importedAt) : ''
+            const sourceName = assetCatalogMeta && assetCatalogMeta.sourceName ? assetCatalogMeta.sourceName : ''
+            const countText = assetCatalog.length.toLocaleString('th-TH') + ' รายการ'
+            const helperText = ['พร้อม autocomplete ' + countText, importedAt ? 'import ล่าสุด ' + importedAt : '', sourceName]
+                .filter(Boolean)
+                .join(' | ')
+            const currentMeta = [
+                '<strong>สถานะปัจจุบัน:</strong> พร้อมใช้งาน ' + countText,
+                importedAt ? '<strong>import ล่าสุด:</strong> ' + importedAt : '',
+                sourceName ? '<strong>ไฟล์ล่าสุด:</strong> ' + escapeHtml(sourceName) : ''
+            ].filter(Boolean).join('<br>')
+
+            $badge.removeClass('empty').addClass('ready').html('<i class="bi bi-database-check"></i>Asset Master ' + countText)
+            $helper.text(helperText)
+            $current.html(currentMeta)
+        }
+
+        function resetPendingAssetImport() {
+            pendingAssetImport = null
+            $('#asset-import-pending').removeClass('ready').empty()
+            $('#asset-import-confirm-btn').prop('disabled', true)
+        }
+
+        function setAssetImportLoading(isLoading) {
+            $('#asset-import-loading').toggleClass('active', !!isLoading)
+        }
+
+        function canAccessAssetImport() {
+            return !!(profile && ASSET_IMPORT_ALLOWED_USER_IDS.has(profile.userId))
+        }
+
+        function updateAssetImportVisibility() {
+            $('#asset-import-btn').toggleClass('d-none', !canAccessAssetImport())
+        }
+
+        function openAssetImportModal() {
+            if (!canAccessAssetImport()) {
+                return
+            }
+
+            if (!assetImportModal) {
+                const modalElement = document.getElementById('asset-import-modal')
+                assetImportModal = new bootstrap.Modal(modalElement)
+                modalElement.addEventListener('hidden.bs.modal', function () {
+                    setAssetImportLoading(false)
+                })
+            }
+
+            updateAssetCatalogStatus()
+            assetImportModal.show()
+        }
+
+        function renderAssetPreview(asset) {
+            const $card = $('#asset-preview-card')
+
+            if (!asset) {
+                $card.addClass('d-none')
+                return
+            }
+
+            $('#asset-preview-name').text(asset.name || '-')
+            $('#asset-preview-code').text(asset.code || '-')
+            $('#asset-preview-brand').text(asset.brand || '-')
+            $('#asset-preview-model').text(asset.model || '-')
+            $('#asset-preview-serial').text(asset.serial || '-')
+            $card.removeClass('d-none')
+        }
+
+        function findExactAssetMatch(rawValue) {
+            const normalized = normalizeAssetCode(rawValue)
+
+            if (!normalized) {
+                return null
+            }
+
+            const converted = normalizeAssetCode(convertCode(normalized))
+            const candidates = [normalized, converted].filter(Boolean)
+
+            for (const candidate of candidates) {
+                if (assetCatalogLookup.has(candidate)) {
+                    return assetCatalogLookup.get(candidate)
+                }
+
+                const key = normalizeSearchKey(candidate)
+                if (key && assetCatalogCodeLookup.has(key)) {
+                    return assetCatalogCodeLookup.get(key)
+                }
+            }
+
+            return null
+        }
+
+        function syncAssetPreviewByInput(rawValue) {
+            const asset = findExactAssetMatch(rawValue)
+            renderAssetPreview(asset)
+            return asset
+        }
+
+        function getAssetSuggestions(query) {
+            const normalized = normalizeAssetCode(query)
+            const queryKey = normalizeSearchKey(query)
+
+            if (!normalized || !queryKey) {
+                return []
+            }
+
+            return assetCatalog
+                .map(asset => {
+                    let score = 0
+
+                    if (asset.code === normalized) score += 300
+                    else if (asset.code.startsWith(normalized)) score += 180
+                    else if (asset.code.includes(normalized)) score += 120
+
+                    if (asset.codeKey.startsWith(queryKey)) score += 110
+                    else if (asset.codeKey.includes(queryKey)) score += 80
+
+                    if (asset.searchKey.includes(queryKey)) score += 50
+                    if (asset.name && asset.name.toUpperCase().includes(normalized)) score += 25
+                    if (asset.brand && asset.brand.toUpperCase().includes(normalized)) score += 20
+                    if (asset.model && asset.model.toUpperCase().includes(normalized)) score += 20
+                    if (asset.serial && asset.serial.toUpperCase().includes(normalized)) score += 20
+
+                    return {
+                        asset,
+                        score
+                    }
+                })
+                .filter(item => item.score > 0)
+                .sort((left, right) => right.score - left.score || left.asset.code.localeCompare(right.asset.code, 'en'))
+                .slice(0, ASSET_SUGGESTION_LIMIT)
+                .map(item => item.asset)
+        }
+
+        function hideAssetSuggestions() {
+            currentAssetSuggestions = []
+            currentAssetSuggestionIndex = -1
+            $('#asset-suggestion-list').hide().empty()
+        }
+
+        function setActiveAssetSuggestion(index) {
+            currentAssetSuggestionIndex = index
+            $('#asset-suggestion-list .asset-suggestion-item').removeClass('active')
+            $('#asset-suggestion-list .asset-suggestion-item').eq(index).addClass('active')
+        }
+
+        function renderAssetSuggestions(items) {
+            const $list = $('#asset-suggestion-list')
+
+            if (!items.length) {
+                hideAssetSuggestions()
+                return
+            }
+
+            currentAssetSuggestions = items
+            currentAssetSuggestionIndex = -1
+
+            const html = items.map((item, index) => {
+                item.serial = item.serial ? ("SN: " + item.serial) : ''
+                const metaParts = [item.brand, item.model, item.serial].filter(Boolean)
+
+                return `
+                    <button type="button" class="asset-suggestion-item" data-index="${index}">
+                        <div class="asset-suggestion-code">
+                            <span>${escapeHtml(item.code)}</span>
+                            <span class="text-muted small">เลือก</span>
+                        </div>
+                        <div class="asset-suggestion-name">${escapeHtml(item.name || '-')}</div>
+                        <div class="asset-suggestion-meta">${escapeHtml(metaParts.join(' | ') || 'ไม่มี brand / model / SN')}</div>
+                    </button>
+                `
+            }).join('')
+
+            $list.html('<div class="asset-suggestion-scroll">' + html + '</div>').show()
+        }
+
+        function applySelectedAsset(asset) {
+            if (!asset) {
+                return
+            }
+
+            $('#code').val(asset.code).trigger('input').trigger('focus')
+            hideAssetSuggestions()
+        }
+
+        function handleAssetInput() {
+            const value = $('#code').val()
+            const matchedAsset = syncAssetPreviewByInput(value)
+            const normalized = normalizeAssetCode(value)
+
+            if (!value || matchedAsset && matchedAsset.code === normalized) {
+                hideAssetSuggestions()
+                return
+            }
+
+            renderAssetSuggestions(getAssetSuggestions(value))
+        }
+
+        function bindAssetCatalogEvents() {
+            $('#asset-import-btn').off('.assetCatalog').on('click.assetCatalog', function () {
+                openAssetImportModal()
+            })
+
+            $('#asset-import-picker-btn').off('.assetCatalog').on('click.assetCatalog', function () {
+                $('#asset-import-file').trigger('click')
+            })
+
+            $('#asset-import-file').off('.assetCatalog').on('change.assetCatalog', async function (event) {
+                const file = event.target.files && event.target.files[0]
+
+                if (!file) {
+                    return
+                }
+
+                try {
+                    resetPendingAssetImport()
+                    setAssetImportLoading(true)
+
+                    const parsed = await parseAssetWorkbook(file)
+                    const diff = compareImportedAssetCatalog(parsed.records)
+                    previewAssetImport(file, parsed, diff)
+                } catch (error) {
+                    console.error('Asset import failed', error)
+                    Swal.fire({
+                        customClass: {
+                            popup: 'rounded-4'
+                        },
+                        icon: 'error',
+                        title: 'ไม่สามารถอ่านไฟล์ได้',
+                        text: error.message || 'กรุณาตรวจสอบไฟล์ Excel แล้วลองใหม่อีกครั้ง',
+                        confirmButtonText: 'ตกลง'
+                    })
+                } finally {
+                    setAssetImportLoading(false)
+                    event.target.value = ''
+                }
+            })
+
+            $('#asset-import-confirm-btn').off('.assetCatalog').on('click.assetCatalog', function () {
+                if (!pendingAssetImport) {
+                    return
+                }
+
+                const parsed = pendingAssetImport.parsed
+                const diff = pendingAssetImport.diff
+                const file = pendingAssetImport.file
+
+                persistAssetCatalog(parsed.records, {
+                    importedAt: new Date().toISOString(),
+                    sourceName: file.name,
+                    sheetName: parsed.sheetName,
+                    count: parsed.records.length,
+                    stats: {
+                        unchanged: diff.unchanged.length,
+                        added: diff.added.length,
+                        updated: diff.updated.length,
+                        removed: diff.removed.length,
+                        duplicates: parsed.duplicates.length,
+                        skipped: parsed.skipped.length
+                    }
+                })
+
+                resetPendingAssetImport()
+                hideAssetSuggestions()
+                syncAssetPreviewByInput($('#code').val())
+
+                if (assetImportModal) {
+                    assetImportModal.hide()
+                }
+
+                Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
+                    icon: 'success',
+                    title: 'Import สำเร็จ',
+                    text: 'พร้อมใช้ autocomplete จาก Asset Master ' + parsed.records.length.toLocaleString('th-TH') + ' รายการ',
+                    timer: 1800,
+                    showConfirmButton: false
+                })
+            })
+
+            $('#code').off('input.assetCatalog').on('input.assetCatalog', handleAssetInput)
+
+            $('#code').off('keydown.assetCatalog').on('keydown.assetCatalog', function (event) {
+                if (!currentAssetSuggestions.length) {
+                    return
+                }
+
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault()
+                    const nextIndex = currentAssetSuggestionIndex >= currentAssetSuggestions.length - 1
+                        ? 0
+                        : currentAssetSuggestionIndex + 1
+                    setActiveAssetSuggestion(nextIndex)
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault()
+                    const nextIndex = currentAssetSuggestionIndex <= 0
+                        ? currentAssetSuggestions.length - 1
+                        : currentAssetSuggestionIndex - 1
+                    setActiveAssetSuggestion(nextIndex)
+                } else if (event.key === 'Enter' && currentAssetSuggestionIndex > -1) {
+                    event.preventDefault()
+                    applySelectedAsset(currentAssetSuggestions[currentAssetSuggestionIndex])
+                } else if (event.key === 'Escape') {
+                    hideAssetSuggestions()
+                }
+            })
+
+            $('#asset-suggestion-list').off('mousedown.assetCatalog').on('mousedown.assetCatalog', '.asset-suggestion-item', function (event) {
+                event.preventDefault()
+                const index = Number($(this).attr('data-index'))
+
+                if (!Number.isNaN(index)) {
+                    applySelectedAsset(currentAssetSuggestions[index])
+                }
+            })
+
+            $(document).off('click.assetCatalog').on('click.assetCatalog', function (event) {
+                if (!$(event.target).closest('.code-field-wrapper').length) {
+                    hideAssetSuggestions()
+                }
+            })
+        }
+
+        function parseAssetWorkbookBuffer(buffer, sourceName) {
+            if (typeof XLSX === 'undefined') {
+                throw new Error('ไม่พบไลบรารีสำหรับอ่านไฟล์ Excel')
+            }
+
+            const workbook = XLSX.read(buffer, { type: 'array' })
+            const sheetName = workbook.SheetNames[0]
+
+            if (!sheetName) {
+                throw new Error('ไม่พบ sheet ในไฟล์นี้')
+            }
+
+            const worksheet = workbook.Sheets[sheetName]
+            const rows = XLSX.utils.sheet_to_json(worksheet, {
+                header: 1,
+                defval: '',
+                raw: false,
+                blankrows: false
+            })
+
+            if (rows.length <= 1) {
+                throw new Error('ไฟล์นี้ไม่มีข้อมูลสำหรับ import')
+            }
+
+            const importedMap = new Map()
+            const duplicates = []
+            const skipped = []
+
+            rows.slice(1).forEach((row, index) => {
+                const rowNumber = index + 2
+                const candidate = createCompactAssetRecord({
+                    name: row[ASSET_IMPORT_FIELD_INDEX.name],
+                    code: row[ASSET_IMPORT_FIELD_INDEX.code],
+                    brand: row[ASSET_IMPORT_FIELD_INDEX.brand],
+                    model: row[ASSET_IMPORT_FIELD_INDEX.model],
+                    serial: row[ASSET_IMPORT_FIELD_INDEX.serial]
+                })
+
+                if (!candidate.code) {
+                    const hasSomeData = [candidate.name, candidate.brand, candidate.model, candidate.serial].some(Boolean)
+                    if (hasSomeData) {
+                        skipped.push({
+                            rowNumber,
+                            reason: 'ไม่มี ID code'
+                        })
+                    }
+                    return
+                }
+
+                if (importedMap.has(candidate.code)) {
+                    duplicates.push({
+                        rowNumber,
+                        code: candidate.code,
+                        name: candidate.name || '-',
+                        keptRowNumber: importedMap.get(candidate.code).__rowNumber,
+                        reason: 'รหัสซ้ำในไฟล์ ระบบจะใช้ข้อมูลจากแถวล่าสุด'
+                    })
+                }
+
+                importedMap.set(candidate.code, Object.assign({ __rowNumber: rowNumber }, candidate))
+            })
+
+            const records = Array.from(importedMap.values())
+                .map(item => ({
+                    code: item.code,
+                    name: item.name,
+                    brand: item.brand,
+                    model: item.model,
+                    serial: item.serial
+                }))
+                .sort((left, right) => left.code.localeCompare(right.code, 'en'))
+
+            return {
+                fileName: sourceName,
+                sheetName,
+                totalRows: rows.length - 1,
+                headers: rows[0] || [],
+                records,
+                duplicates,
+                skipped
+            }
+        }
+
+        async function parseAssetWorkbook(file) {
+            const buffer = await file.arrayBuffer()
+            return parseAssetWorkbookBuffer(buffer, file.name)
+        }
+
+        function getAssetFieldChanges(before, after) {
+            const labels = {
+                name: 'ชื่อเครื่องมือ',
+                brand: 'Brand',
+                model: 'Model',
+                serial: 'SN'
+            }
+
+            return Object.keys(labels)
+                .filter(key => normalizeWhitespace(before[key]) !== normalizeWhitespace(after[key]))
+                .map(key => ({
+                    key,
+                    label: labels[key],
+                    before: before[key] || '-',
+                    after: after[key] || '-'
+                }))
+        }
+
+        function compareImportedAssetCatalog(importedRecords) {
+            const currentMap = new Map(assetCatalog.map(item => [item.code, item]))
+            const importedMap = new Map(importedRecords.map(item => [item.code, item]))
+            const unchanged = []
+            const added = []
+            const updated = []
+            const removed = []
+
+            importedRecords.forEach(item => {
+                const existing = currentMap.get(item.code)
+
+                if (!existing) {
+                    added.push(item)
+                    return
+                }
+
+                const changes = getAssetFieldChanges(existing, item)
+
+                if (!changes.length) {
+                    unchanged.push(item)
+                    return
+                }
+
+                updated.push({
+                    code: item.code,
+                    before: existing,
+                    after: item,
+                    changes
+                })
+            })
+
+            assetCatalog.forEach(item => {
+                if (!importedMap.has(item.code)) {
+                    removed.push(item)
+                }
+            })
+
+            return {
+                unchanged,
+                added,
+                updated,
+                removed
+            }
+        }
+
+        function buildAssetRecordTable(items) {
+            if (!items.length) {
+                return '<div class="asset-import-empty">ไม่มีรายการในกลุ่มนี้</div>'
+            }
+
+            const rows = items.slice(0, ASSET_PREVIEW_LIMIT).map(item => `
+                <tr>
+                    <td>${escapeHtml(item.code)}</td>
+                    <td>${escapeHtml(item.name || '-')}</td>
+                    <td>${escapeHtml(item.brand || '-')}</td>
+                    <td>${escapeHtml(item.model || '-')}</td>
+                    <td>${escapeHtml(item.serial || '-')}</td>
+                </tr>
+            `).join('')
+            const footnote = items.length > ASSET_PREVIEW_LIMIT
+                ? '<div class="asset-import-footnote">แสดง ' + ASSET_PREVIEW_LIMIT.toLocaleString('th-TH') + ' จากทั้งหมด ' + items.length.toLocaleString('th-TH') + ' รายการ</div>'
+                : ''
+
+            return `
+                <div class="asset-import-table-wrap">
+                    <table class="asset-import-table">
+                        <thead>
+                            <tr>
+                                <th>ID code</th>
+                                <th>ชื่อเครื่องมือ</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>SN</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+                ${footnote}
+            `
+        }
+
+        function buildAssetUpdateTable(items) {
+            if (!items.length) {
+                return '<div class="asset-import-empty">ไม่มีรายการที่เปลี่ยนแปลง</div>'
+            }
+
+            const rows = items.slice(0, ASSET_PREVIEW_LIMIT).map(item => {
+                const changeHtml = item.changes.map(change => {
+                    return '<div class="asset-import-change"><strong>' + escapeHtml(change.label) + ':</strong> ' + escapeHtml(change.before) + ' → ' + escapeHtml(change.after) + '</div>'
+                }).join('')
+
+                return `
+                    <tr>
+                        <td>${escapeHtml(item.code)}</td>
+                        <td>${escapeHtml(item.after.name || item.before.name || '-')}</td>
+                        <td>${changeHtml}</td>
+                    </tr>
+                `
+            }).join('')
+            const footnote = items.length > ASSET_PREVIEW_LIMIT
+                ? '<div class="asset-import-footnote">แสดง ' + ASSET_PREVIEW_LIMIT.toLocaleString('th-TH') + ' จากทั้งหมด ' + items.length.toLocaleString('th-TH') + ' รายการ</div>'
+                : ''
+
+            return `
+                <div class="asset-import-table-wrap">
+                    <table class="asset-import-table">
+                        <thead>
+                            <tr>
+                                <th>ID code</th>
+                                <th>ชื่อเครื่องมือ</th>
+                                <th>รายละเอียดที่เปลี่ยน</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+                ${footnote}
+            `
+        }
+
+        function buildAssetSkippedTable(items) {
+            if (!items.length) {
+                return ''
+            }
+
+            const rows = items.slice(0, ASSET_PREVIEW_LIMIT).map(item => `
+                <tr>
+                    <td>${escapeHtml(item.rowNumber)}</td>
+                    <td>${escapeHtml(item.code || '-')}</td>
+                    <td>${escapeHtml(item.name || '-')}</td>
+                    <td>${escapeHtml(item.reason || '-')}</td>
+                </tr>
+            `).join('')
+            const footnote = items.length > ASSET_PREVIEW_LIMIT
+                ? '<div class="asset-import-footnote">แสดง ' + ASSET_PREVIEW_LIMIT.toLocaleString('th-TH') + ' จากทั้งหมด ' + items.length.toLocaleString('th-TH') + ' รายการ</div>'
+                : ''
+
+            return `
+                <div class="asset-import-table-wrap">
+                    <table class="asset-import-table">
+                        <thead>
+                            <tr>
+                                <th>แถว</th>
+                                <th>ID code</th>
+                                <th>ชื่อเครื่องมือ</th>
+                                <th>หมายเหตุ</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+                ${footnote}
+            `
+        }
+
+        function buildAssetImportSection(title, count, html, isOpen) {
+            return `
+                <details class="asset-import-details" ${isOpen ? 'open' : ''}>
+                    <summary>
+                        <span>${escapeHtml(title)}</span>
+                        <span class="asset-import-count">${count.toLocaleString('th-TH')} รายการ</span>
+                    </summary>
+                    ${html}
+                </details>
+            `
+        }
+
+        function buildAssetImportPreviewHtml(file, parsed, diff) {
+            const warningDuplicate = parsed.duplicates.length
+                ? '<div class="asset-import-warning"><strong>พบรหัสซ้ำในไฟล์</strong> ระบบจะเก็บแถวล่าสุดของแต่ละ ID code และแสดงรายการซ้ำไว้ด้านล่างก่อนให้ยืนยัน</div>'
+                : ''
+            const warningRemoved = diff.removed.length
+                ? '<div class="asset-import-warning danger"><strong>มีรายการเดิมหายไปจากไฟล์ใหม่</strong> หากยืนยัน import รายการเหล่านี้จะถูกนำออกจาก autocomplete ด้วย</div>'
+                : ''
+
+            return `
+                <div class="asset-import-preview">
+                    <div class="asset-import-file-meta">
+                        <div><strong>ไฟล์:</strong> ${escapeHtml(file.name)}</div>
+                        <div><strong>Sheet:</strong> ${escapeHtml(parsed.sheetName)}</div>
+                        <div><strong>คอลัมน์ที่อ่าน:</strong> E = ชื่อเครื่องมือ, G = ID code, I/J/K = brand/model/SN</div>
+                        <div><strong>จำนวนแถวข้อมูล:</strong> ${parsed.totalRows.toLocaleString('th-TH')} แถว | <strong>ข้อมูลที่พร้อม import:</strong> ${parsed.records.length.toLocaleString('th-TH')} รายการ</div>
+                    </div>
+
+                    <div class="import-diff-grid">
+                        <div class="import-diff-card"><strong>${parsed.records.length.toLocaleString('th-TH')}</strong><span>พร้อม import</span></div>
+                        <div class="import-diff-card"><strong>${diff.unchanged.length.toLocaleString('th-TH')}</strong><span>รายการเดิม</span></div>
+                        <div class="import-diff-card"><strong>${diff.added.length.toLocaleString('th-TH')}</strong><span>เพิ่มใหม่</span></div>
+                        <div class="import-diff-card"><strong>${diff.updated.length.toLocaleString('th-TH')}</strong><span>อัพเดท</span></div>
+                        <div class="import-diff-card"><strong>${diff.removed.length.toLocaleString('th-TH')}</strong><span>หายจากไฟล์ใหม่</span></div>
+                        <div class="import-diff-card"><strong>${parsed.duplicates.length.toLocaleString('th-TH')}</strong><span>รหัสซ้ำ</span></div>
+                    </div>
+
+                    ${warningDuplicate}
+                    ${warningRemoved}
+                    ${buildAssetImportSection('รายการเดิม', diff.unchanged.length, buildAssetRecordTable(diff.unchanged), false)}
+                    ${buildAssetImportSection('รายการเพิ่มใหม่', diff.added.length, buildAssetRecordTable(diff.added), true)}
+                    ${buildAssetImportSection('รายการที่อัพเดท', diff.updated.length, buildAssetUpdateTable(diff.updated), true)}
+                    ${buildAssetImportSection('รายการเดิมที่ไม่พบในไฟล์ใหม่', diff.removed.length, buildAssetRecordTable(diff.removed), false)}
+                    ${buildAssetImportSection('แถวที่ซ้ำหรือข้าม', parsed.duplicates.length + parsed.skipped.length, buildAssetSkippedTable(parsed.duplicates.concat(parsed.skipped)), false)}
+                </div>
+            `
+        }
+
+        function previewAssetImport(file, parsed, diff) {
+            if (!parsed.records.length) {
+                throw new Error('ไม่พบข้อมูลที่มี ID code สำหรับ import')
+            }
+
+            pendingAssetImport = { file, parsed, diff }
+            $('#asset-import-pending').html(buildAssetImportPreviewHtml(file, parsed, diff)).addClass('ready')
+            $('#asset-import-confirm-btn').prop('disabled', false)
+        }
+
         $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
         });
@@ -697,6 +1975,9 @@
             NProgress.start();
             NProgress.inc()
             $('#end').append($('#start option').not(':first-child').clone())
+            loadAssetCatalogFromStorage()
+            ensureAssetCatalogFromBundledFile()
+            bindAssetCatalogEvents()
             $('#ups').click(function () {
                 Swal.fire({
                     input: 'number',
@@ -714,19 +1995,19 @@
                     }
                 }).then(res => {
                     if (res.isConfirmed) {
-                        if (res.value == '' || res.value == null) $('#code').val('UPS')
-                        else $('#code').val('UPS ' + ('00' + res.value).slice(-2))
+                        if (res.value == '' || res.value == null) $('#code').val('UPS').trigger('input')
+                        else $('#code').val('UPS ' + ('00' + res.value).slice(-2)).trigger('input')
                     }
                 })
             })
 
             $('#scope').click(function () {
-                $('#code').val('SCOPE')
+                $('#code').val('SCOPE').trigger('input')
             })
 
             liff.init({
-                liffId: '1660749495-G5e9Av6r',
-                // liffId: '1660749495-A2gmPQNb',
+                // liffId: '1660749495-G5e9Av6r',
+                liffId: '1655873446-MpmBPPzl',  //for test
                 withLoginOnExternalBrowser: true
             })
             // $('.loader').fadeOut(500)
@@ -841,6 +2122,7 @@
                 ]);
                 console.log("Successfully retrieved all initialization data");
                 profile = await liff.getProfile()
+                updateAssetImportVisibility()
                 $('.loader').fadeOut(500)
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
@@ -1645,7 +2927,7 @@
         src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script charset="utf-8" src="./liff-sdk.js"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
