@@ -1036,11 +1036,11 @@
                 </div>
                 <div class="col-md-6">
                     <div class="code-label-row">
-                        <label for="code" class="mb-0">รหัสเครื่อง</label>
                         <button type="button" class="btn btn-sm asset-import-btn d-none mb-3" id="asset-import-btn">
                             <i class="bi bi-file-earmark-arrow-up"></i>
                             Import Excel
                         </button>
+                        <label for="code" class="mb-0">รหัสเครื่อง</label>
                     </div>
                     <div class="code-field-wrapper">
                         <input type="text" class="form-control text-center" id="code" name="code" autocomplete="off"
@@ -1054,6 +1054,7 @@
                             <span><strong>Brand:</strong> <span id="asset-preview-brand"></span></span>
                             <span><strong>Model:</strong> <span id="asset-preview-model"></span></span>
                             <span><strong>SN:</strong> <span id="asset-preview-serial"></span></span>
+                            <span><strong>ทรัพย์สินของแผนก:</strong> <span id="asset-preview-department-asset"></span></span>
                         </div>
                     </div>
                 </div>
@@ -1098,7 +1099,7 @@
                 <div class="modal-header">
                     <div>
                         <h5 class="modal-title">Import Asset Master</h5>
-                        <div class="small text-muted">อ่านเฉพาะคอลัมน์ E, G, I, J, K แล้วแสดง diff ก่อนยืนยัน</div>
+                        <div class="small text-muted">อ่านเฉพาะคอลัมน์ C, E, G, I, J, K แล้วแสดง diff ก่อนยืนยัน</div>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -1148,6 +1149,7 @@
             'Ua55431b2d9be5d104c316ccb8ef54e81'
         ])
         const ASSET_IMPORT_FIELD_INDEX = Object.freeze({
+            departmentAsset: 2,
             name: 4,
             code: 6,
             brand: 8,
@@ -1185,6 +1187,7 @@
         function createCompactAssetRecord(record) {
             return {
                 code: normalizeAssetCode(record.code),
+                departmentAsset: normalizeWhitespace(record.departmentAsset),
                 name: normalizeWhitespace(record.name),
                 brand: normalizeWhitespace(record.brand),
                 model: normalizeWhitespace(record.model),
@@ -1194,7 +1197,7 @@
 
         function enrichAssetRecord(record) {
             const compact = createCompactAssetRecord(record)
-            const searchText = [compact.code, compact.name, compact.brand, compact.model, compact.serial]
+            const searchText = [compact.code, compact.departmentAsset, compact.name, compact.brand, compact.model, compact.serial]
                 .filter(Boolean)
                 .join(' ')
 
@@ -1384,6 +1387,7 @@
 
             $('#asset-preview-name').text(asset.name || '-')
             $('#asset-preview-code').text(asset.code || '-')
+            $('#asset-preview-department-asset').text(asset.departmentAsset || '-')
             $('#asset-preview-brand').text(asset.brand || '-')
             $('#asset-preview-model').text(asset.model || '-')
             $('#asset-preview-serial').text(asset.serial || '-')
@@ -1678,6 +1682,7 @@
             rows.slice(1).forEach((row, index) => {
                 const rowNumber = index + 2
                 const candidate = createCompactAssetRecord({
+                    departmentAsset: row[ASSET_IMPORT_FIELD_INDEX.departmentAsset],
                     name: row[ASSET_IMPORT_FIELD_INDEX.name],
                     code: row[ASSET_IMPORT_FIELD_INDEX.code],
                     brand: row[ASSET_IMPORT_FIELD_INDEX.brand],
@@ -1686,10 +1691,12 @@
                 })
 
                 if (!candidate.code) {
-                    const hasSomeData = [candidate.name, candidate.brand, candidate.model, candidate.serial].some(Boolean)
+                    const hasSomeData = [candidate.departmentAsset, candidate.name, candidate.brand, candidate.model, candidate.serial].some(Boolean)
                     if (hasSomeData) {
                         skipped.push({
                             rowNumber,
+                            departmentAsset: candidate.departmentAsset,
+                            name: candidate.name || '-',
                             reason: 'ไม่มี ID code'
                         })
                     }
@@ -1700,6 +1707,7 @@
                     duplicates.push({
                         rowNumber,
                         code: candidate.code,
+                        departmentAsset: candidate.departmentAsset,
                         name: candidate.name || '-',
                         keptRowNumber: importedMap.get(candidate.code).__rowNumber,
                         reason: 'รหัสซ้ำในไฟล์ ระบบจะใช้ข้อมูลจากแถวล่าสุด'
@@ -1712,6 +1720,7 @@
             const records = Array.from(importedMap.values())
                 .map(item => ({
                     code: item.code,
+                    departmentAsset: item.departmentAsset,
                     name: item.name,
                     brand: item.brand,
                     model: item.model,
@@ -1737,6 +1746,7 @@
 
         function getAssetFieldChanges(before, after) {
             const labels = {
+                departmentAsset: 'ทรัพย์สินของแผนก',
                 name: 'ชื่อเครื่องมือ',
                 brand: 'Brand',
                 model: 'Model',
@@ -1806,6 +1816,7 @@
             const rows = items.slice(0, ASSET_PREVIEW_LIMIT).map(item => `
                 <tr>
                     <td>${escapeHtml(item.code)}</td>
+                    <td>${escapeHtml(item.departmentAsset || '-')}</td>
                     <td>${escapeHtml(item.name || '-')}</td>
                     <td>${escapeHtml(item.brand || '-')}</td>
                     <td>${escapeHtml(item.model || '-')}</td>
@@ -1822,6 +1833,7 @@
                         <thead>
                             <tr>
                                 <th>ID code</th>
+                                <th>ทรัพย์สินของแผนก</th>
                                 <th>ชื่อเครื่องมือ</th>
                                 <th>Brand</th>
                                 <th>Model</th>
@@ -1883,6 +1895,7 @@
                 <tr>
                     <td>${escapeHtml(item.rowNumber)}</td>
                     <td>${escapeHtml(item.code || '-')}</td>
+                    <td>${escapeHtml(item.departmentAsset || '-')}</td>
                     <td>${escapeHtml(item.name || '-')}</td>
                     <td>${escapeHtml(item.reason || '-')}</td>
                 </tr>
@@ -1898,6 +1911,7 @@
                             <tr>
                                 <th>แถว</th>
                                 <th>ID code</th>
+                                <th>ทรัพย์สินของแผนก</th>
                                 <th>ชื่อเครื่องมือ</th>
                                 <th>หมายเหตุ</th>
                             </tr>
@@ -1934,7 +1948,7 @@
                     <div class="asset-import-file-meta">
                         <div><strong>ไฟล์:</strong> ${escapeHtml(file.name)}</div>
                         <div><strong>Sheet:</strong> ${escapeHtml(parsed.sheetName)}</div>
-                        <div><strong>คอลัมน์ที่อ่าน:</strong> E = ชื่อเครื่องมือ, G = ID code, I/J/K = brand/model/SN</div>
+                        <div><strong>คอลัมน์ที่อ่าน:</strong> C = ทรัพย์สินของแผนก, E = ชื่อเครื่องมือ, G = ID code, I/J/K = brand/model/SN</div>
                         <div><strong>จำนวนแถวข้อมูล:</strong> ${parsed.totalRows.toLocaleString('th-TH')} แถว | <strong>ข้อมูลที่พร้อม import:</strong> ${parsed.records.length.toLocaleString('th-TH')} รายการ</div>
                     </div>
 
@@ -2006,8 +2020,8 @@
             })
 
             liff.init({
-                // liffId: '1660749495-G5e9Av6r',
-                liffId: '1655873446-MpmBPPzl',  //for test
+                liffId: '1660749495-G5e9Av6r',
+                // liffId: '1655873446-MpmBPPzl',  //for test
                 withLoginOnExternalBrowser: true
             })
             // $('.loader').fadeOut(500)
@@ -2344,10 +2358,27 @@
                 })
             })
         }
+        function getAssetOwner(code) {
+            const matchedAsset = findExactAssetMatch(code)
+
+            if (matchedAsset && matchedAsset.departmentAsset) {
+                return matchedAsset.departmentAsset
+            }
+
+            let owner = ''
+            for (let key in history_code) {
+                if (key.includes(code)) {
+                    owner = history_code[key].owner
+                    break
+                }
+            }
+            return owner
+        }
         $('#submit-btn').click(async function () {
             var code = $('#code').val()
             var start = $('#start').val()
             var end = $('#end').val()
+            var owner = getAssetOwner(code)
             if (code == '' && checkcode(code)) {
                 Swal.fire({
                     customClass: {
@@ -2384,6 +2415,10 @@
                 })
                 return false
             }
+            let isBorrow = false
+            if(start === owner && start !== end){
+                isBorrow = true
+            }
             if ($('#telegram-files')[0].files.length == 0) {
                 Swal.fire({
                     customClass: {
@@ -2399,9 +2434,11 @@
             let data = {
                 opt: 'add',
                 code: convertCode(code),
+                owner: owner,
                 start: start,
                 end: end,
                 name: $('#displayName').attr('data-name'),
+                isBorrow: isBorrow,
                 // uid: 'test',
                 // displayName: 'yeah'
                 uid: await getUID(),
