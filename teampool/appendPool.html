@@ -1162,6 +1162,7 @@
         })
         const ASSET_SUGGESTION_LIMIT = 8
         const ASSET_PREVIEW_LIMIT = 12
+        const ASSET_INPUT_DEBOUNCE_DELAY = 250
         let assetCatalog = []
         let assetCatalogMeta = null
         let assetCatalogLookup = new Map()
@@ -1186,6 +1187,16 @@
 
         function normalizeSearchKey(value) {
             return normalizeAssetCode(value).replace(/[^A-Z0-9]/g, '')
+        }
+
+        function debounce(callback, delay) {
+            let timerId
+
+            return function (...args) {
+                const context = this
+                clearTimeout(timerId)
+                timerId = setTimeout(() => callback.apply(context, args), delay)
+            }
         }
 
         function createCompactAssetRecord(record) {
@@ -1509,7 +1520,9 @@
                 return
             }
 
-            $('#code').val(asset.code).trigger('input').trigger('focus')
+            $('#code').val(asset.code)
+            syncAssetPreviewByInput(asset.code)
+            $('#code').trigger('input').trigger('focus')
             hideAssetSuggestions()
         }
 
@@ -1527,6 +1540,8 @@
         }
 
         function bindAssetCatalogEvents() {
+            const debouncedHandleAssetInput = debounce(handleAssetInput, ASSET_INPUT_DEBOUNCE_DELAY)
+
             $('#asset-import-btn').off('.assetCatalog').on('click.assetCatalog', function () {
                 openAssetImportModal()
             })
@@ -1610,7 +1625,7 @@
                 })
             })
 
-            $('#code').off('input.assetCatalog').on('input.assetCatalog', handleAssetInput)
+            $('#code').off('input.assetCatalog').on('input.assetCatalog', debouncedHandleAssetInput)
 
             $('#code').off('keydown.assetCatalog').on('keydown.assetCatalog', function (event) {
                 if (!currentAssetSuggestions.length) {
