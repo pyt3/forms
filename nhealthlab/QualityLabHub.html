@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QualityLabHub - Lab Quality Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            background-color: #f8fafc;
+        }
+        .form-card {
+            display: none;
+        }
+        .form-card.active {
+            display: block;
+        }
+        .nav-item.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        /* SweetAlert2 Custom Style */
+        .swal2-popup {
+            border-radius: 1.5rem !important;
+            font-family: 'Noto Sans Thai', sans-serif !important;
+            padding: 2rem !important;
+        }
+        .swal2-title {
+            font-weight: 700 !important;
+            color: #1e293b !important;
+        }
+        .swal2-html-container {
+            color: #64748b !important;
+        }
+        .swal2-actions {
+            gap: 0.5rem !important;
+        }
+        .swal2-styled.swal2-confirm {
+            border-radius: 0.75rem !important;
+            padding: 0.6rem 2rem !important;
+            font-weight: 600 !important;
+        }
+        .swal2-styled.swal2-cancel {
+            border-radius: 0.75rem !important;
+            padding: 0.6rem 2rem !important;
+            font-weight: 600 !important;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="microscope" class="w-8 h-8 text-blue-600"></i>
+                    <span class="text-xl font-bold text-slate-900 tracking-tight">QualityLabHub</span>
+                </div>
+                <div class="hidden md:flex gap-6">
+                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all active-nav" data-target="home">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4 inline-block mr-1"></i> Dashboard
+                    </button>
+                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-target="eqa-form">
+                        <i data-lucide="file-text" class="w-4 h-4 inline-block mr-1"></i> ประเมินภายนอก (EQA)
+                    </button>
+                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-target="iqc-form">
+                        <i data-lucide="activity" class="w-4 h-4 inline-block mr-1"></i> ควบคุมภายใน (IQC)
+                    </button>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div id="current-date" class="text-sm text-slate-500 font-medium"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Dashboard / Welcome Area -->
+        <div id="home" class="form-card active">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer nav-btn" data-target="eqa-form">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="external-link" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-xl font-bold mb-2">ประเมินคุณภาพโดยองค์กรภายนอก</h2>
+                    <p class="text-slate-500 mb-6">บันทึกผลการประเมินคุณภาพห้องปฏิบัติการ (PT / EQA / Inter Laboratory Comparison)</p>
+                    <div class="flex items-center text-blue-600 font-semibold text-sm">
+                        เริ่มกรอกแบบฟอร์ม <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer nav-btn" data-target="iqc-form">
+                    <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-emerald-600"></i>
+                    </div>
+                    <h2 class="text-xl font-bold mb-2">สรุปการควบคุมคุณภาพภายใน</h2>
+                    <p class="text-slate-500 mb-6">ตารางสรุปการควบคุมคุณภาพภายในของหน่วย (Internal Quality Control)</p>
+                    <div class="flex items-center text-emerald-600 font-semibold text-sm">
+                        เริ่มกรอกแบบฟอร์ม <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex items-start gap-4">
+                <i data-lucide="info" class="w-6 h-6 text-blue-600 mt-1"></i>
+                <div>
+                    <h3 class="font-bold text-blue-900">คำแนะนำการใช้งาน</h3>
+                    <p class="text-blue-800 text-sm mt-1">ท่านสามารถเลือกแบบฟอร์มที่ต้องการจากรายการด้านบน ระบบจะเก็บข้อมูลไว้ในรูปแบบออนไลน์และสามารถแนบหลักฐานเพิ่มเติมได้หลายไฟล์</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form 1: EQA -->
+        <div id="eqa-form" class="form-card">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="bg-slate-50 p-6 border-b border-slate-200">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-900">แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ โดยองค์กรภายนอก</h1>
+                            <p class="text-slate-500 text-sm">(PT / EQA / Inter Laboratory Comparison)</p>
+                        </div>
+                        <div class="text-right text-xs text-slate-400">FI-ALP-PY3-00-011-1 R02</div>
+                    </div>
+                </div>
+                
+                <form class="p-8 space-y-8">
+                    <!-- General Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">หน่วยงาน</label>
+                            <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white">
+                                <option value="" disabled selected>เลือกหน่วยงาน</option>
+                                <option>Chemistry</option>
+                                <option>Immunology</option>
+                                <option>Serology</option>
+                                <option>Hematology</option>
+                                <option>Blood bank</option>
+                                <option>Microbiology</option>
+                                <option>Microscropy</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="text-sm font-semibold text-slate-700">โครงการ</label>
+                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุชื่อโครงการ">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">รอบที่</label>
+                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="เช่น 1/2567">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">วันที่ได้รับตัวอย่าง</label>
+                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">สภาพตัวอย่าง</label>
+                            <div class="flex gap-4 py-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="sample-condition" value="good" class="w-4 h-4 text-blue-600">
+                                    <span>สมบูรณ์</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="sample-condition" value="bad" class="w-4 h-4 text-blue-600">
+                                    <span>ไม่สมบูรณ์</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="space-y-2 md:col-span-3">
+                            <label class="text-sm font-semibold text-slate-700">รายละเอียดเพิ่มเติม (ถ้ามี)</label>
+                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุสาเหตุความไม่สมบูรณ์ หรือข้อมูลอื่นๆ">
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-100">
+
+                    <!-- Testing Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">วันที่ทดสอบ</label>
+                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">ผู้เตรียม / ละลายตัวอย่าง</label>
+                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ชื่อ-นามสกุล">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">ผู้รายงานผล / ส่งผล</label>
+                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ชื่อ-นามสกุล">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">วันที่รายงานผล</label>
+                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-100">
+
+                    <!-- Evaluation Result -->
+                    <div class="space-y-6">
+                        <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-blue-600"></i> ผลการประเมิน
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold text-slate-700">รายการทดสอบ</label>
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="เช่น D-Dimer, HbA1c">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold text-slate-700">ผลการประเมิน</label>
+                                <div class="flex gap-4 py-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="evaluation-result" value="pass" class="w-4 h-4 text-emerald-600">
+                                        <span>ผ่าน</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="evaluation-result" value="fail" class="w-4 h-4 text-red-600">
+                                        <span>ไม่ผ่าน</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold text-slate-700">เกณฑ์การประเมิน</label>
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="เช่น % Bias < 10%">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold text-slate-700">วันที่ได้รับผลประเมิน</label>
+                                <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Non-conformance Section -->
+                        <div id="eqa-nc-section" class="hidden space-y-6 p-6 bg-red-50 rounded-2xl border border-red-100">
+                            <h4 class="font-bold text-red-800">กรณีผลการประเมินไม่ผ่าน</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">ผลการทำ IQC ในวันที่ทดสอบ</label>
+                                    <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
+                                        <option value="pass">ผ่าน</option>
+                                        <option value="pass-fix">ผ่านแบบมีการแก้ไข</option>
+                                        <option value="fail">ไม่ผ่าน</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">สภาพเครื่องมือ</label>
+                                    <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
+                                        <option value="ready">พร้อมใช้งาน (มีการ maintenance ตามรอบ)</option>
+                                        <option value="problem">มีปัญหา</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold text-slate-700">สาเหตุ</label>
+                                <textarea rows="3" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุสาเหตุที่ไม่ผ่าน"></textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">วิธีการแก้ไข / ผลการแก้ไข</label>
+                                    <textarea rows="3" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุแนวทางการแก้ไขและผลลัพธ์"></textarea>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">การป้องกัน</label>
+                                    <textarea rows="3" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุแนวทางการป้องกันการเกิดซ้ำ"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-100">
+
+                    <!-- Attachments -->
+                    <div class="space-y-4">
+                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <i data-lucide="paperclip" class="w-4 h-4"></i> แนบไฟล์หลักฐาน (หลายไฟล์)
+                        </label>
+                        <div class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" onclick="$('#eqa-files').click()">
+                            <i data-lucide="upload-cloud" class="w-10 h-10 text-slate-400 mx-auto mb-4"></i>
+                            <p class="text-slate-600 font-medium">คลิกเพื่ออัพโหลด หรือลากไฟล์มาวางที่นี่</p>
+                            <p class="text-slate-400 text-xs mt-2">รองรับไฟล์ PDF, PNG, JPG, Word, Excel</p>
+                            <input type="file" id="eqa-files" class="hidden" multiple>
+                        </div>
+                        <div id="eqa-file-list" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div class="flex justify-end gap-4 pt-4">
+                        <button type="button" class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all" data-target="home">ยกเลิก</button>
+                        <button type="button" onclick="exportEQA()" class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
+                            <i data-lucide="file-down" class="w-4 h-4"></i> Export PDF
+                        </button>
+                        <button type="submit" class="px-8 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">บันทึกข้อมูล</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Form 2: IQC -->
+        <div id="iqc-form" class="form-card">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="bg-slate-50 p-6 border-b border-slate-200">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-900">ตารางสรุปการควบคุมคุณภาพภายในของหน่วย</h1>
+                            <p class="text-slate-500 text-sm">(Internal Quality Control Summary)</p>
+                        </div>
+                        <div class="text-right text-xs text-slate-400">FM-ALP-PY3-00-004-93 R02</div>
+                    </div>
+                </div>
+
+                <form class="p-8 space-y-8">
+                    <!-- IQC Header -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="text-sm font-semibold text-slate-700">หน่วยงาน / แผนก</label>
+                            <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all bg-white">
+                                <option value="" disabled selected>เลือกหน่วยงาน</option>
+                                <option>Chemistry</option>
+                                <option>Immunology</option>
+                                <option>Serology</option>
+                                <option>Hematology</option>
+                                <option>Blood bank</option>
+                                <option>Microbiology</option>
+                                <option>Microscropy</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">ประจำเดือน</label>
+                            <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all bg-white">
+                                <option>มกราคม</option>
+                                <option>กุมภาพันธ์</option>
+                                <option>มีนาคม</option>
+                                <option>เมษายน</option>
+                                <option>พฤษภาคม</option>
+                                <option>มิถุนายน</option>
+                                <option>กรกฎาคม</option>
+                                <option>สิงหาคม</option>
+                                <option>กันยายน</option>
+                                <option>ตุลาคม</option>
+                                <option>พฤศจิกายน</option>
+                                <option>ธันวาคม</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">ปี พ.ศ.</label>
+                            <input type="number" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all" value="2569">
+                        </div>
+                    </div>
+
+                    <!-- Control Details -->
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                        <h3 class="font-bold text-slate-800">รายละเอียด Control และเครื่องมือ</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-500 uppercase">Control Name</label>
+                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm" placeholder="เช่น Roche CARDIAC IQC">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-500 uppercase">Lot Number</label>
+                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm" placeholder="เช่น 73501793">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-500 uppercase">Expire Date</label>
+                                <input type="date" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="space-y-1 md:col-span-2">
+                                <label class="text-xs font-bold text-slate-500 uppercase">เครื่องมือที่ใช้ตรวจวิเคราะห์ (Analyzer)</label>
+                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm" placeholder="เช่น Cobas h232">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Table -->
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-50 border-b border-slate-200">
+                                <tr>
+                                    <th rowspan="2" class="px-4 py-3 font-bold border-r border-slate-200 min-w-[150px]">Parameter / Test</th>
+                                    <th colspan="2" class="px-4 py-3 font-bold border-b border-r border-slate-200 text-center">ผลการควบคุมคุณภาพ</th>
+                                    <th colspan="6" class="px-4 py-3 font-bold text-center">กรณีการควบคุมคุณภาพไม่ผ่าน</th>
+                                    <th rowspan="2" class="px-4 py-3 font-bold text-center border-l border-slate-200">จัดการ</th>
+                                </tr>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ผ่าน</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ไม่ผ่าน</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">Level</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ติดกฎ</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-24">Error Type</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center min-w-[100px]">สาเหตุ</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center min-w-[100px]">การแก้ไข</th>
+                                    <th class="px-2 py-2 font-semibold text-center min-w-[100px]">ผลการแก้ไข</th>
+                                </tr>
+                            </thead>
+                            <tbody id="iqc-table-body">
+                                <!-- Row 1 default -->
+                                <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="IQC: Low"></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" checked></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                                    <td class="p-2 border-r border-slate-100">
+                                        <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                                            <option value="">-</option>
+                                            <option value="S">Systematic</option>
+                                            <option value="R">Random</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2 text-center border-l border-slate-100">
+                                        <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                                    </td>
+                                </tr>
+                                <!-- Row 2 default -->
+                                <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="IQC: High"></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" checked></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                                    <td class="p-2 border-r border-slate-100">
+                                        <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                                            <option value="">-</option>
+                                            <option value="S">Systematic</option>
+                                            <option value="R">Random</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2 text-center border-l border-slate-100">
+                                        <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="p-4 bg-slate-50/50 flex justify-center">
+                            <button type="button" id="add-iqc-row" class="flex items-center gap-2 text-emerald-600 font-semibold text-sm hover:text-emerald-700">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i> เพิ่มรายการทดสอบ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Footers -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้สรุปข้อมูล</h4>
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700">ลงชื่อ</label>
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ชื่อ-นามสกุล">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700">ตำแหน่ง</label>
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ระบุตำแหน่ง">
+                            </div>
+                        </div>
+                        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ตรวจสอบ (Supervisor)</h4>
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700">ลงชื่อ</label>
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ชื่อ-นามสกุล">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700">ตำแหน่ง</label>
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ระบุตำแหน่ง">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attachments IQC -->
+                    <div class="space-y-4">
+                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <i data-lucide="paperclip" class="w-4 h-4"></i> แนบหลักฐาน / ตารางบันทึกประจำวัน (หลายไฟล์)
+                        </label>
+                        <div class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-emerald-400 transition-colors cursor-pointer" onclick="$('#iqc-files').click()">
+                            <i data-lucide="upload-cloud" class="w-10 h-10 text-slate-400 mx-auto mb-4"></i>
+                            <p class="text-slate-600 font-medium">คลิกเพื่ออัพโหลด หรือลากไฟล์มาวางที่นี่</p>
+                            <input type="file" id="iqc-files" class="hidden" multiple>
+                        </div>
+                        <div id="iqc-file-list" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div class="flex justify-end gap-4 pt-4">
+                        <button type="button" class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all" data-target="home">ยกเลิก</button>
+                        <button type="button" onclick="exportIQC()" class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
+                            <i data-lucide="file-down" class="w-4 h-4"></i> Export PDF
+                        </button>
+                        <button type="submit" class="px-8 py-2 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all">บันทึกข้อมูล</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        $(document).ready(function() {
+            // Track if form is modified
+            let isDirty = false;
+            
+            $(document).on('change input', 'form input, form select, form textarea', function() {
+                isDirty = true;
+            });
+
+            function resetAllForms() {
+                $('form').each(function() {
+                    this.reset();
+                });
+                $('#eqa-file-list, #iqc-file-list').empty();
+                $('#eqa-nc-section').hide().addClass('hidden');
+                isDirty = false;
+            }
+
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
+            // Set current date
+            moment.locale('th');
+            $('#current-date').text(moment().format('LLLL'));
+
+            // Navigation
+            $('.nav-btn').click(function() {
+                const target = $(this).data('target');
+                const currentTab = $('.form-card.active').attr('id');
+
+                // If on home/dashboard, no need to check dirty
+                if (currentTab === 'home' || !isDirty) {
+                    performSwitch(target);
+                    return;
+                }
+
+                // If dirty, show SweetAlert
+                Swal.fire({
+                    title: 'คุณมีการแก้ไขข้อมูลที่ยังไม่ได้บันทึก',
+                    text: "ต้องการละทิ้งการแก้ไขและเปลี่ยนหน้าหรือไม่?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3b82f6',
+                    cancelButtonColor: '#94a3b8',
+                    confirmButtonText: 'ตกลง (รีเซ็ตข้อมูล)',
+                    cancelButtonText: 'ยกเลิก',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        resetAllForms();
+                        performSwitch(target);
+                    }
+                });
+            });
+
+            function performSwitch(target) {
+                // Update UI for buttons
+                $('.nav-btn').removeClass('active-nav bg-blue-600 text-white').addClass('text-slate-600 hover:bg-slate-100');
+                $(`.nav-btn[data-target="${target}"]`).addClass('active-nav bg-blue-600 text-white').removeClass('text-slate-600 hover:bg-slate-100');
+                
+                // Switch forms
+                $('.form-card').removeClass('active');
+                $(`#${target}`).addClass('active');
+
+                // Special treatment for Dashboard button
+                if (target === 'home') {
+                    $('.nav-btn[data-target="home"]').removeClass('bg-blue-600').addClass('bg-slate-100 text-slate-900');
+                }
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Toggle EQA NC Section
+            $('input[name="evaluation-result"]').change(function() {
+                if ($(this).val() === 'fail') {
+                    $('#eqa-nc-section').slideDown().removeClass('hidden');
+                } else {
+                    $('#eqa-nc-section').slideUp();
+                }
+            });
+
+            // Add IQC Row
+            $('#add-iqc-row').click(function() {
+                const newRow = `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                        <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"></td>
+                        <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
+                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                        <td class="p-2 border-r border-slate-100">
+                            <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                                <option value="">-</option>
+                                <option value="S">Systematic</option>
+                                <option value="R">Random</option>
+                            </select>
+                        </td>
+                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                        <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                        <td class="p-2 text-center border-l border-slate-100">
+                            <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                        </td>
+                    </tr>
+                `;
+                $('#iqc-table-body').append(newRow);
+                lucide.createIcons();
+            });
+
+            // File Upload Preview EQA
+            $('#eqa-files').change(function() {
+                const files = this.files;
+                $('#eqa-file-list').empty();
+                for (let i = 0; i < files.length; i++) {
+                    $('#eqa-file-list').append(`
+                        <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700">
+                            <i data-lucide="file" class="w-3 h-3"></i>
+                            ${files[i].name}
+                        </div>
+                    `);
+                }
+                lucide.createIcons();
+            });
+
+            // File Upload Preview IQC
+            $('#iqc-files').change(function() {
+                const files = this.files;
+                $('#iqc-file-list').empty();
+                for (let i = 0; i < files.length; i++) {
+                    $('#iqc-file-list').append(`
+                        <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700">
+                            <i data-lucide="file" class="w-3 h-3"></i>
+                            ${files[i].name}
+                        </div>
+                    `);
+                }
+                lucide.createIcons();
+            });
+
+            // Form Submissions (Simulated)
+            $('form').submit(function(e) {
+                e.preventDefault();
+                alert('บันทึกข้อมูลสำเร็จ!');
+                $('.nav-btn[data-target="home"]').click();
+            });
+        });
+
+        async function exportEQA() {
+            // Wait for fonts to be ready
+            await document.fonts.ready;
+            
+            const element = document.createElement('div');
+            // Force styles for the export container
+            element.style.position = 'fixed';
+            element.style.left = '-9999px';
+            element.style.top = '0';
+            element.style.width = '210mm';
+            element.style.minHeight = '297mm';
+            element.style.padding = '20mm';
+            element.style.backgroundColor = 'white';
+            element.style.fontFamily = "'Noto Sans Thai', sans-serif";
+            document.body.appendChild(element);
+            
+            const formData = {
+                dept: $('#eqa-form select:eq(0)').val() || '-',
+                project: $('#eqa-form input:eq(0)').val() || '-',
+                round: $('#eqa-form input:eq(1)').val() || '-',
+                dateRec: $('#eqa-form input:eq(2)').val() || '-',
+                cond: $('input[name="sample-condition"]:checked').next('span').text() || '-',
+                condExt: $('#eqa-form input:eq(5)').val() || '',
+                testDate: $('#eqa-form input:eq(6)').val() || '-',
+                preparer: $('#eqa-form input:eq(7)').val() || '-',
+                reporter: $('#eqa-form input:eq(8)').val() || '-',
+                reportDate: $('#eqa-form input:eq(9)').val() || '-',
+                testItem: $('#eqa-form input:eq(10)').val() || '-',
+                evalResult: $('input[name="evaluation-result"]:checked').next('span').text() || '-',
+                evalCriteria: $('#eqa-form input:eq(13)').val() || '-',
+                evalDate: $('#eqa-form input:eq(14)').val() || '-'
+            };
+
+            element.innerHTML = `
+                <div style="border: 1px solid #000; padding: 15px; min-height: 260mm;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+                        <div style="font-weight: bold; font-size: 24px; color: #000;">N Health</div>
+                        <div style="text-align: right; font-size: 10px; color: #666;">FI-ALP-PY3-00-011-1 R02</div>
+                    </div>
+                    <h2 style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 25px;">แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ โดยองค์กรภายนอก</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px;">
+                        <tr style="height: 35px;"><td style="width: 15%;">หน่วยงาน:</td><td style="border-bottom: 1px dotted #000; width: 35%;">${formData.dept}</td><td style="width: 15%; padding-left: 10px;">โครงการ:</td><td style="border-bottom: 1px dotted #000;">${formData.project}</td></tr>
+                        <tr style="height: 35px;"><td>รอบที่:</td><td style="border-bottom: 1px dotted #000;">${formData.round}</td><td style="padding-left: 10px;">วันที่ได้รับ:</td><td style="border-bottom: 1px dotted #000;">${formData.dateRec}</td></tr>
+                        <tr style="height: 35px;"><td>สภาพตัวอย่าง:</td><td style="border-bottom: 1px dotted #000;">${formData.cond} ${formData.condExt}</td><td style="padding-left: 10px;">วันที่ทดสอบ:</td><td style="border-bottom: 1px dotted #000;">${formData.testDate}</td></tr>
+                        <tr style="height: 35px;"><td>ผู้เตรียม:</td><td style="border-bottom: 1px dotted #000;">${formData.preparer}</td><td style="padding-left: 10px;">ผู้รายงาน:</td><td style="border-bottom: 1px dotted #000;">${formData.reporter}</td></tr>
+                        <tr style="height: 35px;"><td>วันที่รายงาน:</td><td style="border-bottom: 1px dotted #000;">${formData.reportDate}</td><td></td><td></td></tr>
+                    </table>
+                    
+                    <div style="margin-top: 30px; font-weight: bold; font-size: 15px; background: #eee; padding: 5px 10px; border: 1px solid #000;">ผลการประเมิน</div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px;">
+                        <tr style="height: 35px;"><td style="width: 20%;">รายการทดสอบ:</td><td style="border-bottom: 1px dotted #000;">${formData.testItem}</td><td style="width: 20%; padding-left: 10px;">ผลการประเมิน:</td><td style="border-bottom: 1px dotted #000;">${formData.evalResult}</td></tr>
+                        <tr style="height: 35px;"><td>เกณฑ์การประเมิน:</td><td style="border-bottom: 1px dotted #000;">${formData.evalCriteria}</td><td style="padding-left: 10px;">วันที่ได้รับผล:</td><td style="border-bottom: 1px dotted #000;">${formData.evalDate}</td></tr>
+                    </table>
+                    
+                    <div style="margin-top: 100px; display: flex; justify-content: space-around; font-size: 13px;">
+                        <div style="text-align: center;">ลงชื่อ......................................................<br>(ผู้ทบทวนผลการประเมิน)</div>
+                        <div style="text-align: center;">ลงชื่อ......................................................<br>(ผู้ตรวจสอบผลการประเมิน)</div>
+                    </div>
+                </div>
+            `;
+
+            const opt = {
+                margin: 0,
+                filename: 'EQA_Evaluation_' + moment().format('YYYYMMDD') + '.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,
+                    letterRendering: true
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            try {
+                await html2pdf().set(opt).from(element).save();
+            } finally {
+                document.body.removeChild(element);
+            }
+        }
+
+        async function exportIQC() {
+            await document.fonts.ready;
+
+            const element = document.createElement('div');
+            element.style.position = 'fixed';
+            element.style.left = '-9999px';
+            element.style.top = '0';
+            element.style.width = '297mm';
+            element.style.minHeight = '210mm';
+            element.style.padding = '15mm';
+            element.style.backgroundColor = 'white';
+            element.style.fontFamily = "'Noto Sans Thai', sans-serif";
+            document.body.appendChild(element);
+
+            const header = {
+                dept: $('#iqc-form select:eq(0)').val() || '-',
+                month: $('#iqc-form select:eq(1)').val() || '-',
+                year: $('#iqc-form input:eq(0)').val() || '-',
+                name: $('#iqc-form input:eq(1)').val() || '-',
+                lot: $('#iqc-form input:eq(2)').val() || '-',
+                exp: $('#iqc-form input:eq(3)').val() || '-',
+                analyzer: $('#iqc-form input:eq(4)').val() || '-'
+            };
+
+            let tableRows = '';
+            $('#iqc-table-body tr').each(function() {
+                const inputs = $(this).find('input, select');
+                tableRows += `
+                    <tr style="height: 30px;">
+                        <td style="padding: 5px; border: 1px solid #000;">${$(inputs[0]).val() || ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000; text-align: center;">${$(inputs[1]).is(':checked') ? '✓' : ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000; text-align: center;">${$(inputs[2]).is(':checked') ? 'X' : ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000; text-align: center;">${$(inputs[3]).val() || ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000; text-align: center;">${$(inputs[4]).val() || ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000; text-align: center;">${$(inputs[5]).val() || ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000;">${$(inputs[6]).val() || ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000;">${$(inputs[7]).val() || ''}</td>
+                        <td style="padding: 5px; border: 1px solid #000;">${$(inputs[8]).val() || ''}</td>
+                    </tr>
+                `;
+            });
+
+            element.innerHTML = `
+                <div style="border: 1px solid #000; padding: 15px; min-height: 180mm;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px;">
+                        <div style="font-weight: bold; font-size: 22px;">N Health</div>
+                        <div style="font-size: 10px; color: #666;">FM-ALP-PY3-00-004-93 R02</div>
+                    </div>
+                    <h2 style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 15px;">ตารางสรุปการควบคุมคุณภาพภายในของหน่วย</h2>
+                    <div style="font-size: 13px; margin-bottom: 15px; line-height: 1.6;">
+                        <strong>หน่วยงาน:</strong> ${header.dept} &nbsp;&nbsp; 
+                        <strong>ประจำเดือน:</strong> ${header.month} ${header.year} &nbsp;&nbsp; 
+                        <strong>เครื่องมือ:</strong> ${header.analyzer}<br>
+                        <strong>Control:</strong> ${header.name} &nbsp;&nbsp; 
+                        <strong>Lot:</strong> ${header.lot} &nbsp;&nbsp; 
+                        <strong>Exp:</strong> ${header.exp}
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #000;">
+                        <thead style="background-color: #f5f5f5;">
+                            <tr>
+                                <th style="border: 1px solid #000; padding: 8px;" rowspan="2">Parameter / Test</th>
+                                <th style="border: 1px solid #000; padding: 8px;" colspan="2">ผล IQC</th>
+                                <th style="border: 1px solid #000; padding: 8px;" colspan="6">กรณีไม่ผ่าน</th>
+                            </tr>
+                            <tr>
+                                <th style="border: 1px solid #000; padding: 4px; width: 40px;">ผ่าน</th>
+                                <th style="border: 1px solid #000; padding: 4px; width: 40px;">ไม่ผ่าน</th>
+                                <th style="border: 1px solid #000; padding: 4px; width: 40px;">Lvl</th>
+                                <th style="border: 1px solid #000; padding: 4px; width: 40px;">Rule</th>
+                                <th style="border: 1px solid #000; padding: 4px; width: 60px;">Type</th>
+                                <th style="border: 1px solid #000; padding: 4px;">สาเหตุ</th>
+                                <th style="border: 1px solid #000; padding: 4px;">การแก้ไข</th>
+                                <th style="border: 1px solid #000; padding: 4px;">ผล</th>
+                            </tr>
+                        </thead>
+                        <tbody>${tableRows}</tbody>
+                    </table>
+                    <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 13px;">
+                        <div style="text-align: center;">ลงชื่อ......................................................<br>ผู้สรุปข้อมูล</div>
+                        <div style="text-align: center;">ลงชื่อ......................................................<br>ผู้ตรวจสอบ (Supervisor)</div>
+                    </div>
+                </div>
+            `;
+
+            const opt = {
+                margin: 0,
+                filename: 'IQC_Summary_' + header.month + '_' + header.year + '.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+            
+            try {
+                await html2pdf().set(opt).from(element).save();
+            } finally {
+                document.body.removeChild(element);
+            }
+        }
+    </script>
+</body>
+</html>
