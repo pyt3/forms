@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,50 +11,91 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.1.3/dist/signature_pad.umd.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/tanaikech/ResumableUploadForGoogleDrive_js@2.0.2/resumableupload2_js.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         body {
             font-family: 'Noto Sans Thai', sans-serif;
             background-color: #f8fafc;
         }
+
         .form-card {
             display: none;
         }
+
         .form-card.active {
             display: block;
         }
+
         .nav-item.active {
             background-color: #3b82f6;
             color: white;
         }
+
         /* SweetAlert2 Custom Style */
         .swal2-popup {
             border-radius: 1.5rem !important;
             font-family: 'Noto Sans Thai', sans-serif !important;
             padding: 2rem !important;
         }
+
         .swal2-title {
             font-weight: 700 !important;
             color: #1e293b !important;
         }
+
         .swal2-html-container {
             color: #64748b !important;
         }
+
         .swal2-actions {
             gap: 0.5rem !important;
         }
+
         .swal2-styled.swal2-confirm {
             border-radius: 0.75rem !important;
             padding: 0.6rem 2rem !important;
             font-weight: 600 !important;
         }
+
         .swal2-styled.swal2-cancel {
             border-radius: 0.75rem !important;
             padding: 0.6rem 2rem !important;
             font-weight: 600 !important;
         }
+
+        .flatpickr-input {
+            background: #fff;
+        }
+
+        .signature-canvas {
+            width: 100%;
+            height: 220px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 1rem;
+            background: #ffffff;
+        }
+
+        .progress-wrap {
+            background: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 10px;
+            width: 0;
+            background: linear-gradient(90deg, #0ea5e9, #22c55e);
+            transition: width 0.2s ease;
+        }
     </style>
 </head>
+
 <body class="text-slate-800">
     <!-- Navbar -->
     <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
@@ -64,14 +106,25 @@
                     <span class="text-xl font-bold text-slate-900 tracking-tight">QualityLabHub</span>
                 </div>
                 <div class="hidden md:flex gap-6">
-                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all active-nav" data-target="home">
+                    <button
+                        class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all active-nav"
+                        data-target="home">
                         <i data-lucide="layout-dashboard" class="w-4 h-4 inline-block mr-1"></i> Dashboard
                     </button>
-                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-target="eqa-form">
+                    <button
+                        class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
+                        data-target="eqa-form">
                         <i data-lucide="file-text" class="w-4 h-4 inline-block mr-1"></i> ประเมินภายนอก (EQA)
                     </button>
-                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-target="iqc-form">
+                    <button
+                        class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
+                        data-target="iqc-form">
                         <i data-lucide="activity" class="w-4 h-4 inline-block mr-1"></i> ควบคุมภายใน (IQC)
+                    </button>
+                    <button
+                        class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
+                        data-target="records-panel">
+                        <i data-lucide="table-properties" class="w-4 h-4 inline-block mr-1"></i> ข้อมูลที่บันทึก
                     </button>
                 </div>
                 <div class="flex items-center gap-4">
@@ -82,21 +135,24 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         <!-- Dashboard / Welcome Area -->
         <div id="home" class="form-card active">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer nav-btn" data-target="eqa-form">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer nav-btn"
+                    data-target="eqa-form">
                     <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
                         <i data-lucide="external-link" class="w-6 h-6 text-blue-600"></i>
                     </div>
                     <h2 class="text-xl font-bold mb-2">ประเมินคุณภาพโดยองค์กรภายนอก</h2>
-                    <p class="text-slate-500 mb-6">บันทึกผลการประเมินคุณภาพห้องปฏิบัติการ (PT / EQA / Inter Laboratory Comparison)</p>
+                    <p class="text-slate-500 mb-6">บันทึกผลการประเมินคุณภาพห้องปฏิบัติการ (PT / EQA / Inter Laboratory
+                        Comparison)</p>
                     <div class="flex items-center text-blue-600 font-semibold text-sm">
                         เริ่มกรอกแบบฟอร์ม <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
                     </div>
                 </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer nav-btn" data-target="iqc-form">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer nav-btn"
+                    data-target="iqc-form">
                     <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-6">
                         <i data-lucide="bar-chart-3" class="w-6 h-6 text-emerald-600"></i>
                     </div>
@@ -107,35 +163,53 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex items-start gap-4">
                 <i data-lucide="info" class="w-6 h-6 text-blue-600 mt-1"></i>
                 <div>
                     <h3 class="font-bold text-blue-900">คำแนะนำการใช้งาน</h3>
-                    <p class="text-blue-800 text-sm mt-1">ท่านสามารถเลือกแบบฟอร์มที่ต้องการจากรายการด้านบน ระบบจะเก็บข้อมูลไว้ในรูปแบบออนไลน์และสามารถแนบหลักฐานเพิ่มเติมได้หลายไฟล์</p>
+                    <p class="text-blue-800 text-sm mt-1">ท่านสามารถเลือกแบบฟอร์มที่ต้องการจากรายการด้านบน
+                        ระบบจะเก็บข้อมูลไว้ในรูปแบบออนไลน์และสามารถแนบหลักฐานเพิ่มเติมได้หลายไฟล์</p>
+                </div>
+            </div>
+
+            <div class="bg-white mt-8 p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer nav-btn"
+                data-target="records-panel">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold mb-2">จัดการข้อมูลที่บันทึกแล้ว</h2>
+                        <p class="text-slate-500">ค้นหา แก้ไข และลบข้อมูลย้อนหลัง พร้อมกรองวันที่แบบรวดเร็ว</p>
+                    </div>
+                    <i data-lucide="database" class="w-7 h-7 text-indigo-600"></i>
                 </div>
             </div>
         </div>
 
         <!-- Form 1: EQA -->
         <div id="eqa-form" class="form-card">
+            <div class="flex justify-end mb-2">
+                <button type="button" id="mock-eqa-btn"
+                    class="px-2 py-1 rounded bg-amber-100 text-amber-700 font-semibold hover:bg-amber-200 text-xs">เติมข้อมูลตัวอย่าง (Mockup)</button>
+            </div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div class="bg-slate-50 p-6 border-b border-slate-200">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h1 class="text-2xl font-bold text-slate-900">แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ โดยองค์กรภายนอก</h1>
+                            <h1 class="text-2xl font-bold text-slate-900">แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ
+                                โดยองค์กรภายนอก</h1>
                             <p class="text-slate-500 text-sm">(PT / EQA / Inter Laboratory Comparison)</p>
                         </div>
                         <div class="text-right text-xs text-slate-400">FI-ALP-PY3-00-011-1 R02</div>
                     </div>
                 </div>
-                
+
                 <form class="p-8 space-y-8">
                     <!-- General Info -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">หน่วยงาน</label>
-                            <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white">
+                            <select
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white">
                                 <option value="" disabled selected>เลือกหน่วยงาน</option>
                                 <option>Chemistry</option>
                                 <option>Immunology</option>
@@ -148,32 +222,41 @@
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-sm font-semibold text-slate-700">โครงการ</label>
-                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุชื่อโครงการ">
+                            <input type="text"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                placeholder="ระบุชื่อโครงการ">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">รอบที่</label>
-                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="เช่น 1/2567">
+                            <input type="text"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                placeholder="เช่น 1/2567">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">วันที่ได้รับตัวอย่าง</label>
-                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                            <input type="date"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">สภาพตัวอย่าง</label>
                             <div class="flex gap-4 py-2">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="sample-condition" value="good" class="w-4 h-4 text-blue-600">
+                                    <input type="radio" name="sample-condition" value="good"
+                                        class="w-4 h-4 text-blue-600">
                                     <span>สมบูรณ์</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="sample-condition" value="bad" class="w-4 h-4 text-blue-600">
+                                    <input type="radio" name="sample-condition" value="bad"
+                                        class="w-4 h-4 text-blue-600">
                                     <span>ไม่สมบูรณ์</span>
                                 </label>
                             </div>
                         </div>
                         <div class="space-y-2 md:col-span-3">
                             <label class="text-sm font-semibold text-slate-700">รายละเอียดเพิ่มเติม (ถ้ามี)</label>
-                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุสาเหตุความไม่สมบูรณ์ หรือข้อมูลอื่นๆ">
+                            <input type="text"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                placeholder="ระบุสาเหตุความไม่สมบูรณ์ หรือข้อมูลอื่นๆ">
                         </div>
                     </div>
 
@@ -183,19 +266,25 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">วันที่ทดสอบ</label>
-                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                            <input type="date"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">ผู้เตรียม / ละลายตัวอย่าง</label>
-                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ชื่อ-นามสกุล">
+                            <input type="text"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                placeholder="ชื่อ-นามสกุล">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">ผู้รายงานผล / ส่งผล</label>
-                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ชื่อ-นามสกุล">
+                            <input type="text"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                placeholder="ชื่อ-นามสกุล">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">วันที่รายงานผล</label>
-                            <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                            <input type="date"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                         </div>
                     </div>
 
@@ -209,38 +298,48 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">รายการทดสอบ</label>
-                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="เช่น D-Dimer, HbA1c">
+                                <input type="text"
+                                    class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                    placeholder="เช่น D-Dimer, HbA1c">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">ผลการประเมิน</label>
                                 <div class="flex gap-4 py-2">
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="evaluation-result" value="pass" class="w-4 h-4 text-emerald-600">
+                                        <input type="radio" name="evaluation-result" value="pass"
+                                            class="w-4 h-4 text-emerald-600">
                                         <span>ผ่าน</span>
                                     </label>
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="evaluation-result" value="fail" class="w-4 h-4 text-red-600">
+                                        <input type="radio" name="evaluation-result" value="fail"
+                                            class="w-4 h-4 text-red-600">
                                         <span>ไม่ผ่าน</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">เกณฑ์การประเมิน</label>
-                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="เช่น % Bias < 10%">
+                                <input type="text"
+                                    class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                    placeholder="เช่น % Bias < 10%">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">วันที่ได้รับผลประเมิน</label>
-                                <input type="date" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                                <input type="date"
+                                    class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                             </div>
                         </div>
 
                         <!-- Non-conformance Section -->
-                        <div id="eqa-nc-section" class="hidden space-y-6 p-6 bg-red-50 rounded-2xl border border-red-100">
+                        <div id="eqa-nc-section"
+                            class="hidden space-y-6 p-6 bg-red-50 rounded-2xl border border-red-100">
                             <h4 class="font-bold text-red-800">กรณีผลการประเมินไม่ผ่าน</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-slate-700">ผลการทำ IQC ในวันที่ทดสอบ</label>
-                                    <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
+                                    <label class="text-sm font-semibold text-slate-700">ผลการทำ IQC
+                                        ในวันที่ทดสอบ</label>
+                                    <select
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
                                         <option value="pass">ผ่าน</option>
                                         <option value="pass-fix">ผ่านแบบมีการแก้ไข</option>
                                         <option value="fail">ไม่ผ่าน</option>
@@ -248,7 +347,8 @@
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">สภาพเครื่องมือ</label>
-                                    <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
+                                    <select
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
                                         <option value="ready">พร้อมใช้งาน (มีการ maintenance ตามรอบ)</option>
                                         <option value="problem">มีปัญหา</option>
                                     </select>
@@ -256,16 +356,23 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">สาเหตุ</label>
-                                <textarea rows="3" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุสาเหตุที่ไม่ผ่าน"></textarea>
+                                <textarea rows="3"
+                                    class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                    placeholder="ระบุสาเหตุที่ไม่ผ่าน"></textarea>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-slate-700">วิธีการแก้ไข / ผลการแก้ไข</label>
-                                    <textarea rows="3" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุแนวทางการแก้ไขและผลลัพธ์"></textarea>
+                                    <label class="text-sm font-semibold text-slate-700">วิธีการแก้ไข /
+                                        ผลการแก้ไข</label>
+                                    <textarea rows="3"
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                        placeholder="ระบุแนวทางการแก้ไขและผลลัพธ์"></textarea>
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">การป้องกัน</label>
-                                    <textarea rows="3" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" placeholder="ระบุแนวทางการป้องกันการเกิดซ้ำ"></textarea>
+                                    <textarea rows="3"
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                        placeholder="ระบุแนวทางการป้องกันการเกิดซ้ำ"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -277,22 +384,34 @@
                     <div class="space-y-4">
                         <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
                             <i data-lucide="paperclip" class="w-4 h-4"></i> แนบไฟล์หลักฐาน (หลายไฟล์)
+                            <span id="eqa-upload-counter" class="text-xs font-medium text-slate-500 ml-2">0/10
+                                files</span>
                         </label>
-                        <div class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" onclick="$('#eqa-files').click()">
-                            <i data-lucide="upload-cloud" class="w-10 h-10 text-slate-400 mx-auto mb-4"></i>
-                            <p class="text-slate-600 font-medium">คลิกเพื่ออัพโหลด หรือลากไฟล์มาวางที่นี่</p>
-                            <p class="text-slate-400 text-xs mt-2">รองรับไฟล์ PDF, PNG, JPG, Word, Excel</p>
-                            <input type="file" id="eqa-files" class="hidden" multiple>
+                        <div id="eqa-upload-picker-wrap" class="text-left my-2">
+                            <button type="button" onclick="$('#eqa-files').click()" class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-blue-700 border border-blue-200 shadow hover:bg-blue-50 hover:border-blue-400 transition-all font-semibold">
+                                <i data-lucide="upload-cloud" class="w-5 h-5"></i> อัพโหลดไฟล์หลักฐาน
+                            </button>
                         </div>
-                        <div id="eqa-file-list" class="flex flex-wrap gap-2"></div>
+                        <input type="file" id="eqa-files" class="hidden" multiple>
+                        <p id="eqa-upload-limit-notice"
+                            class="hidden mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
+                            File limit reached</p>
+                        <button id="eqa-remove-all-btn" type="button"
+                            class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600">Remove
+                            all</button>
+                        <div id="eqa-file-list" class="mt-4 grid gap-3 md:grid-cols-2"></div>
                     </div>
 
                     <div class="flex justify-end gap-4 pt-4">
-                        <button type="button" class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all" data-target="home">ยกเลิก</button>
-                        <button type="button" onclick="exportEQA()" class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
+                        <button type="button"
+                            class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all"
+                            data-target="home">ยกเลิก</button>
+                        <button type="button" onclick="exportEQA()"
+                            class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
                             <i data-lucide="file-down" class="w-4 h-4"></i> Export PDF
                         </button>
-                        <button type="submit" class="px-8 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">บันทึกข้อมูล</button>
+                        <button type="submit"
+                            class="px-8 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
@@ -300,6 +419,10 @@
 
         <!-- Form 2: IQC -->
         <div id="iqc-form" class="form-card">
+            <div class="flex justify-end mb-2">
+                <button type="button" id="mock-iqc-btn"
+                    class="px-2 py-1 rounded bg-amber-100 text-amber-700 font-semibold hover:bg-amber-200 text-xs">เติมข้อมูลตัวอย่าง (Mockup)</button>
+            </div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div class="bg-slate-50 p-6 border-b border-slate-200">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -316,7 +439,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-sm font-semibold text-slate-700">หน่วยงาน / แผนก</label>
-                            <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all bg-white">
+                            <select
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all bg-white">
                                 <option value="" disabled selected>เลือกหน่วยงาน</option>
                                 <option>Chemistry</option>
                                 <option>Immunology</option>
@@ -326,10 +450,12 @@
                                 <option>Microbiology</option>
                                 <option>Microscropy</option>
                             </select>
+
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">ประจำเดือน</label>
-                            <select class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all bg-white">
+                            <select
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all bg-white">
                                 <option>มกราคม</option>
                                 <option>กุมภาพันธ์</option>
                                 <option>มีนาคม</option>
@@ -346,7 +472,9 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">ปี พ.ศ.</label>
-                            <input type="number" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all" value="2569">
+                            <input type="number"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                                value="2569">
                         </div>
                     </div>
 
@@ -356,21 +484,26 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-slate-500 uppercase">Control Name</label>
-                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm" placeholder="เช่น Roche CARDIAC IQC">
+                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
+                                    placeholder="เช่น Roche CARDIAC IQC">
                             </div>
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-slate-500 uppercase">Lot Number</label>
-                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm" placeholder="เช่น 73501793">
+                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
+                                    placeholder="เช่น 73501793">
                             </div>
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-slate-500 uppercase">Expire Date</label>
-                                <input type="date" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm">
+                                <input type="date"
+                                    class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="space-y-1 md:col-span-2">
-                                <label class="text-xs font-bold text-slate-500 uppercase">เครื่องมือที่ใช้ตรวจวิเคราะห์ (Analyzer)</label>
-                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm" placeholder="เช่น Cobas h232">
+                                <label class="text-xs font-bold text-slate-500 uppercase">เครื่องมือที่ใช้ตรวจวิเคราะห์
+                                    (Analyzer)</label>
+                                <input type="text" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
+                                    placeholder="เช่น Cobas h232">
                             </div>
                         </div>
                     </div>
@@ -380,69 +513,124 @@
                         <table class="w-full text-sm text-left">
                             <thead class="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th rowspan="2" class="px-4 py-3 font-bold border-r border-slate-200 min-w-[150px]">Parameter / Test</th>
-                                    <th colspan="2" class="px-4 py-3 font-bold border-b border-r border-slate-200 text-center">ผลการควบคุมคุณภาพ</th>
-                                    <th colspan="6" class="px-4 py-3 font-bold text-center">กรณีการควบคุมคุณภาพไม่ผ่าน</th>
-                                    <th rowspan="2" class="px-4 py-3 font-bold text-center border-l border-slate-200">จัดการ</th>
+                                    <th rowspan="2" class="px-4 py-3 font-bold border-r border-slate-200 min-w-[150px]">
+                                        Parameter / Test</th>
+                                    <th colspan="2"
+                                        class="px-4 py-3 font-bold border-b border-r border-slate-200 text-center">
+                                        ผลการควบคุมคุณภาพ</th>
+                                    <th colspan="6" class="px-4 py-3 font-bold text-center">กรณีการควบคุมคุณภาพไม่ผ่าน
+                                    </th>
+                                    <th rowspan="2" class="px-4 py-3 font-bold text-center border-l border-slate-200">
+                                        จัดการ</th>
                                 </tr>
                                 <tr class="bg-slate-50 border-b border-slate-200">
-                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ผ่าน</th>
-                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ไม่ผ่าน</th>
-                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">Level</th>
-                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ติดกฎ</th>
-                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-24">Error Type</th>
-                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center min-w-[100px]">สาเหตุ</th>
-                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center min-w-[100px]">การแก้ไข</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ผ่าน
+                                    </th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">
+                                        ไม่ผ่าน</th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">Level
+                                    </th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-16">ติดกฎ
+                                    </th>
+                                    <th class="px-2 py-2 font-semibold border-r border-slate-200 text-center w-24">Error
+                                        Type</th>
+                                    <th
+                                        class="px-2 py-2 font-semibold border-r border-slate-200 text-center min-w-[100px]">
+                                        สาเหตุ</th>
+                                    <th
+                                        class="px-2 py-2 font-semibold border-r border-slate-200 text-center min-w-[100px]">
+                                        การแก้ไข</th>
                                     <th class="px-2 py-2 font-semibold text-center min-w-[100px]">ผลการแก้ไข</th>
                                 </tr>
                             </thead>
                             <tbody id="iqc-table-body">
                                 <!-- Row 1 default -->
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="IQC: Low"></td>
-                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" checked></td>
-                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"
+                                            value="IQC: Low"></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio"
+                                            name="iqc-passfail-0"
+                                            class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" checked>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio"
+                                            name="iqc-passfail-0"
+                                            class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center">
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center">
+                                    </td>
                                     <td class="p-2 border-r border-slate-100">
-                                        <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                                        <select
+                                            class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
                                             <option value="">-</option>
                                             <option value="S">Systematic</option>
                                             <option value="R">Random</option>
                                         </select>
                                     </td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                                    <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded">
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded">
+                                    </td>
+                                    <td class="p-2"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded">
+                                    </td>
                                     <td class="p-2 text-center border-l border-slate-100">
-                                        <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                                        <button type="button" class="text-slate-400 hover:text-red-500"
+                                            onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2"
+                                                class="w-4 h-4 mx-auto"></i></button>
                                     </td>
                                 </tr>
                                 <!-- Row 2 default -->
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="IQC: High"></td>
-                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" checked></td>
-                                    <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"
+                                            value="IQC: High"></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio"
+                                            name="iqc-passfail-1"
+                                            class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" checked>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio"
+                                            name="iqc-passfail-1"
+                                            class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center">
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center">
+                                    </td>
                                     <td class="p-2 border-r border-slate-100">
-                                        <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                                        <select
+                                            class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
                                             <option value="">-</option>
                                             <option value="S">Systematic</option>
                                             <option value="R">Random</option>
                                         </select>
                                     </td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                                    <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded">
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded">
+                                    </td>
+                                    <td class="p-2"><input type="text"
+                                            class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded">
+                                    </td>
                                     <td class="p-2 text-center border-l border-slate-100">
-                                        <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                                        <button type="button" class="text-slate-400 hover:text-red-500"
+                                            onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2"
+                                                class="w-4 h-4 mx-auto"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="p-4 bg-slate-50/50 flex justify-center">
-                            <button type="button" id="add-iqc-row" class="flex items-center gap-2 text-emerald-600 font-semibold text-sm hover:text-emerald-700">
+                            <button type="button" id="add-iqc-row"
+                                class="flex items-center gap-2 text-emerald-600 font-semibold text-sm hover:text-emerald-700">
                                 <i data-lucide="plus-circle" class="w-4 h-4"></i> เพิ่มรายการทดสอบ
                             </button>
                         </div>
@@ -454,204 +642,1204 @@
                             <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้สรุปข้อมูล</h4>
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ลงชื่อ</label>
-                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ชื่อ-นามสกุล">
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
+                                    placeholder="ชื่อ-นามสกุล">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ตำแหน่ง</label>
-                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ระบุตำแหน่ง">
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
+                                    placeholder="ระบุตำแหน่ง">
                             </div>
                         </div>
                         <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
                             <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ตรวจสอบ (Supervisor)</h4>
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ลงชื่อ</label>
-                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ชื่อ-นามสกุล">
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
+                                    placeholder="ชื่อ-นามสกุล">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ตำแหน่ง</label>
-                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white" placeholder="ระบุตำแหน่ง">
+                                <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
+                                    placeholder="ระบุตำแหน่ง">
                             </div>
                         </div>
                     </div>
 
                     <!-- Attachments IQC -->
-                    <div class="space-y-4">
+                    <div class="space-y-4 mt-4">
                         <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                            <i data-lucide="paperclip" class="w-4 h-4"></i> แนบหลักฐาน / ตารางบันทึกประจำวัน (หลายไฟล์)
+                            <i data-lucide="paperclip" class="w-4 h-4"></i> แนบไฟล์หลักฐาน (หลายไฟล์)
+                            <span id="iqc-upload-counter" class="text-xs font-medium text-slate-500 ml-2">0/10
+                                files</span>
                         </label>
-                        <div class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-emerald-400 transition-colors cursor-pointer" onclick="$('#iqc-files').click()">
-                            <i data-lucide="upload-cloud" class="w-10 h-10 text-slate-400 mx-auto mb-4"></i>
-                            <p class="text-slate-600 font-medium">คลิกเพื่ออัพโหลด หรือลากไฟล์มาวางที่นี่</p>
-                            <input type="file" id="iqc-files" class="hidden" multiple>
+                        <div id="iqc-upload-picker-wrap" class="text-left my-2">
+                            <button type="button" onclick="$('#iqc-files').click()" class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-emerald-700 border border-emerald-200 shadow hover:bg-emerald-50 hover:border-emerald-400 transition-all font-semibold">
+                                <i data-lucide="upload-cloud" class="w-5 h-5"></i> อัพโหลดไฟล์หลักฐาน
+                            </button>
                         </div>
-                        <div id="iqc-file-list" class="flex flex-wrap gap-2"></div>
+                        <input type="file" id="iqc-files" class="hidden" multiple>
+                        <p id="iqc-upload-limit-notice"
+                            class="hidden mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
+                            File limit reached</p>
+                        <button id="iqc-remove-all-btn" type="button"
+                            class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600">Remove
+                            all</button>
+                        <div id="iqc-file-list" class="mt-4 grid gap-3 md:grid-cols-2"></div>
                     </div>
 
                     <div class="flex justify-end gap-4 pt-4">
-                        <button type="button" class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all" data-target="home">ยกเลิก</button>
-                        <button type="button" onclick="exportIQC()" class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
+                        <button type="button"
+                            class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all"
+                            data-target="home">ยกเลิก</button>
+                        <button type="button" onclick="exportIQC()"
+                            class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
                             <i data-lucide="file-down" class="w-4 h-4"></i> Export PDF
                         </button>
-                        <button type="submit" class="px-8 py-2 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all">บันทึกข้อมูล</button>
+                        <button type="submit"
+                            class="px-8 py-2 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all">บันทึกข้อมูล</button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <div id="records-panel" class="form-card">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="bg-slate-50 p-6 border-b border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-900">ข้อมูลที่บันทึกไว้</h2>
+                    <p class="text-sm text-slate-500">ค้นหาและจัดการรายการที่เคยบันทึก โดยกรองช่วงวันที่และประเภทฟอร์ม
+                    </p>
+                </div>
+
+                <div class="p-6 border-b border-slate-100 bg-white">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="text-sm font-semibold text-slate-700">ช่วงวันที่</label>
+                            <input id="filter-date-range" type="text"
+                                class="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                placeholder="เลือกช่วงวันที่">
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">ช่วงวันด่วน</label>
+                            <select id="quick-range"
+                                class="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="today">วันนี้</option>
+                                <option value="week">สัปดาห์นี้</option>
+                                <option value="month">เดือนนี้</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">ประเภท</label>
+                            <select id="filter-type"
+                                class="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                <option value="ALL">ทั้งหมด</option>
+                                <option value="EQA">EQA</option>
+                                <option value="IQC">IQC</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-4 gap-3">
+                        <button type="button" id="btn-reset-filters"
+                            class="px-4 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100">รีเซ็ต</button>
+                        <button type="button" id="btn-load-records"
+                            class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700">ค้นหาข้อมูล</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 border-y border-slate-200">
+                            <tr>
+                                <th class="px-4 py-3 text-left">วันที่</th>
+                                <th class="px-4 py-3 text-left">ประเภท</th>
+                                <th class="px-4 py-3 text-left">หน่วยงาน</th>
+                                <th class="px-4 py-3 text-left">หัวข้อ</th>
+                                <th class="px-4 py-3 text-left">สถานะ</th>
+                                <th class="px-4 py-3 text-left">อัปเดตล่าสุด</th>
+                                <th class="px-4 py-3 text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-table-body"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
     </main>
 
     <script>
-        $(document).ready(function() {
-            // Track if form is modified
-            let isDirty = false;
-            
-            $(document).on('change input', 'form input, form select, form textarea', function() {
-                isDirty = true;
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxRsTyqZ8Ltq5J2aFrQcZLkaFEwSP1GX1yzyj8mFDWs4HWEmWDcZccHWwjifRARavkc/exec';
+        const state = {
+            isDirty: false,
+            editingId: null,
+            records: [],
+            dateRangePicker: null,
+            uploadAuth: null,
+            newEqaFiles: [],
+            newIqcFiles: []
+        };
+
+        $(document).ready(function () {
+            // --- MOCKUP DATA BUTTONS ---
+            $('#mock-eqa-btn').on('click', function () {
+                // เติมข้อมูลตัวอย่าง EQA
+                const $form = $('#eqa-form form');
+                $form.find('select:eq(0)').val('Chemistry');
+                $form.find('input:eq(0)').val('EQA HbA1c 2026');
+                $form.find('input:eq(1)').val('1/2569');
+                $form.find('input:eq(2)').val('2026-04-01');
+                $form.find('input[name="sample-condition"][value="good"]').prop('checked', true);
+                $form.find('input:eq(5)').val('');
+                $form.find('input:eq(6)').val('2026-04-02');
+                $form.find('input:eq(7)').val('สมชาย ใจดี');
+                $form.find('input:eq(8)').val('สมหญิง เก่งงาน');
+                $form.find('input:eq(9)').val('2026-04-03');
+                $form.find('input:eq(10)').val('HbA1c');
+                $form.find('input[name="evaluation-result"][value="pass"]').prop('checked', true);
+                $form.find('input:eq(13)').val('% Bias < 10%');
+                $form.find('input:eq(14)').val('2026-04-05');
             });
 
-            function resetAllForms() {
-                $('form').each(function() {
-                    this.reset();
-                });
-                $('#eqa-file-list, #iqc-file-list').empty();
-                $('#eqa-nc-section').hide().addClass('hidden');
-                isDirty = false;
-            }
-
-            // Initialize Lucide Icons
-            lucide.createIcons();
-
-            // Set current date
-            moment.locale('th');
-            $('#current-date').text(moment().format('LLLL'));
-
-            // Navigation
-            $('.nav-btn').click(function() {
+            $('#mock-iqc-btn').on('click', function () {
+                // เติมข้อมูลตัวอย่าง IQC
+                const $form = $('#iqc-form form');
+                $form.find('select:eq(0)').val('Chemistry');
+                $form.find('select:eq(1)').val('เมษายน');
+                $form.find('input:eq(0)').val('2569');
+                $form.find('input:eq(1)').val('Roche CARDIAC IQC');
+                $form.find('input:eq(2)').val('73501793');
+                $form.find('input:eq(3)').val('2026-12-31');
+                $form.find('input:eq(4)').val('Cobas h232');
+                // เติมแถวในตาราง
+                const $tbody = $('#iqc-table-body');
+                $tbody.empty();
+                $tbody.append(`
+                                <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="IQC: Low"></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio" name="iqc-passfail-0" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" checked></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio" name="iqc-passfail-0" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center" value="1"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center" value="2-2s"></td>
+                                    <td class="p-2 border-r border-slate-100">
+                                        <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                                            <option value="">-</option>
+                                            <option value="S" selected>Systematic</option>
+                                            <option value="R">Random</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="Reagent expired"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="เปลี่ยน reagent"></td>
+                                    <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="ผ่านหลังเปลี่ยน"></td>
+                                    <td class="p-2 text-center border-l border-slate-100">
+                                        <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                                    </td>
+                                </tr>
+                            `);
+                $tbody.append(`
+                                <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="IQC: High"></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio" name="iqc-passfail-1" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"></td>
+                                    <td class="p-2 border-r border-slate-100 text-center"><input type="radio" name="iqc-passfail-1" class="w-4 h-4 rounded text-red-600 focus:ring-red-500" checked></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center" value="2"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center" value="1-3s"></td>
+                                    <td class="p-2 border-r border-slate-100">
+                                        <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                                            <option value="">-</option>
+                                            <option value="S">Systematic</option>
+                                            <option value="R" selected>Random</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="เครื่องมือ error"></td>
+                                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="แจ้งช่างซ่อม"></td>
+                                    <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="รอผลซ่อม"></td>
+                                    <td class="p-2 text-center border-l border-slate-100">
+                                        <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                                    </td>
+                                </tr>
+                            `);
+                lucide.createIcons();
+            });
+            // --- END MOCKUP DATA BUTTONS ---
+            // Enable navigation for all nav-btn (including dashboard cards)
+            $(document).on('click', '.nav-btn', function (e) {
                 const target = $(this).data('target');
-                const currentTab = $('.form-card.active').attr('id');
-
-                // If on home/dashboard, no need to check dirty
-                if (currentTab === 'home' || !isDirty) {
+                if (target) {
                     performSwitch(target);
+                }
+            });
+            // IQC file upload logic (Admin style)
+            $('#iqc-files').on('change', function () {
+                handleIqcFileSelection(this.files);
+                $(this).val('');
+            });
+            $('#iqc-remove-all-btn').on('click', function () {
+                clearAllIqcUploads();
+            });
+            initDateRangePicker();
+            renderIqcFileList();
+            $('input[type="date"]').not('#filter-date-range').flatpickr({
+                dateFormat: 'Y-m-d',
+                altFormat: 'd/m/Y',
+                altInput: true,
+                allowInput: true,
+                placeHolder: 'Select date'
+            });
+            function handleIqcFileSelection(fileList) {
+                const FILE_UPLOAD_LIMIT = 10;
+                const selectedFiles = Array.from(fileList || []);
+                if (!selectedFiles.length) return;
+                const currentCount = state.newIqcFiles.length;
+                if (currentCount >= FILE_UPLOAD_LIMIT) {
+                    showIqcLimitNotice();
                     return;
                 }
+                if (currentCount + selectedFiles.length > FILE_UPLOAD_LIMIT) {
+                    showIqcLimitNotice();
+                    return;
+                }
+                selectedFiles.forEach((file) => {
+                    const fileObj = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        file: file,
+                        uploadStatus: 'PENDING',
+                        progress: 0,
+                        id: null // will be set after upload
+                    };
+                    state.newIqcFiles.push(fileObj);
+                    uploadIqcFile(fileObj, state.newIqcFiles.length - 1);
+                });
+                renderIqcFileList();
+            }
 
-                // If dirty, show SweetAlert
+            function renderIqcFileList() {
+                const $list = $('#iqc-file-list').empty();
+                const files = state.newIqcFiles;
+                $('#iqc-upload-counter').text(`${files.length}/10 files`);
+                $('#iqc-remove-all-btn').toggleClass('hidden', files.length === 0);
+                $('#iqc-upload-limit-notice').toggleClass('hidden', files.length < 10);
+                if (!files.length) {
+                    $list.append('<div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 md:col-span-2">No files attached yet.</div>');
+                    return;
+                }
+                files.forEach((file, idx) => {
+                    let statusHtml = '';
+                    let progressBarHtml = '';
+                    if (file.uploadStatus === 'UPLOADING') {
+                        statusHtml = `<span class='ml-2 text-xs text-blue-500'>Uploading... ${file.progress || 0}%</span>`;
+                        progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
+                            <div class='flex-1 bg-slate-100 rounded-full h-2'>
+                                <div class='bg-blue-400 h-2 rounded-full' style='width:${file.progress || 0}%'></div>
+                            </div>
+                            ${statusHtml}
+                        </div>`;
+                        statusHtml = '';
+                    } else if (file.uploadStatus === 'PENDING') {
+                        progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
+                            <div class='flex-1 bg-slate-100 rounded-full h-2'></div>
+                            <span class='ml-2 text-xs text-blue-400'>Initiating...</span>
+                        </div>`;
+                    } else if (file.uploadStatus === 'UPLOADED') {
+                        statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
+                    } else if (file.uploadStatus === 'ERROR') {
+                        statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
+                    }
+                    $list.append(`
+                        <div class="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="paperclip" class="w-4 h-4 text-emerald-600"></i>
+                                <span class="truncate text-sm font-semibold text-slate-800">${escapeHtml(file.name)}</span>
+                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                                ${statusHtml}
+                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-iqc-file="${idx}">Remove</button>
+                            </div>
+                            ${progressBarHtml}
+                        </div>
+                    `);
+                });
+                $list.find('[data-remove-iqc-file]').on('click', function () {
+                    const idx = Number($(this).attr('data-remove-iqc-file'));
+                    state.newIqcFiles.splice(idx, 1);
+                    renderIqcFileList();
+                });
+            }
+
+            function clearAllIqcUploads() {
+                state.newIqcFiles = [];
+                renderIqcFileList();
+            }
+
+            function showIqcLimitNotice() {
+                $('#iqc-upload-limit-notice').removeClass('hidden');
+                setTimeout(() => {
+                    $('#iqc-upload-limit-notice').addClass('hidden');
+                }, 2000);
+            }
+
+            // formatFileSize, escapeHtml ใช้ร่วมกับ EQA
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // EQA file upload logic (IQC style)
+            $('#eqa-files').on('change', function () {
+                handleEqaFileSelection(this.files);
+                $(this).val('');
+            });
+            $('#eqa-remove-all-btn').on('click', function () {
+                clearAllEqaUploads();
+            });
+            renderEqaFileList();
+
+            function handleEqaFileSelection(fileList) {
+                const FILE_UPLOAD_LIMIT = 10;
+                const selectedFiles = Array.from(fileList || []);
+                if (!selectedFiles.length) return;
+                const currentCount = state.newEqaFiles.length;
+                if (currentCount >= FILE_UPLOAD_LIMIT) {
+                    showEqaLimitNotice();
+                    return;
+                }
+                if (currentCount + selectedFiles.length > FILE_UPLOAD_LIMIT) {
+                    showEqaLimitNotice();
+                    return;
+                }
+                selectedFiles.forEach((file) => {
+                    const fileObj = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        file: file,
+                        uploadStatus: 'PENDING',
+                        progress: 0,
+                        id: null // will be set after upload
+                    };
+                    state.newEqaFiles.push(fileObj);
+                    uploadEqaFile(fileObj, state.newEqaFiles.length - 1);
+                });
+                renderEqaFileList();
+            }
+
+            function renderEqaFileList() {
+                const $list = $('#eqa-file-list').empty();
+                const files = state.newEqaFiles;
+                $('#eqa-upload-counter').text(`${files.length}/10 files`);
+                $('#eqa-remove-all-btn').toggleClass('hidden', files.length === 0);
+                $('#eqa-upload-limit-notice').toggleClass('hidden', files.length < 10);
+                if (!files.length) {
+                    $list.append('<div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 md:col-span-2">No files attached yet.</div>');
+                    return;
+                }
+                files.forEach((file, idx) => {
+                    let statusHtml = '';
+                    let progressBarHtml = '';
+                    if (file.uploadStatus === 'UPLOADING') {
+                        statusHtml = `<span class='ml-2 text-xs text-blue-500'>Uploading... ${file.progress || 0}%</span>`;
+                        progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
+                            <div class='flex-1 bg-slate-100 rounded-full h-2'>
+                                <div class='bg-blue-400 h-2 rounded-full' style='width:${file.progress || 0}%'></div>
+                            </div>
+                            ${statusHtml}
+                        </div>`;
+                        statusHtml = '';
+                    } else if (file.uploadStatus === 'PENDING') {
+                        progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
+                            <div class='flex-1 bg-slate-100 rounded-full h-2'></div>
+                            <span class='ml-2 text-xs text-blue-400'>Initiating...</span>
+                        </div>`;
+                    } else if (file.uploadStatus === 'UPLOADED') {
+                        statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
+                    } else if (file.uploadStatus === 'ERROR') {
+                        statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
+                    }
+                    $list.append(`
+                        <div class="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>
+                                <span class="truncate text-sm font-semibold text-slate-800">${escapeHtml(file.name)}</span>
+                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                                ${statusHtml}
+                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-eqa-file="${idx}">Remove</button>
+                            </div>
+                            ${progressBarHtml}
+                        </div>
+                    `);
+                });
+                $list.find('[data-remove-eqa-file]').on('click', function () {
+                    const idx = Number($(this).attr('data-remove-eqa-file'));
+                    state.newEqaFiles.splice(idx, 1);
+                    renderEqaFileList();
+                });
+            }
+
+            function clearAllEqaUploads() {
+                state.newEqaFiles = [];
+                renderEqaFileList();
+            }
+
+            // --- UPLOAD HELPERS ---
+            async function uploadEqaFile(fileObj, idx) {
+                if (!window.ResumableUploadToGoogleDrive2) {
+                    fileObj.uploadStatus = 'ERROR';
+                    renderEqaFileList();
+                    return;
+                }
+                try {
+                    if (!state.uploadAuth) {
+                        state.uploadAuth = await postApi('getUploadAuth');
+                    }
+                    // Show INITIATING before upload
+                    fileObj.uploadStatus = 'PENDING';
+                    renderEqaFileList();
+                    setTimeout(() => {
+                        fileObj.uploadStatus = 'UPLOADING';
+                        renderEqaFileList();
+                        const ru = new ResumableUploadToGoogleDrive2();
+                        ru.Do({
+                            file: fileObj.file,
+                            accessToken: state.uploadAuth.accessToken,
+                            folderId: state.uploadAuth.folderId,
+                            fields: 'id,name,webViewLink,mimeType,size'
+                        }, (res, err) => {
+                            if (err) {
+                                fileObj.uploadStatus = 'ERROR';
+                                renderEqaFileList();
+                                return;
+                            }
+                            if (res && res.progressNumber && res.status === 'Uploading') {
+                                fileObj.uploadStatus = 'UPLOADING';
+                                fileObj.progress = Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
+                                renderEqaFileList();
+                                return;
+                            }
+                            if (res && res.status && String(res.status).toLowerCase() === 'done') {
+                                fileObj.uploadStatus = 'UPLOADED';
+                                const parsed = parseUploadResponse(res);
+                                fileObj.id = parsed.id || '';
+                                fileObj.url = parsed.webViewLink || '';
+                                fileObj.mimeType = parsed.mimeType || fileObj.type;
+                                fileObj.size = parsed.size || fileObj.size;
+                                renderEqaFileList();
+                            }
+                        });
+                    }, 100);
+                } catch (e) {
+                    fileObj.uploadStatus = 'ERROR';
+                    renderEqaFileList();
+                }
+            }
+
+            async function uploadIqcFile(fileObj, idx) {
+                if (!window.ResumableUploadToGoogleDrive2) {
+                    fileObj.uploadStatus = 'ERROR';
+                    renderIqcFileList();
+                    return;
+                }
+                try {
+                    if (!state.uploadAuth) {
+                        state.uploadAuth = await postApi('getUploadAuth');
+                    }
+                    fileObj.uploadStatus = 'UPLOADING';
+                    renderIqcFileList();
+                    const ru = new ResumableUploadToGoogleDrive2();
+                    ru.Do({
+                        file: fileObj.file,
+                        accessToken: state.uploadAuth.accessToken,
+                        folderId: state.uploadAuth.folderId,
+                        fields: 'id,name,webViewLink,mimeType,size'
+                    }, (res, err) => {
+                        if (err) {
+                            fileObj.uploadStatus = 'ERROR';
+                            renderIqcFileList();
+                            return;
+                        }
+                        if (res && res.progressNumber && res.status === 'Uploading') {
+                            fileObj.uploadStatus = 'UPLOADING';
+                            fileObj.progress = Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
+                            renderIqcFileList();
+                            return;
+                        }
+                        if (res && res.status && String(res.status).toLowerCase() === 'done') {
+                            fileObj.uploadStatus = 'UPLOADED';
+                            const parsed = parseUploadResponse(res);
+                            fileObj.id = parsed.id || '';
+                            fileObj.url = parsed.webViewLink || '';
+                            fileObj.mimeType = parsed.mimeType || fileObj.type;
+                            fileObj.size = parsed.size || fileObj.size;
+                            renderIqcFileList();
+                        }
+                    });
+                } catch (e) {
+                    fileObj.uploadStatus = 'ERROR';
+                    renderIqcFileList();
+                }
+            }
+
+            function parseUploadResponse(res) {
+                if (res.result && typeof res.result === 'object') return res.result;
+                if (res.response && typeof res.response === 'object') return res.response;
+                if (res.response && typeof res.response === 'string') {
+                    try { return JSON.parse(res.response); } catch (err) { return {}; }
+                }
+                return {};
+            }
+            function showEqaLimitNotice() {
+                selectedFiles.forEach((file, idx) => {
+                    const fileObj = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        file: file,
+                        uploadStatus: 'PENDING',
+                        progress: 0
+                    };
+                    state.newEqaFiles.push(fileObj);
+                    uploadEqaFile(fileObj, state.newEqaFiles.length - 1);
+                });
+                renderEqaFileList();
+                i++;
+                selectedFiles.forEach((file, idx) => {
+                    const fileObj = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        file: file,
+                        uploadStatus: 'PENDING',
+                        progress: 0
+                    };
+                    fileObj.uploadStatus = 'INITIATING';
+                    state.newIqcFiles.push(fileObj);
+                    renderIqcFileList();
+                    setTimeout(() => uploadIqcFile(fileObj, state.newIqcFiles.length - 1), 100);
+                });
+                renderIqcFileList();
+
+                files.forEach((file, idx) => {
+                    let statusHtml = '';
+                    if (file.uploadStatus === 'UPLOADING') {
+                        statusHtml = `<span class='ml-2 text-xs text-blue-500'>Uploading... ${file.progress || 0}%</span>`;
+                    } else if (file.uploadStatus === 'UPLOADED') {
+                        statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
+                    } else if (file.uploadStatus === 'ERROR') {
+                        statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
+                    }
+                    $list.append(`
+                            <div class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                                <i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>
+                                <span class="truncate text-sm font-semibold text-slate-800">${escapeHtml(file.name)}</span>
+                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                                ${statusHtml}
+                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-eqa-file="${idx}">Remove</button>
+                            </div>
+                        `);
+                });
+                if (!confirm.isConfirmed) {
+                    files.forEach((file, idx) => {
+                        let statusHtml = '';
+                        if (file.uploadStatus === 'UPLOADING') {
+                            statusHtml = `<span class='ml-2 text-xs text-emerald-500'>Uploading... ${file.progress || 0}%</span>`;
+                        } else if (file.uploadStatus === 'UPLOADED') {
+                            statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
+                        } else if (file.uploadStatus === 'ERROR') {
+                            statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
+                        }
+                        $list.append(`
+                            <div class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                                <i data-lucide="paperclip" class="w-4 h-4 text-emerald-600"></i>
+                                <span class="truncate text-sm font-semibold text-slate-800">${escapeHtml(file.name)}</span>
+                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                                ${statusHtml}
+                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-iqc-file="${idx}">Remove</button>
+                            </div>
+                        `);
+                    });
+                }
+            }
+            lucide.createIcons();
+        });
+
+        $('#add-iqc-row').click(function () {
+            let newRow = buildIqcRow({});
+            $('#iqc-table-body').append(newRow);
+            lucide.createIcons();
+        });
+
+        $('#eqa-files').off('change').on('change', function () {
+            renderFilePreview(this.files, '#eqa-file-list');
+            // Use setTimeout to avoid recursive change event
+            setTimeout(() => { this.value = ''; }, 0);
+        });
+
+        $('#iqc-files').off('change').on('change', function () {
+            renderFilePreview(this.files, '#iqc-file-list');
+            setTimeout(() => { this.value = ''; }, 0);
+        });
+
+        $('#eqa-form form').on('submit', async function (e) {
+            e.preventDefault();
+            await handleSave('EQA');
+        });
+
+        $('#iqc-form form').on('submit', async function (e) {
+            e.preventDefault();
+            await handleSave('IQC');
+        });
+
+        $('#quick-range').change(function () {
+            applyQuickRange($(this).val());
+        });
+
+        $('#btn-load-records').click(loadRecords);
+        $('#btn-reset-filters').click(function () {
+            $('#quick-range').val('all');
+            $('#filter-type').val('ALL');
+            applyQuickRange('all');
+            loadRecords();
+        });
+
+        $(document).on('click', '.btn-edit-record', function () {
+            const id = $(this).data('id');
+            startEditRecord(id);
+        });
+
+        $(document).on('click', '.btn-delete-record', async function () {
+            const id = $(this).data('id');
+            await deleteRecord(id);
+        });
+
+        loadRecords();
+
+
+        function initDateRangePicker() {
+            state.dateRangePicker = flatpickr('#filter-date-range', {
+                mode: 'range',
+                dateFormat: 'Y-m-d',
+                allowInput: false
+            });
+        }
+
+        function applyQuickRange(mode) {
+            const today = moment();
+            if (mode === 'today') {
+                state.dateRangePicker.setDate([today.format('YYYY-MM-DD'), today.format('YYYY-MM-DD')], true);
+                return;
+            }
+            if (mode === 'week') {
+                state.dateRangePicker.setDate([today.startOf('week').format('YYYY-MM-DD'), today.endOf('week').format('YYYY-MM-DD')], true);
+                return;
+            }
+            if (mode === 'month') {
+                state.dateRangePicker.setDate([today.startOf('month').format('YYYY-MM-DD'), today.endOf('month').format('YYYY-MM-DD')], true);
+                return;
+            }
+            state.dateRangePicker.clear();
+        }
+
+        function performSwitch(target) {
+            $('.nav-btn').removeClass('active-nav bg-blue-600 text-white').addClass('text-slate-600 hover:bg-slate-100');
+            $(`.nav-btn[data-target="${target}"]`).addClass('active-nav bg-blue-600 text-white').removeClass('text-slate-600 hover:bg-slate-100');
+            $('.form-card').removeClass('active');
+            $(`#${target}`).addClass('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetAllForms() {
+            $('form').each(function () {
+                this.reset();
+            });
+            $('#eqa-file-list, #iqc-file-list').empty();
+            $('#eqa-nc-section').hide().addClass('hidden');
+            state.isDirty = false;
+            state.editingId = null;
+            $('#eqa-files').val('');
+            $('#iqc-files').val('');
+        }
+
+        function renderFilePreview(files, containerSelector) {
+            const container = $(containerSelector);
+            container.empty();
+            Array.from(files || []).forEach((f) => {
+                container.append(`
+                    <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700">
+                        <i data-lucide="file" class="w-3 h-3"></i>
+                        ${escapeHtml(f.name)}
+                    </div>
+                `);
+            });
+            lucide.createIcons();
+        }
+
+        async function postApi(action, payload = {}) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action, ...payload })
+            });
+            const json = await response.json();
+            if (!json.ok) {
+                throw new Error(json.message || 'Request failed');
+            }
+            return json.data;
+        }
+
+        async function getRecordsApi(params) {
+            // เปลี่ยนเป็น POST API
+            const payload = {
+                mode: 'records',
+                startDate: params.startDate,
+                endDate: params.endDate,
+                type: params.type
+            };
+            const data = await postApi('listRecords', payload);
+            return data || [];
+        }
+
+        async function loadRecords() {
+            try {
+                let selected = [];
+                if (state.dateRangePicker && Array.isArray(state.dateRangePicker.selectedDates)) {
+                    selected = state.dateRangePicker.selectedDates;
+                }
+                const payload = {
+                    startDate: selected[0] ? moment(selected[0]).format('YYYY-MM-DD') : '',
+                    endDate: selected[1] ? moment(selected[1]).format('YYYY-MM-DD') : '',
+                    type: $('#filter-type').val()
+                };
+                state.records = await getRecordsApi(payload);
+                renderRecordsTable(state.records);
+            } catch (err) {
+                Swal.fire('ผิดพลาด', err.message, 'error');
+            }
+        }
+
+        function renderRecordsTable(records) {
+            const body = $('#records-table-body');
+            body.empty();
+
+            if (!records.length) {
+                body.append('<tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">ไม่พบข้อมูลในช่วงที่เลือก</td></tr>');
+                return;
+            }
+
+            records.forEach((r) => {
+                body.append(`
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/70">
+                        <td class="px-4 py-3">${escapeHtml(r.recordDate || '-')}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-semibold ${r.type === 'EQA' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}">${escapeHtml(r.type)}</span></td>
+                        <td class="px-4 py-3">${escapeHtml(r.department || '-')}</td>
+                        <td class="px-4 py-3">${escapeHtml(r.title || '-')}</td>
+                        <td class="px-4 py-3">${escapeHtml(r.status || '-')}</td>
+                        <td class="px-4 py-3">${r.updatedAt ? moment(r.updatedAt).format('DD/MM/YYYY HH:mm') : '-'}</td>
+                        <td class="px-4 py-3 text-center">
+                            <button class="btn-edit-record px-3 py-1.5 text-xs bg-amber-100 text-amber-700 rounded-lg mr-2" data-id="${escapeHtml(r.id)}">แก้ไข</button>
+                            <button class="btn-delete-record px-3 py-1.5 text-xs bg-rose-100 text-rose-700 rounded-lg" data-id="${escapeHtml(r.id)}">ลบ</button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        async function handleSave(type) {
+            try {
+                // รองรับการแก้ไข: โหลด signatureData เดิมถ้ามี
+                let signatureData = null;
+                if (state.editingId && state.editingSignatureData) {
+                    signatureData = await promptSignature(state.editingSignatureData);
+                } else {
+                    signatureData = await promptSignature();
+                }
+                if (!signatureData) {
+                    return;
+                }
+                const attachments = await getAttachmentsForCurrentForm(type);
+                const record = type === 'EQA' ? collectEqaRecord() : collectIqcRecord();
+                record.id = state.editingId;
+                record.type = type;
+                record.signatureData = signatureData;
+                record.attachments = attachments;
                 Swal.fire({
-                    title: 'คุณมีการแก้ไขข้อมูลที่ยังไม่ได้บันทึก',
-                    text: "ต้องการละทิ้งการแก้ไขและเปลี่ยนหน้าหรือไม่?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3b82f6',
-                    cancelButtonColor: '#94a3b8',
-                    confirmButtonText: 'ตกลง (รีเซ็ตข้อมูล)',
-                    cancelButtonText: 'ยกเลิก',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        resetAllForms();
-                        performSwitch(target);
+                    icon: 'info',
+                    title: 'กำลังบันทึกข้อมูล',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+                await postApi('upsertRecord', { record });
+                resetAllForms();
+                await loadRecords();
+                performSwitch('records-panel');
+                Swal.fire('สำเร็จ', 'บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
+            } catch (err) {
+                Swal.fire('ผิดพลาด', err.message, 'error');
+            }
+        }
+
+        function getAttachmentsForCurrentForm(type) {
+            if (type === 'EQA') {
+                return state.newEqaFiles.filter(f => f.uploadStatus === 'UPLOADED').map(f => ({
+                    id: f.id,
+                    name: f.name,
+                    mimeType: f.mimeType,
+                }));
+            } else {
+                return state.newIqcFiles.filter(f => f.uploadStatus === 'UPLOADED').map(f => ({
+                    id: f.id,
+                    name: f.name,
+                    mimeType: f.mimeType,
+                }));
+            }
+        }
+
+        async function promptSignature(existingData) {
+            let signaturePad;
+            const res = await Swal.fire({
+                title: 'ลงลายเซ็นก่อนบันทึก',
+                html: `
+                    <div class="text-left text-sm text-slate-600 mb-3">กรุณาเซ็นชื่อเพื่อยืนยันการบันทึกข้อมูล</div>
+                    <canvas id="signature-canvas" class="signature-canvas"></canvas>
+                    <div class="mt-3 text-right">
+                        <button id="clear-signature" type="button" class="px-3 py-1.5 text-sm rounded-lg border border-slate-300 text-slate-600">ล้างลายเซ็น</button>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยันบันทึก',
+                cancelButtonText: 'ยกเลิก',
+                didOpen: () => {
+                    const canvas = document.getElementById('signature-canvas');
+                    signaturePad = new SignaturePad(canvas, {
+                        penColor: '#1e40af', // น้ำเงินเข้ม
+                        backgroundColor: 'rgb(255,255,255)'
+                    });
+                    resizeSignatureCanvas(canvas, signaturePad);
+                    window.addEventListener('resize', () => resizeSignatureCanvas(canvas, signaturePad), { once: true });
+                    document.getElementById('clear-signature').addEventListener('click', function () {
+                        signaturePad.clear();
+                    });
+                    // โหลดลายเซ็นเดิมถ้ามี
+                    if (existingData && Array.isArray(existingData) && existingData.length > 0) {
+                        try { signaturePad.fromData(existingData); } catch (e) { }
+                    }
+                },
+                preConfirm: () => {
+                    if (!signaturePad || signaturePad.isEmpty()) {
+                        Swal.showValidationMessage('กรุณาเซ็นชื่อก่อนกดยืนยัน');
+                        return false;
+                    }
+                    return signaturePad.toData();
+                }
+            });
+            return res.isConfirmed ? res.value : null;
+        }
+
+        function resizeSignatureCanvas(canvas, signaturePad) {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+            canvas.getContext('2d').scale(ratio, ratio);
+            signaturePad.clear();
+        }
+
+        async function uploadAttachments(type) {
+            const input = type === 'EQA' ? document.getElementById('eqa-files') : document.getElementById('iqc-files');
+            const files = Array.from((input && input.files) || []);
+            if (!files.length) {
+                return [];
+            }
+
+            if (typeof ResumableUploadToGoogleDrive2 === 'undefined') {
+                throw new Error('ยังโหลดไลบรารีอัปโหลดไฟล์ไม่สำเร็จ');
+            }
+
+            if (!state.uploadAuth) {
+                state.uploadAuth = await postApi('getUploadAuth');
+                console.log('Received upload auth:', state.uploadAuth);
+            }
+
+            const progressMap = {};
+            Swal.fire({
+                title: 'กำลังอัปโหลดไฟล์',
+                html: '<div class="progress-wrap"><div id="upload-progress" class="progress-bar"></div></div><div id="upload-progress-text" class="mt-2 text-sm text-slate-600">0%</div>',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            const uploaded = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const meta = await uploadSingleFile(file, state.uploadAuth, (p) => {
+                    progressMap[file.name] = p;
+                    const total = Object.values(progressMap).reduce((sum, n) => sum + n, 0);
+                    const avg = Math.round(total / files.length);
+                    $('#upload-progress').css('width', `${avg}%`);
+                    $('#upload-progress-text').text(`${avg}%`);
+                });
+                uploaded.push(meta);
+            }
+
+            Swal.close();
+            return uploaded;
+        }
+
+        function uploadSingleFile(file, auth, onProgress) {
+            return new Promise((resolve, reject) => {
+                const ru = new ResumableUploadToGoogleDrive2();
+                ru.Do({
+                    file,
+                    accessToken: auth.accessToken,
+                    folderId: auth.folderId,
+                    fields: 'id,name,webViewLink,mimeType,size'
+                }, (res, err) => {
+                    if (err) {
+                        reject(new Error('อัปโหลดไฟล์ไม่สำเร็จ: ' + file.name));
+                        return;
+                    }
+
+                    if (res && res.progressNumber && res.status === 'Uploading') {
+                        const value = Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
+                        onProgress(value);
+                        return;
+                    }
+
+                    if (res && res.status && String(res.status).toLowerCase() === 'done') {
+                        onProgress(100);
+                        const parsed = parseUploadResponse(res);
+                        resolve({
+                            id: parsed.id || '',
+                            name: parsed.name || file.name,
+                            mimeType: parsed.mimeType || file.type,
+                            url: parsed.webViewLink || '',
+                            size: parsed.size || file.size
+                        });
                     }
                 });
             });
+        }
 
-            function performSwitch(target) {
-                // Update UI for buttons
-                $('.nav-btn').removeClass('active-nav bg-blue-600 text-white').addClass('text-slate-600 hover:bg-slate-100');
-                $(`.nav-btn[data-target="${target}"]`).addClass('active-nav bg-blue-600 text-white').removeClass('text-slate-600 hover:bg-slate-100');
-                
-                // Switch forms
-                $('.form-card').removeClass('active');
-                $(`#${target}`).addClass('active');
+        function parseUploadResponse(res) {
+            if (res.result && typeof res.result === 'object') return res.result;
+            if (res.response && typeof res.response === 'object') return res.response;
+            if (res.response && typeof res.response === 'string') {
+                try { return JSON.parse(res.response); } catch (err) { return {}; }
+            }
+            return {};
+        }
 
-                // Special treatment for Dashboard button
-                if (target === 'home') {
-                    $('.nav-btn[data-target="home"]').removeClass('bg-blue-600').addClass('bg-slate-100 text-slate-900');
-                }
+        function collectEqaRecord() {
+            const data = {
+                dept: $('#eqa-form select:eq(0)').val() || '',
+                project: $('#eqa-form input:eq(0)').val() || '',
+                round: $('#eqa-form input:eq(1)').val() || '',
+                dateRec: $('#eqa-form input:eq(2)').val() || '',
+                cond: $('input[name="sample-condition"]:checked').val() || '',
+                condExt: $('#eqa-form input:eq(5)').val() || '',
+                testDate: $('#eqa-form input:eq(6)').val() || '',
+                preparer: $('#eqa-form input:eq(7)').val() || '',
+                reporter: $('#eqa-form input:eq(8)').val() || '',
+                reportDate: $('#eqa-form input:eq(9)').val() || '',
+                testItem: $('#eqa-form input:eq(10)').val() || '',
+                evalResult: $('input[name="evaluation-result"]:checked').val() || '',
+                evalCriteria: $('#eqa-form input:eq(13)').val() || '',
+                evalDate: $('#eqa-form input:eq(14)').val() || ''
+            };
 
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            return {
+                recordDate: data.reportDate || data.evalDate || moment().format('YYYY-MM-DD'),
+                title: data.project || data.testItem || 'EQA Record',
+                department: data.dept,
+                status: data.evalResult === 'fail' ? 'ไม่ผ่าน' : (data.evalResult === 'pass' ? 'ผ่าน' : ''),
+                data
+            };
+        }
+
+        function collectIqcRecord() {
+            const rows = [];
+            $('#iqc-table-body tr').each(function () {
+                const inputs = $(this).find('input, select');
+                // Radio: only one can be checked per row
+                const passChecked = $(inputs[1]).is(':checked');
+                const failChecked = $(inputs[2]).is(':checked');
+                rows.push({
+                    parameter: $(inputs[0]).val() || '',
+                    pass: passChecked && !failChecked,
+                    fail: failChecked && !passChecked,
+                    level: $(inputs[3]).val() || '',
+                    rule: $(inputs[4]).val() || '',
+                    errorType: $(inputs[5]).val() || '',
+                    cause: $(inputs[6]).val() || '',
+                    action: $(inputs[7]).val() || '',
+                    result: $(inputs[8]).val() || ''
+                });
+            });
+
+            const thaiMonth = $('#iqc-form select:eq(1)').val() || '';
+            const buddhistYear = Number($('#iqc-form input:eq(0)').val() || moment().year() + 543);
+            const gregorianYear = buddhistYear > 2400 ? buddhistYear - 543 : buddhistYear;
+            const monthMap = {
+                'มกราคม': 1, 'กุมภาพันธ์': 2, 'มีนาคม': 3, 'เมษายน': 4, 'พฤษภาคม': 5, 'มิถุนายน': 6,
+                'กรกฎาคม': 7, 'สิงหาคม': 8, 'กันยายน': 9, 'ตุลาคม': 10, 'พฤศจิกายน': 11, 'ธันวาคม': 12
+            };
+            const m = monthMap[thaiMonth] || moment().month() + 1;
+            const recordDate = `${gregorianYear}-${String(m).padStart(2, '0')}-01`;
+
+            const data = {
+                dept: $('#iqc-form select:eq(0)').val() || '',
+                month: thaiMonth,
+                year: buddhistYear,
+                controlName: $('#iqc-form input:eq(1)').val() || '',
+                lot: $('#iqc-form input:eq(2)').val() || '',
+                exp: $('#iqc-form input:eq(3)').val() || '',
+                analyzer: $('#iqc-form input:eq(4)').val() || '',
+                rows
+            };
+
+            const hasFail = rows.some((r) => r.fail);
+            return {
+                recordDate,
+                title: `IQC ${thaiMonth} ${buddhistYear}`,
+                department: data.dept,
+                status: hasFail ? 'พบไม่ผ่าน' : 'ผ่าน',
+                data
+            };
+        }
+
+        function startEditRecord(id) {
+            const record = state.records.find((r) => r.id === id);
+            if (!record) {
+                return;
             }
 
-            // Toggle EQA NC Section
-            $('input[name="evaluation-result"]').change(function() {
-                if ($(this).val() === 'fail') {
-                    $('#eqa-nc-section').slideDown().removeClass('hidden');
-                } else {
-                    $('#eqa-nc-section').slideUp();
-                }
+            resetAllForms();
+            state.editingId = id;
+            if (record.type === 'EQA') {
+                fillEqaForm(record.data || {});
+                performSwitch('eqa-form');
+            } else {
+                fillIqcForm(record.data || {});
+                performSwitch('iqc-form');
+            }
+            // เตรียม signatureData สำหรับการแก้ไข
+            state.editingSignatureData = record.signatureData || [];
+            Swal.fire({
+                icon: 'info',
+                title: 'โหมดแก้ไขข้อมูล',
+                text: 'แก้ไขข้อมูลให้ครบถ้วน แล้วกดบันทึก (ต้องเซ็นชื่อใหม่ทุกครั้ง)'
+            });
+        }
+
+        function fillEqaForm(data) {
+            $('#eqa-form select:eq(0)').val(data.dept || '');
+            $('#eqa-form input:eq(0)').val(data.project || '');
+            $('#eqa-form input:eq(1)').val(data.round || '');
+            $('#eqa-form input:eq(2)').val(data.dateRec || '');
+            $('input[name="sample-condition"][value="' + (data.cond || '') + '"]').prop('checked', true);
+            $('#eqa-form input:eq(5)').val(data.condExt || '');
+            $('#eqa-form input:eq(6)').val(data.testDate || '');
+            $('#eqa-form input:eq(7)').val(data.preparer || '');
+            $('#eqa-form input:eq(8)').val(data.reporter || '');
+            $('#eqa-form input:eq(9)').val(data.reportDate || '');
+            $('#eqa-form input:eq(10)').val(data.testItem || '');
+            $('input[name="evaluation-result"][value="' + (data.evalResult || '') + '"]').prop('checked', true).trigger('change');
+            $('#eqa-form input:eq(13)').val(data.evalCriteria || '');
+            $('#eqa-form input:eq(14)').val(data.evalDate || '');
+            state.isDirty = false;
+        }
+
+        function fillIqcForm(data) {
+            $('#iqc-form select:eq(0)').val(data.dept || '');
+            $('#iqc-form select:eq(1)').val(data.month || '');
+            $('#iqc-form input:eq(0)').val(data.year || '');
+            $('#iqc-form input:eq(1)').val(data.controlName || '');
+            $('#iqc-form input:eq(2)').val(data.lot || '');
+            $('#iqc-form input:eq(3)').val(data.exp || '');
+            $('#iqc-form input:eq(4)').val(data.analyzer || '');
+
+            const rows = data.rows || [];
+            $('#iqc-table-body').empty();
+            if (!rows.length) {
+                $('#iqc-table-body').append(buildIqcRow({ parameter: 'IQC: Low' }));
+                $('#iqc-table-body').append(buildIqcRow({ parameter: 'IQC: High' }));
+            } else {
+                rows.forEach((r) => $('#iqc-table-body').append(buildIqcRow(r)));
+            }
+            lucide.createIcons();
+            state.isDirty = false;
+        }
+
+        function buildIqcRow(row, idx) {
+            idx = typeof idx === 'number' ? idx : Math.floor(Math.random() * 100000);
+            return `
+                <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="${escapeHtml(row.parameter || '')}"></td>
+                    <td class="p-2 border-r border-slate-100 text-center">
+                        <input type="radio" name="iqc-passfail-${idx}" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500" ${row.pass && !row.fail ? 'checked' : ''}>
+                    </td>
+                    <td class="p-2 border-r border-slate-100 text-center">
+                        <input type="radio" name="iqc-passfail-${idx}" class="w-4 h-4 text-red-600 focus:ring-red-500" ${row.fail && !row.pass ? 'checked' : ''}>
+                    </td>
+                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center" value="${escapeHtml(row.level || '')}"></td>
+                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center" value="${escapeHtml(row.rule || '')}"></td>
+                    <td class="p-2 border-r border-slate-100">
+                        <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
+                            <option value="" ${!row.errorType ? 'selected' : ''}>-</option>
+                            <option value="S" ${row.errorType === 'S' ? 'selected' : ''}>Systematic</option>
+                            <option value="R" ${row.errorType === 'R' ? 'selected' : ''}>Random</option>
+                        </select>
+                    </td>
+                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="${escapeHtml(row.cause || '')}"></td>
+                    <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="${escapeHtml(row.action || '')}"></td>
+                    <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded" value="${escapeHtml(row.result || '')}"></td>
+                    <td class="p-2 text-center border-l border-slate-100">
+                        <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        async function deleteRecord(id) {
+            const confirm = await Swal.fire({
+                title: 'ยืนยันการลบข้อมูล?',
+                text: 'ข้อมูลและไฟล์แนบจะถูกลบออกจากระบบ',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ลบข้อมูล',
+                cancelButtonText: 'ยกเลิก'
             });
 
-            // Add IQC Row
-            $('#add-iqc-row').click(function() {
-                const newRow = `
-                    <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                        <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"></td>
-                        <td class="p-2 border-r border-slate-100 text-center"><input type="checkbox" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"></td>
-                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
-                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-center"></td>
-                        <td class="p-2 border-r border-slate-100">
-                            <select class="w-full px-1 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded text-xs">
-                                <option value="">-</option>
-                                <option value="S">Systematic</option>
-                                <option value="R">Random</option>
-                            </select>
-                        </td>
-                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                        <td class="p-2 border-r border-slate-100"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                        <td class="p-2"><input type="text" class="w-full px-2 py-1 bg-transparent focus:bg-white focus:outline-blue-500 rounded"></td>
-                        <td class="p-2 text-center border-l border-slate-100">
-                            <button type="button" class="text-slate-400 hover:text-red-500" onclick="$(this).closest('tr').remove()"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
-                        </td>
-                    </tr>
-                `;
-                $('#iqc-table-body').append(newRow);
-                lucide.createIcons();
-            });
+            if (!confirm.isConfirmed) {
+                return;
+            }
 
-            // File Upload Preview EQA
-            $('#eqa-files').change(function() {
-                const files = this.files;
-                $('#eqa-file-list').empty();
-                for (let i = 0; i < files.length; i++) {
-                    $('#eqa-file-list').append(`
-                        <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700">
-                            <i data-lucide="file" class="w-3 h-3"></i>
-                            ${files[i].name}
-                        </div>
-                    `);
-                }
-                lucide.createIcons();
-            });
+            try {
+                await postApi('deleteRecord', { id });
+                await loadRecords();
+                Swal.fire('ลบแล้ว', 'ข้อมูลถูกลบเรียบร้อย', 'success');
+            } catch (err) {
+                Swal.fire('ผิดพลาด', err.message, 'error');
+            }
+        }
 
-            // File Upload Preview IQC
-            $('#iqc-files').change(function() {
-                const files = this.files;
-                $('#iqc-file-list').empty();
-                for (let i = 0; i < files.length; i++) {
-                    $('#iqc-file-list').append(`
-                        <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700">
-                            <i data-lucide="file" class="w-3 h-3"></i>
-                            ${files[i].name}
-                        </div>
-                    `);
-                }
-                lucide.createIcons();
-            });
-
-            // Form Submissions (Simulated)
-            $('form').submit(function(e) {
-                e.preventDefault();
-                alert('บันทึกข้อมูลสำเร็จ!');
-                $('.nav-btn[data-target="home"]').click();
-            });
-        });
+        function escapeHtml(text) {
+            return String(text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
         async function exportEQA() {
             // Wait for fonts to be ready
             await document.fonts.ready;
-            
+
             const element = document.createElement('div');
             // Force styles for the export container
             element.style.position = 'fixed';
@@ -663,7 +1851,7 @@
             element.style.backgroundColor = 'white';
             element.style.fontFamily = "'Noto Sans Thai', sans-serif";
             document.body.appendChild(element);
-            
+
             const formData = {
                 dept: $('#eqa-form select:eq(0)').val() || '-',
                 project: $('#eqa-form input:eq(0)').val() || '-',
@@ -713,14 +1901,14 @@
                 margin: 0,
                 filename: 'EQA_Evaluation_' + moment().format('YYYYMMDD') + '.pdf',
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
-                    scale: 2, 
+                html2canvas: {
+                    scale: 2,
                     useCORS: true,
                     letterRendering: true
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            
+
             try {
                 await html2pdf().set(opt).from(element).save();
             } finally {
@@ -753,7 +1941,7 @@
             };
 
             let tableRows = '';
-            $('#iqc-table-body tr').each(function() {
+            $('#iqc-table-body tr').each(function () {
                 const inputs = $(this).find('input, select');
                 tableRows += `
                     <tr style="height: 30px;">
@@ -816,14 +2004,14 @@
                 margin: 0,
                 filename: 'IQC_Summary_' + header.month + '_' + header.year + '.pdf',
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
+                html2canvas: {
                     scale: 2,
                     useCORS: true,
                     letterRendering: true
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
-            
+
             try {
                 await html2pdf().set(opt).from(element).save();
             } finally {
@@ -832,4 +2020,5 @@
         }
     </script>
 </body>
+
 </html>
