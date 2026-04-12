@@ -8,8 +8,6 @@ const HEADER = [
   'department',
   'status',
   'payloadJson',
-  'signatureFileId',
-  'signatureUrl',
   'attachmentsJson',
   'createdAt',
   'updatedAt',
