@@ -189,7 +189,8 @@
         <div id="eqa-form" class="form-card">
             <div class="flex justify-end mb-2">
                 <button type="button" id="mock-eqa-btn"
-                    class="px-2 py-1 rounded bg-amber-100 text-amber-700 font-semibold hover:bg-amber-200 text-xs">เติมข้อมูลตัวอย่าง (Mockup)</button>
+                    class="px-2 py-1 rounded bg-amber-100 text-amber-700 font-semibold hover:bg-amber-200 text-xs">เติมข้อมูลตัวอย่าง
+                    (Mockup)</button>
             </div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div class="bg-slate-50 p-6 border-b border-slate-200">
@@ -388,7 +389,8 @@
                                 files</span>
                         </label>
                         <div id="eqa-upload-picker-wrap" class="text-left my-2">
-                            <button type="button" onclick="$('#eqa-files').click()" class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-blue-700 border border-blue-200 shadow hover:bg-blue-50 hover:border-blue-400 transition-all font-semibold">
+                            <button type="button" onclick="$('#eqa-files').click()"
+                                class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-blue-700 border border-blue-200 shadow hover:bg-blue-50 hover:border-blue-400 transition-all font-semibold">
                                 <i data-lucide="upload-cloud" class="w-5 h-5"></i> อัพโหลดไฟล์หลักฐาน
                             </button>
                         </div>
@@ -421,7 +423,8 @@
         <div id="iqc-form" class="form-card">
             <div class="flex justify-end mb-2">
                 <button type="button" id="mock-iqc-btn"
-                    class="px-2 py-1 rounded bg-amber-100 text-amber-700 font-semibold hover:bg-amber-200 text-xs">เติมข้อมูลตัวอย่าง (Mockup)</button>
+                    class="px-2 py-1 rounded bg-amber-100 text-amber-700 font-semibold hover:bg-amber-200 text-xs">เติมข้อมูลตัวอย่าง
+                    (Mockup)</button>
             </div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div class="bg-slate-50 p-6 border-b border-slate-200">
@@ -674,7 +677,8 @@
                                 files</span>
                         </label>
                         <div id="iqc-upload-picker-wrap" class="text-left my-2">
-                            <button type="button" onclick="$('#iqc-files').click()" class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-emerald-700 border border-emerald-200 shadow hover:bg-emerald-50 hover:border-emerald-400 transition-all font-semibold">
+                            <button type="button" onclick="$('#iqc-files').click()"
+                                class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-emerald-700 border border-emerald-200 shadow hover:bg-emerald-50 hover:border-emerald-400 transition-all font-semibold">
                                 <i data-lucide="upload-cloud" class="w-5 h-5"></i> อัพโหลดไฟล์หลักฐาน
                             </button>
                         </div>
@@ -980,13 +984,7 @@
 
             // formatFileSize, escapeHtml ใช้ร่วมกับ EQA
 
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 B';
-                const k = 1024;
-                const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
+
 
             // EQA file upload logic (IQC style)
             $('#eqa-files').on('change', function () {
@@ -996,6 +994,7 @@
             $('#eqa-remove-all-btn').on('click', function () {
                 clearAllEqaUploads();
             });
+
             renderEqaFileList();
 
             function handleEqaFileSelection(fileList) {
@@ -1264,6 +1263,67 @@
             }
             lucide.createIcons();
         });
+
+        // --- Ensure renderEqaFileList is defined before use ---
+        function renderEqaFileList() {
+            const $list = $('#eqa-file-list').empty();
+            const files = state.newEqaFiles;
+            $('#eqa-upload-counter').text(`${files.length}/10 files`);
+            $('#eqa-remove-all-btn').toggleClass('hidden', files.length === 0);
+            $('#eqa-upload-limit-notice').toggleClass('hidden', files.length < 10);
+            if (!files.length) {
+                $list.append('<div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 md:col-span-2">No files attached yet.</div>');
+                return;
+            }
+            files.forEach((file, idx) => {
+                let statusHtml = '';
+                let progressBarHtml = '';
+                if (file.uploadStatus === 'UPLOADING') {
+                    statusHtml = `<span class='ml-2 text-xs text-blue-500'>Uploading... ${file.progress || 0}%</span>`;
+                    progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
+                            <div class='flex-1 bg-slate-100 rounded-full h-2'>
+                                <div class='bg-blue-400 h-2 rounded-full' style='width:${file.progress || 0}%'></div>
+                            </div>
+                            ${statusHtml}
+                        </div>`;
+                    statusHtml = '';
+                } else if (file.uploadStatus === 'PENDING') {
+                    progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
+                            <div class='flex-1 bg-slate-100 rounded-full h-2'></div>
+                            <span class='ml-2 text-xs text-blue-400'>Initiating...</span>
+                        </div>`;
+                } else if (file.uploadStatus === 'UPLOADED') {
+                    statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
+                } else if (file.uploadStatus === 'ERROR') {
+                    statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
+                }
+                $list.append(`
+                        <div class="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>
+                                <span class="truncate text-sm font-semibold text-slate-800">${escapeHtml(file.name)}</span>
+                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                                ${statusHtml}
+                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-eqa-file="${idx}">Remove</button>
+                            </div>
+                            ${progressBarHtml}
+                        </div>
+                    `);
+            });
+            $list.find('[data-remove-eqa-file]').on('click', function () {
+                const idx = Number($(this).attr('data-remove-eqa-file'));
+                state.newEqaFiles.splice(idx, 1);
+                renderEqaFileList();
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
 
         $('#add-iqc-row').click(function () {
             let newRow = buildIqcRow({});
@@ -1712,6 +1772,7 @@
         }
 
         function startEditRecord(id) {
+            console.log(state)
             const record = state.records.find((r) => r.id === id);
             if (!record) {
                 return;
@@ -1720,10 +1781,10 @@
             resetAllForms();
             state.editingId = id;
             if (record.type === 'EQA') {
-                fillEqaForm(record.data || {});
+                fillEqaForm(record || {});
                 performSwitch('eqa-form');
             } else {
-                fillIqcForm(record.data || {});
+                fillIqcForm(record || {});
                 performSwitch('iqc-form');
             }
             // เตรียม signatureData สำหรับการแก้ไข
@@ -1735,7 +1796,9 @@
             });
         }
 
-        function fillEqaForm(data) {
+        function fillEqaForm(record) {
+            let data = record.data || {};
+            console.log("?? ~ fillEqaForm ~ data:", data)
             $('#eqa-form select:eq(0)').val(data.dept || '');
             $('#eqa-form input:eq(0)').val(data.project || '');
             $('#eqa-form input:eq(1)').val(data.round || '');
@@ -1750,10 +1813,41 @@
             $('input[name="evaluation-result"][value="' + (data.evalResult || '') + '"]').prop('checked', true).trigger('change');
             $('#eqa-form input:eq(13)').val(data.evalCriteria || '');
             $('#eqa-form input:eq(14)').val(data.evalDate || '');
+            const attachments = Array.isArray(record.attachments) ? record.attachments : [];
+            const normalizedAttachments = new Array(attachments.length);
+            for (let i = 0; i < attachments.length; i++) {
+                const att = attachments[i];
+                if (typeof att === 'string') {
+                    normalizedAttachments[i] = {
+                        id: att,
+                        name: 'Unknown',
+                        mimeType: '',
+                        type: '',
+                        url: '',
+                        size: 0,
+                        uploadStatus: 'UPLOADED',
+                        progress: 100
+                    };
+                    continue;
+                }
+                normalizedAttachments[i] = {
+                    id: att?.id || null,
+                    name: att?.name || 'Unknown',
+                    mimeType: att?.mimeType || '',
+                    type: att?.mimeType || '',
+                    url: att?.url || '',
+                    size: Number(att?.size) || 0,
+                    uploadStatus: 'UPLOADED',
+                    progress: 100
+                };
+            }
+            state.newEqaFiles = normalizedAttachments;
+            renderEqaFileList();
             state.isDirty = false;
         }
 
-        function fillIqcForm(data) {
+        function fillIqcForm(record) {
+            let data = record.data || {};
             $('#iqc-form select:eq(0)').val(data.dept || '');
             $('#iqc-form select:eq(1)').val(data.month || '');
             $('#iqc-form input:eq(0)').val(data.year || '');

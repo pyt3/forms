@@ -177,12 +177,10 @@ function toRecordObject_(row) {
     department: row[4] || '',
     status: row[5] || '',
     data: parseJsonSafe_(row[6], {}),
-    signatureFileId: row[7] || '',
-    signatureUrl: row[8] || '',
-    attachments: parseJsonSafe_(row[9], []).map(f => typeof f === 'string' ? f : (f.id || f.fileId || f)),
-    createdAt: toIsoString_(row[10]),
-    updatedAt: toIsoString_(row[11]),
-    signatureData: parseJsonSafe_(row[12], []) // new: return signaturePad.toData() array
+    attachments: parseJsonSafe_(row[7], []),
+    createdAt: toIsoString_(row[8]),
+    updatedAt: toIsoString_(row[9]),
+    signatureData: parseJsonSafe_(row[10], []) // new: return signaturePad.toData() array
   };
   return obj;
 }
