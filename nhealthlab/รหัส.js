@@ -79,7 +79,7 @@ function upsertRecord_(record) {
 
   const sh = getSheet_();
   const now = new Date();
-  const id = record.id || Utilities.getUuid();
+  const id = record.id || generateNewId_(record.type);
   const rowIndex = findRowById_(id);
 
   let signatureDataJson = '';
@@ -88,7 +88,7 @@ function upsertRecord_(record) {
   } 
 
   // Only save file id for attachments (EQA/IQC)
-  const attachmentsIds = (record.attachments || []).map(f => ({id: f.id, name: f.name, mimeType: f.mimeType}));
+  const attachmentsIds = (record.attachments || []).map(f => ({id: f.id, name: f.name, mimeType: f.mimeType, size: f.size}));
   const payload = [
     id,
     String(record.type || '').toUpperCase(),
@@ -112,6 +112,13 @@ function upsertRecord_(record) {
   return toRecordObject_(payload);
 }
 
+function generateNewId_(type) {
+  const prefix = (type || 'REC').toUpperCase().substring(0, 3);
+  const timestamp = Date.now();
+  const randomPart = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+  return `${prefix}-${timestamp}-${randomPart}`;
+}
+
 function deleteRecord_(id) {
   if (!id) {
     throw new Error('Missing id');
@@ -124,8 +131,8 @@ function deleteRecord_(id) {
   }
 
   const row = sh.getRange(rowIndex, 1, 1, HEADER.length).getValues()[0];
-  const signatureFileId = row[7];
-  const attachments = parseJsonSafe_(row[9], []);
+  const signatureFileId = row[10];
+  const attachments = parseJsonSafe_(row[7], []);
 
   trashFileIfExists_(signatureFileId);
   attachments.forEach((f) => trashFileIfExists_(f.id));
