@@ -210,7 +210,8 @@
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">หน่วยงาน</label>
                             <select
-                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white" id="eqa-department" name="department">
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white"
+                                id="eqa-department" name="department">
                                 <option value="" disabled selected>เลือกหน่วยงาน</option>
                                 <option>Chemistry</option>
                                 <option>Immunology</option>
@@ -340,7 +341,8 @@
                                     <label class="text-sm font-semibold text-slate-700">ผลการทำ IQC
                                         ในวันที่ทดสอบ</label>
                                     <select
-                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm" name="eqa-iqcResult" id="eqa-iqcResult">
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm"
+                                        name="eqa-iqcResult" id="eqa-iqcResult">
                                         <option value="pass">ผ่าน</option>
                                         <option value="pass-fix">ผ่านแบบมีการแก้ไข</option>
                                         <option value="fail">ไม่ผ่าน</option>
@@ -349,7 +351,8 @@
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">สภาพเครื่องมือ</label>
                                     <select
-                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm" name="eqa-analyzerStatus" id="eqa-analyzerStatus">
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm"
+                                        name="eqa-analyzerStatus" id="eqa-analyzerStatus">
                                         <option value="ready">พร้อมใช้งาน (มีการ maintenance ตามรอบ)</option>
                                         <option value="problem">มีปัญหา</option>
                                     </select>
@@ -367,13 +370,15 @@
                                         ผลการแก้ไข</label>
                                     <textarea rows="3"
                                         class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-                                        placeholder="ระบุแนวทางการแก้ไขและผลลัพธ์" name="eqa-correctiveAction" id="eqa-correctiveAction"></textarea>
+                                        placeholder="ระบุแนวทางการแก้ไขและผลลัพธ์" name="eqa-correctiveAction"
+                                        id="eqa-correctiveAction"></textarea>
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">การป้องกัน</label>
                                     <textarea rows="3"
                                         class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-                                        placeholder="ระบุแนวทางการป้องกันการเกิดซ้ำ" name="eqa-preventiveAction" id="eqa-preventiveAction"></textarea>
+                                        placeholder="ระบุแนวทางการป้องกันการเกิดซ้ำ" name="eqa-preventiveAction"
+                                        id="eqa-preventiveAction"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -403,25 +408,25 @@
                             all</button>
                         <div id="eqa-file-list" class="mt-4 grid gap-3"></div>
                     </div>
-                     <div class="space-y-4" id="eqa-signature-preview">
+                    <div class="space-y-4" id="eqa-signature-preview">
 
-                     </div>
-
-                     </div>
-
-                    <div class="flex justify-end gap-4 pt-4">
-                        <button type="button"
-                            class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all"
-                            data-target="home">ยกเลิก</button>
-                        <button type="button" onclick="exportEQA()"
-                            class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
-                            <i data-lucide="file-down" class="w-4 h-4"></i> Export PDF
-                        </button>
-                        <button type="submit"
-                            class="px-8 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">บันทึกข้อมูล</button>
                     </div>
-                </form>
+
             </div>
+
+            <div class="flex justify-end gap-4 pt-4">
+                <button type="button"
+                    class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all"
+                    data-target="home">ยกเลิก</button>
+                <button type="button" onclick="exportEQA()"
+                    class="px-6 py-2 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
+                    <i data-lucide="file-down" class="w-4 h-4"></i> Export PDF
+                </button>
+                <button type="submit"
+                    class="px-8 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">บันทึกข้อมูล</button>
+            </div>
+            </form>
+        </div>
         </div>
 
         <!-- Form 2: IQC -->
@@ -492,12 +497,14 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-slate-500 uppercase">Control Name</label>
-                                <input type="text" id="iqc-controlName" name="controlName" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
+                                <input type="text" id="iqc-controlName" name="controlName"
+                                    class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
                                     placeholder="เช่น Roche CARDIAC IQC">
                             </div>
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-slate-500 uppercase">Lot Number</label>
-                                <input type="text" id="iqc-lot" name="lot" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
+                                <input type="text" id="iqc-lot" name="lot"
+                                    class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
                                     placeholder="เช่น 73501793">
                             </div>
                             <div class="space-y-1">
@@ -510,7 +517,8 @@
                             <div class="space-y-1 md:col-span-2">
                                 <label class="text-xs font-bold text-slate-500 uppercase">เครื่องมือที่ใช้ตรวจวิเคราะห์
                                     (Analyzer)</label>
-                                <input type="text" id="iqc-analyzer" name="analyzer" class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
+                                <input type="text" id="iqc-analyzer" name="analyzer"
+                                    class="w-full px-3 py-1.5 rounded-md border border-slate-200 text-sm"
                                     placeholder="เช่น Cobas h232">
                             </div>
                         </div>
@@ -669,7 +677,8 @@
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ตำแหน่ง</label>
                                 <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
-                                    placeholder="ระบุตำแหน่ง" id="iqc-supervisor-position" name="iqc-supervisor-position">
+                                    placeholder="ระบุตำแหน่ง" id="iqc-supervisor-position"
+                                    name="iqc-supervisor-position">
                             </div>
                         </div>
                     </div>
@@ -773,7 +782,18 @@
                         </thead>
                         <tbody id="records-table-body">
                             <tr>
-                                <td colspan="7" class="p-4 text-center text-sm text-slate-500">No records found</td>
+                                <td colspan="7" class="p-4 text-center">
+                                    <span class="inline-flex items-center gap-2 text-slate-400 text-sm">
+                                        <svg class="animate-spin h-5 w-5 text-indigo-400"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                        </svg>
+                                        กำลังโหลดข้อมูล...
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -819,7 +839,7 @@
                 $('#eqa-evalDate')[0]._flatpickr.setDate('2026-04-05', true);
                 $('input[name="sample-condition"][value="bad"]').prop('checked', true);
                 $('input[name="evaluation-result"][value="fail"]').prop('checked', true);
-                
+
             });
 
             $('#mock-iqc-btn').on('click', function () {
@@ -1218,7 +1238,7 @@
                 $list.append(`
                         <div class="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 hover:bg-slate-100 hover:shadow-slate-200 hover:border-slate-300">
                             <div class="flex items-center gap-2">
-                                ${/^image\//.test(file.mimeType || file.type) && file.uploadStatus === "UPLOADED"? `<img src="https://lh3.googleusercontent.com/d/${file.id}" alt="${escapeHtml(file.name)}" class="w-10 h-10 object-cover rounded border border-slate-200" style="min-width:40px;max-width:40px;max-height:40px;" />` : `<i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>`}
+                                ${/^image\//.test(file.mimeType || file.type) && file.uploadStatus === "UPLOADED" ? `<img src="https://lh3.googleusercontent.com/d/${file.id}" alt="${escapeHtml(file.name)}" class="w-10 h-10 object-cover rounded border border-slate-200" style="min-width:40px;max-width:40px;max-height:40px;" />` : `<i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>`}
                                 <span class="truncate text-sm font-semibold text-blue-600 cursor-pointer hover:underline" onclick="window.open('https://drive.google.com/file/d/${file.id}', '_blank')">${escapeHtml(file.name)}</span>
                                 <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
                                 ${statusHtml}
@@ -1271,7 +1291,7 @@
                 $list.append(`
                         <div class="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 hover:bg-slate-100 hover:shadow-slate-200 hover:border-slate-300">
                             <div class="flex items-center gap-2">
-                                ${/^image\//.test(file.mimeType || file.type) && file.uploadStatus === "UPLOADED"? `<img src="https://lh3.googleusercontent.com/d/${file.id}" alt="${escapeHtml(file.name)}" class="w-10 h-10 object-cover rounded border border-slate-200" style="min-width:40px;max-width:40px;max-height:40px;" />` : `<i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>`}
+                                ${/^image\//.test(file.mimeType || file.type) && file.uploadStatus === "UPLOADED" ? `<img src="https://lh3.googleusercontent.com/d/${file.id}" alt="${escapeHtml(file.name)}" class="w-10 h-10 object-cover rounded border border-slate-200" style="min-width:40px;max-width:40px;max-height:40px;" />` : `<i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>`}
                                 <span class="truncate text-sm font-semibold text-blue-600 cursor-pointer hover:underline" onclick="window.open('https://drive.google.com/file/d/${file.id}', '_blank')">${escapeHtml(file.name)}</span>
                                 <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
                                 ${statusHtml}
@@ -1435,6 +1455,19 @@
 
         async function loadRecords() {
             try {
+                $('#records-table-body').html(`
+                                    <tr>
+                                        <td colspan="7" class="p-4 text-center">
+                                            <span class="inline-flex items-center gap-2 text-slate-400 text-sm">
+                                                <svg class="animate-spin h-5 w-5 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                                </svg>
+                                                กำลังโหลดข้อมูล...
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `);
                 let selected = [];
                 if (state.dateRangePicker && Array.isArray(state.dateRangePicker.selectedDates)) {
                     selected = state.dateRangePicker.selectedDates;
@@ -1456,7 +1489,19 @@
             body.empty();
 
             if (!records.length) {
-                body.append('<tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">No records found</td></tr>');
+                body.append(`
+                                    <tr>
+                                        <td colspan="7" class="p-4 text-center">
+                                            <span class="inline-flex items-center gap-2 text-slate-400 text-sm">
+                                                <svg class="h-5 w-5 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                                </svg>
+                                                ไม่พบข้อมูล
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `);
                 return;
             }
 
@@ -1515,9 +1560,9 @@
                 });
                 const result = await postApi('upsertRecord', { record });
                 postApi('movefilestorecordfolder', { recordId: result.id, attachments, type: type });
+                performSwitch('records-panel');
                 resetAllForms();
                 await loadRecords();
-                performSwitch('records-panel');
                 Swal.fire('สำเร็จ', 'บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
             } catch (err) {
                 Swal.fire('ผิดพลาด', err.message, 'error');
@@ -1843,7 +1888,7 @@
                 };
             }
             // show signature if exists
-            if(record.signatureData && Array.isArray(record.signatureData) && record.signatureData.length > 0) {
+            if (record.signatureData && Array.isArray(record.signatureData) && record.signatureData.length > 0) {
                 const canvas = document.createElement('canvas');
                 canvas.width = 400;
                 canvas.height = 200;
@@ -1914,7 +1959,7 @@
                 };
             }
             // show signature if exists
-            if(record.signatureData && Array.isArray(record.signatureData) && record.signatureData.length > 0) {
+            if (record.signatureData && Array.isArray(record.signatureData) && record.signatureData.length > 0) {
                 const canvas = document.createElement('canvas');
                 canvas.width = 400;
                 canvas.height = 200;
