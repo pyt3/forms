@@ -45,6 +45,15 @@ function doPost(e) {
       });
     }
 
+    if (action === 'movefilestorecordfolder') {
+      const recordId = body.recordId;
+      const type = body.type || 'MISC';
+      const attachments = body.attachments || [];
+      const fileIds = attachments.map(f => f.id);
+      batchMoveFiles_(fileIds, recordId, type);
+      return jsonOut({ ok: true });
+    }
+
     if (action === 'uploadbase64') {
       const res = uploadBase64File_(body.fileName, body.mimeType, body.base64, TempUploadFolderId);
       return jsonOut({ ok: true, data: res });
@@ -76,6 +85,10 @@ function upsertRecord_(record) {
   if (!record || !record.type) {
     throw new Error('Invalid record payload');
   }
+  let lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) {
+    throw new Error('Could not acquire lock after 30 seconds. Please try again.');
+  }
 
   const sh = getSheet_();
   const now = new Date();
@@ -85,10 +98,10 @@ function upsertRecord_(record) {
   let signatureDataJson = '';
   if (record.signatureData && Array.isArray(record.signatureData)) {
     signatureDataJson = JSON.stringify(record.signatureData);
-  } 
+  }
 
   // Only save file id for attachments (EQA/IQC)
-  const attachmentsIds = (record.attachments || []).map(f => ({id: f.id, name: f.name, mimeType: f.mimeType, size: f.size}));
+  const attachmentsIds = (record.attachments || []).map(f => ({ id: f.id, name: f.name, mimeType: f.mimeType, size: f.size }));
   const payload = [
     id,
     String(record.type || '').toUpperCase(),
@@ -108,15 +121,53 @@ function upsertRecord_(record) {
   } else {
     sh.appendRow(payload);
   }
+  let recordObj = toRecordObject_(payload);
 
-  return toRecordObject_(payload);
+  lock.releaseLock();
+  return recordObj;
+}
+
+function batchRemoveFiles_(fileIds) {
+  var requests = {
+    batchPath: "batch/drive/v3", // batch path. This will be introduced in the near future.
+    requests: fileIds.map(id => ({
+      method: "DELETE",
+      endpoint: "files/" + id
+    })),
+    accessToken: ScriptApp.getOAuthToken()
+  };
+  var result = BatchRequest.Do(requests); // Using this library
+  Logger.log(result);
+}
+
+function batchMoveFiles_(fileIds, recordId, type) {
+  let sourceFolderId = DriveApp.getFolderById(TempUploadFolderId).getParents().next().getId();
+  let folderId = getRecordFolder_(sourceFolderId, recordId, type).getId()
+  var requests = fileIds.map(id => ({
+    method: "PATCH",
+    endpoint: 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(id) + '?addParents=' + encodeURIComponent(folderId) + '&removeParents=' + encodeURIComponent(sourceFolderId),
+    requestBody: {}
+  }));
+
+  const responses = BatchRequest.EDo({
+    batchPath: "batch/drive/v3",
+    requests: requests,
+    useFetchAll: true,
+    accessToken: ScriptApp.getOAuthToken()
+  });
+
+  responses.forEach(function (item) {
+    if (!item || typeof item !== 'object' || item.error) {
+      Logger.log('Unable to ' + actionLabel + ': ' + JSON.stringify(item));
+    }
+  });
+  return responses;
 }
 
 function generateNewId_(type) {
   const prefix = (type || 'REC').toUpperCase().substring(0, 3);
-  const timestamp = Date.now();
-  const randomPart = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return `${prefix}-${timestamp}-${randomPart}`;
+  const timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMddHHmmss');
+  return `${prefix}-${timestamp}`;
 }
 
 function deleteRecord_(id) {
@@ -192,38 +243,6 @@ function toRecordObject_(row) {
   return obj;
 }
 
-function saveSignature_(dataUrl, recordId) {
-  const mt = dataUrl.match(/^data:(.*?);base64,(.*)$/);
-  if (!mt) {
-    throw new Error('Invalid signature data URL');
-  }
-  const mimeType = mt[1] || 'image/png';
-  const bytes = Utilities.base64Decode(mt[2]);
-  const ext = mimeType.split('/')[1] || 'png';
-  const blob = Utilities.newBlob(bytes, mimeType, 'signature_' + recordId + '.' + ext);
-  const file = getUploadFolder_().createFile(blob);
-  return {
-    fileId: file.getId(),
-    url: file.getUrl()
-  };
-}
-
-function uploadBase64File_(fileName, mimeType, base64, folderId) {
-  if (!fileName || !base64) {
-    throw new Error('Missing file content');
-  }
-  const folder = folderId ? DriveApp.getFolderById(folderId) : getUploadFolder_();
-  const bytes = Utilities.base64Decode(base64);
-  const blob = Utilities.newBlob(bytes, mimeType || 'application/octet-stream', fileName);
-  const file = folder.createFile(blob);
-  return {
-    id: file.getId(),
-    name: file.getName(),
-    mimeType: file.getMimeType(),
-    url: file.getUrl(),
-    size: file.getSize()
-  };
-}
 
 function getSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -245,21 +264,17 @@ function getSheet_() {
   return sh;
 }
 
-function getUploadFolder_() {
-  const props = PropertiesService.getScriptProperties();
-  const key = 'QUALITYLAB_UPLOAD_FOLDER_ID';
-  const folderId = props.getProperty(key);
-  if (folderId) {
-    try {
-      return DriveApp.getFolderById(folderId);
-    } catch (err) {
-      // ignore and recreate folder
-    }
-  }
+function getRecordFolder_(sourceFolderId, recordId, type) {
+  const rootFolder = DriveApp.getFolderById(sourceFolderId);
+  const typeFolderName = (type || 'MISC').toUpperCase();
 
-  const folder = DriveApp.createFolder('QualityLabHub Uploads');
-  props.setProperty(key, folder.getId());
-  return folder;
+  // Get or create type folder
+  let typeFolderIter = rootFolder.getFoldersByName(typeFolderName);
+  let typeFolder = typeFolderIter.hasNext() ? typeFolderIter.next() : rootFolder.createFolder(typeFolderName);
+
+  // Get or create record folder
+  let recordFolderIter = typeFolder.getFoldersByName(recordId);
+  return recordFolderIter.hasNext() ? recordFolderIter.next() : typeFolder.createFolder(recordId);
 }
 
 function findRowById_(id) {

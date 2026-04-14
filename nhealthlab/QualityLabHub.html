@@ -210,7 +210,7 @@
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">หน่วยงาน</label>
                             <select
-                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white">
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white" id="eqa-department" name="department">
                                 <option value="" disabled selected>เลือกหน่วยงาน</option>
                                 <option>Chemistry</option>
                                 <option>Immunology</option>
@@ -235,7 +235,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">วันที่ได้รับตัวอย่าง</label>
-                            <input type="date" id="eqa-dateRec" name="dateRec"
+                            <input type="date" id="eqa-dateRec" name="eqa-dateRec"
                                 class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                         </div>
                         <div class="space-y-2">
@@ -255,7 +255,7 @@
                         </div>
                         <div class="space-y-2 md:col-span-3">
                             <label class="text-sm font-semibold text-slate-700">รายละเอียดเพิ่มเติม (ถ้ามี)</label>
-                            <input type="text" id="eqa-condExt" name="condExt"
+                            <input type="text" id="eqa-condExt" name="eqa-condExt"
                                 class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                                 placeholder="ระบุสาเหตุความไม่สมบูรณ์ หรือข้อมูลอื่นๆ">
                         </div>
@@ -267,24 +267,24 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">วันที่ทดสอบ</label>
-                            <input type="date" id="eqa-testDate" name="testDate"
+                            <input type="date" id="eqa-testDate" name="eqa-testDate"
                                 class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">ผู้เตรียม / ละลายตัวอย่าง</label>
-                            <input type="text" id="eqa-preparer" name="preparer"
+                            <input type="text" id="eqa-preparer" name="eqa-preparer"
                                 class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                                 placeholder="ชื่อ-นามสกุล">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">ผู้รายงานผล / ส่งผล</label>
-                            <input type="text" id="eqa-reporter" name="reporter"
+                            <input type="text" id="eqa-reporter" name="eqa-reporter"
                                 class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                                 placeholder="ชื่อ-นามสกุล">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-700">วันที่รายงานผล</label>
-                            <input type="date" id="eqa-reportDate" name="reportDate"
+                            <input type="date" id="eqa-reportDate" name="eqa-reportDate"
                                 class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                         </div>
                     </div>
@@ -299,7 +299,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">รายการทดสอบ</label>
-                                <input type="text" id="eqa-testItem" name="testItem"
+                                <input type="text" id="eqa-testItem" name="eqa-testItem"
                                     class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                                     placeholder="เช่น D-Dimer, HbA1c">
                             </div>
@@ -320,13 +320,13 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">เกณฑ์การประเมิน</label>
-                                <input type="text" id="eqa-evalCriteria" name="evalCriteria"
+                                <input type="text" id="eqa-evalCriteria" name="eqa-evalCriteria"
                                     class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                                     placeholder="เช่น % Bias < 10%">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-700">วันที่ได้รับผลประเมิน</label>
-                                <input type="date" id="eqa-evalDate" name="evalDate"
+                                <input type="date" id="eqa-evalDate" name="eqa-evalDate"
                                     class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
                             </div>
                         </div>
@@ -340,7 +340,7 @@
                                     <label class="text-sm font-semibold text-slate-700">ผลการทำ IQC
                                         ในวันที่ทดสอบ</label>
                                     <select
-                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm" name="eqa-iqcResult" id="eqa-iqcResult">
                                         <option value="pass">ผ่าน</option>
                                         <option value="pass-fix">ผ่านแบบมีการแก้ไข</option>
                                         <option value="fail">ไม่ผ่าน</option>
@@ -349,7 +349,7 @@
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">สภาพเครื่องมือ</label>
                                     <select
-                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm">
+                                        class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all bg-white text-sm" name="eqa-analyzerStatus" id="eqa-analyzerStatus">
                                         <option value="ready">พร้อมใช้งาน (มีการ maintenance ตามรอบ)</option>
                                         <option value="problem">มีปัญหา</option>
                                     </select>
@@ -359,7 +359,7 @@
                                 <label class="text-sm font-semibold text-slate-700">สาเหตุ</label>
                                 <textarea rows="3"
                                     class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-                                    placeholder="ระบุสาเหตุที่ไม่ผ่าน"></textarea>
+                                    placeholder="ระบุสาเหตุที่ไม่ผ่าน" name="eqa-cause" id="eqa-cause"></textarea>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2">
@@ -367,13 +367,13 @@
                                         ผลการแก้ไข</label>
                                     <textarea rows="3"
                                         class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-                                        placeholder="ระบุแนวทางการแก้ไขและผลลัพธ์"></textarea>
+                                        placeholder="ระบุแนวทางการแก้ไขและผลลัพธ์" name="eqa-correctiveAction" id="eqa-correctiveAction"></textarea>
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">การป้องกัน</label>
                                     <textarea rows="3"
                                         class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-                                        placeholder="ระบุแนวทางการป้องกันการเกิดซ้ำ"></textarea>
+                                        placeholder="ระบุแนวทางการป้องกันการเกิดซ้ำ" name="eqa-preventiveAction" id="eqa-preventiveAction"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -403,6 +403,11 @@
                             all</button>
                         <div id="eqa-file-list" class="mt-4 grid gap-3"></div>
                     </div>
+                     <div class="space-y-4" id="eqa-signature-preview">
+
+                     </div>
+
+                     </div>
 
                     <div class="flex justify-end gap-4 pt-4">
                         <button type="button"
@@ -646,12 +651,12 @@
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ลงชื่อ</label>
                                 <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
-                                    placeholder="ชื่อ-นามสกุล" id="recorder" name="recorder">
+                                    placeholder="ชื่อ-นามสกุล" id="iqc-recorder" name="iqc-recorder">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ตำแหน่ง</label>
                                 <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
-                                    placeholder="ระบุตำแหน่ง" id="recorder-position" name="recorder-position">
+                                    placeholder="ระบุตำแหน่ง" id="iqc-recorder-position" name="iqc-recorder-position">
                             </div>
                         </div>
                         <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
@@ -659,12 +664,12 @@
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ลงชื่อ</label>
                                 <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
-                                    placeholder="ชื่อ-นามสกุล" id="supervisor" name="supervisor">
+                                    placeholder="ชื่อ-นามสกุล" id="iqc-supervisor" name="iqc-supervisor">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-xs font-semibold text-slate-700">ตำแหน่ง</label>
                                 <input type="text" class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-white"
-                                    placeholder="ระบุตำแหน่ง" id="supervisor-position" name="supervisor-position">
+                                    placeholder="ระบุตำแหน่ง" id="iqc-supervisor-position" name="iqc-supervisor-position">
                             </div>
                         </div>
                     </div>
@@ -691,6 +696,8 @@
                             all</button>
                         <div id="iqc-file-list" class="mt-4 grid gap-3"></div>
                     </div>
+
+                    <div class="space-y-4" id="iqc-signature-preview"></div>
 
                     <div class="flex justify-end gap-4 pt-4">
                         <button type="button"
@@ -792,33 +799,45 @@
             // --- MOCKUP DATA BUTTONS ---
             $('#mock-eqa-btn').on('click', function () {
                 // เติมข้อมูลตัวอย่าง EQA
-                const $form = $('#eqa-form form');
-                $form.find('select:eq(0)').val('Chemistry');
-                $form.find('input:eq(0)').val('EQA HbA1c 2026');
-                $form.find('input:eq(1)').val('1/2569');
-                $form.find('input:eq(2)').val('2026-04-01');
-                $form.find('input[name="sample-condition"][value="good"]').prop('checked', true);
-                $form.find('input:eq(5)').val('');
-                $form.find('input:eq(6)').val('2026-04-02');
-                $form.find('input:eq(7)').val('สมชาย ใจดี');
-                $form.find('input:eq(8)').val('สมหญิง เก่งงาน');
-                $form.find('input:eq(9)').val('2026-04-03');
-                $form.find('input:eq(10)').val('HbA1c');
-                $form.find('input[name="evaluation-result"][value="pass"]').prop('checked', true);
-                $form.find('input:eq(13)').val('% Bias < 10%');
-                $form.find('input:eq(14)').val('2026-04-05');
+                $('#eqa-department').val('Chemistry');
+                $('#eqa-project').val('การวิเคราะห์คุณภาพภายนอก EQA รอบที่ 1/2569');
+                $('#eqa-round').val('1/2569');
+                $('#eqa-month').val('เมษายน');
+                $('#eqa-year').val('2569');
+                $('#eqa-condExt').val('ตัวอย่างมีลักษณะผิดปกติ');
+                $('#eqa-preparer').val('นางสาวปรียานุช ใจดี');
+                $('#eqa-reporter').val('นายสมชาย แก้วใส');
+                $('#eqa-analyzerStatus').val('problem');
+                $('#eqa-cause').val('เครื่องวัดมีปัญหา');
+                $('#eqa-correctiveAction').val('ส่งซ่อมเครื่องวัด');
+                $('#eqa-preventiveAction').val('ตรวจสอบเครื่องวัดก่อนใช้งานทุกวัน');
+                $('#eqa-testItem').val('Glucose');
+                $('#eqa-evalCriteria').val('ค่าที่ได้ต้องอยู่ในช่วง 90-110 mg/dL');
+                $('#eqa-dateRec')[0]._flatpickr.setDate('2026-04-01', true);
+                $('#eqa-testDate')[0]._flatpickr.setDate('2026-04-02', true);
+                $('#eqa-reportDate')[0]._flatpickr.setDate('2026-04-03', true);
+                $('#eqa-evalDate')[0]._flatpickr.setDate('2026-04-05', true);
+                $('input[name="sample-condition"][value="bad"]').prop('checked', true);
+                $('input[name="evaluation-result"][value="fail"]').prop('checked', true);
+                
             });
 
             $('#mock-iqc-btn').on('click', function () {
                 // เติมข้อมูลตัวอย่าง IQC
                 const $form = $('#iqc-form form');
-                $form.find('select:eq(0)').val('Chemistry');
-                $form.find('select:eq(1)').val('เมษายน');
-                $form.find('input:eq(0)').val('2569');
-                $form.find('input:eq(1)').val('Roche CARDIAC IQC');
-                $form.find('input:eq(2)').val('73501793');
-                $form.find('input:eq(3)').val('2026-12-31');
-                $form.find('input:eq(4)').val('Cobas h232');
+                $('#iqc-department').val('Chemistry');
+                $('#iqc-month').val('เมษายน');
+                $('#iqc-year').val('2569');
+                $('#iqc-project').val('Roche CARDIAC IQC');
+                $('#iqc-lot').val('73501793');
+                $('#iqc-exp')[0]._flatpickr.setDate('2026-12-31', true);
+                $('#iqc-controlName').val('Roche CARDIAC IQC');
+                $('#iqc-analyzer').val('Cobas h232');
+                $('#iqc-instrument').val('Cobas h232');
+                $('#iqc-recorder').val('นางสาวปรียานุช ใจดี');
+                $('#iqc-recorder-position').val('นักเทคนิคการแพทย์');
+                $('#iqc-supervisor').val('นายสมชาย แก้วใส');
+                $('#iqc-supervisor-position').val('หัวหน้าหน่วยเคมีคลินิก');
                 // เติมแถวในตาราง
                 const $tbody = $('#iqc-table-body');
                 $tbody.empty();
@@ -1398,6 +1417,7 @@
             if (!json.ok) {
                 throw new Error(json.message || 'Request failed');
             }
+            console.log('API Response for', action, json);
             return json.data;
         }
 
@@ -1441,13 +1461,23 @@
             }
 
             records.forEach((r) => {
+                // Badge color by status
+                let status = r.status || '-';
+                let statusClass = 'bg-slate-100 text-slate-600';
+                if (status === 'สำเร็จ' || status === 'ผ่าน' || status.toLowerCase() === 'success') {
+                    statusClass = 'bg-emerald-100 text-emerald-700';
+                } else if (status === 'รอดำเนินการ' || status === 'pending' || status.toLowerCase() === 'pending') {
+                    statusClass = 'bg-yellow-100 text-yellow-700';
+                } else if (status === 'ไม่ผ่าน' || status === 'ผิดพลาด' || status.toLowerCase() === 'fail' || status.toLowerCase() === 'error') {
+                    statusClass = 'bg-rose-100 text-rose-700';
+                }
                 body.append(`
                     <tr class="border-b border-slate-100 hover:bg-slate-50/70">
-                        <td class="px-4 py-3">${escapeHtml(r.recordDate || '-')}</td>
+                        <td class="px-4 py-3">${escapeHtml(r.recordDate ? moment(r.recordDate).format('DD/MM/YYYY') : '-')}</td>
                         <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-semibold ${r.type === 'EQA' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}">${escapeHtml(r.type)}</span></td>
                         <td class="px-4 py-3">${escapeHtml(r.department || '-')}</td>
                         <td class="px-4 py-3">${escapeHtml(r.title || '-')}</td>
-                        <td class="px-4 py-3">${escapeHtml(r.status || '-')}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-semibold ${statusClass}">${escapeHtml(status)}</span></td>
                         <td class="px-4 py-3">${r.updatedAt ? moment(r.updatedAt).format('DD/MM/YYYY HH:mm') : '-'}</td>
                         <td class="px-4 py-3 text-center">
                             <button class="btn-edit-record px-3 py-1.5 text-xs bg-amber-100 text-amber-700 rounded-lg mr-2" data-id="${escapeHtml(r.id)}">Edit</button>
@@ -1483,7 +1513,8 @@
                     showConfirmButton: false,
                     didOpen: () => Swal.showLoading()
                 });
-                await postApi('upsertRecord', { record });
+                const result = await postApi('upsertRecord', { record });
+                postApi('movefilestorecordfolder', { recordId: result.id, attachments, type: type });
                 resetAllForms();
                 await loadRecords();
                 performSwitch('records-panel');
@@ -1653,17 +1684,22 @@
                 dept: $('#eqa-department').val() || '',
                 project: $('#eqa-project').val() || '',
                 round: $('#eqa-round').val() || '',
-                dateRec: $('#eqa-date-rec').val() || '',
+                dateRec: $('#eqa-dateRec').val() || '',
                 cond: $('input[name="sample-condition"]:checked').val() || '',
-                condExt: $('#eqa-cond-ext').val() || '',
-                testDate: $('#eqa-test-date').val() || '',
+                condExt: $('#eqa-condExt').val() || '',
+                testDate: $('#eqa-testDate').val() || '',
                 preparer: $('#eqa-preparer').val() || '',
                 reporter: $('#eqa-reporter').val() || '',
-                reportDate: $('#eqa-report-date').val() || '',
-                testItem: $('#eqa-test-item').val() || '',
+                reportDate: $('#eqa-reportDate').val() || '',
+                testItem: $('#eqa-testItem').val() || '',
                 evalResult: $('input[name="evaluation-result"]:checked').val() || '',
-                evalCriteria: $('#eqa-eval-criteria').val() || '',
-                evalDate: $('#eqa-eval-date').val() || ''
+                evalCriteria: $('#eqa-evalCriteria').val() || '',
+                evalDate: $('#eqa-evalDate').val() || '',
+                iqcResult: $('#eqa-iqcResult').val() || '',
+                analyzerStatus: $('#eqa-analyzer').val() || '',
+                cause: $('#eqa-cause').val() || '',
+                correctiveAction: $('#eqa-correctiveAction').val() || '',
+                preventiveAction: $('#eqa-preventiveAction').val() || ''
             };
 
             return {
@@ -1709,7 +1745,7 @@
                 dept: $('#iqc-department').val() || '',
                 month: thaiMonth,
                 year: buddhistYear,
-                controlName: $('#iqc-control-name').val() || '',
+                controlName: $('#iqc-controlName').val() || '',
                 lot: $('#iqc-lot').val() || '',
                 exp: $('#iqc-exp').val() || '',
                 analyzer: $('#iqc-analyzer').val() || '',
@@ -1761,17 +1797,23 @@
             $('#eqa-department').val(data.dept || '');
             $('#eqa-project').val(data.project || '');
             $('#eqa-round').val(data.round || '');
-            $('#eqa-date-rec').val(data.dateRec || '');
+            $('#eqa-dateRec')[0]._flatpickr.setDate(data.dateRec || '', true);
             $('input[name="sample-condition"][value="' + (data.cond || '') + '"]').prop('checked', true);
-            $('#eqa-cond-ext').val(data.condExt || '');
-            $('#eqa-test-date').val(data.testDate || '');
+            $('#eqa-condExt').val(data.condExt || '');
+            $('#eqa-testDate')[0]._flatpickr.setDate(data.testDate || '', true);
             $('#eqa-preparer').val(data.preparer || '');
             $('#eqa-reporter').val(data.reporter || '');
-            $('#eqa-report-date').val(data.reportDate || '');
-            $('#eqa-test-item').val(data.testItem || '');
+            $('#eqa-reportDate')[0]._flatpickr.setDate(data.reportDate || '', true);
+            $('#eqa-testItem').val(data.testItem || '');
             $('input[name="evaluation-result"][value="' + (data.evalResult || '') + '"]').prop('checked', true).trigger('change');
-            $('#eqa-eval-criteria').val(data.evalCriteria || '');
-            $('#eqa-eval-date').val(data.evalDate || '');
+            $('#eqa-evalCriteria').val(data.evalCriteria || '');
+            $('#eqa-evalDate')[0]._flatpickr.setDate(data.evalDate || '', true);
+            $('#eqa-iqcResult').val(data.iqcResult || '');
+            $('#eqa-analyzer').val(data.analyzerStatus || '');
+            $('#eqa-cause').val(data.cause || '');
+            $('#eqa-correctiveAction').val(data.correctiveAction || '');
+            $('#eqa-preventiveAction').val(data.preventiveAction || '');
+
             const attachments = Array.isArray(record.attachments) ? record.attachments : [];
             const normalizedAttachments = new Array(attachments.length);
             for (let i = 0; i < attachments.length; i++) {
@@ -1800,6 +1842,21 @@
                     progress: 100
                 };
             }
+            // show signature if exists
+            if(record.signatureData && Array.isArray(record.signatureData) && record.signatureData.length > 0) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 200;
+                $(canvas).addClass('border border-slate-300 rounded-2xl');
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                const signaturePad = new SignaturePad(canvas);
+                try { signaturePad.fromData(record.signatureData); } catch (e) { }
+                $('#eqa-signature-preview').html('<label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ลายเซ็นผู้บันทึก</label>').append(canvas);
+            } else {
+                $('#eqa-signature-preview').empty();
+            }
             state.newEqaFiles = normalizedAttachments;
             renderEqaFileList();
             lucide.createIcons();
@@ -1811,9 +1868,9 @@
             $('#iqc-department').val(data.dept || '');
             $('#iqc-month').val(data.month || '');
             $('#iqc-year').val(data.year || '');
-            $('#iqc-control-name').val(data.controlName || '');
+            $('#iqc-controlName').val(data.controlName || '');
             $('#iqc-lot').val(data.lot || '');
-            $('#iqc-exp').val(data.exp || '');
+            $('#iqc-exp')[0]._flatpickr.setDate(data.exp || '', true);
             $('#iqc-analyzer').val(data.analyzer || '');
             $('#iqc-recorder').val(data.recorder || '');
             $('#iqc-recorder-position').val(data.recorderPosition || '');
@@ -1855,6 +1912,21 @@
                     uploadStatus: 'UPLOADED',
                     progress: 100
                 };
+            }
+            // show signature if exists
+            if(record.signatureData && Array.isArray(record.signatureData) && record.signatureData.length > 0) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 200;
+                $(canvas).addClass('border border-slate-300 rounded-2xl');
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                const signaturePad = new SignaturePad(canvas);
+                try { signaturePad.fromData(record.signatureData); } catch (e) { }
+                $('#iqc-signature-preview').html('<label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ลายเซ็นผู้บันทึก</label>').append(canvas);
+            } else {
+                $('#iqc-signature-preview').empty();
             }
             state.newIqcFiles = normalizedAttachments;
             renderIqcFileList();
