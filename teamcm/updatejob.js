@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
     NProgress.done();
 });
-// const liff_id = '1655873446-MpmBPPzl'
+// const liff_id= '1655873446-MpmBPPzl' // for test
 const liff_id = '1661543046-a1pJexbX' // use
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
@@ -116,6 +116,7 @@ $(document).ready(async () => {
     moment.locale('th')
     liff.init({
         liffId: liff_id,
+        withLoginOnExternalBrowser: true
     })
     liff.ready.then(async () => {
         // Initialize UX enhancements
@@ -2622,10 +2623,10 @@ function renderContact() {
         let [name, phone, role] = contact.split('|').map(x => x.trim())
         console.log(name, phone, role)
         let contactCard = $(`
-            <li class="flex justify-between items-center py-3 px-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+            <li class="flex justify-between items-center py-3 px-4 border-b border-gray-200 hover:bg-gray-50 transition-colors gap-2">
             <div class="flex-grow">
                 <div class="flex items-center gap-2 mb-1">
-                <div class="font-semibold text-gray-900">${name}</div>
+                <div class="font-semibold text-gray-900 truncate w-0 flex-1">${name}</div>
                 <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">${role}</span>
                 </div>
                 <div class="text-sm text-gray-600">
