@@ -1275,7 +1275,6 @@
                 }
             })
 
-            updateAssetCatalogStatus()
             syncAssetPreviewByInput($('#code').val())
         }
 
@@ -1346,71 +1345,7 @@
             }
         }
 
-        function updateAssetCatalogStatus() {
-            const $badge = $('#asset-status-badge')
-            const $helper = $('#asset-helper-text')
-            const $current = $('#asset-import-current')
-
-            if (!assetCatalog.length) {
-                $badge.removeClass('ready').addClass('empty').html('<i class="bi bi-database-exclamation"></i>ยังไม่มี Asset Master')
-                $helper.text('นำเข้า Asset Master จาก Excel เพื่อเปิด autocomplete ของรหัสเครื่อง')
-                $current.html('<strong>สถานะปัจจุบัน:</strong> ยังไม่มีข้อมูล catalog ที่โหลดอยู่ในรอบนี้')
-                return
-            }
-
-            const importedAt = assetCatalogMeta && assetCatalogMeta.importedAt ? formatAssetDate(assetCatalogMeta.importedAt) : ''
-            const sourceName = assetCatalogMeta && assetCatalogMeta.sourceName ? assetCatalogMeta.sourceName : ''
-            const countText = assetCatalog.length.toLocaleString('th-TH') + ' รายการ'
-            const helperText = ['พร้อม autocomplete ' + countText, importedAt ? 'import ล่าสุด ' + importedAt : '', sourceName]
-                .filter(Boolean)
-                .join(' | ')
-            const currentMeta = [
-                '<strong>สถานะปัจจุบัน:</strong> พร้อมใช้งาน ' + countText,
-                importedAt ? '<strong>import ล่าสุด:</strong> ' + importedAt : '',
-                sourceName ? '<strong>ไฟล์ล่าสุด:</strong> ' + escapeHtml(sourceName) : ''
-            ].filter(Boolean).join('<br>')
-
-            $badge.removeClass('empty').addClass('ready').html('<i class="bi bi-database-check"></i>Asset Master ' + countText)
-            $helper.text(helperText)
-            $current.html(currentMeta)
-        }
-
-        function resetPendingAssetImport() {
-            pendingAssetImport = null
-            $('#asset-import-pending').removeClass('ready').empty()
-            $('#asset-import-confirm-btn').prop('disabled', true)
-        }
-
-        function setAssetImportLoading(isLoading) {
-            $('#asset-import-loading').toggleClass('active', !!isLoading)
-        }
-
-        function canAccessAssetImport() {
-            return !!(profile && ASSET_IMPORT_ALLOWED_USER_IDS.has(profile.userId))
-        }
-
-        function updateAssetImportVisibility() {
-            $('#asset-import-btn').toggleClass('d-none', !canAccessAssetImport())
-        }
-
-        function openAssetImportModal() {
-            if (!canAccessAssetImport()) {
-                return
-            }
-
-            if (!assetImportModal) {
-                const modalElement = document.getElementById('asset-import-modal')
-                assetImportModal = new bootstrap.Modal(modalElement)
-                modalElement.addEventListener('hidden.bs.modal', function () {
-                    setAssetImportLoading(false)
-                })
-            }
-
-            updateAssetCatalogStatus()
-            assetImportModal.show()
-        }
-
-        function renderAssetPreview(asset) {
+       function renderAssetPreview(asset) {
             const $card = $('#asset-preview-card')
 
             if (!asset) {
@@ -1542,7 +1477,8 @@
                             <span>${escapeHtml(item.code)}</span>
                             <span class="text-muted small">เลือก</span>
                         </div>
-                        <div class="asset-suggestion-name">${escapeHtml(item.name || '-')}</div>
+                        <div class="asset-suggestion-name">${escapeHtml(item.name || '-')}
+                        </div>
                         <div class="asset-suggestion-meta">${escapeHtml(metaParts.join(' | ') || 'ไม่มี brand / model / SN')}</div>
                     </button>
                 `
@@ -1550,6 +1486,12 @@
 
             $list.html('<div class="asset-suggestion-scroll">' + html + '</div>').show()
             positionAssetSuggestions()
+             // If only one suggestion, auto-apply it
+            if (items.length === 1) {
+                setTimeout(() => {
+                    applySelectedAsset(items[0])
+                }, 500);
+            }
         }
 
         function applySelectedAsset(asset) {
@@ -1798,245 +1740,7 @@
             return parseAssetWorkbookBuffer(buffer, file.name)
         }
 
-        function getAssetFieldChanges(before, after) {
-            const labels = {
-                departmentAsset: 'ทรัพย์สินของแผนก',
-                name: 'ชื่อเครื่องมือ',
-                brand: 'Brand',
-                model: 'Model',
-                serial: 'SN'
-            }
-
-            return Object.keys(labels)
-                .filter(key => normalizeWhitespace(before[key]) !== normalizeWhitespace(after[key]))
-                .map(key => ({
-                    key,
-                    label: labels[key],
-                    before: before[key] || '-',
-                    after: after[key] || '-'
-                }))
-        }
-
-        function compareImportedAssetCatalog(importedRecords) {
-            const currentMap = new Map(assetCatalog.map(item => [item.code, item]))
-            const importedMap = new Map(importedRecords.map(item => [item.code, item]))
-            const unchanged = []
-            const added = []
-            const updated = []
-            const removed = []
-
-            importedRecords.forEach(item => {
-                const existing = currentMap.get(item.code)
-
-                if (!existing) {
-                    added.push(item)
-                    return
-                }
-
-                const changes = getAssetFieldChanges(existing, item)
-
-                if (!changes.length) {
-                    unchanged.push(item)
-                    return
-                }
-
-                updated.push({
-                    code: item.code,
-                    before: existing,
-                    after: item,
-                    changes
-                })
-            })
-
-            assetCatalog.forEach(item => {
-                if (!importedMap.has(item.code)) {
-                    removed.push(item)
-                }
-            })
-
-            return {
-                unchanged,
-                added,
-                updated,
-                removed
-            }
-        }
-
-        function buildAssetRecordTable(items) {
-            if (!items.length) {
-                return '<div class="asset-import-empty">ไม่มีรายการในกลุ่มนี้</div>'
-            }
-
-            const rows = items.slice(0, ASSET_PREVIEW_LIMIT).map(item => `
-                <tr>
-                    <td>${escapeHtml(item.code)}</td>
-                    <td>${escapeHtml(item.departmentAsset || '-')}</td>
-                    <td>${escapeHtml(item.name || '-')}</td>
-                    <td>${escapeHtml(item.brand || '-')}</td>
-                    <td>${escapeHtml(item.model || '-')}</td>
-                    <td>${escapeHtml(item.serial || '-')}</td>
-                </tr>
-            `).join('')
-            const footnote = items.length > ASSET_PREVIEW_LIMIT
-                ? '<div class="asset-import-footnote">แสดง ' + ASSET_PREVIEW_LIMIT.toLocaleString('th-TH') + ' จากทั้งหมด ' + items.length.toLocaleString('th-TH') + ' รายการ</div>'
-                : ''
-
-            return `
-                <div class="asset-import-table-wrap">
-                    <table class="asset-import-table">
-                        <thead>
-                            <tr>
-                                <th>ID code</th>
-                                <th>ทรัพย์สินของแผนก</th>
-                                <th>ชื่อเครื่องมือ</th>
-                                <th>Brand</th>
-                                <th>Model</th>
-                                <th>SN</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-                ${footnote}
-            `
-        }
-
-        function buildAssetUpdateTable(items) {
-            if (!items.length) {
-                return '<div class="asset-import-empty">ไม่มีรายการที่เปลี่ยนแปลง</div>'
-            }
-
-            const rows = items.slice(0, ASSET_PREVIEW_LIMIT).map(item => {
-                const changeHtml = item.changes.map(change => {
-                    return '<div class="asset-import-change"><strong>' + escapeHtml(change.label) + ':</strong> ' + escapeHtml(change.before) + ' → ' + escapeHtml(change.after) + '</div>'
-                }).join('')
-
-                return `
-                    <tr>
-                        <td>${escapeHtml(item.code)}</td>
-                        <td>${escapeHtml(item.after.name || item.before.name || '-')}</td>
-                        <td>${changeHtml}</td>
-                    </tr>
-                `
-            }).join('')
-            const footnote = items.length > ASSET_PREVIEW_LIMIT
-                ? '<div class="asset-import-footnote">แสดง ' + ASSET_PREVIEW_LIMIT.toLocaleString('th-TH') + ' จากทั้งหมด ' + items.length.toLocaleString('th-TH') + ' รายการ</div>'
-                : ''
-
-            return `
-                <div class="asset-import-table-wrap">
-                    <table class="asset-import-table">
-                        <thead>
-                            <tr>
-                                <th>ID code</th>
-                                <th>ชื่อเครื่องมือ</th>
-                                <th>รายละเอียดที่เปลี่ยน</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-                ${footnote}
-            `
-        }
-
-        function buildAssetSkippedTable(items) {
-            if (!items.length) {
-                return ''
-            }
-
-            const rows = items.slice(0, ASSET_PREVIEW_LIMIT).map(item => `
-                <tr>
-                    <td>${escapeHtml(item.rowNumber)}</td>
-                    <td>${escapeHtml(item.code || '-')}</td>
-                    <td>${escapeHtml(item.departmentAsset || '-')}</td>
-                    <td>${escapeHtml(item.name || '-')}</td>
-                    <td>${escapeHtml(item.reason || '-')}</td>
-                </tr>
-            `).join('')
-            const footnote = items.length > ASSET_PREVIEW_LIMIT
-                ? '<div class="asset-import-footnote">แสดง ' + ASSET_PREVIEW_LIMIT.toLocaleString('th-TH') + ' จากทั้งหมด ' + items.length.toLocaleString('th-TH') + ' รายการ</div>'
-                : ''
-
-            return `
-                <div class="asset-import-table-wrap">
-                    <table class="asset-import-table">
-                        <thead>
-                            <tr>
-                                <th>แถว</th>
-                                <th>ID code</th>
-                                <th>ทรัพย์สินของแผนก</th>
-                                <th>ชื่อเครื่องมือ</th>
-                                <th>หมายเหตุ</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-                ${footnote}
-            `
-        }
-
-        function buildAssetImportSection(title, count, html, isOpen) {
-            return `
-                <details class="asset-import-details" ${isOpen ? 'open' : ''}>
-                    <summary>
-                        <span>${escapeHtml(title)}</span>
-                        <span class="asset-import-count">${count.toLocaleString('th-TH')} รายการ</span>
-                    </summary>
-                    ${html}
-                </details>
-            `
-        }
-
-        function buildAssetImportPreviewHtml(file, parsed, diff) {
-            const warningDuplicate = parsed.duplicates.length
-                ? '<div class="asset-import-warning"><strong>พบรหัสซ้ำในไฟล์</strong> ระบบจะเก็บแถวล่าสุดของแต่ละ ID code และแสดงรายการซ้ำไว้ด้านล่างก่อนให้ยืนยัน</div>'
-                : ''
-            const warningRemoved = diff.removed.length
-                ? '<div class="asset-import-warning danger"><strong>มีรายการเดิมหายไปจากไฟล์ใหม่</strong> หากยืนยัน import รายการเหล่านี้จะถูกนำออกจาก autocomplete ด้วย</div>'
-                : ''
-
-            return `
-                <div class="asset-import-preview">
-                    <div class="asset-import-file-meta">
-                        <div><strong>ไฟล์:</strong> ${escapeHtml(file.name)}</div>
-                        <div><strong>Sheet:</strong> ${escapeHtml(parsed.sheetName)}</div>
-                        <div><strong>คอลัมน์ที่อ่าน:</strong> C = ทรัพย์สินของแผนก, E = ชื่อเครื่องมือ, G = ID code, I/J/K = brand/model/SN</div>
-                        <div><strong>จำนวนแถวข้อมูล:</strong> ${parsed.totalRows.toLocaleString('th-TH')} แถว | <strong>ข้อมูลที่พร้อม import:</strong> ${parsed.records.length.toLocaleString('th-TH')} รายการ</div>
-                    </div>
-
-                    <div class="import-diff-grid">
-                        <div class="import-diff-card"><strong>${parsed.records.length.toLocaleString('th-TH')}</strong><span>พร้อม import</span></div>
-                        <div class="import-diff-card"><strong>${diff.unchanged.length.toLocaleString('th-TH')}</strong><span>รายการเดิม</span></div>
-                        <div class="import-diff-card"><strong>${diff.added.length.toLocaleString('th-TH')}</strong><span>เพิ่มใหม่</span></div>
-                        <div class="import-diff-card"><strong>${diff.updated.length.toLocaleString('th-TH')}</strong><span>อัพเดท</span></div>
-                        <div class="import-diff-card"><strong>${diff.removed.length.toLocaleString('th-TH')}</strong><span>หายจากไฟล์ใหม่</span></div>
-                        <div class="import-diff-card"><strong>${parsed.duplicates.length.toLocaleString('th-TH')}</strong><span>รหัสซ้ำ</span></div>
-                    </div>
-
-                    ${warningDuplicate}
-                    ${warningRemoved}
-                    ${buildAssetImportSection('รายการเดิม', diff.unchanged.length, buildAssetRecordTable(diff.unchanged), false)}
-                    ${buildAssetImportSection('รายการเพิ่มใหม่', diff.added.length, buildAssetRecordTable(diff.added), true)}
-                    ${buildAssetImportSection('รายการที่อัพเดท', diff.updated.length, buildAssetUpdateTable(diff.updated), true)}
-                    ${buildAssetImportSection('รายการเดิมที่ไม่พบในไฟล์ใหม่', diff.removed.length, buildAssetRecordTable(diff.removed), false)}
-                    ${buildAssetImportSection('แถวที่ซ้ำหรือข้าม', parsed.duplicates.length + parsed.skipped.length, buildAssetSkippedTable(parsed.duplicates.concat(parsed.skipped)), false)}
-                </div>
-            `
-        }
-
-        function previewAssetImport(file, parsed, diff) {
-            if (!parsed.records.length) {
-                throw new Error('ไม่พบข้อมูลที่มี ID code สำหรับ import')
-            }
-
-            pendingAssetImport = { file, parsed, diff }
-            $('#asset-import-pending').html(buildAssetImportPreviewHtml(file, parsed, diff)).addClass('ready')
-            $('#asset-import-confirm-btn').prop('disabled', false)
-        }
-
-        $(document).on('select2:open', () => {
+       $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
         });
         $(document).ready(function () {
