@@ -1894,8 +1894,9 @@
                 ]);
                 console.log("Successfully retrieved all initialization data");
                 profile = await liff.getProfile()
-                updateAssetImportVisibility()
+
                 $('.loader').fadeOut(500)
+                NProgress.done()
                 if (profile.userId == 'U5c0c8ed83945a138718d146af61636db' || profile.userId == 'U6664113cf382c2c6b77b94e8deb7b7ea') {
                     Swal.fire({
                         customClass: {
