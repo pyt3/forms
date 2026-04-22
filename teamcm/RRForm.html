@@ -43,6 +43,7 @@
     <link rel="icon" href="https://img.icons8.com/3d-fluency/94/maintenance.png" type="image/x-icon" />
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
     <script src="../teampm/main const.js"></script>
     <style>
         * {
@@ -349,6 +350,14 @@
                                 คิดเป็น % ของราคาซื้อ
                             </label>
                             <input type="text" name="consumable_percent" id="consumable_percent" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
+                                          focus:ring-2 focus:ring-brand-orange focus:border-transparent 
+                                          transition-all shadow-sm hover:border-gray-400 bg-gray-50">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="warranty_end" class="block text-sm font-medium text-gray-700">
+                                วันหมดประกัน
+                            </label>
+                            <input type="text" name="warranty_end" id="warranty_end" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
                                           focus:ring-2 focus:ring-brand-orange focus:border-transparent 
                                           transition-all shadow-sm hover:border-gray-400 bg-gray-50">
                         </div>
@@ -1734,7 +1743,7 @@
                 let _this = $(this)
                 if (_this.val() == '' || _this.prop('id') == '' || _this.val() == null || _this.val() == undefined || !pdfFields.includes(_this.prop('id'))) return
                 if (['e_manufacturer', 'e_img_file', '1-file-nsmart', '2-file-quatation', '3-file-other', 'e_date', 'e_name', 'rr_vender', 'quatation_no', 'rr-cm-other', 'e_dept', 'cause_of_fail'].includes(_this.prop('id'))) return
-                if (_this.prop('id') == 'rr-cm' || _this.prop('id') == 'rr-contract') {
+                if (_this.prop('id') == 'rr-cm' || _this.prop('id') == 'rr-contract' || _this.prop('id') == 'warranty_end') {
                     let v = _this.find('option:selected').val()
                     if (v == '') return
                     form.getTextField(v).setText('✓')
@@ -1772,6 +1781,8 @@
                 form.getTextField(_this.prop('id')).setText(_this.val())
             })
 
+
+
             // $('#e_price, #e_repair_price #consumable').each(function () {
             //     if ($(this).val() == '') return
             //     let val = $(this).val().replace(/,/g, '')
@@ -1799,6 +1810,18 @@
                     form.getTextField($(this).prop('id')).setText('')
                 }
             })
+
+            const warranty_end_date = moment($('#warranty_end').val(), 'DD/MM/YYYY')
+            const today = moment()
+            const diffDays = warranty_end_date.diff(today, 'days')
+            const isWarrantyValid = diffDays >= 0
+            if (isWarrantyValid) {
+                form.getTextField('Other').setText('✓')
+                form.getTextField('rr_cm_other_text').setText('  อยู่ในประกัน (' + warranty_end_date.add(543, 'years').format('DD/MM/YYYY') + ')')
+                form.getTextField('rr_cm_other_text').setFontSize(10)
+                form.getTextField('Other').updateAppearances(symbol)
+            }
+
             if (signature && $('#name').val() == 'DARANPHOP YIMYAM') form.getTextField('bme_sign').setImage(signature)
             if (imgs_obj['e_img']) form.getTextField('e_img').setImage(imgs_obj['e_img'])
             if (imgs_obj['e_img_code']) form.getTextField('e_img_code').setImage(imgs_obj['e_img_code'])
@@ -1849,8 +1872,8 @@
                 const firstPage = pdfDoc.getPages()[0]
                 const { width, height } = firstPage.getSize()
                 firstPage.drawImage(qrImage, {
-                    x: width - 40,
-                    y: 10,
+                    x: width - 65,
+                    y: 213,
                     width: 30,
                     height: 30
                 })
@@ -2314,10 +2337,10 @@
                     const qrSize = 55;
                     const margin = 10;
                     firstPage.drawImage(qrImage, {
-                        x: pageWidth - qrSize - margin,
-                        y: margin,
-                        width: qrSize,
-                        height: qrSize,
+                        x: width - 65,
+                        y: 213,
+                        width: 30,
+                        height: 30
                     });
                 }
 
