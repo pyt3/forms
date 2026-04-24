@@ -2333,9 +2333,9 @@
                     const qrBytes = await fetch(qrDataUrl).then(r => r.arrayBuffer());
                     const qrImage = await pdfDoc.embedPng(qrBytes);
                     const firstPage = pdfDoc.getPages()[0];
-                    const { width: pageWidth } = firstPage.getSize();
                     const qrSize = 55;
                     const margin = 10;
+                    const { width, height } = firstPage.getSize()
                     firstPage.drawImage(qrImage, {
                         x: width - 65,
                         y: 213,
