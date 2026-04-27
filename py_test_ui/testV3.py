@@ -31,7 +31,7 @@ from selenium import webdriver
 from rich import print, pretty
 from rich.progress import track, Progress, BarColumn
 from rich.table import Table
-from rich.console import Console่
+from rich.console import Console
 from rich import box
 from rich.panel import Panel
 from rich.align import Align
