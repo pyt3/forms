@@ -2176,7 +2176,7 @@
             let e_code = assetDetail.code || ''
 
             let isBorrow = false
-            if (start === owner && start !== end) {
+            if ((start === owner && start !== end) || (start !== owner && start !== end)) {
                 isBorrow = true
             }
             let data = {
