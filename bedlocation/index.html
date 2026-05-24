@@ -14,6 +14,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJ+Y6k5xR2vNhbbX6YsJhBKt3vnDnNQfXlBxQ=" crossorigin="anonymous"></script>
+    <!-- vConsole for debugging -->
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-900 h-screen flex flex-col">
@@ -62,6 +64,10 @@
     </div>
 
     <script type="module">
+        // Initialize vConsole for debugging
+        var vConsole = new window.VConsole();
+        console.log('🔧 vConsole เปิดใช้งานแล้ว - เลื่อนขึ้นเพื่อดู Console');
+
         import QrScanner from "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
 
         const video = document.getElementById('qr-video');
@@ -87,14 +93,17 @@
 
                 if (!roomId) {
                     alert('กรุณาระบุเลขห้องก่อนสแกน');
+                    console.warn('⚠️ ผู้ใช้ยังไม่ได้ระบุเลขห้อง');
                     return;
                 }
 
                 const bedId = parseBedId(result.data).trim();
                 if (!bedId) {
+                    console.warn('⚠️ ไม่สามารถแยกรหัสเตียงจาก QR Code');
                     return;
                 }
 
+                console.log(`✅ สแกน QR Code สำเร็จ - เตียง: ${bedId}, ห้อง: ${roomId}`);
                 scanner.pause(true);
                 $('#feedback-text').text(`เตียง ${bedId} -> ห้อง ${roomId}`);
                 modal.removeClass('hidden');
@@ -106,7 +115,7 @@
                 setTimeout(() => {
                     modal.addClass('hidden');
                     scanner.start().catch(error => {
-                        console.error('เริ่มสแกนอีกครั้งไม่สำเร็จ:', error);
+                        console.error('❌ เริ่มสแกนอีกครั้งไม่สำเร็จ:', error);
                         handleCameraError(error);
                     });
                 }, 2500);
@@ -116,23 +125,29 @@
         };
 
         const startScanner = () => {
+            console.log('📱 กำลังเริ่มต้นกล้อง...');
             scanner.start().catch(error => {
-                console.error('เริ่มการสแกนไม่สำเร็จ:', error);
+                console.error('❌ เริ่มการสแกนไม่สำเร็จ:', error);
                 handleCameraError(error);
             });
         };
 
         const handleCameraError = (error) => {
             let errorMessage = '';
+            console.error('🚨 Camera Error:', {
+                name: error.name,
+                message: error.message,
+                fullError: error
+            });
             
             if (error.name === 'NotAllowedError') {
                 errorMessage = '⚠️ กรุณาอนุญาตการใช้งานกล้อง\nตรวจสอบในตั้งค่าเบราว์เซอร์';
             } else if (error.name === 'NotFoundError') {
                 errorMessage = '❌ ไม่พบกล้องในอุปกรณ์นี้\nตรวจสอบว่ากล้องเชื่อมต่ออยู่';
             } else if (error.name === 'NotSupportedError') {
-                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น (Chrome, Firefox, Safari)';
+                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น';
             } else if (error.name === 'SecurityError') {
-                errorMessage = '🔒 ไม่สามารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
+                errorMessage = '🔒 ไม่สา��ารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
             } else {
                 errorMessage = `❌ เข้าถึงกล้องไม่ได้\n${error.message || 'โปรดลองอีกครั้ง'}`;
             }
@@ -142,20 +157,37 @@
         };
 
         retryBtn.on('click', () => {
+            console.log('🔄 ผู้ใช้คลิกปุ่มลองอีกครั้ง');
             errorModal.addClass('hidden');
             startScanner();
         });
 
         // Initialize scanner on page load
+        console.log('⚡ BedTracker Pro เริ่มต้นแล้ว');
         initScanner();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js').catch(error => {
-                    console.error('ลงทะเบียน Service Worker ไม่สำเร็จ:', error);
+                    console.error('❌ ลงทะเบียน Service Worker ไม่สำเร็จ:', error);
                 });
             });
         }
+
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            console.error('🔴 Global Error:', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                error: event.error
+            });
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('🔴 Unhandled Promise Rejection:', event.reason);
+        });
     </script>
 </body>
 
