@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1d4ed8">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="BedTracker">
@@ -16,24 +16,24 @@
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 </head>
 
-<body class="bg-slate-50 font-sans text-slate-900 h-screen flex flex-col">
-    <header class="p-6 bg-white shadow-md flex items-center justify-between">
-        <h1 class="text-3xl font-black text-blue-700">BedTracker</h1>
+<body class="bg-slate-900 font-sans text-slate-100 h-screen flex flex-col">
+    <header class="p-6 bg-slate-800 shadow-md flex items-center justify-between">
+        <h1 class="text-3xl font-black text-slate-100">BedTracker</h1>
         <div class="flex items-center gap-4">
-            <span id="connection-status" class="text-lg font-bold text-emerald-600 bg-emerald-100 px-4 py-1 rounded-full">ออนไลน์</span>
-            <button id="install-btn" class="hidden bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors">
+            <span id="connection-status" class="text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full">ออนไลน์</span>
+            <button id="install-btn" class="hidden bg-slate-700 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-600 transition-colors">
                 📥 ติดตั้ง
             </button>
         </div>
     </header>
 
     <!-- Update Notification -->
-    <div id="update-notification" class="hidden fixed top-0 left-0 right-0 bg-blue-500 text-white p-4 shadow-lg z-40 flex items-center justify-between">
+    <div id="update-notification" class="hidden fixed top-0 left-0 right-0 bg-slate-700 text-white p-4 shadow-lg z-40 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <span class="text-2xl">🔄</span>
             <span class="font-bold">มีเวอร์ชันใหม่พร้อมใช้</span>
         </div>
-        <button id="update-btn" class="bg-white text-blue-600 px-4 py-2 rounded font-bold hover:bg-blue-50">
+        <button id="update-btn" class="bg-slate-600 text-slate-100 px-4 py-2 rounded font-bold hover:bg-slate-500">
             อัปเดตเลย
         </button>
     </div>
@@ -41,55 +41,55 @@
     <main class="flex-1 p-6 max-w-lg mx-auto w-full flex flex-col space-y-8">
         <!-- Step 1: QR Scanner -->
         <div id="scanner-section" class="flex flex-col space-y-6">
-            <h2 class="text-2xl font-bold text-slate-800">สแกน QR Code</h2>
-            <div class="relative w-full aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-black border-4 border-white">
+            <h2 class="text-2xl font-bold text-slate-200">สแกน QR Code</h2>
+            <div class="relative w-full aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-black border-4 border-slate-400">
                 <video id="qr-video" class="w-full h-full object-cover" playsinline muted></video>
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div class="w-[70%] aspect-square relative">
-                        <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-white rounded-tl-2xl"></div>
-                        <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-white rounded-tr-2xl"></div>
-                        <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-white rounded-bl-2xl"></div>
-                        <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-white rounded-br-2xl"></div>
+                        <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-cyan-400 rounded-tl-2xl"></div>
+                        <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-cyan-400 rounded-tr-2xl"></div>
+                        <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-cyan-400 rounded-bl-2xl"></div>
+                        <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-cyan-400 rounded-br-2xl"></div>
                     </div>
                 </div>
             </div>
-            <button id="skip-scan-btn" class="bg-slate-400 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-500 transition-colors">
+            <button id="skip-scan-btn" class="bg-slate-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-500 transition-colors">
                 ข้ามการสแกน (ระบุรหัสเตียงด้วยตนเอง)
             </button>
         </div>
 
         <!-- Step 2: Form Input -->
         <div id="form-section" class="hidden flex flex-col space-y-6">
-            <h2 class="text-2xl font-bold text-slate-800">ระบุข้อมูล</h2>
+            <h2 class="text-2xl font-bold text-slate-200">ระบุข้อมูล</h2>
             
             <!-- Scanned Bed ID Display -->
-            <div class="bg-blue-50 p-6 rounded-3xl shadow-lg border-2 border-blue-100">
-                <label class="text-sm font-bold uppercase text-slate-500 tracking-wider">เลขเตียงที่สแกน</label>
-                <div id="bed-id-display" class="w-full mt-3 text-4xl font-black bg-white p-4 rounded-xl text-blue-800 border-2 border-blue-200">
+            <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-cyan-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider">เลขเตียงที่สแกน</label>
+                <div id="bed-id-display" class="w-full mt-3 text-4xl font-black bg-slate-900 p-4 rounded-xl text-cyan-300 border-2 border-cyan-600">
                     --
                 </div>
             </div>
 
             <!-- Room Input -->
-            <div class="bg-white p-6 rounded-3xl shadow-lg border-2 border-blue-100">
-                <label class="text-sm font-bold uppercase text-slate-500 tracking-wider" for="room-input">ระบุเลขห้อง</label>
+            <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider" for="room-input">ระบุเลขห้อง</label>
                 <input type="text" id="room-input" placeholder="เช่น 301, 302, ..."
-                    class="w-full mt-3 text-3xl font-black bg-slate-100 p-4 rounded-xl outline-none text-blue-800 placeholder:text-slate-300">
+                    class="w-full mt-3 text-3xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border border-slate-700">
             </div>
 
             <!-- Recorder Name Input -->
-            <div class="bg-white p-6 rounded-3xl shadow-lg border-2 border-blue-100">
-                <label class="text-sm font-bold uppercase text-slate-500 tracking-wider" for="recorder-input">ชื่อผู้บันทึก</label>
+            <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider" for="recorder-input">ชื่อผู้บันทึก</label>
                 <input type="text" id="recorder-input" placeholder="ระบุชื่อของคุณ"
-                    class="w-full mt-3 text-3xl font-black bg-slate-100 p-4 rounded-xl outline-none text-blue-800 placeholder:text-slate-300">
+                    class="w-full mt-3 text-3xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border border-slate-700">
             </div>
 
             <!-- Action Buttons -->
             <div class="flex gap-4">
-                <button id="back-btn" class="flex-1 bg-slate-400 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-500 transition-colors">
+                <button id="back-btn" class="flex-1 bg-slate-700 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-600 transition-colors">
                     ← ย้อนกลับ
                 </button>
-                <button id="save-btn" class="flex-1 bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-colors">
+                <button id="save-btn" class="flex-1 bg-cyan-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-cyan-500 transition-colors">
                     💾 บันทึก
                 </button>
             </div>
@@ -97,38 +97,38 @@
     </main>
 
     <!-- Success Modal -->
-    <div id="success-modal" class="hidden fixed inset-0 bg-emerald-600 z-50 flex items-center justify-center p-8">
+    <div id="success-modal" class="hidden fixed inset-0 bg-cyan-900 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
             <div class="text-9xl mb-6">✅</div>
             <h2 class="text-5xl font-black">บันทึกสำเร็จ!</h2>
-            <p id="success-text" class="mt-6 text-2xl font-bold text-emerald-100"></p>
+            <p id="success-text" class="mt-6 text-2xl font-bold text-cyan-200"></p>
         </div>
     </div>
 
     <!-- Offline Queue Modal -->
-    <div id="offline-queue-modal" class="hidden fixed inset-0 bg-amber-600 z-50 flex items-center justify-center p-8">
+    <div id="offline-queue-modal" class="hidden fixed inset-0 bg-slate-700 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
             <div class="text-9xl mb-6">📡</div>
             <h2 class="text-4xl font-black">บันทึกในโหมดออฟไลน์</h2>
-            <p class="mt-6 text-2xl font-bold text-amber-100">ข้อมูลของคุณถูกบันทึกลง Local Storage</p>
-            <p class="mt-2 text-xl text-amber-100">จะส่งอัตโนมัติเมื่อเชื่อมต่ออินเตอร์เน็ตอีกครั้ง</p>
+            <p class="mt-6 text-2xl font-bold text-slate-300">ข้อมูลของคุณถูกบันทึกลง Local Storage</p>
+            <p class="mt-2 text-xl text-slate-400">จะส่งอัตโนมัติเมื่อเชื่อมต่ออินเตอร์เน็ตอีกครั้ง</p>
         </div>
     </div>
 
     <!-- Error Modal -->
-    <div id="error-modal" class="hidden fixed inset-0 bg-red-600 z-50 flex items-center justify-center p-8">
+    <div id="error-modal" class="hidden fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
             <div class="text-9xl mb-6">⚠️</div>
             <h2 id="error-title" class="text-4xl font-black">เข้าถึงกล้องไม่ได้</h2>
-            <p id="error-text" class="mt-6 text-2xl font-bold text-red-100"></p>
-            <button id="retry-btn" class="mt-8 bg-white text-red-600 px-8 py-3 rounded-xl font-bold text-xl hover:bg-red-50">
+            <p id="error-text" class="mt-6 text-2xl font-bold text-slate-300"></p>
+            <button id="retry-btn" class="mt-8 bg-slate-700 text-white px-8 py-3 rounded-xl font-bold text-xl hover:bg-slate-600">
                 ลองอีกครั้ง
             </button>
         </div>
     </div>
 
     <!-- Loading Modal -->
-    <div id="loading-modal" class="hidden fixed inset-0 bg-blue-600 z-50 flex items-center justify-center p-8">
+    <div id="loading-modal" class="hidden fixed inset-0 bg-slate-800 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
             <div class="text-6xl mb-6 animate-spin">⏳</div>
             <h2 class="text-4xl font-black" id="loading-text">กำลังบันทึก...</h2>
@@ -227,12 +227,12 @@
             const isOnline = navigator.onLine;
             if (isOnline) {
                 connectionStatus.textContent = 'ออนไลน์';
-                connectionStatus.className = 'text-lg font-bold text-emerald-600 bg-emerald-100 px-4 py-1 rounded-full';
+                connectionStatus.className = 'text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full';
                 console.log('✅ เชื่อมต่ออินเตอร์เน็ตแล้ว');
                 syncOfflineData();
             } else {
                 connectionStatus.textContent = 'ออฟไลน์';
-                connectionStatus.className = 'text-lg font-bold text-red-600 bg-red-100 px-4 py-1 rounded-full';
+                connectionStatus.className = 'text-lg font-bold text-slate-400 bg-slate-700 px-4 py-1 rounded-full';
                 console.log('❌ ไม่เชื่อมต่ออินเตอร์เน็ต');
             }
         };
@@ -322,7 +322,7 @@
             } else if (error.name === 'NotFoundError') {
                 errorMessage = '❌ ไม่พบกล้องในอุปกรณ์นี้\nตรวจสอบว่ากล้องเชื่อมต่ออยู่';
             } else if (error.name === 'NotSupportedError') {
-                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์ Chrome หรือ Edge';
+                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น';
             } else if (error.name === 'SecurityError') {
                 errorMessage = '🔒 ไม่สามารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
             } else {
