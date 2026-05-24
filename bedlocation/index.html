@@ -19,7 +19,12 @@
 <body class="bg-slate-50 font-sans text-slate-900 h-screen flex flex-col">
     <header class="p-6 bg-white shadow-md flex items-center justify-between">
         <h1 class="text-3xl font-black text-blue-700">BedTracker</h1>
-        <span class="text-lg font-bold text-emerald-600 bg-emerald-100 px-4 py-1 rounded-full">ออนไลน์</span>
+        <div class="flex items-center gap-4">
+            <span class="text-lg font-bold text-emerald-600 bg-emerald-100 px-4 py-1 rounded-full">ออนไลน์</span>
+            <button id="install-btn" class="hidden bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors">
+                📥 ติดตั้ง
+            </button>
+        </div>
     </header>
 
     <main class="flex-1 p-6 max-w-lg mx-auto w-full flex flex-col space-y-8">
@@ -65,6 +70,50 @@
     <script>
         var vConsole = new window.VConsole();
         console.log('🔧 vConsole เปิดใช้งานแล้ว - เลื่อนขึ้นเพื่อดู Console');
+    </script>
+
+    <!-- PWA Install script -->
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+
+        // ตรวจสอบว่า PWA ถูกติดตั้งไปแล้วหรือไม่
+        window.addEventListener('beforeinstallprompt', (event) => {
+            // ป้องกันการแสดง mini-infobar ของ Chrome
+            event.preventDefault();
+            // เก็บ event สำหรับใช้งานภายหลัง
+            deferredPrompt = event;
+            // แสดงปุ่มติดตั้ง
+            installBtn.classList.remove('hidden');
+            console.log('📥 PWA ยังไม่ได้ติดตั้ง - แสดงปุ่มติดตั้ง');
+        });
+
+        // เช็คว่า PWA ถูกติดตั้งแล้วหรือไม่
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA ติดตั้งสำเร็จ');
+            installBtn.classList.add('hidden');
+            deferredPrompt = null;
+        });
+
+        // ตรวจสอบการติดตั้งแบบ iOS (ไม่มี beforeinstallprompt event)
+        if (window.navigator.standalone === true) {
+            console.log('✅ กำลังรัน PWA ที่ติดตั้งแล้ว (iOS)');
+            installBtn.classList.add('hidden');
+        }
+
+        // คลิกปุ่มติดตั้ง
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                console.warn('⚠️ ไม่สามารถติดตั้ง PWA ได้');
+                return;
+            }
+            // แสดง install prompt
+            deferredPrompt.prompt();
+            // รอการตอบสนองจากผู้ใช้
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`👤 ผู้ใช้เลือก: ${outcome}`);
+            deferredPrompt = null;
+        });
     </script>
 
     <!-- QR Scanner script -->
@@ -148,7 +197,7 @@
             } else if (error.name === 'NotFoundError') {
                 errorMessage = '❌ ไม่พบกล้องในอุปกรณ์นี้\nตรวจสอบว่ากล้องเชื่อมต่ออยู่';
             } else if (error.name === 'NotSupportedError') {
-                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอ��์อื่น';
+                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น';
             } else if (error.name === 'SecurityError') {
                 errorMessage = '🔒 ไม่สามารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
             } else {
