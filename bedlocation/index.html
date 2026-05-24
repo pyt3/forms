@@ -20,7 +20,7 @@
     <header class="p-6 bg-white shadow-md flex items-center justify-between">
         <h1 class="text-3xl font-black text-blue-700">BedTracker</h1>
         <div class="flex items-center gap-4">
-            <span class="text-lg font-bold text-emerald-600 bg-emerald-100 px-4 py-1 rounded-full">ออนไลน์</span>
+            <span id="connection-status" class="text-lg font-bold text-emerald-600 bg-emerald-100 px-4 py-1 rounded-full">ออนไลน์</span>
             <button id="install-btn" class="hidden bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors">
                 📥 ติดตั้ง
             </button>
@@ -28,41 +28,99 @@
     </header>
 
     <main class="flex-1 p-6 max-w-lg mx-auto w-full flex flex-col space-y-8">
-        <div class="relative w-full aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-black border-4 border-white">
-            <video id="qr-video" class="w-full h-full object-cover" playsinline muted></video>
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div class="w-[70%] aspect-square relative">
-                    <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-white rounded-tl-2xl"></div>
-                    <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-white rounded-tr-2xl"></div>
-                    <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-white rounded-bl-2xl"></div>
-                    <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-white rounded-br-2xl"></div>
+        <!-- Step 1: QR Scanner -->
+        <div id="scanner-section" class="flex flex-col space-y-6">
+            <h2 class="text-2xl font-bold text-slate-800">ขั้นตอนที่ 1: สแกน QR Code</h2>
+            <div class="relative w-full aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-black border-4 border-white">
+                <video id="qr-video" class="w-full h-full object-cover" playsinline muted></video>
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-[70%] aspect-square relative">
+                        <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-white rounded-tl-2xl"></div>
+                        <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-white rounded-tr-2xl"></div>
+                        <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-white rounded-bl-2xl"></div>
+                        <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-white rounded-br-2xl"></div>
+                    </div>
                 </div>
             </div>
+            <button id="skip-scan-btn" class="bg-slate-400 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-500 transition-colors">
+                ข้ามการสแกน (ระบุเลขห้องด้วยตนเอง)
+            </button>
         </div>
 
-        <div class="bg-white p-6 rounded-3xl shadow-lg border-2 border-blue-100">
-            <label class="text-sm font-bold uppercase text-slate-500 tracking-wider" for="room-input">ระบุเลขห้อง</label>
-            <input type="text" id="room-input" placeholder="ระบุเลขห้อง..."
-                class="w-full mt-3 text-4xl font-black bg-slate-100 p-4 rounded-xl outline-none text-blue-800 placeholder:text-slate-300">
+        <!-- Step 2: Form Input -->
+        <div id="form-section" class="hidden flex flex-col space-y-6">
+            <h2 class="text-2xl font-bold text-slate-800">ขั้นตอนที่ 2: ระบุข้อมูล</h2>
+            
+            <!-- Scanned Bed ID Display -->
+            <div class="bg-blue-50 p-6 rounded-3xl shadow-lg border-2 border-blue-100">
+                <label class="text-sm font-bold uppercase text-slate-500 tracking-wider">เลขเตียงที่สแกน</label>
+                <div id="bed-id-display" class="w-full mt-3 text-4xl font-black bg-white p-4 rounded-xl text-blue-800 border-2 border-blue-200">
+                    --
+                </div>
+            </div>
+
+            <!-- Room Input -->
+            <div class="bg-white p-6 rounded-3xl shadow-lg border-2 border-blue-100">
+                <label class="text-sm font-bold uppercase text-slate-500 tracking-wider" for="room-input">ระบุเลขห้อง</label>
+                <input type="text" id="room-input" placeholder="เช่น 301, 302, ..."
+                    class="w-full mt-3 text-3xl font-black bg-slate-100 p-4 rounded-xl outline-none text-blue-800 placeholder:text-slate-300">
+            </div>
+
+            <!-- Recorder Name Input -->
+            <div class="bg-white p-6 rounded-3xl shadow-lg border-2 border-blue-100">
+                <label class="text-sm font-bold uppercase text-slate-500 tracking-wider" for="recorder-input">ชื่อผู้บันทึก</label>
+                <input type="text" id="recorder-input" placeholder="ระบุชื่อของคุณ"
+                    class="w-full mt-3 text-3xl font-black bg-slate-100 p-4 rounded-xl outline-none text-blue-800 placeholder:text-slate-300">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4">
+                <button id="back-btn" class="flex-1 bg-slate-400 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-500 transition-colors">
+                    ← ย้อนกลับ
+                </button>
+                <button id="save-btn" class="flex-1 bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-colors">
+                    💾 บันทึก
+                </button>
+            </div>
         </div>
     </main>
 
-    <div id="success-modal" class="hidden fixed inset-0 bg-blue-600 z-50 flex items-center justify-center p-8">
+    <!-- Success Modal -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-emerald-600 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
             <div class="text-9xl mb-6">✅</div>
             <h2 class="text-5xl font-black">บันทึกสำเร็จ!</h2>
-            <p id="feedback-text" class="mt-6 text-3xl font-bold text-blue-100"></p>
+            <p id="success-text" class="mt-6 text-2xl font-bold text-emerald-100"></p>
         </div>
     </div>
 
+    <!-- Offline Queue Modal -->
+    <div id="offline-queue-modal" class="hidden fixed inset-0 bg-amber-600 z-50 flex items-center justify-center p-8">
+        <div class="text-white text-center">
+            <div class="text-9xl mb-6">📡</div>
+            <h2 class="text-4xl font-black">บันทึกในโหมดออฟไลน์</h2>
+            <p class="mt-6 text-2xl font-bold text-amber-100">ข้อมูลของคุณถูกบันทึกลง Local Storage</p>
+            <p class="mt-2 text-xl text-amber-100">จะส่งอัตโนมัติเมื่อเชื่อมต่ออินเตอร์เน็ตอีกครั้ง</p>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
     <div id="error-modal" class="hidden fixed inset-0 bg-red-600 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
             <div class="text-9xl mb-6">⚠️</div>
-            <h2 class="text-4xl font-black">เข้าถึงกล้องไม่ได้</h2>
+            <h2 id="error-title" class="text-4xl font-black">เข้าถึงกล้องไม่ได้</h2>
             <p id="error-text" class="mt-6 text-2xl font-bold text-red-100"></p>
             <button id="retry-btn" class="mt-8 bg-white text-red-600 px-8 py-3 rounded-xl font-bold text-xl hover:bg-red-50">
                 ลองอีกครั้ง
             </button>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="hidden fixed inset-0 bg-blue-600 z-50 flex items-center justify-center p-8">
+        <div class="text-white text-center">
+            <div class="text-6xl mb-6 animate-spin">⏳</div>
+            <h2 class="text-4xl font-black" id="loading-text">กำลังบันทึก...</h2>
         </div>
     </div>
 
@@ -77,58 +135,87 @@
         let deferredPrompt;
         const installBtn = document.getElementById('install-btn');
 
-        // ตรวจสอบว่า PWA ถูกติดตั้งไปแล้วหรือไม่
         window.addEventListener('beforeinstallprompt', (event) => {
-            // ป้องกันการแสดง mini-infobar ของ Chrome
             event.preventDefault();
-            // เก็บ event สำหรับใช้งานภายหลัง
             deferredPrompt = event;
-            // แสดงปุ่มติดตั้ง
             installBtn.classList.remove('hidden');
             console.log('📥 PWA ยังไม่ได้ติดตั้ง - แสดงปุ่มติดตั้ง');
         });
 
-        // เช็คว่า PWA ถูกติดตั้งแล้วหรือไม่
         window.addEventListener('appinstalled', () => {
             console.log('✅ PWA ติดตั้งสำเร็จ');
             installBtn.classList.add('hidden');
             deferredPrompt = null;
         });
 
-        // ตรวจสอบการติดตั้งแบบ iOS (ไม่มี beforeinstallprompt event)
         if (window.navigator.standalone === true) {
             console.log('✅ กำลังรัน PWA ที่ติดตั้งแล้ว (iOS)');
             installBtn.classList.add('hidden');
         }
 
-        // คลิกปุ่มติดตั้ง
         installBtn.addEventListener('click', async () => {
             if (!deferredPrompt) {
                 console.warn('⚠️ ไม่สามารถติดตั้ง PWA ได้');
                 return;
             }
-            // แสดง install prompt
             deferredPrompt.prompt();
-            // รอการตอบสนองจากผู้ใช้
             const { outcome } = await deferredPrompt.userChoice;
             console.log(`👤 ผู้ใช้เลือก: ${outcome}`);
             deferredPrompt = null;
         });
     </script>
 
-    <!-- QR Scanner script -->
+    <!-- Connection Status Monitor -->
+    <script>
+        const connectionStatus = document.getElementById('connection-status');
+
+        const updateConnectionStatus = () => {
+            const isOnline = navigator.onLine;
+            if (isOnline) {
+                connectionStatus.textContent = 'ออนไลน์';
+                connectionStatus.className = 'text-lg font-bold text-emerald-600 bg-emerald-100 px-4 py-1 rounded-full';
+                console.log('✅ เชื่อมต่ออินเตอร์เน็ตแล้ว');
+                syncOfflineData();
+            } else {
+                connectionStatus.textContent = 'ออฟไลน์';
+                connectionStatus.className = 'text-lg font-bold text-red-600 bg-red-100 px-4 py-1 rounded-full';
+                console.log('❌ ไม่เชื่อมต่ออินเตอร์เน็ต');
+            }
+        };
+
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+
+        // Initial check
+        updateConnectionStatus();
+    </script>
+
+    <!-- QR Scanner & Form Logic -->
     <script type="module">
         import QrScanner from "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
 
         const video = document.getElementById('qr-video');
-        const modal = document.getElementById('success-modal');
-        const errorModal = document.getElementById('error-modal');
-        const errorText = document.getElementById('error-text');
-        const retryBtn = document.getElementById('retry-btn');
+        const scannerSection = document.getElementById('scanner-section');
+        const formSection = document.getElementById('form-section');
+        const bedIdDisplay = document.getElementById('bed-id-display');
         const roomInput = document.getElementById('room-input');
-        const feedbackText = document.getElementById('feedback-text');
+        const recorderInput = document.getElementById('recorder-input');
+        const saveBtn = document.getElementById('save-btn');
+        const backBtn = document.getElementById('back-btn');
+        const skipScanBtn = document.getElementById('skip-scan-btn');
+        const retryBtn = document.getElementById('retry-btn');
+        const successModal = document.getElementById('success-modal');
+        const offlineQueueModal = document.getElementById('offline-queue-modal');
+        const errorModal = document.getElementById('error-modal');
+        const loadingModal = document.getElementById('loading-modal');
+        const errorText = document.getElementById('error-text');
+        const errorTitle = document.getElementById('error-title');
+        const successText = document.getElementById('success-text');
+        const loadingText = document.getElementById('loading-text');
 
         let scanner = null;
+        let scannedBedId = null;
+        const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_DEPLOYMENT_URL'; // Replace with actual URL
 
         const parseBedId = (rawValue) => {
             try {
@@ -141,36 +228,20 @@
 
         const initScanner = () => {
             scanner = new QrScanner(video, result => {
-                const roomId = roomInput.value.toString().trim();
-
-                if (!roomId) {
-                    alert('กรุณาระบุเลขห้องก่อนสแกน');
-                    console.warn('⚠️ ผู้ใช้ยังไม่ได้ระบุเลขห้อง');
-                    return;
-                }
-
-                const bedId = parseBedId(result.data).trim();
-                if (!bedId) {
+                scannedBedId = parseBedId(result.data).trim();
+                
+                if (!scannedBedId) {
                     console.warn('⚠️ ไม่สามารถแยกรหัสเตียงจาก QR Code');
                     return;
                 }
 
-                console.log(`✅ สแกน QR Code สำเร็จ - เตียง: ${bedId}, ห้อง: ${roomId}`);
+                console.log(`✅ สแกน QR Code สำเร็จ - เตียง: ${scannedBedId}`);
                 scanner.pause(true);
-                feedbackText.textContent = `เตียง ${bedId} -> ห้อง ${roomId}`;
-                modal.classList.remove('hidden');
+                showFormSection();
 
                 if (navigator.vibrate) {
-                    navigator.vibrate(500);
+                    navigator.vibrate(200);
                 }
-
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                    scanner.start().catch(error => {
-                        console.error('❌ เริ่มสแกนอีกครั้งไม่สำเร็จ:', error);
-                        handleCameraError(error);
-                    });
-                }, 2500);
             }, { highlightScanRegion: false, returnDetailedScanResult: true });
 
             startScanner();
@@ -197,19 +268,176 @@
             } else if (error.name === 'NotFoundError') {
                 errorMessage = '❌ ไม่พบกล้องในอุปกรณ์นี้\nตรวจสอบว่ากล้องเชื่อมต่ออยู่';
             } else if (error.name === 'NotSupportedError') {
-                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น';
+                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์ Chrome หรือ Edge';
             } else if (error.name === 'SecurityError') {
                 errorMessage = '🔒 ไม่สามารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
             } else {
                 errorMessage = `❌ เข้าถึงกล้องไม่ได้\n${error.message || 'โปรดลองอีกครั้ง'}`;
             }
             
+            errorTitle.textContent = 'เข้าถึงกล้องไม่ได้';
             errorText.textContent = errorMessage;
             errorModal.classList.remove('hidden');
         };
 
+        const showFormSection = () => {
+            scannerSection.classList.add('hidden');
+            formSection.classList.remove('hidden');
+            bedIdDisplay.textContent = scannedBedId;
+            roomInput.focus();
+        };
+
+        const backToScanner = () => {
+            formSection.classList.add('hidden');
+            scannerSection.classList.remove('hidden');
+            scannedBedId = null;
+            bedIdDisplay.textContent = '--';
+            roomInput.value = '';
+            recorderInput.value = '';
+            startScanner();
+        };
+
+        const isOnline = () => navigator.onLine;
+
+        const saveToLocalStorage = (data) => {
+            try {
+                const queue = JSON.parse(localStorage.getItem('bedTrackerQueue') || '[]');
+                queue.push({
+                    ...data,
+                    timestamp: new Date().toISOString(),
+                    synced: false
+                });
+                localStorage.setItem('bedTrackerQueue', JSON.stringify(queue));
+                console.log('💾 บันทึกข้อมูลลง Local Storage:', queue);
+                return true;
+            } catch (error) {
+                console.error('❌ ไม่สามารถบันทึกลง Local Storage:', error);
+                return false;
+            }
+        };
+
+        const sendToGoogleAppsScript = async (data) => {
+            try {
+                loadingText.textContent = 'กำลังส่งข้อมูล...';
+                loadingModal.classList.remove('hidden');
+
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bedId: data.bedId,
+                        roomId: data.roomId,
+                        recorderName: data.recorderName,
+                        timestamp: data.timestamp
+                    })
+                });
+
+                console.log('✅ ส่งข้อมูลไปยัง Google Apps Script สำเร็จ');
+                loadingModal.classList.add('hidden');
+                return true;
+            } catch (error) {
+                console.error('❌ ไม่สามารถส่งข้อมูลไปยัง Google Apps Script:', error);
+                loadingModal.classList.add('hidden');
+                return false;
+            }
+        };
+
+        const syncOfflineData = async () => {
+            if (!isOnline()) return;
+
+            try {
+                const queue = JSON.parse(localStorage.getItem('bedTrackerQueue') || '[]');
+                const unsynced = queue.filter(item => !item.synced);
+
+                if (unsynced.length === 0) {
+                    console.log('✅ ไม่มีข้อมูลที่ต้องซิงค์');
+                    return;
+                }
+
+                console.log(`🔄 กำลังซิงค์ ${unsynced.length} รายการ...`);
+
+                for (let i = 0; i < unsynced.length; i++) {
+                    const item = unsynced[i];
+                    const success = await sendToGoogleAppsScript(item);
+
+                    if (success) {
+                        item.synced = true;
+                        queue[queue.indexOf(item)] = item;
+                    }
+                }
+
+                localStorage.setItem('bedTrackerQueue', JSON.stringify(queue));
+                console.log('✅ ซิงค์ข้อมูลเสร็จแล้ว');
+            } catch (error) {
+                console.error('❌ เกิดข้อผิดพลาดในการซิงค์:', error);
+            }
+        };
+
+        const handleSave = async () => {
+            const roomId = roomInput.value.trim();
+            const recorderName = recorderInput.value.trim();
+
+            if (!scannedBedId || !roomId || !recorderName) {
+                alert('⚠️ กรุณาระบุข้อมูลให้ครบถ้วน');
+                console.warn('⚠️ ข้อมูลไม่ครบ');
+                return;
+            }
+
+            const data = {
+                bedId: scannedBedId,
+                roomId: roomId,
+                recorderName: recorderName,
+                timestamp: new Date().toISOString()
+            };
+
+            if (isOnline()) {
+                // Online: Send directly
+                const success = await sendToGoogleAppsScript(data);
+                if (success) {
+                    successText.textContent = `เตียง ${scannedBedId} → ห้อง ${roomId}\nผู้บันทึก: ${recorderName}`;
+                    successModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        successModal.classList.add('hidden');
+                        backToScanner();
+                    }, 2500);
+                } else {
+                    // Fallback to offline storage
+                    saveToLocalStorage(data);
+                    offlineQueueModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        offlineQueueModal.classList.add('hidden');
+                        backToScanner();
+                    }, 2500);
+                }
+            } else {
+                // Offline: Save to Local Storage
+                if (saveToLocalStorage(data)) {
+                    offlineQueueModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        offlineQueueModal.classList.add('hidden');
+                        backToScanner();
+                    }, 2500);
+                } else {
+                    errorTitle.textContent = 'ไม่สามารถบันทึกข้อมูล';
+                    errorText.textContent = 'เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง';
+                    errorModal.classList.remove('hidden');
+                }
+            }
+        };
+
+        skipScanBtn.addEventListener('click', () => {
+            scannedBedId = 'MANUAL_INPUT';
+            showFormSection();
+        });
+
+        saveBtn.addEventListener('click', handleSave);
+
+        backBtn.addEventListener('click', backToScanner);
+
         retryBtn.addEventListener('click', () => {
-            console.log('🔄 ผู้ใช้คลิกปุ่มลองอีกครั้ง');
             errorModal.classList.add('hidden');
             startScanner();
         });
