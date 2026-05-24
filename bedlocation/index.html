@@ -10,8 +10,10 @@
     <meta name="apple-mobile-web-app-title" content="BedTracker">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
-    <title>BedTracker</title>
+    <title>BedTracker Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- vConsole for debugging -->
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 </head>
@@ -21,8 +23,9 @@
         <h1 class="text-3xl font-black text-slate-100">BedTracker</h1>
         <div class="flex items-center gap-4">
             <span id="connection-status" class="text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full">ออนไลน์</span>
-            <button id="install-btn" class="hidden bg-slate-700 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-600 transition-colors">
-                📥 ติดตั้ง
+            <button id="install-btn" class="hidden bg-slate-700 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-600 transition-colors flex items-center gap-2">
+                <i data-lucide="download"></i>
+                <span>ติดตั้ง</span>
             </button>
         </div>
     </header>
@@ -30,7 +33,7 @@
     <!-- Update Notification -->
     <div id="update-notification" class="hidden fixed top-0 left-0 right-0 bg-slate-700 text-white p-4 shadow-lg z-40 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <span class="text-2xl">🔄</span>
+            <i data-lucide="refresh-cw" class="w-6 h-6"></i>
             <span class="font-bold">มีเวอร์ชันใหม่พร้อมใช้</span>
         </div>
         <button id="update-btn" class="bg-slate-600 text-slate-100 px-4 py-2 rounded font-bold hover:bg-slate-500">
@@ -86,11 +89,13 @@
 
             <!-- Action Buttons -->
             <div class="flex gap-4">
-                <button id="back-btn" class="flex-1 bg-slate-700 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-600 transition-colors">
-                    ← ย้อนกลับ
+                <button id="back-btn" class="flex-1 bg-slate-700 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    <span>ย้อนกลับ</span>
                 </button>
-                <button id="save-btn" class="flex-1 bg-cyan-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-cyan-500 transition-colors">
-                    💾 บันทึก
+                <button id="save-btn" class="flex-1 bg-cyan-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="save" class="w-5 h-5"></i>
+                    <span>บันทึก</span>
                 </button>
             </div>
         </div>
@@ -99,7 +104,9 @@
     <!-- Success Modal -->
     <div id="success-modal" class="hidden fixed inset-0 bg-cyan-900 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
-            <div class="text-9xl mb-6">✅</div>
+            <div class="mb-6">
+                <i data-lucide="check-circle" class="w-24 h-24 mx-auto text-green-400"></i>
+            </div>
             <h2 class="text-5xl font-black">บันทึกสำเร็จ!</h2>
             <p id="success-text" class="mt-6 text-2xl font-bold text-cyan-200"></p>
         </div>
@@ -108,7 +115,9 @@
     <!-- Offline Queue Modal -->
     <div id="offline-queue-modal" class="hidden fixed inset-0 bg-slate-700 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
-            <div class="text-9xl mb-6">📡</div>
+            <div class="mb-6">
+                <i data-lucide="wifi-off" class="w-24 h-24 mx-auto text-yellow-400"></i>
+            </div>
             <h2 class="text-4xl font-black">บันทึกในโหมดออฟไลน์</h2>
             <p class="mt-6 text-2xl font-bold text-slate-300">ข้อมูลของคุณถูกบันทึกลง Local Storage</p>
             <p class="mt-2 text-xl text-slate-400">จะส่งอัตโนมัติเมื่อเชื่อมต่ออินเตอร์เน็ตอีกครั้ง</p>
@@ -118,11 +127,14 @@
     <!-- Error Modal -->
     <div id="error-modal" class="hidden fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
-            <div class="text-9xl mb-6">⚠️</div>
+            <div class="mb-6">
+                <i data-lucide="alert-circle" class="w-24 h-24 mx-auto text-red-400"></i>
+            </div>
             <h2 id="error-title" class="text-4xl font-black">เข้าถึงกล้องไม่ได้</h2>
             <p id="error-text" class="mt-6 text-2xl font-bold text-slate-300"></p>
-            <button id="retry-btn" class="mt-8 bg-slate-700 text-white px-8 py-3 rounded-xl font-bold text-xl hover:bg-slate-600">
-                ลองอีกครั้ง
+            <button id="retry-btn" class="mt-8 bg-slate-700 text-white px-8 py-3 rounded-xl font-bold text-xl hover:bg-slate-600 flex items-center justify-center gap-2 mx-auto">
+                <i data-lucide="redo" class="w-5 h-5"></i>
+                <span>ลองอีกครั้ง</span>
             </button>
         </div>
     </div>
@@ -130,7 +142,9 @@
     <!-- Loading Modal -->
     <div id="loading-modal" class="hidden fixed inset-0 bg-slate-800 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
-            <div class="text-6xl mb-6 animate-spin">⏳</div>
+            <div class="mb-6">
+                <i data-lucide="loader" class="w-16 h-16 mx-auto animate-spin text-cyan-400"></i>
+            </div>
             <h2 class="text-4xl font-black" id="loading-text">กำลังบันทึก...</h2>
         </div>
     </div>
@@ -139,6 +153,11 @@
     <script>
         var vConsole = new window.VConsole();
         console.log('🔧 vConsole เปิดใช้งานแล้ว - เลื่อนขึ้นเพื่อดู Console');
+    </script>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
     </script>
 
     <!-- Service Worker Update Handler -->
@@ -483,9 +502,8 @@
         };
 
         skipScanBtn.addEventListener('click', () => {
-            scannedBedId = '';
+            scannedBedId = 'MANUAL_INPUT';
             showFormSection();
-            
         });
 
         saveBtn.addEventListener('click', handleSave);
