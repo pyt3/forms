@@ -39,6 +39,11 @@
             <label class="text-sm font-bold uppercase text-slate-500 tracking-wider" for="room-input">ระบุเลขห้อง</label>
             <input type="text" id="room-input" placeholder="ระบุเลขห้อง..."
                 class="w-full mt-3 text-4xl font-black bg-slate-100 p-4 rounded-xl outline-none text-blue-800 placeholder:text-slate-300">
+            <button id="start-scan-btn"
+                class="w-full mt-4 bg-blue-600 text-white text-xl font-bold py-3 rounded-xl hover:bg-blue-700 transition">
+                เปิดกล้องสแกน
+            </button>
+            <p id="camera-hint" class="mt-3 text-sm text-slate-500">กดปุ่มเพื่อเปิดกล้องสแกน QR</p>
         </div>
     </main>
 
@@ -55,6 +60,9 @@
 
         const video = document.getElementById('qr-video');
         const modal = $('#success-modal');
+        const startButton = $('#start-scan-btn');
+        const cameraHint = $('#camera-hint');
+        let isStarting = false;
 
         const parseBedId = (rawValue) => {
             try {
@@ -63,6 +71,27 @@
             } catch {
                 return rawValue;
             }
+        };
+
+        const showCameraError = (error) => {
+            const errorCode = error?.message || error?.name || '';
+            let message = 'ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้งานกล้องและลองอีกครั้ง';
+
+            if (errorCode === 'INSECURE_CONTEXT') {
+                message = 'ไม่สามารถเปิดกล้องได้ กรุณาเปิดผ่าน HTTPS หรือ localhost';
+            } else if (errorCode === 'NO_CAMERA') {
+                message = 'ไม่พบกล้องในอุปกรณ์นี้';
+            } else if (errorCode === 'NotAllowedError' || errorCode === 'PermissionDeniedError') {
+                message = 'กรุณาอนุญาตการใช้งานกล้อง แล้วกดเปิดกล้องอีกครั้ง';
+            } else if (errorCode === 'NotFoundError' || errorCode === 'DevicesNotFoundError') {
+                message = 'ไม่พบกล้องในอุปกรณ์นี้';
+            } else if (errorCode === 'NotReadableError' || errorCode === 'TrackStartError') {
+                message = 'กล้องกำลังถูกใช้งานโดยแอปอื่น กรุณาปิดแอปนั้นแล้วลองอีกครั้ง';
+            }
+
+            console.error('เริ่มการสแกนไม่สำเร็จ:', error);
+            cameraHint.text(message);
+            startButton.prop('disabled', false).text('เปิดกล้องสแกน');
         };
 
         const scanner = new QrScanner(video, result => {
@@ -88,14 +117,39 @@
 
             setTimeout(() => {
                 modal.addClass('hidden');
-                scanner.start().catch(error => console.error('เริ่มสแกนอีกครั้งไม่สำเร็จ:', error));
+                startScanner();
             }, 2500);
-        }, { highlightScanRegion: false, returnDetailedScanResult: true });
+        }, { highlightScanRegion: false, returnDetailedScanResult: true, preferredCamera: 'environment' });
 
-        scanner.start().catch(error => {
-            console.error('เริ่มการสแกนไม่สำเร็จ:', error);
-            alert('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้งานกล้องและลองอีกครั้ง');
-        });
+        const startScanner = async () => {
+            if (isStarting) return;
+
+            isStarting = true;
+            startButton.prop('disabled', true).text('กำลังเปิดกล้อง...');
+
+            try {
+                if (!window.isSecureContext) {
+                    throw new Error('INSECURE_CONTEXT');
+                }
+
+                const hasCamera = await QrScanner.hasCamera();
+                if (!hasCamera) {
+                    throw new Error('NO_CAMERA');
+                }
+
+                await scanner.start();
+                cameraHint.text('พร้อมสแกน QR แล้ว');
+                startButton.addClass('hidden');
+            } catch (error) {
+                showCameraError(error);
+            } finally {
+                isStarting = false;
+            }
+        };
+
+        startButton.on('click', startScanner);
+
+        startScanner();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
