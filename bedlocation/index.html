@@ -101,6 +101,26 @@
         </div>
     </main>
 
+    <!-- Manual Bed ID Modal -->
+    <div id="manual-bed-id-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-8">
+        <div class="bg-slate-800 rounded-3xl p-8 w-full max-w-md shadow-2xl border-2 border-cyan-700">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="edit" class="w-8 h-8 text-cyan-400"></i>
+                <h2 class="text-3xl font-black text-white">ระบุเลขเตียง</h2>
+            </div>
+            
+            <p class="text-slate-300 mb-6 text-lg">กรุณาระบุเลขเตียงเพื่อดำเนินการต่อ</p>
+            
+            <input type="text" id="manual-bed-id-input" placeholder="เช่น A001, B102, ..."
+                class="w-full mb-6 text-2xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border-2 border-cyan-600">
+            
+            <button id="manual-bed-id-submit-btn" class="w-full bg-cyan-600 text-white px-4 py-4 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2 text-lg">
+                <i data-lucide="check" class="w-5 h-5"></i>
+                <span>ตกลง</span>
+            </button>
+        </div>
+    </div>
+
     <!-- Success Modal -->
     <div id="success-modal" class="hidden fixed inset-0 bg-cyan-900 z-50 flex items-center justify-center p-8">
         <div class="text-white text-center">
@@ -285,6 +305,9 @@
         const errorTitle = document.getElementById('error-title');
         const successText = document.getElementById('success-text');
         const loadingText = document.getElementById('loading-text');
+        const manualBedIdModal = document.getElementById('manual-bed-id-modal');
+        const manualBedIdInput = document.getElementById('manual-bed-id-input');
+        const manualBedIdSubmitBtn = document.getElementById('manual-bed-id-submit-btn');
 
         let scanner = null;
         let scannedBedId = null;
@@ -358,6 +381,42 @@
             formSection.classList.remove('hidden');
             bedIdDisplay.textContent = scannedBedId;
             roomInput.focus();
+        };
+
+        const showManualBedIdModal = () => {
+            scanner.pause(true);
+            scannerSection.classList.add('hidden');
+            manualBedIdModal.classList.remove('hidden');
+            manualBedIdInput.value = '';
+            setTimeout(() => {
+                manualBedIdInput.focus();
+            }, 100);
+            console.log('📝 แสดง Modal ระบุเลขเตียง');
+        };
+
+        const closeManualBedIdModal = () => {
+            manualBedIdModal.classList.add('hidden');
+            scannerSection.classList.remove('hidden');
+            startScanner();
+        };
+
+        const submitManualBedId = () => {
+            const bedId = manualBedIdInput.value.trim();
+            
+            if (!bedId) {
+                alert('⚠️ กรุณาระบุเลขเตียง');
+                manualBedIdInput.focus();
+                return;
+            }
+
+            console.log(`✅ กรอกเลขเตียงด้วยตนเอง: ${bedId}`);
+            scannedBedId = bedId;
+            manualBedIdModal.classList.add('hidden');
+            showFormSection();
+
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
         };
 
         const backToScanner = () => {
@@ -501,9 +560,14 @@
             }
         };
 
-        skipScanBtn.addEventListener('click', () => {
-            scannedBedId = 'MANUAL_INPUT';
-            showFormSection();
+        skipScanBtn.addEventListener('click', showManualBedIdModal);
+
+        manualBedIdSubmitBtn.addEventListener('click', submitManualBedId);
+
+        manualBedIdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitManualBedId();
+            }
         });
 
         saveBtn.addEventListener('click', handleSave);
