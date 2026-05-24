@@ -63,11 +63,14 @@
         </div>
     </div>
 
-    <script type="module">
-        // Initialize vConsole for debugging
+    <!-- Initialize vConsole first -->
+    <script>
         var vConsole = new window.VConsole();
         console.log('🔧 vConsole เปิดใช้งานแล้ว - เลื่อนขึ้นเพื่อดู Console');
+    </script>
 
+    <!-- QR Scanner script -->
+    <script type="module">
         import QrScanner from "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
 
         const video = document.getElementById('qr-video');
