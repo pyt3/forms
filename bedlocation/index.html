@@ -12,8 +12,6 @@
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <title>BedTracker Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJ+Y6k5xR2vNhbbX6YsJhBKt3vnDnNQfXlBxQ=" crossorigin="anonymous"></script>
     <!-- vConsole for debugging -->
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 </head>
@@ -74,10 +72,12 @@
         import QrScanner from "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
 
         const video = document.getElementById('qr-video');
-        const modal = $('#success-modal');
-        const errorModal = $('#error-modal');
-        const errorText = $('#error-text');
-        const retryBtn = $('#retry-btn');
+        const modal = document.getElementById('success-modal');
+        const errorModal = document.getElementById('error-modal');
+        const errorText = document.getElementById('error-text');
+        const retryBtn = document.getElementById('retry-btn');
+        const roomInput = document.getElementById('room-input');
+        const feedbackText = document.getElementById('feedback-text');
 
         let scanner = null;
 
@@ -92,7 +92,7 @@
 
         const initScanner = () => {
             scanner = new QrScanner(video, result => {
-                const roomId = $('#room-input').val().toString().trim();
+                const roomId = roomInput.value.toString().trim();
 
                 if (!roomId) {
                     alert('กรุณาระบุเลขห้องก่อนสแกน');
@@ -108,15 +108,15 @@
 
                 console.log(`✅ สแกน QR Code สำเร็จ - เตียง: ${bedId}, ห้อง: ${roomId}`);
                 scanner.pause(true);
-                $('#feedback-text').text(`เตียง ${bedId} -> ห้อง ${roomId}`);
-                modal.removeClass('hidden');
+                feedbackText.textContent = `เตียง ${bedId} -> ห้อง ${roomId}`;
+                modal.classList.remove('hidden');
 
                 if (navigator.vibrate) {
                     navigator.vibrate(500);
                 }
 
                 setTimeout(() => {
-                    modal.addClass('hidden');
+                    modal.classList.add('hidden');
                     scanner.start().catch(error => {
                         console.error('❌ เริ่มสแกนอีกครั้งไม่สำเร็จ:', error);
                         handleCameraError(error);
@@ -148,20 +148,20 @@
             } else if (error.name === 'NotFoundError') {
                 errorMessage = '❌ ไม่พบกล้องในอุปกรณ์นี้\nตรวจสอบว่ากล้องเชื่อมต่ออยู่';
             } else if (error.name === 'NotSupportedError') {
-                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น';
+                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอ��์อื่น';
             } else if (error.name === 'SecurityError') {
-                errorMessage = '🔒 ไม่สา��ารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
+                errorMessage = '🔒 ไม่สามารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
             } else {
                 errorMessage = `❌ เข้าถึงกล้องไม่ได้\n${error.message || 'โปรดลองอีกครั้ง'}`;
             }
             
-            errorText.text(errorMessage);
-            errorModal.removeClass('hidden');
+            errorText.textContent = errorMessage;
+            errorModal.classList.remove('hidden');
         };
 
-        retryBtn.on('click', () => {
+        retryBtn.addEventListener('click', () => {
             console.log('🔄 ผู้ใช้คลิกปุ่มลองอีกครั้ง');
-            errorModal.addClass('hidden');
+            errorModal.classList.add('hidden');
             startScanner();
         });
 
