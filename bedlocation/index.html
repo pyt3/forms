@@ -50,11 +50,27 @@
         </div>
     </div>
 
+    <div id="error-modal" class="hidden fixed inset-0 bg-red-600 z-50 flex items-center justify-center p-8">
+        <div class="text-white text-center">
+            <div class="text-9xl mb-6">⚠️</div>
+            <h2 class="text-4xl font-black">เข้าถึงกล้องไม่ได้</h2>
+            <p id="error-text" class="mt-6 text-2xl font-bold text-red-100"></p>
+            <button id="retry-btn" class="mt-8 bg-white text-red-600 px-8 py-3 rounded-xl font-bold text-xl hover:bg-red-50">
+                ลองอีกครั้ง
+            </button>
+        </div>
+    </div>
+
     <script type="module">
         import QrScanner from "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
 
         const video = document.getElementById('qr-video');
         const modal = $('#success-modal');
+        const errorModal = $('#error-modal');
+        const errorText = $('#error-text');
+        const retryBtn = $('#retry-btn');
+
+        let scanner = null;
 
         const parseBedId = (rawValue) => {
             try {
@@ -65,37 +81,73 @@
             }
         };
 
-        const scanner = new QrScanner(video, result => {
-            const roomId = $('#room-input').val().toString().trim();
+        const initScanner = () => {
+            scanner = new QrScanner(video, result => {
+                const roomId = $('#room-input').val().toString().trim();
 
-            if (!roomId) {
-                alert('กรุณาระบุเลขห้องก่อนสแกน');
-                return;
+                if (!roomId) {
+                    alert('กรุณาระบุเลขห้องก่อนสแกน');
+                    return;
+                }
+
+                const bedId = parseBedId(result.data).trim();
+                if (!bedId) {
+                    return;
+                }
+
+                scanner.pause(true);
+                $('#feedback-text').text(`เตียง ${bedId} -> ห้อง ${roomId}`);
+                modal.removeClass('hidden');
+
+                if (navigator.vibrate) {
+                    navigator.vibrate(500);
+                }
+
+                setTimeout(() => {
+                    modal.addClass('hidden');
+                    scanner.start().catch(error => {
+                        console.error('เริ่มสแกนอีกครั้งไม่สำเร็จ:', error);
+                        handleCameraError(error);
+                    });
+                }, 2500);
+            }, { highlightScanRegion: false, returnDetailedScanResult: true });
+
+            startScanner();
+        };
+
+        const startScanner = () => {
+            scanner.start().catch(error => {
+                console.error('เริ่มการสแกนไม่สำเร็จ:', error);
+                handleCameraError(error);
+            });
+        };
+
+        const handleCameraError = (error) => {
+            let errorMessage = '';
+            
+            if (error.name === 'NotAllowedError') {
+                errorMessage = '⚠️ กรุณาอนุญาตการใช้งานกล้อง\nตรวจสอบในตั้งค่าเบราว์เซอร์';
+            } else if (error.name === 'NotFoundError') {
+                errorMessage = '❌ ไม่พบกล้องในอุปกรณ์นี้\nตรวจสอบว่ากล้องเชื่อมต่ออยู่';
+            } else if (error.name === 'NotSupportedError') {
+                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น (Chrome, Firefox, Safari)';
+            } else if (error.name === 'SecurityError') {
+                errorMessage = '🔒 ไม่สามารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
+            } else {
+                errorMessage = `❌ เข้าถึงกล้องไม่ได้\n${error.message || 'โปรดลองอีกครั้ง'}`;
             }
+            
+            errorText.text(errorMessage);
+            errorModal.removeClass('hidden');
+        };
 
-            const bedId = parseBedId(result.data).trim();
-            if (!bedId) {
-                return;
-            }
-
-            scanner.pause(true);
-            $('#feedback-text').text(`เตียง ${bedId} -> ห้อง ${roomId}`);
-            modal.removeClass('hidden');
-
-            if (navigator.vibrate) {
-                navigator.vibrate(500);
-            }
-
-            setTimeout(() => {
-                modal.addClass('hidden');
-                scanner.start().catch(error => console.error('เริ่มสแกนอีกครั้งไม่สำเร็จ:', error));
-            }, 2500);
-        }, { highlightScanRegion: false, returnDetailedScanResult: true });
-
-        scanner.start().catch(error => {
-            console.error('เริ่มการสแกนไม่สำเร็จ:', error);
-            alert('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้งานกล้องและลองอีกครั้ง');
+        retryBtn.on('click', () => {
+            errorModal.addClass('hidden');
+            startScanner();
         });
+
+        // Initialize scanner on page load
+        initScanner();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
