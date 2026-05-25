@@ -66,10 +66,28 @@
             <h2 class="text-2xl font-bold text-slate-200">ระบุข้อมูล</h2>
             
             <!-- Scanned Bed ID Display -->
-            <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-cyan-700">
+            <div id="scanned-bed-section" class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-cyan-700">
                 <label class="text-sm font-bold uppercase text-slate-400 tracking-wider">เลขเตียงที่สแกน</label>
                 <div id="bed-id-display" class="w-full mt-3 text-4xl font-black bg-slate-900 p-4 rounded-xl text-cyan-300 border-2 border-cyan-600">
                     --
+                </div>
+            </div>
+
+            <!-- Equipment Detail Display -->
+            <div id="equipment-detail-card" class="hidden bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider">รายละเอียดอุปกรณ์</label>
+                <div class="mt-4 grid grid-cols-[96px_1fr] gap-4 items-start">
+                    <div class="w-24 h-24 rounded-xl border border-slate-600 bg-slate-900 overflow-hidden flex items-center justify-center">
+                        <img id="equipment-image" src="" alt="equipment image" class="w-full h-full object-cover hidden">
+                        <span id="equipment-image-placeholder" class="text-xs text-slate-500 text-center px-2">ไม่มีรูปภาพ</span>
+                    </div>
+                    <div class="flex items-center min-w-0">
+                        <div class="hidden text-slate-300"><span class="font-bold text-slate-400">Item no.:</span> <span id="equipment-item-no">-</span></div>
+                        <div class="w-full min-w-0 px-1 py-1 text-center text-cyan-200 leading-tight">
+                            <span class="block font-bold text-cyan-300 text-base tracking-wide">ID CODE</span>
+                            <span id="equipment-id-code" class="block font-black tracking-wide mt-1 max-w-full break-all text-[clamp(1.6rem,7vw,3.2rem)] leading-tight">-</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -286,10 +304,12 @@
     <!-- QR Scanner & Form Logic -->
     <script type="module">
         import QrScanner from "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
+        import * as XLSX from "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm";
 
         const video = document.getElementById('qr-video');
         const scannerSection = document.getElementById('scanner-section');
         const formSection = document.getElementById('form-section');
+        const scannedBedSection = document.getElementById('scanned-bed-section');
         const bedIdDisplay = document.getElementById('bed-id-display');
         const roomInput = document.getElementById('room-input');
         const recorderInput = document.getElementById('recorder-input');
@@ -308,28 +328,129 @@
         const manualBedIdModal = document.getElementById('manual-bed-id-modal');
         const manualBedIdInput = document.getElementById('manual-bed-id-input');
         const manualBedIdSubmitBtn = document.getElementById('manual-bed-id-submit-btn');
+        const equipmentDetailCard = document.getElementById('equipment-detail-card');
+        const equipmentImage = document.getElementById('equipment-image');
+        const equipmentImagePlaceholder = document.getElementById('equipment-image-placeholder');
+        const equipmentItemNo = document.getElementById('equipment-item-no');
+        const equipmentIdCode = document.getElementById('equipment-id-code');
 
         let scanner = null;
         let scannedBedId = null;
+        let equipmentDataByItemNo = new Map();
+        let scannedEquipment = null;
         const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_DEPLOYMENT_URL'; // Replace with actual URL
 
-        const parseBedId = (rawValue) => {
+        const normalizeHeader = (value) => String(value || '')
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/[^a-z0-9]/g, '');
+
+        const getValueByCandidates = (row, candidates) => {
+            const keys = Object.keys(row);
+            for (const key of keys) {
+                const normalizedKey = normalizeHeader(key);
+                if (candidates.includes(normalizedKey)) {
+                    return String(row[key] ?? '').trim();
+                }
+            }
+            return '';
+        };
+
+        const loadEquipmentData = async () => {
+            try {
+                const response = await fetch('./equipment_list.xlsx', { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`โหลดไฟล์ equipment_list.xlsx ไม่สำเร็จ (HTTP ${response.status})`);
+                }
+
+                const buffer = await response.arrayBuffer();
+                const workbook = XLSX.read(buffer, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const firstSheet = workbook.Sheets[firstSheetName];
+
+                const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+                const map = new Map();
+
+                for (const row of rows) {
+                    const itemNo = getValueByCandidates(row, ['itemno']);
+                    if (!itemNo) {
+                        continue;
+                    }
+
+                    map.set(itemNo, {
+                        image: getValueByCandidates(row, ['image']),
+                        itemNo,
+                        idCode: getValueByCandidates(row, ['idcode'])
+                    });
+                }
+
+                equipmentDataByItemNo = map;
+                console.log(`✅ โหลดข้อมูลอุปกรณ์สำเร็จ: ${equipmentDataByItemNo.size} รายการ`);
+            } catch (error) {
+                console.error('❌ โหลดข้อมูล equipment_list.xlsx ไม่สำเร็จ:', error);
+                alert('ไม่สามารถโหลดข้อมูล equipment_list.xlsx ได้ โปรดตรวจสอบไฟล์และลองใหม่อีกครั้ง');
+            }
+        };
+
+        const parseScannedCode = (rawValue) => {
             try {
                 const urlObj = new URL(rawValue);
-                return urlObj.searchParams.get('code') || rawValue;
+                const code = urlObj.searchParams.get('code');
+                if (!code || !code.trim()) {
+                    return null;
+                }
+                return code.trim();
             } catch {
-                return rawValue;
+                return null;
+            }
+        };
+
+        const renderEquipmentDetail = (equipment) => {
+            if (!equipment) {
+                equipmentDetailCard.classList.add('hidden');
+                equipmentImage.classList.add('hidden');
+                equipmentImage.removeAttribute('src');
+                equipmentImagePlaceholder.classList.remove('hidden');
+                equipmentItemNo.textContent = '-';
+                equipmentIdCode.textContent = '-';
+                return;
+            }
+
+            equipmentDetailCard.classList.remove('hidden');
+            equipmentItemNo.textContent = equipment.itemNo || '-';
+            equipmentIdCode.textContent = equipment.idCode || '-';
+
+            if (equipment.image) {
+                equipmentImage.src = equipment.image;
+                equipmentImage.classList.remove('hidden');
+                equipmentImagePlaceholder.classList.add('hidden');
+            } else {
+                equipmentImage.classList.add('hidden');
+                equipmentImage.removeAttribute('src');
+                equipmentImagePlaceholder.classList.remove('hidden');
             }
         };
 
         const initScanner = () => {
             scanner = new QrScanner(video, result => {
-                scannedBedId = parseBedId(result.data).trim();
-                
-                if (!scannedBedId) {
-                    console.warn('⚠️ ไม่สามารถแยกรหัสเตียงจาก QR Code');
+                const scannedCode = parseScannedCode(result.data);
+
+                if (!scannedCode) {
+                    alert('qrcode ไม่ถูกต้อง');
+                    console.warn('⚠️ QR Code ไม่มี parameter code');
                     return;
                 }
+
+                const equipment = equipmentDataByItemNo.get(scannedCode);
+                if (!equipment) {
+                    alert(`ไม่พบข้อมูลอุปกรณ์สำหรับ code: ${scannedCode}`);
+                    console.warn(`⚠️ ไม่พบข้อมูลอุปกรณ์ในไฟล์ Excel สำหรับ code: ${scannedCode}`);
+                    return;
+                }
+
+                scannedBedId = equipment.idCode;
+                scannedEquipment = equipment;
 
                 console.log(`✅ สแกน QR Code สำเร็จ - เตียง: ${scannedBedId}`);
                 scanner.pause(true);
@@ -380,6 +501,12 @@
             scannerSection.classList.add('hidden');
             formSection.classList.remove('hidden');
             bedIdDisplay.textContent = scannedBedId;
+            if (scannedEquipment) {
+                scannedBedSection.classList.add('hidden');
+            } else {
+                scannedBedSection.classList.remove('hidden');
+            }
+            renderEquipmentDetail(scannedEquipment);
             roomInput.focus();
         };
 
@@ -411,6 +538,7 @@
 
             console.log(`✅ กรอกเลขเตียงด้วยตนเอง: ${bedId}`);
             scannedBedId = bedId;
+            scannedEquipment = null;
             manualBedIdModal.classList.add('hidden');
             showFormSection();
 
@@ -423,9 +551,12 @@
             formSection.classList.add('hidden');
             scannerSection.classList.remove('hidden');
             scannedBedId = null;
+            scannedEquipment = null;
+            scannedBedSection.classList.remove('hidden');
             bedIdDisplay.textContent = '--';
             roomInput.value = '';
             recorderInput.value = '';
+            renderEquipmentDetail(null);
             startScanner();
         };
 
@@ -581,6 +712,7 @@
 
         // Initialize scanner on page load
         console.log('⚡ BedTracker Pro เริ่มต้นแล้ว');
+        await loadEquipmentData();
         initScanner();
 
         if ('serviceWorker' in navigator) {
