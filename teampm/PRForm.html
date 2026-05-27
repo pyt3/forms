@@ -1040,21 +1040,29 @@
         })
         // $('#autoFillOffCanvas').offcanvas('show')
 
+        function parseCurrencyNumber(value) {
+            if (value === undefined || value === null) return NaN
+            let normalized = value.toString().replace(/,/g, '').replace(/บาท|฿/g, '').trim()
+            if (normalized === '') return NaN
+            return Number(normalized)
+        }
+
         $('#pr_price').on('keyup', function () {
-            let price = $(this).val()
+            let price = parseCurrencyNumber($(this).val())
             let vat = price * 0.07
             let total = price * 1.07
-            if (isNaN(price)) return
-            if (isNaN(vat)) return
-            if (isNaN(total)) return
+            if (Number.isNaN(price)) return
+            if (Number.isNaN(vat)) return
+            if (Number.isNaN(total)) return
             $('#pr_vat').val(vat.toFixed(2))
             $('#pr_grand_price').val(total.toFixed(2))
         })
         $('#pr_vat').on('keyup', function () {
-            let vat = $(this).val()
-            let total = Number($('#pr_price').val()) + Number(vat)
-            if (isNaN(vat)) return
-            if (isNaN(total)) return
+            let vat = parseCurrencyNumber($(this).val())
+            let price = parseCurrencyNumber($('#pr_price').val())
+            let total = price + vat
+            if (Number.isNaN(vat)) return
+            if (Number.isNaN(total)) return
             $('#pr_grand_price').val(total.toFixed(2))
         })
 
@@ -1406,9 +1414,10 @@
                 let _this = $(this)
                 if (_this.val() == '' || !pdfFields.includes(_this.prop('id'))) return
                 if (['e_manufacturer', 'e_sn', 'e_img_file', '1-file-nsmart', '2-file-quatation'].includes(_this.prop('id'))) return
-                if (['pr_price', 'pr_vat', 'pr_grand_price', 'pr_cm_vender'].includes(_this.prop('id'))) {
-                    let value = Number(_this.val())
-                    if (value != NaN) {
+                if (['pr_price', 'pr_vat', 'pr_grand_price'].includes(_this.prop('id'))) {
+                    let value = parseCurrencyNumber(_this.val())
+                    console.log(_this.prop('id'), value)
+                    if (!Number.isNaN(value)) {
                         value = value.toFixed(2).split('.')
 
                         value[0] = Number(value[0]).toLocaleString()
