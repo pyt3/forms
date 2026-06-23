@@ -257,7 +257,14 @@
                                           transition-all shadow-sm hover:border-gray-400">
                         </div>
                         <div class="space-y-2">
-                            <label for="job_id" class="block text-sm font-medium text-gray-700">Work Order</label>
+                            <div class="flex items-center justify-between gap-2 text-[12px] text-gray-700 nowrap">
+                                <label for="job_id" class="block text-sm font-medium text-gray-700">Work Order</label>
+                                <a id="fetch-job-report" class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg 
+                                        hover:from-purple-700 hover:to-purple-800 active:scale-95 transition-all shadow-sm nowrap flex items-center gap-1 cursor-pointer" onclick="fetchJobReport()">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                    ดาวน์โหลดใบงาน
+                                </a>
+                            </div>
                             <input type="text" name="job_id" id="job_id" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 
                                           focus:ring-2 focus:ring-brand-orange focus:border-transparent 
                                           transition-all shadow-sm hover:border-gray-400">
@@ -2451,7 +2458,57 @@
             });
         }
     </script>
+    <script>
+        function fetchJobReport(){
+            event.preventDefault();
+            let job_id = $('#job_id').val().trim()
+            if(job_id == '') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่มีรหัสงาน',
+                    text: 'กรุณากรอกรหัสงานเพื่อดึงรายงาน',
+                    customClass: {
+                        popup: 'rounded-2xl'
+                    },
+                    timer: 2000,
+                });
+                return;
+            }
+             $('#fetch-job-report').html('<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> กำลังดึงรายงาน...')
+            lucide.createIcons();
+            let reportUrl = `https://bursting-fox-mostly.ngrok-free.app/?mode=fetchJobReport&wo=${encodeURIComponent(job_id)}`
+            // Request the report as a PDF response so it can be reused as a file input value.
+            fetch(reportUrl, {
+                headers: {
+                    Accept: 'application/pdf',
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            }).then(async res => {
+                if (!res.ok) throw new Error('Network response was not ok');
 
+                const contentType = (res.headers.get('content-type') || '').toLowerCase();
+                if (!contentType.includes('application/pdf')) {
+                    throw new Error(`Unexpected content type: ${contentType || 'unknown'}`);
+                }
+
+                return res.blob();
+            }).then(blob => {
+                const file = new File([blob], `JobReport_${job_id}.pdf`, { type: blob.type || 'application/pdf' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                const pdfUrl = URL.createObjectURL(blob);
+                Swal.close();
+                $('input[name="1-file-nsmart"]').prop('files', dataTransfer.files).trigger('change');
+                setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+                $('#fetch-job-report').html('<i data-lucide="check-circle" class="w-4 h-4"></i> ดึงรายงานสำเร็จ')
+                lucide.createIcons();
+            }).catch(err => {
+                console.error('Fetch job report error:', err);
+                $('#fetch-job-report').html('<i data-lucide="alert-circle" class="w-4 h-4"></i> ดึงรายงานไม่สำเร็จ')
+                lucide.createIcons();
+            })
+        }
+    </script>
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
