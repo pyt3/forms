@@ -42,6 +42,14 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 app.app_context().push()
 
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With, ngrok-skip-browser-warning, Accept'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    return response
+
 # Global variables with type hints
 cookies: Dict[str, str] = {
     "_ga": "GA1.1.409909798.1624509466",
