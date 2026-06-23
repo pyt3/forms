@@ -1,238 +1,743 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital@0;1&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: 'Prompt', sans-serif;
-            box-sizing: border-box;
-        }
-
-        label {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-    </style>
-    <title>บันทึกข้อมูลการย้ายเตียง</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ย้ายเตียง">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <title>ย้ายเตียง</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- vConsole for debugging -->
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 </head>
 
-<body>
-    <div class="container-fluid">
-        <form id="myForm" class="mb-5">
-            <div class="row justify-content-center mt-3">
-                <div class="col-md-12 text-center h4 fw-bold">
-                    บันทึกข้อมูลการย้ายเตียงระหว่างแผนก
-                </div>
-                <div class="col-md-12 text-center h4 fw-bold">
-                    โรงพยาบาลพญาไท 3
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
-                <div class="col-md-4">
-                    <label for="name">ชื่อผู้ย้าย <span class="text-danger">*</span></label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="ชื่อผู้ย้าย">
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
-                <div class="col-md-4">
-                    <label for="bed">หมายเลขท้ายเตียง <span class="text-danger">*</span></label>
-                    <input type="text" id="bed" name="bed" class="form-control" placeholder="หมายเลขเตียง">
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
-                <div class="col-md-4">
-                    <label for="from">แผนกต้นทาง <span class="text-danger">*</span></label>
-                    <select id="from" name="from" class="form-select">
-                        <option value="" selected disabled>เลือกแผนกปลายทาง</option>
-                        <option value="WARD 7 ชั้น7">WARD 7 ชั้น7</option>
-                        <option value="WARD 8 ชั้น8">WARD 8 ชั้น8</option>
-                        <option value="WARD 9 ชั้น9">WARD 9 ชั้น9</option>
-                        <option value="WARD 10 ชั้น10">WARD 10 ชั้น10</option>
-                        <option value="WARD 11 ชั้น11">WARD 11 ชั้น11</option>
-                        <option value="WARD 12 ชั้น12">WARD 12 ชั้น12</option>
-                        <option value="WARD 14 ชั้น14">WARD 14 ชั้น14</option>
-                        <option value="WARD 15 ชั้น15">WARD 15 ชั้น15</option>
-                        <option value="WARD 17 ชั้น17">WARD 17 ชั้น17</option>
-                        <option value="ชั้น 20">ชั้น 20</option>
-                        <option value="ชั้น 21">ชั้น 21</option>
-                        <option value="MAID(ชั้น D)">MAID(ชั้น D)</option>
-                        <option value="MAID(ชั้น 20)">MAID(ชั้น 19)</option>
-                        <option value="MAID(ชั้น 20)">MAID(ชั้น 20)</option>
-                        <option value="INTENSIVE CARE UNIT(ผู้ป่วยหนัก) ชั้น3">INTENSIVE CARE UNIT(ผู้ป่วยหนัก) ชั้น3</option>
-                        <option value="ANESTHESIA (วิสัญญี) ">ANESTHESIA (วิสัญญี) </option>
-                        <option value="ART-LAB (ศูนย์ผู้มีบุตรยาก) ชั้น6">ART-LAB (ศูนย์ผู้มีบุตรยาก) ชั้น6</option>
-                        <option value="BME-PYT3">BME-PYT3</option>
-                        <option value="CATH-LAB ชั้น3">CATH-LAB ชั้น3</option>
-                        <option value="CHECK-UP (ตรวจสุขภาพ) ชั้น18">CHECK-UP (ตรวจสุขภาพ) ชั้น18</option>
-                        <option value="DIABETIC METABOLIC(เบาหวาน) ชั้น19">DIABETIC METABOLIC(เบาหวาน) ชั้น19</option>
-                        <option value="EENT( หูตาคอจมูก) ชั้น4">EENT( หูตาคอจมูก) ชั้น4</option>
-                        <option value="EMERGENCY( ฉุกเฉิน) ชั้น1">EMERGENCY( ฉุกเฉิน) ชั้น1</option>
-                        <option value="GASTROINTESTINAL LABORATORY(GI) ชั้น2">GASTROINTESTINAL LABORATORY(GI) ชั้น2</option>
-                        <option value="HEMODIALYSIS (ไตเทียม) ชั้น3">HEMODIALYSIS (ไตเทียม) ชั้น3</option>
-                        <option value="HEMODIALYSIS (ไตเทียม) ชั้น16">HEMODIALYSIS (ไตเทียม) ชั้น16</option>
-                        <option value="HOPD CENTER (ศุนย์มะเร็ง) ชั้น14">HOPD CENTER (ศุนย์มะเร็ง) ชั้น14</option>
-                        <option value="LABOR ROOM(ห้องคลอด) ชั้น6">LABOR ROOM(ห้องคลอด) ชั้น6</option>
-                        <option value="NURSERY(เด็กอ่อน) ชั้น6">NURSERY(เด็กอ่อน) ชั้น6</option>
-                        <option value="OBSERVE(สังเกตอาการ) ชั้น14">OBSERVE(สังเกตอาการ) ชั้น14</option>
-                        <option value="OPD CARDIO(ศูนย์หัวใจ) ชั้น2">OPD CARDIO(ศูนย์หัวใจ) ชั้น2</option>
-                        <option value="OPD HEAD NECK BREAST(ศุนย์เต้านม) ชั้น18">OPD HEAD NECK BREAST(ศุนย์เต้านม) ชั้น18</option>
-                        <option value="OPD MEDICINE(อายุกรรม) ชั้น1">OPD MEDICINE(อายุกรรม) ชั้น1</option>
-                        <option value="OPD NEURO (ศูนย์สมอง) ชั้น2">OPD NEURO (ศูนย์สมอง) ชั้น2</option>
-                        <option value="OPD OB/GYN(ศุนย์สุขภาพหญิง)ชั้น2">OPD OB/GYN(ศุนย์สุขภาพหญิง)ชั้น2</option>
-                        <option value="OPD PEDIATRIC( แผนกเด็ก) ชั้น4">OPD PEDIATRIC( แผนกเด็ก) ชั้น4</option>
-                        <option value="OPD SURGERY(ศัลยกรรม) ชั้น1">OPD SURGERY(ศัลยกรรม) ชั้น1</option>
-                        <option value=">OPD UROLOGY (ทางเดินปัสสาวะ) ชั้น19">OPD UROLOGY (ทางเดินปัสสาวะ) ชั้น19</option>
-                        <option value="OPERATING ROOM(ห้องผ่าตัด) ชั้น3">OPERATING ROOM(ห้องผ่าตัด) ชั้น3</option>
-                        <option value="PHYATHAI BEAUTY CENTER (PBC ความงาม) ชั้น14">PHYATHAI BEAUTY CENTER (PBC ความงาม) ชั้น14</option>
-                        <option value="PHYSICAL THERAPY( กายภาพ) ชั้น16">PHYSICAL THERAPY( กายภาพ) ชั้น16</option>
-                        <option value="PICU ชั้น3">PICU ชั้น3</option>
-                        <option value="PWA LIFE CENTER ชั้น14">PWA LIFE CENTER ชั้น14</option>
-                        <option value="PWA ชะลอวัย ชั้น14">PWA ชะลอวัย ชั้น14</option>
-                        <option value="X-RAY ชั้น1">X-RAY ชั้น1</option>
-                        <option value="X-RAY ชั้น18">X-RAY ชั้น18</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
-                <div class="col-md-4">
-                    <label for="to">แผนกปลายทาง <span class="text-danger">*</span></label>
-                    <select id="to" name="to" class="form-select">
-                        <option value="" selected disabled>เลือกแผนกปลายทาง</option>
-                        <option value="WARD 7 ชั้น7">WARD 7 ชั้น7</option>
-                        <option value="WARD 8 ชั้น8">WARD 8 ชั้น8</option>
-                        <option value="WARD 9 ชั้น9">WARD 9 ชั้น9</option>
-                        <option value="WARD 10 ชั้น10">WARD 10 ชั้น10</option>
-                        <option value="WARD 11 ชั้น11">WARD 11 ชั้น11</option>
-                        <option value="WARD 12 ชั้น12">WARD 12 ชั้น12</option>
-                        <option value="WARD 14 ชั้น14">WARD 14 ชั้น14</option>
-                        <option value="WARD 15 ชั้น15">WARD 15 ชั้น15</option>
-                        <option value="WARD 17 ชั้น17">WARD 17 ชั้น17</option>
-                        <option value="ชั้น 20">ชั้น 20</option>
-                        <option value="ชั้น 21">ชั้น 21</option>
-                        <option value="MAID(ชั้น D)">MAID(ชั้น D)</option>
-                        <option value="MAID(ชั้น 20)">MAID(ชั้น 20)</option>
-                        <option value="INTENSIVE CARE UNIT(ผู้ป่วยหนัก) ชั้น3">INTENSIVE CARE UNIT(ผู้ป่วยหนัก) ชั้น3</option>
-                        <option value="ANESTHESIA (วิสัญญี) ">ANESTHESIA (วิสัญญี) </option>
-                        <option value="ART-LAB (ศูนย์ผู้มีบุตรยาก) ชั้น6">ART-LAB (ศูนย์ผู้มีบุตรยาก) ชั้น6</option>
-                        <option value="BME-PYT3">BME-PYT3</option>
-                        <option value="CATH-LAB ชั้น3">CATH-LAB ชั้น3</option>
-                        <option value="CHECK-UP (ตรวจสุขภาพ) ชั้น18">CHECK-UP (ตรวจสุขภาพ) ชั้น18</option>
-                        <option value="DIABETIC METABOLIC(เบาหวาน) ชั้น19">DIABETIC METABOLIC(เบาหวาน) ชั้น19</option>
-                        <option value="EENT( หูตาคอจมูก) ชั้น4">EENT( หูตาคอจมูก) ชั้น4</option>
-                        <option value="EMERGENCY( ฉุกเฉิน) ชั้น1">EMERGENCY( ฉุกเฉิน) ชั้น1</option>
-                        <option value="GASTROINTESTINAL LABORATORY(GI) ชั้น2">GASTROINTESTINAL LABORATORY(GI) ชั้น2</option>
-                        <option value="HEMODIALYSIS (ไตเทียม) ชั้น3">HEMODIALYSIS (ไตเทียม) ชั้น3</option>
-                        <option value="HEMODIALYSIS (ไตเทียม) ชั้น16">HEMODIALYSIS (ไตเทียม) ชั้น16</option>
-                        <option value="HOPD CENTER (ศุนย์มะเร็ง) ชั้น14">HOPD CENTER (ศุนย์มะเร็ง) ชั้น14</option>
-                        <option value="LABOR ROOM(ห้องคลอด) ชั้น6">LABOR ROOM(ห้องคลอด) ชั้น6</option>
-                        <option value="NURSERY(เด็กอ่อน) ชั้น6">NURSERY(เด็กอ่อน) ชั้น6</option>
-                        <option value="OBSERVE(สังเกตอาการ) ชั้น14">OBSERVE(สังเกตอาการ) ชั้น14</option>
-                        <option value="OPD CARDIO(ศูนย์หัวใจ) ชั้น2">OPD CARDIO(ศูนย์หัวใจ) ชั้น2</option>
-                        <option value="OPD HEAD NECK BREAST(ศุนย์เต้านม) ชั้น18">OPD HEAD NECK BREAST(ศุนย์เต้านม) ชั้น18</option>
-                        <option value="OPD MEDICINE(อายุกรรม) ชั้น1">OPD MEDICINE(อายุกรรม) ชั้น1</option>
-                        <option value="OPD NEURO (ศูนย์สมอง) ชั้น2">OPD NEURO (ศูนย์สมอง) ชั้น2</option>
-                        <option value="OPD OB/GYN(ศุนย์สุขภาพหญิง)ชั้น2">OPD OB/GYN(ศุนย์สุขภาพหญิง)ชั้น2</option>
-                        <option value="OPD PEDIATRIC( แผนกเด็ก) ชั้น4">OPD PEDIATRIC( แผนกเด็ก) ชั้น4</option>
-                        <option value="OPD SURGERY(ศัลยกรรม) ชั้น1">OPD SURGERY(ศัลยกรรม) ชั้น1</option>
-                        <option value=">OPD UROLOGY (ทางเดินปัสสาวะ) ชั้น19">OPD UROLOGY (ทางเดินปัสสาวะ) ชั้น19</option>
-                        <option value="OPERATING ROOM(ห้องผ่าตัด) ชั้น3">OPERATING ROOM(ห้องผ่าตัด) ชั้น3</option>
-                        <option value="PHYATHAI BEAUTY CENTER (PBC ความงาม) ชั้น14">PHYATHAI BEAUTY CENTER (PBC ความงาม) ชั้น14</option>
-                        <option value="PHYSICAL THERAPY( กายภาพ) ชั้น16">PHYSICAL THERAPY( กายภาพ) ชั้น16</option>
-                        <option value="PICU ชั้น3">PICU ชั้น3</option>
-                        <option value="PWA LIFE CENTER ชั้น14">PWA LIFE CENTER ชั้น14</option>
-                        <option value="PWA ชะลอวัย ชั้น14">PWA ชะลอวัย ชั้น14</option>
-                        <option value="X-RAY ชั้น1">X-RAY ชั้น1</option>
-                        <option value="X-RAY ชั้น18">X-RAY ชั้น18</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
-                <div class="col-md-4">
-                    <label for="room">เบอร์ห้อง</label>
-                    <input type="text" id="room" name="room" class="form-control" placeholder="ห้อง(กรอกเลขห้องทั้ง 4 หลัก)">
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
-                <div class="col-md-4">
-                    <label for="note">หมายเหตุ</label>
-                    <input type="text" id="note" name="note" class="form-control" placeholder="หากไม่มีไม่ต้องกรอก">
-                </div>
-            </div>
-            <div class="row justify-content-center mt-3">
-                <div class="col text-center">
-                    <button class="btn btn-primary" style="min-width: 200px">
-                        บันทึกข้อมูล
-                    </button>
-                </div>
-            </div>
+<body class="bg-slate-900 font-sans text-slate-100 h-screen flex flex-col">
+    <header class="p-6 bg-slate-800 shadow-md flex items-center justify-between">
+        <h1 class="text-3xl font-black text-slate-100">ย้ายเตียง</h1>
+        <div class="flex items-center gap-4">
+            <span id="connection-status" class="text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full">ออนไลน์</span>
+            <button id="install-btn" class="hidden bg-slate-700 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-600 transition-colors flex items-center gap-2">
+                <i data-lucide="download"></i>
+                <span>ติดตั้ง</span>
+            </button>
+        </div>
+    </header>
 
-        </form>
-
+    <!-- Update Notification -->
+    <div id="update-notification" class="hidden fixed top-0 left-0 right-0 bg-slate-700 text-white p-4 shadow-lg z-40 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <i data-lucide="refresh-cw" class="w-6 h-6"></i>
+            <span class="font-bold">มีเวอร์ชันใหม่พร้อมใช้</span>
+        </div>
+        <button id="update-btn" class="bg-slate-600 text-slate-100 px-4 py-2 rounded font-bold hover:bg-slate-500">
+            อัปเดตเลย
+        </button>
     </div>
 
+    <main class="flex-1 p-6 max-w-lg mx-auto w-full flex flex-col space-y-8">
+        <!-- Step 1: QR Scanner -->
+        <div id="scanner-section" class="flex flex-col space-y-6">
+            <h2 class="text-2xl font-bold text-slate-200">สแกน QR Code</h2>
+            <div class="relative w-full aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-black border-4 border-slate-400">
+                <video id="qr-video" class="w-full h-full object-cover" playsinline muted></video>
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-[70%] aspect-square relative">
+                        <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-cyan-400 rounded-tl-2xl"></div>
+                        <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-cyan-400 rounded-tr-2xl"></div>
+                        <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-cyan-400 rounded-bl-2xl"></div>
+                        <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-cyan-400 rounded-br-2xl"></div>
+                    </div>
+                </div>
+            </div>
+            <button id="skip-scan-btn" class="bg-slate-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-500 transition-colors">
+                ข้ามการสแกน (ระบุรหัสเตียงด้วยตนเอง)
+            </button>
+        </div>
+
+        <!-- Step 2: Form Input -->
+        <div id="form-section" class="hidden flex flex-col space-y-6">
+            <h2 class="text-2xl font-bold text-slate-200">ระบุข้อมูล</h2>
+            
+            <!-- Scanned Bed ID Display -->
+            <div id="scanned-bed-section" class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-cyan-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider">เลขเตียงที่สแกน</label>
+                <div id="bed-id-display" class="w-full mt-3 text-4xl font-black bg-slate-900 p-4 rounded-xl text-cyan-300 border-2 border-cyan-600">
+                    --
+                </div>
+            </div>
+
+            <!-- Equipment Detail Display -->
+            <div id="equipment-detail-card" class="hidden bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider">รายละเอียดอุปกรณ์</label>
+                <div class="mt-4 grid grid-cols-[96px_1fr] gap-4 items-start">
+                    <div class="w-24 h-24 rounded-xl border border-slate-600 bg-slate-900 overflow-hidden flex items-center justify-center">
+                        <img id="equipment-image" src="" alt="equipment image" class="w-full h-full object-cover hidden">
+                        <span id="equipment-image-placeholder" class="text-xs text-slate-500 text-center px-2">ไม่มีรูปภาพ</span>
+                    </div>
+                    <div class="flex items-center min-w-0">
+                        <div class="hidden text-slate-300"><span class="font-bold text-slate-400">Item no.:</span> <span id="equipment-item-no">-</span></div>
+                        <div class="w-full min-w-0 px-1 py-1 text-center text-cyan-200 leading-tight">
+                            <span class="block font-bold text-cyan-300 text-base tracking-wide">ID CODE</span>
+                            <span id="equipment-id-code" class="block font-black tracking-wide mt-1 max-w-full break-all text-[clamp(1.6rem,7vw,3.2rem)] leading-tight">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room Input -->
+            <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider" for="room-input">ระบุเลขห้อง</label>
+                <input type="text" id="room-input" placeholder="เช่น 301, 302, ..."
+                    class="w-full mt-3 text-3xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border border-slate-700">
+            </div>
+
+            <!-- Recorder Name Input -->
+            <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider" for="recorder-input">ชื่อผู้บันทึก</label>
+                <input type="text" id="recorder-input" placeholder="ระบุชื่อของคุณ"
+                    class="w-full mt-3 text-3xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border border-slate-700">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4">
+                <button id="back-btn" class="flex-1 bg-slate-700 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    <span>ย้อนกลับ</span>
+                </button>
+                <button id="save-btn" class="flex-1 bg-cyan-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="save" class="w-5 h-5"></i>
+                    <span>บันทึก</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Manual Bed ID Modal -->
+    <div id="manual-bed-id-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-8">
+        <div class="bg-slate-800 rounded-3xl p-8 w-full max-w-md shadow-2xl border-2 border-cyan-700">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="edit" class="w-8 h-8 text-cyan-400"></i>
+                <h2 class="text-3xl font-black text-white">ระบุเลขเตียง</h2>
+            </div>
+            
+            <p class="text-slate-300 mb-6 text-lg">กรุณาระบุเลขเตียงเพื่อดำเนินการต่อ</p>
+            
+            <input type="text" id="manual-bed-id-input" placeholder="เช่น A001, B102, ..."
+                class="w-full mb-6 text-2xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border-2 border-cyan-600">
+            
+            <button id="manual-bed-id-submit-btn" class="w-full bg-cyan-600 text-white px-4 py-4 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2 text-lg">
+                <i data-lucide="check" class="w-5 h-5"></i>
+                <span>ตกลง</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-cyan-900 z-50 flex items-center justify-center p-8">
+        <div class="text-white text-center">
+            <div class="mb-6">
+                <i data-lucide="check-circle" class="w-24 h-24 mx-auto text-green-400"></i>
+            </div>
+            <h2 class="text-5xl font-black">บันทึกสำเร็จ!</h2>
+            <p id="success-text" class="mt-6 text-2xl font-bold text-cyan-200"></p>
+        </div>
+    </div>
+
+    <!-- Offline Queue Modal -->
+    <div id="offline-queue-modal" class="hidden fixed inset-0 bg-slate-700 z-50 flex items-center justify-center p-8">
+        <div class="text-white text-center">
+            <div class="mb-6">
+                <i data-lucide="wifi-off" class="w-24 h-24 mx-auto text-yellow-400"></i>
+            </div>
+            <h2 class="text-4xl font-black">บันทึกในโหมดออฟไลน์</h2>
+            <p class="mt-6 text-2xl font-bold text-slate-300">ข้อมูลของคุณถูกบันทึกลง Local Storage</p>
+            <p class="mt-2 text-xl text-slate-400">จะส่งอัตโนมัติเมื่อเชื่อมต่ออินเตอร์เน็ตอีกครั้ง</p>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="hidden fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-8">
+        <div class="text-white text-center">
+            <div class="mb-6">
+                <i data-lucide="alert-circle" class="w-24 h-24 mx-auto text-red-400"></i>
+            </div>
+            <h2 id="error-title" class="text-4xl font-black">เข้าถึงกล้องไม่ได้</h2>
+            <p id="error-text" class="mt-6 text-2xl font-bold text-slate-300"></p>
+            <button id="retry-btn" class="mt-8 bg-slate-700 text-white px-8 py-3 rounded-xl font-bold text-xl hover:bg-slate-600 flex items-center justify-center gap-2 mx-auto">
+                <i data-lucide="redo" class="w-5 h-5"></i>
+                <span>ลองอีกครั้ง</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="hidden fixed inset-0 bg-slate-800 z-50 flex items-center justify-center p-8">
+        <div class="text-white text-center">
+            <div class="mb-6">
+                <i data-lucide="loader" class="w-16 h-16 mx-auto animate-spin text-cyan-400"></i>
+            </div>
+            <h2 class="text-4xl font-black" id="loading-text">กำลังบันทึก...</h2>
+        </div>
+    </div>
+
+    <!-- Initialize vConsole first -->
     <script>
-        $('#myForm').submit(function () {
-            event.preventDefault();
-            let name = $('#name').val();
-            let bed = $('#bed').val();
-            let room = $('#room').val();
-            let note = $('#note').val();
-            let to = $('#to').val();
-            let from = $('#from').val();
-            if (name == '') {
-                return showalert($('label[for="name"]').html(), 'warning');
-            }
-            if (name == '') {
-                return showalert($('label[for="bed"]').html(), 'warning');
-            }
-            if (to == '') {
-                return showalert($('label[for="to"]').html(), 'warning');
-            }
-            if (from == '') {
-                return showalert($('label[for="from"]').html(), 'warning');
-            }
+        var vConsole = new window.VConsole();
+        console.log('🔧 vConsole เปิดใช้งานแล้ว - เลื่อนขึ้นเพื่อดู Console');
+    </script>
 
-            let scripturl = 'https://script.google.com/macros/s/AKfycbysni_E3NiLuxgyDFaF-P0cEjXY4DpIE7eyii-I-P77_5GHrsE4oi2-io3iyraizE4/exec'
-            $.getJSON(scripturl + '?opt=save', {
-                name: name,
-                room: room,
-                bed: bed,
-                note: note,
-                to: to,
-                from: from
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- Service Worker Update Handler -->
+    <script>
+        let refreshing = false;
+        const updateNotification = document.getElementById('update-notification');
+        const updateBtn = document.getElementById('update-btn');
+
+        // Listen for messages from Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                    console.log('🔄 อัปเดตพร้อมใช้:', event.data.message);
+                    updateNotification.classList.remove('hidden');
+                }
             });
-            showalert('บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
-            $('#name').val('');
-            $('#room').val('');
-            $('#bed').val('');
-            $('#note').val('');
-            $('#to').val('');
-            $('#from').val('');
-        })
+        }
 
-        function showalert(text, type) {
-            Swal.fire({
-                title: "กรุณากรอกข้อมูล",
-                html: text,
-                icon: type,
-                timer: 2000,
-                showConfirmButton: false
+        // Handle update button click
+        updateBtn.addEventListener('click', () => {
+            if (!refreshing) {
+                refreshing = true;
+                
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.controller?.postMessage({ type: 'SKIP_WAITING' });
+                }
+
+                // Reload after a short delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }
+        });
+
+        // Listen for controller change (new service worker activated)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('✅ Service Worker อัปเดตแล้ว');
+                if (refreshing) {
+                    // Page will reload automatically
+                }
             });
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- PWA Install script -->
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            deferredPrompt = event;
+            installBtn.classList.remove('hidden');
+            console.log('📥 PWA ยังไม่ได้ติดตั้ง - แสดงปุ่มติดตั้ง');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA ติดตั้งสำเร็จ');
+            installBtn.classList.add('hidden');
+            deferredPrompt = null;
+        });
+
+        if (window.navigator.standalone === true) {
+            console.log('✅ กำลังรัน PWA ที่ติดตั้งแล้ว (iOS)');
+            installBtn.classList.add('hidden');
+        }
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                console.warn('⚠️ ไม่สามารถติดตั้ง PWA ได้');
+                return;
+            }
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`👤 ผู้ใช้เลือก: ${outcome}`);
+            deferredPrompt = null;
+        });
+    </script>
+
+    <!-- Connection Status Monitor -->
+    <script>
+        const connectionStatus = document.getElementById('connection-status');
+
+        const updateConnectionStatus = () => {
+            const isOnline = navigator.onLine;
+            if (isOnline) {
+                connectionStatus.textContent = 'ออนไลน์';
+                connectionStatus.className = 'text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full';
+                console.log('✅ เชื่อมต่ออินเตอร์เน็ตแล้ว');
+                syncOfflineData();
+            } else {
+                connectionStatus.textContent = 'ออฟไลน์';
+                connectionStatus.className = 'text-lg font-bold text-slate-400 bg-slate-700 px-4 py-1 rounded-full';
+                console.log('❌ ไม่เชื่อมต่ออินเตอร์เน็ต');
+            }
+        };
+
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+
+        // Initial check
+        updateConnectionStatus();
+    </script>
+
+    <!-- QR Scanner & Form Logic -->
+    <script type="module">
+        import QrScanner from "https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js";
+        import * as XLSX from "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm";
+
+        const video = document.getElementById('qr-video');
+        const scannerSection = document.getElementById('scanner-section');
+        const formSection = document.getElementById('form-section');
+        const scannedBedSection = document.getElementById('scanned-bed-section');
+        const bedIdDisplay = document.getElementById('bed-id-display');
+        const roomInput = document.getElementById('room-input');
+        const recorderInput = document.getElementById('recorder-input');
+        const saveBtn = document.getElementById('save-btn');
+        const backBtn = document.getElementById('back-btn');
+        const skipScanBtn = document.getElementById('skip-scan-btn');
+        const retryBtn = document.getElementById('retry-btn');
+        const successModal = document.getElementById('success-modal');
+        const offlineQueueModal = document.getElementById('offline-queue-modal');
+        const errorModal = document.getElementById('error-modal');
+        const loadingModal = document.getElementById('loading-modal');
+        const errorText = document.getElementById('error-text');
+        const errorTitle = document.getElementById('error-title');
+        const successText = document.getElementById('success-text');
+        const loadingText = document.getElementById('loading-text');
+        const manualBedIdModal = document.getElementById('manual-bed-id-modal');
+        const manualBedIdInput = document.getElementById('manual-bed-id-input');
+        const manualBedIdSubmitBtn = document.getElementById('manual-bed-id-submit-btn');
+        const equipmentDetailCard = document.getElementById('equipment-detail-card');
+        const equipmentImage = document.getElementById('equipment-image');
+        const equipmentImagePlaceholder = document.getElementById('equipment-image-placeholder');
+        const equipmentItemNo = document.getElementById('equipment-item-no');
+        const equipmentIdCode = document.getElementById('equipment-id-code');
+
+        let scanner = null;
+        let scannedBedId = null;
+        let equipmentDataByItemNo = new Map();
+        let scannedEquipment = null;
+        const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_DEPLOYMENT_URL'; // Replace with actual URL
+
+        const normalizeHeader = (value) => String(value || '')
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/[^a-z0-9]/g, '');
+
+        const getValueByCandidates = (row, candidates) => {
+            const keys = Object.keys(row);
+            for (const key of keys) {
+                const normalizedKey = normalizeHeader(key);
+                if (candidates.includes(normalizedKey)) {
+                    return String(row[key] ?? '').trim();
+                }
+            }
+            return '';
+        };
+
+        const loadEquipmentData = async () => {
+            try {
+                const response = await fetch('./equipment_list.xlsx', { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`โหลดไฟล์ equipment_list.xlsx ไม่สำเร็จ (HTTP ${response.status})`);
+                }
+
+                const buffer = await response.arrayBuffer();
+                const workbook = XLSX.read(buffer, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const firstSheet = workbook.Sheets[firstSheetName];
+
+                const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+                const map = new Map();
+
+                for (const row of rows) {
+                    const itemNo = getValueByCandidates(row, ['itemno']);
+                    if (!itemNo) {
+                        continue;
+                    }
+
+                    map.set(itemNo, {
+                        image: getValueByCandidates(row, ['image']),
+                        itemNo,
+                        idCode: getValueByCandidates(row, ['idcode'])
+                    });
+                }
+
+                equipmentDataByItemNo = map;
+                console.log(`✅ โหลดข้อมูลอุปกรณ์สำเร็จ: ${equipmentDataByItemNo.size} รายการ`);
+            } catch (error) {
+                console.error('❌ โหลดข้อมูล equipment_list.xlsx ไม่สำเร็จ:', error);
+                alert('ไม่สามารถโหลดข้อมูล equipment_list.xlsx ได้ โปรดตรวจสอบไฟล์และลองใหม่อีกครั้ง');
+            }
+        };
+
+        const parseScannedCode = (rawValue) => {
+            try {
+                const urlObj = new URL(rawValue);
+                const code = urlObj.searchParams.get('code');
+                if (!code || !code.trim()) {
+                    return null;
+                }
+                return code.trim();
+            } catch {
+                return null;
+            }
+        };
+
+        const renderEquipmentDetail = (equipment) => {
+            if (!equipment) {
+                equipmentDetailCard.classList.add('hidden');
+                equipmentImage.classList.add('hidden');
+                equipmentImage.removeAttribute('src');
+                equipmentImagePlaceholder.classList.remove('hidden');
+                equipmentItemNo.textContent = '-';
+                equipmentIdCode.textContent = '-';
+                return;
+            }
+
+            equipmentDetailCard.classList.remove('hidden');
+            equipmentItemNo.textContent = equipment.itemNo || '-';
+            equipmentIdCode.textContent = equipment.idCode || '-';
+
+            if (equipment.image) {
+                equipmentImage.src = equipment.image;
+                equipmentImage.classList.remove('hidden');
+                equipmentImagePlaceholder.classList.add('hidden');
+            } else {
+                equipmentImage.classList.add('hidden');
+                equipmentImage.removeAttribute('src');
+                equipmentImagePlaceholder.classList.remove('hidden');
+            }
+        };
+
+        const initScanner = () => {
+            scanner = new QrScanner(video, result => {
+                const scannedCode = parseScannedCode(result.data);
+
+                if (!scannedCode) {
+                    alert('qrcode ไม่ถูกต้อง');
+                    console.warn('⚠️ QR Code ไม่มี parameter code');
+                    return;
+                }
+
+                const equipment = equipmentDataByItemNo.get(scannedCode);
+                if (!equipment) {
+                    alert(`ไม่พบข้อมูลอุปกรณ์สำหรับ code: ${scannedCode}`);
+                    console.warn(`⚠️ ไม่พบข้อมูลอุปกรณ์ในไฟล์ Excel สำหรับ code: ${scannedCode}`);
+                    return;
+                }
+
+                scannedBedId = equipment.idCode;
+                scannedEquipment = equipment;
+
+                console.log(`✅ สแกน QR Code สำเร็จ - เตียง: ${scannedBedId}`);
+                scanner.pause(true);
+                showFormSection();
+
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+            }, { highlightScanRegion: false, returnDetailedScanResult: true });
+
+            startScanner();
+        };
+
+        const startScanner = () => {
+            console.log('📱 กำลังเริ่มต้นกล้อง...');
+            scanner.start().catch(error => {
+                console.error('❌ เริ่มการสแกนไม่สำเร็จ:', error);
+                handleCameraError(error);
+            });
+        };
+
+        const handleCameraError = (error) => {
+            let errorMessage = '';
+            console.error('🚨 Camera Error:', {
+                name: error.name,
+                message: error.message,
+                fullError: error
+            });
+            
+            if (error.name === 'NotAllowedError') {
+                errorMessage = '⚠️ กรุณาอนุญาตการใช้งานกล้อง\nตรวจสอบในตั้งค่าเบราว์เซอร์';
+            } else if (error.name === 'NotFoundError') {
+                errorMessage = '❌ ไม่พบกล้องในอุปกรณ์นี้\nตรวจสอบว่ากล้องเชื่อมต่ออยู่';
+            } else if (error.name === 'NotSupportedError') {
+                errorMessage = '❌ เบราว์เซอร์นี้ไม่รองรับการใช้งานกล้อง\nลองใช้เบราว์เซอร์อื่น';
+            } else if (error.name === 'SecurityError') {
+                errorMessage = '🔒 ไม่สามารถใช้งานกล้องบนโปรโตคอล HTTP\nใช้ HTTPS หรือ localhost เท่านั้น';
+            } else {
+                errorMessage = `❌ เข้าถึงกล้องไม่ได้\n${error.message || 'โปรดลองอีกครั้ง'}`;
+            }
+            
+            errorTitle.textContent = 'เข้าถึงกล้องไม่ได้';
+            errorText.textContent = errorMessage;
+            errorModal.classList.remove('hidden');
+        };
+
+        const showFormSection = () => {
+            scannerSection.classList.add('hidden');
+            formSection.classList.remove('hidden');
+            bedIdDisplay.textContent = scannedBedId;
+            if (scannedEquipment) {
+                scannedBedSection.classList.add('hidden');
+            } else {
+                scannedBedSection.classList.remove('hidden');
+            }
+            renderEquipmentDetail(scannedEquipment);
+            roomInput.focus();
+        };
+
+        const showManualBedIdModal = () => {
+            scanner.pause(true);
+            scannerSection.classList.add('hidden');
+            manualBedIdModal.classList.remove('hidden');
+            manualBedIdInput.value = '';
+            setTimeout(() => {
+                manualBedIdInput.focus();
+            }, 100);
+            console.log('📝 แสดง Modal ระบุเลขเตียง');
+        };
+
+        const closeManualBedIdModal = () => {
+            manualBedIdModal.classList.add('hidden');
+            scannerSection.classList.remove('hidden');
+            startScanner();
+        };
+
+        const submitManualBedId = () => {
+            const bedId = manualBedIdInput.value.trim();
+            
+            if (!bedId) {
+                alert('⚠️ กรุณาระบุเลขเตียง');
+                manualBedIdInput.focus();
+                return;
+            }
+
+            console.log(`✅ กรอกเลขเตียงด้วยตนเอง: ${bedId}`);
+            scannedBedId = bedId;
+            scannedEquipment = null;
+            manualBedIdModal.classList.add('hidden');
+            showFormSection();
+
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+        };
+
+        const backToScanner = () => {
+            formSection.classList.add('hidden');
+            scannerSection.classList.remove('hidden');
+            scannedBedId = null;
+            scannedEquipment = null;
+            scannedBedSection.classList.remove('hidden');
+            bedIdDisplay.textContent = '--';
+            roomInput.value = '';
+            recorderInput.value = '';
+            renderEquipmentDetail(null);
+            startScanner();
+        };
+
+        const isOnline = () => navigator.onLine;
+
+        const saveToLocalStorage = (data) => {
+            try {
+                const queue = JSON.parse(localStorage.getItem('bedTrackerQueue') || '[]');
+                queue.push({
+                    ...data,
+                    timestamp: new Date().toISOString(),
+                    synced: false
+                });
+                localStorage.setItem('bedTrackerQueue', JSON.stringify(queue));
+                console.log('💾 บันทึกข้อมูลลง Local Storage:', queue);
+                return true;
+            } catch (error) {
+                console.error('❌ ไม่สามารถบันทึกลง Local Storage:', error);
+                return false;
+            }
+        };
+
+        const sendToGoogleAppsScript = async (data) => {
+            try {
+                loadingText.textContent = 'กำลังส่งข้อมูล...';
+                loadingModal.classList.remove('hidden');
+
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bedId: data.bedId,
+                        roomId: data.roomId,
+                        recorderName: data.recorderName,
+                        timestamp: data.timestamp
+                    })
+                });
+
+                console.log('✅ ส่งข้อมูลไปยัง Google Apps Script สำเร็จ');
+                loadingModal.classList.add('hidden');
+                return true;
+            } catch (error) {
+                console.error('❌ ไม่สามารถส่งข้อมูลไปยัง Google Apps Script:', error);
+                loadingModal.classList.add('hidden');
+                return false;
+            }
+        };
+
+        const syncOfflineData = async () => {
+            if (!isOnline()) return;
+
+            try {
+                const queue = JSON.parse(localStorage.getItem('bedTrackerQueue') || '[]');
+                const unsynced = queue.filter(item => !item.synced);
+
+                if (unsynced.length === 0) {
+                    console.log('✅ ไม่มีข้อมูลที่ต้องซิงค์');
+                    return;
+                }
+
+                console.log(`🔄 กำลังซิงค์ ${unsynced.length} รายการ...`);
+
+                for (let i = 0; i < unsynced.length; i++) {
+                    const item = unsynced[i];
+                    const success = await sendToGoogleAppsScript(item);
+
+                    if (success) {
+                        item.synced = true;
+                        queue[queue.indexOf(item)] = item;
+                    }
+                }
+
+                localStorage.setItem('bedTrackerQueue', JSON.stringify(queue));
+                console.log('✅ ซิงค์ข้อมูลเสร็จแล้ว');
+            } catch (error) {
+                console.error('❌ เกิดข้อผิดพลาดในการซิงค์:', error);
+            }
+        };
+
+        const handleSave = async () => {
+            const roomId = roomInput.value.trim();
+            const recorderName = recorderInput.value.trim();
+
+            if (!scannedBedId || !roomId || !recorderName) {
+                alert('⚠️ กรุณาระบุข้อมูลให้ครบถ้วน');
+                console.warn('⚠️ ข้อมูลไม่ครบ');
+                return;
+            }
+
+            const data = {
+                bedId: scannedBedId,
+                roomId: roomId,
+                recorderName: recorderName,
+                timestamp: new Date().toISOString()
+            };
+
+            if (isOnline()) {
+                // Online: Send directly
+                const success = await sendToGoogleAppsScript(data);
+                if (success) {
+                    successText.textContent = `เตียง ${scannedBedId} → ห้อง ${roomId}\nผู้บันทึก: ${recorderName}`;
+                    successModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        successModal.classList.add('hidden');
+                        backToScanner();
+                    }, 2500);
+                } else {
+                    // Fallback to offline storage
+                    saveToLocalStorage(data);
+                    offlineQueueModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        offlineQueueModal.classList.add('hidden');
+                        backToScanner();
+                    }, 2500);
+                }
+            } else {
+                // Offline: Save to Local Storage
+                if (saveToLocalStorage(data)) {
+                    offlineQueueModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        offlineQueueModal.classList.add('hidden');
+                        backToScanner();
+                    }, 2500);
+                } else {
+                    errorTitle.textContent = 'ไม่สามารถบันทึกข้อมูล';
+                    errorText.textContent = 'เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง';
+                    errorModal.classList.remove('hidden');
+                }
+            }
+        };
+
+        skipScanBtn.addEventListener('click', showManualBedIdModal);
+
+        manualBedIdSubmitBtn.addEventListener('click', submitManualBedId);
+
+        manualBedIdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitManualBedId();
+            }
+        });
+
+        saveBtn.addEventListener('click', handleSave);
+
+        backBtn.addEventListener('click', backToScanner);
+
+        retryBtn.addEventListener('click', () => {
+            errorModal.classList.add('hidden');
+            startScanner();
+        });
+
+        // Initialize scanner on page load
+        console.log('⚡ BedTracker Pro เริ่มต้นแล้ว');
+        await loadEquipmentData();
+        initScanner();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js').catch(error => {
+                    console.error('❌ ลงทะเบียน Service Worker ไม่สำเร็จ:', error);
+                });
+            });
+        }
+
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            console.error('🔴 Global Error:', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                error: event.error
+            });
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('🔴 Unhandled Promise Rejection:', event.reason);
+        });
+    </script>
 </body>
 
 </html>
