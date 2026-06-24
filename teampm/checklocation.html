@@ -421,6 +421,7 @@
                 let [main_id, sub_id] = id.toString().split('_')
                 queryArr.push(client + '_' + (('00000' + main_id).slice(-5)) + '_' + sub_id)
             }
+            queryArr.push(client + 'T_' + (('00000' + id).slice(-5)))
             queryArr.push(client + 'D_' + (('00000' + id).slice(-5)))
             queryArr.push('DEMO_' + (('000000' + id).slice(-6)))
             queryArr.push(client + (('00000' + id).slice(-5)))
