@@ -57,7 +57,11 @@
                 </div>
             </div>
             <button id="skip-scan-btn" class="bg-slate-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-500 transition-colors">
-                ข้ามการสแกน (ระบุรหัสเตียงด้วยตนเอง)
+                กรอกรหัสเอง
+            </button>
+            <button id="flash-toggle-btn" class="hidden bg-amber-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-500 transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="flashlight" class="w-5 h-5"></i>
+                <span id="flash-toggle-text">เปิดแฟลช</span>
             </button>
         </div>
 
@@ -85,7 +89,7 @@
                         <div class="hidden text-slate-300"><span class="font-bold text-slate-400">Item no.:</span> <span id="equipment-item-no">-</span></div>
                         <div class="w-full min-w-0 px-1 py-1 text-center text-cyan-200 leading-tight">
                             <span class="block font-bold text-cyan-300 text-base tracking-wide">ID CODE</span>
-                            <span id="equipment-id-code" class="block font-black tracking-wide mt-1 max-w-full break-all text-[clamp(1.6rem,7vw,3.2rem)] leading-tight">-</span>
+                            <span id="equipment-id-code" class="block font-black tracking-wide mt-1 max-w-full break-all text-[clamp(1.6rem,7vw,2.8rem)] leading-tight">-</span>
                         </div>
                     </div>
                 </div>
@@ -94,7 +98,7 @@
             <!-- Room Input -->
             <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
                 <label class="text-sm font-bold uppercase text-slate-400 tracking-wider" for="room-input">ระบุเลขห้อง</label>
-                <input type="text" id="room-input" placeholder="เช่น 301, 302, ..."
+                <input type="text" id="room-input" placeholder="เช่น 751, 860"
                     class="w-full mt-3 text-3xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border border-slate-700">
             </div>
 
@@ -316,6 +320,8 @@
         const saveBtn = document.getElementById('save-btn');
         const backBtn = document.getElementById('back-btn');
         const skipScanBtn = document.getElementById('skip-scan-btn');
+        const flashToggleBtn = document.getElementById('flash-toggle-btn');
+        const flashToggleText = document.getElementById('flash-toggle-text');
         const retryBtn = document.getElementById('retry-btn');
         const successModal = document.getElementById('success-modal');
         const offlineQueueModal = document.getElementById('offline-queue-modal');
@@ -338,7 +344,102 @@
         let scannedBedId = null;
         let equipmentDataByItemNo = new Map();
         let scannedEquipment = null;
+        let isTorchOn = false;
         const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_DEPLOYMENT_URL'; // Replace with actual URL
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const getActiveVideoTrack = () => {
+            const stream = video.srcObject;
+            if (!(stream instanceof MediaStream)) {
+                return null;
+            }
+
+            const [track] = stream.getVideoTracks();
+            return track || null;
+        };
+
+        const isTorchSupported = (track) => {
+            if (!track) {
+                return false;
+            }
+
+            if (typeof track.getCapabilities === 'function') {
+                const capabilities = track.getCapabilities();
+                console.log('🔦 Torch Capabilities:', capabilities);
+
+                if (typeof capabilities?.torch === 'boolean') {
+                    return capabilities.torch;
+                }
+            }
+
+            // Fallback for some mobile browsers: if this is rear camera, allow showing the toggle.
+            if (typeof track.getSettings === 'function') {
+                const settings = track.getSettings();
+                if (settings?.facingMode === 'environment') {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        const updateFlashToggleButton = () => {
+            const track = getActiveVideoTrack();
+            const supported = isTorchSupported(track);
+            console.log('🚀 updateFlashToggleButton supported:', supported);
+
+            if (!supported) {
+                flashToggleBtn.classList.add('hidden');
+                isTorchOn = false;
+                return;
+            }
+
+            flashToggleBtn.classList.remove('hidden');
+            flashToggleText.textContent = isTorchOn ? 'ปิดแฟลช' : 'เปิดแฟลช';
+            flashToggleBtn.classList.toggle('bg-amber-600', !isTorchOn);
+            flashToggleBtn.classList.toggle('hover:bg-amber-500', !isTorchOn);
+            flashToggleBtn.classList.toggle('bg-slate-600', isTorchOn);
+            flashToggleBtn.classList.toggle('hover:bg-slate-500', isTorchOn);
+        };
+
+        const refreshFlashToggleButton = async () => {
+            // On mobile, video track/capabilities may be available slightly after scanner.start().
+            for (let attempt = 0; attempt < 10; attempt++) {
+                updateFlashToggleButton();
+
+                if (!flashToggleBtn.classList.contains('hidden')) {
+                    return;
+                }
+
+                await sleep(180);
+            }
+        };
+
+        const setTorchState = async (enabled) => {
+            const track = getActiveVideoTrack();
+
+            if (!isTorchSupported(track)) {
+                isTorchOn = false;
+                updateFlashToggleButton();
+                return;
+            }
+
+            await track.applyConstraints({
+                advanced: [{ torch: enabled }]
+            });
+
+            isTorchOn = enabled;
+            updateFlashToggleButton();
+        };
+
+        const toggleFlash = async () => {
+            try {
+                await setTorchState(!isTorchOn);
+            } catch (error) {
+                console.error('❌ ไม่สามารถเปลี่ยนสถานะแฟลชได้:', error);
+                alert('ไม่สามารถเปลี่ยนสถานะแฟลชได้ โปรดลองอีกครั้ง');
+            }
+        };
 
         const normalizeHeader = (value) => String(value || '')
             .trim()
@@ -459,17 +560,24 @@
                 if (navigator.vibrate) {
                     navigator.vibrate(200);
                 }
-            }, { highlightScanRegion: false, returnDetailedScanResult: true });
+            }, {
+                highlightScanRegion: false,
+                returnDetailedScanResult: true,
+                preferredCamera: 'environment'
+            });
 
             startScanner();
         };
 
-        const startScanner = () => {
+        const startScanner = async () => {
             console.log('📱 กำลังเริ่มต้นกล้อง...');
-            scanner.start().catch(error => {
+            try {
+                await scanner.start();
+                await refreshFlashToggleButton();
+            } catch (error) {
                 console.error('❌ เริ่มการสแกนไม่สำเร็จ:', error);
                 handleCameraError(error);
-            });
+            }
         };
 
         const handleCameraError = (error) => {
@@ -495,6 +603,8 @@
             errorTitle.textContent = 'เข้าถึงกล้องไม่ได้';
             errorText.textContent = errorMessage;
             errorModal.classList.remove('hidden');
+            flashToggleBtn.classList.add('hidden');
+            isTorchOn = false;
         };
 
         const showFormSection = () => {
@@ -537,8 +647,25 @@
             }
 
             console.log(`✅ กรอกเลขเตียงด้วยตนเอง: ${bedId}`);
+            // find in equipmentDataByItemNo to see if the idCode is = bedId
+            let bedIdRegex = new RegExp(`${bedId}$`, 'i');
+            let foundEquipment = null;
+            for (const equipment of equipmentDataByItemNo.values()) {
+                if (bedIdRegex.test(equipment.idCode)) {
+                    foundEquipment = equipment;
+                    break;
+                }
+            }
+
+            if (!foundEquipment) {
+                console.warn(`⚠️ ไม่พบข้อมูลอุปกรณ์สำหรับเลขเตียง: ${bedId}`);
+                alert(`ไม่พบข้อมูลอุปกรณ์สำหรับเลขเตียง: ${bedId}\nโปรดตรวจสอบและลองใหม่`);
+                manualBedIdInput.focus();
+                return;
+            }
+
             scannedBedId = bedId;
-            scannedEquipment = null;
+            scannedEquipment = foundEquipment;
             manualBedIdModal.classList.add('hidden');
             showFormSection();
 
@@ -692,6 +819,8 @@
         };
 
         skipScanBtn.addEventListener('click', showManualBedIdModal);
+
+        flashToggleBtn.addEventListener('click', toggleFlash);
 
         manualBedIdSubmitBtn.addEventListener('click', submitManualBedId);
 
