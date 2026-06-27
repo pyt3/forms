@@ -1464,7 +1464,8 @@
             if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
             form.updateFieldAppearances(sarabun);
             form.flatten()
-            if (!e_img_bytes && !e_img_code_bytes && !e_img_nameplate_bytes) {
+            let hasImages = e_img_bytes || e_img_code_bytes || e_img_nameplate_bytes
+            if (!hasImages) {
                 // remove last page
                 pdfDoc.removePage(pdfDoc.getPages().length - 1)
             }
@@ -1484,6 +1485,16 @@
                             pdfDoc.addPage(page)
                         }
                     }
+                }
+            }
+
+            if(hasImages) {
+                // mave 2nd page to last page
+                const pages = pdfDoc.getPages()
+                if (pages.length > 1) {
+                    const secondPage = pages[1]
+                    pdfDoc.removePage(1)
+                    pdfDoc.addPage(secondPage)
                 }
             }
 
