@@ -647,7 +647,7 @@ function setPMThermoHygroMeter() {
         setupDatepicker(data);
         setupLocationInfo(data, '#table55ac99d7_notetext');
     }
-    setSameValue(data.temp, data.humid);
+    setSameValue(data.checklist.std_temp, ["", "-"].includes(data.checklist.std_humid) ? undefined : data.checklist.std_humid);
 }
 function setPMThermoDigital() {
     const checkboxIds = [
@@ -680,7 +680,7 @@ function setPMThermoDigital() {
         setupDatepicker(data);
         setupLocationInfo(data, '#table55ac99d7_notetext');
     }
-    setSameValue(data.temp, data.humid);
+    setSameValue(data.checklist.std_temp, ["", "-"].includes(data.checklist.std_humid) ? undefined : data.checklist.std_humid);
 }
 
 // Utility functions
