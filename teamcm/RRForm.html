@@ -1711,6 +1711,7 @@
             if (signature_bytes) {
                 signature = await pdfDoc.embedPng(signature_bytes)
             }
+            
             let imgs_obj = {}
             if (e_img_bytes) {
                 imgs_obj['e_img'] = await embedImage(e_img_bytes, 'e_img_file')
@@ -1835,13 +1836,14 @@
             if (imgs_obj['e_img_nameplate']) form.getTextField('e_img_nameplate').setImage(imgs_obj['e_img_nameplate'])
             form.updateFieldAppearances(sarabun);
             form.flatten()
-            if (!e_img_bytes && !e_img_code_bytes && !e_img_nameplate_bytes) {
+            let hasImages = e_img_bytes || e_img_code_bytes || e_img_nameplate_bytes
+            if (!hasImages) {
                 // remove last page
                 pdfDoc.removePage(pdfDoc.getPages().length - 1)
             }
 
             // add nsmartFiles pdfs
-            let nsmartFiles = ['1-file-nsmart', '2-file-quatation', '3-file-other']
+            let nsmartFiles = ['2-file-quatation', '3-file-other', '1-file-nsmart']
             for (let id of nsmartFiles) {
                 console.log(id)
                 if (pdfFiles[id] && pdfFiles[id].length > 0) {
@@ -1855,6 +1857,16 @@
                             pdfDoc.addPage(page)
                         }
                     }
+                }
+            }
+
+            if(hasImages) {
+                // mave 2nd page to last page
+                const pages = pdfDoc.getPages()
+                if (pages.length > 1) {
+                    const secondPage = pages[1]
+                    pdfDoc.removePage(1)
+                    pdfDoc.addPage(secondPage)
                 }
             }
 
@@ -1885,6 +1897,8 @@
                     height: 30
                 })
             }
+
+            
 
             // scale all pages to fit A4
             const a4Width = 595.28 // A4 width in points
