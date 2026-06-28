@@ -30,6 +30,7 @@ function handlePMForm() {
         "SUCTION REGULATOR (MED)": setPMSuctionRegulator,
         "SPHYGMOMANOMETER": setPMSphygmomanometer,
         "THERMOMETER, HYGRO (MED)": setPMThermoHygroMeter, //357
+        "THERMOMETER DIGITAL (MED)": setPMThermoDigital, //354
     };
 
     if (pmHandlers[form_name]) {
@@ -94,7 +95,7 @@ function handleCalForm() {
 // Helper functions
 function processDeviceCode(code) {
     console.log('Original device code:', code);
-    $("button:contains('"+code+"')").removeClass('btn-info').addClass('btn-warning');
+    $("button:contains('" + code + "')").removeClass('btn-info').addClass('btn-warning');
     code = code.replace('PYT3D_', '').replace('PYT3T_', '').replace('PYT3_', '').replace('D_', '').replace('T_', '').trim()
     console.log('Processing device code:', code);
     const hasUnderscore = code.indexOf('_') !== -1;
@@ -357,11 +358,20 @@ function setCalThermoHygroMeter() {
 // PM functions
 function setPMFlowMeter() {
     const checkboxIds = [
-        "tr55acd89d101-recheck-pass", "tr55acd89d102-recheck-pass", "tr55acd89d103-recheck-pass", "tr55acd89d104-recheck-pass",
-        "tr55acd89d106-recheck-pass", "tr55acd89d106-recheck-pass", "tr55acd89d107-recheck-pass", "tr55acd89d108-recheck-pass",
-        "tr55acd8ae101-recheck-pass", "tr55acd8c0101-recheck-pass", "tr55acd8c0102-recheck-none", "tr55acd8c0103-recheck-none",
-        "tr55acd8c0104-recheck-none", "tr55acd89d105-recheck-none"
-    ];
+        "tr55acd89d101_result",
+        "tr55acd89d102_result",
+        "tr55acd89d103_result",
+        "tr55acd89d104_result",
+        "tr55acd89d105_result",
+        "tr55acd89d106_result",
+        "tr55acd89d107_result",
+        "tr55acd89d108_result",
+        "tr55acd8ae101_result",
+        "tr55acd8c0101_result",
+        "tr55acd8c0102_result",
+        "tr55acd8c0103_result",
+        "tr55acd8c0104_result"
+    ]
     checkboxIds.forEach(id => $('#' + id).click());
 
     const { processedCode, data } = getDeviceCode();
@@ -374,13 +384,31 @@ function setPMFlowMeter() {
 
 function setPMAspirator() {
     const checkboxIds = [
-        "tr55acdb7f101-recheck-pass", "tr55acdb7f102-recheck-pass", "tr55acdb7f103-recheck-none", "tr55acdb7f104-recheck-none",
-        "tr55acdb7f105-recheck-none", "tr55acdb7f106-recheck-none", "tr55acdb7f107-recheck-pass", "tr55acdb7f108-recheck-pass",
-        "tr55acdb7f109-recheck-pass", "tr55acdb7f110-recheck-pass", "tr55acdb7f111-recheck-pass", "tr55acdb7f112-recheck-pass",
-        "tr55acdb7f113-recheck-none", "tr62d778471-recheck-pass", "tr62d778572-recheck-pass", "tr62d778663-recheck-none",
-        "tr55acdb91101-recheck-none", "tr55acdb91102-recheck-none", "tr55acdb91103-recheck-none", "tr55acdb91104-recheck-none",
-        "tr55acdb91105-recheck-none", "tr55acdba8101-recheck-pass", "tr55acdba8102-recheck-none", "tr55acdba8103-recheck-none",
-        "tr55acdba8104-recheck-none"
+        "tr55acdb7f101_result",
+        "tr55acdb7f102_result",
+        "tr55acdb7f103_result",
+        "tr55acdb7f104_result",
+        "tr55acdb7f105_result",
+        "tr55acdb7f106_result",
+        "tr55acdb7f107_result",
+        "tr55acdb7f108_result",
+        "tr55acdb7f109_result",
+        "tr55acdb7f110_result",
+        "tr55acdb7f111_result",
+        "tr55acdb7f112_result",
+        "tr55acdb7f113_result",
+        "tr62d778471_result",
+        "tr62d778572_result",
+        "tr62d778663_result",
+        "tr55acdb91101_result",
+        "tr55acdb91102_result",
+        "tr55acdb91103_result",
+        "tr55acdb91104_result",
+        "tr55acdb91105_result",
+        "tr55acdba8101_result",
+        "tr55acdba8102_result",
+        "tr55acdba8103_result",
+        "tr55acdba8104_result"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
 
@@ -394,15 +422,37 @@ function setPMAspirator() {
 
 function setPMEKG() {
     const checkboxIds = [
-        "tr64bcfc111-recheck-pass", "tr55acd19d102-recheck-pass", "tr55acd19d103-recheck-none", "tr55acd19d104-recheck-none",
-        "tr55acd19d105-recheck-none", "tr55acd19d106-recheck-none", "tr55acd19d108-recheck-pass", "tr55acd19d109-recheck-pass",
-        "tr55acd19d110-recheck-pass", "tr55acd19d111-recheck-pass", "tr55acd19d112-recheck-pass", "tr55acd19d113-recheck-pass",
-        "tr55acd19d114-recheck-pass", "tr55acd19d115-recheck-pass", "tr55acd19d116-recheck-none", "tr55acd19d117-recheck-pass",
-        "tr55acd19d118-recheck-pass", "tr55acd19d119-recheck-pass", "tr55acd19d120-recheck-pass", "tr60f697d01-recheck-none",
-        "tr55acd19d121-recheck-none", "tr55acd1d6101-recheck-none", "tr55acd1d6102-recheck-none", "tr55acd1d6103-recheck-none",
-        "tr62d76f661-recheck-none", "tr55acd1d6104-recheck-none", "tr55acd209101-recheck-pass", "tr55acd209102-recheck-none",
-        "tr55acd209103-recheck-none", "tr55acd209104-recheck-none"
-    ];
+        "tr64bcfc111_result",
+        "tr55acd19d102_result",
+        "tr55acd19d103_result",
+        "tr55acd19d104_result",
+        "tr55acd19d105_result",
+        "tr55acd19d106_result",
+        "tr55acd19d108_result",
+        "tr55acd19d109_result",
+        "tr55acd19d110_result",
+        "tr55acd19d111_result",
+        "tr55acd19d112_result",
+        "tr55acd19d113_result",
+        "tr55acd19d114_result",
+        "tr55acd19d115_result",
+        "tr55acd19d116_result",
+        "tr55acd19d117_result",
+        "tr55acd19d118_result",
+        "tr55acd19d119_result",
+        "tr55acd19d120_result",
+        "tr60f697d01_result",
+        "tr55acd19d121_result",
+        "tr55acd1d6101_result",
+        "tr55acd1d6102_result",
+        "tr55acd1d6103_result",
+        "tr62d76f661_result",
+        "tr55acd1d6104_result",
+        "tr55acd209101_result",
+        "tr55acd209102_result",
+        "tr55acd209103_result",
+        "tr55acd209104_result"
+    ]
     checkboxIds.forEach(id => $('#' + id).click());
 
     const { processedCode, data } = getDeviceCode();
@@ -415,13 +465,34 @@ function setPMEKG() {
 
 function setPMNIBP() {
     const checkboxIds = [
-        "tr55ace183101-recheck-pass", "tr55ace183102-recheck-pass", "tr55ace183103-recheck-none", "tr55ace183104-recheck-pass",
-        "tr55ace183105-recheck-pass", "tr55ace183106-recheck-pass", "tr55ace183107-recheck-none", "tr55ace183108-recheck-none",
-        "tr55ace183109-recheck-pass", "tr55ace183110-recheck-pass", "tr55ace183111-recheck-pass", "tr55ace183112-recheck-none",
-        "tr55ace183113-recheck-pass", "tr55ace183114-recheck-pass", "tr55ace183115-recheck-none", "tr55ace183116-recheck-pass",
-        "tr55ace183117-recheck-pass", "tr60f698fc1-recheck-none", "tr55ace1a5101-recheck-pass", "tr55ace1a5102-recheck-pass",
-        "tr55ace1a5103-recheck-none", "tr55ace1a5104-recheck-none", "tr55ace1a5105-recheck-none", "tr62d76eea1-recheck-pass",
-        "tr55ace1b9101-recheck-pass", "tr55ace1b9102-recheck-none", "tr55ace1b9103-recheck-none", "tr55ace1b9104-recheck-none"
+        "tr55ace183101_result",
+        "tr55ace183102_result",
+        "tr55ace183103_result",
+        "tr55ace183104_result",
+        "tr55ace183105_result",
+        "tr55ace183106_result",
+        "tr55ace183107_result",
+        "tr55ace183108_result",
+        "tr55ace183109_result",
+        "tr55ace183110_result",
+        "tr55ace183111_result",
+        "tr55ace183112_result",
+        "tr55ace183113_result",
+        "tr55ace183114_result",
+        "tr55ace183115_result",
+        "tr55ace183116_result",
+        "tr55ace183117_result",
+        "tr60f698fc1_result",
+        "tr55ace1a5101_result",
+        "tr55ace1a5102_result",
+        "tr55ace1a5103_result",
+        "tr55ace1a5104_result",
+        "tr55ace1a5105_result",
+        "tr62d76eea1_result",
+        "tr55ace1b9101_result",
+        "tr55ace1b9102_result",
+        "tr55ace1b9103_result",
+        "tr55ace1b9104_result"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
 
@@ -452,13 +523,32 @@ function setPMModule() {
 }
 
 function setPMSpO2() {
-    const checkboxIds = [
-        "tr55acd41b101-recheck-pass", "tr55acd41b102-recheck-pass", "tr55acd41b103-recheck-none", "tr55acd41b104-recheck-none",
-        "tr55acd41b105-recheck-none", "tr55acd41b106-recheck-none", "tr55acd41b107-recheck-none", "tr55acd41b108-recheck-pass",
-        "tr55acd41b109-recheck-pass", "tr55acd41b110-recheck-pass", "tr55acd41b111-recheck-pass", "tr55acd41b112-recheck-pass",
-        "tr55acd41b113-recheck-pass", "tr55acd41b114-recheck-pass", "tr55acd41b115-recheck-none", "tr55acd41b116-recheck-pass",
-        "tr55acd41b117-recheck-pass", "tr55acd41b118-recheck-pass", "tr55acd42f101-recheck-none", "tr55acd42f102-recheck-none",
-        "tr55acd441101-recheck-pass", "tr55acd441102-recheck-none", "tr55acd441103-recheck-none", "tr55acd441104-recheck-none"
+    [
+        "tr55acd41b101_result",
+        "tr55acd41b102_result",
+        "tr55acd41b103_result",
+        "tr55acd41b104_result",
+        "tr55acd41b105_result",
+        "tr55acd41b106_result",
+        "tr55acd41b107_result",
+        "tr55acd41b108_result",
+        "tr55acd41b109_result",
+        "tr55acd41b110_result",
+        "tr55acd41b111_result",
+        "tr55acd41b112_result",
+        "tr55acd41b113_result",
+        "tr55acd41b114_result",
+        "tr55acd41b115_result",
+        "tr55acd41b116_result",
+        "tr55acd41b117_result",
+        "tr55acd41b118_result",
+        "tr55acd42f101_result",
+        "tr55acd42f101_result",
+        "tr55acd42f102_result",
+        "tr55acd441101_result",
+        "tr55acd441102_result",
+        "tr55acd441103_result",
+        "tr55acd441104_result"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
 
@@ -472,11 +562,24 @@ function setPMSpO2() {
 
 function setPMSuctionRegulator() {
     const checkboxIds = [
-        "tr55acdc75101-recheck-pass", "tr55acdc75102-recheck-pass", "tr55acdc75103-recheck-pass", "tr55acdc75104-recheck-none",
-        "tr55acdc75105-recheck-pass", "tr55acdc75106-recheck-none", "tr55acdc75107-recheck-none", "tr55acdc75108-recheck-pass",
-        "tr55acdc75109-recheck-pass", "tr55acdc75110-recheck-none", "tr55acdcac101-recheck-none", "tr55acdcac102-recheck-none",
-        "tr55acdcac103-recheck-pass", "tr55acdcc3101-recheck-pass", "tr55acdcc3102-recheck-none", "tr55acdcc3103-recheck-none",
-        "tr55acdcc3104-recheck-none"
+        "tr55acdc75101_result",
+        "tr55acdc75102_result",
+        "tr55acdc75103_result",
+        "tr55acdc75104_result",
+        "tr55acdc75105_result",
+        "tr55acdc75106_result",
+        "tr55acdc75107_result",
+        "tr55acdc75108_result",
+        "tr55acdc75109_result",
+        "tr55acdc75110_result",
+        "tr55acdcac101_result",
+        "tr55acdcac102_result",
+        "tr55acdcac103_result",
+        "tr55acdcc3101_result",
+        "tr55acdcc3102_result",
+        "tr55acdcc3103_result",
+        "tr55acdcc3104_result",
+        "tr55acdcac102_result"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
 
@@ -490,11 +593,24 @@ function setPMSuctionRegulator() {
 
 function setPMSphygmomanometer() {
     const checkboxIds = [
-        "tr55acdafa101-recheck-pass", "tr55acdafa102-recheck-pass", "tr55acdafa103-recheck-none", "tr55acdafa104-recheck-pass",
-        "tr55acdafa105-recheck-pass", "tr55acdafa106-recheck-none", "tr55acdafa107-recheck-pass", "tr55acdafa108-recheck-pass",
-        "tr55acdafa109-recheck-none", "tr55acdafa110-recheck-pass", "tr55acdafa111-recheck-pass", "tr55acdafa112-recheck-pass",
-        "tr55acdb10101-recheck-pass", "tr55acdb10102-recheck-pass", "tr55acdb25101-recheck-pass", "tr55acdb25102-recheck-none",
-        "tr55acdb25103-recheck-none", "tr55acdb25104-recheck-none"
+        "tr55acdafa101_result",
+        "tr55acdafa102_result",
+        "tr55acdafa103_result",
+        "tr55acdafa104_result",
+        "tr55acdafa105_result",
+        "tr55acdafa106_result",
+        "tr55acdafa107_result",
+        "tr55acdafa108_result",
+        "tr55acdafa109_result",
+        "tr55acdafa110_result",
+        "tr55acdafa111_result",
+        "tr55acdafa112_result",
+        "tr55acdb10101_result",
+        "tr55acdb10102_result",
+        "tr55acdb25101_result",
+        "tr55acdb25102_result",
+        "tr55acdb25103_result",
+        "tr55acdb25104_result"
     ];
     checkboxIds.forEach(id => $('#' + id).click());
 
@@ -511,19 +627,52 @@ function setPMSphygmomanometer() {
 
 function setPMThermoHygroMeter() {
     const checkboxIds = [
-        "tr55ace186102-recheck-pass",
-        "tr55ace186105-recheck-pass",
-        "tr55ace186110-recheck-none",
-        "tr55ace186112-recheck-pass",
-        "tr55ace186113-recheck-pass",
-        "tr55ace186114-recheck-pass",
-        "tr55ace186115-recheck-none",
-        "tr55ace1a3103-recheck-pass",
-        "tr599e3d841-recheck-none",
-        "tr55ace1b2101-recheck-pass",
-        "tr55ace1b2102-recheck-none",
-        "tr55ace1b2103-recheck-none",
-        "tr55ace1b2104-recheck-none"
+        "tr55ace186102_result",
+        "tr55ace186105_result",
+        "tr55ace186110_result",
+        "tr55ace186112_result",
+        "tr55ace186113_result",
+        "tr55ace186114_result",
+        "tr55ace186115_result",
+        "tr55ace1a3103_result",
+        "tr599e3d841_result",
+        "tr55ace1b2101_result",
+        "tr55ace1b2102_result",
+        "tr55ace1b2103_result",
+        "tr55ace1b2104_result"
+    ]
+    checkboxIds.forEach(id => $('#' + id).click());
+    const { processedCode, data } = getDeviceCode();
+    if (processedCode) {
+        setupDatepicker(data);
+        setupLocationInfo(data, '#table55ac99d7_notetext');
+    }
+    setSameValue(data.temp, data.humid);
+}
+function setPMThermoDigital() {
+    const checkboxIds = [
+        "tr55ace186102_result",
+        "tr55ace186103_result",
+        "tr55ace186104_result",
+        "tr55ace186105_result",
+        "tr55ace186106_result",
+        "tr55ace186107_result",
+        "tr55ace186109_result",
+        "tr55ace186111_result",
+        "tr55ace186113_result",
+        "tr55ace186114_result",
+        "tr55ace186115_result",
+        "tr60f686ed1_result",
+        "tr60f686ed1_result",
+        "tr60f686ef2_result",
+        "tr62d7875d1_result",
+        "tr62d7875f2_result",
+        "tr62d787613_result",
+        "tr55ae0af9101_result",
+        "tr55ae0af9102_result",
+        "tr55ae0af9103_result",
+        "tr5e2125b41_result",
+        "tr55ace1b2101_result"
     ]
     checkboxIds.forEach(id => $('#' + id).click());
     const { processedCode, data } = getDeviceCode();
@@ -590,7 +739,7 @@ function setupQuickSearchModal() {
         if (title === 'ข้อมูลเครื่องมือแพทย์') {
             await waitForElement('#QuickSearchResultBox .modal-body div[style*="color:#0000FF"]');
             let code = $('#QuickSearchResultBox .modal-body div[style*="color:#0000FF"]')[0].textContent.trim();
-            
+
             $('#QuickSearchResultBox').attr('data-code', code);
             let cal_data = processDeviceCode(code);
             console.log('cal_data:', cal_data);
