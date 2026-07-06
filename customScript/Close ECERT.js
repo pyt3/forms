@@ -187,6 +187,7 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
     };
 
     const decimal = decimalMap[data.form_cal] || 2;
+    console.log('Using decimal places:', decimal, 'for form:', data.form_cal);
     setupInputHandlers(ids, decimal, useSameValue);
 
     data.checklist.forEach((item, index) => {
@@ -195,7 +196,6 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
         }
     });
 
-    setSameValue(data.temp, data.humid);
 }
 
 function setupInputHandlers(ids, decimal = 2, useSameValue = false) {
@@ -340,6 +340,7 @@ function setCalThermoHygroMeter() {
     };
     const { processedCode, data } = getDeviceCode();
     console.log('Processed code:', processedCode, 'Data:', { ...data });
+    console.log('Processed code:', processedCode, 'Data:', { ...data });
     data.checklist = {
         temperature: [[data.temp_std, data.temp]],
         humidity: [[data.humid_std, data.humid]]
@@ -348,7 +349,7 @@ function setCalThermoHygroMeter() {
         Object.keys(ids).forEach(key => {
             if (data.checklist[key] && data.checklist[key].length > 0) {
                 setupCalibrationForm(ids[key], { checklist: data.checklist[key], form_cal: data.form_cal.split('#')[0] }, null, false);
-                setSameValue(data.checklist.temperature[0][1], data.checklist.humidity[0][1])
+                setSameValue(data.checklist.temperature[0][1] < 15 ? 25 : data.checklist.temperature[0][1], data.checklist.humidity[0][1] < 40 || data.checklist.humidity[0][1] == "-" ? 55 : data.checklist.humidity[0][1]);
             }
         });
         setupDatepicker(data);
@@ -648,7 +649,7 @@ function setPMThermoHygroMeter() {
         setupDatepicker(data);
         setupLocationInfo(data, '#table55ac99d7_notetext');
     }
-    setSameValue(data.temp_std, ["", "-"].includes(data.humid_std) ? undefined : data.humid_std);
+    setSameValue(data.checklist.std_temp, ["", "-"].includes(data.checklist.std_humid) ? undefined : data.checklist.std_humid);
 }
 function setPMThermoDigital() {
     const checkboxIds = [
@@ -682,11 +683,12 @@ function setPMThermoDigital() {
     ]
     checkboxIds.forEach(id => $('#' + id).click());
     const { processedCode, data } = getDeviceCode();
+    console.log('Processed code:', processedCode, 'Data:', { ...data });
     if (processedCode) {
         setupDatepicker(data);
         setupLocationInfo(data, '#table55ac99d7_notetext');
     }
-    setSameValue(data.checklist.temp_std, ["", "-"].includes(data.checklist.humid_std) ? undefined : data.checklist.humid_std);
+    setSameValue(data.checklist.std_temp, ["", "-"].includes(data.checklist.std_humid) ? undefined : data.checklist.std_humid);
 }
 
 // Utility functions
