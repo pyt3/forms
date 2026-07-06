@@ -200,7 +200,7 @@ function mapSign(text) {
         case "ไม่ผ่าน":
             return "✘"
         case "อยู่ระหว่างการซ่อม":
-            return "⚠"
+            return "○"
         case "N/A":
             return "N/A"
         default:
