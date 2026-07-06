@@ -318,11 +318,11 @@
             session = localStorage.getItem("session")
             let config = localStorage.getItem("config")
             if (config) {
-                setFirebase(JSON.parse(config))
+                await setFirebase(JSON.parse(config))
             } else {
                 $.post(script_url, { opt: 'getconst' }, async function (c) {
                     localStorage.setItem('config', JSON.stringify(c))
-                    setFirebase(c)
+                    await setFirebase(c)
                 })
             }
             if (session) {
@@ -622,7 +622,9 @@
                 console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
                 if (querySnapshot.docs.length > 0) {
                     client = querySnapshot.docs[0].data().site.toUpperCase()
+                    console.log("🚀 ~ getTableData ~ client:", client)
                     user = querySnapshot.docs[0].data()
+                    console.log("🚀 ~ getTableData ~ user:", user)
                     getTable()
                 } else {
                     // $('#signout-btn').click()

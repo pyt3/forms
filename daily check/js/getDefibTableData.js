@@ -19,6 +19,7 @@ const getResult = function (promises) {
 async function getDefibTableData(session) {
     const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
     const buildQuery = ({ collection, form = 'defibrillator', filters = [], limit }) => {
+        console.log('buildQuery', { collection, form, filters, limit });
         let query = firestore.collection(collection)
             .where('form', '==', form)
             .where('time', '>=', thirtyDaysAgo)
@@ -37,7 +38,7 @@ async function getDefibTableData(session) {
 
     const buildTable = (snapshots, dedupe = false) => {
         let records = getResult(snapshots).flat();
-
+        console.log('records', JSON.stringify(records, null, 2));
         if (dedupe) {
             const seen = new Set();
             records = records.filter(item => {
