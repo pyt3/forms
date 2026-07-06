@@ -12,6 +12,7 @@
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <title>ย้ายเตียง</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- vConsole for debugging -->
@@ -19,11 +20,19 @@
 </head>
 
 <body class="bg-slate-900 font-sans text-slate-100 h-screen flex flex-col">
+    <button id="quick-flash-btn"
+        class="hidden fixed top-24 right-4 z-30 w-14 h-14 rounded-full bg-slate-600 text-white shadow-xl border-2 border-slate-300 hover:bg-slate-500 transition-colors items-center justify-center"
+        aria-label="เปิดหรือปิดไฟฉาย">
+        <i id="quick-flash-icon" data-lucide="flashlight" class="w-6 h-6"></i>
+    </button>
+
     <header class="p-6 bg-slate-800 shadow-md flex items-center justify-between">
         <h1 class="text-3xl font-black text-slate-100">ย้ายเตียง</h1>
         <div class="flex items-center gap-4">
-            <span id="connection-status" class="text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full">ออนไลน์</span>
-            <button id="install-btn" class="hidden bg-slate-700 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-600 transition-colors flex items-center gap-2">
+            <span id="connection-status"
+                class="text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full">ออนไลน์</span>
+            <button id="install-btn"
+                class="hidden bg-slate-700 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-600 transition-colors flex items-center gap-2">
                 <i data-lucide="download"></i>
                 <span>ติดตั้ง</span>
             </button>
@@ -31,7 +40,8 @@
     </header>
 
     <!-- Update Notification -->
-    <div id="update-notification" class="hidden fixed top-0 left-0 right-0 bg-slate-700 text-white p-4 shadow-lg z-40 flex items-center justify-between">
+    <div id="update-notification"
+        class="hidden fixed top-0 left-0 right-0 bg-slate-700 text-white p-4 shadow-lg z-40 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <i data-lucide="refresh-cw" class="w-6 h-6"></i>
             <span class="font-bold">มีเวอร์ชันใหม่พร้อมใช้</span>
@@ -45,51 +55,64 @@
         <!-- Step 1: QR Scanner -->
         <div id="scanner-section" class="flex flex-col space-y-6">
             <h2 class="text-2xl font-bold text-slate-200">สแกน QR Code</h2>
-            <div class="relative w-full aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-black border-4 border-slate-400">
+            <div
+                class="relative w-full aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-black border-4 border-slate-400">
                 <video id="qr-video" class="w-full h-full object-cover" playsinline muted></video>
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div class="w-[70%] aspect-square relative">
-                        <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-cyan-400 rounded-tl-2xl"></div>
-                        <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-cyan-400 rounded-tr-2xl"></div>
-                        <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-cyan-400 rounded-bl-2xl"></div>
-                        <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-cyan-400 rounded-br-2xl"></div>
+                        <div
+                            class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-cyan-400 rounded-tl-2xl">
+                        </div>
+                        <div
+                            class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-cyan-400 rounded-tr-2xl">
+                        </div>
+                        <div
+                            class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-cyan-400 rounded-bl-2xl">
+                        </div>
+                        <div
+                            class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-cyan-400 rounded-br-2xl">
+                        </div>
                     </div>
                 </div>
             </div>
-            <button id="skip-scan-btn" class="bg-slate-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-500 transition-colors">
+            <button id="skip-scan-btn"
+                class="bg-slate-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-500 transition-colors">
                 กรอกรหัสเอง
-            </button>
-            <button id="flash-toggle-btn" class="hidden bg-amber-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-500 transition-colors flex items-center justify-center gap-2">
-                <i data-lucide="flashlight" class="w-5 h-5"></i>
-                <span id="flash-toggle-text">เปิดแฟลช</span>
             </button>
         </div>
 
         <!-- Step 2: Form Input -->
         <div id="form-section" class="hidden flex flex-col space-y-6">
             <h2 class="text-2xl font-bold text-slate-200">ระบุข้อมูล</h2>
-            
+
             <!-- Scanned Bed ID Display -->
             <div id="scanned-bed-section" class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-cyan-700">
                 <label class="text-sm font-bold uppercase text-slate-400 tracking-wider">เลขเตียงที่สแกน</label>
-                <div id="bed-id-display" class="w-full mt-3 text-4xl font-black bg-slate-900 p-4 rounded-xl text-cyan-300 border-2 border-cyan-600">
+                <div id="bed-id-display"
+                    class="w-full mt-3 text-4xl font-black bg-slate-900 p-4 rounded-xl text-cyan-300 border-2 border-cyan-600">
                     --
                 </div>
             </div>
 
             <!-- Equipment Detail Display -->
-            <div id="equipment-detail-card" class="hidden bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
+            <div id="equipment-detail-card"
+                class="hidden bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
                 <label class="text-sm font-bold uppercase text-slate-400 tracking-wider">รายละเอียดอุปกรณ์</label>
                 <div class="mt-4 grid grid-cols-[96px_1fr] gap-4 items-start">
-                    <div class="w-24 h-24 rounded-xl border border-slate-600 bg-slate-900 overflow-hidden flex items-center justify-center">
-                        <img id="equipment-image" src="" alt="equipment image" class="w-full h-full object-cover hidden">
-                        <span id="equipment-image-placeholder" class="text-xs text-slate-500 text-center px-2">ไม่มีรูปภาพ</span>
+                    <div
+                        class="w-24 h-24 rounded-xl border border-slate-600 bg-slate-900 overflow-hidden flex items-center justify-center">
+                        <img id="equipment-image" src="" alt="equipment image"
+                            class="w-full h-full object-cover hidden">
+                        <span id="equipment-image-placeholder"
+                            class="text-xs text-slate-500 text-center px-2">ไม่มีรูปภาพ</span>
                     </div>
                     <div class="flex items-center min-w-0">
-                        <div class="hidden text-slate-300"><span class="font-bold text-slate-400">Item no.:</span> <span id="equipment-item-no">-</span></div>
+                        <div class="hidden text-slate-300"><span class="font-bold text-slate-400">Item no.:</span> <span
+                                id="equipment-item-no">-</span></div>
                         <div class="w-full min-w-0 px-1 py-1 text-center text-cyan-200 leading-tight">
                             <span class="block font-bold text-cyan-300 text-base tracking-wide">ID CODE</span>
-                            <span id="equipment-id-code" class="block font-black tracking-wide mt-1 max-w-full break-all text-[clamp(1.6rem,7vw,2.8rem)] leading-tight">-</span>
+                            <span id="equipment-id-code"
+                                class="block font-black tracking-wide mt-1 max-w-full break-all text-[clamp(1.6rem,7vw,2.8rem)] leading-tight">-</span>
                         </div>
                     </div>
                 </div>
@@ -97,25 +120,29 @@
 
             <!-- Room Input -->
             <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
-                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider" for="room-input">ระบุเลขห้อง</label>
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider"
+                    for="room-input">ระบุเลขห้อง</label>
                 <input type="text" id="room-input" placeholder="เช่น 751, 860"
                     class="w-full mt-3 text-3xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border border-slate-700">
             </div>
 
             <!-- Recorder Name Input -->
             <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border-2 border-slate-700">
-                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider" for="recorder-input">ชื่อผู้บันทึก</label>
+                <label class="text-sm font-bold uppercase text-slate-400 tracking-wider"
+                    for="recorder-input">ชื่อผู้บันทึก</label>
                 <input type="text" id="recorder-input" placeholder="ระบุชื่อของคุณ"
                     class="w-full mt-3 text-3xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border border-slate-700">
             </div>
 
             <!-- Action Buttons -->
             <div class="flex gap-4">
-                <button id="back-btn" class="flex-1 bg-slate-700 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
+                <button id="back-btn"
+                    class="flex-1 bg-slate-700 text-white px-4 py-3 rounded-xl font-bold hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                     <span>ย้อนกลับ</span>
                 </button>
-                <button id="save-btn" class="flex-1 bg-cyan-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2">
+                <button id="save-btn"
+                    class="flex-1 bg-cyan-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2">
                     <i data-lucide="save" class="w-5 h-5"></i>
                     <span>บันทึก</span>
                 </button>
@@ -124,19 +151,21 @@
     </main>
 
     <!-- Manual Bed ID Modal -->
-    <div id="manual-bed-id-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-8">
+    <div id="manual-bed-id-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-8">
         <div class="bg-slate-800 rounded-3xl p-8 w-full max-w-md shadow-2xl border-2 border-cyan-700">
             <div class="flex items-center gap-3 mb-6">
                 <i data-lucide="edit" class="w-8 h-8 text-cyan-400"></i>
                 <h2 class="text-3xl font-black text-white">ระบุเลขเตียง</h2>
             </div>
-            
+
             <p class="text-slate-300 mb-6 text-lg">กรุณาระบุเลขเตียงเพื่อดำเนินการต่อ</p>
-            
+
             <input type="text" id="manual-bed-id-input" placeholder="เช่น A001, B102, ..."
                 class="w-full mb-6 text-2xl font-black bg-slate-900 p-4 rounded-xl outline-none text-cyan-300 placeholder:text-slate-500 border-2 border-cyan-600">
-            
-            <button id="manual-bed-id-submit-btn" class="w-full bg-cyan-600 text-white px-4 py-4 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2 text-lg">
+
+            <button id="manual-bed-id-submit-btn"
+                class="w-full bg-cyan-600 text-white px-4 py-4 rounded-xl font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2 text-lg">
                 <i data-lucide="check" class="w-5 h-5"></i>
                 <span>ตกลง</span>
             </button>
@@ -161,7 +190,6 @@
                 <i data-lucide="wifi-off" class="w-24 h-24 mx-auto text-yellow-400"></i>
             </div>
             <h2 class="text-4xl font-black">บันทึกในโหมดออฟไลน์</h2>
-            <p class="mt-6 text-2xl font-bold text-slate-300">ข้อมูลของคุณถูกบันทึกลง Local Storage</p>
             <p class="mt-2 text-xl text-slate-400">จะส่งอัตโนมัติเมื่อเชื่อมต่ออินเตอร์เน็ตอีกครั้ง</p>
         </div>
     </div>
@@ -174,7 +202,8 @@
             </div>
             <h2 id="error-title" class="text-4xl font-black">เข้าถึงกล้องไม่ได้</h2>
             <p id="error-text" class="mt-6 text-2xl font-bold text-slate-300"></p>
-            <button id="retry-btn" class="mt-8 bg-slate-700 text-white px-8 py-3 rounded-xl font-bold text-xl hover:bg-slate-600 flex items-center justify-center gap-2 mx-auto">
+            <button id="retry-btn"
+                class="mt-8 bg-slate-700 text-white px-8 py-3 rounded-xl font-bold text-xl hover:bg-slate-600 flex items-center justify-center gap-2 mx-auto">
                 <i data-lucide="redo" class="w-5 h-5"></i>
                 <span>ลองอีกครั้ง</span>
             </button>
@@ -192,10 +221,10 @@
     </div>
 
     <!-- Initialize vConsole first -->
-    <script>
+    <!-- <script>
         var vConsole = new window.VConsole();
         console.log('🔧 vConsole เปิดใช้งานแล้ว - เลื่อนขึ้นเพื่อดู Console');
-    </script>
+    </script> -->
 
     <!-- Initialize Lucide Icons -->
     <script>
@@ -222,7 +251,7 @@
         updateBtn.addEventListener('click', () => {
             if (!refreshing) {
                 refreshing = true;
-                
+
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.controller?.postMessage({ type: 'SKIP_WAITING' });
                 }
@@ -290,7 +319,7 @@
                 connectionStatus.textContent = 'ออนไลน์';
                 connectionStatus.className = 'text-lg font-bold text-cyan-400 bg-cyan-950 px-4 py-1 rounded-full';
                 console.log('✅ เชื่อมต่ออินเตอร์เน็ตแล้ว');
-                syncOfflineData();
+                window.syncOfflineData?.();
             } else {
                 connectionStatus.textContent = 'ออฟไลน์';
                 connectionStatus.className = 'text-lg font-bold text-slate-400 bg-slate-700 px-4 py-1 rounded-full';
@@ -320,8 +349,8 @@
         const saveBtn = document.getElementById('save-btn');
         const backBtn = document.getElementById('back-btn');
         const skipScanBtn = document.getElementById('skip-scan-btn');
-        const flashToggleBtn = document.getElementById('flash-toggle-btn');
-        const flashToggleText = document.getElementById('flash-toggle-text');
+        const quickFlashBtn = document.getElementById('quick-flash-btn');
+        const quickFlashIcon = document.getElementById('quick-flash-icon');
         const retryBtn = document.getElementById('retry-btn');
         const successModal = document.getElementById('success-modal');
         const offlineQueueModal = document.getElementById('offline-queue-modal');
@@ -345,7 +374,7 @@
         let equipmentDataByItemNo = new Map();
         let scannedEquipment = null;
         let isTorchOn = false;
-        const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_DEPLOYMENT_URL'; // Replace with actual URL
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'; // Replace with actual URL
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         const getActiveVideoTrack = () => {
@@ -389,17 +418,21 @@
             console.log('🚀 updateFlashToggleButton supported:', supported);
 
             if (!supported) {
-                flashToggleBtn.classList.add('hidden');
+                quickFlashBtn.classList.add('hidden');
+                quickFlashBtn.classList.remove('flex');
                 isTorchOn = false;
                 return;
             }
 
-            flashToggleBtn.classList.remove('hidden');
-            flashToggleText.textContent = isTorchOn ? 'ปิดแฟลช' : 'เปิดแฟลช';
-            flashToggleBtn.classList.toggle('bg-amber-600', !isTorchOn);
-            flashToggleBtn.classList.toggle('hover:bg-amber-500', !isTorchOn);
-            flashToggleBtn.classList.toggle('bg-slate-600', isTorchOn);
-            flashToggleBtn.classList.toggle('hover:bg-slate-500', isTorchOn);
+            quickFlashBtn.classList.remove('hidden');
+            quickFlashBtn.classList.add('flex');
+            quickFlashBtn.classList.toggle('bg-slate-600', !isTorchOn);
+            quickFlashBtn.classList.toggle('hover:bg-slate-500', !isTorchOn);
+            quickFlashBtn.classList.toggle('border-slate-300', !isTorchOn);
+            quickFlashBtn.classList.toggle('bg-amber-600', isTorchOn);
+            quickFlashBtn.classList.toggle('hover:bg-amber-500', isTorchOn);
+            quickFlashBtn.classList.toggle('border-amber-300', isTorchOn);
+
         };
 
         const refreshFlashToggleButton = async () => {
@@ -407,7 +440,7 @@
             for (let attempt = 0; attempt < 10; attempt++) {
                 updateFlashToggleButton();
 
-                if (!flashToggleBtn.classList.contains('hidden')) {
+                if (!quickFlashBtn.classList.contains('hidden')) {
                     return;
                 }
 
@@ -507,6 +540,48 @@
             }
         };
 
+        const handleScannedRawValue = (rawValue, source = 'กล้อง') => {
+            const scannedCode = parseScannedCode(rawValue);
+
+            if (!scannedCode) {
+                alert('qrcode ไม่ถูกต้อง');
+                console.warn(`⚠️ QR Code ไม่มี parameter code (${source})`);
+                return false;
+            }
+
+            const equipment = equipmentDataByItemNo.get(scannedCode);
+            if (!equipment) {
+                alert(`ไม่พบข้อมูลอุปกรณ์สำหรับ code: ${scannedCode}`);
+                console.warn(`⚠️ ไม่พบข้อมูลอุปกรณ์ในไฟล์ Excel สำหรับ code: ${scannedCode} (${source})`);
+                return false;
+            }
+
+            scannedBedId = equipment.idCode;
+            scannedEquipment = equipment;
+
+            console.log(`✅ อ่าน QR สำเร็จจาก${source} - เตียง: ${scannedBedId}`);
+            scanner?.pause(true);
+            showFormSection();
+
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+
+            return true;
+        };
+
+        const extractScanResultData = (result) => {
+            if (typeof result === 'string') {
+                return result;
+            }
+
+            if (result && typeof result.data === 'string') {
+                return result.data;
+            }
+
+            return '';
+        };
+
         const renderEquipmentDetail = (equipment) => {
             if (!equipment) {
                 equipmentDetailCard.classList.add('hidden');
@@ -535,31 +610,7 @@
 
         const initScanner = () => {
             scanner = new QrScanner(video, result => {
-                const scannedCode = parseScannedCode(result.data);
-
-                if (!scannedCode) {
-                    alert('qrcode ไม่ถูกต้อง');
-                    console.warn('⚠️ QR Code ไม่มี parameter code');
-                    return;
-                }
-
-                const equipment = equipmentDataByItemNo.get(scannedCode);
-                if (!equipment) {
-                    alert(`ไม่พบข้อมูลอุปกรณ์สำหรับ code: ${scannedCode}`);
-                    console.warn(`⚠️ ไม่พบข้อมูลอุปกรณ์ในไฟล์ Excel สำหรับ code: ${scannedCode}`);
-                    return;
-                }
-
-                scannedBedId = equipment.idCode;
-                scannedEquipment = equipment;
-
-                console.log(`✅ สแกน QR Code สำเร็จ - เตียง: ${scannedBedId}`);
-                scanner.pause(true);
-                showFormSection();
-
-                if (navigator.vibrate) {
-                    navigator.vibrate(200);
-                }
+                handleScannedRawValue(result.data, 'กล้อง');
             }, {
                 highlightScanRegion: false,
                 returnDetailedScanResult: true,
@@ -587,7 +638,7 @@
                 message: error.message,
                 fullError: error
             });
-            
+
             if (error.name === 'NotAllowedError') {
                 errorMessage = '⚠️ กรุณาอนุญาตการใช้งานกล้อง\nตรวจสอบในตั้งค่าเบราว์เซอร์';
             } else if (error.name === 'NotFoundError') {
@@ -599,15 +650,24 @@
             } else {
                 errorMessage = `❌ เข้าถึงกล้องไม่ได้\n${error.message || 'โปรดลองอีกครั้ง'}`;
             }
-            
+
             errorTitle.textContent = 'เข้าถึงกล้องไม่ได้';
             errorText.textContent = errorMessage;
             errorModal.classList.remove('hidden');
-            flashToggleBtn.classList.add('hidden');
+            quickFlashBtn.classList.add('hidden');
+            quickFlashBtn.classList.remove('flex');
             isTorchOn = false;
         };
 
         const showFormSection = () => {
+            if (isTorchOn) {
+                setTorchState(false).catch(error => {
+                    console.warn('⚠️ ปิดแฟลชไม่สำเร็จก่อนเข้าแบบฟอร์ม:', error);
+                });
+            }
+            quickFlashBtn.classList.add('hidden');
+            quickFlashBtn.classList.remove('flex');
+
             scannerSection.classList.add('hidden');
             formSection.classList.remove('hidden');
             bedIdDisplay.textContent = scannedBedId;
@@ -639,7 +699,7 @@
 
         const submitManualBedId = () => {
             const bedId = manualBedIdInput.value.trim();
-            
+
             if (!bedId) {
                 alert('⚠️ กรุณาระบุเลขเตียง');
                 manualBedIdInput.focus();
@@ -690,6 +750,7 @@
         const isOnline = () => navigator.onLine;
 
         const saveToLocalStorage = (data) => {
+            console.log("🚀 ~ saveToLocalStorage ~ data:", data)
             try {
                 const queue = JSON.parse(localStorage.getItem('bedTrackerQueue') || '[]');
                 queue.push({
@@ -711,18 +772,23 @@
                 loadingText.textContent = 'กำลังส่งข้อมูล...';
                 loadingModal.classList.remove('hidden');
 
-                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        bedId: data.bedId,
-                        roomId: data.roomId,
-                        recorderName: data.recorderName,
-                        timestamp: data.timestamp
-                    })
+                await new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: GOOGLE_APPS_SCRIPT_URL,
+                        type: 'POST',
+                        data: {
+                            action: 'bed',
+                            bedId: data.bedId,
+                            roomId: data.roomId,
+                            recorderName: data.recorderName,
+                            timestamp: data.timestamp
+                        }
+                    }).done(function (data) {
+                        console.log(data);
+                        resolve();
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        reject(new Error(`AJAX request failed: ${textStatus}, ${errorThrown}`));
+                    });
                 });
 
                 console.log('✅ ส่งข้อมูลไปยัง Google Apps Script สำเร็จ');
@@ -740,31 +806,31 @@
 
             try {
                 const queue = JSON.parse(localStorage.getItem('bedTrackerQueue') || '[]');
-                const unsynced = queue.filter(item => !item.synced);
 
-                if (unsynced.length === 0) {
+                if (queue.length === 0) {
                     console.log('✅ ไม่มีข้อมูลที่ต้องซิงค์');
                     return;
                 }
 
-                console.log(`🔄 กำลังซิงค์ ${unsynced.length} รายการ...`);
+                console.log(`🔄 กำลังซิงค์ ${queue.length} รายการ...`);
 
-                for (let i = 0; i < unsynced.length; i++) {
-                    const item = unsynced[i];
+                for (let i = 0; i < queue.length; i++) {
+                    const item = queue[i];
                     const success = await sendToGoogleAppsScript(item);
-
+                    console.log(`🔄 ซิงค์รายการที่ ${i + 1}/${queue.length} - เตียง: ${item.bedId}, ห้อง: ${item.roomId}, ผู้บันทึก: ${item.recorderName} - ผลลัพธ์: ${success ? 'สำเร็จ' : 'ล้มเหลว'}`);
                     if (success) {
-                        item.synced = true;
-                        queue[queue.indexOf(item)] = item;
+                        queue[i] = undefined; // Mark as synced
                     }
                 }
 
-                localStorage.setItem('bedTrackerQueue', JSON.stringify(queue));
+                localStorage.setItem('bedTrackerQueue', JSON.stringify(queue.filter(item => item !== undefined)));
                 console.log('✅ ซิงค์ข้อมูลเสร็จแล้ว');
             } catch (error) {
                 console.error('❌ เกิดข้อผิดพลาดในการซิงค์:', error);
             }
         };
+
+        window.syncOfflineData = syncOfflineData;
 
         const handleSave = async () => {
             const roomId = roomInput.value.trim();
@@ -794,13 +860,9 @@
                         backToScanner();
                     }, 2500);
                 } else {
-                    // Fallback to offline storage
-                    saveToLocalStorage(data);
-                    offlineQueueModal.classList.remove('hidden');
-                    setTimeout(() => {
-                        offlineQueueModal.classList.add('hidden');
-                        backToScanner();
-                    }, 2500);
+                    errorTitle.textContent = 'บันทึกข้อมูลไม่สำเร็จ';
+                    errorText.textContent = 'กรุณาตรวจสอบข้อมูลอีกครั้ง แล้วลองบันทึกใหม่';
+                    errorModal.classList.remove('hidden');
                 }
             } else {
                 // Offline: Save to Local Storage
@@ -820,7 +882,7 @@
 
         skipScanBtn.addEventListener('click', showManualBedIdModal);
 
-        flashToggleBtn.addEventListener('click', toggleFlash);
+        quickFlashBtn.addEventListener('click', toggleFlash);
 
         manualBedIdSubmitBtn.addEventListener('click', submitManualBedId);
 
