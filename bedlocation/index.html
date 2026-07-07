@@ -374,8 +374,27 @@
         let equipmentDataByItemNo = new Map();
         let scannedEquipment = null;
         let isTorchOn = false;
+        const RECORDER_NAME_STORAGE_KEY = 'bedTrackerRecorderName';
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_g-xZYndPu9IzaYITUdHQ5ckjxX8dGxkB6qkhVfQxMrmAN7PfN9X7ENbVhXCgEWxCEg/exec'; // Replace with actual URL
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const saveRecorderName = (name) => {
+            const trimmedName = String(name || '').trim();
+            if (!trimmedName) {
+                return;
+            }
+            localStorage.setItem(RECORDER_NAME_STORAGE_KEY, trimmedName);
+            console.log('💾 บันทึกชื่อผู้บันทึกลง Local Storage:', trimmedName);
+        };
+
+        const loadSavedRecorderName = () => {
+            const savedName = String(localStorage.getItem(RECORDER_NAME_STORAGE_KEY) || '').trim();
+            if (!savedName) {
+                return;
+            }
+
+            recorderInput.value = savedName;
+        };
 
         const getActiveVideoTrack = () => {
             const stream = video.srcObject;
@@ -853,6 +872,7 @@
                 // Online: Send directly
                 const success = await sendToGoogleAppsScript(data);
                 if (success) {
+                    saveRecorderName(recorderName);
                     successText.textContent = `เตียง ${scannedBedId} → ห้อง ${roomId}\nผู้บันทึก: ${recorderName}`;
                     successModal.classList.remove('hidden');
                     setTimeout(() => {
@@ -867,6 +887,7 @@
             } else {
                 // Offline: Save to Local Storage
                 if (saveToLocalStorage(data)) {
+                    saveRecorderName(recorderName);
                     offlineQueueModal.classList.remove('hidden');
                     setTimeout(() => {
                         offlineQueueModal.classList.add('hidden');
@@ -903,6 +924,7 @@
 
         // Initialize scanner on page load
         console.log('⚡ BedTracker Pro เริ่มต้นแล้ว');
+        loadSavedRecorderName();
         await loadEquipmentData();
         initScanner();
 

@@ -11,7 +11,15 @@ const INVENTORY_HEADERS = [
   "ชื่อผลิตภัณฑ์/สารเคมี",
   "Trade Name",
   "ปริมาณสูงสุดที่มี",
-  "พื้นที่/หน่วยงานที่จัดเก็บ",
+  "พื้นที่/หน่วยงานที่จัดเก็บ"
+];
+
+const CATALOG_HEADERS = [
+  "รหัส SDS",
+  "ชื่อผลิตภัณฑ์/สารเคมี",
+  "Trade Name",
+  "รูปภาพ",
+  "เอกสารประกอบ",
   "สารออกซิไดซ์",
   "สารไวไฟ",
   "วัตถุระเบิด",
@@ -30,8 +38,6 @@ const INVENTORY_HEADERS = [
   "ต้องประกาศ Code 1",
   "สารเคมีไวไฟในแผนก"
 ];
-
-const CATALOG_HEADERS = ["รหัส SDS", "ชื่อผลิตภัณฑ์/สารเคมี", "Trade Name", "รูปภาพ", "เอกสารประกอบ"];
 
 const REQUEST_HEADERS = [
   "Request ID",
@@ -88,9 +94,10 @@ function doGet(e) {
     return handleApiRequest("GET", e);
   }
 
-  return HtmlService.createHtmlOutputFromFile("Index")
+  return HtmlService.createHtmlOutputFromFile("main")
     .setTitle("SDS Online")
-    .addMetaTag("viewport", "width=device-width, initial-scale=1");
+    .addMetaTag("viewport", "width=device-width, initial-scale=1")
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function doPost(e) {
@@ -416,17 +423,24 @@ function getChemicals(department='ไตเทียม', includeAll) {
 
   const centralChemicals = catalogRows
     .filter((row) => sanitize(row["รหัส SDS"]))
-    .map((row) => ({
-      sdsCode: sanitize(row["รหัส SDS"]),
-      chemicalName: sanitize(row["ชื่อผลิตภัณฑ์/สารเคมี"]),
-      tradeName: sanitize(row["Trade Name"]),
-      imageUrl: sanitize(row["รูปภาพ"]),
-      documentUrls: parseDocumentUrls(row["เอกสารประกอบ"]),
-      inDepartment: deptSdsSet.has(sanitize(row["รหัส SDS"]))
-    }));
+    .map((row) => {
+      const checklist = readChecklistFromCatalogRow(row);
+      return {
+        sdsCode: sanitize(row["รหัส SDS"]),
+        chemicalName: sanitize(row["ชื่อผลิตภัณฑ์/สารเคมี"]),
+        tradeName: sanitize(row["Trade Name"]),
+        imageUrl: sanitize(row["รูปภาพ"]),
+        documentUrls: parseDocumentUrls(row["เอกสารประกอบ"]),
+        categories: checklist.categories,
+        ppe: checklist.ppe,
+        code1: checklist.code1,
+        flammableInDepartment: checklist.flammableInDepartment,
+        inDepartment: deptSdsSet.has(sanitize(row["รหัส SDS"]))
+      };
+    });
 
   const deptChemicals = deptRows.map((row) => toChemicalViewModel(row, catalogMap));
-  const stats = buildStats(deptRows);
+  const stats = buildStats(deptChemicals);
   const requests = isAllDepartments ? getRequests("") : getRequests(activeDepartment);
 
   return {
@@ -895,21 +909,26 @@ function uploadFilesToDrive(filePayloads) {
     });
 }
 
-function buildStats(deptRows) {
+function buildStats(deptChemicals) {
   const stats = {};
   CATEGORY_KEYS.forEach((entry) => {
-    stats[entry.key] = deptRows.reduce((acc, row) => {
-      return acc + (isChecked(row[entry.header]) ? 1 : 0);
+    stats[entry.key] = (deptChemicals || []).reduce((acc, item) => {
+      if (entry.key === "code1") {
+        return acc + (item && item.code1 ? 1 : 0);
+      }
+
+      const categories = item && Array.isArray(item.categories) ? item.categories : [];
+      return acc + (categories.includes(entry.label) ? 1 : 0);
     }, 0);
   });
   return stats;
 }
 
 function toChemicalViewModel(row, catalogMap) {
-  const categories = CATEGORY_KEYS.filter((entry) => isChecked(row[entry.header])).map((entry) => entry.label);
-  const ppe = PPE_KEYS.filter((entry) => isChecked(row[entry.label])).map((entry) => entry.label);
   const sdsCode = sanitize(row["รหัส SDS"]);
   const catalogItem = (catalogMap && catalogMap[sdsCode]) || {};
+  const categories = Array.isArray(catalogItem.categories) ? catalogItem.categories : [];
+  const ppe = Array.isArray(catalogItem.ppe) ? catalogItem.ppe : [];
 
   return {
     department: sanitize(row["แผนก"]),
@@ -922,7 +941,8 @@ function toChemicalViewModel(row, catalogMap) {
     documentUrls: Array.isArray(catalogItem.documentUrls) ? catalogItem.documentUrls : [],
     categories,
     ppe,
-    code1: isChecked(row["ต้องประกาศ Code 1"])
+    code1: !!catalogItem.code1,
+    flammableInDepartment: !!catalogItem.flammableInDepartment
   };
 }
 
@@ -934,13 +954,33 @@ function buildCatalogMap(catalogRows) {
       return;
     }
 
+    const checklist = readChecklistFromCatalogRow(row);
+
     map[code] = {
       imageUrl: sanitize(row["รูปภาพ"]),
-      documentUrls: parseDocumentUrls(row["เอกสารประกอบ"])
+      documentUrls: parseDocumentUrls(row["เอกสารประกอบ"]),
+      categories: checklist.categories,
+      ppe: checklist.ppe,
+      code1: checklist.code1,
+      flammableInDepartment: checklist.flammableInDepartment
     };
   });
 
   return map;
+}
+
+function readChecklistFromCatalogRow(row) {
+  const categories = CATEGORY_KEYS
+    .filter((entry) => entry.key !== "code1" && isChecked(row[entry.header]))
+    .map((entry) => entry.label);
+  const ppe = PPE_KEYS.filter((entry) => isChecked(row[entry.label])).map((entry) => entry.label);
+
+  return {
+    categories,
+    ppe,
+    code1: isChecked(row["ต้องประกาศ Code 1"]),
+    flammableInDepartment: isChecked(row["สารเคมีไวไฟในแผนก"])
+  };
 }
 
 function parseDocumentUrls(value) {
