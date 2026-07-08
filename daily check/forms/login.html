@@ -518,7 +518,7 @@
                         client = data.site.toUpperCase()
                         let name = data.name
                         user = data
-                        console.log("🚀 ~ data", data)
+                        
                         var sissionid = generatePassword()
                         if (data.isFirstTime) {
                             $.LoadingOverlay("hide");
@@ -613,18 +613,18 @@
                     default: return getDefibTableData(session)
                 }
             }
-            console.log("🚀 ~ session", session)
+            
             if (!form) form = active_tab
             if (ischeck) {
                 return getTable()
             }
             firestore.collection('user').where('sessionid', 'array-contains', session.sessionid).get().then(function (querySnapshot) {
-                console.log("🚀 ~ querySnapshot.docs.length", querySnapshot.docs.length)
+                
                 if (querySnapshot.docs.length > 0) {
                     client = querySnapshot.docs[0].data().site.toUpperCase()
-                    console.log("🚀 ~ getTableData ~ client:", client)
+                    
                     user = querySnapshot.docs[0].data()
-                    console.log("🚀 ~ getTableData ~ user:", user)
+                    
                     getTable()
                 } else {
                     // $('#signout-btn').click()
@@ -812,7 +812,7 @@
             }
             let now = new Date()
             Object.keys(signatures).forEach(key => {
-                console.log('key: ' + key)
+                
                 let file = signatures[key]
                 var chunkSize = Math.round(0.25 * 1024 * 1024)
                 let filename, fileurl = 'https://drive.google.com/uc?id='

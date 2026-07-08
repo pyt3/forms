@@ -138,7 +138,7 @@
                 setFirebase(JSON.parse(config))
             } else {
                 $.post(script_url, { opt: 'getconst' }, async function (c) {
-                    console.log("🚀 ~ c:", c)
+                    
                     localStorage.setItem('config', JSON.stringify(c))
                     setFirebase(c)
                 })
@@ -212,9 +212,9 @@
             month = parseInt(month)
             year = parseInt(year)
             let start = new Date(year, month - 1, 1).getTime()
-            console.log("🚀 ~ start:", start)
+            
             let end = new Date(year, month, 1).getTime()
-            console.log("🚀 ~ end:", end)
+            
             $.LoadingOverlay("show");
             let queryArr = []
 
@@ -223,7 +223,7 @@
             queryArr.push('DEMO_' + (('000000' + code).slice(-6)))
             queryArr.push(client + (('00000' + code).slice(-5)))
             queryArr= queryArr.map(q=>q.toUpperCase())
-            console.log("🚀 ~ queryArr:", queryArr)
+            
             firestore.collection(client)
                 .where('e_code', "in", queryArr)
                 .where('time', ">=", start)
@@ -242,24 +242,29 @@
                     let e_code
                     querySnapshot.forEach((doc) => {
                         let d = doc.data()
-                        console.log("🚀 !! d:", d)
+                        
                         if (d.form == 'defibrillator') {
                             if (!queryobj[d.e_code]) queryobj[d.e_code] = {}
                             if (!queryobj[d.e_code][d.shift]) queryobj[d.e_code][d.shift] = {}
                             let check_index
-                            if (d.afteruse_rec_name) check_index = 'after'
+                            if (d.afteruse_rec_name) {
+                                check_index = 'after'
+                                d.shift = d.afteruse_shift
+
+                            }
                             else check_index = 'before'
                             if (!queryobj[d.e_code][d.shift][check_index]) queryobj[d.e_code][d.shift][check_index] = {}
                             d['firestore_id'] = doc.id
                             if(queryobj[d.e_code][d.shift][check_index][d.date]){
                                 let time = queryobj[d.e_code][d.shift][check_index][d.date].time
-                                console.log("🚀 ~ time:", time)
+                                
                                 if(d.time > time){
                                     queryobj[d.e_code][d.shift][check_index][d.date] = d
                                 }
                             }else{
                                 queryobj[d.e_code][d.shift][check_index][d.date] = d
                             }
+                            
                             form = d.form
                         } else if (d.form == 'temperature') {
                             if (!queryobj[d.e_code]) queryobj[d.e_code] = {}
@@ -276,13 +281,13 @@
                         }
                     });
                   
-                    console.log(queryobj)
+                    
                     localStorage.setItem('report_obj', JSON.stringify(Object.values(queryobj)[0]))
                     $.LoadingOverlay("hide");
-                    console.log(location.origin)
-                    console.log(location.href.split('forms/export')[0] + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1')
+                    
+                    
                     window.open(location.href.split('forms/export')[0] + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1', '_blank')
-                    console.log("🚀 ~ location.href.split('forms/export')[0] + '/' + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1", location.href.split('forms/export')[0] + '/' + form.slice(0, 5) + '_files/' + form + '_report.html?openExternalBrowser=1')
+                    
                 })
 
         })

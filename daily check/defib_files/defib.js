@@ -12,7 +12,7 @@ Swal.fire({
     allowEnterKey: false,
 })
 var testobj = JSON.parse(localStorage.getItem('report_obj'))
-console.log("🚀 ~ testobj", testobj)
+
 var tempkey = Object.keys(testobj['DAY']['before'])[0]
 
 
@@ -21,7 +21,7 @@ var e_code = testobj['DAY']['before'][tempkey].e_code
 var e_brand = testobj['DAY']['before'][tempkey].e_brand
 var e_model = testobj['DAY']['before'][tempkey].e_model
 var e_dept = testobj['DAY']['before'][tempkey].e_dept
-console.log("🚀 ~ e_dept", e_dept)
+
 var month = new Date(testobj['DAY']['before'][tempkey].time).toLocaleString('en-En', { month: 'long' })
 var month_num = new Date(testobj['DAY']['before'][tempkey].time).getMonth() + 1
 var year = new Date(testobj['DAY']['before'][tempkey].time).getFullYear()
@@ -100,16 +100,16 @@ $(document).ready(() => {
 
 
     let keys = Object.keys(week_check).sort((a, b) => a.split('/')[0] - b.split('/')[0])
-    console.log("🚀 ~ keys", keys)
+    
     for (var i = 5; i > keys.length; i--) {
-        console.log("🚀 ~ i", i)
+        
         $('[name="paper-week-' + i + '"]').remove()
     }
     keys.forEach((key, weeknum) => {
-        console.log("🚀 ~ weeknum", weeknum)
-        console.log("🚀 ~ key", key)
+        
+        
         let q = week_check[key]
-        console.log("🚀 ~ q", q)
+        
         let target = $('[name="paper-week-' + (weeknum + 1) + '"]')
         let img = $('<img>', {
             src: 'https://lh3.googleusercontent.com/d/' + q.img_url.split('?id=')[1]
@@ -141,7 +141,7 @@ $(document).ready(() => {
 
     let imgs = document.querySelectorAll('.isloading')
     let len = imgs.length
-    console.log("🚀 ~ len", len)
+    
     let count = 0
     imgs.forEach(function (img) {
         if (img.complete) incrementCounter();
@@ -152,15 +152,24 @@ $(document).ready(() => {
         if (q) {
             let day = new Date(q['time'])
             if (day.toLocaleString('en-EN', { weekday: 'short' }) == "Mon") {
-                console.log("🚀 ~ i", i)
-                console.log("🚀 ~ q", q)
+                
+                
                 week_check[i + '/' + month_num + '/' + year_bd] = q
             }
         }
         else q = ''
         let keys = ['staff', 'manager', 'staff_afteruse', 'manager_afteruse']
         keys.forEach(key => {
-            q[q_key[key]] ? q[q_key[key]] = ('https://lh3.googleusercontent.com/d/' + q[q_key[key]].split('?id=')[1]) : ''
+            
+            
+            // q[q_key[key]] = q[q_key[key]] ? ('https://lh3.googleusercontent.com/d/' + q[q_key[key]].split('?id=')[1]) : ''
+            if(q[q_key[key]] && q[q_key[key]].includes('https://drive.google.com/file/d/')){
+                q[q_key[key]] = 'https://lh3.googleusercontent.com/d/' + q[q_key[key]].split('/')[5]
+            }else if(q[q_key[key]] && q[q_key[key]].includes('id=')){
+                q[q_key[key]] = 'https://lh3.googleusercontent.com/d/' + q[q_key[key]].split('id=')[1].split('&')[0]
+            }else if(!q[q_key[key]]){
+                q[q_key[key]] = ''
+            }
             switch (key) {
                 case 'staff':
                     $(paper + ' [name="daily-sign' + '-' + i + '"]').append($('<img>', { src: q[q_key['staff']], class: 'rot270 ' + (q[q_key['staff']] ? 'isloading' : '') }))
