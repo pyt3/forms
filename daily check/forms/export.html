@@ -251,7 +251,15 @@
                             else check_index = 'before'
                             if (!queryobj[d.e_code][d.shift][check_index]) queryobj[d.e_code][d.shift][check_index] = {}
                             d['firestore_id'] = doc.id
-                            queryobj[d.e_code][d.shift][check_index][d.date] = d
+                            if(queryobj[d.e_code][d.shift][check_index][d.date]){
+                                let time = queryobj[d.e_code][d.shift][check_index][d.date].time
+                                console.log("🚀 ~ time:", time)
+                                if(d.time > time){
+                                    queryobj[d.e_code][d.shift][check_index][d.date] = d
+                                }
+                            }else{
+                                queryobj[d.e_code][d.shift][check_index][d.date] = d
+                            }
                             form = d.form
                         } else if (d.form == 'temperature') {
                             if (!queryobj[d.e_code]) queryobj[d.e_code] = {}
@@ -267,6 +275,7 @@
                             })
                         }
                     });
+                  
                     console.log(queryobj)
                     localStorage.setItem('report_obj', JSON.stringify(Object.values(queryobj)[0]))
                     $.LoadingOverlay("hide");
