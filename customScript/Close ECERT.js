@@ -693,6 +693,7 @@ function setPMThermoDigital() {
 // Utility functions
 function generateFourValuesWithSameMean(initialValue, preferDecimalPlaces = 2) {
     initialValue = Number(initialValue);
+    console.log("🚀 ~ generateFourValuesWithSameMean ~ initialValue:", initialValue)
     if (isNaN(initialValue)) {
         return [0, 0, 0, 0];
     }
