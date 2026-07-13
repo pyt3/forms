@@ -91,11 +91,6 @@ $(document).ready(() => {
 
         // }
         // console.log(week_check)
-
-
-
-
-
     })
 
 

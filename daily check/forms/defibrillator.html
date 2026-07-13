@@ -1208,7 +1208,7 @@
             let formdata = $('#daily-form').serializeArray()
             let obj = {}
             formdata.forEach(function (item) {
-                obj[item.name] = item.value
+                obj[item.name] = item.value.replace(/\+/g, ' ')
             })
             if (img_url) {
                 obj.img_url = img_url
