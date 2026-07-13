@@ -340,7 +340,6 @@ function setCalThermoHygroMeter() {
     };
     const { processedCode, data } = getDeviceCode();
     console.log('Processed code:', processedCode, 'Data:', { ...data });
-    console.log('Processed code:', processedCode, 'Data:', { ...data });
     data.checklist = {
         temperature: [[data.temp_std, data.temp]],
         humidity: [[data.humid_std, data.humid]]
@@ -649,7 +648,7 @@ function setPMThermoHygroMeter() {
         setupDatepicker(data);
         setupLocationInfo(data, '#table55ac99d7_notetext');
     }
-    setSameValue(data.checklist.std_temp, ["", "-"].includes(data.checklist.std_humid) ? undefined : data.checklist.std_humid);
+    setSameValue(data.temp_std < 15 ? 25 : data.temp_std, ["", "-"].includes(data.humid_std) ? undefined : (data.humid_std < 40 ? 55 : data.humid_std));
 }
 function setPMThermoDigital() {
     const checkboxIds = [
@@ -688,7 +687,7 @@ function setPMThermoDigital() {
         setupDatepicker(data);
         setupLocationInfo(data, '#table55ac99d7_notetext');
     }
-    setSameValue(data.checklist.std_temp, ["", "-"].includes(data.checklist.std_humid) ? undefined : data.checklist.std_humid);
+    setSameValue(data.temp_std < 15 ? 25 : data.temp_std, ["", "-"].includes(data.humid_std) ? undefined : (data.humid_std < 40 ? 55 : data.humid_std));
 }
 
 // Utility functions
@@ -700,7 +699,7 @@ function generateFourValuesWithSameMean(initialValue, preferDecimalPlaces = 2) {
 
     const differenceMap = {
         0: 1,
-        1: 0.5,
+        1: 0.3,
         2: 0.08,
         3: 0.008
     };
