@@ -1762,7 +1762,8 @@ def convertDate(date):
             return ""
         if len(date) == 3:
             month = months_str.index(date[1].upper()) + 1
-            return date[0] + '/' + str(month) + '/' + date[2]
+            date[1] = '0' + str(month) if month < 10 else str(month)
+            return date[0] + '/' + date[1]  + '/' + date[2]
     elif date.find('-') > -1:
         date = date.split('-')
         if len(date) == 1:
@@ -1772,7 +1773,7 @@ def convertDate(date):
             date[0] = '0' + date[0] if len(date[0]) == 1 else date[0]
             date[1] = '0' + date[1] if len(date[1]) == 1 else date[1]
             date[2] = '20' + date[2] if len(date[2]) == 2 else date[2]
-            return date[0] + '/' + str(month) + '/' + date[2]
+            return date[0] + '/' + date[1] + '/' + date[2]
 
     return ' '.join(date)
 
@@ -2073,6 +2074,7 @@ def change_file_name():
         
         # PM data
         pm_date = convertDate(value['pm'])
+        print(f"Processing PM date for {code}: {pm_date}")
         tmp_arr[8] = pm_date
         
         if pm_date:
@@ -2084,6 +2086,7 @@ def change_file_name():
         # CAL data
         cal_date = convertDate(value['cal'])
         tmp_arr[10] = cal_date
+        print(f"Processing CAL date for {code}: {cal_date}")
         
         if cal_date:
             tmp_arr[11] = convertDate(value['issue-cal']) or cal_date
