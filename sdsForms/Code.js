@@ -138,6 +138,9 @@ function handleApiRequest(method, e) {
       case "getUploadContext":
         result = getUploadContext.apply(null, args);
         break;
+      case "getChemicalAssetUploadContext":
+        result = getChemicalAssetUploadContext.apply(null, args);
+        break;
       case "exportSdsExcel":
         result = exportSdsExcel.apply(null, args);
         break;
@@ -158,6 +161,9 @@ function handleApiRequest(method, e) {
         break;
       case "setUserActive":
         result = setUserActive.apply(null, args);
+        break;
+      case "updateCatalogChemical":
+        result = updateCatalogChemical.apply(null, args);
         break;
       default:
         throw new Error(`ไม่รองรับ action: ${action}`);
@@ -821,6 +827,118 @@ function getUploadContext(payload) {
   };
 }
 
+function getChemicalAssetUploadContext(sessionToken, payload) {
+  ensureDataModel();
+  assertAdmin(sessionToken);
+
+  DriveApp.getRootFolder();
+
+  const data = payload || {};
+  const chemicalName = sanitize(data.chemicalName);
+  const tradeName = sanitize(data.tradeName);
+  const sdsCode = sanitize(data.sdsCode);
+
+  if (!sdsCode || !chemicalName) {
+    throw new Error("กรุณาระบุรหัส SDS และชื่อสารเคมีก่อนอัปโหลดไฟล์");
+  }
+
+  const folder = ensureChemicalAssetFolder({
+    sdsCode,
+    chemicalName,
+    tradeName
+  });
+
+  return {
+    accessToken: ScriptApp.getOAuthToken(),
+    folderId: folder.getId(),
+    folderName: folder.getName(),
+    folderUrl: folder.getUrl()
+  };
+}
+
+function updateCatalogChemical(sessionToken, payload) {
+  ensureDataModel();
+  assertAdmin(sessionToken);
+
+  const data = payload || {};
+  const sdsCode = sanitize(data.sdsCode);
+  const chemicalName = sanitize(data.chemicalName);
+  const tradeName = sanitize(data.tradeName);
+  const imageUrl = sanitize(data.imageUrl);
+  const documentUrls = normalizeUrlList(data.documentUrls);
+  const imageFileId = sanitize(data.imageFileId);
+  const documentFileIds = normalizeLabelList(data.documentFileIds);
+  const categories = normalizeLabelList(data.categories);
+  const ppe = normalizeLabelList(data.ppe);
+
+  if (!sdsCode || !chemicalName) {
+    throw new Error("กรุณาระบุรหัส SDS และชื่อสารเคมี");
+  }
+
+  if (imageFileId) {
+    ensureFileSharedForView(imageFileId);
+  }
+  documentFileIds.forEach((fileId) => ensureFileSharedForView(fileId));
+
+  const catalogSheet = getSheet(SHEET_NAMES.catalog, CATALOG_HEADERS);
+  const target = findCatalogRowBySdsCode(catalogSheet, sdsCode);
+  if (!target) {
+    throw new Error("ไม่พบสารเคมีที่ต้องการแก้ไขในคลังกลาง");
+  }
+
+  const existingChecklist = readChecklistFromCatalogRow(target.row);
+  const rowValues = CATALOG_HEADERS.map(() => "");
+  rowValues[0] = sdsCode;
+  rowValues[1] = chemicalName;
+  rowValues[2] = tradeName;
+  rowValues[3] = imageUrl;
+  rowValues[4] = documentUrls.join("\n");
+
+  CATEGORY_KEYS.forEach((entry) => {
+    const index = CATALOG_HEADERS.indexOf(entry.header);
+    if (index < 0) {
+      return;
+    }
+
+    if (entry.key === "code1") {
+      rowValues[index] = data.code1 ? "✓" : "";
+      return;
+    }
+
+    rowValues[index] = categories.indexOf(entry.label) >= 0 ? "✓" : "";
+  });
+
+  PPE_KEYS.forEach((entry) => {
+    const index = CATALOG_HEADERS.indexOf(entry.label);
+    if (index >= 0) {
+      rowValues[index] = ppe.indexOf(entry.label) >= 0 ? "✓" : "";
+    }
+  });
+
+  const flammableIndex = CATALOG_HEADERS.indexOf("สารเคมีไวไฟในแผนก");
+  if (flammableIndex >= 0) {
+    rowValues[flammableIndex] = existingChecklist.flammableInDepartment ? "✓" : "";
+  }
+
+  catalogSheet.getRange(target.rowIndex, 1, 1, CATALOG_HEADERS.length).setValues([rowValues]);
+  syncInventoryChemicalFields(sdsCode, chemicalName, tradeName);
+
+  return {
+    ok: true,
+    message: "อัปเดตข้อมูลสารเคมีกลางเรียบร้อย",
+    chemical: {
+      sdsCode,
+      chemicalName,
+      tradeName,
+      imageUrl,
+      documentUrls,
+      categories,
+      ppe,
+      code1: !!data.code1
+    }
+  };
+}
+
 function getRequests(department) {
   const requestSheet = getSheet(SHEET_NAMES.requests, REQUEST_HEADERS);
   const rows = readRowsAsObjects(requestSheet, REQUEST_HEADERS);
@@ -877,13 +995,29 @@ function buildRequestAttachmentFolderName(meta) {
   const tokens = [baseName];
 
   if (sdsCode) {
-    tokens.push(`SDS ${sdsCode}`);
+    tokens.push("SDS " + sdsCode);
   }
 
   tokens.push(requestType === "Edit" ? "EDIT" : "ADD");
   const normalized = tokens.join(" | ").replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, " ").trim();
 
-  return normalized || `Chemical Request ${Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyyMMdd-HHmmss")}`;
+  return normalized || ("Chemical Request " + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyyMMdd-HHmmss"));
+}
+
+function ensureChemicalAssetFolder(meta) {
+  const baseFolderId = sanitize(PropertiesService.getScriptProperties().getProperty("UPLOAD_FOLDER_ID"));
+  const baseFolder = baseFolderId ? DriveApp.getFolderById(baseFolderId) : DriveApp.getRootFolder();
+  const parentFolder = getOrCreateFolder(baseFolder, "SDS_Chemical_Assets");
+  return getOrCreateFolder(parentFolder, buildChemicalAssetFolderName(meta || {}));
+}
+
+function buildChemicalAssetFolderName(meta) {
+  const sdsCode = sanitize(meta.sdsCode);
+  const chemicalName = sanitize(meta.chemicalName);
+  const tradeName = sanitize(meta.tradeName);
+  const baseName = [sdsCode, chemicalName, tradeName].filter(Boolean).join(" | ");
+  const normalized = baseName.replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, " ").trim();
+  return normalized || ("Chemical Asset " + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyyMMdd-HHmmss"));
 }
 
 function uploadFilesToDrive(filePayloads) {
@@ -1143,6 +1277,70 @@ function findUserRowByUsername(usersSheet, usernameLower) {
 function normalizeRole(roleValue) {
   const text = sanitize(roleValue).toLowerCase();
   return text === "admin" ? "admin" : "user";
+}
+
+function normalizeLabelList(values) {
+  return (Array.isArray(values) ? values : [])
+    .map((value) => sanitize(value))
+    .filter(Boolean);
+}
+
+function normalizeUrlList(values) {
+  if (Array.isArray(values)) {
+    return values.map((value) => sanitize(value)).filter(Boolean);
+  }
+  return parseDocumentUrls(values);
+}
+
+function findCatalogRowBySdsCode(catalogSheet, sdsCode) {
+  const rows = readRowsAsObjects(catalogSheet, CATALOG_HEADERS);
+  for (let i = 0; i < rows.length; i += 1) {
+    if (sanitize(rows[i]["รหัส SDS"]) === sdsCode) {
+      return {
+        rowIndex: i + 2,
+        row: rows[i]
+      };
+    }
+  }
+  return null;
+}
+
+function syncInventoryChemicalFields(sdsCode, chemicalName, tradeName) {
+  const code = sanitize(sdsCode);
+  if (!code) {
+    return;
+  }
+
+  const inventorySheet = getSheet(SHEET_NAMES.inventory, INVENTORY_HEADERS);
+  const lastRow = inventorySheet.getLastRow();
+  if (lastRow < 2) {
+    return;
+  }
+
+  const values = inventorySheet.getRange(2, 1, lastRow - 1, INVENTORY_HEADERS.length).getValues();
+  let changed = false;
+
+  values.forEach((row) => {
+    if (sanitize(row[1]) === code) {
+      row[2] = chemicalName;
+      row[3] = tradeName;
+      changed = true;
+    }
+  });
+
+  if (changed) {
+    inventorySheet.getRange(2, 1, values.length, INVENTORY_HEADERS.length).setValues(values);
+  }
+}
+
+function ensureFileSharedForView(fileId) {
+  const id = sanitize(fileId);
+  if (!id) {
+    return;
+  }
+
+  const file = DriveApp.getFileById(id);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 }
 
 function createSessionToken(userRow) {
