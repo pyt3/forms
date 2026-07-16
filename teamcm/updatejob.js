@@ -228,10 +228,14 @@ $(document).ready(async () => {
         openSignBtn.addEventListener('click', function (event) {
             event.preventDefault();
             event.stopImmediatePropagation();
-            openSurveyModal();
+            if(current_user?.site.toLowerCase() == 'pyt3') {
+                openSurveyModal();
+            }else{
+                openSignatureModal();
+            }
         });
     }
-})
+});
 var jobid, wo, current_code, current_user, contactList = []
 async function initialData() {
 
