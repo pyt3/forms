@@ -398,6 +398,38 @@
         .transition-smooth {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        .emoji-btn {
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .emoji-btn:hover,
+        .emoji-btn:focus {
+            transform: translateY(-4px) scale(1.08);
+            filter: drop-shadow(0 8px 12px rgba(59, 130, 246, 0.25));
+        }
+
+        .survey-choice {
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            background: #f8fafc;
+            padding: 0.75rem 0.5rem;
+            min-width: 78px;
+            transition: all 0.2s ease;
+        }
+
+        .survey-choice:hover,
+        .survey-choice:focus {
+            border-color: #60a5fa;
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        .survey-choice.active {
+            border-color: #2563eb;
+            background: #dbeafe;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
     </style>
     <title>อัพเดทงาน</title>
 </head>
@@ -456,6 +488,17 @@
                                 class="flex items-center space-x-3 p-3 bg-emerald-50 rounded-xl border border-emerald-200">
                                 <i class="bi bi-check-circle-fill text-emerald-500 text-xl"></i>
                                 <div class="text-sm text-emerald-700" id="reciever">Loading status...</div>
+                            </div>
+
+                            <!-- Feedback Display -->
+                            <div id="feedback-display"
+                                onclick="handleFeedbackHiddenClick()"
+                                class="hidden flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-200 select-none">
+                                <div class="text-sm text-blue-700 font-medium">ความพึงพอใจ</div>
+                                <div class="flex items-center gap-2">
+                                    <span id="feedback-emoji" class="text-4xl leading-none">-</span>
+                                    <span id="feedback-text" class="text-sm text-blue-700 font-semibold">-</span>
+                                </div>
                             </div>
 
                             <!-- Request Number -->
@@ -766,6 +809,16 @@
 
                 <!-- Content -->
                 <div class="p-6">
+                    <div id="feedback-display-summary"
+                        onclick="handleFeedbackHiddenClick()"
+                        class="hidden mb-4 flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-200 select-none">
+                        <div class="text-sm text-blue-700 font-medium">ความพึงพอใจ</div>
+                        <div class="flex items-center gap-2">
+                            <span id="feedback-emoji-summary" class="text-4xl leading-none">-</span>
+                            <span id="feedback-text-summary" class="text-sm text-blue-700 font-semibold">-</span>
+                        </div>
+                    </div>
+
                     <!-- Summary Display -->
                     <div class="hidden mb-6 font-noto-serif-thai" id="summary-content">
                         <div
@@ -814,6 +867,67 @@
             </div>
         </div>
     </main>
+
+    <!-- Survey Modal -->
+    <div id="surveyModal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+        aria-labelledby="surveyModalLabel" aria-hidden="true">
+        <div id="survey-card"
+            class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center transition-all duration-500 transform border border-blue-100">
+            <div class="flex justify-end mb-2">
+                <button type="button" onclick="closeSurveyModal()"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all"
+                    aria-label="ปิดแบบประเมิน">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div id="survey-content">
+                <div
+                    class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-4">
+                    แบบประเมินความพึงพอใจ
+                </div>
+                <h1 id="surveyModalLabel" class="text-2xl font-bold text-gray-800 mb-2">บริการครั้งนี้เป็นอย่างไรบ้าง?</h1>
+                <p class="text-gray-500 mb-2">โปรดเลือกคะแนนเพื่อดำเนินการต่อ</p>
+                <p class="text-xs text-amber-600 mb-8">จำเป็นต้องให้คะแนนก่อนเซ็นรับทราบ</p>
+
+                <div class="flex justify-center space-x-6">
+                    <button onclick="submitFeedback('neutral')"
+                        class="emoji-btn survey-choice focus:outline-none flex flex-col items-center"
+                        aria-label="พอใช้">
+                        <span class="text-5xl">😐</span>
+                        <span class="text-xs text-gray-600 mt-1">พอใช้</span>
+                    </button>
+                    <button onclick="submitFeedback('good')"
+                        class="emoji-btn survey-choice focus:outline-none flex flex-col items-center"
+                        aria-label="ดี">
+                        <span class="text-5xl">😊</span>
+                        <span class="text-xs text-gray-600 mt-1">ดี</span>
+                    </button>
+                    <button onclick="submitFeedback('happy')"
+                        class="emoji-btn survey-choice focus:outline-none flex flex-col items-center"
+                        aria-label="ดีมาก">
+                        <span class="text-5xl">😄</span>
+                        <span class="text-xs text-gray-600 mt-1">ดีมาก</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="thank-you-content" class="hidden">
+                <div class="text-6xl mb-4">🎉</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">ขอบคุณสำหรับคำประเมิน</h2>
+                <p class="text-gray-600">คุณเลือกคะแนน: <span id="selected-feedback-label" class="font-semibold text-blue-600">-</span></p>
+                <div class="mt-6 flex flex-col gap-3">
+                    <button onclick="confirmFeedback()"
+                        class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all">
+                        ยืนยันคะแนนและไปหน้าเซ็นชื่อ
+                    </button>
+                    <button onclick="resetSurvey()" class="text-sm text-blue-500 hover:underline">เปลี่ยนคะแนน</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Signature Modal -->
     <div id="signatureModal"
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
@@ -848,34 +962,6 @@
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <script>
-        // Modal functions for Tailwind (replacing Bootstrap modal)
-        function openSignatureModal() {
-            const modal = document.getElementById('signatureModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.getElementById('signatureparent').classList.remove('hidden');
-            // Trigger resize for signature canvas
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
-        }
-
-        function closeSignatureModal() {
-            const modal = document.getElementById('signatureModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // Update modal event listeners
-        document.addEventListener('DOMContentLoaded', function () {
-            // Replace Bootstrap modal events
-            const openSignBtn = document.getElementById('open-sign');
-            if (openSignBtn) {
-                openSignBtn.addEventListener('click', openSignatureModal);
-            }
-        });
-    </script>
     <script>
         let script = document.createElement('script');
         script.src = './updatejob.js' + '?v=' + Date.now();
