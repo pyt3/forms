@@ -1,4 +1,4 @@
-// var vConsole = new VConsole();
+var vConsole = new VConsole();
 AOS.init();
 document.addEventListener("DOMContentLoaded", function () {
     NProgress.start();
@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
     NProgress.done();
 });
-// const liff_id= '1655873446-MpmBPPzl' // for test
+// const liff_id = '1655873446-MpmBPPzl' // for test
 const liff_id = '1661543046-a1pJexbX' // use
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
@@ -220,6 +220,17 @@ $(document).ready(async () => {
     // let alert_height = $('#image').parents('.alert').height()
     // console.log("🚀 !! alert_height:", alert_height)
     // $('#image').css('max-height', alert_height + 'px').css('max-width', alert_height + 'px')
+
+    console.log("🚀 ~ DOMContentLoaded event fired");
+    const openSignBtn = document.getElementById('open-sign');
+    console.log("🚀 ~ openSignBtn:", openSignBtn)
+    if (openSignBtn) {
+        openSignBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            openSurveyModal();
+        });
+    }
 })
 var jobid, wo, current_code, current_user, contactList = []
 async function initialData() {
@@ -326,7 +337,7 @@ async function initialData() {
         if (!liff.isInClient()) {
             $('#more-update-btn').addClass('hidden')
             $('#mobile-only-warning').removeClass('hidden')
-        }else{
+        } else {
             $('#more-update-btn').removeClass('hidden')
             $('#mobile-only-warning').addClass('hidden')
         }
@@ -367,6 +378,7 @@ async function initialData() {
         firestore.collection('jobdata/').doc(jobid).get().then(data => {
             data = data.data()
             console.log("🚀 ~ firestore.collection ~ data:", data)
+            renderFeedbackDisplay(data.feedback, data.feedback_label)
             if (data.signature) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
                 $('#open-sign')
@@ -886,6 +898,7 @@ async function initialData() {
             }
             data = data.data()
             current_code = data.code.split('_')
+            renderFeedbackDisplay(data.feedback, data.feedback_label)
             if (current_code.length > 1) {
                 current_code = current_code[1]
             } else {
@@ -1384,7 +1397,7 @@ ${update}
         if (!liff.isInClient()) {
             $('#more-update-btn').addClass('hidden')
             $('#mobile-only-warning').removeClass('hidden')
-        }else{
+        } else {
             $('#more-update-btn').removeClass('hidden')
             $('#mobile-only-warning').addClass('hidden')
         }
@@ -1426,6 +1439,7 @@ ${update}
         firestore.collection('jobdata/').doc(jobid).get().then(data => {
             data = data.data()
             console.log("🚀 ~ firestore.collection ~ data:", data)
+            renderFeedbackDisplay(data.feedback, data.feedback_label)
             if (data.signature) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
                 $('#open-sign')
@@ -5295,3 +5309,183 @@ MIT License <http://www.opensource.org/licenses/mit-license.php>
     //	}
 
 })();
+
+
+let selectedFeedback = null;
+let feedbackHiddenTapCount = 0;
+let feedbackHiddenTapTimer = null;
+
+function getFeedbackLabel(feedbackType) {
+    const feedbackMap = {
+        neutral: 'พอใช้',
+        good: 'ดี',
+        happy: 'ดีมาก'
+    };
+    return feedbackMap[feedbackType] || '-';
+}
+
+function getFeedbackEmoji(feedbackType) {
+    const emojiMap = {
+        neutral: '😐',
+        good: '😊',
+        happy: '😄'
+    };
+    return emojiMap[feedbackType] || '🙂';
+}
+
+function renderFeedbackDisplay(feedbackType, feedbackLabel = '') {
+    const displayTargets = [
+        {
+            container: document.getElementById('feedback-display'),
+            emoji: document.getElementById('feedback-emoji'),
+            text: document.getElementById('feedback-text')
+        },
+        {
+            container: document.getElementById('feedback-display-summary'),
+            emoji: document.getElementById('feedback-emoji-summary'),
+            text: document.getElementById('feedback-text-summary')
+        }
+    ];
+
+    displayTargets.forEach((target) => {
+        if (!target.container || !target.emoji || !target.text) return;
+
+        if (!feedbackType) {
+            target.container.classList.add('hidden');
+            return;
+        }
+
+        target.emoji.textContent = getFeedbackEmoji(feedbackType);
+        target.text.textContent = feedbackLabel || getFeedbackLabel(feedbackType);
+        target.container.classList.remove('hidden');
+    });
+}
+
+function handleFeedbackHiddenClick() {
+    openSurveyModal();
+}
+
+function openSurveyModal() {
+    const surveyModal = document.getElementById('surveyModal');
+    if (!surveyModal) return;
+    resetSurvey();
+    surveyModal.classList.remove('hidden');
+    surveyModal.classList.add('flex');
+}
+
+function closeSurveyModal() {
+    const surveyModal = document.getElementById('surveyModal');
+    if (!surveyModal) return;
+    surveyModal.classList.add('hidden');
+    surveyModal.classList.remove('flex');
+}
+
+function submitFeedback(feedbackType) {
+    selectedFeedback = feedbackType;
+
+    document.querySelectorAll('#survey-content .survey-choice').forEach((btn) => {
+        btn.classList.remove('active');
+    });
+
+    const selectedBtn = document.querySelector(`#survey-content button[onclick="submitFeedback('${feedbackType}')"]`);
+    if (selectedBtn) {
+        selectedBtn.classList.add('active');
+    }
+
+    const surveyContent = document.getElementById('survey-content');
+    const thankYouContent = document.getElementById('thank-you-content');
+    const selectedFeedbackLabel = document.getElementById('selected-feedback-label');
+    if (!surveyContent || !thankYouContent) return;
+
+    if (selectedFeedbackLabel) {
+        selectedFeedbackLabel.textContent = getFeedbackLabel(feedbackType);
+    }
+
+    surveyContent.classList.add('hidden');
+    thankYouContent.classList.remove('hidden');
+}
+
+async function confirmFeedback() {
+    if (!selectedFeedback) {
+        resetSurvey();
+        return;
+    }
+
+    const feedbackDocId = ($('#request-no').val() || jobid || '').toString().trim();
+    if (!feedbackDocId) {
+        Swal.fire({
+            icon: 'error',
+            title: 'ไม่สามารถบันทึกคะแนนได้',
+            text: 'ไม่พบรหัสงานสำหรับบันทึก feedback',
+            customClass: sweetalert_custom_class,
+            confirmButtonText: 'ตกลง'
+        });
+        return;
+    }
+
+    try {
+        const savedFeedbackLabel = getFeedbackLabel(selectedFeedback);
+        await firestore.collection('jobdata/').doc(feedbackDocId).set({
+            feedback: selectedFeedback,
+            feedback_label: savedFeedbackLabel,
+            feedback_updated_at: firebase.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true });
+        renderFeedbackDisplay(selectedFeedback, savedFeedbackLabel);
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'บันทึกคะแนนไม่สำเร็จ',
+            text: 'กรุณาลองใหม่อีกครั้ง',
+            customClass: sweetalert_custom_class,
+            confirmButtonText: 'ตกลง'
+        });
+        console.error('Save feedback failed:', error);
+        return;
+    }
+
+    closeSurveyModal();
+    Swal.close();
+    if (typeof openSignatureModal === 'function') {
+        openSignatureModal();
+    }
+}
+
+function resetSurvey() {
+    const surveyContent = document.getElementById('survey-content');
+    const thankYouContent = document.getElementById('thank-you-content');
+    const selectedFeedbackLabel = document.getElementById('selected-feedback-label');
+    if (!surveyContent || !thankYouContent) return;
+
+    selectedFeedback = null;
+    surveyContent.classList.remove('hidden');
+    thankYouContent.classList.add('hidden');
+    if (selectedFeedbackLabel) {
+        selectedFeedbackLabel.textContent = '-';
+    }
+    document.querySelectorAll('#survey-content .survey-choice').forEach((btn) => {
+        btn.classList.remove('active');
+    });
+}
+
+// Modal functions for Tailwind (replacing Bootstrap modal)
+function openSignatureModal() {
+    const modal = document.getElementById('signatureModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    const signatureParent = document.getElementById('signatureparent');
+    if (signatureParent) {
+        signatureParent.classList.remove('hidden');
+    }
+    // Trigger resize for signature canvas
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 100);
+}
+
+function closeSignatureModal() {
+    const modal = document.getElementById('signatureModal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
