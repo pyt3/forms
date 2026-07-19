@@ -69,19 +69,66 @@
             cursor: grabbing;
         }
 
-        /* Smooth transitions */
+        /* Smooth transitions — targeted properties only (no transition:all) */
         input,
         select,
         textarea,
         button {
-            transition: all 0.2s ease-in-out;
+            transition:
+                transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 150ms cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
-            transform: translateY(-1px);
+        /* Focus shift — only for users who haven't opted out of motion */
+        @media (prefers-reduced-motion: no-preference) {
+            input:focus,
+            select:focus,
+            textarea:focus {
+                transform: translateY(-1px);
+            }
         }
+
+        /* Global reduced-motion reset */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 1ms !important;
+                animation-delay: -1ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 1ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Modal enter / exit keyframes */
+        @keyframes modalBackdropIn  { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalBackdropOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes modalPanelIn {
+            from { opacity: 0; transform: scale(0.97) translateY(8px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);   }
+        }
+        @keyframes modalPanelOut {
+            from { opacity: 1; transform: scale(1)    translateY(0);   }
+            to   { opacity: 0; transform: scale(0.97) translateY(8px); }
+        }
+        .modal-entering {
+            animation: modalBackdropIn 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .modal-entering > div:first-child {
+            animation: modalPanelIn 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .modal-leaving {
+            animation: modalBackdropOut 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            pointer-events: none;
+        }
+        .modal-leaving > div:first-child {
+            animation: modalPanelOut 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* PDF iframe reveal — composited on GPU via opacity + transform */
+        .pdf-iframe-hidden  { opacity: 0; transform: scale(0.97); transition: opacity 300ms cubic-bezier(0.16,1,0.3,1), transform 300ms cubic-bezier(0.16,1,0.3,1); }
+        .pdf-iframe-visible { opacity: 1; transform: scale(1);    transition: opacity 300ms cubic-bezier(0.16,1,0.3,1), transform 300ms cubic-bezier(0.16,1,0.3,1); }
 
         /* Custom scrollbar */
         ::-webkit-scrollbar {
@@ -179,7 +226,7 @@
         <div class="py-8">
             <div class="container mx-auto px-4 flex flex-col items-center justify-center">
                 <div class="flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4 
-                            hover:scale-110 transition-transform">
+                            transition-transform duration-150 pointer-fine:hover:scale-110">
                     <img width="50" src="https://img.icons8.com/3d-fluency/94/maintenance.png" alt="repair" />
                 </div>
                 <h1 class="text-4xl font-bold text-orange drop-shadow-lg tracking-wide">RR Form</h1>
@@ -1160,13 +1207,17 @@
                 let e_name = $('#e_name').val() ? $('#e_name').val() : 'no_name'
                 let dept = $('#dept').val() ? $('#dept').val() : 'no_department'
                 let name = 'IMAGE-ONLY-' + e_code + '-' + e_name + '-' + dept + '.pdf'
-                $(iframe).show(200)
+                // GPU-composited reveal: fade-in + scale-up (no layout reflow)
+                $(iframe).addClass('pdf-iframe-hidden').css('display', 'block')
+                requestAnimationFrame(() => $(iframe).removeClass('pdf-iframe-hidden').addClass('pdf-iframe-visible'))
                 $('#a-download').attr('href', url)
                 $('#a-download').attr('download', name).show()
-                // scroll to pdf
-                $('html, body').animate({
-                    scrollTop: $(iframe).offset().top
-                }, 500);
+                // scroll to pdf — respects prefers-reduced-motion
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    window.scrollTo({ top: $(iframe).offset().top, behavior: 'auto' })
+                } else {
+                    $('html, body').animate({ scrollTop: $(iframe).offset().top }, 250, 'swing')
+                }
                 pdfDoc = await PDFDocument.load(form_pdf_bytes)
                 $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
 
@@ -1205,16 +1256,18 @@
         $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragover', function (e) {
             e.preventDefault()
             e.stopPropagation()
-            // $(this).removeClass('from-blue-50', 'to-blue-100', 'border-blue-300',
-            //     'from-purple-50', 'to-purple-100', 'border-purple-300',
-            //     'from-green-50', 'to-green-100', 'border-green-300')
-            //     .addClass('from-brand-orange', 'to-brand-orange-dark', 'border-brand-orange', 'scale-105')
+            // Activate drag-over state: strip color classes, apply brand highlight
+            $(this).removeClass('from-blue-50', 'to-blue-100', 'border-blue-300',
+                'from-purple-50', 'to-purple-100', 'border-purple-300',
+                'from-green-50', 'to-green-100', 'border-green-300')
+                .addClass('from-brand-orange/10', 'to-brand-orange-dark/10', 'border-brand-orange', 'scale-[1.02]')
         })
         $('#e_img_div, #e_img_code_div, #e_img_nameplate_div').on('dragleave', function (e) {
             e.preventDefault()
             e.stopPropagation()
             let id = $(this).attr('id')
-            $(this).removeClass('from-brand-orange', 'to-brand-orange-dark', 'border-brand-orange', 'scale-105')
+            // Remove drag-over state before restoring original colors
+            $(this).removeClass('from-brand-orange/10', 'to-brand-orange-dark/10', 'border-brand-orange', 'scale-[1.02]')
             if (id === 'e_img_div') {
                 $(this).addClass('from-blue-50', 'to-blue-100', 'border-blue-300')
             } else if (id === 'e_img_code_div') {
@@ -1658,13 +1711,17 @@
                 let dept = $('#e_dept').val() ? $('#e_dept').val() : 'no_department'
                 let rr_no = $('#rr_no').val()
                 let name = 'RR_' + rr_no.split('_').slice(1).join('_') + '_' + e_name + ', ' + dept + '.pdf'
-                $(iframe).show(200)
+                // GPU-composited reveal: fade-in + scale-up (no layout reflow)
+                $(iframe).addClass('pdf-iframe-hidden').css('display', 'block')
+                requestAnimationFrame(() => $(iframe).removeClass('pdf-iframe-hidden').addClass('pdf-iframe-visible'))
                 $('#a-download').attr('href', url)
                 $('#a-download').attr('download', name).show()
-                // scroll to pdf
-                $('html, body').animate({
-                    scrollTop: $(iframe).offset().top
-                }, 500);
+                // scroll to pdf — respects prefers-reduced-motion
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    window.scrollTo({ top: $(iframe).offset().top, behavior: 'auto' })
+                } else {
+                    $('html, body').animate({ scrollTop: $(iframe).offset().top }, 250, 'swing')
+                }
                 pdfDoc = await PDFDocument.load(form_pdf_bytes)
                 // $('#1-file-nsmart, #2-file-quatation, #3-file-other').change()
 
@@ -2205,7 +2262,9 @@
 
         function openEmailModal() {
             const modal = $('#emailModal');
-            modal.removeClass('hidden').addClass('flex');
+            modal.removeClass('hidden modal-leaving').addClass('flex modal-entering');
+            // Remove animation class after it completes so it can re-trigger
+            setTimeout(() => modal.removeClass('modal-entering'), 210);
 
             $('#subject').val("[RR] ขออนุมัติ Repair Recommendation No. " + $('#rr_no').val())
 
@@ -2258,8 +2317,12 @@
 
         function closeEmailModal() {
             const modal = $('#emailModal');
-            modal.addClass('hidden').removeClass('flex');
-            window.emailMode = null;
+            modal.removeClass('modal-entering').addClass('modal-leaving');
+            // Wait for exit animation before hiding
+            setTimeout(() => {
+                modal.addClass('hidden').removeClass('flex modal-leaving');
+                window.emailMode = null;
+            }, 155);
         }
 
         // Handle email form submission
@@ -2608,15 +2671,20 @@
         // ── NHealth Calculator ──────────────────────────────────────────
         function openNHealthCalcModal() {
             const modal = document.getElementById('nhealthCalcModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden', 'modal-leaving');
+            modal.classList.add('flex', 'modal-entering');
+            setTimeout(() => modal.classList.remove('modal-entering'), 210);
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function closeNHealthCalcModal() {
             const modal = document.getElementById('nhealthCalcModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.remove('modal-entering');
+            modal.classList.add('modal-leaving');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex', 'modal-leaving');
+            }, 155);
         }
 
         // Close on outside click
