@@ -1,8 +1,16 @@
-const CACHE_NAME = 'bedtracker-cache-v1';
+const CACHE_NAME = 'bedtracker-cache-v2';
 const ASSETS_TO_CACHE = [
-  '/forms/bedlocation/index.html',
-  '/forms/bedlocation/manifest.json',
-  '/forms/bedlocation/icon.svg'
+  './index.html',
+  './manifest.json',
+  './icon.svg',
+  './equipment_list.xlsx',
+  'https://cdn.tailwindcss.com',
+  'https://code.jquery.com/jquery-3.7.1.min.js',
+  'https://unpkg.com/lucide@latest',
+  'https://unpkg.com/vconsole@latest/dist/vconsole.min.js',
+  'https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js',
+  'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm',
+  'https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;700;900&family=Inter:wght@400;500;700;900&family=Sarabun:wght@400;500;600;700&display=swap'
 ];
 
 self.addEventListener('install', event => {
@@ -10,7 +18,13 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       console.log('💾 Caching app shell');
-      return cache.addAll(ASSETS_TO_CACHE);
+      return Promise.all(
+        ASSETS_TO_CACHE.map(url => {
+          return fetch(new Request(url, { mode: 'no-cors' }))
+            .then(response => cache.put(url, response))
+            .catch(err => console.warn('Pre-cache failed for:', url, err));
+        })
+      );
     })
   );
   self.skipWaiting();
@@ -34,40 +48,28 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  // Network-First Strategy for main documents
-  if (event.request.destination === 'document' || event.request.url.includes('index.html')) {
+  // Network-First for HTML, Cache-First for assets and CDNs
+  const isDoc = event.request.destination === 'document' || event.request.url.includes('index.html');
+  if (isDoc) {
     event.respondWith(
       fetch(event.request)
         .then(networkResponse => {
-          // Clone the response
           const responseToCache = networkResponse.clone();
-
-          // Update cache with new version
           caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, responseToCache);
-            console.log('✅ Updated cache:', event.request.url);
           });
-
           return networkResponse;
         })
-        .catch(error => {
-          console.log('📡 Network failed, using cache:', event.request.url);
+        .catch(() => {
           return caches.match(event.request)
-            .then(cachedResponse => {
-              if (cachedResponse) {
-                return cachedResponse;
-              }
-              return caches.match('/forms/bedlocation/index.html');
-            });
+            .then(cachedResponse => cachedResponse || caches.match('./index.html'));
         })
     );
   } else {
-    // Cache-First Strategy for other assets
     event.respondWith(
       caches.match(event.request)
         .then(cachedResponse => {
@@ -77,7 +79,7 @@ self.addEventListener('fetch', event => {
 
           return fetch(event.request)
             .then(networkResponse => {
-              if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+              if (!networkResponse || networkResponse.status !== 200) {
                 return networkResponse;
               }
 
@@ -86,8 +88,7 @@ self.addEventListener('fetch', event => {
               return networkResponse;
             })
             .catch(() => {
-              // Return offline page if available
-              return caches.match('/forms/bedlocation/index.html');
+              return caches.match('./index.html');
             });
         })
     );
@@ -103,39 +104,9 @@ self.addEventListener('message', event => {
 });
 
 // Periodically check for updates
-self.addEventListener('install', event => {
-  // Check for new version every time SW installs
-  console.log('🔍 Checking for updates...');
-  
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return Promise.all(
-        ASSETS_TO_CACHE.map(url => {
-          return fetch(url)
-            .then(response => {
-              if (response && response.status === 200) {
-                cache.put(url, response);
-                console.log('✨ New version available for:', url);
-                
-                // Notify all clients about update
-                self.clients.matchAll().then(clients => {
-                  clients.forEach(client => {
-                    client.postMessage({
-                      type: 'UPDATE_AVAILABLE',
-                      message: 'มีเวอร์ชันใหม่พร้อมใช้'
-                    });
-                  });
-                });
-              }
-              return response;
-            })
-            .catch(error => {
-              console.log('❌ Failed to fetch:', url, error);
-            });
-        })
-      );
-    })
-  );
-  
-  self.skipWaiting();
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'CHECK_FOR_UPDATE') {
+    console.log('🔍 Checking for updates...');
+    // Standard update checks can be performed by the browser naturally
+  }
 });
