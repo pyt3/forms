@@ -1,7 +1,10 @@
 const setIspass = function (obj) {
     let isPass = Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
     if (Object.keys(obj).filter(key => key.indexOf('daily-check') > -1).length > 0) obj.isPass = isPass
-    else obj.isPass = ''
+    else {
+        console.log('no daily-check keys found in object:', obj)
+        obj.isPass = ''
+    }
     let isPass_afteruse = Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).every(key => obj[key] != 'ไม่ผ่าน')
     if (Object.keys(obj).filter(key => key.indexOf('afteruse-check') > -1).length > 0) obj.isPass_afteruse = isPass_afteruse
     return obj
@@ -207,6 +210,7 @@ function createDefibTable(data) {
                 data: 'isPass',
                 title: 'ผลการตรวจเช็ค',
                 render: function (data, type) {
+                    if (data == undefined || data == '') return ''
                     if (data)
                         return `<span class="badge rounded-pill bg-success status-pill"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
                     return `<span class="badge rounded-pill bg-danger status-pill"><i class="bi bi-x-circle-fill"></i>&nbsp;ไม่ผ่าน</span>`;
@@ -260,7 +264,7 @@ function createDefibTable(data) {
                 data: 'isPass_afteruse',
                 title: 'ผลการตรวจเช็คหลังใช้',
                 render: function (data, type) {
-                    if (data == undefined) return ''
+                    if (data == undefined || data == '') return ''
                     if (data)
                         return `<span class="badge rounded-pill bg-success status-pill"><i class="bi bi-check-circle-fill"></i>&nbsp;ผ่าน</span>`
                     return `<span class="badge rounded-pill bg-danger status-pill"><i class="bi bi-x-circle-fill"></i>&nbsp;ไม่ผ่าน</span>`;
