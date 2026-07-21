@@ -17,7 +17,7 @@ function handlePMForm() {
     const standard_select = $('select[id$="std_code"]');
 
     const pmHandlers = {
-        "FLOW METER": setPMFlowMeter,
+        "FLOW METER (MED)": setPMFlowMeter,
         "ASPIRATOR, EMERGENCY (SUCTION PUMP)": setPMAspirator,
         "ASPIRATOR, EMERGENCY (SUCTION PUMP) (MED)": setPMAspirator,
         "EKG RECORDER": setPMEKG,
@@ -28,7 +28,7 @@ function handlePMForm() {
         "PM MODULE (MED)": setPMModule,
         "PULSE OXIMETER (MED)": setPMSpO2,
         "SUCTION REGULATOR (MED)": setPMSuctionRegulator,
-        "SPHYGMOMANOMETER": setPMSphygmomanometer,
+        "SPHYGMOMANOMETER (MED)": setPMSphygmomanometer,
         "THERMOMETER, HYGRO (MED)": setPMThermoHygroMeter, //357
         "THERMOMETER DIGITAL (MED)": setPMThermoDigital, //354
     };
@@ -42,10 +42,11 @@ function handlePMForm() {
 
 function handleCalForm() {
     const form_name = $('#show-form-name').text().trim();
+    console.log("🚀 ~ handleCalForm ~ form_name:", form_name)
     const standard_select = $('select[id$="_standard_code"]');
 
     const calHandlers = {
-        "FLOW METER": () => {
+        "FLOW METER (MED)": () => {
             $(standard_select[0]).select2("val", "G5-BMEPYT3-023");
             setCalFlowMeter();
         },
@@ -75,7 +76,7 @@ function handleCalForm() {
             standard_select.select2("val", "G5-BMEPYT3-022");
             setCalSuctionRegulator();
         },
-        "SPHYGMOMANOMETER": () => {
+        "SPHYGMOMANOMETER (MED)": () => {
             standard_select.select2("val", "G5-BMEPYT3-013");
             setCalSphygmomanometer();
         },
@@ -327,6 +328,7 @@ function setCalSphygmomanometer() {
     const { processedCode, data } = getDeviceCode();
     if (processedCode) {
         data.checklist = data.checklist.pressure;
+        console.log('data checklist:', data.checklist);
         setupCalibrationForm(ids, data);
         setupDatepicker(data);
         setupLocationInfo(data, '#table55a5cab3_notetext');
