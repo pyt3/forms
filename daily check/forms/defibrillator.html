@@ -1290,7 +1290,7 @@
                 let formdata = $(form).serializeArray()
                 let obj = {}
                 formdata.forEach(function (item) {
-                    obj[item.name] = item.value
+                    obj[item.name] = item.value.replace(/\+/g, ' ')
                 })
                 obj.e_code = obj.afteruse_e_code
                 obj.e_dept = obj.afteruse_e_dept
