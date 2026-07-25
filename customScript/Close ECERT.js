@@ -177,13 +177,13 @@ function setupCalibrationForm(ids, data, toleranceFieldId = null, useSameValue =
     }
 
     const decimalMap = {
-        'FLOW METER': 2,
-        'ASPIRATOR, EMERGENCY (SUCTION PUMP)': 2,
+        'FLOW METER (MED)': 2,
+        'ASPIRATOR, EMERGENCY (SUCTION PUMP) (MED)': 2,
         'EKG RECORDER': 0,
-        'NIBP MONITOR': 0,
-        'PULSE OXIMETER': 0,
-        'SUCTION REGULATOR': 2,
-        'SPHYGMOMANOMETER': 1,
+        'NIBP MONITOR (MED)': 0,
+        'PULSE OXIMETER (MED)': 0,
+        'SUCTION REGULATOR (MED)': 2,
+        'SPHYGMOMANOMETER (MED)': 1,
         'THERMOMETER, HYGRO (MED)': 1,
     };
 
