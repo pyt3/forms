@@ -9,9 +9,10 @@ const HEADER = [
   'status',
   'payloadJson',
   'attachmentsJson',
+  'operatorSignatureJson',
+  'supervisorSignatureJson',
   'createdAt',
-  'updatedAt',
-  'signatureDataJson' // new: raw signaturePad.toData() JSON
+  'updatedAt'
 ];
 
 const TempUploadFolderId = '17qyfta4jObGgXL4NkR5YaCvaKSoKcnq4';
@@ -19,6 +20,57 @@ const TempUploadFolderId = '17qyfta4jObGgXL4NkR5YaCvaKSoKcnq4';
 // doGet removed: Frontend is hosted externally on GitHub. Only doPost is used for API.
 
 Logger = BetterLog.useSpreadsheet()
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu(APP_TITLE)
+    .addItem('SetUp database', 'SetUp')
+    .addToUi();
+}
+
+function SetUp() {
+  return setupDatabase_();
+}
+
+function setupDatabase_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    throw new Error('This script must be bound to a Google Spreadsheet');
+  }
+
+  let sh = ss.getSheetByName(SHEET_NAME);
+  if (!sh) {
+    sh = ss.insertSheet(SHEET_NAME);
+  }
+
+  sh.clear();
+  sh.clearFormats();
+  sh.clearNotes();
+  if (sh.getMaxColumns() < HEADER.length) {
+    sh.insertColumnsAfter(sh.getMaxColumns(), HEADER.length - sh.getMaxColumns());
+  }
+  sh.getRange(1, 1, 1, HEADER.length).setValues([HEADER]);
+  sh.getRange(1, 1, 1, HEADER.length).setFontWeight('bold');
+  sh.setFrozenRows(1);
+  sh.setColumnWidth(1, 140);
+  sh.setColumnWidth(2, 90);
+  sh.setColumnWidth(3, 110);
+  sh.setColumnWidth(4, 220);
+  sh.setColumnWidth(5, 150);
+  sh.setColumnWidth(6, 120);
+  sh.setColumnWidth(7, 320);
+  sh.setColumnWidth(8, 220);
+  sh.setColumnWidth(9, 220);
+  sh.setColumnWidth(10, 220);
+  sh.setColumnWidth(11, 140);
+  sh.setColumnWidth(12, 140);
+
+  return {
+    sheetName: SHEET_NAME,
+    headers: HEADER.slice()
+  };
+}
+
 function doPost(e) {
   Logger.log("aaaa")
   try {
@@ -28,6 +80,10 @@ function doPost(e) {
 
     if (action === 'upsertrecord') {
       return jsonOut({ ok: true, data: upsertRecord_(body.record || {}) });
+    }
+
+    if (action === 'setupdatabase' || action === 'setup') {
+      return jsonOut({ ok: true, data: setupDatabase_() });
     }
 
     if (action === 'deleterecord') {
@@ -81,6 +137,23 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
+function normalizeSignaturePayload_(record) {
+  const direct = record || {};
+  const operatorSource = Array.isArray(direct.operatorSignatureData)
+    ? direct.operatorSignatureData
+    : (Array.isArray(direct.signatureData) ? direct.signatureData : []);
+  const supervisorSource = Array.isArray(direct.supervisorSignatureData)
+    ? direct.supervisorSignatureData
+    : (direct.signatureData && !Array.isArray(direct.signatureData) && Array.isArray(direct.signatureData.supervisor)
+      ? direct.signatureData.supervisor
+      : []);
+
+  return {
+    operator: operatorSource,
+    supervisor: supervisorSource
+  };
+}
+
 function upsertRecord_(record) {
   if (!record || !record.type) {
     throw new Error('Invalid record payload');
@@ -95,10 +168,7 @@ function upsertRecord_(record) {
   const id = record.id || generateNewId_(record.type);
   const rowIndex = findRowById_(id);
 
-  let signatureDataJson = '';
-  if (record.signatureData && Array.isArray(record.signatureData)) {
-    signatureDataJson = JSON.stringify(record.signatureData);
-  }
+  const signaturePayload = normalizeSignaturePayload_(record);
 
   // Only save file id for attachments (EQA/IQC)
   const attachmentsIds = (record.attachments || []).map(f => ({ id: f.id, name: f.name, mimeType: f.mimeType, size: f.size }));
@@ -111,9 +181,10 @@ function upsertRecord_(record) {
     String(record.status || ''),
     JSON.stringify(record.data || {}),
     JSON.stringify(attachmentsIds),
+    JSON.stringify(signaturePayload.operator),
+    JSON.stringify(signaturePayload.supervisor),
     rowIndex ? sh.getRange(rowIndex, 11).getValue() || now : now,
     now,
-    signatureDataJson // new: save signaturePad.toData() array
   ];
 
   if (rowIndex) {
@@ -182,10 +253,7 @@ function deleteRecord_(id) {
   }
 
   const row = sh.getRange(rowIndex, 1, 1, HEADER.length).getValues()[0];
-  const signatureFileId = row[10];
   const attachments = parseJsonSafe_(row[7], []);
-
-  trashFileIfExists_(signatureFileId);
   attachments.forEach((f) => trashFileIfExists_(f.id));
   sh.deleteRow(rowIndex);
 }
@@ -227,6 +295,8 @@ function listRecords_(startDate, endDate, type) {
 }
 
 function toRecordObject_(row) {
+  const operatorSignatureData = parseJsonSafe_(row[8], []);
+  const supervisorSignatureData = parseJsonSafe_(row[9], []);
   const obj = {
     id: row[0],
     type: row[1],
@@ -236,9 +306,16 @@ function toRecordObject_(row) {
     status: row[5] || '',
     data: parseJsonSafe_(row[6], {}),
     attachments: parseJsonSafe_(row[7], []),
-    createdAt: toIsoString_(row[8]),
-    updatedAt: toIsoString_(row[9]),
-    signatureData: parseJsonSafe_(row[10], []) // new: return signaturePad.toData() array
+    operatorSignatureData,
+    supervisorSignatureData,
+    createdAt: toIsoString_(row[10]),
+    updatedAt: toIsoString_(row[11]),
+    signatureData: supervisorSignatureData.length > 0
+      ? {
+          operator: operatorSignatureData,
+          supervisor: supervisorSignatureData
+        }
+      : operatorSignatureData
   };
   return obj;
 }
@@ -251,15 +328,14 @@ function getSheet_() {
   }
   let sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) {
-    sh = ss.insertSheet(SHEET_NAME);
-    sh.getRange(1, 1, 1, HEADER.length).setValues([HEADER]);
-    sh.getRange(1, 1, 1, HEADER.length).setFontWeight('bold');
-    sh.setFrozenRows(1);
+    setupDatabase_();
+    sh = ss.getSheetByName(SHEET_NAME);
   }
-  // Ensure new column exists if sheet was created before
-  if (sh.getLastColumn() < HEADER.length) {
-    sh.insertColumnAfter(sh.getLastColumn());
-    sh.getRange(1, 1, 1, HEADER.length).setValues([HEADER]);
+  const headerRow = sh.getRange(1, 1, 1, HEADER.length).getValues()[0];
+  const headerMatches = HEADER.every((value, idx) => headerRow[idx] === value);
+  if (!headerMatches) {
+    setupDatabase_();
+    sh = ss.getSheetByName(SHEET_NAME);
   }
   return sh;
 }
