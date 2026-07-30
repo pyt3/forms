@@ -296,14 +296,6 @@
                 </button>
             </div>
 
-            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex items-start gap-4">
-                <i data-lucide="info" class="w-6 h-6 text-blue-600 mt-1"></i>
-                <div>
-                    <h3 class="font-bold text-blue-900">คำแนะนำการใช้งาน</h3>
-                    <p class="text-blue-800 text-sm mt-1">ท่านสามารถเลือกแบบฟอร์มที่ต้องการจากรายการด้านบน
-                        ระบบจะเก็บข้อมูลไว้ในรูปแบบออนไลน์และสามารถแนบหลักฐานเพิ่มเติมได้หลายไฟล์</p>
-                </div>
-            </div>
 
             <button type="button"
                 class="bg-white mt-8 p-6 rounded-2xl surface-card border border-slate-100 hover:shadow-md transition-shadow nav-btn nav-surface cursor-pointer"
@@ -885,6 +877,7 @@
                 low: false,
                 high: false
             },
+            iqcNonConformance: [],
             iqcControlCache: null,
             iqcSignaturePayload: {
                 operator: [],
@@ -1085,7 +1078,7 @@
             root.innerHTML = '';
             root.setAttribute('aria-hidden', 'true');
             root.style.pointerEvents = 'none';
-            root.style.aspectRatio = '2 / 1';
+            root.style.aspectRatio = '4 / 1';
             root.style.display = 'flex';
             root.style.alignItems = 'center';
             root.style.justifyContent = 'center';
@@ -1291,6 +1284,160 @@
             return 'bg-slate-100 text-slate-600 border-slate-300';
         }
 
+        function getIqcFailureLevelLabel(kind) {
+            if (kind === 'low') {
+                return 'IQC: Low';
+            }
+            if (kind === 'high') {
+                return 'IQC: High';
+            }
+            if (kind === 'level1') {
+                return 'Control Level 1';
+            }
+            if (kind === 'level2') {
+                return 'Control Level 2';
+            }
+            return '';
+        }
+
+        function getIqcFailureItems(source = {}) {
+            const data = source && typeof source === 'object' && source.iqcLow ? source : normalizeIqcDailySource(source);
+            const items = [];
+            const lowStatus = String(data.iqcLow?.status || '').trim();
+            const highStatus = String(data.iqcHigh?.status || '').trim();
+            const level1Status = deriveIqcStatus(data.weekly?.level1?.value || '', data.weekly?.level1?.range || '');
+            const level2Status = deriveIqcStatus(data.weekly?.level2?.value || '', data.weekly?.level2?.range || '');
+
+            if (lowStatus === 'ไม่ผ่าน') {
+                items.push({ key: 'low', label: getIqcFailureLevelLabel('low') });
+            }
+            if (highStatus === 'ไม่ผ่าน') {
+                items.push({ key: 'high', label: getIqcFailureLevelLabel('high') });
+            }
+            if (level1Status === 'ไม่ผ่าน') {
+                items.push({ key: 'level1', label: getIqcFailureLevelLabel('level1') });
+            }
+            if (level2Status === 'ไม่ผ่าน') {
+                items.push({ key: 'level2', label: getIqcFailureLevelLabel('level2') });
+            }
+
+            return items;
+        }
+
+        function renderIqcFailureSection(source = {}) {
+            const $section = $('#iqc-nc-section');
+            const $items = $('#iqc-nc-items');
+            if (!$section.length || !$items.length) {
+                return;
+            }
+
+            const items = getIqcFailureItems(source);
+            if (!items.length) {
+                $section.addClass('hidden');
+                $items.empty();
+                return;
+            }
+
+            const savedItems = Array.isArray(source.iqcNonConformance) ? source.iqcNonConformance : [];
+            const savedMap = new Map(savedItems.map((item) => [String(item?.key || item?.levelKey || '').trim(), item || {}]));
+            const cardsHtml = items.map((item) => {
+                const saved = savedMap.get(item.key) || {};
+                const fieldValue = (suffix) => String(saved[suffix] || '').trim();
+                return `
+                    <div class="js-iqc-nc-card rounded-2xl border border-rose-200 bg-white p-4 shadow-sm" data-iqc-nc-key="${escapeHtml(item.key)}">
+                        <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <div class="text-xs font-bold uppercase tracking-wide text-rose-500">กรณีที่ไม่ผ่าน</div>
+                                <h5 class="text-base font-bold text-slate-900">${escapeHtml(item.label)}</h5>
+                            </div>
+                            <div class="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">ต้องกรอกข้อมูลเพิ่ม</div>
+                        </div>
+                        <div class="mt-4 grid gap-4 md:grid-cols-3">
+                            <label class="space-y-1">
+                                <span class="text-sm font-semibold text-slate-700">Level</span>
+                                <input type="text" class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-700" value="${escapeHtml(item.label)}" readonly data-iqc-nc-field="level">
+                            </label>
+                            <label class="space-y-1">
+                                <span class="text-sm font-semibold text-slate-700">ติดกฎ</span>
+                                <input type="text" class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20" value="${escapeHtml(fieldValue('rule'))}" placeholder="เช่น 1_2s, 1_3s" data-iqc-nc-field="rule" required>
+                            </label>
+                            <label class="space-y-1">
+                                <span class="text-sm font-semibold text-slate-700">Error Type</span>
+                                <input type="text" class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20" value="${escapeHtml(fieldValue('errorType'))}" placeholder="ระบุประเภทข้อผิดพลาด" data-iqc-nc-field="errorType" required>
+                            </label>
+                            <label class="space-y-1">
+                                <span class="text-sm font-semibold text-slate-700">สาเหตุ</span>
+                                <textarea rows="3" class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20" placeholder="ระบุสาเหตุ" data-iqc-nc-field="cause" required>${escapeHtml(fieldValue('cause'))}</textarea>
+                            </label>
+                            <label class="space-y-1">
+                                <span class="text-sm font-semibold text-slate-700">การแก้ไข</span>
+                                <textarea rows="3" class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20" placeholder="ระบุการแก้ไข" data-iqc-nc-field="action" required>${escapeHtml(fieldValue('action'))}</textarea>
+                            </label>
+                            <label class="space-y-1">
+                                <span class="text-sm font-semibold text-slate-700">ผลการแก้ไข</span>
+                                <textarea rows="3" class="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20" placeholder="ระบุผลการแก้ไข" data-iqc-nc-field="result" required>${escapeHtml(fieldValue('result'))}</textarea>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            $items.html(cardsHtml);
+            $section.removeClass('hidden');
+        }
+
+        function collectIqcNonConformanceData() {
+            const items = [];
+            $('#iqc-nc-items .js-iqc-nc-card').each(function () {
+                const $card = $(this);
+                const key = String($card.attr('data-iqc-nc-key') || '').trim();
+                if (!key) {
+                    return;
+                }
+                items.push({
+                    key,
+                    levelKey: key,
+                    level: $card.find('[data-iqc-nc-field="level"]').val() || '',
+                    rule: $card.find('[data-iqc-nc-field="rule"]').val() || '',
+                    errorType: $card.find('[data-iqc-nc-field="errorType"]').val() || '',
+                    cause: $card.find('[data-iqc-nc-field="cause"]').val() || '',
+                    action: $card.find('[data-iqc-nc-field="action"]').val() || '',
+                    result: $card.find('[data-iqc-nc-field="result"]').val() || ''
+                });
+            });
+            return items;
+        }
+
+        function getIqcFailureSectionSnapshot() {
+            return {
+                iqcLow: {
+                    status: state.iqcStatusState.low || '',
+                    value: $('#iqc-low-value').val() || '',
+                    range: getIqcRangeText('low')
+                },
+                iqcHigh: {
+                    status: state.iqcStatusState.high || '',
+                    value: $('#iqc-high-value').val() || '',
+                    range: getIqcRangeText('high')
+                },
+                weekly: {
+                    level1: {
+                        value: $('#iqc-weekly-l1-value').val() || '',
+                        range: $('#iqc-weekly-l1-range').val() || ''
+                    },
+                    level2: {
+                        value: $('#iqc-weekly-l2-value').val() || '',
+                        range: $('#iqc-weekly-l2-range').val() || ''
+                    }
+                },
+                iqcNonConformance: collectIqcNonConformanceData()
+            };
+        }
+
+        function syncIqcFailureSection() {
+            renderIqcFailureSection(getIqcFailureSectionSnapshot());
+        }
+
         function debounce(fn, wait = 250) {
             let timer = null;
             return function (...args) {
@@ -1328,6 +1475,8 @@
             if (showManual) {
                 $(manualSelector).val(status || 'ผ่าน');
             }
+
+            syncIqcFailureSection();
         }
 
         const syncIqcLowStatusUi = debounce(() => syncIqcStatusUi('low'), 280);
@@ -1383,6 +1532,9 @@
             const highValue = data.iqcHigh?.value || '';
             const lowRange = data.iqcLow?.range || getIqcRangeText('low');
             const highRange = data.iqcHigh?.range || getIqcRangeText('high');
+            const nonConformanceSource = Array.isArray(data.iqcNonConformance)
+                ? data.iqcNonConformance
+                : (Array.isArray(data.nonConformance) ? data.nonConformance : []);
             const signatureData = normalizeSignaturePack(data.signatureData || {
                 operator: Array.isArray(data.operatorSignatureData) ? data.operatorSignatureData : [],
                 supervisor: Array.isArray(data.supervisorSignatureData) ? data.supervisorSignatureData : []
@@ -1422,6 +1574,16 @@
                         ...normalizeWeeklyMeanRange(data.weekly?.level2)
                     }
                 },
+                iqcNonConformance: nonConformanceSource.map((item) => ({
+                    key: String(item?.key || item?.levelKey || '').trim(),
+                    levelKey: String(item?.levelKey || item?.key || '').trim(),
+                    level: item?.level || item?.label || '',
+                    rule: item?.rule || '',
+                    errorType: item?.errorType || '',
+                    cause: item?.cause || '',
+                    action: item?.action || '',
+                    result: item?.result || ''
+                })).filter((item) => Boolean(item.key)),
                 signatureData,
                 operatorSignatureData: signatureData.operator,
                 supervisorSignatureData: signatureData.supervisor
@@ -1564,6 +1726,137 @@
             });
             monthKeys.add(moment().format('YYYY-MM'));
             return Array.from(monthKeys).sort((a, b) => (a < b ? 1 : -1));
+        }
+
+        function getIqcMonthlyMetricStatus(data, kind) {
+            if (kind === 'low') {
+                return String(data.iqcLow?.status || '').trim();
+            }
+            if (kind === 'high') {
+                return String(data.iqcHigh?.status || '').trim();
+            }
+            if (kind === 'level1') {
+                return deriveIqcStatus(data.weekly?.level1?.value || '', data.weekly?.level1?.range || '');
+            }
+            if (kind === 'level2') {
+                return deriveIqcStatus(data.weekly?.level2?.value || '', data.weekly?.level2?.range || '');
+            }
+            return '';
+        }
+
+        function buildIqcMonthlySummaryRows(records = []) {
+            const iqcRecords = (Array.isArray(records) ? records : [])
+                .filter((record) => getRecordSummaryType(record) === 'IQC' && getRecordDataSource(record));
+            const kinds = [
+                { key: 'low', label: 'IQC : Low' },
+                { key: 'high', label: 'IQC : High' },
+                { key: 'level1', label: 'Control Level 1' },
+                { key: 'level2', label: 'Control Level 2' }
+            ];
+
+            const passRows = [];
+            const failRows = [];
+            kinds.forEach((kindItem) => {
+                const entries = iqcRecords.map((record) => {
+                    const data = normalizeIqcDailySource(record);
+                    const rawDate = data.date || getRecordSummaryDate(record) || record?.recordDate || '';
+                    const dateMoment = moment(rawDate, moment.ISO_8601, true);
+                    const dateLabel = dateMoment.isValid() ? dateMoment.format('DD/MM/YYYY') : '';
+                    const status = getIqcMonthlyMetricStatus(data, kindItem.key);
+                    const failureItems = getIqcFailureItems(data);
+                    const failureMap = new Map((Array.isArray(data.iqcNonConformance) ? data.iqcNonConformance : []).map((item) => [
+                        String(item?.key || item?.levelKey || '').trim(),
+                        item || {}
+                    ]));
+                    const hasRelevantContent = Boolean(
+                        dateLabel ||
+                        status ||
+                        data.iqcLow?.value ||
+                        data.iqcHigh?.value ||
+                        data.weekly?.level1?.value ||
+                        data.weekly?.level2?.value
+                    );
+                    return {
+                        record,
+                        data,
+                        rawDate,
+                        dateLabel,
+                        status,
+                        failureItems,
+                        failureMap,
+                        hasRelevantContent
+                    };
+                }).filter((entry) => entry.hasRelevantContent);
+
+                const failures = entries
+                    .filter((entry) => entry.status === 'ไม่ผ่าน')
+                    .sort((a, b) => {
+                        const aValue = moment(a.rawDate, ['YYYY-MM-DD', moment.ISO_8601], true).valueOf();
+                        const bValue = moment(b.rawDate, ['YYYY-MM-DD', moment.ISO_8601], true).valueOf();
+                        return aValue - bValue;
+                    });
+
+                const sortedEntries = entries
+                    .filter((entry) => entry.status)
+                    .sort((a, b) => {
+                        const aValue = moment(a.rawDate, ['YYYY-MM-DD', moment.ISO_8601], true).valueOf();
+                        const bValue = moment(b.rawDate, ['YYYY-MM-DD', moment.ISO_8601], true).valueOf();
+                        return aValue - bValue;
+                    });
+
+                if (failures.length) {
+                    failures.forEach((entry) => {
+                        const failureItem = entry.failureItems.find((item) => item.key === kindItem.key) || {};
+                        const saved = entry.failureMap.get(kindItem.key) || {};
+                        failRows.push({
+                            label: `${kindItem.label} (${entry.dateLabel || '-'})`,
+                            pass: '',
+                            fail: '✗',
+                            level: saved.level || failureItem.label || kindItem.label,
+                            rule: saved.rule || '',
+                            errorType: saved.errorType || '',
+                            cause: saved.cause || '',
+                            action: saved.action || '',
+                            result: saved.result || ''
+                        });
+                    });
+                    return;
+                }
+
+                if (sortedEntries.length) {
+                    const isAllPass = sortedEntries.every((entry) => entry.status === 'ผ่าน');
+                    if (isAllPass) {
+                        passRows.push({
+                            label: kindItem.label,
+                            pass: '✓',
+                            fail: '',
+                            level: '',
+                            rule: '',
+                            errorType: '',
+                            cause: '',
+                            action: '',
+                            result: ''
+                        });
+                    }
+                }
+            });
+
+            passRows.sort((a, b) => String(a.label || '').localeCompare(String(b.label || ''), 'th'));
+            failRows.sort((a, b) => {
+                const aMatch = String(a.label || '').match(/\(([^)]+)\)$/);
+                const bMatch = String(b.label || '').match(/\(([^)]+)\)$/);
+                const aDate = aMatch ? moment(aMatch[1], 'DD/MM/YYYY', true) : moment.invalid();
+                const bDate = bMatch ? moment(bMatch[1], 'DD/MM/YYYY', true) : moment.invalid();
+                const aValue = aDate.isValid() ? aDate.valueOf() : 0;
+                const bValue = bDate.isValid() ? bDate.valueOf() : 0;
+                if (aValue !== bValue) {
+                    return aValue - bValue;
+                }
+                return String(a.label || '').localeCompare(String(b.label || ''), 'th');
+            });
+
+            const rows = [...passRows, ...failRows];
+            return rows;
         }
 
         function renderIqcSummarySignatureCell(record, role, monthKey) {
@@ -1767,7 +2060,7 @@
             `;
         }
 
-        function buildIqcCoverPage(current, monthName, buddhistYear, signatureData, logoSrc = 'nhealth-logo.png', controlSets = []) {
+        function buildIqcCoverPage(current, monthName, buddhistYear, signatureData, logoSrc = 'nhealth-logo.png', controlSets = [], records = []) {
             const department = dottedPlaceholder(current.dept, '');
             const controlName = escapeHtml(current.controlName || '');
             const lot = escapeHtml(current.lot || '');
@@ -1806,17 +2099,20 @@
                 </tr>
             `).join('');
 
-            const summaryRows = new Array(15).fill(null).map(() => ({
-                label: '',
-                pass: '',
-                fail: '',
-                level: '',
-                rule: '',
-                errorType: '',
-                cause: '',
-                action: '',
-                result: ''
-            }));
+            const summaryRows = buildIqcMonthlySummaryRows(records);
+            while (summaryRows.length < 15) {
+                summaryRows.push({
+                    label: '',
+                    pass: '',
+                    fail: '',
+                    level: '',
+                    rule: '',
+                    errorType: '',
+                    cause: '',
+                    action: '',
+                    result: ''
+                });
+            }
 
             const tableRows = summaryRows.map((row) => `
                 <tr>
@@ -1826,9 +2122,9 @@
                     <td class="iqc-table-cell iqc-table-center">${escapeHtml(row.level)}</td>
                     <td class="iqc-table-cell iqc-table-center">${escapeHtml(row.rule)}</td>
                     <td class="iqc-table-cell iqc-table-center">${escapeHtml(row.errorType)}</td>
-                    <td class="iqc-table-cell">${escapeHtml(row.cause)}</td>
-                    <td class="iqc-table-cell">${escapeHtml(row.action)}</td>
-                    <td class="iqc-table-cell">${escapeHtml(row.result)}</td>
+                    <td class="iqc-table-cell">${escapeCellText(row.cause)}</td>
+                    <td class="iqc-table-cell">${escapeCellText(row.action)}</td>
+                    <td class="iqc-table-cell">${escapeCellText(row.result)}</td>
                 </tr>
             `).join('');
 
@@ -1874,13 +2170,13 @@
                     <colgroup>
                         <col class="iqc-col-task">
                         <col class="iqc-col-criteria">
+                        <col class="iqc-col-criteria">
                         <col class="iqc-col-small">
                         <col class="iqc-col-small">
                         <col class="iqc-col-small">
-                        <col class="iqc-col-small">
-                        <col class="iqc-col-small">
-                        <col class="iqc-col-small">
-                        <col class="iqc-col-small">
+                        <col class="iqc-col-long">
+                        <col class="iqc-col-long">
+                        <col class="iqc-col-long">
                     </colgroup>
                     <thead>
                         <tr>
@@ -1904,7 +2200,7 @@
                         ${tableRows}
                     </tbody>
                 </table>
-                <div class="iqc-footnote">* เครื่องหมาย ● = ผ่าน, เครื่องหมาย ○ = ไม่ผ่าน</div>
+                <div class="iqc-footnote">* เครื่องหมาย ✓ = ผ่าน, เครื่องหมาย ✗ = ไม่ผ่าน</div>
                 <div class="iqc-signature-grid iqc-signature-grid-cover">
                     ${operatorSignature}
                     ${supervisorSignature}
@@ -1923,7 +2219,7 @@
                 if (!record) {
                     return '';
                 }
-                return record.dailyMaintenance?.[key] ? '<span class="iqc-check-mark iqc-check-mark-daily">?</span>' : '';
+                return record.dailyMaintenance?.[key] ? '<span class="iqc-check-mark iqc-check-mark-daily">✓</span>' : '';
             };
 
             const renderIqcStatus = (record, type) => {
@@ -1935,8 +2231,8 @@
                     return '';
                 }
                 return status === 'ไม่ผ่าน'
-                    ? '<span class="iqc-check-mark iqc-check-mark-fail">?</span>'
-                    : '<span class="iqc-check-mark iqc-check-mark-pass">?</span>';
+                    ? '<span class="iqc-check-mark iqc-check-mark-fail">✗</span>'
+                    : '<span class="iqc-check-mark iqc-check-mark-pass">✓</span>';
             };
 
             const renderIqcValue = (record, type) => {
@@ -1961,11 +2257,16 @@
                 if (!active) {
                     return '';
                 }
-                return '<span class="iqc-check-mark iqc-check-mark-weekly">?</span>';
+                return '<span class="iqc-check-mark iqc-check-mark-weekly">✓</span>';
             };
 
-            const renderWeeklyLotValue = (record, levelKey) => {
+            const isIqcWeeklyAnchorDay = (day) => [7, 14, 21, 28].includes(Number(day));
+
+            const renderWeeklyLotValue = (record, levelKey, day) => {
                 if (!record || !record.weekly || !record.weekly[levelKey]) {
+                    return '';
+                }
+                if (!isIqcWeeklyAnchorDay(day)) {
                     return '';
                 }
                 const level = record.weekly[levelKey];
@@ -1974,9 +2275,11 @@
                 return escapeHtml(`${lot} ${value}`);
             };
 
-            const renderWeeklyMeanRange = (record, levelKey) => {
-                console.log('renderWeeklyMeanRange', record, levelKey);
+            const renderWeeklyMeanRange = (record, levelKey, day) => {
                 if (!record || !record.weekly || !record.weekly[levelKey]) {
+                    return '';
+                }
+                if (!isIqcWeeklyAnchorDay(day)) {
                     return '';
                 }
                 const level = record.weekly[levelKey];
@@ -2125,16 +2428,16 @@
                             <td class="iqc-table-cell iqc-day-cell${[7, 14, 21, 28].includes(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyEntry(record, 'run')}</td>
                         `)}
                         ${renderMergedWeeklyRow('Level 1 : Lot, Value (ug/mL)', '', (day, record) => `
-                            <td class="iqc-table-cell iqc-day-cell${[7, 14, 21, 28].includes(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyLotValue(record, 'level1')}</td>
+                            <td class="iqc-table-cell iqc-day-cell${isIqcWeeklyAnchorDay(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyLotValue(record, 'level1', day)}</td>
                         `)}
                         ${renderMergedWeeklyRow('Mean / Range', '', (day, record) => `
-                            <td class="iqc-table-cell iqc-day-cell${[7, 14, 21, 28].includes(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyMeanRange(record, 'level1')}</td>
+                            <td class="iqc-table-cell iqc-day-cell${isIqcWeeklyAnchorDay(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyMeanRange(record, 'level1', day)}</td>
                         `, 'iqc-weekly-divider-row')}
                         ${renderMergedWeeklyRow('Level 2 : Lot, Value (ug/mL)', '', (day, record) => `
-                            <td class="iqc-table-cell iqc-day-cell${[7, 14, 21, 28].includes(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyLotValue(record, 'level2')}</td>
+                            <td class="iqc-table-cell iqc-day-cell${isIqcWeeklyAnchorDay(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyLotValue(record, 'level2', day)}</td>
                         `)}
                         ${renderMergedWeeklyRow('Mean / Range', '', (day, record) => `
-                            <td class="iqc-table-cell iqc-day-cell${[7, 14, 21, 28].includes(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyMeanRange(record, 'level2')}</td>
+                            <td class="iqc-table-cell iqc-day-cell${isIqcWeeklyAnchorDay(day) ? ' iqc-day-shaded' : ''}">${renderWeeklyMeanRange(record, 'level2', day)}</td>
                         `)}
                         ${rowHtml('ผู้ปฏิบัติ (07)', '', (day, record) => `
                             <td class="iqc-table-cell iqc-day-cell iqc-signature-day${[7, 14, 21, 28].includes(day) ? ' iqc-day-shaded' : ''}">${renderIqcDailySignatureCell(record, 'operator')}</td>
@@ -2275,6 +2578,20 @@
                         </div>
                     </div>
 
+                    <div id="iqc-nc-section" class="hidden rounded-2xl border border-rose-200 bg-rose-50 p-5 shadow-sm">
+                        <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h4 class="text-base font-bold text-rose-800">ข้อมูลเพิ่มเติมเมื่อผลไม่ผ่าน</h4>
+                                <p class="text-sm text-rose-700">ระบบจะแสดงเฉพาะรายการที่ไม่ผ่าน และบังคับกรอกข้อมูลประกอบให้ครบ</p>
+                            </div>
+                            <div class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                Required
+                            </div>
+                        </div>
+                        <div id="iqc-nc-items" class="mt-4 grid gap-4"></div>
+                    </div>
+
                     <div id="iqc-weekly-section" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${weeklyMaintenanceDate ? '' : 'hidden'}">
                         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between mb-4">
                             <div>
@@ -2364,6 +2681,7 @@
             renderIqcSignatureButtons();
             syncIqcStatusUi('low');
             syncIqcStatusUi('high');
+            renderIqcFailureSection(data);
             lucide.createIcons();
         }
 
@@ -2374,7 +2692,7 @@
             const renderBox = (selector, data, emptyText) => {
                 const $box = $(selector).empty();
                 if (data.length > 0) {
-                    $box.append('<div class="signature-preview-frame rounded-xl border border-slate-200 bg-white p-1" style="aspect-ratio: 2 / 1;"></div>');
+                    $box.append('<div class="signature-preview-frame rounded-xl border border-slate-200 bg-white p-5" style="aspect-ratio: 4 / 1;"></div>');
                     renderSignatureSvgPreview($box.find('.signature-preview-frame')[0], data);
                 } else {
                     $box.append(`<div class="flex h-[84px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 text-sm text-slate-400">${emptyText}</div>`);
@@ -2531,6 +2849,9 @@
                 }
                 syncIqcHighStatusUi();
             });
+            $(document).on('input change', '#iqc-weekly-l1-value, #iqc-weekly-l1-range, #iqc-weekly-l2-value, #iqc-weekly-l2-range', function () {
+                syncIqcFailureSection();
+            });
             $(document).on('change', '#iqc-low-status-manual', function () {
                 state.iqcStatusState.low = $(this).val() || 'ผ่าน';
                 syncIqcStatusUi('low');
@@ -2590,7 +2911,6 @@
                 }, 2000);
             }
 
-            // formatFileSize, escapeHtml �f�S�?ร�^วมกั�s EQA
 
 
 
@@ -3116,7 +3436,6 @@
         }
 
         async function getRecordsApi(params) {
-            // �?�>ลี�^ย�T�?�>�?�T POST API
             const payload = {
                 mode: 'records',
                 startDate: params.startDate,
@@ -3772,6 +4091,7 @@
                 iqcLow,
                 iqcHigh,
                 weekly,
+                iqcNonConformance: collectIqcNonConformanceData(),
                 signatureData: normalizeSignaturePack(state.iqcSignaturePayload || {}),
                 operatorSignatureData: Array.isArray(state.iqcSignaturePayload?.operator) ? state.iqcSignaturePayload.operator : [],
                 supervisorSignatureData: Array.isArray(state.iqcSignaturePayload?.supervisor) ? state.iqcSignaturePayload.supervisor : []
@@ -3809,6 +4129,7 @@
                     value: $('#iqc-high-value').val() || '',
                     status: $('#iqc-high-status-manual').val() || ''
                 },
+                iqcNonConformance: collectIqcNonConformanceData(),
                 weekly: {
                     dissolve: $('#iqc-weekly-dissolve').is(':checked'),
                     run: $('#iqc-weekly-run').is(':checked'),
@@ -3906,7 +4227,7 @@
             // show signature if exists
             const operatorSignature = getRecordSignaturePack(record).operator;
             if (operatorSignature.length > 0) {
-                $('#eqa-signature-preview').html('<label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ลาย�?�<�?�T�oู�?�sั�T�-ึก</label><div class="signature-preview-frame mt-2 rounded-2xl border border-black bg-white p-0" style="aspect-ratio: 2 / 1;"></div>');
+                $('#eqa-signature-preview').html('<label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ลายเซ็นผู้ปฏิบัติงาน</label><div class="signature-preview-frame mt-2 rounded-2xl border border-black bg-white p-5" style="aspect-ratio: 4 / 1;"></div>');
                 renderSignatureSvgPreview($('#eqa-signature-preview .signature-preview-frame')[0], operatorSignature);
             } else {
                 $('#eqa-signature-preview').empty();
@@ -3989,12 +4310,12 @@
 
         async function deleteRecord(id) {
             const confirm = await Swal.fire({
-                title: 'ยื�Tยั�Tการล�s�,�?อมูล?',
-                text: '�,�?อมูลและ�"�Yล�Oแ�T�s�^ะ�-ูกล�sออก�^ากระ�s�s',
+                title: 'ยืนยันการลบข้อมูล',
+                html: 'ข้อมูลและไฟล์ที่เกี่ยวข้องจะถูกลบออกจากระบบอย่างถาวร<br>คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'ล�s�,�?อมูล',
-                cancelButtonText: 'ยก�?ลิก'
+                confirmButtonText: 'ลบข้อมูล',
+                cancelButtonText: 'ยกเลิก'
             });
 
             if (!confirm.isConfirmed) {
@@ -4004,7 +4325,7 @@
             try {
                 await postApi('deleteRecord', { id });
                 await loadRecords();
-                Swal.fire('ล�sแล�?ว', '�,�?อมูล�-ูกล�s�?รีย�sร�?อย', 'success');
+                Swal.fire('ลบแล้ว', 'ข้อมูลและไฟล์ที่เกี่ยวข้องถูกลบเรียบร้อย', 'success');
             } catch (err) {
                 Swal.fire('ผิดพลาด', err.message, 'error');
             }
@@ -4246,7 +4567,8 @@
                 dailyMaintenance: currentData.dailyMaintenance || { device: false, guide: false },
                 iqcLow: currentData.iqcLow || { status: '', value: '', range: '' },
                 iqcHigh: currentData.iqcHigh || { status: '', value: '', range: '' },
-                weekly: currentData.weekly || {}
+                weekly: currentData.weekly || {},
+                iqcNonConformance: Array.isArray(currentData.iqcNonConformance) ? currentData.iqcNonConformance : []
             };
             const monthParts = formatBuddhistMonthYear(monthStart.toDate());
             const recordMap = getIqcMonthlyRecordMap(records);
@@ -4424,10 +4746,12 @@
                         border-width: 1.5px;
 
                     }
-                    .iqc-col-task { width: 24%; }
-                    .iqc-col-criteria { width: 10%; }
-                    .iqc-col-small { width: 11%; }
-                    .iqc-col-day { width: 2.45%; }
+                    .iqc-col-task { width: 14%; }
+                    .iqc-checklist-table .iqc-col-task { width: 11%; }
+                    .iqc-col-criteria { width: 4%; }
+                    .iqc-col-small { width: 8%; }
+                    .iqc-col-long { width: 18%; }
+                    .iqc-col-day { width: 2.4%; }
                     .iqc-table-label {
                         font-size: var(--iqc-font-sm);
                         font-weight: 700;
@@ -4474,8 +4798,6 @@
                         line-height: 1.3;
                     }
                     .iqc-cover-page .iqc-summary-table .iqc-table-cell {
-                        padding-top: 2.5mm;
-                        padding-bottom: 2.5mm;
                         line-height: 1.2;
                     }
                     .iqc-cover-page .iqc-summary-table tbody td {
@@ -4540,7 +4862,7 @@
                     }
                     .iqc-check-mark {
                         display: inline-block;
-                        font-size: 11px;
+                        font-size: 14px;
                         line-height: 1;
                         font-weight: 700;
                     }
@@ -4621,7 +4943,7 @@
                     }
                     .iqc-summary-table thead th,
                     .iqc-checklist-table thead th {
-                        border-top-width: 1.5px;
+                        border-width: 1.5px;
                         border-bottom-width: 1.5px;
                     }
                     .iqc-summary-table tbody tr:last-child td,
@@ -4695,7 +5017,7 @@
                 </style>
             `;
 
-            const coverHtml = buildIqcCoverPage(current, monthParts.monthName, monthParts.buddhistYear, signatureData, logoSrc, controlSets);
+            const coverHtml = buildIqcCoverPage(current, monthParts.monthName, monthParts.buddhistYear, signatureData, logoSrc, controlSets, records);
             const checklistHtml = buildIqcChecklistPage(current, monthParts.monthName, monthParts.buddhistYear, [], recordMap, signatureData, logoSrc);
             let printHost = document.getElementById('iqc-print-host');
             if (printHost) {
