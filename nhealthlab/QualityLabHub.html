@@ -592,18 +592,6 @@
                             <div id="iqc-operator-signature-preview"
                                 class="rounded-2xl border border-dashed border-slate-300 bg-white p-3 min-h-28"></div>
                         </div>
-                        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                            <div class="flex items-center justify-between gap-3">
-                                <div>
-                                    <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ตรวจสอบ</h4>
-                                    <p class="text-xs text-slate-500 mt-1">กดเซ็นชื่อยืนยันหลังตรวจสอบข้อมูล</p>
-                                </div>
-                                <button type="button" id="iqc-sign-supervisor"
-                                    class="px-4 py-2 rounded-lg bg-slate-800 text-white text-sm font-semibold hover:bg-slate-900">เซ็นชื่อผู้ตรวจสอบ</button>
-                            </div>
-                            <div id="iqc-supervisor-signature-preview"
-                                class="rounded-2xl border border-dashed border-slate-300 bg-white p-3 min-h-28"></div>
-                        </div>
                     </div>
 
                     <!-- Attachments IQC -->
@@ -2705,7 +2693,6 @@
 
         function renderIqcSignatureButtons() {
             const operatorData = Array.isArray(state.iqcSignaturePayload.operator) ? state.iqcSignaturePayload.operator : [];
-            const supervisorData = Array.isArray(state.iqcSignaturePayload.supervisor) ? state.iqcSignaturePayload.supervisor : [];
 
             const renderBox = (selector, data, emptyText) => {
                 const $box = $(selector).empty();
@@ -2718,7 +2705,6 @@
             };
 
             renderBox('#iqc-operator-signature-preview', operatorData, 'ยังไม่มีลายเซ็น');
-            renderBox('#iqc-supervisor-signature-preview', supervisorData, 'ยังไม่มีลายเซ็น');
 
             $('#iqc-sign-operator').off('click').on('click', async function () {
                 const signature = await promptSignature(operatorData);
@@ -2726,15 +2712,6 @@
                     return;
                 }
                 state.iqcSignaturePayload.operator = signature;
-                renderIqcSignatureButtons();
-            });
-
-            $('#iqc-sign-supervisor').off('click').on('click', async function () {
-                const signature = await promptSignature(supervisorData);
-                if (!signature) {
-                    return;
-                }
-                state.iqcSignaturePayload.supervisor = signature;
                 renderIqcSignatureButtons();
             });
         }
@@ -2749,6 +2726,18 @@
                 await saveIqcMonthlySummarySignature(monthKey, role);
             } catch (err) {
                 Swal.fire('ผิดพลาด', err.message || 'ไม่สามารถบันทึกลายเซ็นรายเดือนได้', 'error');
+            }
+        });
+
+        $(document).on('click', '.js-iqc-supervisor-sign-btn', async function () {
+            const recordId = String($(this).data('id') || '').trim();
+            if (!recordId) {
+                return;
+            }
+            try {
+                await saveIqcDailySupervisorSignature(recordId);
+            } catch (err) {
+                Swal.fire('ผิดพลาด', err.message || 'ไม่สามารถบันทึกลายเซ็นผู้ตรวจสอบได้', 'error');
             }
         });
 
@@ -3713,9 +3702,11 @@
                         : '<div class="text-xs font-medium text-slate-400">ยังไม่มีข้อมูล</div>'}
                         </td>
                         <td class="px-4 py-3">
-                            ${signatures.supervisor.length > 0
-                        ? `<div class="js-signature-preview h-6 w-full rounded-lg bg-white" data-signature-json="${escapeHtml(JSON.stringify(signatures.supervisor || []))}"></div>`
-                        : '<div class="text-xs font-medium text-slate-400">ยังไม่มีข้อมูล</div>'}
+                            ${recordType === 'IQC'
+                        ? renderIqcDailySupervisorActionCell(r)
+                        : (signatures.supervisor.length > 0
+                            ? `<div class="js-signature-preview h-6 w-full rounded-lg bg-white" data-signature-json="${escapeHtml(JSON.stringify(signatures.supervisor || []))}"></div>`
+                            : '<div class="text-xs font-medium text-slate-400">ยังไม่มีข้อมูล</div>')}
                         </td>
                         <td class="px-4 py-3">${r.updatedAt ? moment(r.updatedAt).format('DD/MM/YYYY HH:mm') : '-'}</td>
                         <td class="px-4 py-3 text-center">
@@ -3747,8 +3738,8 @@
                 let signaturePayload = null;
                 if (type === 'IQC') {
                     signaturePayload = normalizeSignaturePack(state.iqcSignaturePayload || {});
-                    if (!signaturePayload.operator.length || !signaturePayload.supervisor.length) {
-                        await Swal.fire('ต้องลงชื่อก่อน', 'กรุณาเซ็นชื่อผู้ปฏิบัติและผู้ตรวจสอบก่อนบันทึก', 'warning');
+                    if (!signaturePayload.operator.length) {
+                        await Swal.fire('ต้องลงชื่อก่อน', 'กรุณาเซ็นชื่อผู้ปฏิบัติก่อนบันทึก', 'warning');
                         return;
                     }
                 } else {
@@ -4436,6 +4427,85 @@
                     class="iqc-day-signature"
                 >
             `;
+        }
+
+        function renderIqcDailySupervisorActionCell(record) {
+            if (!record) {
+                return '<div class="text-xs font-medium text-slate-400">ยังไม่มีข้อมูล</div>';
+            }
+            const signatures = getRecordSignaturePack(record);
+            const signatureData = Array.isArray(signatures.supervisor) ? signatures.supervisor : [];
+            const imageUrl = signatureDataToImageUrl(signatureData, {
+                strokeMinWidth: 1.8,
+                strokeMaxWidth: 4.2,
+                penColor: '#1e3a8a'
+            });
+            const buttonLabel = signatureData.length > 0 ? 'แก้ไขลายเซ็นผู้ตรวจสอบ' : 'เซ็นชื่อผู้ตรวจสอบ';
+            return `
+                <div class="space-y-2">
+                    ${imageUrl
+                        ? `<div class="js-signature-preview h-6 w-full rounded-lg bg-white" data-signature-json="${escapeHtml(JSON.stringify(signatureData || []))}"></div>`
+                        : '<div class="text-xs font-medium text-slate-400">ยังไม่มีลายเซ็น</div>'}
+                    <button type="button"
+                        class="js-iqc-supervisor-sign-btn inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+                        data-id="${escapeHtml(record.id || '')}">
+                        ${buttonLabel}
+                    </button>
+                </div>
+            `;
+        }
+
+        async function saveIqcDailySupervisorSignature(recordId) {
+            const records = Array.isArray(state.records) ? state.records : [];
+            const record = records.find((item) => item && item.id === recordId) || null;
+            if (!record || getRecordSummaryType(record) !== 'IQC') {
+                return;
+            }
+
+            const currentPack = getRecordSignaturePack(record);
+            const signature = await promptSignature(currentPack.supervisor, {
+                title: 'ลงลายเซ็นผู้ตรวจสอบ',
+                instruction: 'กรุณาเซ็นชื่อเพื่อยืนยันข้อมูล IQC รายวันนี้',
+                confirmButtonText: 'ยืนยันลายเซ็น',
+                penColor: '#1e3a8a'
+            });
+            if (!signature) {
+                return;
+            }
+
+            const updatedSignatureData = {
+                operator: Array.isArray(currentPack.operator) ? currentPack.operator.slice() : [],
+                supervisor: signature
+            };
+            const updatedData = {
+                ...getRecordDataSource(record),
+                signatureData: updatedSignatureData,
+                operatorSignatureData: updatedSignatureData.operator,
+                supervisorSignatureData: updatedSignatureData.supervisor
+            };
+            const updatedRecord = {
+                ...record,
+                data: updatedData,
+                signatureData: updatedSignatureData,
+                operatorSignatureData: updatedSignatureData.operator,
+                supervisorSignatureData: updatedSignatureData.supervisor
+            };
+
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            try {
+                await postApi('upsertRecord', { record: updatedRecord });
+            } finally {
+                Swal.close();
+            }
+
+            await loadRecords();
         }
 
         function getRecordSummaryType(record = {}) {
