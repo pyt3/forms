@@ -237,7 +237,7 @@ function batchMoveFiles_(fileIds, recordId, type) {
 
 function generateNewId_(type) {
   const prefix = (type || 'REC').toUpperCase().substring(0, 3);
-  const timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMddHHmmss');
+  const timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy_MM_dd_HHmmss');
   return `${prefix}-${timestamp}`;
 }
 
