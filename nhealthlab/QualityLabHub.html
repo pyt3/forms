@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>QualityLabHub - Lab Quality Management</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,14 +45,25 @@
             --danger-soft: #fee2e2;
             --info: #0284c7;
             --info-soft: #e0f2fe;
+            --brand-surface: oklch(0.975 0.02 250);
+            --brand-surface-strong: oklch(0.942 0.045 250);
+            --success-surface: oklch(0.975 0.02 165);
+            --success-surface-strong: oklch(0.945 0.05 165);
+            --accent-surface: oklch(0.976 0.02 275);
+            --accent-surface-strong: oklch(0.944 0.045 275);
             --focus: #0f766e;
             --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         body {
             font-family: 'Noto Sans Thai', sans-serif;
             background-color: var(--app-bg);
             color: var(--text);
+            padding-top: env(safe-area-inset-top);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
         }
 
         h1,
@@ -93,6 +104,15 @@
             display: block;
         }
 
+        .form-card.active.motion-enter {
+            animation: view-enter 260ms var(--ease-out-quint) both;
+        }
+
+        .upload-row.motion-enter {
+            animation: upload-row-enter 240ms var(--ease-out-quint) both;
+            animation-delay: var(--entry-delay, 0ms);
+        }
+
         .nav-item.active {
             background-color: var(--brand);
             color: white;
@@ -119,7 +139,7 @@
         .nav-btn.active-nav {
             background: var(--brand);
             color: white;
-            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
         }
 
         .nav-btn.active-nav:hover {
@@ -133,6 +153,57 @@
 
         .surface-card {
             box-shadow: var(--shadow);
+        }
+
+        .brand-surface-blue {
+            background: var(--brand-surface);
+            border-color: color-mix(in srgb, var(--brand) 16%, white);
+        }
+
+        .brand-surface-emerald {
+            background: var(--success-surface);
+            border-color: color-mix(in srgb, var(--success) 16%, white);
+        }
+
+        .brand-surface-indigo {
+            background: var(--accent-surface);
+            border-color: color-mix(in srgb, var(--info) 16%, white);
+        }
+
+        .brand-surface-blue-strong {
+            background: var(--brand-surface-strong);
+        }
+
+        .brand-surface-emerald-strong {
+            background: var(--success-surface-strong);
+        }
+
+        .brand-surface-indigo-strong {
+            background: var(--accent-surface-strong);
+        }
+
+        @keyframes view-enter {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.99);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes upload-row-enter {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.985);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -197,9 +268,109 @@
 
         .progress-bar {
             height: 10px;
-            width: 0;
+            width: 100%;
             background: linear-gradient(90deg, var(--info), var(--success));
-            transition: width 0.2s ease;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.2s ease;
+            will-change: transform;
+        }
+
+        .js-editable-signature {
+            position: relative;
+            display: block;
+            overflow: visible;
+            cursor: pointer;
+        }
+
+        .js-editable-signature .signature-tooltip {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 0.5rem);
+            transform: translate(-50%, 6px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+            white-space: nowrap;
+            border-radius: 0.625rem;
+            background: rgba(15, 23, 42, 0.96);
+            color: #fff;
+            padding: 0.45rem 0.7rem;
+            font-size: 0.75rem;
+            line-height: 1;
+            font-weight: 600;
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+            transition: opacity 150ms ease, transform 150ms ease;
+        }
+
+        .js-editable-signature .signature-tooltip::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -0.6rem;
+            transform: translateX(-50%) translateY(2px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 49;
+            border: 0.35rem solid transparent;
+            border-top-color: rgba(15, 23, 42, 0.96);
+            transition: opacity 150ms ease, transform 150ms ease;
+        }
+
+        .js-editable-signature:hover .signature-tooltip,
+        .js-editable-signature:focus-visible .signature-tooltip {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .js-editable-signature:hover .signature-tooltip::before,
+        .js-editable-signature:focus-visible .signature-tooltip::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .js-editable-signature:focus-visible {
+            outline: 2px solid rgba(30, 58, 138, 0.35);
+            outline-offset: 2px;
+        }
+
+        #iqc-records-table-body tr,
+        #iqc-records-table-body td,
+        #iqc-records-table-body th {
+            white-space: nowrap !important;
+            overflow-wrap: normal !important;
+            word-break: normal !important;
+        }
+
+        #iqc-records-table-body td > *,
+        #iqc-records-table-body th > * {
+            white-space: nowrap !important;
+        }
+
+        @media (max-width: 640px), (pointer: coarse) {
+            #eqa-upload-picker-wrap,
+            #iqc-upload-picker-wrap {
+                width: 100%;
+            }
+
+            #eqa-upload-picker-wrap button,
+            #iqc-upload-picker-wrap button,
+            #eqa-remove-all-btn,
+            #iqc-remove-all-btn {
+                width: 100%;
+            }
+
+            #eqa-file-list > div > div:first-child,
+            #iqc-file-list > div > div:first-child {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #eqa-file-list > div > div:first-child > :last-child,
+            #iqc-file-list > div > div:first-child > :last-child {
+                width: 100%;
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -270,7 +441,7 @@
         <div id="home" class="form-card active">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <button type="button"
-                    class="bg-white p-8 rounded-2xl surface-card border border-slate-100 hover:shadow-md transition-shadow nav-btn nav-surface cursor-pointer"
+                    class="bg-white p-8 rounded-2xl surface-card border border-slate-100 brand-surface-blue hover:shadow-md transition-shadow nav-btn nav-surface cursor-pointer"
                     data-target="eqa-form" aria-label="ไปที่แบบฟอร์มประเมินคุณภาพโดยองค์กรภายนอก">
                     <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
                         <i data-lucide="external-link" class="w-6 h-6 text-blue-600"></i>
@@ -283,7 +454,7 @@
                     </div>
                 </button>
                 <button type="button"
-                    class="bg-white p-8 rounded-2xl surface-card border border-slate-100 hover:shadow-md transition-shadow nav-btn nav-surface cursor-pointer"
+                    class="bg-white p-8 rounded-2xl surface-card border border-slate-100 brand-surface-emerald hover:shadow-md transition-shadow nav-btn nav-surface cursor-pointer"
                     data-target="iqc-form" aria-label="ไปที่แบบฟอร์มสรุปการควบคุมคุณภาพภายใน">
                     <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-6">
                         <i data-lucide="bar-chart-3" class="w-6 h-6 text-emerald-600"></i>
@@ -298,7 +469,7 @@
 
 
             <button type="button"
-                class="bg-white mt-8 p-6 rounded-2xl surface-card border border-slate-100 hover:shadow-md transition-shadow nav-btn nav-surface cursor-pointer"
+                class="bg-white mt-8 p-6 rounded-2xl surface-card border border-slate-100 brand-surface-indigo hover:shadow-md transition-shadow nav-btn nav-surface cursor-pointer"
                 data-target="records-panel" aria-label="ไปที่ข้อมูลที่บันทึกไว้">
                 <div class="flex items-center justify-between gap-4">
                     <div>
@@ -513,24 +684,24 @@
 
                     <!-- Attachments -->
                     <div class="space-y-4">
-                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                        <label class="flex flex-col items-start gap-1 text-sm font-semibold text-slate-700 sm:flex-row sm:items-center sm:gap-2">
                             <i data-lucide="paperclip" class="w-4 h-4"></i> แนบไฟล์หลักฐาน (หลายไฟล์)
-                            <span id="eqa-upload-counter" class="text-xs font-medium text-slate-500 ml-2">0/10
-                                files</span>
+                            <span id="eqa-upload-counter" class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700 ml-2">0/10
+                                ไฟล์</span>
                         </label>
-                        <div id="eqa-upload-picker-wrap" class="text-left my-2">
+                        <div id="eqa-upload-picker-wrap" class="text-left my-2 rounded-2xl border border-blue-100 brand-surface-blue p-4">
                             <button type="button" onclick="$('#eqa-files').click()"
-                                class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-blue-700 border border-blue-200 shadow hover:bg-blue-50 hover:border-blue-400 transition-all font-semibold">
+                                class="inline-flex w-full items-center justify-center gap-2 px-5 py-2 rounded-xl bg-white text-blue-700 border border-blue-200 shadow hover:bg-blue-50 hover:border-blue-400 transition-all font-semibold sm:w-auto">
                                 <i data-lucide="upload-cloud" class="w-5 h-5"></i> อัปโหลดไฟล์หลักฐาน
                             </button>
                         </div>
                         <input type="file" id="eqa-files" class="hidden" multiple>
                         <p id="eqa-upload-limit-notice"
                             class="hidden mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
-                            File limit reached</p>
+                            แนบไฟล์ครบจำนวนแล้ว</p>
+                        <p id="eqa-upload-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
                         <button id="eqa-remove-all-btn" type="button"
-                            class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600">Remove
-                            all</button>
+                            class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 sm:w-auto">ลบทั้งหมด</button>
                         <div id="eqa-file-list" class="mt-4 grid gap-3"></div>
                     </div>
                     <div class="space-y-4" id="eqa-signature-preview"></div>
@@ -542,7 +713,7 @@
                     class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all"
                     data-target="home">ยกเลิก</button>
                 <button type="submit"
-                    class="px-8 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">บันทึกข้อมูล</button>
+                class="px-8 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all">บันทึกข้อมูล</button>
             </div>
             </form>
         </div>
@@ -586,7 +757,7 @@
                                     <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ปฏิบัติ</h4>
                                     <p class="text-xs text-slate-500 mt-1">กดเซ็นชื่อเมื่อกรอกข้อมูลประจำวันเสร็จ</p>
                                 </div>
-                                <button type="button" id="iqc-sign-operator"
+                                    <button type="button" id="iqc-sign-operator"
                                     class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">เซ็นชื่อผู้ปฏิบัติ</button>
                             </div>
                             <div id="iqc-operator-signature-preview"
@@ -596,24 +767,24 @@
 
                     <!-- Attachments IQC -->
                     <div class="space-y-4 mt-4">
-                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                        <label class="flex flex-col items-start gap-1 text-sm font-semibold text-slate-700 sm:flex-row sm:items-center sm:gap-2">
                             <i data-lucide="paperclip" class="w-4 h-4"></i> แนบไฟล์หลักฐาน (หลายไฟล์)
                             <span id="iqc-upload-counter" class="text-xs font-medium text-slate-500 ml-2">0/10
-                                files</span>
+                                ไฟล์</span>
                         </label>
                         <div id="iqc-upload-picker-wrap" class="text-left my-2">
                             <button type="button" onclick="$('#iqc-files').click()"
-                                class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white text-emerald-700 border border-emerald-200 shadow hover:bg-emerald-50 hover:border-emerald-400 transition-all font-semibold">
+                                class="inline-flex w-full items-center justify-center gap-2 px-5 py-2 rounded-xl bg-white text-emerald-700 border border-emerald-200 shadow hover:bg-emerald-50 hover:border-emerald-400 transition-all font-semibold sm:w-auto">
                                 <i data-lucide="upload-cloud" class="w-5 h-5"></i> อัปโหลดไฟล์หลักฐาน
                             </button>
                         </div>
                         <input type="file" id="iqc-files" class="hidden" multiple>
                         <p id="iqc-upload-limit-notice"
                             class="hidden mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
-                            File limit reached</p>
+                            แนบไฟล์ครบจำนวนแล้ว</p>
+                        <p id="iqc-upload-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
                         <button id="iqc-remove-all-btn" type="button"
-                            class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600">Remove
-                            all</button>
+                            class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 sm:w-auto">ลบทั้งหมด</button>
                         <div id="iqc-file-list" class="mt-4 grid gap-3"></div>
                     </div>
 
@@ -622,7 +793,7 @@
                             class="nav-btn px-6 py-2 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-all"
                             data-target="home">ยกเลิก</button>
                         <button type="submit"
-                            class="px-8 py-2 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all">บันทึกข้อมูล</button>
+                            class="px-8 py-2 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition-all">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
@@ -630,44 +801,16 @@
 
         <div id="records-panel" class="form-card">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <div class="bg-slate-50 p-6 border-b border-slate-200">
+                <div class="bg-indigo-50/70 p-6 pb-0 border-b border-indigo-100">
                     <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                         <div>
                             <h2 class="text-2xl font-bold text-slate-900">ข้อมูลที่บันทึกไว้</h2>
-                            <p class="text-sm text-slate-500">แยกดูข้อมูลตามประเภท EQA และ IQC ได้จากเมนูด้านข้าง</p>
                         </div>
                         <button type="button" id="btn-setup-db"
-                            class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                            class="inline-flex items-center gap-2 rounded-lg border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
                             <i data-lucide="database" class="w-4 h-4"></i>
                             ตั้งค่าฐานข้อมูล
                         </button>
-                    </div>
-                </div>
-
-                <div class="p-6 border-b border-slate-100 bg-white">
-                    <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto_auto] gap-4">
-                        <div>
-                            <label class="text-sm font-semibold text-slate-700">ช่วงวันที่</label>
-                            <input id="filter-date-range" type="text"
-                                class="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                                placeholder="เลือกช่วงวันที่">
-                        </div>
-                        <div>
-                            <label class="text-sm font-semibold text-slate-700">ช่วงวันด่วน</label>
-                            <select id="quick-range"
-                                class="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-                                <option value="all">ทั้งหมด</option>
-                                <option value="today">วันนี้</option>
-                                <option value="week">สัปดาห์นี้</option>
-                                <option value="month">เดือนนี้</option>
-                            </select>
-                        </div>
-                        <div class="flex items-end gap-3">
-                            <button type="button" id="btn-reset-filters"
-                                class="px-4 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100">รีเซ็ต</button>
-                            <button type="button" id="btn-load-records"
-                                class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700">ค้นหาข้อมูล</button>
-                        </div>
                     </div>
                 </div>
 
@@ -707,7 +850,7 @@
                             </div>
                         </aside>
 
-                        <div class="min-w-0 space-y-6">
+                        <div class="min-w-0">
                             <section id="records-page-eqa" class="records-page">
                                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                                     <div class="flex items-start justify-between gap-4">
@@ -717,7 +860,7 @@
                                                 ของเดือนนั้นมาสร้าง PDF</p>
                                         </div>
                                         <div class="rounded-xl bg-blue-50 p-3 text-blue-700">
-                                            <i data-lucide="file-down" class="w-5 h-5"></i>
+                                            <i data-lucide="file-down" class="w-5 h-5"></i> PDF
                                         </div>
                                     </div>
                                     <div class="mt-4 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
@@ -773,24 +916,45 @@
 
                             <section id="records-page-iqc" class="records-page hidden">
                                 <div
-                                    class="mt-4 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                                    class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                                     <div
                                         class="flex items-center justify-between gap-4 border-b border-slate-200 bg-slate-50 px-5 py-4">
                                         <div>
                                             <h3 class="text-lg font-bold text-slate-900">รายงานสรุป</h3>
                                             <p class="mt-1 text-sm text-slate-500">สรุปผลการตรวจสอบรายเดือน</p>
                                         </div>
-                                        <i data-lucide="signature" class="w-5 h-5 text-slate-500"></i>
+                                        <i data-lucide="file-text" class="w-5 h-5 text-slate-500"></i>
                                     </div>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-sm">
+                                    <div class="border-b border-slate-200 px-5 py-4">
+                                        <div class="grid gap-3 md:grid-cols-[minmax(0,180px)_minmax(0,220px)_auto] md:items-end">
+                                            <label class="grid gap-1.5 text-sm font-medium text-slate-700">
+                                                <span>ปี</span>
+                                                <select id="iqc-records-year"
+                                                    class="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"></select>
+                                            </label>
+                                            <label class="grid gap-1.5 text-sm font-medium text-slate-700">
+                                                <span>เดือน</span>
+                                                <select id="iqc-records-month"
+                                                    class="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"></select>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="hidden md:block overflow-x-auto">
+                                        <table class="iqc-summary-table w-full text-sm">
+                                            <colgroup>
+                                                <col style="width: 11%;">
+                                                <col style="width: 16%;">
+                                                <col style="width: 28.5%;">
+                                                <col style="width: 28.5%;">
+                                                <col style="width: 16%;">
+                                            </colgroup>
                                             <thead class="bg-white border-b border-slate-200">
                                                 <tr>
-                                                    <th class="px-4 py-3 text-left">ปี</th>
-                                                    <th class="px-4 py-3 text-left">เดือน</th>
-                                                    <th class="px-4 py-3 text-center">ลายเซ็นผู้สรุป</th>
-                                                    <th class="px-4 py-3 text-center">ลายเซ็นผู้ตรวจสอบ</th>
-                                                    <th class="px-4 py-3 text-center">Export</th>
+                                                    <th class="px-4 py-3 text-left" style="width: 11%;">ปี</th>
+                                                    <th class="px-4 py-3 text-left" style="width: 16%;">เดือน</th>
+                                                    <th class="px-4 py-3 text-center" style="width: 28.5%;">ลายเซ็นผู้สรุป</th>
+                                                    <th class="px-4 py-3 text-center" style="width: 28.5%;">ลายเซ็นผู้ตรวจสอบ</th>
+                                                    <th class="px-4 py-3 text-center" style="width: 16%;">Export</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="iqc-monthly-summary-body">
@@ -804,6 +968,18 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                    </div>
+                                    <div id="iqc-monthly-summary-mobile" class="grid gap-3 p-3 md:hidden">
+                                        <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-400">
+                                            <span class="inline-flex items-center gap-2">
+                                                <svg class="h-5 w-5 text-slate-300 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v8A2.5 2.5 0 0 1 17.5 18H6.5A2.5 2.5 0 0 1 4 15.5v-8Z"></path>
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 18v1.25A1.75 1.75 0 0 0 9.75 21h4.5A1.75 1.75 0 0 0 16 19.25V18"></path>
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 11.5h5l1.5 2h3l1.5-2H20"></path>
+                                                </svg>
+                                                กำลังโหลดข้อมูล...
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -859,10 +1035,18 @@
             records: [],
             allRecords: [],
             recordsView: 'eqa',
+            iqcRecordsFilter: {
+                year: '',
+                month: ''
+            },
             dateRangePicker: null,
             uploadAuth: null,
             newEqaFiles: [],
             newIqcFiles: [],
+            uploadLiveMessages: {
+                eqa: '',
+                iqc: ''
+            },
             lastIqcControlData: {
                 dept: '',
                 controlName: '',
@@ -964,11 +1148,29 @@
             return Math.max(0, THAI_MONTHS.indexOf(month));
         }
 
+        function getIqcDefaultFilterSelection() {
+            const currentMoment = moment();
+            return {
+                year: currentMoment.year(),
+                month: THAI_MONTHS[currentMoment.month()] || THAI_MONTHS[0],
+                monthKey: currentMoment.format('YYYY-MM')
+            };
+        }
+
+        function parseRecordMomentValue(record = {}) {
+            const dateValue = getRecordSummaryDate(record);
+            if (!dateValue) {
+                return moment.invalid();
+            }
+            const parsed = moment(dateValue, [moment.ISO_8601, 'YYYY-MM-DD', 'DD/MM/YYYY'], true);
+            return parsed.isValid() ? parsed : moment(dateValue);
+        }
+
         function getIqcReportContext() {
             const currentMoment = moment();
             const selectedMonth = $('#iqc-month').val() || THAI_MONTHS[currentMoment.month()];
-            const selectedYearInput = Number($('#iqc-year').val() || (currentMoment.year() + 543));
-            const gregorianYear = selectedYearInput > 2400 ? selectedYearInput - 543 : selectedYearInput;
+            const selectedYearInput = Number($('#iqc-year').val() || currentMoment.year());
+            const gregorianYear = selectedYearInput;
             const monthIndex = thaiMonthToIndex(selectedMonth);
             const daysInMonth = new Date(gregorianYear, monthIndex + 1, 0).getDate();
             const saturdaySet = new Set();
@@ -985,6 +1187,88 @@
                 daysInMonth,
                 saturdaySet
             };
+        }
+
+        function getIqcRecordsFilterContext() {
+            const defaultSelection = getIqcDefaultFilterSelection();
+            const yearValue = Number($('#iqc-records-year').val() || defaultSelection.year);
+            const monthValue = String($('#iqc-records-month').val() || defaultSelection.month).trim();
+            const monthIndex = thaiMonthToIndex(monthValue);
+            const gregorianYear = yearValue;
+            const monthKey = moment({
+                year: gregorianYear,
+                month: monthIndex,
+                day: 1
+            }).format('YYYY-MM');
+            return {
+                yearValue,
+                monthValue,
+                gregorianYear,
+                monthIndex,
+                monthKey
+            };
+        }
+
+        function getIqcRecordsFetchRange() {
+            const filterContext = getIqcRecordsFilterContext();
+            const monthMoment = moment({
+                year: filterContext.gregorianYear,
+                month: filterContext.monthIndex,
+                day: 1
+            });
+            return {
+                filterContext,
+                startDate: monthMoment.clone().startOf('month').format('YYYY-MM-DD'),
+                endDate: monthMoment.clone().endOf('month').format('YYYY-MM-DD')
+            };
+        }
+
+        function buildIqcFilterYears(records = []) {
+            const years = new Set([getIqcDefaultFilterSelection().year]);
+            (Array.isArray(records) ? records : []).forEach((record) => {
+                const recordMoment = parseRecordMomentValue(record);
+                if (recordMoment.isValid()) {
+                    years.add(recordMoment.year());
+                }
+            });
+            return Array.from(years).sort((a, b) => b - a);
+        }
+
+        function syncIqcFilterControls(records = []) {
+            const yearSelect = $('#iqc-records-year');
+            const monthSelect = $('#iqc-records-month');
+            if (!yearSelect.length || !monthSelect.length) {
+                return getIqcRecordsFilterContext();
+            }
+
+            const years = buildIqcFilterYears(records);
+            const defaultSelection = getIqcDefaultFilterSelection();
+            const currentYear = String(state.iqcRecordsFilter.year || yearSelect.val() || defaultSelection.year);
+            const currentMonth = String(state.iqcRecordsFilter.month || monthSelect.val() || defaultSelection.month);
+
+            yearSelect.html(years.map((year) => `<option value="${escapeHtml(String(year))}">${escapeHtml(String(year))}</option>`).join(''));
+            monthSelect.html(THAI_MONTHS.map((month) => `<option value="${escapeHtml(month)}">${escapeHtml(month)}</option>`).join(''));
+
+            const selectedYear = years.includes(Number(currentYear)) ? String(currentYear) : String(defaultSelection.year);
+            const selectedMonth = THAI_MONTHS.includes(currentMonth) ? currentMonth : defaultSelection.month;
+
+            yearSelect.val(selectedYear);
+            monthSelect.val(selectedMonth);
+            state.iqcRecordsFilter = {
+                year: Number(selectedYear),
+                month: selectedMonth
+            };
+            return getIqcRecordsFilterContext();
+        }
+
+        function filterIqcRecordsBySelection(records = [], filterContext = getIqcRecordsFilterContext()) {
+            return (Array.isArray(records) ? records : []).filter((record) => {
+                const recordMoment = parseRecordMomentValue(record);
+                if (!recordMoment.isValid()) {
+                    return false;
+                }
+                return recordMoment.year() === filterContext.gregorianYear && recordMoment.month() === filterContext.monthIndex;
+            });
         }
 
         function isIqcSaturday(dayNumber, context = getIqcReportContext()) {
@@ -1276,10 +1560,10 @@
 
         function statusPillClass(status) {
             if (status === 'ไม่ผ่าน') {
-                return 'bg-rose-600 text-white border-rose-600 shadow-sm';
+                return 'bg-rose-600 text-white border-rose-600';
             }
             if (status === 'ผ่าน') {
-                return 'bg-emerald-600 text-white border-emerald-600 shadow-sm';
+                return 'bg-emerald-600 text-white border-emerald-600';
             }
             return 'bg-slate-100 text-slate-600 border-slate-300';
         }
@@ -1465,7 +1749,9 @@
                 $pill
                     .html(statusPillContent(status))
                     .attr('data-status', status)
-                    .removeClass('bg-emerald-600 bg-rose-600 bg-slate-100 text-white text-slate-600 border-emerald-600 border-rose-600 border-slate-300 shadow-sm')
+                    .removeClass('bg-emerald-600 bg-rose-600 bg-slate-100')
+                    .removeClass('text-white text-slate-600')
+                    .removeClass('border-emerald-600 border-rose-600 border-slate-300 shadow-sm')
                     .addClass(statusPillClass(status));
                 lucide.createIcons();
             }
@@ -1597,14 +1883,14 @@
             ][monthIndex] || '';
         }
 
-        function formatBuddhistMonthYear(dateValue) {
+        function formatGregorianMonthYear(dateValue) {
             const date = moment(dateValue);
             if (!date.isValid()) {
-                return { monthName: '-', buddhistYear: '-' };
+                return { monthName: '-', year: '-' };
             }
             return {
                 monthName: getThaiMonthName(date.month()),
-                buddhistYear: String(date.year() + 543)
+                year: String(date.year())
             };
         }
 
@@ -1876,23 +2162,99 @@
                 });
                 if (imageUrl) {
                     return `
-                        <button type="button" class="w-full text-left js-summary-signature-edit rounded-md bg-transparent p-0" data-month="${escapeHtml(monthKey)}" data-role="${escapeHtml(role)}">
-                            <img src="${imageUrl}" alt="${role === 'supervisor' ? 'Supervisor signature' : 'Operator signature'}" class="h-6 w-full object-contain object-center">
+                        <button type="button" class="w-full min-h-11 text-left js-summary-signature-edit js-editable-signature rounded-md bg-transparent p-2" data-month="${escapeHtml(monthKey)}" data-role="${escapeHtml(role)}" aria-label="คลิกเพื่อแก้ไข">
+                            <img src="${imageUrl}" alt="${role === 'supervisor' ? 'Supervisor signature' : 'Operator signature'}" class="h-7 w-full object-contain object-center">
+                            <span class="signature-tooltip" aria-hidden="true">คลิกเพื่อแก้ไข</span>
                         </button>
                     `;
                 }
             }
 
             return `
-                <button type="button" class="w-full rounded-lg border border-dashed border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100 js-summary-signature-btn" data-month="${escapeHtml(monthKey)}" data-role="${escapeHtml(role)}">
+                <button type="button" class="w-full min-h-11 rounded-lg border border-dashed border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100 js-summary-signature-btn" data-month="${escapeHtml(monthKey)}" data-role="${escapeHtml(role)}">
                     ${role === 'supervisor' ? 'เซ็นชื่อผู้ตรวจสอบ' : 'เซ็นชื่อผู้สรุป'}
                 </button>
+            `;
+        }
+
+        function renderIqcSummaryMobileCard(record, monthKey, yearText, monthText) {
+            const savedAt = record?.updatedAt || record?.createdAt || '';
+            const dateLabel = savedAt ? moment(savedAt).isValid() ? moment(savedAt).format('DD/MM/YYYY HH:mm') : savedAt : '';
+            return `
+                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500">รายงานสรุป</p>
+                            <h4 class="mt-1 text-base font-bold text-slate-900">${escapeHtml(monthText || '-')} ${escapeHtml(yearText || '-')}</h4>
+                            ${dateLabel ? `<p class="mt-1 text-xs text-slate-500">อัปเดตล่าสุด ${escapeHtml(dateLabel)}</p>` : ''}
+                        </div>
+                        <button type="button"
+                            class="btn-export-iqc-month-row inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                            data-month="${escapeHtml(monthKey)}"
+                            aria-label="Export ${escapeHtml(monthText || '-')}">
+                            <i data-lucide="file-down" class="h-3.5 w-3.5"></i><span class="ml-1.5">PDF</span>
+                        </button>
+                    </div>
+                    <div class="mt-4 grid gap-3">
+                        <div>
+                            <p class="mb-2 text-xs font-semibold text-slate-500">ลายเซ็นผู้สรุป</p>
+                            ${renderIqcSummarySignatureCell(record, 'operator', monthKey)}
+                        </div>
+                        <div>
+                            <p class="mb-2 text-xs font-semibold text-slate-500">ลายเซ็นผู้ตรวจสอบ</p>
+                            ${renderIqcSummarySignatureCell(record, 'supervisor', monthKey)}
+                        </div>
+                    </div>
+                </article>
             `;
         }
 
         function getMonthlySummarySourceRecord(records = [], monthKey) {
             const summaryMap = getIqcMonthlySummaryRecordMap(records);
             return summaryMap.get(monthKey) || null;
+        }
+
+        function buildIqcMonthlySummaryDisplayRecord(records = [], monthKey) {
+            const summaryRecord = getMonthlySummarySourceRecord(records, monthKey);
+            if (summaryRecord) {
+                return summaryRecord;
+            }
+
+            const monthRecords = (Array.isArray(records) ? records : [])
+                .filter((record) => getRecordSummaryType(record) === 'IQC' && getRecordMonthKey(record) === monthKey);
+            const latestDailyRecord = [...monthRecords].reverse().find((record) => record && getRecordDataSource(record)) || null;
+            const monthMoment = moment(monthKey, 'YYYY-MM', true);
+            const monthName = monthMoment.isValid() ? getThaiMonthName(monthMoment.month()) : '';
+            const yearText = monthMoment.isValid() ? String(monthMoment.year()) : '';
+
+            return {
+                id: `iqc-summary-draft:${monthKey}`,
+                type: 'IQC_SUMMARY',
+                recordDate: monthMoment.isValid() ? monthMoment.format('YYYY-MM-DD') : '',
+                createdAt: latestDailyRecord?.createdAt || '',
+                updatedAt: latestDailyRecord?.updatedAt || latestDailyRecord?.createdAt || '',
+                title: latestDailyRecord?.title || `รายงานสรุป ${monthName || '-'} ${yearText || '-'}`,
+                department: getRecordSummaryDepartment(latestDailyRecord || {}) || '',
+                data: {
+                    summaryMonth: monthKey,
+                    summaryMonthName: monthName,
+                    summaryYear: yearText,
+                    summaryOperatorName: '',
+                    summaryOperatorPosition: '',
+                    summarySupervisorName: '',
+                    summarySupervisorPosition: '',
+                    summarySignatureData: {
+                        operator: [],
+                        supervisor: []
+                    }
+                },
+                signatureData: {
+                    operator: [],
+                    supervisor: []
+                },
+                operatorSignatureData: [],
+                supervisorSignatureData: []
+            };
         }
 
         function getIqcMonthlySummarySignaturePack(record = {}) {
@@ -1928,6 +2290,53 @@
             return { operator, supervisor };
         }
 
+        function loadSignatureProfile(storageKey, fallbackPosition = '') {
+            const fallback = {
+                name: '',
+                position: String(fallbackPosition || '').trim()
+            };
+            if (!storageKey) {
+                return fallback;
+            }
+            try {
+                const raw = localStorage.getItem(storageKey);
+                if (!raw) {
+                    return fallback;
+                }
+                const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object') {
+                    return fallback;
+                }
+                return {
+                    name: typeof parsed.name === 'string' ? parsed.name : '',
+                    position: typeof parsed.position === 'string' && parsed.position.trim()
+                        ? parsed.position.trim()
+                        : fallback.position
+                };
+            } catch (err) {
+                return fallback;
+            }
+        }
+
+        function saveSignatureProfile(storageKey, profile = {}) {
+            if (!storageKey) {
+                return;
+            }
+            const payload = {
+                name: String(profile.name || '').trim(),
+                position: String(profile.position || '').trim()
+            };
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(payload));
+            } catch (err) {
+                // Ignore storage failures in restricted browsing modes.
+            }
+        }
+
+        function getIqcSummarySignatureProfileStorageKey(role) {
+            return `iqc-summary-signature-profile:${String(role || '').trim().toLowerCase()}`;
+        }
+
         async function saveIqcMonthlySummarySignature(monthKey, role) {
             const summaryRecord = getMonthlySummarySourceRecord(state.allRecords || state.records || [], monthKey);
             const currentPack = getIqcMonthlySummarySignaturePack(summaryRecord || {});
@@ -1935,15 +2344,47 @@
             const monthText = getThaiMonthNameFromMonthKey(monthKey) || '-';
             const yearText = moment(monthKey, 'YYYY-MM', true).isValid() ? String(moment(monthKey, 'YYYY-MM', true).year()) : '-';
             const existingRoleData = role === 'supervisor' ? currentPack.supervisor : currentPack.operator;
-            const signature = await promptSignature(existingRoleData, {
+            const storageKey = getIqcSummarySignatureProfileStorageKey(role);
+            const signatureResult = await promptSignature(existingRoleData, {
                 title: `ลงลายเซ็น${roleLabel}รายเดือน`,
                 instruction: `กรุณาเซ็นชื่อสำหรับรายงานสรุป ${monthText} ปี ${yearText}`,
                 confirmButtonText: 'ยืนยันลายเซ็น',
-                penColor: '#1e3a8a'
+                penColor: '#1e3a8a',
+                enableSignerProfile: true,
+                storageKey,
+                defaultSignerPosition: role === 'supervisor' ? 'Supervisor' : 'หัวหน้าหน่วยภูมิคุ้มกันวิทยา',
+                positionOptions: role === 'supervisor'
+                    ? ['Supervisor', 'หัวหน้าหน่วยภูมิคุ้มกันวิทยา']
+                    : ['หัวหน้าหน่วยภูมิคุ้มกันวิทยา', 'Supervisor']
             });
+            if (!signatureResult) {
+                return;
+            }
+            const signature = Array.isArray(signatureResult) ? signatureResult : signatureResult.signature;
             if (!signature) {
                 return;
             }
+            const signerName = signatureResult && typeof signatureResult === 'object'
+                ? String(signatureResult.signerName || '').trim()
+                : '';
+            const signerPosition = signatureResult && typeof signatureResult === 'object'
+                ? String(signatureResult.signerPosition || '').trim()
+                : '';
+            const summaryData = summaryRecord && summaryRecord.data && typeof summaryRecord.data === 'object'
+                ? summaryRecord.data
+                : {};
+            const summaryOperatorName = role === 'operator'
+                ? signerName
+                : String(summaryData.summaryOperatorName || summaryData.operatorName || '').trim();
+            const summaryOperatorPosition = role === 'operator'
+                ? signerPosition
+                : String(summaryData.summaryOperatorPosition || summaryData.operatorPosition || '').trim();
+            const summarySupervisorName = role === 'supervisor'
+                ? signerName
+                : String(summaryData.summarySupervisorName || summaryData.supervisorName || '').trim();
+            const summarySupervisorPosition = role === 'supervisor'
+                ? signerPosition
+                : String(summaryData.summarySupervisorPosition || summaryData.supervisorPosition || '').trim();
 
             const mergedPack = {
                 operator: Array.isArray(currentPack.operator) ? currentPack.operator.slice() : [],
@@ -1962,6 +2403,10 @@
                     summaryMonth: monthKey,
                     summaryMonthName: monthText,
                     summaryYear: yearText,
+                    summaryOperatorName,
+                    summaryOperatorPosition,
+                    summarySupervisorName,
+                    summarySupervisorPosition,
                     summarySignatureData: mergedPack
                 },
                 signatureData: mergedPack,
@@ -1985,17 +2430,22 @@
             await loadRecords();
         }
 
-        function renderIqcMonthlySummaryTable(records = []) {
+        function renderIqcMonthlySummaryTable(records = [], filterContext = getIqcRecordsFilterContext()) {
             const body = $('#iqc-monthly-summary-body');
+            const mobileList = $('#iqc-monthly-summary-mobile');
             if (!body.length) {
                 return;
             }
 
-            const summaryRecords = records.filter((record) => getRecordSummaryType(record) === 'IQC_SUMMARY');
-            const summaryMap = getIqcMonthlySummaryRecordMap(summaryRecords);
-            const months = buildIqcMonthlySummaryMonths(records);
+            const monthKey = filterContext.monthKey;
+            const yearText = String(filterContext.yearValue || moment(monthKey, 'YYYY-MM', true).year() || '');
+            const monthText = filterContext.monthValue || getThaiMonthNameFromMonthKey(monthKey);
+            const monthDailyRecords = (Array.isArray(records) ? records : [])
+                .filter((record) => getRecordSummaryType(record) === 'IQC' && getRecordMonthKey(record) === monthKey);
+            const selectedSummaryRecord = getMonthlySummarySourceRecord(records, monthKey);
+            const selectedMonthRecord = selectedSummaryRecord || (monthDailyRecords.length ? buildIqcMonthlySummaryDisplayRecord(records, monthKey) : null);
 
-            if (!months.length) {
+            if (!selectedMonthRecord) {
                 body.html(`
                     <tr>
                         <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-400">
@@ -2005,39 +2455,62 @@
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 18v1.25A1.75 1.75 0 0 0 9.75 21h4.5A1.75 1.75 0 0 0 16 19.25V18"></path>
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 11.5h5l1.5 2h3l1.5-2H20"></path>
                                 </svg>
-                                ยังไม่มีข้อมูลรายงานสรุป
+                                ไม่มีข้อมูล
                             </span>
                         </td>
                     </tr>
                 `);
+                if (mobileList.length) {
+                    mobileList.html(`
+                        <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-400">
+                            <span class="inline-flex items-center gap-2">
+                                <svg class="h-5 w-5 text-slate-300 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v8A2.5 2.5 0 0 1 17.5 18H6.5A2.5 2.5 0 0 1 4 15.5v-8Z"></path>
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 18v1.25A1.75 1.75 0 0 0 9.75 21h4.5A1.75 1.75 0 0 0 16 19.25V18"></path>
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 11.5h5l1.5 2h3l1.5-2H20"></path>
+                                </svg>
+                                ไม่มีข้อมูล
+                            </span>
+                        </div>
+                    `);
+                }
                 return;
             }
 
-            body.html(months.map((monthKey) => {
-                const record = summaryMap.get(monthKey) || null;
-                const yearText = moment(monthKey, 'YYYY-MM', true).isValid() ? String(moment(monthKey, 'YYYY-MM', true).year()) : '';
-                const monthText = getThaiMonthNameFromMonthKey(monthKey);
-                return `
-                    <tr class="border-b border-slate-100 align-top">
-                        <td class="px-4 py-3 font-semibold text-slate-700 align-middle">${escapeHtml(yearText || '-')}</td>
-                        <td class="px-4 py-3 text-slate-700 align-middle">${escapeHtml(monthText || '-')}</td>
-                        <td class="px-4 py-3 align-middle">
-                            ${renderIqcSummarySignatureCell(record, 'operator', monthKey)}
-                        </td>
-                        <td class="px-4 py-3 align-middle">
-                            ${renderIqcSummarySignatureCell(record, 'supervisor', monthKey)}
-                        </td>
-                        <td class="px-4 py-3 text-center align-middle">
-                            <button type="button"
-                                class="btn-export-iqc-month-row inline-flex py-2 px-4 items-center justify-center rounded-full bg-emerald-600 text-white hover:bg-emerald-700"
-                                data-month="${escapeHtml(monthKey)}"
-                                aria-label="Export ${escapeHtml(monthText || '-')}">
-                                <i data-lucide="file-down" class="h-3.5 w-3.5"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join(''));
+            const rowsHtml = `
+                <tr class="border-b border-slate-100 align-top">
+                    <td class="px-4 py-3 font-semibold text-slate-700 align-middle" style="width: 11%;">${escapeHtml(yearText || '-')}</td>
+                    <td class="px-4 py-3 text-slate-700 align-middle" style="width: 16%;">${escapeHtml(monthText || '-')}</td>
+                    <td class="px-4 py-3 align-middle" style="width: 28.5%;">
+                        ${renderIqcSummarySignatureCell(selectedMonthRecord, 'operator', monthKey)}
+                    </td>
+                    <td class="px-4 py-3 align-middle" style="width: 28.5%;">
+                        ${renderIqcSummarySignatureCell(selectedMonthRecord, 'supervisor', monthKey)}
+                    </td>
+                    <td class="px-4 py-3 text-center align-middle" style="width: 16%;">
+                        <button type="button"
+                            class="btn-export-iqc-month-row inline-flex py-2 px-4 items-center justify-center rounded-full bg-emerald-600 text-white hover:bg-emerald-700"
+                            data-month="${escapeHtml(monthKey)}"
+                            aria-label="Export ${escapeHtml(monthText || '-')}">
+                            <i data-lucide="file-down" class="h-3.5 w-3.5"></i>&nbsp;PDF
+                        </button>
+                    </td>
+                </tr>
+            `;
+            body.html(rowsHtml);
+            if (mobileList.length) {
+                mobileList.html(renderIqcSummaryMobileCard(selectedMonthRecord, monthKey, yearText, monthText));
+            }
+        }
+
+        function renderIqcRecordsPage() {
+            const filterContext = syncIqcFilterControls(state.allRecords);
+            const filteredIqcRecords = filterIqcRecordsBySelection(state.records, filterContext);
+            renderRecordsTable(filteredIqcRecords, '#iqc-records-table-body');
+            renderIqcMonthlySummaryTable(state.allRecords, filterContext);
+            if (window.lucide) {
+                lucide.createIcons();
+            }
         }
 
         function escapeCellText(value) {
@@ -2066,7 +2539,7 @@
             `;
         }
 
-        function buildIqcCoverPage(current, monthName, buddhistYear, signatureData, logoSrc = 'nhealth-logo.png', controlSets = [], records = []) {
+        function buildIqcCoverPage(current, monthName, yearText, signatureData, logoSrc = 'nhealth-logo.png', controlSets = [], records = []) {
             const department = dottedPlaceholder(current.dept, '');
             const controlName = escapeHtml(current.controlName || '');
             const lot = escapeHtml(current.lot || '');
@@ -2079,7 +2552,9 @@
             }
             const analyzer = escapeHtml(current.analyzer || '');
             const operatorName = current.summaryOperatorName || current.operatorName || '';
-            const supervisorName = current.summarySupervisorName || current.supervisorName || '';
+            const supervisorProfile = loadSignatureProfile(getIqcSummarySignatureProfileStorageKey('supervisor'), 'Supervisor');
+            const supervisorName = current.summarySupervisorName || current.supervisorName || supervisorProfile.name || '';
+            const supervisorPosition = current.summarySupervisorPosition || current.supervisorPosition || supervisorProfile.position || 'Supervisor';
             const displayControlSets = (Array.isArray(controlSets) && controlSets.length > 0
                 ? controlSets.slice(0, 3)
                 : [{ controlName: current.controlName || '', lot: current.lot || '', exp: current.exp || '' }]);
@@ -2135,11 +2610,14 @@
             `).join('');
 
             const operatorNameLine = operatorName
-                ? `(${escapeHtml(operatorName)})`
-                : '(................................................)';
+                ? `( ${escapeHtml(operatorName)} )`
+                : '................................................';
             const supervisorNameLine = supervisorName
-                ? `(${escapeHtml(supervisorName)})`
-                : '(................................................)';
+                ? `( ${escapeHtml(supervisorName)} )`
+                : '................................................';
+            const supervisorPositionLine = supervisorPosition
+                ? ` ${escapeHtml(supervisorPosition)} `
+                : '................................................';
             const operatorSignature = `
                 <div class="iqc-signature-block">
                     <div id="iqc-export-operator-signature" class="iqc-signature-preview"></div>
@@ -2153,7 +2631,7 @@
                     <div id="iqc-export-supervisor-signature" class="iqc-signature-preview"></div>
                     <div class="iqc-signature-role">ผู้ตรวจสอบ</div>
                     <div class="iqc-signature-name">${supervisorNameLine}</div>
-                    <div class="iqc-signature-position">ตำแหน่ง....................................Supervisor....................................</div>
+                    <div class="iqc-signature-position">ตำแหน่ง${supervisorPositionLine}</div>
                 </div>
             `;
 
@@ -2162,7 +2640,7 @@
                     <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="N Health">
                 </div>
                 <div class="iqc-cover-title">
-                    ตารางสรุปการควบคุมคุณภาพภายในของหน่วย.........${department}.........ประจำเดือน.........${dottedPlaceholder(monthName)}.........ปี.........${dottedPlaceholder(buddhistYear)}.........
+                    ตารางสรุปการควบคุมคุณภาพภายในของหน่วย.........${department}.........ประจำเดือน.........${dottedPlaceholder(monthName)}.........ปี.........${dottedPlaceholder(yearText)}.........
                 </div>
                 <div class="iqc-cover-lines iqc-cover-control-sets">
                     <table class="iqc-cover-control-table">
@@ -2214,7 +2692,7 @@
             `, 'FM-ALP-PY3-00-004/93 แก้ไขครั้งที่ 02', 'วันที่บังคับใช้ 13/08/2568', 'iqc-cover-page', 'iqc-cover-shell');
         }
 
-        function buildIqcChecklistPage(current, monthName, buddhistYear, records, recordMap, signatureData, logoSrc = 'nhealth-logo.png') {
+        function buildIqcChecklistPage(current, monthName, yearText, records, recordMap, signatureData, logoSrc = 'nhealth-logo.png') {
             const days = Array.from({ length: 31 }, (_, index) => index + 1);
             const dayHeaderCells = days.map((day) => {
                 const shaded = [7, 14, 21, 28].includes(day);
@@ -2386,7 +2864,7 @@
                     <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="N Health">
                 </div>
                 <div class="iqc-checklist-title">ตารางการบำรุงรักษาเครื่อง D-Dimer Cobas h 232</div>
-                <div class="iqc-checklist-month">ประจำเดือน .....${monthName}..... ปี .....${buddhistYear}.....</div>
+                <div class="iqc-checklist-month">ประจำเดือน .....${monthName}..... ปี .....${yearText}.....</div>
                 <table class="iqc-checklist-table">
                     <colgroup>
                         <col class="iqc-col-task">
@@ -2458,7 +2936,6 @@
 
         function renderIqcScheduleForm(source = {}) {
             const data = normalizeIqcDailySource(source);
-            console.log('renderIqcScheduleFormxxxx', data);
             const weeklyMaintenanceDate = isWeeklyMaintenanceDate(data.date);
             state.iqcStatusState = {
                 low: data.iqcLow.value ? data.iqcLow.status : '',
@@ -2797,13 +3274,11 @@
                     performSwitch(target);
                 }
             });
-            // IQC file upload logic (Admin style)
-            $('#iqc-files').on('change', function () {
-                handleIqcFileSelection(this.files);
-                $(this).val('');
-            });
             $('#iqc-remove-all-btn').on('click', function () {
-                clearAllIqcUploads();
+                clearAllIqcUploads()
+                    .catch((err) => {
+                        Swal.fire('ผิดพลาด', err.message, 'error');
+                    });
             });
             const defaultExportMonth = moment().format('YYYY-MM');
             $('#records-export-eqa-month').val(defaultExportMonth);
@@ -2898,17 +3373,18 @@
                         file: file,
                         uploadStatus: 'PENDING',
                         progress: 0,
-                        id: null // will be set after upload
+                        id: null, // will be set after upload
+                        justAdded: true
                     };
                     state.newIqcFiles.push(fileObj);
-                    uploadIqcFile(fileObj, state.newIqcFiles.length - 1);
+                    uploadIqcFile(fileObj);
                 });
+                setUploadStatusMessage(renderIqcFileList, `เลือกไฟล์ ${selectedFiles.length} ไฟล์และเริ่มอัปโหลด`);
                 renderIqcFileList();
             }
 
             function clearAllIqcUploads() {
-                state.newIqcFiles = [];
-                renderIqcFileList();
+                return clearAllUploadedFiles(state.newIqcFiles, renderIqcFileList);
             }
 
             function showIqcLimitNotice() {
@@ -2921,13 +3397,11 @@
 
 
 
-            // EQA file upload logic (IQC style)
-            $('#eqa-files').on('change', function () {
-                handleEqaFileSelection(this.files);
-                $(this).val('');
-            });
             $('#eqa-remove-all-btn').on('click', function () {
-                clearAllEqaUploads();
+                clearAllEqaUploads()
+                    .catch((err) => {
+                        Swal.fire('ผิดพลาด', err.message, 'error');
+                    });
             });
 
             renderEqaFileList();
@@ -2953,115 +3427,269 @@
                         file: file,
                         uploadStatus: 'PENDING',
                         progress: 0,
-                        id: null // will be set after upload
+                        id: null, // will be set after upload
+                        justAdded: true
                     };
                     state.newEqaFiles.push(fileObj);
-                    uploadEqaFile(fileObj, state.newEqaFiles.length - 1);
+                    uploadEqaFile(fileObj);
                 });
+                setUploadStatusMessage(renderEqaFileList, `เลือกไฟล์ ${selectedFiles.length} ไฟล์และเริ่มอัปโหลด`);
                 renderEqaFileList();
             }
 
             function clearAllEqaUploads() {
-                state.newEqaFiles = [];
-                renderEqaFileList();
+                return clearAllUploadedFiles(state.newEqaFiles, renderEqaFileList);
             }
 
             // --- UPLOAD HELPERS ---
-            async function uploadEqaFile(fileObj, idx) {
-                if (!window.ResumableUploadToGoogleDrive2) {
-                    fileObj.uploadStatus = 'ERROR';
-                    renderEqaFileList();
+            function createCancelledUploadError() {
+                const error = new Error('อัปโหลดถูกยกเลิกแล้ว');
+                error.code = 'UPLOAD_CANCELLED';
+                return error;
+            }
+
+            function isCancelledUploadError(error) {
+                return Boolean(error && (error.code === 'UPLOAD_CANCELLED' || error.name === 'AbortError'));
+            }
+
+            function isActiveUploadFile(file) {
+                return Boolean(file && (file.uploadStatus === 'PENDING' || file.uploadStatus === 'UPLOADING'));
+            }
+
+            function createUploadHandle() {
+                return {
+                    aborted: false,
+                    initXhr: null,
+                    uploadXhr: null
+                };
+            }
+
+            function abortFileUpload(fileObj) {
+                const handle = fileObj && fileObj.uploadHandle;
+                if (!handle) {
                     return;
                 }
-                try {
-                    if (!state.uploadAuth) {
-                        state.uploadAuth = await postApi('getUploadAuth');
-                    }
-                    // Show INITIATING before upload
-                    fileObj.uploadStatus = 'PENDING';
-                    renderEqaFileList();
-                    setTimeout(() => {
-                        fileObj.uploadStatus = 'UPLOADING';
-                        renderEqaFileList();
-                        const ru = new ResumableUploadToGoogleDrive2();
-                        ru.Do({
-                            file: fileObj.file,
-                            accessToken: state.uploadAuth.accessToken,
-                            folderId: state.uploadAuth.folderId,
-                            fields: 'id,name,webViewLink,mimeType,size'
-                        }, (res, err) => {
-                            if (err) {
-                                fileObj.uploadStatus = 'ERROR';
-                                renderEqaFileList();
-                                return;
-                            }
-                            if (res && res.progressNumber && res.status === 'Uploading') {
-                                fileObj.uploadStatus = 'UPLOADING';
-                                fileObj.progress = Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
-                                renderEqaFileList();
-                                return;
-                            }
-                            if (res && res.status && String(res.status).toLowerCase() === 'done') {
-                                fileObj.uploadStatus = 'UPLOADED';
-                                const parsed = parseUploadResponse(res);
-                                fileObj.id = parsed.id || '';
-                                fileObj.url = parsed.webViewLink || '';
-                                fileObj.mimeType = parsed.mimeType || fileObj.type;
-                                fileObj.size = parsed.size || fileObj.size;
-                                renderEqaFileList();
-                            }
-                        });
-                    }, 100);
-                } catch (e) {
-                    fileObj.uploadStatus = 'ERROR';
-                    renderEqaFileList();
+                handle.aborted = true;
+                if (handle.initXhr && handle.initXhr.readyState !== 4) {
+                    handle.initXhr.abort();
+                }
+                if (handle.uploadXhr && handle.uploadXhr.readyState !== 4) {
+                    handle.uploadXhr.abort();
                 }
             }
 
-            async function uploadIqcFile(fileObj, idx) {
-                if (!window.ResumableUploadToGoogleDrive2) {
-                    fileObj.uploadStatus = 'ERROR';
-                    renderIqcFileList();
+            function getUploadMimeType(fileObj) {
+                return fileObj.type || 'application/octet-stream';
+            }
+
+            function getUploadA11yTargets(renderList) {
+                return renderList === renderEqaFileList
+                    ? { listId: 'eqa-file-list', statusId: 'eqa-upload-status' }
+                    : { listId: 'iqc-file-list', statusId: 'iqc-upload-status' };
+            }
+
+            function setUploadStatusMessage(renderList, message) {
+                const targets = getUploadA11yTargets(renderList);
+                const $status = $(`#${targets.statusId}`);
+                const key = targets.statusId.startsWith('eqa-') ? 'eqa' : 'iqc';
+                const nextMessage = message || '';
+                if (state.uploadLiveMessages[key] === nextMessage) {
                     return;
                 }
+                state.uploadLiveMessages[key] = nextMessage;
+                if ($status.length) {
+                    $status.text(nextMessage);
+                }
+            }
+
+            function syncUploadBusyState(renderList, files) {
+                const targets = getUploadA11yTargets(renderList);
+                const isBusy = (files || []).some((file) => file && (file.uploadStatus === 'PENDING' || file.uploadStatus === 'UPLOADING'));
+                $(`#${targets.listId}`).attr('aria-busy', isBusy ? 'true' : 'false');
+            }
+
+            function getXhrErrorMessage(xhr, fallback) {
+                if (!xhr) {
+                    return fallback;
+                }
                 try {
-                    if (!state.uploadAuth) {
-                        state.uploadAuth = await postApi('getUploadAuth');
+                    const parsed = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+                    if (parsed && parsed.error) {
+                        if (typeof parsed.error === 'string') {
+                            return parsed.error;
+                        }
+                        if (parsed.error.message) {
+                            return parsed.error.message;
+                        }
                     }
-                    console.log('auth', state.uploadAuth);
-                    fileObj.uploadStatus = 'UPLOADING';
-                    renderIqcFileList();
-                    const ru = new ResumableUploadToGoogleDrive2();
-                    ru.Do({
-                        file: fileObj.file,
-                        accessToken: state.uploadAuth.accessToken,
-                        folderId: state.uploadAuth.folderId,
-                        fields: 'id,name,webViewLink,mimeType,size'
-                    }, (res, err) => {
-                        if (err) {
-                            fileObj.uploadStatus = 'ERROR';
-                            renderIqcFileList();
+                } catch (err) {
+                    // Ignore parse failures and fall back to the raw text.
+                }
+                return xhr.statusText || xhr.responseText || fallback;
+            }
+
+            function startResumableDriveUpload(fileObj, renderList) {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        let progressRenderHandle = null;
+                        const scheduleProgressRender = () => {
+                            if (progressRenderHandle !== null) {
+                                return;
+                            }
+                            progressRenderHandle = window.requestAnimationFrame(() => {
+                                progressRenderHandle = null;
+                                renderList();
+                            });
+                        };
+                        if (!state.uploadAuth) {
+                            state.uploadAuth = await postApi('getUploadAuth');
+                        }
+                        if (!fileObj.uploadHandle) {
+                            fileObj.uploadHandle = createUploadHandle();
+                        }
+                        fileObj.uploadStatus = 'PENDING';
+                        fileObj.progress = 0;
+                        renderList();
+                        setUploadStatusMessage(renderList, `กำลังเตรียมอัปโหลดไฟล์ ${fileObj.name}`);
+
+                        const metadata = {
+                            name: fileObj.name,
+                            mimeType: getUploadMimeType(fileObj),
+                            parents: [state.uploadAuth.folderId]
+                        };
+                        const initUrl = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name,webViewLink,mimeType,size';
+                        const sessionUrl = await new Promise((sessionResolve, sessionReject) => {
+                            const xhr = new XMLHttpRequest();
+                            fileObj.uploadHandle.initXhr = xhr;
+                            xhr.open('POST', initUrl, true);
+                            xhr.setRequestHeader('Authorization', `Bearer ${state.uploadAuth.accessToken}`);
+                            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                            xhr.setRequestHeader('X-Upload-Content-Type', getUploadMimeType(fileObj));
+                            xhr.setRequestHeader('X-Upload-Content-Length', String(fileObj.file.size));
+                            xhr.onload = () => {
+                                if (fileObj.uploadHandle?.aborted) {
+                                    sessionReject(createCancelledUploadError());
+                                    return;
+                                }
+                                if (xhr.status >= 200 && xhr.status < 300) {
+                                    const location = xhr.getResponseHeader('Location') || xhr.getResponseHeader('location');
+                                    if (!location) {
+                                        sessionReject(new Error('ไม่พบ session สำหรับอัปโหลดไฟล์'));
+                                        return;
+                                    }
+                                    sessionResolve(location);
+                                    return;
+                                }
+                                sessionReject(new Error(getXhrErrorMessage(xhr, 'เริ่มอัปโหลดไม่สำเร็จ')));
+                            };
+                            xhr.onerror = () => sessionReject(new Error('เชื่อมต่อกับ Google Drive ไม่สำเร็จ'));
+                            xhr.onabort = () => sessionReject(createCancelledUploadError());
+                            xhr.send(JSON.stringify(metadata));
+                        });
+
+                        if (fileObj.uploadHandle?.aborted) {
+                            throw createCancelledUploadError();
+                        }
+
+                        fileObj.uploadStatus = 'UPLOADING';
+                        renderList();
+                        setUploadStatusMessage(renderList, `กำลังอัปโหลดไฟล์ ${fileObj.name}`);
+
+                        const result = await new Promise((uploadResolve, uploadReject) => {
+                            const xhr = new XMLHttpRequest();
+                            fileObj.uploadHandle.uploadXhr = xhr;
+                            xhr.open('PUT', sessionUrl, true);
+                            xhr.setRequestHeader('Content-Type', getUploadMimeType(fileObj));
+                            xhr.setRequestHeader('Content-Range', `bytes 0-${fileObj.file.size - 1}/${fileObj.file.size}`);
+                            xhr.upload.onprogress = (event) => {
+                                if (!event.lengthComputable) {
+                                    return;
+                                }
+                                if (fileObj.uploadHandle?.aborted) {
+                                    uploadReject(createCancelledUploadError());
+                                    return;
+                                }
+                                const nextProgress = Math.max(0, Math.min(100, Math.round((event.loaded / event.total) * 100)));
+                                if (nextProgress === fileObj.progress) {
+                                    return;
+                                }
+                                fileObj.progress = nextProgress;
+                                scheduleProgressRender();
+                            };
+                            xhr.onload = () => {
+                                if (fileObj.uploadHandle?.aborted) {
+                                    uploadReject(createCancelledUploadError());
+                                    return;
+                                }
+                                if (xhr.status === 200 || xhr.status === 201) {
+                                    uploadResolve(parseUploadResponse({
+                                        response: xhr.responseText
+                                    }));
+                                    return;
+                                }
+                                if (xhr.status === 308) {
+                                    uploadReject(new Error('อัปโหลดถูกหยุดกลางทาง กรุณาลองใหม่อีกครั้ง'));
+                                    return;
+                                }
+                                uploadReject(new Error(getXhrErrorMessage(xhr, 'อัปโหลดไฟล์ไม่สำเร็จ')));
+                            };
+                            xhr.onerror = () => uploadReject(new Error('อัปโหลดไฟล์ไม่สำเร็จ'));
+                            xhr.onabort = () => uploadReject(createCancelledUploadError());
+                            xhr.send(fileObj.file);
+                        });
+
+                        if (fileObj.uploadHandle?.aborted) {
+                            throw createCancelledUploadError();
+                        }
+
+                        fileObj.uploadStatus = 'UPLOADED';
+                        fileObj.progress = 100;
+                        fileObj.id = result.id || '';
+                        fileObj.url = result.webViewLink || '';
+                        fileObj.mimeType = result.mimeType || getUploadMimeType(fileObj);
+                        fileObj.size = result.size || fileObj.size;
+                        fileObj.uploadHandle = null;
+                        renderList();
+                        setUploadStatusMessage(renderList, `อัปโหลดไฟล์ ${fileObj.name} สำเร็จ`);
+                        resolve(result);
+                    } catch (error) {
+                        if (isCancelledUploadError(error)) {
+                            setUploadStatusMessage(renderList, `ยกเลิกการอัปโหลดไฟล์ ${fileObj.name}`);
+                            reject(error);
                             return;
                         }
-                        if (res && res.progressNumber && res.status === 'Uploading') {
-                            fileObj.uploadStatus = 'UPLOADING';
-                            fileObj.progress = Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
-                            renderIqcFileList();
-                            return;
-                        }
-                        if (res && res.status && String(res.status).toLowerCase() === 'done') {
-                            fileObj.uploadStatus = 'UPLOADED';
-                            const parsed = parseUploadResponse(res);
-                            fileObj.id = parsed.id || '';
-                            fileObj.url = parsed.webViewLink || '';
-                            fileObj.mimeType = parsed.mimeType || fileObj.type;
-                            fileObj.size = parsed.size || fileObj.size;
-                            renderIqcFileList();
-                        }
-                    });
-                } catch (e) {
-                    fileObj.uploadStatus = 'ERROR';
-                    renderIqcFileList();
+                        fileObj.uploadStatus = 'ERROR';
+                        fileObj.uploadHandle = null;
+                        renderList();
+                        setUploadStatusMessage(renderList, `อัปโหลดไฟล์ ${fileObj.name} ไม่สำเร็จ`);
+                        reject(error);
+                    }
+                });
+            }
+
+            async function uploadEqaFile(fileObj) {
+                try {
+                    return await startResumableDriveUpload(fileObj, renderEqaFileList);
+                } catch (error) {
+                    if (!isCancelledUploadError(error)) {
+                        fileObj.uploadStatus = 'ERROR';
+                        renderEqaFileList();
+                        setUploadStatusMessage(renderEqaFileList, `อัปโหลดไฟล์ ${fileObj.name} ไม่สำเร็จ`);
+                    }
+                    return null;
+                }
+            }
+
+            async function uploadIqcFile(fileObj) {
+                try {
+                    return await startResumableDriveUpload(fileObj, renderIqcFileList);
+                } catch (error) {
+                    if (!isCancelledUploadError(error)) {
+                        fileObj.uploadStatus = 'ERROR';
+                        renderIqcFileList();
+                        setUploadStatusMessage(renderIqcFileList, `อัปโหลดไฟล์ ${fileObj.name} ไม่สำเร็จ`);
+                    }
+                    return null;
                 }
             }
 
@@ -3073,96 +3701,147 @@
                 }
                 return {};
             }
-            function showEqaLimitNotice() {
-                selectedFiles.forEach((file, idx) => {
-                    const fileObj = {
-                        name: file.name,
-                        size: file.size,
-                        type: file.type,
-                        file: file,
-                        uploadStatus: 'PENDING',
-                        progress: 0
-                    };
-                    state.newEqaFiles.push(fileObj);
-                    uploadEqaFile(fileObj, state.newEqaFiles.length - 1);
-                });
-                renderEqaFileList();
-                i++;
-                selectedFiles.forEach((file, idx) => {
-                    const fileObj = {
-                        name: file.name,
-                        size: file.size,
-                        type: file.type,
-                        file: file,
-                        uploadStatus: 'PENDING',
-                        progress: 0
-                    };
-                    fileObj.uploadStatus = 'INITIATING';
-                    state.newIqcFiles.push(fileObj);
-                    renderIqcFileList();
-                    setTimeout(() => uploadIqcFile(fileObj, state.newIqcFiles.length - 1), 100);
-                });
-                renderIqcFileList();
 
-                files.forEach((file, idx) => {
-                    let statusHtml = '';
-                    if (file.uploadStatus === 'UPLOADING') {
-                        statusHtml = `<span class='ml-2 text-xs text-blue-500'>Uploading... ${file.progress || 0}%</span>`;
-                    } else if (file.uploadStatus === 'UPLOADED') {
-                        statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
-                    } else if (file.uploadStatus === 'ERROR') {
-                        statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
-                    }
-                    $list.append(`
-                            <div class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                                <i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>
-                                <span class="truncate text-sm font-semibold text-slate-800">${escapeHtml(file.name)}</span>
-                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
-                                ${statusHtml}
-                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-eqa-file="${idx}">Remove</button>
-                            </div>
-                        `);
+            function getUploadedDriveFileIds(files) {
+                return (files || [])
+                    .map((file) => file && file.uploadStatus === 'UPLOADED' ? file.id : null)
+                    .filter(Boolean);
+            }
+
+            async function deleteDriveFiles(fileIds, loaderText = 'กำลังลบไฟล์ออกจาก Google Drive...') {
+                const ids = Array.from(new Set((fileIds || []).filter(Boolean)));
+                if (!ids.length) {
+                    return;
+                }
+                Swal.fire({
+                    title: 'กำลังลบไฟล์',
+                    text: loaderText,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
                 });
-                if (!confirm.isConfirmed) {
-                    files.forEach((file, idx) => {
-                        let statusHtml = '';
-                        if (file.uploadStatus === 'UPLOADING') {
-                            statusHtml = `<span class='ml-2 text-xs text-emerald-500'>Uploading... ${file.progress || 0}%</span>`;
-                        } else if (file.uploadStatus === 'UPLOADED') {
-                            statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
-                        } else if (file.uploadStatus === 'ERROR') {
-                            statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
-                        }
-                        $list.append(`
-                            <div class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                                <i data-lucide="paperclip" class="w-4 h-4 text-emerald-600"></i>
-                                <span class="truncate text-sm font-semibold text-slate-800">${escapeHtml(file.name)}</span>
-                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
-                                ${statusHtml}
-                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-iqc-file="${idx}">Remove</button>
-                            </div>
-                        `);
-                    });
+                try {
+                    await postApi('deleteFiles', { fileIds: ids });
+                } finally {
+                    Swal.close();
                 }
             }
+
+            async function removeFileFromList(files, idx, renderList) {
+                const file = files[idx];
+                if (!file) {
+                    return;
+                }
+
+                if (isActiveUploadFile(file)) {
+                    abortFileUpload(file);
+                    files.splice(idx, 1);
+                    renderList();
+                    setUploadStatusMessage(renderList, `ยกเลิกการอัปโหลดไฟล์ ${file.name}`);
+                    return;
+                }
+
+                const confirm = await Swal.fire({
+                    title: 'ยืนยันการลบไฟล์',
+                    html: file.uploadStatus === 'UPLOADED'
+                        ? `คุณต้องการลบไฟล์ <b>${escapeHtml(file.name)}</b> ใช่หรือไม่?`
+                        : `คุณต้องการลบไฟล์ <b>${escapeHtml(file.name)}</b> ออกจากรายการใช่หรือไม่?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ลบไฟล์',
+                    cancelButtonText: 'ยกเลิก',
+                });
+
+                if (!confirm.isConfirmed) {
+                    return;
+                }
+
+                if (file.uploadStatus === 'UPLOADED' && file.id) {
+                    await deleteDriveFiles([file.id]);
+                }
+
+                files.splice(idx, 1);
+                renderList();
+                setUploadStatusMessage(renderList, `ลบไฟล์ ${file.name} แล้ว`);
+            }
+
+            async function clearAllUploadedFiles(files, renderList) {
+                const uploadedIds = getUploadedDriveFileIds(files);
+                const activeFiles = (files || []).filter(isActiveUploadFile);
+                const confirm = await Swal.fire({
+                    title: 'ยืนยันการลบไฟล์ทั้งหมด',
+                    html: `ไฟล์ทั้งหมด <b>${uploadedIds.length}</b> รายการจะถูกลบ`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ลบทั้งหมด',
+                    cancelButtonText: 'ยกเลิก',
+                });
+
+                if (!confirm.isConfirmed) {
+                    return;
+                }
+
+                activeFiles.forEach(abortFileUpload);
+
+                if (uploadedIds.length) {
+                    await deleteDriveFiles(uploadedIds, 'กำลังลบไฟล์ทั้งหมดออกจาก Google Drive...');
+                }
+
+                files.length = 0;
+                renderList();
+                setUploadStatusMessage(renderList, 'ลบไฟล์แนบทั้งหมดแล้ว');
+            }
+            window.removeFileFromList = removeFileFromList;
+            window.clearAllUploadedFiles = clearAllUploadedFiles;
+            window.deleteDriveFiles = deleteDriveFiles;
+            function showEqaLimitNotice() {
+                $('#eqa-upload-limit-notice').removeClass('hidden');
+                setTimeout(() => {
+                    $('#eqa-upload-limit-notice').addClass('hidden');
+                }, 2000);
+            }
+            window.handleEqaFileSelection = handleEqaFileSelection;
+            window.handleIqcFileSelection = handleIqcFileSelection;
             lucide.createIcons();
         });
+
+        function syncUploadBusyState(renderList, files) {
+            const targets = renderList === renderEqaFileList
+                ? { listId: 'eqa-file-list' }
+                : { listId: 'iqc-file-list' };
+            const isBusy = (files || []).some((file) => file && (file.uploadStatus === 'PENDING' || file.uploadStatus === 'UPLOADING'));
+            $(`#${targets.listId}`).attr('aria-busy', isBusy ? 'true' : 'false');
+        }
 
         function renderEqaFileList() {
             const $list = $('#eqa-file-list').empty();
             const files = state.newEqaFiles;
-            $('#eqa-upload-counter').text(`${files.length}/10 files`);
+            $('#eqa-upload-counter').text(`${files.length}/10 ไฟล์`);
             $('#eqa-remove-all-btn').toggleClass('hidden', files.length === 0);
             $('#eqa-upload-limit-notice').toggleClass('hidden', files.length < 10);
+            syncUploadBusyState(renderEqaFileList, files);
             if (!files.length) {
-                $list.append('<div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 md:col-span-2">No files attached yet.</div>');
+                $list.append('<div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 md:col-span-2">ยังไม่มีไฟล์แนบ</div>');
                 return;
             }
             files.forEach((file, idx) => {
                 let statusHtml = '';
                 let progressBarHtml = '';
+                const isActive = file.uploadStatus === 'PENDING' || file.uploadStatus === 'UPLOADING';
+                const actionLabel = isActive ? 'ยกเลิก' : 'ลบ';
+                const actionAttr = isActive ? `data-cancel-eqa-file="${idx}"` : `data-remove-eqa-file="${idx}"`;
+                const actionClass = isActive
+                    ? 'border-amber-200 text-amber-700 hover:bg-amber-50'
+                    : 'border-rose-200 text-rose-600 hover:bg-rose-50';
+                const rowToneClass = file.uploadStatus === 'ERROR'
+                    ? 'bg-rose-50 border-rose-200 hover:bg-rose-100 hover:border-rose-300'
+                    : file.uploadStatus === 'UPLOADED'
+                        ? 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300'
+                        : 'bg-blue-50 border-blue-200 hover:bg-blue-100 hover:border-blue-300';
+                const entryClass = file.justAdded ? 'upload-row motion-enter' : 'upload-row';
+                const entryDelay = file.justAdded ? `style="--entry-delay:${idx * 40}ms"` : '';
                 if (file.uploadStatus === 'UPLOADING') {
-                    statusHtml = `<span class='ml-2 text-xs text-blue-500'>Uploading... ${file.progress || 0}%</span>`;
+                    statusHtml = `<span class='ml-2 text-xs font-semibold text-blue-700'>กำลังอัปโหลด... ${file.progress || 0}%</span>`;
                     progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
                             <div class='flex-1 bg-slate-100 rounded-full h-2'>
                                 <div class='bg-blue-400 h-2 rounded-full' style='width:${file.progress || 0}%'></div>
@@ -3173,49 +3852,72 @@
                 } else if (file.uploadStatus === 'PENDING') {
                     progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
                             <div class='flex-1 bg-slate-100 rounded-full h-2'></div>
-                            <span class='ml-2 text-xs text-blue-400'>Initiating...</span>
+                            <span class='ml-2 text-xs font-semibold text-blue-700'>กำลังเริ่มอัปโหลด...</span>
                         </div>`;
                 } else if (file.uploadStatus === 'UPLOADED') {
-                    statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
+                    statusHtml = `<span class='ml-2 text-xs font-semibold text-emerald-700'>อัปโหลดแล้ว</span>`;
                 } else if (file.uploadStatus === 'ERROR') {
-                    statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
+                    statusHtml = `<span class='ml-2 text-xs font-semibold text-rose-700'>ผิดพลาด</span>`;
                 }
                 $list.append(`
-                        <div class="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 hover:bg-slate-100 hover:shadow-slate-200 hover:border-slate-300">
-                            <div class="flex items-center gap-2">
+                        <div class="${entryClass} ${rowToneClass} flex flex-col gap-1 rounded-2xl border px-4 py-3 hover:shadow-slate-200" ${entryDelay}>
+                            <div class="flex min-w-0 items-center gap-2">
                                 ${/^image\//.test(file.mimeType || file.type) && file.uploadStatus === "UPLOADED" ? `<img src="https://lh3.googleusercontent.com/d/${file.id}" alt="${escapeHtml(file.name)}" class="w-10 h-10 object-cover rounded border border-slate-200" style="min-width:40px;max-width:40px;max-height:40px;" />` : `<i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>`}
-                                <span class="truncate text-sm font-semibold text-blue-600 cursor-pointer hover:underline" onclick="window.open('https://drive.google.com/file/d/${file.id}', '_blank')">${escapeHtml(file.name)}</span>
-                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                                <a href="https://drive.google.com/file/d/${file.id}" target="_blank" rel="noopener noreferrer" class="min-w-0 flex-1 truncate text-sm font-semibold text-blue-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">${escapeHtml(file.name)}</a>
+                                <span class="ml-2 shrink-0 text-xs text-slate-500">${formatFileSize(file.size)}</span>
                                 ${statusHtml}
-                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-eqa-file="${idx}">Remove</button>
+                                <button type="button" class="ml-auto inline-flex min-h-11 shrink-0 items-center justify-center rounded-full border px-4 py-2 text-xs font-semibold ${actionClass}" ${actionAttr}>${actionLabel}</button>
                             </div>
                             ${progressBarHtml}
                         </div>
                     `);
             });
             lucide.createIcons();
-            $list.find('[data-remove-eqa-file]').on('click', function () {
-                const idx = Number($(this).attr('data-remove-eqa-file'));
-                state.newEqaFiles.splice(idx, 1);
-                renderEqaFileList();
+            $list.find('[data-remove-eqa-file], [data-cancel-eqa-file]').on('click', function () {
+                const idx = Number($(this).attr('data-remove-eqa-file') || $(this).attr('data-cancel-eqa-file'));
+                window.removeFileFromList(state.newEqaFiles, idx, renderEqaFileList)
+                    .catch((err) => {
+                        Swal.fire('ผิดพลาด', err.message, 'error');
+                    });
+            });
+            files.forEach((file) => {
+                if (file.justAdded) {
+                    window.setTimeout(() => {
+                        file.justAdded = false;
+                    }, 320);
+                }
             });
         }
 
         function renderIqcFileList() {
             const $list = $('#iqc-file-list').empty();
             const files = state.newIqcFiles;
-            $('#iqc-upload-counter').text(`${files.length}/10 files`);
+            $('#iqc-upload-counter').text(`${files.length}/10 ไฟล์`);
             $('#iqc-remove-all-btn').toggleClass('hidden', files.length === 0);
             $('#iqc-upload-limit-notice').toggleClass('hidden', files.length < 10);
+            syncUploadBusyState(renderIqcFileList, files);
             if (!files.length) {
-                $list.append('<div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 md:col-span-2">No files attached yet.</div>');
+                $list.append('<div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 md:col-span-2">ยังไม่มีไฟล์แนบ</div>');
                 return;
             }
             files.forEach((file, idx) => {
                 let statusHtml = '';
                 let progressBarHtml = '';
+                const isActive = file.uploadStatus === 'PENDING' || file.uploadStatus === 'UPLOADING';
+                const actionLabel = isActive ? 'ยกเลิก' : 'ลบ';
+                const actionAttr = isActive ? `data-cancel-iqc-file="${idx}"` : `data-remove-iqc-file="${idx}"`;
+                const actionClass = isActive
+                    ? 'border-amber-200 text-amber-700 hover:bg-amber-50'
+                    : 'border-rose-200 text-rose-600 hover:bg-rose-50';
+                const rowToneClass = file.uploadStatus === 'ERROR'
+                    ? 'bg-rose-50 border-rose-200 hover:bg-rose-100 hover:border-rose-300'
+                    : file.uploadStatus === 'UPLOADED'
+                        ? 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300'
+                        : 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300';
+                const entryClass = file.justAdded ? 'upload-row motion-enter' : 'upload-row';
+                const entryDelay = file.justAdded ? `style="--entry-delay:${idx * 40}ms"` : '';
                 if (file.uploadStatus === 'UPLOADING') {
-                    statusHtml = `<span class='ml-2 text-xs text-blue-500'>Uploading... ${file.progress || 0}%</span>`;
+                    statusHtml = `<span class='ml-2 text-xs font-semibold text-emerald-700'>กำลังอัปโหลด... ${file.progress || 0}%</span>`;
                     progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
                             <div class='flex-1 bg-slate-100 rounded-full h-2'>
                                 <div class='bg-blue-400 h-2 rounded-full' style='width:${file.progress || 0}%'></div>
@@ -3226,31 +3928,40 @@
                 } else if (file.uploadStatus === 'PENDING') {
                     progressBarHtml = `<div class='w-full flex items-center gap-2 mt-1'>
                             <div class='flex-1 bg-slate-100 rounded-full h-2'></div>
-                            <span class='ml-2 text-xs text-blue-400'>Initiating...</span>
+                            <span class='ml-2 text-xs font-semibold text-emerald-700'>กำลังเริ่มอัปโหลด...</span>
                         </div>`;
                 } else if (file.uploadStatus === 'UPLOADED') {
-                    statusHtml = `<span class='ml-2 text-xs text-emerald-600'>Uploaded</span>`;
+                    statusHtml = `<span class='ml-2 text-xs font-semibold text-emerald-700'>อัปโหลดแล้ว</span>`;
                 } else if (file.uploadStatus === 'ERROR') {
-                    statusHtml = `<span class='ml-2 text-xs text-red-600'>Error</span>`;
+                    statusHtml = `<span class='ml-2 text-xs font-semibold text-rose-700'>ผิดพลาด</span>`;
                 }
                 $list.append(`
-                        <div class="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 hover:bg-slate-100 hover:shadow-slate-200 hover:border-slate-300">
-                            <div class="flex items-center gap-2">
+                        <div class="${entryClass} ${rowToneClass} flex flex-col gap-1 rounded-2xl border px-4 py-3 hover:shadow-slate-200" ${entryDelay}>
+                            <div class="flex min-w-0 items-center gap-2">
                                 ${/^image\//.test(file.mimeType || file.type) && file.uploadStatus === "UPLOADED" ? `<img src="https://lh3.googleusercontent.com/d/${file.id}" alt="${escapeHtml(file.name)}" class="w-10 h-10 object-cover rounded border border-slate-200" style="min-width:40px;max-width:40px;max-height:40px;" />` : `<i data-lucide="paperclip" class="w-4 h-4 text-blue-600"></i>`}
-                                <span class="truncate text-sm font-semibold text-blue-600 cursor-pointer hover:underline" onclick="window.open('https://drive.google.com/file/d/${file.id}', '_blank')">${escapeHtml(file.name)}</span>
-                                <span class="ml-2 text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                                <a href="https://drive.google.com/file/d/${file.id}" target="_blank" rel="noopener noreferrer" class="min-w-0 flex-1 truncate text-sm font-semibold text-blue-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">${escapeHtml(file.name)}</a>
+                                <span class="ml-2 shrink-0 text-xs text-slate-500">${formatFileSize(file.size)}</span>
                                 ${statusHtml}
-                                <button type="button" class="ml-auto rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600" data-remove-iqc-file="${idx}">Remove</button>
+                                <button type="button" class="ml-auto inline-flex min-h-11 shrink-0 items-center justify-center rounded-full border px-4 py-2 text-xs font-semibold ${actionClass}" ${actionAttr}>${actionLabel}</button>
                             </div>
                             ${progressBarHtml}
                         </div>
                     `);
             });
             lucide.createIcons();
-            $list.find('[data-remove-iqc-file]').on('click', function () {
-                const idx = Number($(this).attr('data-remove-iqc-file'));
-                state.newIqcFiles.splice(idx, 1);
-                renderIqcFileList();
+            $list.find('[data-remove-iqc-file], [data-cancel-iqc-file]').on('click', function () {
+                const idx = Number($(this).attr('data-remove-iqc-file') || $(this).attr('data-cancel-iqc-file'));
+                window.removeFileFromList(state.newIqcFiles, idx, renderIqcFileList)
+                    .catch((err) => {
+                        Swal.fire('ผิดพลาด', err.message, 'error');
+                    });
+            });
+            files.forEach((file) => {
+                if (file.justAdded) {
+                    window.setTimeout(() => {
+                        file.justAdded = false;
+                    }, 320);
+                }
             });
         }
 
@@ -3263,13 +3974,13 @@
         }
 
         $('#eqa-files').off('change').on('change', function () {
-            renderFilePreview(this.files, '#eqa-file-list');
+            window.handleEqaFileSelection(this.files);
             // Use setTimeout to avoid recursive change event
             setTimeout(() => { this.value = ''; }, 0);
         });
 
         $('#iqc-files').off('change').on('change', function () {
-            renderFilePreview(this.files, '#iqc-file-list');
+            window.handleIqcFileSelection(this.files);
             setTimeout(() => { this.value = ''; }, 0);
         });
 
@@ -3294,6 +4005,14 @@
 
         $(document).on('click', '.records-view-nav', function () {
             setRecordsView($(this).attr('data-record-view'));
+        });
+
+        $(document).on('change', '#iqc-records-year, #iqc-records-month', function () {
+            state.iqcRecordsFilter = {
+                year: Number($('#iqc-records-year').val() || getIqcDefaultFilterSelection().year),
+                month: String($('#iqc-records-month').val() || getIqcDefaultFilterSelection().month)
+            };
+            loadRecords({ useIqcMonthRange: true });
         });
 
         $('#btn-load-records').click(loadRecords);
@@ -3376,8 +4095,16 @@
             $(`.nav-btn[data-target="${target}"]`)
                 .addClass('active-nav')
                 .attr({ 'aria-current': 'page', 'aria-pressed': 'true' });
-            $('.form-card').removeClass('active');
-            $(`#${target}`).addClass('active');
+            const $cards = $('.form-card');
+            $cards.removeClass('active motion-enter');
+            const $nextCard = $(`#${target}`);
+            $nextCard.addClass('active motion-enter');
+            window.requestAnimationFrame(() => {
+                $nextCard.addClass('motion-enter');
+            });
+            window.setTimeout(() => {
+                $nextCard.removeClass('motion-enter');
+            }, 300);
             if (target === 'records-panel') {
                 setRecordsView(state.recordsView || 'eqa');
             }
@@ -3395,6 +4122,9 @@
                 .addClass('bg-slate-900 text-white shadow-sm border-slate-900');
             $('.records-page').addClass('hidden');
             $(`#records-page-${nextView}`).removeClass('hidden');
+            if (nextView === 'iqc') {
+                renderIqcRecordsPage();
+            }
             if (window.lucide) {
                 lucide.createIcons();
             }
@@ -3414,6 +4144,9 @@
             state.editingSignatureData = null;
             $('#eqa-files').val('');
             $('#iqc-files').val('');
+            window.requestAnimationFrame(() => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            });
         }
 
         function renderFilePreview(files, containerSelector) {
@@ -3439,7 +4172,6 @@
             if (!json.ok) {
                 throw new Error(json.message || 'Request failed');
             }
-            console.log('API Response for', action, json);
             return json.data;
         }
 
@@ -3465,10 +4197,10 @@
         }
 
         function getMonthlyLabel(monthMoment) {
-            const parts = formatBuddhistMonthYear(monthMoment.toDate());
+            const parts = formatGregorianMonthYear(monthMoment.toDate());
             return {
                 monthName: parts.monthName || '',
-                buddhistYear: parts.buddhistYear || ''
+                year: parts.year || ''
             };
         }
 
@@ -3515,7 +4247,7 @@
             const analyzerStatus = mapEqaAnalyzerStatus(data.analyzerStatus || '');
             const pageInfo = `${pageIndex}/${totalPages}`;
             const titleMonth = monthParts.monthName ? `ประจำเดือน ${escapeHtml(monthParts.monthName)}` : 'ประจำเดือน';
-            const titleYear = monthParts.buddhistYear ? `ปี ${escapeHtml(monthParts.buddhistYear)}` : 'ปี';
+            const titleYear = monthParts.year ? `ปี ${escapeHtml(monthParts.year)}` : 'ปี';
 
             return `
                 <div class="eqa-export-page" style="width:210mm; min-height:297mm; background:#fff; color:#000; font-family:'Noto Sans Thai', sans-serif; padding:18mm 18mm 16mm; box-sizing:border-box; break-after:page; page-break-after:always;">
@@ -3607,7 +4339,7 @@
             `;
         }
 
-        async function loadRecords() {
+        async function loadRecords(options = {}) {
             try {
                 $('#eqa-records-table-body, #iqc-records-table-body, #iqc-monthly-summary-body').html(`
                                     <tr>
@@ -3622,24 +4354,34 @@
                                         </td>
                                     </tr>
                                 `);
-                let selected = [];
-                if (state.dateRangePicker && Array.isArray(state.dateRangePicker.selectedDates)) {
-                    selected = state.dateRangePicker.selectedDates;
-                }
-                const payload = {
-                    startDate: selected[0] ? moment(selected[0]).format('YYYY-MM-DD') : '',
-                    endDate: selected[1] ? moment(selected[1]).format('YYYY-MM-DD') : '',
-                    type: 'ALL'
-                };
+                const useIqcMonthRange = Boolean(options.useIqcMonthRange || state.recordsView === 'iqc');
+                const payload = useIqcMonthRange
+                    ? (() => {
+                        const range = getIqcRecordsFetchRange();
+                        return {
+                            startDate: range.startDate,
+                            endDate: range.endDate,
+                            type: 'ALL'
+                        };
+                    })()
+                    : (() => {
+                        let selected = [];
+                        if (state.dateRangePicker && Array.isArray(state.dateRangePicker.selectedDates)) {
+                            selected = state.dateRangePicker.selectedDates;
+                        }
+                        return {
+                            startDate: selected[0] ? moment(selected[0]).format('YYYY-MM-DD') : '',
+                            endDate: selected[1] ? moment(selected[1]).format('YYYY-MM-DD') : '',
+                            type: 'ALL'
+                        };
+                    })();
                 const allRecords = await getRecordsApi(payload);
                 state.allRecords = Array.isArray(allRecords) ? allRecords : [];
                 state.records = state.allRecords.filter((record) => getRecordSummaryType(record) !== 'IQC_SUMMARY');
                 const eqaRecords = state.records.filter((record) => getRecordSummaryType(record) === 'EQA');
-                const iqcRecords = state.records.filter((record) => getRecordSummaryType(record) === 'IQC');
                 state.lastIqcControlData = getLatestIqcControlData(state.allRecords);
                 renderRecordsTable(eqaRecords, '#eqa-records-table-body');
-                renderRecordsTable(iqcRecords, '#iqc-records-table-body');
-                renderIqcMonthlySummaryTable(state.allRecords);
+                renderIqcRecordsPage();
                 setRecordsView(state.recordsView || 'eqa');
                 if (!state.editingId) {
                     renderIqcScheduleForm();
@@ -3775,7 +4517,6 @@
                 });
                 const result = await postApi('upsertRecord', { record });
                 postApi('movefilestorecordfolder', { recordId: result.id, attachments, type: type });
-                performSwitch('records-panel');
                 resetAllForms();
                 await loadRecords();
                 Swal.fire('สำเร็จ', 'บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
@@ -3808,10 +4549,40 @@
             const instruction = options.instruction || 'กรุณาเซ็นชื่อเพื่อยืนยันการบันทึกข้อมูล';
             const confirmButtonText = options.confirmButtonText || 'ยืนยันบันทึก';
             const penColor = options.penColor || '#1e3a8a';
+            const enableSignerProfile = Boolean(options.enableSignerProfile);
+            const storageKey = String(options.storageKey || '').trim();
+            const defaultSignerPosition = String(options.defaultSignerPosition || '').trim();
+            const positionOptions = Array.isArray(options.positionOptions) && options.positionOptions.length > 0
+                ? options.positionOptions.map((item) => String(item || '').trim()).filter(Boolean)
+                : [];
+            const profile = enableSignerProfile
+                ? loadSignatureProfile(storageKey, defaultSignerPosition)
+                : { name: '', position: '' };
             const res = await Swal.fire({
                 title,
                 html: `
                     <div class="text-left text-sm text-slate-600 mb-3">${escapeHtml(instruction)}</div>
+                    ${enableSignerProfile ? `
+                        <div class="mb-3 grid gap-3 sm:grid-cols-2">
+                            <label class="block">
+                                <span class="mb-1 block text-sm font-semibold text-slate-700">ชื่อผู้ลงนาม</span>
+                                <input id="signature-signer-name" type="text" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" placeholder="กรอกชื่อ" autocomplete="name">
+                            </label>
+                            <label class="block">
+                                <span class="mb-1 block text-sm font-semibold text-slate-700">ตำแหน่ง</span>
+                                <select id="signature-signer-position" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                                    ${positionOptions.map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join('')}
+                                    <option value="__other__">อื่นๆ</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div id="signature-signer-position-other-wrap" class="mb-3 hidden">
+                            <label class="block">
+                                <span class="mb-1 block text-sm font-semibold text-slate-700">ระบุตำแหน่งเอง</span>
+                                <input id="signature-signer-position-other" type="text" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" placeholder="กรอกตำแหน่ง">
+                            </label>
+                        </div>
+                    ` : ''}
                     <canvas id="signature-canvas" class="signature-canvas"></canvas>
                     <div class="mt-3 text-right">
                         <button id="clear-signature" type="button" class="px-3 py-1.5 text-sm rounded-lg border border-slate-300 text-slate-600">ล้างลายเซ็น</button>
@@ -3826,11 +4597,66 @@
                         penColor,
                         backgroundColor: 'rgba(255,255,255,0)',
                     });
+                    const nameInput = enableSignerProfile ? document.getElementById('signature-signer-name') : null;
+                    const positionSelect = enableSignerProfile ? document.getElementById('signature-signer-position') : null;
+                    const positionOtherWrap = enableSignerProfile ? document.getElementById('signature-signer-position-other-wrap') : null;
+                    const positionOtherInput = enableSignerProfile ? document.getElementById('signature-signer-position-other') : null;
+                    const knownPositionSet = new Set(positionOptions);
+                    let profileSaveTimer = null;
+                    const getProfileSnapshot = () => ({
+                        name: String(nameInput?.value || '').trim(),
+                        position: positionSelect?.value === '__other__'
+                            ? String(positionOtherInput?.value || '').trim()
+                            : String(positionSelect?.value || '').trim()
+                    });
+                    const syncOtherPositionVisibility = () => {
+                        if (!positionSelect || !positionOtherWrap) {
+                            return;
+                        }
+                        const useOther = positionSelect.value === '__other__';
+                        positionOtherWrap.classList.toggle('hidden', !useOther);
+                        if (positionOtherInput) {
+                            positionOtherInput.required = useOther;
+                        }
+                    };
+                    const commitProfile = () => {
+                        if (!enableSignerProfile) {
+                            return;
+                        }
+                        saveSignatureProfile(storageKey, getProfileSnapshot());
+                    };
+                    const scheduleProfileCommit = () => {
+                        if (!enableSignerProfile) {
+                            return;
+                        }
+                        if (profileSaveTimer) {
+                            clearTimeout(profileSaveTimer);
+                        }
+                        profileSaveTimer = window.setTimeout(commitProfile, 250);
+                    };
                     resizeSignatureCanvas(canvas, signaturePad);
                     window.addEventListener('resize', () => resizeSignatureCanvas(canvas, signaturePad), { once: true });
                     document.getElementById('clear-signature').addEventListener('click', function () {
                         signaturePad.clear();
                     });
+                    if (enableSignerProfile && nameInput && positionSelect && positionOtherWrap && positionOtherInput) {
+                        nameInput.value = profile.name || '';
+                        if (profile.position && knownPositionSet.has(profile.position)) {
+                            positionSelect.value = profile.position;
+                            positionOtherInput.value = '';
+                        } else {
+                            positionSelect.value = '__other__';
+                            positionOtherInput.value = profile.position || '';
+                        }
+                        syncOtherPositionVisibility();
+                        nameInput.addEventListener('input', scheduleProfileCommit);
+                        positionSelect.addEventListener('change', () => {
+                            syncOtherPositionVisibility();
+                            scheduleProfileCommit();
+                        });
+                        positionOtherInput.addEventListener('input', scheduleProfileCommit);
+                        commitProfile();
+                    }
                     // โหลดลายเซ็นเดิมถ้ามี
                     if (existingData && Array.isArray(existingData) && existingData.length > 0) {
                         try { signaturePad.fromData(existingData); } catch (e) { }
@@ -3840,6 +4666,25 @@
                     if (!signaturePad || signaturePad.isEmpty()) {
                         Swal.showValidationMessage('กรุณาเซ็นชื่อก่อนยืนยัน');
                         return false;
+                    }
+                    if (enableSignerProfile) {
+                        const nameInput = document.getElementById('signature-signer-name');
+                        const positionSelect = document.getElementById('signature-signer-position');
+                        const positionOtherInput = document.getElementById('signature-signer-position-other');
+                        const signerName = String(nameInput?.value || '').trim();
+                        const signerPosition = positionSelect?.value === '__other__'
+                            ? String(positionOtherInput?.value || '').trim()
+                            : String(positionSelect?.value || '').trim();
+                        if (positionSelect?.value === '__other__' && !signerPosition) {
+                            Swal.showValidationMessage('กรุณาระบุตำแหน่ง');
+                            return false;
+                        }
+                        saveSignatureProfile(storageKey, { name: signerName, position: signerPosition });
+                        return {
+                            signature: signaturePad.toData(),
+                            signerName,
+                            signerPosition
+                        };
                     }
                     return signaturePad.toData();
                 }
@@ -3946,7 +4791,6 @@
 
             if (!state.uploadAuth) {
                 state.uploadAuth = await postApi('getUploadAuth');
-                console.log('Received upload auth:', state.uploadAuth);
             }
 
             const progressMap = {};
@@ -3965,7 +4809,7 @@
                     progressMap[file.name] = p;
                     const total = Object.values(progressMap).reduce((sum, n) => sum + n, 0);
                     const avg = Math.round(total / files.length);
-                    $('#upload-progress').css('width', `${avg}%`);
+                    $('#upload-progress').css('transform', `scaleX(${avg / 100})`);
                     $('#upload-progress-text').text(`${avg}%`);
                 });
                 uploaded.push(meta);
@@ -4160,7 +5004,6 @@
         }
 
         function startEditRecord(id) {
-            console.log(state)
             const record = state.records.find((r) => r.id === id);
             if (!record) {
                 return;
@@ -4441,16 +5284,24 @@
                 penColor: '#1e3a8a'
             });
             const buttonLabel = signatureData.length > 0 ? 'แก้ไขลายเซ็นผู้ตรวจสอบ' : 'เซ็นชื่อผู้ตรวจสอบ';
+            const previewMarkup = imageUrl
+                ? `<div class="js-signature-preview h-6 w-full rounded-lg bg-white" data-signature-json="${escapeHtml(JSON.stringify(signatureData || []))}"></div>`
+                : '';
             return `
                 <div class="space-y-2">
                     ${imageUrl
-                        ? `<div class="js-signature-preview h-6 w-full rounded-lg bg-white" data-signature-json="${escapeHtml(JSON.stringify(signatureData || []))}"></div>`
-                        : '<div class="text-xs font-medium text-slate-400">ยังไม่มีลายเซ็น</div>'}
-                    <button type="button"
-                        class="js-iqc-supervisor-sign-btn inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
-                        data-id="${escapeHtml(record.id || '')}">
-                        ${buttonLabel}
-                    </button>
+                        ? `<button type="button"
+                            class="js-iqc-supervisor-sign-btn js-editable-signature w-full rounded-md bg-transparent p-0 text-left"
+                            data-id="${escapeHtml(record.id || '')}"
+                            aria-label="คลิกเพื่อแก้ไข">
+                            ${previewMarkup}
+                            <span class="signature-tooltip" aria-hidden="true">คลิกเพื่อแก้ไข</span>
+                        </button>`
+                        : `<button type="button"
+                            class="js-iqc-supervisor-sign-btn inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+                            data-id="${escapeHtml(record.id || '')}">
+                            ${buttonLabel}
+                        </button>`}
                 </div>
             `;
         }
@@ -4662,13 +5513,15 @@
                 supervisorName: currentData.supervisorName || '',
                 summaryOperatorName: summaryRecord?.data?.summaryOperatorName || summaryRecord?.data?.operatorName || '',
                 summarySupervisorName: summaryRecord?.data?.summarySupervisorName || summaryRecord?.data?.supervisorName || '',
+                summaryOperatorPosition: summaryRecord?.data?.summaryOperatorPosition || summaryRecord?.data?.operatorPosition || '',
+                summarySupervisorPosition: summaryRecord?.data?.summarySupervisorPosition || summaryRecord?.data?.supervisorPosition || '',
                 dailyMaintenance: currentData.dailyMaintenance || { device: false, guide: false },
                 iqcLow: currentData.iqcLow || { status: '', value: '', range: '' },
                 iqcHigh: currentData.iqcHigh || { status: '', value: '', range: '' },
                 weekly: currentData.weekly || {},
                 iqcNonConformance: Array.isArray(currentData.iqcNonConformance) ? currentData.iqcNonConformance : []
             };
-            const monthParts = formatBuddhistMonthYear(monthStart.toDate());
+            const monthParts = formatGregorianMonthYear(monthStart.toDate());
             const recordMap = getIqcMonthlyRecordMap(records);
             const controlSets = getIqcCoverControlSets(records, current);
             const logoSrc = 'nhealth-logo.png';
@@ -4844,9 +5697,9 @@
                         border-width: 1.5px;
 
                     }
-                    .iqc-col-task { width: 14%; }
+                    .iqc-col-task { width: 12%; }
                     .iqc-checklist-table .iqc-col-task { width: 11%; }
-                    .iqc-col-criteria { width: 4%; }
+                    .iqc-col-criteria { width: 5%; }
                     .iqc-col-small { width: 8%; }
                     .iqc-col-long { width: 18%; }
                     .iqc-col-day { width: 2.4%; }
@@ -4892,7 +5745,7 @@
                     }
                     .iqc-cover-page .iqc-signature-name,
                     .iqc-cover-page .iqc-signature-position {
-                        font-size: var(--iqc-font-xs);
+                        font-size: var(--iqc-font-sm);
                         line-height: 1.3;
                     }
                     .iqc-cover-page .iqc-summary-table .iqc-table-cell {
@@ -5028,8 +5881,114 @@
                         display: block;
                         vertical-align: middle;
                     }
-                    .iqc-summary-table th:first-child,
-                    .iqc-summary-table td:first-child,
+                    #iqc-records-table-body tr,
+                    #iqc-records-table-body td,
+                    #iqc-records-table-body th {
+                        white-space: nowrap !important;
+                        overflow-wrap: normal !important;
+                        word-break: normal !important;
+                    }
+                    #iqc-records-table-body td > *,
+                    #iqc-records-table-body th > * {
+                        white-space: nowrap !important;
+                    }
+                    .js-editable-signature {
+                        position: relative;
+                        display: block;
+                        overflow: visible;
+                        cursor: pointer;
+                    }
+                    .js-editable-signature .signature-tooltip {
+                        position: absolute;
+                        left: 50%;
+                        bottom: calc(100% + 0.5rem);
+                        transform: translate(-50%, 6px);
+                        opacity: 0;
+                        pointer-events: none;
+                        z-index: 20;
+                        white-space: nowrap;
+                        border-radius: 0.625rem;
+                        background: rgba(15, 23, 42, 0.96);
+                        color: #fff;
+                        padding: 0.45rem 0.7rem;
+                        font-size: 0.75rem;
+                        line-height: 1;
+                        font-weight: 600;
+                        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+                        transition: opacity 150ms ease, transform 150ms ease;
+                    }
+                    .js-editable-signature .signature-tooltip::before {
+                        content: "";
+                        position: absolute;
+                        left: 50%;
+                        bottom: -0.6rem;
+                        transform: translateX(-50%) translateY(2px);
+                        opacity: 0;
+                        pointer-events: none;
+                        z-index: 19;
+                        border: 0.35rem solid transparent;
+                        border-top-color: rgba(15, 23, 42, 0.96);
+                        transition: opacity 150ms ease, transform 150ms ease;
+                    }
+                    .js-editable-signature:hover .signature-tooltip,
+                    .js-editable-signature:focus-visible .signature-tooltip {
+                        opacity: 1;
+                        transform: translate(-50%, 0);
+                    }
+                    .js-editable-signature:hover .signature-tooltip::before,
+                    .js-editable-signature:focus-visible .signature-tooltip::before {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
+                    }
+                    .js-editable-signature:focus-visible {
+                        outline: 2px solid rgba(30, 58, 138, 0.35);
+                        outline-offset: 2px;
+                    }
+        .iqc-summary-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .iqc-summary-col-year {
+            width: 11% !important;
+        }
+        .iqc-summary-col-month {
+            width: 16% !important;
+        }
+        .iqc-summary-col-signature {
+            width: 28.5% !important;
+        }
+        .iqc-summary-col-export {
+            width: 16% !important;
+        }
+        .iqc-summary-table thead th:nth-child(1),
+        .iqc-summary-table tbody td:nth-child(1) {
+            width: 11% !important;
+        }
+        .iqc-summary-table thead th:nth-child(2),
+        .iqc-summary-table tbody td:nth-child(2) {
+            width: 16% !important;
+        }
+        .iqc-summary-table thead th:nth-child(3),
+        .iqc-summary-table tbody td:nth-child(3),
+        .iqc-summary-table thead th:nth-child(4),
+        .iqc-summary-table tbody td:nth-child(4) {
+            width: 28.5% !important;
+        }
+        .iqc-summary-table thead th:nth-child(5),
+        .iqc-summary-table tbody td:nth-child(5) {
+            width: 16% !important;
+        }
+        .iqc-summary-table thead th,
+        .iqc-summary-table tbody td {
+            overflow-wrap: normal;
+            word-break: normal;
+        }
+        .iqc-summary-table tbody td:nth-child(3),
+        .iqc-summary-table tbody td:nth-child(4) {
+            text-align: center;
+        }
+        .iqc-summary-table th:first-child,
+        .iqc-summary-table td:first-child,
                     .iqc-summary-table th:last-child,
                     .iqc-summary-table td:last-child,
                     .iqc-checklist-table th:first-child,
@@ -5115,8 +6074,8 @@
                 </style>
             `;
 
-            const coverHtml = buildIqcCoverPage(current, monthParts.monthName, monthParts.buddhistYear, signatureData, logoSrc, controlSets, records);
-            const checklistHtml = buildIqcChecklistPage(current, monthParts.monthName, monthParts.buddhistYear, [], recordMap, signatureData, logoSrc);
+            const coverHtml = buildIqcCoverPage(current, monthParts.monthName, monthParts.year, signatureData, logoSrc, controlSets, records);
+            const checklistHtml = buildIqcChecklistPage(current, monthParts.monthName, monthParts.year, [], recordMap, signatureData, logoSrc);
             let printHost = document.getElementById('iqc-print-host');
             if (printHost) {
                 printHost.remove();
@@ -5156,15 +6115,159 @@
             )));
 
             Swal.close();
-            setTimeout(() => {
-                window.print();
-            }, 150);
+            // setTimeout(() => {
+            //     window.print();
+            // }, 150);
 
-            window.addEventListener('afterprint', () => {
-                document.body.classList.remove('iqc-print-mode');
-                printHost.remove();
-            }, { once: true });
+            // window.addEventListener('afterprint', () => {
+            //     document.body.classList.remove('iqc-print-mode');
+            //     printHost.remove();
+            // }, { once: true });
         }
+    </script>
+    <script>
+        (() => {
+            const RECORD_SECTIONS = [
+                { bodySelector: '#eqa-records-table-body', listId: 'eqa-records-mobile-list' },
+                { bodySelector: '#iqc-records-table-body', listId: 'iqc-records-mobile-list' },
+            ];
+
+            const MOBILE_LIST_CLASS = 'grid gap-3 p-3 md:hidden';
+
+            function escapeText(value) {
+                return $('<div>').text(value ?? '').html();
+            }
+
+            function ensureMobileList($body, listId) {
+                const existing = document.getElementById(listId);
+                if (existing) {
+                    return $(existing);
+                }
+
+                const $wrapper = $body.closest('.overflow-x-auto');
+                if (!$wrapper.length) {
+                    return $();
+                }
+
+                $wrapper.addClass('hidden md:block');
+                const $list = $(`<div id="${listId}" class="${MOBILE_LIST_CLASS}" aria-live="polite"></div>`);
+                $wrapper.after($list);
+                return $list;
+            }
+
+            function buildMobileRecordCard($row) {
+                const cells = $row.children('td');
+                if (cells.length < 9) {
+                    return null;
+                }
+
+                const recordId = $row.attr('data-record-id')
+                    || $row.attr('data-id')
+                    || $row.data('recordId')
+                    || $row.data('id')
+                    || '';
+                const dateText = cells.eq(0).text().trim();
+                const typeText = cells.eq(1).text().trim();
+                const departmentText = cells.eq(2).text().trim();
+                const titleText = cells.eq(3).text().trim();
+                const statusHtml = cells.eq(4).html() || '';
+                const operatorHtml = cells.eq(5).html() || '';
+                const supervisorHtml = cells.eq(6).html() || '';
+                const updatedAtText = cells.eq(7).text().trim();
+                const actionsHtml = cells.eq(8).html() || '';
+
+                return `
+                    <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" data-record-id="${escapeText(recordId)}">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 border border-slate-200">${escapeText(typeText || 'รายการ')}</span>
+                                    <span class="text-xs font-medium text-slate-500">${escapeText(dateText || '-')}</span>
+                                </div>
+                                <h4 class="mt-2 text-base font-semibold text-slate-900">${escapeText(titleText || '-')}</h4>
+                                <p class="mt-1 text-sm text-slate-500">${escapeText(departmentText || '-')}</p>
+                            </div>
+                            <div class="shrink-0">${statusHtml}</div>
+                        </div>
+
+                        <dl class="mt-4 grid gap-3 text-sm text-slate-600">
+                            <div>
+                                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">อัปเดตล่าสุด</dt>
+                                <dd class="mt-1 text-slate-700">${escapeText(updatedAtText || '-')}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">ผู้ปฏิบัติ</dt>
+                                <dd class="mt-1">${operatorHtml || '<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm text-slate-400">ไม่มีลายเซ็น</div>'}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">ผู้ตรวจสอบ</dt>
+                                <dd class="mt-1">${supervisorHtml || '<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm text-slate-400">ไม่มีลายเซ็น</div>'}</dd>
+                            </div>
+                        </dl>
+
+                        <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+                            ${actionsHtml}
+                        </div>
+                    </article>`;
+            }
+
+            function syncMobileRecordsSection(target) {
+                const $body = $(target.bodySelector);
+                if (!$body.length) {
+                    return;
+                }
+
+                const $list = ensureMobileList($body, target.listId);
+                if (!$list.length) {
+                    return;
+                }
+
+                const $rows = $body.find('tr').filter((_, row) => $(row).children('td').length >= 9);
+                if (!$rows.length) {
+                    $list.html(`
+                        <div class="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-6 text-center text-sm text-slate-500">
+                            ไม่มีข้อมูลที่บันทึกไว้
+                        </div>
+                    `);
+                    return;
+                }
+
+                $list.html($rows.map((_, row) => buildMobileRecordCard($(row))).get().join(''));
+
+                $list.find('.btn-edit-record, .btn-delete-record').each((_, button) => {
+                    $(button).addClass('inline-flex min-h-11 w-full items-center justify-center gap-2');
+                });
+
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+            }
+
+            let syncHandle = null;
+            const scheduleSync = () => {
+                window.clearTimeout(syncHandle);
+                syncHandle = window.setTimeout(() => {
+                    RECORD_SECTIONS.forEach(syncMobileRecordsSection);
+                }, 0);
+            };
+
+            const observer = new MutationObserver(scheduleSync);
+
+            RECORD_SECTIONS.forEach((target) => {
+                const body = document.querySelector(target.bodySelector);
+                if (body) {
+                    observer.observe(body, { childList: true, subtree: true });
+                }
+            });
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', scheduleSync, { once: true });
+            } else {
+                scheduleSync();
+            }
+
+            window.addEventListener('resize', scheduleSync, { passive: true });
+        })();
     </script>
 </body>
 

@@ -12,10 +12,15 @@ const HEADER = [
   'operatorSignatureJson',
   'supervisorSignatureJson',
   'createdAt',
-  'updatedAt'
+  'updatedAt',
+  'summaryOperatorName',
+  'summaryOperatorPosition',
+  'summarySupervisorName',
+  'summarySupervisorPosition'
 ];
 
-const TempUploadFolderId = '17qyfta4jObGgXL4NkR5YaCvaKSoKcnq4';
+const UPLOAD_STAGING_FOLDER_ID = '17qyfta4jObGgXL4NkR5YaCvaKSoKcnq4';
+const RECORD_ROOT_FOLDER_ID = '1--lgBw5_XGuLw8_v7dqAS7n2d-N1hXdg';
 
 // doGet removed: Frontend is hosted externally on GitHub. Only doPost is used for API.
 
@@ -43,9 +48,6 @@ function setupDatabase_() {
     sh = ss.insertSheet(SHEET_NAME);
   }
 
-  sh.clear();
-  sh.clearFormats();
-  sh.clearNotes();
   if (sh.getMaxColumns() < HEADER.length) {
     sh.insertColumnsAfter(sh.getMaxColumns(), HEADER.length - sh.getMaxColumns());
   }
@@ -64,6 +66,10 @@ function setupDatabase_() {
   sh.setColumnWidth(10, 220);
   sh.setColumnWidth(11, 140);
   sh.setColumnWidth(12, 140);
+  sh.setColumnWidth(13, 180);
+  sh.setColumnWidth(14, 180);
+  sh.setColumnWidth(15, 180);
+  sh.setColumnWidth(16, 180);
 
   return {
     sheetName: SHEET_NAME,
@@ -96,7 +102,7 @@ function doPost(e) {
         ok: true,
         data: {
           accessToken: ScriptApp.getOAuthToken(),
-          folderId: TempUploadFolderId
+          folderId: UPLOAD_STAGING_FOLDER_ID
         }
       });
     }
@@ -111,8 +117,14 @@ function doPost(e) {
     }
 
     if (action === 'uploadbase64') {
-      const res = uploadBase64File_(body.fileName, body.mimeType, body.base64, TempUploadFolderId);
+      const res = uploadBase64File_(body.fileName, body.mimeType, body.base64, UPLOAD_STAGING_FOLDER_ID);
       return jsonOut({ ok: true, data: res });
+    }
+
+    if (action === 'deletefiles') {
+      const fileIds = Array.isArray(body.fileIds) ? body.fileIds : [];
+      const deletedCount = batchRemoveFiles_(fileIds);
+      return jsonOut({ ok: true, data: { deletedCount } });
     }
 
     // เพิ่มรองรับ listRecords (mode: 'records')
@@ -169,6 +181,10 @@ function upsertRecord_(record) {
   const rowIndex = findRowById_(id);
 
   const signaturePayload = normalizeSignaturePayload_(record);
+  const summaryOperatorName = String(record.summaryOperatorName || record.data?.summaryOperatorName || record.data?.operatorName || '').trim();
+  const summaryOperatorPosition = String(record.summaryOperatorPosition || record.data?.summaryOperatorPosition || record.data?.operatorPosition || '').trim();
+  const summarySupervisorName = String(record.summarySupervisorName || record.data?.summarySupervisorName || record.data?.supervisorName || '').trim();
+  const summarySupervisorPosition = String(record.summarySupervisorPosition || record.data?.summarySupervisorPosition || record.data?.supervisorPosition || '').trim();
 
   // Only save file id for attachments (EQA/IQC)
   const attachmentsIds = (record.attachments || []).map(f => ({ id: f.id, name: f.name, mimeType: f.mimeType, size: f.size }));
@@ -185,6 +201,10 @@ function upsertRecord_(record) {
     JSON.stringify(signaturePayload.supervisor),
     rowIndex ? sh.getRange(rowIndex, 11).getValue() || now : now,
     now,
+    summaryOperatorName,
+    summaryOperatorPosition,
+    summarySupervisorName,
+    summarySupervisorPosition,
   ];
 
   if (rowIndex) {
@@ -199,21 +219,31 @@ function upsertRecord_(record) {
 }
 
 function batchRemoveFiles_(fileIds) {
-  var requests = {
-    batchPath: "batch/drive/v3", // batch path. This will be introduced in the near future.
-    requests: fileIds.map(id => ({
-      method: "DELETE",
-      endpoint: "files/" + id
+  const ids = Array.from(new Set((fileIds || []).filter(Boolean)));
+  if (!ids.length) {
+    return 0;
+  }
+
+  const requests = {
+    batchPath: 'batch/drive/v3',
+    requests: ids.map((id) => ({
+      method: 'DELETE',
+      endpoint: `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}`,
     })),
-    accessToken: ScriptApp.getOAuthToken()
+    accessToken: ScriptApp.getOAuthToken(),
   };
-  var result = BatchRequest.Do(requests); // Using this library
+
+  const result = BatchRequest.EDo(requests);
   Logger.log(result);
+  return ids.length;
 }
 
 function batchMoveFiles_(fileIds, recordId, type) {
-  let sourceFolderId = DriveApp.getFolderById(TempUploadFolderId).getParents().next().getId();
-  let folderId = getRecordFolder_(sourceFolderId, recordId, type).getId()
+  const sourceFolderId = UPLOAD_STAGING_FOLDER_ID;
+  const folderId = getOrCreateRecordFolder_(RECORD_ROOT_FOLDER_ID, recordId, type).getId();
+  if (!fileIds || !fileIds.length) {
+    return [];
+  }
   var requests = fileIds.map(id => ({
     method: "PATCH",
     endpoint: 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(id) + '?addParents=' + encodeURIComponent(folderId) + '&removeParents=' + encodeURIComponent(sourceFolderId),
@@ -229,7 +259,7 @@ function batchMoveFiles_(fileIds, recordId, type) {
 
   responses.forEach(function (item) {
     if (!item || typeof item !== 'object' || item.error) {
-      Logger.log('Unable to ' + actionLabel + ': ' + JSON.stringify(item));
+      Logger.log('Unable to move file: ' + JSON.stringify(item));
     }
   });
   return responses;
@@ -297,6 +327,15 @@ function listRecords_(startDate, endDate, type) {
 function toRecordObject_(row) {
   const operatorSignatureData = parseJsonSafe_(row[8], []);
   const supervisorSignatureData = parseJsonSafe_(row[9], []);
+  const summaryOperatorName = row[12] || '';
+  const summaryOperatorPosition = row[13] || '';
+  const summarySupervisorName = row[14] || '';
+  const summarySupervisorPosition = row[15] || '';
+  const data = parseJsonSafe_(row[6], {});
+  data.summaryOperatorName = data.summaryOperatorName || summaryOperatorName;
+  data.summaryOperatorPosition = data.summaryOperatorPosition || summaryOperatorPosition;
+  data.summarySupervisorName = data.summarySupervisorName || summarySupervisorName;
+  data.summarySupervisorPosition = data.summarySupervisorPosition || summarySupervisorPosition;
   const obj = {
     id: row[0],
     type: row[1],
@@ -304,12 +343,16 @@ function toRecordObject_(row) {
     title: row[3] || '',
     department: row[4] || '',
     status: row[5] || '',
-    data: parseJsonSafe_(row[6], {}),
+    data,
     attachments: parseJsonSafe_(row[7], []),
     operatorSignatureData,
     supervisorSignatureData,
     createdAt: toIsoString_(row[10]),
     updatedAt: toIsoString_(row[11]),
+    summaryOperatorName,
+    summaryOperatorPosition,
+    summarySupervisorName,
+    summarySupervisorPosition,
     signatureData: supervisorSignatureData.length > 0
       ? {
           operator: operatorSignatureData,
@@ -340,8 +383,8 @@ function getSheet_() {
   return sh;
 }
 
-function getRecordFolder_(sourceFolderId, recordId, type) {
-  const rootFolder = DriveApp.getFolderById(sourceFolderId);
+function getOrCreateRecordFolder_(rootFolderId, recordId, type) {
+  const rootFolder = DriveApp.getFolderById(rootFolderId);
   const typeFolderName = (type || 'MISC').toUpperCase();
 
   // Get or create type folder
