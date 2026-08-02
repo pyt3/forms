@@ -16,7 +16,9 @@ const HEADER = [
   'summaryOperatorName',
   'summaryOperatorPosition',
   'summarySupervisorName',
-  'summarySupervisorPosition'
+  'summarySupervisorPosition',
+  'attachmentsFolderId',
+  'attachmentsFolderUrl'
 ];
 
 const UPLOAD_STAGING_FOLDER_ID = '17qyfta4jObGgXL4NkR5YaCvaKSoKcnq4';
@@ -70,6 +72,8 @@ function setupDatabase_() {
   sh.setColumnWidth(14, 180);
   sh.setColumnWidth(15, 180);
   sh.setColumnWidth(16, 180);
+  sh.setColumnWidth(17, 180);
+  sh.setColumnWidth(18, 320);
 
   return {
     sheetName: SHEET_NAME,
@@ -78,7 +82,6 @@ function setupDatabase_() {
 }
 
 function doPost(e) {
-  Logger.log("aaaa")
   try {
     const body = parseBody_(e);
     const action = (body.action || '').toLowerCase();
@@ -112,8 +115,9 @@ function doPost(e) {
       const type = body.type || 'MISC';
       const attachments = body.attachments || [];
       const fileIds = attachments.map(f => f.id);
-      batchMoveFiles_(fileIds, recordId, type);
-      return jsonOut({ ok: true });
+      const moveResult = batchMoveFiles_(fileIds, recordId, type);
+      updateRecordFolderLink_(recordId, moveResult.folderId, moveResult.folderUrl);
+      return jsonOut({ ok: true, data: moveResult });
     }
 
     if (action === 'uploadbase64') {
@@ -166,15 +170,88 @@ function normalizeSignaturePayload_(record) {
   };
 }
 
-function upsertRecord_(record) {
-  if (!record || !record.type) {
-    throw new Error('Invalid record payload');
+function validateRecordPayload_(record) {
+  if (!record || typeof record !== 'object') {
+    throw new Error('ไม่พบข้อมูลรายการที่ต้องการบันทึก');
   }
+  const type = String(record.type || '').trim().toUpperCase();
+  if (type !== 'EQA' && type !== 'IQC') {
+    throw new Error('ประเภทรายการไม่ถูกต้อง');
+  }
+  const data = record.data && typeof record.data === 'object' ? record.data : {};
+  const requiredText = (value, label, maxLength) => {
+    const text = String(value == null ? '' : value).trim();
+    if (!text) {
+      throw new Error('กรุณาระบุ' + label);
+    }
+    if (maxLength && text.length > maxLength) {
+      throw new Error(label + 'ยาวเกิน ' + maxLength + ' ตัวอักษร');
+    }
+    return text;
+  };
+  const requiredDate = (value, label) => {
+    const text = requiredText(value, label, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+      throw new Error(label + 'ไม่อยู่ในรูปแบบวันที่ที่ถูกต้อง');
+    }
+    return text;
+  };
+  const signature = normalizeSignaturePayload_(record);
+  if (!Array.isArray(signature.operator) || !signature.operator.length) {
+    throw new Error(type === 'EQA' ? 'กรุณาเซ็นชื่อผู้ทบทวนก่อนบันทึก' : 'กรุณาเซ็นชื่อผู้ปฏิบัติก่อนบันทึก');
+  }
+
+  if (type === 'EQA') {
+    requiredText(data.dept, 'หน่วยงาน', 100);
+    requiredText(data.project, 'ชื่อโครงการ', 200);
+    requiredText(data.round, 'รอบการประเมิน', 50);
+    requiredDate(data.dateRec, 'วันที่ได้รับตัวอย่าง');
+    requiredText(data.cond, 'สภาพตัวอย่าง', 20);
+    requiredDate(data.testDate, 'วันที่ทดสอบ');
+    requiredText(data.preparer, 'ผู้เตรียมหรือละลายตัวอย่าง', 150);
+    requiredText(data.reporter, 'ผู้รายงานหรือส่งผล', 150);
+    requiredDate(data.reportDate, 'วันที่รายงานผล');
+    requiredText(data.testItem, 'รายการทดสอบ', 200);
+    const evaluationResult = requiredText(data.evalResult, 'ผลการประเมิน', 20);
+    requiredText(data.evalCriteria, 'เกณฑ์การประเมิน', 500);
+    requiredDate(data.evalDate, 'วันที่ได้รับผลประเมิน');
+    if (evaluationResult === 'fail') {
+      requiredText(data.cause, 'สาเหตุที่ไม่ผ่าน', 2000);
+      requiredText(data.correctiveAction, 'วิธีการแก้ไขและผลการแก้ไข', 2000);
+      requiredText(data.preventiveAction, 'แนวทางป้องกันการเกิดซ้ำ', 2000);
+    }
+  } else {
+    requiredDate(data.date, 'วันที่ตรวจสอบ');
+    requiredText(data.dept, 'หน่วยงานหรือแผนก', 100);
+    requiredText(data.controlName, 'ชื่อ Control', 150);
+    requiredText(data.lot, 'Lot Number', 100);
+    requiredDate(data.exp, 'วันหมดอายุ');
+    const lowValue = requiredText(data.iqcLow && data.iqcLow.value, 'ผล IQC ระดับ Low', 30);
+    const highValue = requiredText(data.iqcHigh && data.iqcHigh.value, 'ผล IQC ระดับ High', 30);
+    if (!isFinite(Number(lowValue)) || !isFinite(Number(highValue))) {
+      throw new Error('ผล IQC ระดับ Low และ High ต้องเป็นตัวเลข');
+    }
+  }
+
+  const attachments = Array.isArray(record.attachments) ? record.attachments : [];
+  if (attachments.length > 10) {
+    throw new Error('แนบไฟล์ได้ไม่เกิน 10 ไฟล์ต่อรายการ');
+  }
+  attachments.forEach(function (file) {
+    if (!file || !String(file.id || '').trim()) {
+      throw new Error('พบไฟล์แนบที่อัปโหลดไม่สมบูรณ์');
+    }
+  });
+}
+
+function upsertRecord_(record) {
+  validateRecordPayload_(record);
   let lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) {
     throw new Error('Could not acquire lock after 30 seconds. Please try again.');
   }
 
+  try {
   const sh = getSheet_();
   const now = new Date();
   const id = record.id || generateNewId_(record.type);
@@ -185,6 +262,8 @@ function upsertRecord_(record) {
   const summaryOperatorPosition = String(record.summaryOperatorPosition || record.data?.summaryOperatorPosition || record.data?.operatorPosition || '').trim();
   const summarySupervisorName = String(record.summarySupervisorName || record.data?.summarySupervisorName || record.data?.supervisorName || '').trim();
   const summarySupervisorPosition = String(record.summarySupervisorPosition || record.data?.summarySupervisorPosition || record.data?.supervisorPosition || '').trim();
+  const attachmentsFolderId = String(record.attachmentsFolderId || record.data?.attachmentsFolderId || record.data?.folderId || '').trim();
+  const attachmentsFolderUrl = String(record.attachmentsFolderUrl || record.data?.attachmentsFolderUrl || record.data?.folderUrl || '').trim();
 
   // Only save file id for attachments (EQA/IQC)
   const attachmentsIds = (record.attachments || []).map(f => ({ id: f.id, name: f.name, mimeType: f.mimeType, size: f.size }));
@@ -205,6 +284,8 @@ function upsertRecord_(record) {
     summaryOperatorPosition,
     summarySupervisorName,
     summarySupervisorPosition,
+    attachmentsFolderId,
+    attachmentsFolderUrl,
   ];
 
   if (rowIndex) {
@@ -214,8 +295,10 @@ function upsertRecord_(record) {
   }
   let recordObj = toRecordObject_(payload);
 
-  lock.releaseLock();
   return recordObj;
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function batchRemoveFiles_(fileIds) {
@@ -234,15 +317,21 @@ function batchRemoveFiles_(fileIds) {
   };
 
   const result = BatchRequest.EDo(requests);
-  Logger.log(result);
   return ids.length;
 }
 
 function batchMoveFiles_(fileIds, recordId, type) {
   const sourceFolderId = UPLOAD_STAGING_FOLDER_ID;
-  const folderId = getOrCreateRecordFolder_(RECORD_ROOT_FOLDER_ID, recordId, type).getId();
+  const recordFolder = getOrCreateRecordFolder_(RECORD_ROOT_FOLDER_ID, recordId, type);
+  const folderId = recordFolder.getId();
+  const folderUrl = recordFolder.getUrl();
   if (!fileIds || !fileIds.length) {
-    return [];
+    return {
+      folderId,
+      folderUrl,
+      movedCount: 0,
+      responses: []
+    };
   }
   var requests = fileIds.map(id => ({
     method: "PATCH",
@@ -262,7 +351,37 @@ function batchMoveFiles_(fileIds, recordId, type) {
       Logger.log('Unable to move file: ' + JSON.stringify(item));
     }
   });
-  return responses;
+  return {
+    folderId,
+    folderUrl,
+    movedCount: fileIds.length,
+    responses
+  };
+}
+
+function updateRecordFolderLink_(recordId, folderId, folderUrl) {
+  if (!recordId || !folderUrl) {
+    return;
+  }
+  const sh = getSheet_();
+  const rowIndex = findRowById_(recordId);
+  if (!rowIndex) {
+    return;
+  }
+
+  const payloadCell = sh.getRange(rowIndex, 7);
+  const payload = parseJsonSafe_(payloadCell.getValue(), {});
+  const nextPayload = {
+    ...(payload && typeof payload === 'object' ? payload : {}),
+    attachmentsFolderId: String(folderId || ''),
+    attachmentsFolderUrl: String(folderUrl || ''),
+    folderId: String(folderId || ''),
+    folderUrl: String(folderUrl || '')
+  };
+
+  payloadCell.setValue(JSON.stringify(nextPayload));
+  sh.getRange(rowIndex, 17).setValue(String(folderId || ''));
+  sh.getRange(rowIndex, 18).setValue(String(folderUrl || ''));
 }
 
 function generateNewId_(type) {
@@ -331,11 +450,17 @@ function toRecordObject_(row) {
   const summaryOperatorPosition = row[13] || '';
   const summarySupervisorName = row[14] || '';
   const summarySupervisorPosition = row[15] || '';
+  const attachmentsFolderId = row[16] || '';
+  const attachmentsFolderUrl = row[17] || '';
   const data = parseJsonSafe_(row[6], {});
   data.summaryOperatorName = data.summaryOperatorName || summaryOperatorName;
   data.summaryOperatorPosition = data.summaryOperatorPosition || summaryOperatorPosition;
   data.summarySupervisorName = data.summarySupervisorName || summarySupervisorName;
   data.summarySupervisorPosition = data.summarySupervisorPosition || summarySupervisorPosition;
+  data.attachmentsFolderId = data.attachmentsFolderId || data.folderId || attachmentsFolderId;
+  data.attachmentsFolderUrl = data.attachmentsFolderUrl || data.folderUrl || attachmentsFolderUrl;
+  data.folderId = data.folderId || data.attachmentsFolderId;
+  data.folderUrl = data.folderUrl || data.attachmentsFolderUrl;
   const obj = {
     id: row[0],
     type: row[1],
@@ -353,6 +478,8 @@ function toRecordObject_(row) {
     summaryOperatorPosition,
     summarySupervisorName,
     summarySupervisorPosition,
+    attachmentsFolderId: data.attachmentsFolderId || '',
+    attachmentsFolderUrl: data.attachmentsFolderUrl || '',
     signatureData: supervisorSignatureData.length > 0
       ? {
           operator: operatorSignatureData,
