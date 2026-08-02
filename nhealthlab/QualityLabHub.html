@@ -15,7 +15,6 @@
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.1.3/dist/signature_pad.umd.min.js" defer></script>
     <script
@@ -594,11 +593,11 @@
                             <i data-lucide="check-circle" class="w-5 h-5 text-blue-600"></i> ผลการประเมิน
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
+                            <div class="space-y-2 md:col-span-2">
                                 <label class="text-sm font-semibold text-slate-700">รายการทดสอบ</label>
                                 <input type="text" id="eqa-testItem" name="eqa-testItem"
                                     class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-                                    placeholder="เช่น D-Dimer, HbA1c">
+                                    placeholder="ระบุรายการทดสอบ">
                             </div>
                             <fieldset class="space-y-2">
                                 <legend class="text-sm font-semibold text-slate-700">ผลการประเมิน</legend>
@@ -632,6 +631,7 @@
                         <div id="eqa-nc-section"
                             class="hidden space-y-6 p-6 bg-red-50 rounded-2xl border border-red-100">
                             <h4 class="font-bold text-red-800">กรณีผลการประเมินไม่ผ่าน</h4>
+                            <p class="text-sm text-red-700">- ผลการทำ IQC ในวันที่ทดสอบ (เฉพาะรายการทดสอบที่ไม่ผ่าน)</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">ผลการทำ IQC
@@ -682,6 +682,8 @@
 
                     <hr class="border-slate-100">
 
+                    <hr class="border-slate-100">
+
                     <!-- Attachments -->
                     <div class="space-y-4">
                         <label class="flex flex-col items-start gap-1 text-sm font-semibold text-slate-700 sm:flex-row sm:items-center sm:gap-2">
@@ -704,7 +706,36 @@
                             class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 sm:w-auto">ลบทั้งหมด</button>
                         <div id="eqa-file-list" class="mt-4 grid gap-3"></div>
                     </div>
-                    <div class="space-y-4" id="eqa-signature-preview"></div>
+                    <div id="eqa-signature-preview" class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ทบทวนผลการประเมิน</h4>
+                                    <p class="text-xs text-slate-500 mt-1">กดเซ็นชื่อเมื่อกรอกข้อมูลเสร็จ</p>
+                                </div>
+                                <button type="button" id="eqa-sign-reviewer"
+                                    class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
+                                    เซ็นชื่อผู้ทบทวน
+                                </button>
+                            </div>
+                            <div id="eqa-reviewer-signature-preview"
+                                class="rounded-2xl border border-dashed border-slate-300 bg-white p-3 min-h-28"></div>
+                        </div>
+                        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ตรวจสอบผลการประเมิน</h4>
+                                    <p class="text-xs text-slate-500 mt-1">กดเซ็นชื่อเมื่อพร้อม</p>
+                                </div>
+                                <button type="button" id="eqa-sign-verifier"
+                                    class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
+                                    เซ็นชื่อผู้ตรวจสอบ
+                                </button>
+                            </div>
+                            <div id="eqa-verifier-signature-preview"
+                                class="rounded-2xl border border-dashed border-slate-300 bg-white p-3 min-h-28"></div>
+                        </div>
+                    </div>
 
             </div>
 
@@ -856,24 +887,12 @@
                                     <div class="flex items-start justify-between gap-4">
                                         <div>
                                             <h3 class="text-lg font-bold text-slate-900">EQA Data</h3>
-                                            <p class="mt-1 text-sm text-slate-500">เลือกเดือนแล้วดึงรายงาน EQA
-                                                ของเดือนนั้นมาสร้าง PDF</p>
+                                            <p class="mt-1 text-sm text-slate-500">รายงาน EQA แยกเป็นรายวัน
+                                                ใช้ปุ่ม Export ในแต่ละแถวเพื่อพิมพ์ PDF ของวันนั้น</p>
                                         </div>
                                         <div class="rounded-xl bg-blue-50 p-3 text-blue-700">
                                             <i data-lucide="file-down" class="w-5 h-5"></i> PDF
                                         </div>
-                                    </div>
-                                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
-                                        <div>
-                                            <label class="text-sm font-semibold text-slate-700"
-                                                for="records-export-eqa-month">เดือน</label>
-                                            <input id="records-export-eqa-month" type="month"
-                                                class="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-                                        </div>
-                                        <button type="button" id="btn-export-eqa-month"
-                                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white hover:bg-slate-800">
-                                            <i data-lucide="file-down" class="w-4 h-4"></i> Export
-                                        </button>
                                     </div>
                                 </div>
 
@@ -1043,6 +1062,20 @@
             uploadAuth: null,
             newEqaFiles: [],
             newIqcFiles: [],
+            eqaSignaturePayload: {
+                operator: [],
+                supervisor: []
+            },
+            eqaSignatureMeta: {
+                reviewerName: '',
+                reviewerDate: '',
+                verifierName: '',
+                verifierDate: ''
+            },
+            lastEqaSignaturePayload: {
+                operator: [],
+                supervisor: []
+            },
             uploadLiveMessages: {
                 eqa: '',
                 iqc: ''
@@ -3193,6 +3226,86 @@
             });
         }
 
+        function getEqaSignatureMeta() {
+            const meta = state.eqaSignatureMeta || {};
+            return {
+                reviewerName: String(meta.reviewerName || '').trim(),
+                reviewerDate: String(meta.reviewerDate || '').trim(),
+                verifierName: String(meta.verifierName || '').trim(),
+                verifierDate: String(meta.verifierDate || '').trim()
+            };
+        }
+
+        function setEqaSignatureMeta(nextMeta = {}) {
+            state.eqaSignatureMeta = {
+                reviewerName: String(nextMeta.reviewerName || '').trim(),
+                reviewerDate: String(nextMeta.reviewerDate || '').trim(),
+                verifierName: String(nextMeta.verifierName || '').trim(),
+                verifierDate: String(nextMeta.verifierDate || '').trim()
+            };
+        }
+
+        function renderEqaSignatureButtons() {
+            const pack = normalizeSignaturePack(state.eqaSignaturePayload || {});
+            const reviewerData = Array.isArray(pack.operator) ? pack.operator : [];
+            const verifierData = Array.isArray(pack.supervisor) ? pack.supervisor : [];
+
+            const renderBox = (selector, data, emptyText) => {
+                const $box = $(selector).empty();
+                if (data.length > 0) {
+                    $box.append('<div class="signature-preview-frame rounded-xl border border-slate-200 bg-white p-5" style="aspect-ratio: 4 / 1;"></div>');
+                    renderSignatureSvgPreview($box.find('.signature-preview-frame')[0], data);
+                } else {
+                    $box.append(`<div class="flex h-[84px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 text-sm text-slate-400">${emptyText}</div>`);
+                }
+            };
+
+            renderBox('#eqa-reviewer-signature-preview', reviewerData, 'ยังไม่มีลายเซ็น');
+            renderBox('#eqa-verifier-signature-preview', verifierData, 'ยังไม่มีลายเซ็น');
+
+            $('#eqa-sign-reviewer').off('click').on('click', async function () {
+                const signature = await promptSignature(reviewerData, {
+                    enableSignerProfile: true,
+                    storageKey: 'eqa-reviewer-signature-profile',
+                    defaultSignerPosition: 'ผู้ทบทวน',
+                    positionOptions: ['ผู้ทบทวน', 'Reviewer']
+                });
+                if (!signature) {
+                    return;
+                }
+                state.eqaSignaturePayload = normalizeSignaturePack(state.eqaSignaturePayload || {});
+                state.eqaSignaturePayload.operator = Array.isArray(signature.signature) ? signature.signature : [];
+                const signerName = String(signature.signerName || '').trim();
+                setEqaSignatureMeta({
+                    ...getEqaSignatureMeta(),
+                    reviewerName: signerName,
+                    reviewerDate: moment().format('YYYY-MM-DD')
+                });
+                renderEqaSignatureButtons();
+            });
+
+            $('#eqa-sign-verifier').off('click').on('click', async function () {
+                const signature = await promptSignature(verifierData, {
+                    enableSignerProfile: true,
+                    storageKey: 'eqa-verifier-signature-profile',
+                    defaultSignerPosition: 'ผู้ตรวจสอบ',
+                    positionOptions: ['ผู้ตรวจสอบ', 'Verifier']
+                });
+                if (!signature) {
+                    return;
+                }
+                state.eqaSignaturePayload = normalizeSignaturePack(state.eqaSignaturePayload || {});
+                state.eqaSignaturePayload.supervisor = Array.isArray(signature.signature) ? signature.signature : [];
+                const signerName = String(signature.signerName || '').trim();
+                setEqaSignatureMeta({
+                    ...getEqaSignatureMeta(),
+                    verifierName: signerName,
+                    verifierDate: moment().format('YYYY-MM-DD')
+                });
+                renderEqaSignatureButtons();
+            });
+        }
+
         $(document).on('click', '.js-summary-signature-btn, .js-summary-signature-edit', async function () {
             const monthKey = String($(this).data('month') || '').trim();
             const role = String($(this).data('role') || '').trim();
@@ -3222,6 +3335,14 @@
             // --- MOCKUP DATA BUTTONS ---
             $('#mock-eqa-btn').on('click', function () {
                 // เตรียมข้อมูลตัวอย่าง EQA
+                state.eqaSignaturePayload = { operator: [], supervisor: [] };
+                state.lastEqaSignaturePayload = { operator: [], supervisor: [] };
+                setEqaSignatureMeta({
+                    reviewerName: 'นางสาวสุภาวดี ใจดี',
+                    reviewerDate: '2026-04-04',
+                    verifierName: 'นายวิชัย มั่นคง',
+                    verifierDate: '2026-04-05'
+                });
                 $('#eqa-department').val('Chemistry');
                 $('#eqa-project').val('การวิเคราะห์คุณภาพภายนอก EQA รอบที่ 1/2569');
                 $('#eqa-round').val('1/2569');
@@ -3239,9 +3360,10 @@
                 $('#eqa-dateRec')[0]._flatpickr.setDate('2026-04-01', true);
                 $('#eqa-testDate')[0]._flatpickr.setDate('2026-04-02', true);
                 $('#eqa-reportDate')[0]._flatpickr.setDate('2026-04-03', true);
-                $('#eqa-evalDate')[0]._flatpickr.setDate('2026-04-05', true);
+                $('#eqa-evalDate')[0]._flatpickr.setDate('2026-04-06', true);
                 $('input[name="sample-condition"][value="bad"]').prop('checked', true);
                 $('input[name="evaluation-result"][value="fail"]').prop('checked', true);
+                renderEqaSignatureButtons();
 
             });
 
@@ -3267,6 +3389,7 @@
                 lucide.createIcons();
             });
             // --- END MOCKUP DATA BUTTONS ---
+            renderEqaSignatureButtons();
             // Enable navigation for all nav-btn (including dashboard cards)
             $(document).on('click', '.nav-btn', function (e) {
                 const target = $(this).data('target');
@@ -3280,18 +3403,22 @@
                         Swal.fire('ผิดพลาด', err.message, 'error');
                     });
             });
-            const defaultExportMonth = moment().format('YYYY-MM');
-            $('#records-export-eqa-month').val(defaultExportMonth);
-            $('#btn-export-eqa-month').on('click', async function () {
+            $(document).on('click', '.btn-export-eqa-record', async function () {
+                const recordId = $(this).attr('data-id') || '';
+                const record = (state.records || []).find((item) => String(item.id) === String(recordId));
+                if (!record) {
+                    Swal.fire('ผิดพลาด', 'ไม่พบข้อมูล EQA ที่ต้องการพิมพ์', 'error');
+                    return;
+                }
                 try {
-                    await Swal.fire({
+                    Swal.fire({
                         title: 'กำลังสร้าง PDF',
-                        text: 'ระบบกำลังดึงข้อมูล EQA ของเดือนที่เลือก',
+                        text: 'ระบบกำลังเตรียมรายงาน EQA ของแถวที่เลือก',
                         allowOutsideClick: false,
                         showConfirmButton: false,
                         didOpen: () => Swal.showLoading()
                     });
-                    await exportEQA($('#records-export-eqa-month').val());
+                    await exportEQA(record);
                 } catch (err) {
                     Swal.fire('ผิดพลาด', err.message, 'error');
                 } finally {
@@ -4136,9 +4263,13 @@
             });
             $('#eqa-file-list, #iqc-file-list').empty();
             $('#eqa-nc-section').hide().addClass('hidden');
+            state.eqaSignaturePayload = { operator: [], supervisor: [] };
+            state.lastEqaSignaturePayload = { operator: [], supervisor: [] };
             state.iqcSignaturePayload = { operator: [], supervisor: [] };
+            state.lastIqcSignaturePayload = { operator: [], supervisor: [] };
             state.iqcStatusState = { low: '', high: '' };
             renderIqcScheduleForm();
+            renderEqaSignatureButtons();
             state.isDirty = false;
             state.editingId = null;
             state.editingSignatureData = null;
@@ -4246,95 +4377,129 @@
             const iqcResult = mapEqaIqcResult(data.iqcResult || '');
             const analyzerStatus = mapEqaAnalyzerStatus(data.analyzerStatus || '');
             const pageInfo = `${pageIndex}/${totalPages}`;
-            const titleMonth = monthParts.monthName ? `ประจำเดือน ${escapeHtml(monthParts.monthName)}` : 'ประจำเดือน';
-            const titleYear = monthParts.year ? `ปี ${escapeHtml(monthParts.year)}` : 'ปี';
+            const formatDisplayDate = (value) => {
+                const date = moment(value);
+                return date.isValid() ? date.format('DD/MM/YYYY') : '';
+            };
+            const roundParts = String(data.round || '').split('/').map((part) => String(part || '').trim());
+            const roundNo = roundParts[0] || '';
+            const roundYear = roundParts[1] || '';
+            const sampleDetail = String(data.condExt || '').trim();
+            const reviewerName = String(data.reviewerName || '').trim();
+            const reviewerDate = formatDisplayDate(data.reviewDate);
+            const verifierName = String(data.reviewerVerifier || '').trim();
+            const verifierDate = formatDisplayDate(data.reviewerVerifierDate);
+            const reviewerLineId = `eqa-export-reviewer-signature-${pageIndex}`;
+            const verifierLineId = `eqa-export-verifier-signature-${pageIndex}`;
+            const pageBreakStyle = pageIndex < totalPages
+                ? 'break-after:page; page-break-after:always;'
+                : 'break-after:auto; page-break-after:auto;';
 
             return `
-                <div class="eqa-export-page" style="width:210mm; min-height:297mm; background:#fff; color:#000; font-family:'Noto Sans Thai', sans-serif; padding:18mm 18mm 16mm; box-sizing:border-box; break-after:page; page-break-after:always;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:10mm;">
-                        <div style="font-size:24px; font-weight:700;">N Health</div>
-                        <div style="text-align:right; font-size:10px; line-height:1.4;">FI-ALP-PY3-00-011-1 R02<br>${escapeHtml(pageInfo)}</div>
+                <div class="eqa-export-page" style="width:210mm; min-height:297mm; background:#fff; color:#000; font-family:'Noto Sans Thai', sans-serif; padding:15mm 16mm 14mm; box-sizing:border-box; ${pageBreakStyle}">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:7mm;">
+                        <div style="font-size:10px; line-height:1.45; font-weight:700;">
+                            FI-ALP-PY3-00-011/1 แก้ไขครั้งที่ 02<br>
+                            วันที่บังคับใช้ 08/10/2568
+                        </div>
+                        <div style="text-align:right; font-size:10px; line-height:1.4;">หน้า ${escapeHtml(pageInfo)}</div>
                     </div>
-                    <h2 style="text-align:center; font-weight:700; font-size:18px; line-height:1.35; margin:0 0 5mm;">
-                        แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการภายนอก
+                    <h2 style="text-align:center; font-weight:700; font-size:18px; line-height:1.35; margin:0 0 6mm;">
+                        แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการโดยองค์กรภายนอก
                     </h2>
-                    <div style="text-align:center; font-size:12px; margin-bottom:8mm;">${titleMonth} ${titleYear}</div>
-                    <table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:6mm;">
-                        <tr style="height:32px;">
-                            <td style="width:15%;">หน่วยงาน:</td>
-                            <td style="border-bottom:1px dotted #000; width:35%;">${toEqaDisplayText(data.dept, '................................')}</td>
-                            <td style="width:15%; padding-left:10px;">โครงการ:</td>
+                    <div style="text-align:center; font-size:12px; margin-bottom:8mm;">(PT / EQA / Inter Laboratory Comparison)</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:1.45; margin-bottom:6mm;">
+                        <tr style="height:28px;">
+                            <td style="width:14%;">หน่วย</td>
+                            <td style="width:36%; border-bottom:1px dotted #000;">${toEqaDisplayText(data.dept, '................................')}</td>
+                            <td style="width:14%; padding-left:10px;">โครงการ</td>
                             <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.project, '................................')}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>รอบที่:</td>
-                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.round, '................................')}</td>
-                            <td style="padding-left:10px;">วันที่ได้รับ:</td>
-                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.dateRec, '................................')}</td>
+                        <tr style="height:28px;">
+                            <td>รอบที่</td>
+                            <td style="border-bottom:1px dotted #000;">${escapeHtml(roundNo || '............')} / ${escapeHtml(roundYear || '............')}</td>
+                            <td style="padding-left:10px;">ปี</td>
+                            <td style="border-bottom:1px dotted #000;">${escapeHtml(roundYear || '............')}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>สภาพตัวอย่าง:</td>
-                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(sampleCondition, '................................')} ${toEqaDisplayText(data.condExt, '')}</td>
-                            <td style="padding-left:10px;">วันที่ทดสอบ:</td>
-                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.testDate, '................................')}</td>
+                        <tr style="height:28px;">
+                            <td>วันที่ได้รับตัวอย่าง</td>
+                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(formatDisplayDate(data.dateRec), '................................')}</td>
+                            <td style="padding-left:10px;">สภาพตัวอย่าง</td>
+                            <td style="border-bottom:1px dotted #000;">${sampleCondition ? `${escapeHtml(sampleCondition)}${sampleDetail ? ` ระบุ ${escapeHtml(sampleDetail)}` : ''}` : '................................'}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>ผู้เตรียม:</td>
+                        <tr style="height:28px;">
+                            <td>วันที่ทดสอบ</td>
+                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(formatDisplayDate(data.testDate), '................................')}</td>
+                            <td style="padding-left:10px;">ผู้เตรียม/ละลายตัวอย่าง</td>
                             <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.preparer, '................................')}</td>
-                            <td style="padding-left:10px;">ผู้รายงาน:</td>
-                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.reporter, '................................')}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>วันที่รายงาน:</td>
-                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.reportDate, '................................')}</td>
-                            <td></td>
-                            <td></td>
+                        <tr style="height:28px;">
+                            <td>ผู้รายงานผล/ส่งผล</td>
+                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.reporter, '................................')}</td>
+                            <td style="padding-left:10px;">วันที่</td>
+                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(formatDisplayDate(data.reportDate), '................................')}</td>
+                        </tr>
+                        <tr style="height:28px;">
+                            <td>ผู้ตรวจสอบผล</td>
+                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(verifierName, '................................')}</td>
+                            <td style="padding-left:10px;">วันที่</td>
+                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(verifierDate, '................................')}</td>
                         </tr>
                     </table>
 
-                    <div style="margin-top:5mm; font-weight:700; font-size:15px; background:#eee; padding:5px 10px; border:1px solid #000;">ผลการประเมิน</div>
-                    <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4mm;">
-                        <tr style="height:32px;">
-                            <td style="width:20%;">รายการทดสอบ:</td>
+                    <div style="margin-top:4mm; font-weight:700; font-size:14px; background:#eee; padding:5px 10px; border:1px solid #000;">ผลการประเมิน</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:1.45; margin-top:4mm;">
+                        <tr style="height:28px;">
+                            <td style="width:20%;">รายการทดสอบ</td>
                             <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.testItem, '................................')}</td>
-                            <td style="width:20%; padding-left:10px;">ผลการประเมิน:</td>
+                            <td style="width:20%; padding-left:10px;">ผลการประเมิน</td>
                             <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(status, '................................')}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>เกณฑ์การประเมิน:</td>
+                        <tr style="height:28px;">
+                            <td>เกณฑ์การประเมิน</td>
                             <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.evalCriteria, '................................')}</td>
-                            <td style="padding-left:10px;">วันที่ได้รับผล:</td>
-                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.evalDate, '................................')}</td>
+                            <td style="padding-left:10px;">วันที่ได้รับผลประเมิน</td>
+                            <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(formatDisplayDate(data.evalDate), '................................')}</td>
                         </tr>
                     </table>
 
                     <div style="margin-top:6mm; font-weight:700; font-size:14px; background:#f8fafc; padding:5px 10px; border:1px solid #000;">กรณีผลการประเมินไม่ผ่าน</div>
-                    <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4mm;">
-                        <tr style="height:32px;">
-                            <td style="width:20%;">ผลการทำ IQC:</td>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:1.45; margin-top:4mm;">
+                        <tr style="height:28px;">
+                            <td style="width:20%;">ผลการทำ IQC</td>
                             <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(iqcResult, '................................')}</td>
-                            <td style="width:20%; padding-left:10px;">สภาพเครื่องมือ:</td>
+                            <td style="width:20%; padding-left:10px;">สภาพเครื่องมือ</td>
                             <td style="border-bottom:1px dotted #000;">${toEqaDisplayText(analyzerStatus, '................................')}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>สาเหตุ:</td>
+                        <tr style="height:28px;">
+                            <td>สาเหตุ</td>
                             <td colspan="3" style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.cause, '................................................................................................')}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>วิธีการแก้ไข / ผลการแก้ไข:</td>
+                        <tr style="height:28px;">
+                            <td>วิธีการแก้ไข / ผลการแก้ไข</td>
                             <td colspan="3" style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.correctiveAction, '................................................................................................')}</td>
                         </tr>
-                        <tr style="height:32px;">
-                            <td>การป้องกัน:</td>
+                        <tr style="height:28px;">
+                            <td>การป้องกัน</td>
                             <td colspan="3" style="border-bottom:1px dotted #000;">${toEqaDisplayText(data.preventiveAction, '................................................................................................')}</td>
                         </tr>
                     </table>
 
-                    <div style="margin-top:10mm; display:flex; justify-content:space-around; font-size:13px; gap:16px;">
-                        <div style="text-align:center; flex:1;">ลงชื่อ......................................................<br>(ผู้ปฏิบัติการประเมิน)</div>
-                        <div style="text-align:center; flex:1;">ลงชื่อ......................................................<br>(ผู้ตรวจสอบผลการประเมิน)</div>
+                    <div style="margin-top:11mm; display:grid; grid-template-columns:1fr 1fr; gap:14mm; font-size:13px; align-items:start;">
+                        <div style="text-align:center; line-height:1.55;">
+                            <div>ลงชื่อ........................................................</div>
+                            <div id="${escapeHtml(reviewerLineId)}" style="height:18mm; margin:1.5mm 0 1mm;"></div>
+                            <div>${reviewerName ? `( ${escapeHtml(reviewerName)} )` : '(........................................)'}</div>
+                            <div>วันที่ ${reviewerDate || '................................'}</div>
+                        </div>
+                        <div style="text-align:center; line-height:1.55;">
+                            <div>ลงชื่อ........................................................</div>
+                            <div id="${escapeHtml(verifierLineId)}" style="height:18mm; margin:1.5mm 0 1mm;"></div>
+                            <div>${verifierName ? `( ${escapeHtml(verifierName)} )` : '(........................................)'}</div>
+                            <div>วันที่ ${verifierDate || '................................'}</div>
+                        </div>
                     </div>
-                    <div style="margin-top:6mm; text-align:right; font-size:9px; color:#666;">วันที่บันทึก: ${escapeHtml(recordDate || '-')}</div>
+                    <div style="margin-top:5mm; text-align:right; font-size:9px; color:#666;">วันที่บันทึก: ${escapeHtml(formatDisplayDate(recordDate) || recordDate || '-')}</div>
                 </div>
             `;
         }
@@ -4452,6 +4617,9 @@
                         </td>
                         <td class="px-4 py-3">${r.updatedAt ? moment(r.updatedAt).format('DD/MM/YYYY HH:mm') : '-'}</td>
                         <td class="px-4 py-3 text-center">
+                            ${recordType === 'EQA'
+                        ? `<button class="btn-export-eqa-record px-3 py-1.5 text-xs bg-sky-100 text-sky-700 rounded-lg mr-2" data-id="${escapeHtml(r.id)}">Export</button>`
+                        : ''}
                             <button class="btn-edit-record px-3 py-1.5 text-xs bg-amber-100 text-amber-700 rounded-lg mr-2" data-id="${escapeHtml(r.id)}">Edit</button>
                             <button class="btn-delete-record px-3 py-1.5 text-xs bg-rose-100 text-rose-700 rounded-lg" data-id="${escapeHtml(r.id)}">Delete</button>
                         </td>
@@ -4485,9 +4653,11 @@
                         return;
                     }
                 } else {
-                    signaturePayload = await promptSignature(
-                        state.editingId && Array.isArray(state.editingSignatureData) ? state.editingSignatureData : null
-                    );
+                    signaturePayload = normalizeSignaturePack(state.eqaSignaturePayload || {});
+                    if (!signaturePayload.operator.length) {
+                        await Swal.fire('ต้องลงชื่อก่อน', 'กรุณาเซ็นชื่อผู้ทบทวนก่อนบันทึก', 'warning');
+                        return;
+                    }
                 }
                 if (!signaturePayload) {
                     return;
@@ -4503,8 +4673,8 @@
                     state.lastIqcSignaturePayload = signaturePayload;
                 } else {
                     record.signatureData = signaturePayload;
-                    record.operatorSignatureData = signaturePayload;
-                    record.supervisorSignatureData = [];
+                    record.operatorSignatureData = signaturePayload.operator;
+                    record.supervisorSignatureData = signaturePayload.supervisor;
                     state.lastEqaSignaturePayload = signaturePayload;
                 }
                 record.attachments = attachments;
@@ -4864,6 +5034,7 @@
         }
 
         function collectEqaRecord() {
+            const meta = getEqaSignatureMeta();
             const data = {
                 dept: $('#eqa-department').val() || '',
                 project: $('#eqa-project').val() || '',
@@ -4875,12 +5046,16 @@
                 preparer: $('#eqa-preparer').val() || '',
                 reporter: $('#eqa-reporter').val() || '',
                 reportDate: $('#eqa-reportDate').val() || '',
+                reviewerName: meta.reviewerName || '',
+                reviewDate: meta.reviewerDate || '',
+                reviewerVerifier: meta.verifierName || '',
+                reviewerVerifierDate: meta.verifierDate || '',
                 testItem: $('#eqa-testItem').val() || '',
                 evalResult: $('input[name="evaluation-result"]:checked').val() || '',
                 evalCriteria: $('#eqa-evalCriteria').val() || '',
                 evalDate: $('#eqa-evalDate').val() || '',
                 iqcResult: $('#eqa-iqcResult').val() || '',
-                analyzerStatus: $('#eqa-analyzer').val() || '',
+                analyzerStatus: $('#eqa-analyzerStatus').val() || '',
                 cause: $('#eqa-cause').val() || '',
                 correctiveAction: $('#eqa-correctiveAction').val() || '',
                 preventiveAction: $('#eqa-preventiveAction').val() || ''
@@ -5039,15 +5214,23 @@
             $('#eqa-preparer').val(data.preparer || '');
             $('#eqa-reporter').val(data.reporter || '');
             $('#eqa-reportDate')[0]._flatpickr.setDate(data.reportDate || '', true);
+            setEqaSignatureMeta({
+                reviewerName: data.reviewerName || '',
+                reviewerDate: data.reviewDate || '',
+                verifierName: data.reviewerVerifier || '',
+                verifierDate: data.reviewerVerifierDate || ''
+            });
             $('#eqa-testItem').val(data.testItem || '');
             $('input[name="evaluation-result"][value="' + (data.evalResult || '') + '"]').prop('checked', true).trigger('change');
             $('#eqa-evalCriteria').val(data.evalCriteria || '');
             $('#eqa-evalDate')[0]._flatpickr.setDate(data.evalDate || '', true);
             $('#eqa-iqcResult').val(data.iqcResult || '');
-            $('#eqa-analyzer').val(data.analyzerStatus || '');
+            $('#eqa-analyzerStatus').val(data.analyzerStatus || '');
             $('#eqa-cause').val(data.cause || '');
             $('#eqa-correctiveAction').val(data.correctiveAction || '');
             $('#eqa-preventiveAction').val(data.preventiveAction || '');
+            state.eqaSignaturePayload = getRecordSignaturePack(record);
+            renderEqaSignatureButtons();
 
             const attachments = Array.isArray(record.attachments) ? record.attachments : [];
             const normalizedAttachments = new Array(attachments.length);
@@ -5077,13 +5260,59 @@
                     progress: 100
                 };
             }
-            // show signature if exists
-            const operatorSignature = getRecordSignaturePack(record).operator;
-            if (operatorSignature.length > 0) {
-                $('#eqa-signature-preview').html('<label class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ลายเซ็นผู้ปฏิบัติงาน</label><div class="signature-preview-frame mt-2 rounded-2xl border border-black bg-white p-5" style="aspect-ratio: 4 / 1;"></div>');
-                renderSignatureSvgPreview($('#eqa-signature-preview .signature-preview-frame')[0], operatorSignature);
-            } else {
-                $('#eqa-signature-preview').empty();
+            const signatures = getRecordSignaturePack(record);
+            const reviewerSignature = Array.isArray(signatures.operator) ? signatures.operator : [];
+            const verifierSignature = Array.isArray(signatures.supervisor) ? signatures.supervisor : [];
+            const renderSignatureCard = (title, role, nameValue, dateValue, signatureData) => {
+                const signatureMarkup = signatureData.length > 0
+                    ? '<div class="signature-preview-frame rounded-xl border border-slate-200 bg-white p-5" style="aspect-ratio: 4 / 1;"></div>'
+                    : '<div class="flex h-[84px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 text-sm text-slate-400">ยังไม่มีลายเซ็น</div>';
+                return `
+                    <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-500 uppercase">${title}</h4>
+                                <p class="text-xs text-slate-500 mt-1">รูปแบบเดียวกับการ์ดลายเซ็นของ IQC</p>
+                            </div>
+                            <span class="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-500 border border-slate-200">${role}</span>
+                        </div>
+                        ${signatureMarkup}
+                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
+                                <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">ชื่อ</div>
+                                <div class="mt-1 text-sm font-medium text-slate-700">${escapeHtml(nameValue || 'ยังไม่มีชื่อ')}</div>
+                            </div>
+                            <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
+                                <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">วันที่</div>
+                                <div class="mt-1 text-sm font-medium text-slate-700">${escapeHtml(dateValue || 'ยังไม่มีวันที่')}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+            $('#eqa-signature-preview').html(`
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    ${renderSignatureCard(
+                        'ผู้ทบทวนผลการประเมิน',
+                        'Review',
+                        data.reviewerName,
+                        data.reviewDate,
+                        reviewerSignature
+                    )}
+                    ${renderSignatureCard(
+                        'ผู้ตรวจสอบผลการประเมิน',
+                        'Verify',
+                        data.reviewerVerifier,
+                        data.reviewerVerifierDate,
+                        verifierSignature
+                    )}
+                </div>
+            `);
+            if (reviewerSignature.length > 0) {
+                renderSignatureSvgPreview($('#eqa-signature-preview .signature-preview-frame').first()[0], reviewerSignature);
+            }
+            if (verifierSignature.length > 0) {
+                renderSignatureSvgPreview($('#eqa-signature-preview .signature-preview-frame').last()[0], verifierSignature);
             }
             state.newEqaFiles = normalizedAttachments;
             renderEqaFileList();
@@ -5398,6 +5627,10 @@
                 preparer: data.preparer || data.operatorName || '',
                 reporter: data.reporter || data.supervisorName || '',
                 reportDate: data.reportDate || data.submitDate || data.evalDate || '',
+                reviewDate: data.reviewDate || data.reviewerVerifierDate || '',
+                reviewerName: data.reviewerName || data.reviewedBy || '',
+                reviewerVerifier: data.reviewerVerifier || data.approver || '',
+                reviewerVerifierDate: data.reviewerVerifierDate || data.approverDate || '',
                 testItem: data.testItem || data.parameter || '',
                 evalResult: data.evalResult || data.result || '',
                 evalCriteria: data.evalCriteria || data.criteria || '',
@@ -5430,47 +5663,115 @@
             });
         }
 
-        async function exportEQA(monthValue) {
+        async function exportEQA(recordOrId) {
             await document.fonts.ready;
-            const exportMonthValue = String(monthValue || $('#records-export-eqa-month').val() || moment().format('YYYY-MM')).trim();
-            const { monthMoment, startDate, endDate } = getMonthlyRange(exportMonthValue);
-            const records = await getRecordsApi({
-                startDate,
-                endDate,
-                type: 'EQA'
+            const record = recordOrId && typeof recordOrId === 'object'
+                ? recordOrId
+                : (state.records || []).find((item) => String(item.id) === String(recordOrId || ''));
+            if (!record) {
+                throw new Error('ไม่พบข้อมูล EQA ที่ต้องการพิมพ์');
+            }
+            const pages = [record];
+            const exportStyles = `
+                <style>
+                    @page { size: A4 portrait; margin: 0; }
+                    * { box-sizing: border-box; }
+                    *, ::after, ::before {
+                        box-sizing: border-box;
+                        border-width: 0;
+                        border-style: solid;
+                        border-color: #000;
+                    }
+                    body { margin: 0; }
+                    .eqa-report-page,
+                    .eqa-export-page {
+                        background: #fff;
+                        color: #000;
+                        font-family: 'Noto Sans Thai', sans-serif;
+                        position: relative;
+                        overflow: hidden;
+                        break-inside: avoid;
+                        page-break-inside: avoid;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                    .eqa-export-page {
+                        width: 210mm;
+                        min-height: 297mm;
+                    }
+                    .eqa-print-host {
+                        position: fixed;
+                        inset: 0;
+                        background: #fff;
+                        color: #000;
+                        z-index: 2147483647;
+                        overflow: hidden;
+                    }
+                    body.eqa-print-mode > :not(.eqa-print-host) {
+                        display: none !important;
+                    }
+                    body.eqa-print-mode .eqa-print-host {
+                        position: static;
+                        inset: auto;
+                    }
+                    @media print {
+                        body > :not(.eqa-print-host) {
+                            display: none !important;
+                        }
+                        .eqa-print-host {
+                            position: static;
+                            inset: auto;
+                        }
+                    }
+                </style>
+            `;
+
+            let printHost = document.getElementById('eqa-print-host');
+            if (printHost) {
+                printHost.remove();
+            }
+            printHost = document.createElement('div');
+            printHost.id = 'eqa-print-host';
+            printHost.className = 'eqa-print-host';
+            printHost.innerHTML = `
+                ${exportStyles}
+                <div class="eqa-print-root">
+                    ${pages.map((pageRecord, index) => buildEqaMonthlyPageHtml(pageRecord, null, index + 1, pages.length)).join('')}
+                </div>
+            `;
+            document.body.classList.add('eqa-print-mode');
+            document.body.appendChild(printHost);
+
+            const reviewerSignatureTargets = Array.from(printHost.querySelectorAll('[id^="eqa-export-reviewer-signature-"]'));
+            const verifierSignatureTargets = Array.from(printHost.querySelectorAll('[id^="eqa-export-verifier-signature-"]'));
+            pages.forEach((record, index) => {
+                const signatures = getRecordSignaturePack(record || {});
+                renderSignatureSvgPreview(reviewerSignatureTargets[index], signatures.operator);
+                renderSignatureSvgPreview(verifierSignatureTargets[index], signatures.supervisor);
             });
-            const monthParts = getMonthlyLabel(monthMoment);
-            const pages = records.length ? records : [null];
 
-            const element = document.createElement('div');
-            element.style.position = 'fixed';
-            element.style.left = '-9999px';
-            element.style.top = '0';
-            element.style.width = '210mm';
-            element.style.backgroundColor = 'white';
-            element.style.color = '#000';
-            element.style.fontFamily = "'Noto Sans Thai', sans-serif";
-            element.innerHTML = pages.map((record, index) => buildEqaMonthlyPageHtml(record, monthParts, index + 1, pages.length)).join('');
-            document.body.appendChild(element);
+            await new Promise((resolve) => window.requestAnimationFrame(() => window.requestAnimationFrame(resolve)));
+            const exportImages = Array.from(printHost.querySelectorAll('img'));
+            await Promise.all(exportImages.map((img) => (
+                img.complete
+                    ? Promise.resolve()
+                    : new Promise((resolve) => {
+                        img.onload = () => resolve();
+                        img.onerror = () => resolve();
+                    })
+            )));
 
-            const opt = {
-                margin: 0,
-                filename: `EQA_Monthly_${monthMoment.format('YYYYMM')}.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    letterRendering: true
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
+            const cleanup = () => {
+                document.body.classList.remove('eqa-print-mode');
+                if (printHost && printHost.parentNode) {
+                    printHost.parentNode.removeChild(printHost);
+                }
+                window.removeEventListener('afterprint', cleanup);
             };
 
-            try {
-                await html2pdf().set(opt).from(element).save();
-            } finally {
-                document.body.removeChild(element);
-            }
+            window.addEventListener('afterprint', cleanup, { once: true });
+            Swal.close();
+            window.print();
         }
 
         async function exportIQC(monthValue) {
@@ -6234,7 +6535,7 @@
 
                 $list.html($rows.map((_, row) => buildMobileRecordCard($(row))).get().join(''));
 
-                $list.find('.btn-edit-record, .btn-delete-record').each((_, button) => {
+                $list.find('.btn-edit-record, .btn-delete-record, .btn-export-eqa-record').each((_, button) => {
                     $(button).addClass('inline-flex min-h-11 w-full items-center justify-center gap-2');
                 });
 
