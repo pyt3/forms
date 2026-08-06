@@ -159,7 +159,7 @@ function checkMinMaxLimit(inp) {
         })
     })
 }
-function getLastSaved() {
+async function getLastSaved() {
     Swal.fire({
         iconHtml: '<i class="bi bi-hourglass-split display-1"></i>',
         customClass: {
