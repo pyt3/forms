@@ -1,4 +1,4 @@
-var script_url = 'https://script.google.com/macros/s/AKfycbwew5SoKXY39vXShqtwgL7OAVJle0fLaE3vY6_T5R5pmHeK4fNo8Jjw8pJY2VPQiVLc/exec'
+var script_url = 'https://script.google.com/macros/s/AKfycbwvFaXkyD_uv1ZrJcH92l9IKdmc1qTR8nBPedJayhtu2tPHeKcADzlLteBqF00IB2Dv/exec'
 const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
