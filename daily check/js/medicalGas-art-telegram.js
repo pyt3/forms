@@ -182,9 +182,8 @@ function getLastSaved() {
             form: $(a).attr('id')
         }
     })
-    Promise.all(forms.map(a => {
-        return new Promise((resolve, reject) => {
-            $.ajax(a.url, {
+    let lastSaved = await new Promise((resolve, reject) => {
+         $.ajax(script_url + '?opt=get_last', {
                 success: function (res) {
                     if (res.status == 'success') {
                         resolve(res)
@@ -193,40 +192,23 @@ function getLastSaved() {
                     }
                 },
             })
-        });
-    })).then((res) => {
-        res.filter(e => e != false).forEach(r => {
-            let data = r.data
-            Object.keys(data).forEach(key => {
-                if (key.length < 1) return
-                if (!$("[name='" + key + "']")) return
-                // if ($('#' + key).is(':checkbox')) {
-                //     if (data[key] == '✓') {
-                //         $('#' + key).prop('checked', true).val('✓')
-                //     } else {
-                //         $('#' + key).prop('checked', false).val('')
-                //     }
-                //     return
-                // } else if ($('#' + key).is(':radio')) {
-                //     if (data[key] == '✓') {
-                //         $('#' + key).prop('checked', true)
-                //     } else {
-                //         $('#' + key).prop('checked', false)
-                //     }
-                //     return
-                // }
-                $('[name="' + key + '"]').attr('placeholder', data[key])
-                if (key.indexOf('-lot') > -1) $("[name='" + key + "']").val(data[key])
-            })
-            if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
-                $('#name').val(localStorage.getItem('user') || "")
-            } else {
-                $('#name').val("")
-            }
-        })
-        sessionStorage.setItem('dailycheck_app', res[0]['tg'])
-        Swal.close()
     })
+    Object.keys(lastSaved.data).forEach(formName => {
+        let data = lastSaved.data[formName]
+        Object.keys(data).forEach(key => {
+            if (key.length < 1) return
+            if (!$("[name='" + key + "']")) return
+            $('[name="' + key + '"]').attr('placeholder', data[key])
+            if (key.indexOf('-lot') > -1) $("[name='" + key + "']").val(data[key])
+        })
+        if (localStorage.getItem('user') != null && localStorage.getItem('user') != 'null') {
+            $('#name').val(localStorage.getItem('user') || "")
+        } else {
+            $('#name').val("")
+        }
+    })
+    sessionStorage.setItem('dailycheck_app', lastSaved['tg'])
+    Swal.close()
     // return $.ajax({
     //     url: script_url,
     //     data: obj,
