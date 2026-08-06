@@ -10,7 +10,6 @@ const Toast = Swal.mixin({
     },
 })
 var tg
-
 $(document).ready(() => {
     // Initialize Telegram Web App
     tg = window.Telegram.WebApp;
