@@ -160,7 +160,7 @@ function checkMinMaxLimit(inp) {
     })
 }
 async function getLastSaved() {
-    
+
     Swal.fire({
         iconHtml: '<i class="bi bi-hourglass-split display-1"></i>',
         customClass: {
@@ -175,12 +175,6 @@ async function getLastSaved() {
         },
         didOpen: () => {
             Swal.showLoading()
-        }
-    })
-    let forms = $('form').toArray().map(a => {
-        return {
-            url: script_url + '?opt=get_last&form=' + $(a).attr('id'),
-            form: $(a).attr('id')
         }
     })
     let lastSaved = await new Promise((resolve, reject) => {
