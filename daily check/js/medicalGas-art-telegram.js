@@ -473,6 +473,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
         $.ajax({
             url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app') + '/sendMessage',
             type: 'POST',
+            timeout: 15000,
             data: {
                 chat_id: chat_id,
                 text: message,
@@ -493,35 +494,42 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
             },
             success: function (res) {
                 console.log("Message sent successfully:", res);
-                success_all++
-                checkDone()
                 resolve(res)
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                let res = JSON.parse(jqXHR.responseText)
+                let res
+                try {
+                    res = JSON.parse(jqXHR.responseText)
+                } catch (parseErr) {
+                    res = { description: textStatus || errorThrown || 'Unknown Telegram error' }
+                }
                 console.error("Error sending message:", res.description);
                 if (res.description == 'Bad Request: message thread not found') {
                     $.ajax({
                         url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app') + '/sendMessage',
                         type: 'POST',
+                        timeout: 15000,
                         data: {
                             chat_id: chat_id,
                             text: message,
                             parse_mode: parse_mode,
                         },
                         success: function (res) {
-                            success_all++
-                            checkDone()
                             resolve(res)
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
-                            let res = JSON.parse(jqXHR.responseText)
+                            let res
+                            try {
+                                res = JSON.parse(jqXHR.responseText)
+                            } catch (parseErr) {
+                                res = { description: textStatus || errorThrown || 'Unknown Telegram error' }
+                            }
                             console.error("Error sending message:", res.description);
-                            reject(errorThrown);
+                            reject(errorThrown || textStatus || res.description);
                         }
                     })
                 } else {
-                    reject(errorThrown);
+                    reject(errorThrown || textStatus || res.description);
                 }
             }
         })
@@ -566,6 +574,7 @@ function sendTelegram_confirm(obj) {
         $.ajax({
             url: 'https://api.telegram.org/bot' + sessionStorage.getItem('dailycheck_app') + '/sendMessage',
             type: 'POST',
+            timeout: 15000,
             data: {
                 chat_id: tg.initDataUnsafe.user.id,
                 text: message,
@@ -573,13 +582,11 @@ function sendTelegram_confirm(obj) {
             },
             success: function (res) {
                 console.log("Confirmation message sent successfully:", res);
-                success_all++
-                checkDone()
                 resolve(res)
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error sending images:", errorThrown);
-                reject(errorThrown);
+                reject(errorThrown || textStatus || 'Failed to send confirmation message');
             }
         })
     })
@@ -610,31 +617,21 @@ const retryRequest = (fn, retries = 3) => {
         }
     });
 };
-let success_all = 0
-const checkDone = () => {
-    if (success_all >= 3) {
-        setTimeout(() => {
-            $('html, body').animate({
-                scrollTop: 0
-            }, 200);
-            Swal.fire({
-                icon: 'success',
-                title: 'บันทึกข้อมูลสำเร็จ',
-                confirmButtonText: 'ตกลง',
-                timer: 800,
-                allowOutsideClick: false,
-                timerProgressBar: true,
-                customClass: {
-                    popup: 'rounded-4',
-                    icon: 'border-0',
-                },
-            }).then(() => {
-                // tg.close()
-            })
-        }, 200);
-    }
+const submitTimeout = (promise, timeoutMs) => {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+            reject(new Error('Submission timed out'))
+        }, timeoutMs)
+        promise.then((value) => {
+            clearTimeout(timer)
+            resolve(value)
+        }).catch((err) => {
+            clearTimeout(timer)
+            reject(err)
+        })
+    })
 }
-function ChecklistForm(form) {
+async function ChecklistForm(form) {
     // check if not attach image
     let data = $(form).serializeArray()
     let obj = {}
@@ -661,11 +658,45 @@ function ChecklistForm(form) {
             icon: 'border-0',
         },
     })
-    Promise.all([
-        retryRequest(() => saveToSheet(obj)),
-        retryRequest(() => sendTelegram(obj)),
-        retryRequest(() => sendTelegram_confirm(obj)),
-    ])
+    try {
+        await submitTimeout(Promise.all([
+            retryRequest(() => saveToSheet(obj)),
+            retryRequest(() => sendTelegram(obj)),
+            retryRequest(() => sendTelegram_confirm(obj)),
+        ]), 70000)
+        Swal.close()
+        $('html, body').animate({
+            scrollTop: 0
+        }, 200);
+        Swal.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+            confirmButtonText: 'ตกลง',
+            timer: 800,
+            allowOutsideClick: false,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'rounded-4',
+                icon: 'border-0',
+            },
+        }).then(() => {
+            // tg.close()
+        })
+    } catch (err) {
+        console.error('Checklist submission failed:', err)
+        Swal.close()
+        Swal.fire({
+            icon: 'error',
+            title: 'บันทึกไม่สำเร็จ',
+            text: 'กรุณาลองใหม่อีกครั้ง',
+            confirmButtonText: 'ตกลง',
+            allowOutsideClick: false,
+            customClass: {
+                popup: 'rounded-4',
+                icon: 'border-0',
+            },
+        })
+    }
 }
 function saveToSheet(obj) {
     return new Promise((resolve, reject) => {
@@ -673,6 +704,7 @@ function saveToSheet(obj) {
             url: script_url,
             data: obj,
             type: 'POST',
+            timeout: 15000,
             success: function (res) {
                 let form = $('#' + obj.form)
                 if (res.status) {
@@ -686,15 +718,13 @@ function saveToSheet(obj) {
                         localStorage.setItem('history', JSON.stringify(obj))
                     }
                     console.log("Data saved successfully:", res);
-                    success_all++
-                    checkDone()
                 } else {
                     reject(res)
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error sending images:", errorThrown);
-                reject(errorThrown);
+                reject(errorThrown || textStatus || 'Failed to save sheet');
             }
         })
     })
