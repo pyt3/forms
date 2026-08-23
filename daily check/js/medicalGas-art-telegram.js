@@ -718,6 +718,7 @@ function saveToSheet(obj) {
                         localStorage.setItem('history', JSON.stringify(obj))
                     }
                     console.log("Data saved successfully:", res);
+                    resolve(res)
                 } else {
                     reject(res)
                 }
