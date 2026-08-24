@@ -430,10 +430,10 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
                 message = `<strong>✅ Embryology Incubator Daily Check Report</strong>
 <strong>📆 Date: </strong> ${moment().format('DD/MM/YYYY')}
 <strong>🕑 Shift: </strong> ${obj.shift}
-<blockquote><b><i>👉 ASTEC</i></b
+<blockquote><b><i>👉 ASTEC</i></b>
 CO2 =  <b>${obj['embryology-incubator-astec-co2']}</b>  %
 Temperature =  <b>${obj['embryology-incubator-astec-temp']}</b>   ํC</blockquote>
-<blockquote><b><i>👉 MEMMERT</i></b
+<blockquote><b><i>👉 MEMMERT</i></b>
 Temperature =  <b>${obj['embryology-incubator-memmert-temp']}</b>   ํC</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                 break
@@ -464,7 +464,7 @@ Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUn
 <strong>🕑 Shift: </strong> ${obj.shift}
 <blockquote><b><i>👉 Refrigerator</i></b>
 Temperature =  <b>${obj['andrology-refrigerator-refrig-temp']}</b>   ํC</blockquote>
-<blockquote><b><i>👉 ESCORT</i></b
+<blockquote><b><i>👉 ESCORT</i></b>
 Temperature =  <b>${obj['andrology-refrigerator-escort-temp']}</b>   ํC</blockquote>
 Checklist by <a href="tg://user?id=${tg.initDataUnsafe.user.id}">${tg.initDataUnsafe.user.first_name}</a>`
                 break
