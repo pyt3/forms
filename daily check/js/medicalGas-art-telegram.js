@@ -661,7 +661,7 @@ async function ChecklistForm(form) {
     try {
         await submitTimeout(Promise.all([
             retryRequest(() => saveToSheet(obj)),
-            retryRequest(() => sendTelegram(obj)),
+            // retryRequest(() => sendTelegram(obj)),
             retryRequest(() => sendTelegram_confirm(obj)),
         ]), 70000)
         Swal.close()
