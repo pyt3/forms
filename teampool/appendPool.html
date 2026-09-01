@@ -2170,10 +2170,24 @@
                 })
                 return false
             }
+            if (code == '' || code == null) {
+                Swal.fire({
+                    customClass: {
+                        popup: 'rounded-4'
+                    },
+                    icon: 'error',
+                    title: 'กรุณาระบุข้อมูลเครื่องมือที่ขนย้าย',
+                    text: 'ต้องมีรหัสเครื่องมือก่อนบันทึกข้อมูล',
+                    showConfirmButton: false,
+                    timer: 1800
+                })
+                return false
+            }
+
             let assetDetail = getAssetDetail(code) || {}
             let owner = assetDetail.departmentAsset || ''
             let e_name = assetDetail.name || ''
-            let e_code = assetDetail.code || ''
+            let e_code = assetDetail.code || code
 
             let isBorrow = false
             if ((start === owner && start !== end) || (start !== owner && start !== end)) {
