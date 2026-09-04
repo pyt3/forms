@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
     NProgress.done();
 });
-// const liff_id = '1655873446-MpmBPPzl' // for test
+// const liff_id = '1661543046-86kpRl4E' // for test
 const liff_id = '1661543046-a1pJexbX' // use
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
@@ -15,6 +15,8 @@ const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
 var job_detail
 let update_data, tg_thread_id
 let chat_id = '-1002300341036'
+const RELATED_REPAIR_ENDPOINT = 'https://bursting-fox-mostly.ngrok-free.app/?mode=searchRepair'
+let relatedRepairAssetCatalogPromise = null
 const sweetalert_custom_class = {
     popup: 'rounded-xl',
     confirmButton: 'px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all',
@@ -237,6 +239,133 @@ $(document).ready(async () => {
     }
 });
 var jobid, wo, current_code, current_user, contactList = []
+let relatedRepairWorkDetail = null
+let relatedRepairHistoryPromise = null
+
+function repairText(value) {
+    return value == null || value === '' || value === '-' ? '-' : String(value).replaceAll('- ', '\n● ')
+}
+
+function escapeRelatedRepairHtml(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+async function getRelatedRepairAsset(code) {
+    if (!code) return { brand: '', model: '' }
+
+    if (!relatedRepairAssetCatalogPromise) {
+        relatedRepairAssetCatalogPromise = fetch('../teampool/export_asset_branch.xlsx', { cache: 'no-store' })
+            .then(response => {
+                if (!response.ok) throw new Error('โหลดไฟล์ข้อมูลครุภัณฑ์ไม่สำเร็จ')
+                return response.arrayBuffer()
+            })
+            .then(buffer => {
+                const workbook = XLSX.read(buffer, { type: 'array' })
+                const sheet = workbook.Sheets[workbook.SheetNames[0]]
+                return XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: false, blankrows: false })
+                    .slice(1)
+                    .reduce((catalog, row) => {
+                        const assetCode = String(row[6] || '').trim().toUpperCase()
+                        if (assetCode) catalog.set(assetCode, { brand: String(row[8] || '').trim(), model: String(row[9] || '').trim() })
+                        return catalog
+                    }, new Map())
+            })
+    }
+
+    const catalog = await relatedRepairAssetCatalogPromise
+    return catalog.get(String(code).trim().toUpperCase()) || { brand: '', model: '' }
+}
+
+function renderRelatedRepairHistory(response) {
+    const metadataGroups = Array.isArray(response?.metadatas) ? response.metadatas : []
+    const documentGroups = Array.isArray(response?.documents) ? response.documents : []
+    const metadata = metadataGroups.flat().filter(Boolean)
+    const documents = documentGroups.flat()
+    const rows = metadata.length ? metadata : documents.map(document => ({ repair_detail: document }))
+    const $section = $('#related-repair-history')
+    const $status = $('#related-repair-history-status')
+    const $body = $('#related-repair-history-body')
+
+    $section.removeClass('hidden')
+    $('#related-repair-history-count').text(`${rows.length} รายการ`)
+    if (!rows.length) {
+        $('#related-repair-history-table-wrap').addClass('hidden')
+        $status.html('<i class="bi bi-inbox text-2xl block mb-2 text-slate-300" aria-hidden="true"></i>ไม่พบประวัติงานซ่อมที่เกี่ยวข้อง')
+        return
+    }
+
+    $status.empty()
+    $('#related-repair-history-table-wrap').removeClass('hidden')
+    $body.html(rows.slice(0, 10).map(row => {
+        const values = [row.work_order, row.raw_name || row.clean_name, row.raw_brand || row.clean_brand, row.raw_model || row.clean_model, row.symptom, row.repair_detail]
+        return `<tr class="align-top hover:bg-slate-50 transition-colors">${values.map((value, index) => `<td class="px-4 py-3 text-slate-700 ${index > 3 ? 'whitespace-pre-wrap leading-relaxed' : 'whitespace-nowrap'}">${escapeRelatedRepairHtml(repairText(value))}</td>`).join('')}</tr>`
+    }).join(''))
+}
+
+async function loadRelatedRepairHistory(workDetail) {
+    const $section = $('#related-repair-history')
+    const $status = $('#related-repair-history-status')
+    if (new URL(window.location.href).searchParams.get('action')) return
+
+    $section.removeClass('hidden')
+    $('#related-repair-history-table-wrap').addClass('hidden')
+    $('#related-repair-history-count').empty()
+    $status.html('<i class="bi bi-arrow-clockwise animate-spin text-2xl block mb-2 text-blue-500" aria-hidden="true"></i>กำลังค้นหาประวัติงานซ่อม...')
+
+    try {
+        const asset = await getRelatedRepairAsset(workDetail.code)
+        const params = new URLSearchParams({
+            query_text: workDetail.detail || '',
+            search_brand: asset.brand || '',
+            search_model: asset.model || '',
+            search_name: workDetail.ename || '',
+            top_k: '10',
+            'ngrok-skip-browser-warning': 'true'
+        })
+        const response = await fetch(`${RELATED_REPAIR_ENDPOINT}&${params.toString()}`, {
+            cache: 'no-store',
+            headers: {
+                'ngrok-skip-browser-warning': 'true'
+            }
+        })
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const responseText = await response.text()
+        if (responseText.trim().startsWith('<')) {
+            console.warn('Related repair history returned HTML:', responseText.slice(0, 300))
+            throw new Error('API returned HTML instead of JSON')
+        }
+        renderRelatedRepairHistory(JSON.parse(responseText))
+    } catch (error) {
+        console.error('Related repair history:', error)
+        $section.removeClass('hidden')
+        $('#related-repair-history-count').empty()
+        $('#related-repair-history-table-wrap').addClass('hidden')
+        $status.html('<i class="bi bi-exclamation-circle text-2xl block mb-2 text-amber-500" aria-hidden="true"></i>ไม่สามารถโหลดประวัติงานซ่อมได้ในขณะนี้')
+    }
+}
+
+function setupRelatedRepairHistoryButton(workDetail) {
+    relatedRepairWorkDetail = workDetail
+    relatedRepairHistoryPromise = null
+
+    $('#history-btn').off('click.relatedRepair').on('click.relatedRepair', async function () {
+        if (!relatedRepairWorkDetail || relatedRepairHistoryPromise) return
+
+        const $button = $(this)
+        $button.prop('disabled', true).addClass('opacity-75 cursor-not-allowed')
+        relatedRepairHistoryPromise = loadRelatedRepairHistory(relatedRepairWorkDetail)
+        await relatedRepairHistoryPromise
+        relatedRepairHistoryPromise = null
+        $button.prop('disabled', false).removeClass('opacity-75 cursor-not-allowed')
+        document.getElementById('related-repair-history')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+}
+
 async function initialData() {
 
     let url = new URL(window.location.href);
@@ -325,7 +454,6 @@ async function initialData() {
     })
     if (code) {
         $('#history-btn').removeClass('hidden')
-        $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
     } else {
         $('#history-btn').addClass('hidden')
     }
@@ -408,6 +536,7 @@ async function initialData() {
                 $('#work-status').parent().removeClass('hidden')
             }
             $('#code').val(data.code)
+            if (!action && data.code) setupRelatedRepairHistoryButton(data)
             if (!data.name && !data.reciever) {
                 $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
                 $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
@@ -1015,7 +1144,7 @@ async function initialData() {
             }
             if (data.code) {
                 $('#history-btn').removeClass('hidden')
-                $('#history-btn').prop('href', 'https://nsmart.nhealth-asia.com/MTDPDB01/jobs/BJOBA_01A.php?s_sap_code=' + data.code.toUpperCase() + '&openExternalBrowser=1').prop('target', '_blank')
+                setupRelatedRepairHistoryButton(data)
             } else {
                 $('#history-btn').addClass('hidden')
             }
