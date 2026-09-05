@@ -431,6 +431,57 @@
             background: #dbeafe;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
+
+        @media (max-width: 767px) {
+            #related-repair-history-table-wrap {
+                overflow: visible;
+                border: 0;
+            }
+
+            #related-repair-history table,
+            #related-repair-history tbody,
+            #related-repair-history tr,
+            #related-repair-history td {
+                display: block;
+                min-width: 0;
+                width: 100%;
+            }
+
+            #related-repair-history thead {
+                display: none;
+            }
+
+            #related-repair-history tr {
+                margin-bottom: 1rem;
+                padding: .75rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 1rem;
+                background: #fff;
+                box-shadow: 0 4px 12px rgba(15, 23, 42, .06);
+            }
+
+            #related-repair-history td {
+                display: grid;
+                grid-template-columns: minmax(5.5rem, 30%) minmax(0, 1fr);
+                gap: .75rem;
+                padding: .65rem .25rem;
+                white-space: normal !important;
+                line-height: 1.55;
+                border-bottom: 1px solid #f1f5f9;
+                overflow-wrap: anywhere;
+            }
+
+            #related-repair-history td:last-child {
+                border-bottom: 0;
+            }
+
+            #related-repair-history td::before {
+                content: attr(data-label);
+                color: #64748b;
+                font-size: .75rem;
+                font-weight: 600;
+            }
+        }
     </style>
     <title>อัพเดทงาน</title>
 </head>
@@ -527,7 +578,7 @@
                         </div>
 
                         <!-- Right side - Image and actions -->
-                        <div class="flex flex-col items-center space-y-4">
+                        <div class="self-start flex flex-col items-center justify-start space-y-4">
                             <!-- Image -->
                             <div
                                 class="relative w-full aspect-square max-w-xs rounded-2xl overflow-hidden border-2 border-gray-200">
@@ -535,7 +586,6 @@
                                     id="image" class="w-full h-full object-cover transition-opacity duration-300">
                                 <div class="absolute inset-0 pointer-events-none"></div>
                             </div>
-
                         </div>
                     </div>
 
@@ -546,6 +596,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- Work order detail card -->
+            <div id="workorder-detail" class="hidden overflow-hidden rounded-2xl border border-blue-100 bg-white/80 shadow-lg backdrop-blur-sm card-hover">
+                <div class="flex items-center gap-2 border-b border-blue-100 bg-blue-50 px-5 py-3 font-semibold text-blue-700">
+                    <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                    <span>อาการแจ้งซ่อม</span>
+                </div>
+                <div id="workorder-detail-text" class="px-5 py-4 text-sm leading-relaxed text-slate-700 whitespace-pre-wrap"></div>
             </div>
             <!-- Work Update Section -->
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
@@ -885,14 +943,12 @@
                 </div>
                 <div class="p-4 md:p-6">
                     <div id="related-repair-history-status" class="text-sm text-slate-500 py-5 text-center" role="status"></div>
+                    <div id="related-repair-history-equipment" class="hidden mb-5 grid gap-3 sm:grid-cols-3"></div>
                     <div id="related-repair-history-table-wrap" class="hidden overflow-x-auto rounded-xl border border-slate-200">
                         <table class="min-w-full text-left text-sm">
                             <thead class="bg-slate-50 text-slate-600 uppercase tracking-wide text-xs">
                                 <tr>
                                     <th scope="col" class="px-4 py-3 whitespace-nowrap">ใบงาน</th>
-                                    <th scope="col" class="px-4 py-3 min-w-[180px]">อุปกรณ์</th>
-                                    <th scope="col" class="px-4 py-3 whitespace-nowrap">ยี่ห้อ</th>
-                                    <th scope="col" class="px-4 py-3 whitespace-nowrap">รุ่น</th>
                                     <th scope="col" class="px-4 py-3 min-w-[220px]">อาการ</th>
                                     <th scope="col" class="px-4 py-3 min-w-[280px]">รายละเอียดการซ่อม</th>
                                 </tr>
