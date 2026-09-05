@@ -16,7 +16,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'prompt': ['Prompt', 'sans-serif'],
+                        'noto-sans-thai': ['Noto Sans Thai', 'sans-serif'],
+                        'noto-serif-thai': ['Noto Serif Thai', 'serif'],
                     },
                     colors: {
                         primary: {
@@ -71,15 +72,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsignature/libs/flashcanvas.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsignature/libs/modernizr.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- icon -->
-    <link rel="icon" href="https://img.icons8.com/3d-fluency/94/move-by-trolley.png" type="image/x-icon" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&family=Noto+Serif+Thai:wght@100..900&display=swap"
+        rel="stylesheet">
     <!-- Bootstrap Icons for compatibility -->
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
@@ -397,11 +399,94 @@
         .transition-smooth {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        .emoji-btn {
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .emoji-btn:hover,
+        .emoji-btn:focus {
+            transform: translateY(-4px) scale(1.08);
+            filter: drop-shadow(0 8px 12px rgba(59, 130, 246, 0.25));
+        }
+
+        .survey-choice {
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            background: #f8fafc;
+            padding: 0.75rem 0.5rem;
+            min-width: 78px;
+            transition: all 0.2s ease;
+        }
+
+        .survey-choice:hover,
+        .survey-choice:focus {
+            border-color: #60a5fa;
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        .survey-choice.active {
+            border-color: #2563eb;
+            background: #dbeafe;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        @media (max-width: 767px) {
+            #related-repair-history-table-wrap {
+                overflow: visible;
+                border: 0;
+            }
+
+            #related-repair-history table,
+            #related-repair-history tbody,
+            #related-repair-history tr,
+            #related-repair-history td {
+                display: block;
+                min-width: 0;
+                width: 100%;
+            }
+
+            #related-repair-history thead {
+                display: none;
+            }
+
+            #related-repair-history tr {
+                margin-bottom: 1rem;
+                padding: .75rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 1rem;
+                background: #fff;
+                box-shadow: 0 4px 12px rgba(15, 23, 42, .06);
+            }
+
+            #related-repair-history td {
+                display: grid;
+                grid-template-columns: minmax(5.5rem, 30%) minmax(0, 1fr);
+                gap: .75rem;
+                padding: .65rem .25rem;
+                white-space: normal !important;
+                line-height: 1.55;
+                border-bottom: 1px solid #f1f5f9;
+                overflow-wrap: anywhere;
+            }
+
+            #related-repair-history td:last-child {
+                border-bottom: 0;
+            }
+
+            #related-repair-history td::before {
+                content: attr(data-label);
+                color: #64748b;
+                font-size: .75rem;
+                font-weight: 600;
+            }
+        }
     </style>
     <title>อัพเดทงาน</title>
 </head>
 
-<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 font-prompt min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 font-noto-sans-thai min-h-screen">
     <!-- Loading Screen -->
     <div
         class="fixed inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center z-50 load-bar">
@@ -437,8 +522,8 @@
                                 <h2 class="text-lg font-semibold">Work Order:
 
                                     <span id="workorder" class="font-mono font-bold">Loading...</span>
-                                    <i class="bi bi-pencil-square text-sm text-white cursor-pointer ms-3" id="edit-workorder"
-                                        title="Edit work order"></i>
+                                    <i class="bi bi-pencil-square text-sm text-white cursor-pointer ms-3"
+                                        id="edit-workorder" title="Edit work order"></i>
                                 </h2>
                             </div>
                         </div>
@@ -455,6 +540,17 @@
                                 class="flex items-center space-x-3 p-3 bg-emerald-50 rounded-xl border border-emerald-200">
                                 <i class="bi bi-check-circle-fill text-emerald-500 text-xl"></i>
                                 <div class="text-sm text-emerald-700" id="reciever">Loading status...</div>
+                            </div>
+
+                            <!-- Feedback Display -->
+                            <div id="feedback-display"
+                                onclick="handleFeedbackHiddenClick()"
+                                class="hidden flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-200 select-none">
+                                <div class="text-sm text-blue-700 font-medium">ความพึงพอใจ</div>
+                                <div class="flex items-center gap-2">
+                                    <span id="feedback-emoji" class="text-4xl leading-none">-</span>
+                                    <span id="feedback-text" class="text-sm text-blue-700 font-semibold">-</span>
+                                </div>
                             </div>
 
                             <!-- Request Number -->
@@ -482,7 +578,7 @@
                         </div>
 
                         <!-- Right side - Image and actions -->
-                        <div class="flex flex-col items-center space-y-4">
+                        <div class="self-start flex flex-col items-center justify-start space-y-4">
                             <!-- Image -->
                             <div
                                 class="relative w-full aspect-square max-w-xs rounded-2xl overflow-hidden border-2 border-gray-200">
@@ -490,13 +586,6 @@
                                     id="image" class="w-full h-full object-cover transition-opacity duration-300">
                                 <div class="absolute inset-0 pointer-events-none"></div>
                             </div>
-
-                            <!-- History Button -->
-                            <button id="history-btn"
-                                class="hidden w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-xl transition-all btn-ripple">
-                                <i class="bi bi-clock-history mr-2"></i>
-                                ประวัติซ่อม
-                            </button>
                         </div>
                     </div>
 
@@ -507,6 +596,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- Work order detail card -->
+            <div id="workorder-detail" class="hidden overflow-hidden rounded-2xl border border-blue-100 bg-white/80 shadow-lg backdrop-blur-sm card-hover">
+                <div class="flex items-center gap-2 border-b border-blue-100 bg-blue-50 px-5 py-3 font-semibold text-blue-700">
+                    <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                    <span>อาการแจ้งซ่อม</span>
+                </div>
+                <div id="workorder-detail-text" class="px-5 py-4 text-sm leading-relaxed text-slate-700 whitespace-pre-wrap"></div>
             </div>
             <!-- Work Update Section -->
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
@@ -545,9 +642,9 @@
                         </label>
                         <div class="relative">
                             <textarea name="update" id="update" rows="8" maxlength="5000"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none input-focus"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none input-focus font-noto-serif-thai"
                                 placeholder="กรอกข้อมูลอัพเดท..."></textarea>
-                            <div class="absolute bottom-3 right-3 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
+                            <div class="absolute bottom-[-5] right-3 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
                                 id="char-count">
                                 0/5000
                             </div>
@@ -571,7 +668,7 @@
                             </button>
                         </div>
                         <div id="vendor-contact-list"
-                            class="bg-gray-50 border border-gray-200 rounded-xl p-4 min-h-[80px] transition-all">
+                            class="bg-gray-50 border border-gray-200 rounded-xl min-h-[80px] transition-all">
                             <!-- Contact list will be rendered here -->
                         </div>
                     </div>
@@ -765,8 +862,18 @@
 
                 <!-- Content -->
                 <div class="p-6">
+                    <div id="feedback-display-summary"
+                        onclick="handleFeedbackHiddenClick()"
+                        class="hidden mb-4 flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-200 select-none">
+                        <div class="text-sm text-blue-700 font-medium">ความพึงพอใจ</div>
+                        <div class="flex items-center gap-2">
+                            <span id="feedback-emoji-summary" class="text-4xl leading-none">-</span>
+                            <span id="feedback-text-summary" class="text-sm text-blue-700 font-semibold">-</span>
+                        </div>
+                    </div>
+
                     <!-- Summary Display -->
-                    <div class="hidden mb-6" id="summary-content">
+                    <div class="hidden mb-6 font-noto-serif-thai" id="summary-content">
                         <div
                             class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 select-all">
                             <div class="prose max-w-none">
@@ -785,7 +892,7 @@
                                 <i class="bi bi-plus-circle mr-2"></i>
                                 อัพเดทเพิ่ม
                             </button>
-                             <button
+                            <button
                                 class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-all btn-ripple share-line-btn btn-enhanced">
                                 <i class="bi bi-line mr-2"></i>Share
                             </button>
@@ -812,9 +919,111 @@
                 </div>
             </div>
         </div>
+        <!-- Related repair history action -->
+        <div class="max-w-6xl mx-auto mt-5 flex justify-center">
+            <button id="history-btn"
+                type="button"
+                class="hidden px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-xl transition-all btn-ripple">
+                <i class="bi bi-clock-history mr-2"></i>
+                ดูงานที่เกี่ยวข้อง
+            </button>
+        </div>
+        <!-- Related repair history table section -->
+        <section id="related-repair-history" class="hidden max-w-6xl mx-auto mt-6 mb-8" aria-labelledby="related-repair-history-title">
+            <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+                <div class="bg-gradient-to-r from-slate-700 to-slate-800 text-white p-4 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <i class="bi bi-clock-history text-2xl" aria-hidden="true"></i>
+                        <div>
+                            <h2 id="related-repair-history-title" class="text-lg font-semibold">ประวัติงานซ่อมที่เกี่ยวข้อง</h2>
+                            <p class="text-xs text-slate-300">ผลการค้นหาจากอาการ ยี่ห้อ รุ่น และผู้แจ้ง</p>
+                        </div>
+                    </div>
+                    <span id="related-repair-history-count" class="text-xs font-semibold bg-white/15 px-3 py-1 rounded-full"></span>
+                </div>
+                <div class="p-4 md:p-6">
+                    <div id="related-repair-history-status" class="text-sm text-slate-500 py-5 text-center" role="status"></div>
+                    <div id="related-repair-history-equipment" class="hidden mb-5 grid gap-3 sm:grid-cols-3"></div>
+                    <div id="related-repair-history-table-wrap" class="hidden overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="min-w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-600 uppercase tracking-wide text-xs">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap">ใบงาน</th>
+                                    <th scope="col" class="px-4 py-3 min-w-[220px]">อาการ</th>
+                                    <th scope="col" class="px-4 py-3 min-w-[280px]">รายละเอียดการซ่อม</th>
+                                </tr>
+                            </thead>
+                            <tbody id="related-repair-history-body" class="divide-y divide-slate-100 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <!-- Survey Modal -->
+    <div id="surveyModal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+        aria-labelledby="surveyModalLabel" aria-hidden="true">
+        <div id="survey-card"
+            class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center transition-all duration-500 transform border border-blue-100">
+            <div class="flex justify-end mb-2">
+                <button type="button" onclick="closeSurveyModal()"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all"
+                    aria-label="ปิดแบบประเมิน">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div id="survey-content">
+                <div
+                    class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-4">
+                    แบบประเมินความพึงพอใจ
+                </div>
+                <h1 id="surveyModalLabel" class="text-2xl font-bold text-gray-800 mb-2">บริการครั้งนี้เป็นอย่างไรบ้าง?</h1>
+                <p class="text-gray-500 mb-2">โปรดเลือกคะแนนเพื่อดำเนินการต่อ</p>
+
+                <div class="flex justify-center space-x-6">
+                    <button onclick="submitFeedback('neutral')"
+                        class="emoji-btn survey-choice focus:outline-none flex flex-col items-center"
+                        aria-label="พอใช้">
+                        <span class="text-5xl">😐</span>
+                        <span class="text-xs text-gray-600 mt-1">พอใช้</span>
+                    </button>
+                    <button onclick="submitFeedback('good')"
+                        class="emoji-btn survey-choice focus:outline-none flex flex-col items-center"
+                        aria-label="ดี">
+                        <span class="text-5xl">😊</span>
+                        <span class="text-xs text-gray-600 mt-1">ดี</span>
+                    </button>
+                    <button onclick="submitFeedback('happy')"
+                        class="emoji-btn survey-choice focus:outline-none flex flex-col items-center"
+                        aria-label="ดีมาก">
+                        <span class="text-5xl">😄</span>
+                        <span class="text-xs text-gray-600 mt-1">ดีมาก</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="thank-you-content" class="hidden">
+                <div class="text-6xl mb-4">🎉</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">ขอบคุณสำหรับคำประเมิน</h2>
+                <p class="text-gray-600">คุณเลือกคะแนน: <span id="selected-feedback-label" class="font-semibold text-blue-600">-</span></p>
+                <div class="mt-6 flex flex-col gap-3">
+                    <button onclick="confirmFeedback()"
+                        class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all">
+                        ยืนยันคะแนนและไปหน้าเซ็นชื่อ
+                    </button>
+                    <button onclick="resetSurvey()" class="text-sm text-blue-500 hover:underline">เปลี่ยนคะแนน</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Signature Modal -->
-    <div id="signatureModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm" aria-labelledby="signatureModalLabel" aria-hidden="true">
+    <div id="signatureModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+        aria-labelledby="signatureModalLabel" aria-hidden="true">
         <div class="relative w-full h-full max-w-screen">
             <div class="bg-white h-full flex flex-col">
                 <!-- Body -->
@@ -846,40 +1055,12 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
-        // Modal functions for Tailwind (replacing Bootstrap modal)
-        function openSignatureModal() {
-            const modal = document.getElementById('signatureModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.getElementById('signatureparent').classList.remove('hidden');
-            // Trigger resize for signature canvas
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
-        }
-
-        function closeSignatureModal() {
-            const modal = document.getElementById('signatureModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // Update modal event listeners
-        document.addEventListener('DOMContentLoaded', function () {
-            // Replace Bootstrap modal events
-            const openSignBtn = document.getElementById('open-sign');
-            if (openSignBtn) {
-                openSignBtn.addEventListener('click', openSignatureModal);
-            }
-        });
-    </script>
-    <script>
         let script = document.createElement('script');
         script.src = './updatejob.js' + '?v=' + Date.now();
         script.defer = true;
         document.body.appendChild(script);
     </script>
-   
+
 </body>
 
 </html>

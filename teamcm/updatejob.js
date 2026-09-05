@@ -1,4 +1,3 @@
-// var vConsole = new VConsole();
 AOS.init();
 document.addEventListener("DOMContentLoaded", function () {
     NProgress.start();
@@ -17,6 +16,21 @@ let update_data, tg_thread_id
 let chat_id = '-1002300341036'
 const RELATED_REPAIR_ENDPOINT = 'https://bursting-fox-mostly.ngrok-free.app/?mode=searchRepair'
 let relatedRepairAssetCatalogPromise = null
+let xlsxPromise = null
+
+function loadXlsx() {
+    if (window.XLSX) return Promise.resolve(window.XLSX)
+    if (!xlsxPromise) {
+        xlsxPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script')
+            script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'
+            script.onload = () => resolve(window.XLSX)
+            script.onerror = () => reject(new Error('ไม่สามารถโหลดเครื่องมืออ่านข้อมูลได้'))
+            document.head.appendChild(script)
+        })
+    }
+    return xlsxPromise
+}
 const sweetalert_custom_class = {
     popup: 'rounded-xl',
     confirmButton: 'px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all',
@@ -246,6 +260,12 @@ function repairText(value) {
     return value == null || value === '' || value === '-' ? '-' : String(value).replaceAll('- ', '\n● ')
 }
 
+function renderWorkOrderDetail(detail) {
+    const value = detail == null ? '' : String(detail).trim()
+    $('#workorder-detail').toggleClass('hidden', !value)
+    $('#workorder-detail-text').text(value)
+}
+
 function escapeRelatedRepairHtml(value) {
     return String(value == null ? '' : value)
         .replace(/&/g, '&amp;')
@@ -264,7 +284,7 @@ async function getRelatedRepairAsset(code) {
                 if (!response.ok) throw new Error('โหลดไฟล์ข้อมูลครุภัณฑ์ไม่สำเร็จ')
                 return response.arrayBuffer()
             })
-            .then(buffer => {
+            .then(buffer => loadXlsx().then(() => {
                 const workbook = XLSX.read(buffer, { type: 'array' })
                 const sheet = workbook.Sheets[workbook.SheetNames[0]]
                 return XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: false, blankrows: false })
@@ -274,7 +294,7 @@ async function getRelatedRepairAsset(code) {
                         if (assetCode) catalog.set(assetCode, { brand: String(row[8] || '').trim(), model: String(row[9] || '').trim() })
                         return catalog
                     }, new Map())
-            })
+            }))
     }
 
     const catalog = await relatedRepairAssetCatalogPromise
@@ -290,20 +310,40 @@ function renderRelatedRepairHistory(response) {
     const $section = $('#related-repair-history')
     const $status = $('#related-repair-history-status')
     const $body = $('#related-repair-history-body')
+    const $equipment = $('#related-repair-history-equipment')
 
     $section.removeClass('hidden')
     $('#related-repair-history-count').text(`${rows.length} รายการ`)
     if (!rows.length) {
+        $equipment.addClass('hidden').empty()
         $('#related-repair-history-table-wrap').addClass('hidden')
         $status.html('<i class="bi bi-inbox text-2xl block mb-2 text-slate-300" aria-hidden="true"></i>ไม่พบประวัติงานซ่อมที่เกี่ยวข้อง')
         return
     }
 
+    const equipment = rows
+        .map(row => [row.raw_name || row.clean_name, row.raw_brand || row.clean_brand, row.raw_model || row.clean_model].map(value => repairText(value)))
+        .find(values => values.some(value => value !== '-'))
+    $equipment.toggleClass('hidden', !equipment).html(equipment ? `
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <div class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <i class="bi bi-cpu text-blue-500" aria-hidden="true"></i>
+                <span>อุปกรณ์</span>
+            </div>
+            <dl class="space-y-1 text-sm">
+                <div class="flex gap-2"><dt class="shrink-0 text-slate-500">ชื่อ:</dt><dd class="min-w-0 break-words text-slate-700">${escapeRelatedRepairHtml(equipment[0])}</dd></div>
+                <div class="flex gap-2"><dt class="shrink-0 text-slate-500">ยี่ห้อ:</dt><dd class="min-w-0 break-words text-slate-700">${escapeRelatedRepairHtml(equipment[1])}</dd></div>
+                <div class="flex gap-2"><dt class="shrink-0 text-slate-500">รุ่น:</dt><dd class="min-w-0 break-words text-slate-700">${escapeRelatedRepairHtml(equipment[2])}</dd></div>
+            </dl>
+        </div>
+    ` : '')
+
     $status.empty()
     $('#related-repair-history-table-wrap').removeClass('hidden')
     $body.html(rows.slice(0, 10).map(row => {
-        const values = [row.work_order, row.raw_name || row.clean_name, row.raw_brand || row.clean_brand, row.raw_model || row.clean_model, row.symptom, row.repair_detail]
-        return `<tr class="align-top hover:bg-slate-50 transition-colors">${values.map((value, index) => `<td class="px-4 py-3 text-slate-700 ${index > 3 ? 'whitespace-pre-wrap leading-relaxed' : 'whitespace-nowrap'}">${escapeRelatedRepairHtml(repairText(value))}</td>`).join('')}</tr>`
+        const values = [row.work_order, row.symptom, row.repair_detail]
+        const labels = ['ใบงาน', 'อาการ', 'รายละเอียดการซ่อม']
+        return `<tr class="align-top hover:bg-slate-50 transition-colors">${values.map((value, index) => `<td data-label="${labels[index]}" class="px-4 py-3 text-slate-700 ${index > 0 ? 'whitespace-pre-wrap leading-relaxed' : 'whitespace-nowrap'}">${escapeRelatedRepairHtml(repairText(value))}</td>`).join('')}</tr>`
     }).join(''))
 }
 
@@ -314,6 +354,7 @@ async function loadRelatedRepairHistory(workDetail) {
 
     $section.removeClass('hidden')
     $('#related-repair-history-table-wrap').addClass('hidden')
+    $('#related-repair-history-equipment').addClass('hidden').empty()
     $('#related-repair-history-count').empty()
     $status.html('<i class="bi bi-arrow-clockwise animate-spin text-2xl block mb-2 text-blue-500" aria-hidden="true"></i>กำลังค้นหาประวัติงานซ่อม...')
 
@@ -510,6 +551,7 @@ async function initialData() {
         firestore.collection('jobdata/').doc(jobid).get().then(data => {
             data = data.data()
             console.log("🚀 ~ firestore.collection ~ data:", data)
+            renderWorkOrderDetail(data.detail)
             renderFeedbackDisplay(data.feedback, data.feedback_label)
             if (data.signature) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
@@ -538,7 +580,7 @@ async function initialData() {
             $('#code').val(data.code)
             if (!action && data.code) setupRelatedRepairHistoryButton(data)
             if (!data.name && !data.reciever) {
-                $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
+                $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                 $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
                 $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
             }
@@ -1031,6 +1073,7 @@ async function initialData() {
             }
             data = data.data()
             current_code = data.code.split('_')
+            renderWorkOrderDetail(data.detail)
             renderFeedbackDisplay(data.feedback, data.feedback_label)
             if (current_code.length > 1) {
                 current_code = current_code[1]
@@ -1572,6 +1615,7 @@ ${update}
         firestore.collection('jobdata/').doc(jobid).get().then(data => {
             data = data.data()
             console.log("🚀 ~ firestore.collection ~ data:", data)
+            renderWorkOrderDetail(data.detail)
             renderFeedbackDisplay(data.feedback, data.feedback_label)
             if (data.signature) {
                 $('#user-sign').attr('src', data.signature).parent().removeClass('hidden')
@@ -1599,7 +1643,7 @@ ${update}
             }
             $('#code').val(data.code)
             if (!data.name && !data.reciever) {
-                $('#reciever').html = '&nbsp;ยังไม่มีคนรับงาน'
+                $('#reciever').html('&nbsp;ยังไม่มีคนรับงาน')
                 $('#reciever').parent().find('i').removeClass('bi-check-circle-fill').addClass('bi-x-circle-fill')
                 $('#reciever').parent().removeClass('alert-success').addClass('alert-danger')
             }
@@ -2769,25 +2813,29 @@ function renderContact() {
         console.log("🚀 !! contact:", contact)
         let [name, phone, role] = contact.split('|').map(x => x.trim())
         console.log(name, phone, role)
+        const safeName = escapeRelatedRepairHtml(name)
+        const safePhone = escapeRelatedRepairHtml(phone)
+        const safePhoneHref = encodeURIComponent(phone)
+        const safeRole = escapeRelatedRepairHtml(role)
         let contactCard = $(`
             <li class="flex justify-between items-center py-3 px-4 border-b border-gray-200 hover:bg-gray-50 transition-colors gap-2">
-            <div class="flex-grow">
+            <div class="min-w-0 flex-grow">
                 <div class="flex items-center gap-2 mb-1">
-                <div class="font-semibold text-gray-900 truncate w-0 flex-1">${name}</div>
-                <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">${role}</span>
+                <div class="font-semibold text-gray-900 truncate w-0 flex-1">${safeName}</div>
+                <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">${safeRole}</span>
                 </div>
                 <div class="text-sm text-gray-600">
-                <a href="tel:${phone}" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline decoration-1 transition-colors cursor-pointer">
-                    <i class="bi bi-telephone-fill"></i>${phone}
+                <a href="tel:${safePhoneHref}" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline decoration-1 transition-colors cursor-pointer">
+                    <i class="bi bi-telephone-fill" aria-hidden="true"></i>${safePhone}
                 </a>
                 </div>
             </div>
-            <div class="flex gap-1 bg-gray-100 rounded-lg p-1">
-                <button class="edit-contact p-2 bg-white hover:bg-amber-500 hover:text-white text-amber-600 rounded-md transition-all shadow-sm" data-index="${index}" title="แก้ไข">
-                <i class="bi bi-pencil"></i>
+            <div class="flex shrink-0 gap-1 bg-gray-100 rounded-lg p-1">
+                <button type="button" class="edit-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-amber-500 hover:text-white text-amber-600 rounded-md transition-all shadow-sm" data-index="${index}" aria-label="แก้ไข ${safeName}" title="แก้ไข">
+                <i class="bi bi-pencil" aria-hidden="true"></i>
                 </button>
-                <button class="delete-contact p-2 bg-white hover:bg-red-500 hover:text-white text-red-600 rounded-md transition-all shadow-sm" data-index="${index}" title="ลบ">
-                <i class="bi bi-trash"></i>
+                <button type="button" class="delete-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-red-500 hover:text-white text-red-600 rounded-md transition-all shadow-sm" data-index="${index}" aria-label="ลบ ${safeName}" title="ลบ">
+                <i class="bi bi-trash" aria-hidden="true"></i>
                 </button>
             </div>
             </li>
@@ -2798,7 +2846,7 @@ function renderContact() {
     $('#vendor-contact-list').empty()
     $('#vendor-contact-list').append(ul)
     // Add delete functionality
-    $(document).on('click', '.delete-contact', function () {
+    $(document).off('click.contactDelete', '.delete-contact').on('click.contactDelete', '.delete-contact', function () {
         Swal.fire({
             title: 'ลบรายชื่อผู้ติดต่อ',
             text: 'คุณแน่ใจหรือไม่ว่าต้องการลบรายชื่อนี้?',
@@ -2823,7 +2871,7 @@ function renderContact() {
     })
 
     // Add edit functionality
-    $(document).on('click', '.edit-contact', function () {
+    $(document).off('click.contactEdit', '.edit-contact').on('click.contactEdit', '.edit-contact', function () {
         let index = $(this).data('index')
         let contact = contactList[index]
         let [currentName, currentPhone, currentRole] = contact.split('|').map(x => x.trim())
@@ -2831,9 +2879,9 @@ function renderContact() {
         Swal.fire({
             title: 'แก้ไขรายชื่อผู้ติดต่อ',
             html:
-                `<input id="edit-contact-name" class="form-control mb-3 form-control-lg" placeholder="ชื่อ" value="${currentName}">` +
-                `<input id="edit-contact-phone" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์" value="${currentPhone}">` +
-                '<select id="edit-contact-role" class="form-select mb-3 form-control-lg" placeholder="ประเภท">' +
+                `<label for="edit-contact-name" class="d-block text-start mb-1">ชื่อ</label><input id="edit-contact-name" maxlength="120" class="form-control mb-3 form-control-lg" placeholder="ชื่อ" value="${escapeRelatedRepairHtml(currentName)}">` +
+                `<label for="edit-contact-phone" class="d-block text-start mb-1">เบอร์โทรศัพท์</label><input id="edit-contact-phone" maxlength="40" inputmode="tel" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์" value="${escapeRelatedRepairHtml(currentPhone)}">` +
+                '<label for="edit-contact-role" class="d-block text-start mb-1">ประเภท</label><select id="edit-contact-role" class="form-select mb-3 form-control-lg">' +
                 '<option value="" disabled>เลือกประเภท</option>' +
                 `<option value="เซลล์" ${currentRole === 'เซลล์' ? 'selected' : ''}>เซลล์</option>` +
                 `<option value="ช่างซ่อม" ${currentRole === 'ช่างซ่อม' ? 'selected' : ''}>ช่างซ่อม</option>` +
@@ -2876,9 +2924,9 @@ function addContact() {
     Swal.fire({
         title: 'เพิ่มรายชื่อผู้ติดต่อ',
         html:
-            '<input id="contact-name" class="form-control mb-3 form-control-lg" placeholder="ชื่อ">' +
-            '<input id="contact-phone" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์">' +
-            '<select id="contact-role" class="form-select mb-3 form-control-lg" placeholder="ประเภท">' +
+            '<label for="contact-name" class="d-block text-start mb-1">ชื่อ</label><input id="contact-name" maxlength="120" class="form-control mb-3 form-control-lg" placeholder="ชื่อ">' +
+            '<label for="contact-phone" class="d-block text-start mb-1">เบอร์โทรศัพท์</label><input id="contact-phone" maxlength="40" inputmode="tel" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์">' +
+            '<label for="contact-role" class="d-block text-start mb-1">ประเภท</label><select id="contact-role" class="form-select mb-3 form-control-lg">' +
             '<option selected value="" disabled>เลือกประเภท</option>' +
             '<option value="เซลล์">เซลล์</option>' +
             '<option value="ช่างซ่อม">ช่างซ่อม</option>' +
@@ -2974,8 +3022,6 @@ jQuery(document).ready(function ($) {
 
         var data = $sigdiv.jSignature('getData', e.target.value)
         $.publish(pubsubprefix + 'formatchanged')
-        alert(data)
-
         window.document.save_image.test02.value = data
         $.publish(pubsubprefix + data[0], data);
 
@@ -5498,19 +5544,70 @@ function handleFeedbackHiddenClick() {
     openSurveyModal();
 }
 
+let activeModalTrigger = null;
+
+function updateModalState(modal, isOpen, initialFocusSelector) {
+    if (!modal) return;
+    modal.setAttribute('aria-hidden', String(!isOpen));
+    if (isOpen) {
+        document.body.classList.add('overflow-hidden');
+        requestAnimationFrame(() => {
+            const target = modal.querySelector(initialFocusSelector || '[data-modal-close], button, [tabindex]:not([tabindex="-1"])');
+            target?.focus();
+        });
+    } else if (!document.querySelector('[role="dialog"]:not([aria-hidden="true"])')) {
+        document.body.classList.remove('overflow-hidden');
+        if (activeModalTrigger && document.contains(activeModalTrigger)) {
+            activeModalTrigger.focus();
+        }
+        activeModalTrigger = null;
+    }
+}
+
+document.addEventListener('keydown', (event) => {
+    const openModal = document.querySelector('[role="dialog"][aria-hidden="false"]');
+    if (!openModal) return;
+
+    if (event.key === 'Tab') {
+        const focusable = [...openModal.querySelectorAll('button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')]
+            .filter((element) => element.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+        return;
+    }
+
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    if (openModal.id === 'surveyModal') closeSurveyModal();
+    if (openModal.id === 'signatureModal') closeSignatureModal();
+});
+
 function openSurveyModal() {
     const surveyModal = document.getElementById('surveyModal');
     if (!surveyModal) return;
+    activeModalTrigger = document.activeElement;
     resetSurvey();
     surveyModal.classList.remove('hidden');
     surveyModal.classList.add('flex');
+    requestAnimationFrame(() => surveyModal.classList.add('is-open'));
+    updateModalState(surveyModal, true, '[aria-label="ปิดแบบประเมิน"], button');
 }
 
 function closeSurveyModal() {
     const surveyModal = document.getElementById('surveyModal');
     if (!surveyModal) return;
+    surveyModal.classList.remove('is-open');
     surveyModal.classList.add('hidden');
     surveyModal.classList.remove('flex');
+    updateModalState(surveyModal, false);
 }
 
 function submitFeedback(feedbackType) {
@@ -5606,6 +5703,7 @@ function openSignatureModal() {
     if (!modal) return;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    updateModalState(modal, true, '[data-modal-close], button');
     const signatureParent = document.getElementById('signatureparent');
     if (signatureParent) {
         signatureParent.classList.remove('hidden');
@@ -5621,4 +5719,5 @@ function closeSignatureModal() {
     if (!modal) return;
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    updateModalState(modal, false);
 }
