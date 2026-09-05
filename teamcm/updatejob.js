@@ -340,7 +340,7 @@ function renderRelatedRepairHistory(response) {
 
     $status.empty()
     $('#related-repair-history-table-wrap').removeClass('hidden')
-    $body.html(rows.slice(0, 10).map(row => {
+    $body.html(rows.slice(0, 20).map(row => {
         const values = [row.work_order, row.symptom, row.repair_detail]
         const labels = ['ใบงาน', 'อาการ', 'รายละเอียดการซ่อม']
         return `<tr class="align-top hover:bg-slate-50 transition-colors">${values.map((value, index) => `<td data-label="${labels[index]}" class="px-4 py-3 text-slate-700 ${index > 0 ? 'whitespace-pre-wrap leading-relaxed' : 'whitespace-nowrap'}">${escapeRelatedRepairHtml(repairText(value))}</td>`).join('')}</tr>`
@@ -365,7 +365,7 @@ async function loadRelatedRepairHistory(workDetail) {
             search_brand: asset.brand || '',
             search_model: asset.model || '',
             search_name: workDetail.ename || '',
-            top_k: '10',
+            top_k: '20',
             'ngrok-skip-browser-warning': 'true'
         })
         const response = await fetch(`${RELATED_REPAIR_ENDPOINT}&${params.toString()}`, {
