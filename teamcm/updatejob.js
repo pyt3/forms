@@ -5555,7 +5555,8 @@ function updateModalState(modal, isOpen, initialFocusSelector) {
             const target = modal.querySelector(initialFocusSelector || '[data-modal-close], button, [tabindex]:not([tabindex="-1"])');
             target?.focus();
         });
-    } else if (!document.querySelector('[role="dialog"]:not([aria-hidden="true"])')) {
+    } else if (!document.querySelector('[role="dialog"][aria-hidden="false"]')) {
+        // Release the page scroll lock only after the last modal is closed.
         document.body.classList.remove('overflow-hidden');
         if (activeModalTrigger && document.contains(activeModalTrigger)) {
             activeModalTrigger.focus();
