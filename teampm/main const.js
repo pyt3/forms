@@ -137,7 +137,8 @@ const staff_name_array = [
   "RATCHATA PIRIYAKITSAKUL",
   "ILADA BUAPRALAT",
   "JIRASSAYA CHUENYOO",
-  "CHALERMPORN SABUA"
+  "CHALERMPORN SABUA",
+  "CHUTIKAN DEENUSON"
 ]
 
 const supervisor_name = 'ดรัณภพ ยิ้มแย้ม'
