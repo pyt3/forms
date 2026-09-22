@@ -290,7 +290,57 @@
                 liffId: liff_id,
                 withLoginOnExternalBrowser: true
             })
-            liff.ready.then(() => {
+            liff.ready.then(async () => {
+                const venderSelect = document.getElementById('vender')
+
+                try {
+                    const response = await fetch('https://bursting-fox-mostly.ngrok-free.app/get_emp', {
+                        headers: { Accept: 'application/json' },
+                        cache: 'no-store'
+                    })
+
+                    if (!response.ok) {
+                        throw new Error(`get_emp returned ${response.status}`)
+                    }
+
+                    const payload = await response.json()
+                    const responseData = Array.isArray(payload)
+                        ? payload
+                        : payload.data || payload.employees || payload.results || []
+                    const records = Array.isArray(responseData)
+                        ? responseData
+                        : Object.values(responseData || {})
+                    const names = records
+                        .map((record) => {
+                            if (typeof record === 'string' || typeof record === 'number') {
+                                return String(record).trim()
+                            }
+
+                            return String(
+                                record?.name ||
+                                record?.vender ||
+                                record?.vendor ||
+                                record?.company_name ||
+                                record?.employee_name ||
+                                record?.VENDER ||
+                                record?.VENDOR ||
+                                record?.COMPANY_NAME ||
+                                record?.EMPLOYEE_NAME ||
+                                ''
+                            ).trim()
+                        })
+                        .filter(Boolean)
+                        .filter((name, index, list) => list.indexOf(name) === index)
+
+                    names.forEach((name) => {
+                        if (!Array.from(venderSelect.options).some((option) => option.text.trim() === name)) {
+                            venderSelect.add(new Option(name, name))
+                        }
+                    })
+                } catch (error) {
+                    console.error('Unable to load vender data:', error)
+                }
+
                 $('#vender').select2({
                     theme: 'bootstrap-5',
                     width: '100%',
