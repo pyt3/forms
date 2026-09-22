@@ -45,6 +45,7 @@
                 <div class="col-md-4">
                     <label for="vender">Vender</label>
                     <select name="vender" id="vender" class="form-select">
+                        <option value="" selected disabled>เลือก vendor</option>
                       
                     </select>
                 </div>
@@ -133,6 +134,7 @@
                         })
                         .filter(Boolean)
                         .filter((name, index, list) => list.indexOf(name) === index)
+                        .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
 
                     names.forEach((name) => {
                         if (!Array.from(venderSelect.options).some((option) => option.text.trim() === name)) {
