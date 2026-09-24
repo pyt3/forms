@@ -3,23 +3,35 @@ name = "forms"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "aiohttp>=3.8.3",
-    "asyncio>=3.4.3",
-    "beautifulsoup4>=4.11.1",
-    "emoji>=2.2.0",
-    "html2image>=2.0.1",
-    "lxml>=4.9.1",
-    "numpy>=1.23.3",
-    "openpyxl>=3.0.10",
-    "pandas>=1.5.0",
-    "pillow>=9.2.0",
-    "pyfiglet>=0.8.post1",
-    "pymupdf>=1.20.2",
-    "pypdf>=3.5.0",
-    "pyperclip>=1.8.2",
-    "requests>=2.28.1",
-    "rich>=12.6.0",
-    "urllib3>=1.26.12",
+authors = [
+    { name = "mdrp", email = "mdrpdeveloper@gmail.com" }
 ]
+requires-python = ">=3.14"
+dependencies = [
+    "aiohttp>=3.14.3",
+    "async-timeout>=5.0.1",
+    "beautifulsoup4>=4.15.0",
+    "emoji>=2.16.0",
+    "html2image>=2.0.7",
+    "lxml>=6.1.3",
+    "numpy>=2.5.3",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.6",
+    "pillow>=12.3.0",
+    "pyfiglet>=1.0.4",
+    "pymupdf>=1.28.2",
+    "pypdf>=6.19.0",
+    "pyperclip>=1.11.0",
+    "requests>=2.34.2",
+    "rich>=15.0.0",
+    "selenium>=4.49.0",
+    "urllib3>=2.8.0",
+    "webdriver-manager>=4.1.2",
+]
+
+[project.scripts]
+forms = "forms:main"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"

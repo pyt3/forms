@@ -407,138 +407,194 @@ equipments_arr = []
 
 
 def get_equipment_file(url='https://nsmart.nhealth-asia.com/MTDPDB01/asset_mast_list_new.php?asset_masterPageSize=100', page='1', max_retries=3):
-    """Fetch equipment list from server and save to Excel file.
-    
-    Args:
-        url: Base URL for fetching equipment data
-        page: Current page number
-        max_retries: Maximum number of retry attempts
-    
-    Returns:
-        List of equipment data
-    """
+    """Fetch all equipment pages concurrently and save the result to Excel once."""
     global equipments_arr
-    
-    # Initialize array for first page
-    if page == '1':
-        equipments_arr = []
-        print('[cyan]Starting equipment data collection...[/cyan]')
-    
-    # Construct page URL
-    page_url = f"{url}&asset_masterPage={page}"
-    
-    # Fetch data with retry logic
-    for retry in range(max_retries):
-        try:
-            response = requests.get(
-                page_url,
-                headers=headers,
-                cookies=cookies,
-                verify=False,
-                timeout=15
-            )
-            response.raise_for_status()
-            response.encoding = "tis-620"
-            
-            # Find table with equipment data
-            tables = re.findall(r'<table\s+[^>]*class=["\']Grid["\'][^>]*>', response.text, re.DOTALL)
-            if not tables:
-                print("[yellow]No data table found, re-authenticating...[/yellow]")
-                if set_login():
-                    return get_equipment_file(url, page)
-                else:
-                    print("[red]Authentication failed, cannot continue[/red]")
-                    return equipments_arr
-            
-            # Extract table content
-            table_content = response.text.split('<table class="Grid" cellspacing="0" cellpadding="0">')[1]
-            table_content = table_content.split('</table>')[0]
-            table_html = '<table class="Grid" cellspacing="0" cellpadding="0">' + table_content + '</table>'
-            
-            # Parse table
-            soup = BeautifulSoup(table_html, "lxml")
-            footer = soup.find('tr', {'class': 'Footer'})
-            
-            if not footer:
-                print("[red]Invalid page structure, cannot extract data[/red]")
-                return equipments_arr
-                
-            # Get max page number
-            max_page = footer.text.split('of')[1].strip().split(' ')[0]
-            print(f'[yellow]Fetching page[/yellow] [blue]{page}[/blue] [yellow]out of[/yellow] [blue]{max_page}[/blue]')
-            
-            # Extract rows
-            rows = soup.find_all('tr')
-            
-            # Extract headers from first page
-            header = [ele.text.strip() for ele in rows[1].find_all('th')]
-            
-            # Skip header row on subsequent pages
-            data_rows = rows[1:-1] if page == '1' else rows[2:-1]
-            
-            # Process rows
-            for row in data_rows:
-                cols = row.find_all('td')
-                
-                # Extract image link if available
-                img_link = ''
-                if len(cols) < 2:
-                    print(cols)
-                    print("[red]Row does not have enough columns, skipping...[/red]")
+
+    if page != '1':
+        # Keep the public function compatible with existing callers. The
+        # optimized implementation always starts with page 1.
+        page = '1'
+
+    equipments_arr = []
+    print('[cyan]Starting equipment data collection...[/cyan]')
+    worker_local = threading.local()
+
+    def get_session():
+        """Reuse one HTTP session per worker thread."""
+        if not hasattr(worker_local, 'session'):
+            worker_local.session = requests.Session()
+            worker_local.session.headers.update(headers)
+            worker_local.session.cookies.update(cookies)
+        return worker_local.session
+
+    def is_login_page(response, soup):
+        """Detect an expired session before attempting to parse equipment data."""
+        response_url = response.url.lower()
+        if 'index.php' in response_url or '/login' in response_url:
+            return True
+
+        password_input = soup.find(
+            'input', attrs={'type': re.compile('password', re.IGNORECASE)}
+        )
+        page_text = soup.get_text(' ', strip=True).lower()
+        return password_input is not None and any(
+            keyword in page_text
+            for keyword in ('login', 'username', 'password', 'เข้าสู่ระบบ')
+        )
+
+    def save_debug_html(page_number, soup, suffix=''):
+        """Save parsed HTML so the remote page structure can be inspected locally."""
+        debug_dir = os.path.join(root_dir, 'DEBUG_HTML')
+        os.makedirs(debug_dir, exist_ok=True)
+        suffix_text = f'_{suffix}' if suffix else ''
+        file_path = os.path.join(
+            debug_dir,
+            f'equipment_page_{page_number}{suffix_text}.html'
+        )
+        with open(file_path, 'w', encoding='utf-8') as html_file:
+            html_file.write(soup.prettify())
+        return file_path
+
+    def reauthenticate(session):
+        """Refresh the shared cookie once, then copy it to this worker session."""
+        with lock:
+            print('[yellow]Login page detected. Re-authenticating...[/yellow]')
+            if not set_login():
+                return False
+            session.cookies.update(cookies)
+            return True
+
+    def fetch_page(page_number):
+        """Fetch and parse one page using a reusable per-worker session."""
+        session = get_session()
+        page_url = f"{url}&asset_masterPage={page_number}"
+        login_retry_used = False
+
+        for retry in range(max_retries):
+            try:
+                response = session.get(page_url, verify=False, timeout=60)
+                response.raise_for_status()
+                # The endpoint declares UTF-8, but some records contain an
+                # orphaned Windows-874/control byte (notably 0x81) before
+                # Thai text.  Decoding as tis-620 leaves that byte as U+0081
+                # and libxml2 then aborts while converting the HTML.
+                # Decode the response bytes explicitly and remove only C0/C1
+                # controls that are not valid in HTML.  html.parser is also
+                # intentionally used here because this is legacy/malformed
+                # HTML and should not be treated as XML-like input by lxml.
+                html_text = response.content.decode('tis-620', errors='replace')
+                html_text = re.sub(
+                    r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]',
+                    '',
+                    html_text,
+                )
+                soup = BeautifulSoup(html_text, 'html.parser')
+                if is_login_page(response, soup):
+                    login_file = save_debug_html(page_number, soup, 'login')
+                    logging.warning(f'Login page saved for inspection: {login_file}')
+                    if login_retry_used or not reauthenticate(session):
+                        raise RuntimeError('Authentication failed while fetching equipment data')
+                    login_retry_used = True
                     continue
-                if cols[1].find('a') is not None:
-                    img_link = 'https://nsmart.nhealth-asia.com/MTDPDB01/' + cols[1].find('a').get('href')
-                
-                # Extract text from columns
-                cols_data = [ele.text.strip() if ele.text.strip() != 'Click' else '' for ele in cols]
-                cols_data[1] = img_link
-                
-                # Add to results
-                equipments_arr.append(cols_data)
-            
-            # Check if we've reached the last page
-            if int(page) >= int(max_page):
-                # Save to Excel
-                excel_path = os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')
-                
-                with Console().status("[bold green]Saving equipment data to Excel...[/bold green]"):
-                    df = pd.DataFrame(equipments_arr, columns=header)
-                    df.to_excel(excel_path, index=False)
-                    
-                    # Auto-adjust column widths
-                    auto_adjust_column_width_from_df(excel_path, 'Sheet1')
-                
-                print(f'[green]Successfully saved[/green] [blue]{len(equipments_arr)}[/blue] [green]equipment records[/green]')
-                print(f'[yellow]Equipment list saved at:[/yellow] [blue]{excel_path}[/blue]')
-                
-                # Open the file
-                os.system(f'start excel.exe "{excel_path}"')
-                
-                return equipments_arr
-            else:
-                # Fetch next page
-                return get_equipment_file(url, str(int(page) + 1))
-                
-        except requests.exceptions.RequestException as e:
-            print(f"[red]Network error on attempt {retry+1}/{max_retries}: {e}[/red]")
+
+                save_debug_html(page_number, soup)
+
+                table = soup.find('table', class_='Grid')
+                if table is None:
+                    raise ValueError('No equipment table found')
+
+                footer = table.find('tr', class_='Footer')
+                if footer is None:
+                    raise ValueError('Invalid page structure: footer not found')
+
+                footer_text = footer.get_text(' ', strip=True)
+                max_page_match = re.search(r'\bof\s+(\d+)\b', footer_text, re.IGNORECASE)
+                if max_page_match is None:
+                    raise ValueError(f'Could not determine last page from: {footer_text}')
+                total_pages = int(max_page_match.group(1))
+
+                rows = table.find_all('tr')
+                if len(rows) < 3:
+                    return page_number, total_pages, [], []
+
+                header = [cell.get_text(strip=True) for cell in rows[1].find_all('th')]
+                data_rows = rows[1:-1] if page_number == 1 else rows[2:-1]
+                page_data = []
+                for row in data_rows:
+                    cols = row.find_all('td')
+                    if len(cols) < 2:
+                        continue
+
+                    img_link = ''
+                    image_anchor = cols[1].find('a')
+                    if image_anchor and image_anchor.get('href'):
+                        img_link = 'https://nsmart.nhealth-asia.com/MTDPDB01/' + image_anchor['href']
+
+                    cols_data = [cell.get_text(strip=True) for cell in cols]
+                    cols_data = ['' if value == 'Click' else value for value in cols_data]
+                    cols_data[1] = img_link
+                    page_data.append(cols_data)
+                return page_number, total_pages, header, page_data
+
+            except requests.exceptions.RequestException as error:
+                message = f'Network error on page {page_number}, attempt {retry + 1}/{max_retries}: {error}'
+            except Exception as error:
+                message = f'Error processing page {page_number}, attempt {retry + 1}/{max_retries}: {error}'
+
+            logging.warning(message)
             if retry < max_retries - 1:
-                wait_time = 2 * (retry + 1)  # Exponential backoff
-                print(f"[yellow]Retrying in {wait_time} seconds...[/yellow]")
-                time.sleep(wait_time)
-            else:
-                print("[red]Failed to fetch equipment data after multiple attempts[/red]")
-                return equipments_arr
-                
-        except Exception as e:
-            print(f"[red]Error processing equipment data on line {sys.exc_info()[-1].tb_lineno}: {e}[/red]")
-            logging.error(f"Error in get_equipment_file: {e}")
-            if retry < max_retries - 1:
-                wait_time = 2 * (retry + 1)
-                print(f"[yellow]Retrying in {wait_time} seconds...[/yellow]")
-                time.sleep(wait_time)
-            else:
-                print("[red]Failed to process equipment data after multiple attempts[/red]")
-                return equipments_arr
+                time.sleep(2 * (retry + 1))
+
+        raise RuntimeError(f'Failed to fetch equipment page {page_number} after {max_retries} attempts')
+
+    try:
+        # Page 1 is required to discover the total page count.
+        first_page, total_pages, header, first_data = fetch_page(1)
+        print(f'[yellow]Fetching page[/yellow] [blue]1[/blue] [yellow]out of[/yellow] [blue]{total_pages}[/blue]')
+        page_results = {first_page: first_data}
+
+        if total_pages > 1:
+            worker_count = min(10, total_pages - 1)
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                futures = [executor.submit(fetch_page, page_number)
+                           for page_number in range(2, total_pages + 1)]
+                for future in futures:
+                    page_number, _, _, page_data = future.result()
+                    page_results[page_number] = page_data
+                    print(f'[yellow]Fetched page[/yellow] [blue]{page_number}[/blue] [yellow]of[/yellow] [blue]{total_pages}[/blue]')
+
+        # Preserve server ordering even though pages were fetched concurrently.
+        for page_number in range(1, total_pages + 1):
+            equipments_arr.extend(page_results.get(page_number, []))
+
+        excel_path = os.path.join(root_dir, 'EXCEL FILE', 'equipment_list.xlsx')
+        with Console().status('[bold green]Saving equipment data to Excel...[/bold green]'):
+            workbook = openpyxl.Workbook()
+            worksheet = workbook.active
+            worksheet.title = 'Sheet1'
+            column_widths = [len(str(value)) for value in header]
+            worksheet.append(header)
+
+            for row in equipments_arr:
+                worksheet.append(row)
+                for index, value in enumerate(row):
+                    if index < len(column_widths):
+                        column_widths[index] = max(column_widths[index], len(str(value)))
+
+            for index, width in enumerate(column_widths, start=1):
+                worksheet.column_dimensions[openpyxl.utils.get_column_letter(index)].width = min(width + 2, 80)
+
+            workbook.save(excel_path)
+
+        print(f'[green]Successfully saved[/green] [blue]{len(equipments_arr)}[/blue] [green]equipment records[/green]')
+        print(f'[yellow]Equipment list saved at:[/yellow] [blue]{excel_path}[/blue]')
+        os.startfile(excel_path)
+        return equipments_arr
+
+    except Exception as error:
+        print(f'[red]Failed to fetch equipment data: {error}[/red]')
+        logging.error(f'Error in get_equipment_file: {error}')
+        return equipments_arr
 
 def auto_adjust_column_width_from_df(file_path, sheet_name):
     # Load the workbook and select the specified sheet
