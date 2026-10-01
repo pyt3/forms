@@ -2297,6 +2297,65 @@
             return quality
         }
 
+        // Telegram rejects photos with dimensions that are too large. Keep the
+        // original aspect ratio while limiting both the longest side and the
+        // total number of pixels before uploading.
+        const MAX_PHOTO_DIMENSION = 4000
+        const MAX_PHOTO_PIXELS = 10000000
+
+        function resizePhotoToTelegramLimits(file) {
+            return new Promise((resolve, reject) => {
+                const imageUrl = URL.createObjectURL(file)
+                const image = new Image()
+
+                image.onload = () => {
+                    URL.revokeObjectURL(imageUrl)
+
+                    const sourceWidth = image.naturalWidth
+                    const sourceHeight = image.naturalHeight
+                    if (!sourceWidth || !sourceHeight) {
+                        reject(new Error('Unable to read image dimensions'))
+                        return
+                    }
+
+                    const scale = Math.min(
+                        1,
+                        MAX_PHOTO_DIMENSION / Math.max(sourceWidth, sourceHeight),
+                        Math.sqrt(MAX_PHOTO_PIXELS / (sourceWidth * sourceHeight))
+                    )
+                    const width = Math.max(1, Math.round(sourceWidth * scale))
+                    const height = Math.max(1, Math.round(sourceHeight * scale))
+
+                    if (width === sourceWidth && height === sourceHeight) {
+                        resolve(file)
+                        return
+                    }
+
+                    const canvas = document.createElement('canvas')
+                    canvas.width = width
+                    canvas.height = height
+                    const context = canvas.getContext('2d')
+                    context.drawImage(image, 0, 0, width, height)
+
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('Unable to resize image'))
+                            return
+                        }
+                        resolve(new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        }))
+                    }, 'image/jpeg', getCompressionQuality(file))
+                }
+                image.onerror = () => {
+                    URL.revokeObjectURL(imageUrl)
+                    reject(new Error('Unable to decode image'))
+                }
+                image.src = imageUrl
+            })
+        }
+
         $('#telegram-files').change(function () {
             if (this.files.length == 0) return
             // compress file
@@ -2332,12 +2391,18 @@
                                 type: 'image/jpeg',
                                 lastModified: Date.now()
                             });
-                            dataTransfer.items.add(f);
-                            appendPreview(URL.createObjectURL(f), i)
-                            if (dataTransfer.items.length == length) {
-                                $('#telegram-files')[0].files = dataTransfer.files;
+                            resizePhotoToTelegramLimits(f).then((resizedFile) => {
+                                dataTransfer.items.add(resizedFile);
+                                appendPreview(URL.createObjectURL(resizedFile), i)
+                                if (dataTransfer.items.length == length) {
+                                    $('#telegram-files')[0].files = dataTransfer.files;
+                                    Swal.close()
+                                }
+                            }).catch((error) => {
+                                console.error('Unable to prepare image:', error)
                                 Swal.close()
-                            }
+                                Swal.fire('ไม่สามารถเตรียมรูปภาพได้', 'กรุณาเลือกรูปภาพใหม่อีกครั้ง', 'error')
+                            })
                         }).catch((e) => {
                             console.log("🚀 ~ e:", e)
                         });
@@ -2352,12 +2417,18 @@
                                 type: file.type,
                                 lastModified: Date.now()
                             });
-                            dataTransfer.items.add(f);
-                            appendPreview(URL.createObjectURL(f), i)
-                            if (dataTransfer.items.length == length) {
-                                $('#telegram-files')[0].files = dataTransfer.files;
+                            resizePhotoToTelegramLimits(f).then((resizedFile) => {
+                                dataTransfer.items.add(resizedFile);
+                                appendPreview(URL.createObjectURL(resizedFile), i)
+                                if (dataTransfer.items.length == length) {
+                                    $('#telegram-files')[0].files = dataTransfer.files;
+                                    Swal.close()
+                                }
+                            }).catch((error) => {
+                                console.error('Unable to prepare image:', error)
                                 Swal.close()
-                            }
+                                Swal.fire('ไม่สามารถเตรียมรูปภาพได้', 'กรุณาเลือกรูปภาพใหม่อีกครั้ง', 'error')
+                            })
                         },
                         error(err) {
                             console.log(err.message);
