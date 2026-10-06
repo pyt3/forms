@@ -1,14 +1,7 @@
 
 var firestore, auth, isAuth = false
-window.onload = () => {
-    const firebaseConfig = {
-        apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
-        authDomain: "daily-check-form.firebaseapp.com",
-        projectId: "daily-check-form",
-        storageBucket: "daily-check-form.appspot.com",
-        messagingSenderId: "544837049860",
-        appId: "1:544837049860:web:462e6b854290b1dec39f51"
-    };
+window.onload = async () => {
+    const firebaseConfig = await $.getJSON('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=daily-check-form');
     const defaultProject = firebase.initializeApp(firebaseConfig);
     console.log(defaultProject.name);  // "[DEFAULT]"
     firestore = defaultProject.firestore();

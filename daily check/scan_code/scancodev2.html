@@ -69,19 +69,12 @@
     </script>
     <script>
         var firestore, zoom
-        window.onload = () => {
+        window.onload = async () => {
             scancodev2()
             console.log(navigator.mediaDevices.getSupportedConstraints());
             if (navigator.userAgent.indexOf("Android") != -1) zoom = 2.0
             if (navigator.userAgent.indexOf("like Mac") != -1) zoom = 1.0
-            const firebaseConfig = {
-                apiKey: "AIzaSyANRS_sanVDjdunkY8z-F5UD-n3R1rgYKQ",
-                authDomain: "daily-check-form.firebaseapp.com",
-                projectId: "daily-check-form",
-                storageBucket: "daily-check-form.appspot.com",
-                messagingSenderId: "544837049860",
-                appId: "1:544837049860:web:462e6b854290b1dec39f51"
-            };
+            const firebaseConfig = await $.getJSON('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=daily-check-form');
             const defaultProject = firebase.initializeApp(firebaseConfig);
             console.log(defaultProject.name);  // "[DEFAULT]"
             firestore = defaultProject.firestore();
