@@ -26,6 +26,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="../teampm/main const.js"></script>
+    <script src="../js/signature-loader.js"></script>
     <style>
         * {
             margin: 0;
@@ -502,7 +503,7 @@
         })
         $('#name').change(async function () {
             let name = $(this).val()
-            signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
+            signature_bytes = await SignatureLoader.fetchArrayBuffer(name)
         })
         $('#e_sticker_div, #e_img_div, #e_img_code_div, #e_img_nameplate_div').on('click', function () {
             $('#e_img_file').attr('data-id', $(this).attr('id')).click()

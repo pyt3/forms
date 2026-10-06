@@ -41,6 +41,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="./main const.js"></script>
+    <script src="../js/signature-loader.js"></script>
     <style>
         * {
             margin: 0;
@@ -842,9 +843,7 @@
         $('#name').change(async function () {
             if (!$(this).val()) return;
             let name = $(this).val()
-            signature_bytes = await fetch('../img_sign/' + name.replace(/ /g, '_') + '.png').then(res => res.arrayBuffer())
-
-
+            signature_bytes = await SignatureLoader.fetchArrayBuffer(name)
         })
 
         $('#img-only-btn').click(async function () {
