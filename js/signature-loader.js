@@ -8,8 +8,8 @@
  */
 
 const SignatureLoader = (() => {
-  const DRIVE_BASE_PREFIX = 'https://drive.usercontent.google.com/download?id=';
-  const DRIVE_BASE_SUFFIX = '&export=view&authuser=0';
+  const DRIVE_BASE_PREFIX = 'https://lh3.googleusercontent.com/d/';
+  const DRIVE_BASE_SUFFIX = '';
 
   // mapping: ชื่อพนักงาน (UPPERCASE_UNDERSCORE) → Google Drive File ID
   const SIGNATURE_IDS = {
