@@ -8,7 +8,8 @@
  */
 
 const SignatureLoader = (() => {
-  const DRIVE_BASE = 'https://drive.google.com/uc?export=view&id=';
+  const DRIVE_BASE_PREFIX = 'https://drive.usercontent.google.com/download?id=';
+  const DRIVE_BASE_SUFFIX = '&export=view&authuser=0';
 
   // mapping: ชื่อพนักงาน (UPPERCASE_UNDERSCORE) → Google Drive File ID
   const SIGNATURE_IDS = {
@@ -64,7 +65,7 @@ const SignatureLoader = (() => {
       console.warn(`[SignatureLoader] ไม่พบลายเซ็นของ: "${name}" (key: "${key}")`);
       return null;
     }
-    return DRIVE_BASE + id;
+    return DRIVE_BASE_PREFIX + id + DRIVE_BASE_SUFFIX;
   }
 
   /**
