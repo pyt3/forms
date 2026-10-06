@@ -216,7 +216,7 @@ $(document).ready(async () => {
         } else {
             $('#developer').addClass('hidden')
         }
-        const defaultProject = firebase.initializeApp(await $.getJSON('service-account.json'));
+        const defaultProject = firebase.initializeApp(await $.getJSON('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=bot-job'));
         firestore = defaultProject.firestore();
         auth = defaultProject.auth();
         if (!auth.currentUser) {
