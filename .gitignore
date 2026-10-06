@@ -87,3 +87,62 @@ cython_debug/
 .venv/
 venv/
 ENV/
+
+# ==================================================
+# 🔐 Sensitive / Credentials — DO NOT COMMIT
+# ==================================================
+
+# Firebase & Google Cloud credentials
+service-account.json
+*service-account*.json
+firebase-adminsdk*.json
+google-credentials.json
+gcloud-key.json
+
+# Google Apps Script CLI config
+.clasp.json
+
+# Application config files with secrets (passwords, session IDs)
+config.json
+py_test_ui/CONFIG/config.json
+
+# General secret file patterns
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*secret*
+*credential*
+*private_key*
+
+# SSL/TLS certificates (local dev)
+localhost.pem
+localhost-key.pem
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.bak
