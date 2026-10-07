@@ -70,13 +70,13 @@
     <script>
         var firestore, zoom
         window.onload = async () => {
-            scancodev2()
+            //scancodev2()
             console.log(navigator.mediaDevices.getSupportedConstraints());
             if (navigator.userAgent.indexOf("Android") != -1) zoom = 2.0
             if (navigator.userAgent.indexOf("like Mac") != -1) zoom = 1.0
             const firebaseConfig = await $.getJSON('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=daily-check-form');
             const defaultProject = firebase.initializeApp(firebaseConfig);
-            console.log(defaultProject.name);  // "[DEFAULT]"
+            console.log(defaultProject.name, firebaseConfig);  // "[DEFAULT]"
             firestore = defaultProject.firestore();
         }
 
