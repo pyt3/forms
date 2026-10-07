@@ -12,7 +12,7 @@ window.onload = async () => {
             return liff.login()
         }
         getAuth(await liff.getDecodedIDToken().sub)
-        scancode()
+        scancode();
     })
 
 }
