@@ -1,23 +1,31 @@
 
 var firestore, auth, isAuth = false
 window.onload = async () => {
-    const configResponse = await fetch('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=daily-check-form');
-    if (!configResponse.ok) {
-        throw new Error(`Failed to load Firebase config: ${configResponse.status}`);
-    }
-    const firebaseConfig = await configResponse.json();
-    const defaultProject = firebase.initializeApp(firebaseConfig);
-    console.log(defaultProject.name);  // "[DEFAULT]"
-    firestore = defaultProject.firestore();
-    auth = defaultProject.auth();
-    liff.init({ liffId: '1657104960-953rK3wq' })
-    liff.ready.then(async () => {
-        if (!liff.isLoggedIn()) {
-            return liff.login()
+    const loader = document.getElementById('app-loader');
+    try {
+        const configResponse = await fetch('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=daily-check-form');
+        if (!configResponse.ok) {
+            throw new Error(`Failed to load Firebase config: ${configResponse.status}`);
         }
-        getAuth(await liff.getDecodedIDToken().sub)
-        scancode();
-    })
+        const firebaseConfig = await configResponse.json();
+
+        const defaultProject = firebase.initializeApp(firebaseConfig);
+        console.log(defaultProject.name);  // "[DEFAULT]"
+        firestore = defaultProject.firestore();
+        auth = defaultProject.auth();
+        liff.init({ liffId: '1657104960-953rK3wq' })
+        liff.ready.then(async () => {
+            if (!liff.isLoggedIn()) {
+                return liff.login()
+            }
+            getAuth(await liff.getDecodedIDToken().sub)
+            scancode();
+        })
+    } finally {
+        if (loader) {
+            loader.classList.add('is-hidden');
+        }
+    }
 
 }
 
