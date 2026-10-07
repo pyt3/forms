@@ -1,7 +1,11 @@
 
 var firestore, auth, isAuth = false
 window.onload = async () => {
-    const firebaseConfig = await $.getJSON('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=daily-check-form');
+    const configResponse = await fetch('https://script.google.com/macros/s/AKfycbxZYaHtDIQIS46gUnAfD6jho5CJwNmgS0KjIyIIqHjOhqbvleQfVRIg71Q36GxQM5Xb/exec?project=daily-check-form');
+    if (!configResponse.ok) {
+        throw new Error(`Failed to load Firebase config: ${configResponse.status}`);
+    }
+    const firebaseConfig = await configResponse.json();
     const defaultProject = firebase.initializeApp(firebaseConfig);
     console.log(defaultProject.name);  // "[DEFAULT]"
     firestore = defaultProject.firestore();
