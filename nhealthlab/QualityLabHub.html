@@ -17,34 +17,35 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.1.3/dist/signature_pad.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/motion@14.4.0/dist/motion.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Sarabun:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
     <style>
         :root {
-            --app-bg: #f6f6f6;
+            --app-bg: #f8fafc;
             --surface: #ffffff;
-            --surface-soft: #f6f6f6;
-            --surface-muted: #ececec;
-            --border: #dedede;
-            --border-strong: #a8a8a8;
-            --text: #000000;
-            --text-muted: #4a4a4a;
-            --brand: #00338d;
-            --brand-strong: #002a73;
-            --brand-soft: #dbe7ff;
-            --success: #3d98f3;
-            --success-soft: #d6e9ff;
-            --warning: #4a4a4a;
-            --warning-soft: #ececec;
-            --danger: #a61e15;
-            --danger-soft: #ffe0db;
-            --info: #3d98f3;
-            --info-soft: #dbe7ff;
-            --brand-surface: #f6f6f6;
-            --focus: #3d98f3;
-            --signature-ink: #00338d;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --surface-soft: #f8fafc;
+            --surface-muted: #eef2f7;
+            --border: #d7deea;
+            --border-strong: #cbd5e1;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --brand: #2563eb;
+            --brand-strong: #1d4ed8;
+            --brand-soft: #dbeafe;
+            --success: #0f9f75;
+            --success-soft: #d1fae5;
+            --warning: #d97706;
+            --warning-soft: #fef3c7;
+            --danger: #dc2626;
+            --danger-soft: #fee2e2;
+            --info: #0284c7;
+            --info-soft: #e0f2fe;
+            --brand-surface: oklch(0.975 0.02 250);
+            --focus: #0f766e;
+            --signature-ink: #1e3a8a;
+            --shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
             --shadow-toast: 0 4px 8px rgba(15, 23, 42, 0.12);
             --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
             --z-mobile-nav: 45;
@@ -93,9 +94,9 @@
             outline-offset: 2px;
         }
 
-        /* Low-emphasis labels still need enough contrast in the cooler palette. */
+        /* Slate 400 is too faint for meaningful 12–14px labels and empty states. */
         .text-slate-400 {
-            color: #4a4a4a !important;
+            color: #475569 !important;
         }
 
         h1,
@@ -122,7 +123,7 @@
 
         input::placeholder,
         textarea::placeholder {
-            color: var(--text-muted);
+            color: #64748b;
             opacity: 1;
         }
 
@@ -203,27 +204,12 @@
 
         .nav-btn.active-nav {
             background: var(--brand);
-            color: #ffffff !important;
+            color: white;
             box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
         }
 
         .nav-btn.active-nav:hover {
             background: var(--brand-strong);
-        }
-
-        .nav-btn.active-nav .text-slate-400,
-        .nav-btn.active-nav .text-slate-500,
-        .nav-btn.active-nav .text-slate-600,
-        .nav-btn.active-nav .text-slate-700,
-        .nav-btn.active-nav .text-slate-800,
-        .nav-btn.active-nav .text-slate-900,
-        .nav-btn.active-nav [class*="text-"] {
-            color: #ffffff !important;
-        }
-
-        .nav-btn.active-nav i,
-        .nav-btn.active-nav svg {
-            color: #ffffff !important;
         }
 
         .nav-btn:focus-visible {
@@ -260,7 +246,7 @@
         }
 
         .records-view-nav[aria-selected="true"] .text-slate-500 {
-            color: #ffffff !important;
+            color: #e2e8f0 !important;
         }
 
         .records-view-nav:focus-visible {
@@ -304,7 +290,7 @@
 
         .brand-surface-blue {
             background: var(--brand-surface);
-            border-color: color-mix(in srgb, var(--brand) 22%, white);
+            border-color: color-mix(in srgb, var(--brand) 16%, white);
         }
 
         @keyframes view-enter {
@@ -390,32 +376,6 @@
             outline: 2px solid var(--focus) !important;
             outline-offset: 2px !important;
             box-shadow: none !important;
-        }
-
-        @media (max-width: 640px) {
-            .swal2-popup {
-                padding: 1rem !important;
-                border-radius: 0.875rem !important;
-            }
-
-            .swal2-title {
-                margin-bottom: 0.25rem !important;
-            }
-
-            .swal2-html-container {
-                margin: 0.5rem 0 0 !important;
-            }
-
-            .swal2-actions {
-                margin-top: 1rem !important;
-                gap: 0.4rem !important;
-                flex-wrap: wrap !important;
-            }
-
-            .swal2-styled.swal2-confirm,
-            .swal2-styled.swal2-cancel {
-                padding: 0.5rem 1.25rem !important;
-            }
         }
 
         .flatpickr-input {
@@ -611,14 +571,6 @@
                 padding-bottom: max(5.75rem, calc(env(safe-area-inset-bottom) + 5rem));
             }
 
-            .app-status {
-                inset-inline: max(0.75rem, env(safe-area-inset-left)) max(0.75rem, env(safe-area-inset-right));
-                inset-inline-end: auto;
-                bottom: max(6.75rem, calc(env(safe-area-inset-bottom) + 6rem));
-                width: auto;
-                z-index: 46;
-            }
-
             .mobile-primary-nav {
                 position: fixed;
                 inset-inline: env(safe-area-inset-left) env(safe-area-inset-right);
@@ -681,328 +633,16 @@
                 font-size: 0.8125rem;
             }
         }
-
-        /* Theme palette overrides */
-        .bg-slate-50,
-        .bg-slate-50\/70 {
-            background-color: #f6f6f6 !important;
-        }
-
-        .bg-slate-100 {
-            background-color: #ececec !important;
-        }
-
-        .bg-slate-200 {
-            background-color: #dedede !important;
-        }
-
-        .bg-slate-900 {
-            background-color: var(--text) !important;
-        }
-
-        .bg-blue-50,
-        .bg-blue-50\/70 {
-            background-color: #dbe7ff !important;
-        }
-
-        .bg-blue-100 {
-            background-color: #c7dbff !important;
-        }
-
-        .bg-blue-400 {
-            background-color: #3d98f3 !important;
-        }
-
-        .bg-blue-600 {
-            background-color: var(--brand) !important;
-        }
-
-        .bg-emerald-50 {
-            background-color: #dbe7ff !important;
-        }
-
-        .bg-emerald-100 {
-            background-color: #c7dbff !important;
-        }
-
-        .bg-emerald-600 {
-            background-color: var(--success) !important;
-        }
-
-        .bg-amber-50 {
-            background-color: #f6f6f6 !important;
-        }
-
-        .bg-amber-100 {
-            background-color: #ececec !important;
-        }
-
-        .bg-red-50 {
-            background-color: #ffe7e3 !important;
-        }
-
-        .bg-rose-50 {
-            background-color: #ffe5ee !important;
-        }
-
-        .bg-rose-100 {
-            background-color: #f9ccda !important;
-        }
-
-        .bg-sky-100 {
-            background-color: #3d98f3 !important;
-        }
-
-        .bg-yellow-100 {
-            background-color: #ececec !important;
-        }
-
-        .text-slate-300 {
-            color: #a8a8a8 !important;
-        }
-
-        .text-slate-500 {
-            color: #4a4a4a !important;
-        }
-
-        .text-slate-600 {
-            color: #000000 !important;
-        }
-
-        .text-slate-700 {
-            color: #000000 !important;
-        }
-
-        .text-slate-800 {
-            color: #000000 !important;
-        }
-
-        .text-slate-900 {
-            color: var(--text) !important;
-        }
-
-        .text-blue-600 {
-            color: var(--brand) !important;
-        }
-
-        .text-blue-700 {
-            color: #00338d !important;
-        }
-
-        .text-emerald-600 {
-            color: #3d98f3 !important;
-        }
-
-        .text-emerald-700 {
-            color: #00338d !important;
-        }
-
-        .text-amber-700,
-        .text-yellow-700 {
-            color: #4a4a4a !important;
-        }
-
-        .text-red-600,
-        .text-rose-600 {
-            color: var(--danger) !important;
-        }
-
-        .text-red-700,
-        .text-rose-700 {
-            color: #8d1712 !important;
-        }
-
-        .text-red-800,
-        .text-rose-800 {
-            color: #7d1610 !important;
-        }
-
-        .text-sky-700 {
-            color: #00338d !important;
-        }
-
-        .border-slate-100 {
-            border-color: #efefef !important;
-        }
-
-        .border-slate-200 {
-            border-color: #dedede !important;
-        }
-
-        .border-slate-300 {
-            border-color: #a8a8a8 !important;
-        }
-
-        .border-slate-900 {
-            border-color: var(--text) !important;
-        }
-
-        .border-blue-100 {
-            border-color: #dbe7ff !important;
-        }
-
-        .border-blue-200 {
-            border-color: #c7dbff !important;
-        }
-
-        .border-blue-600 {
-            border-color: var(--brand) !important;
-        }
-
-        .border-emerald-200 {
-            border-color: #dbe7ff !important;
-        }
-
-        .border-emerald-300 {
-            border-color: #c7dbff !important;
-        }
-
-        .border-emerald-600 {
-            border-color: var(--success) !important;
-        }
-
-        .border-amber-200 {
-            border-color: #dedede !important;
-        }
-
-        .border-red-100,
-        .border-rose-200 {
-            border-color: #e9a8a0 !important;
-        }
-
-        .border-red-300 {
-            border-color: #d97b6e !important;
-        }
-
-        .border-rose-600 {
-            border-color: #be185d !important;
-        }
-
-        .hover\:bg-slate-50:hover {
-            background-color: #efefef !important;
-        }
-
-        .hover\:bg-slate-50\/70:hover {
-            background-color: #e6e6e6 !important;
-        }
-
-        .hover\:bg-slate-100:hover {
-            background-color: #dedede !important;
-        }
-
-        .hover\:bg-slate-800:hover {
-            background-color: #122033 !important;
-        }
-
-        .hover\:bg-blue-50:hover,
-        .hover\:bg-blue-50\/60:hover {
-            background-color: #dbe7ff !important;
-        }
-
-        .hover\:bg-blue-100:hover {
-            background-color: #c7dbff !important;
-        }
-
-        .hover\:bg-blue-200:hover {
-            background-color: #3d98f3 !important;
-        }
-
-        .hover\:bg-blue-700:hover {
-            background-color: var(--brand-strong) !important;
-        }
-
-        .hover\:bg-emerald-50:hover,
-        .hover\:bg-emerald-50\/60:hover {
-            background-color: #dbe7ff !important;
-        }
-
-        .hover\:bg-emerald-100:hover {
-            background-color: #c7dbff !important;
-        }
-
-        .hover\:bg-emerald-700:hover {
-            background-color: #00338d !important;
-        }
-
-        .hover\:bg-rose-50:hover {
-            background-color: #ffe5ee !important;
-        }
-
-        .hover\:bg-rose-100:hover {
-            background-color: #f9ccda !important;
-        }
-
-        .hover\:bg-amber-50:hover {
-            background-color: #efefef !important;
-        }
-
-        .hover\:border-blue-300:hover {
-            border-color: #c7dbff !important;
-        }
-
-        .hover\:border-blue-400:hover {
-            border-color: #3d98f3 !important;
-        }
-
-        .hover\:border-emerald-300:hover {
-            border-color: #c7dbff !important;
-        }
-
-        .hover\:border-emerald-400:hover {
-            border-color: #3d98f3 !important;
-        }
-
-        .hover\:border-rose-300:hover {
-            border-color: #e97fa2 !important;
-        }
-
-        .focus\:border-blue-500:focus {
-            border-color: #00338d !important;
-        }
-
-        .focus\:border-emerald-500:focus {
-            border-color: #3d98f3 !important;
-        }
-
-        .focus\:border-rose-500:focus {
-            border-color: #a61e15 !important;
-        }
-
-        .focus\:ring-blue-100:focus {
-            --tw-ring-color: rgba(0, 51, 141, 0.18) !important;
-        }
-
-        .focus\:ring-blue-500:focus,
-        .ring-blue-500 {
-            --tw-ring-color: rgba(0, 51, 141, 0.36) !important;
-        }
-
-        .focus\:ring-emerald-500\/20:focus {
-            --tw-ring-color: rgba(61, 152, 243, 0.2) !important;
-        }
-
-        .focus\:ring-rose-500\/20:focus {
-            --tw-ring-color: rgba(166, 30, 21, 0.22) !important;
-        }
-
-        .shadow-slate-200 {
-            --tw-shadow-color: rgba(11, 21, 35, 0.08) !important;
-        }
-
-        .brand-surface-blue {
-            background: var(--brand-surface);
-            border-color: color-mix(in srgb, var(--brand) 16%, white);
-        }
     </style>
 </head>
 
 <body class="text-[color:var(--text)]">
     <div id="dependency-error" role="alert" hidden
-        style="margin:0;padding:12px 16px;background:var(--danger);color:#fff;font:600 14px/1.5 system-ui,sans-serif;text-align:center;">
+        style="margin:0;padding:12px 16px;background:#7f1d1d;color:#fff;font:600 14px/1.5 system-ui,sans-serif;text-align:center;">
         ระบบโหลดส่วนประกอบที่จำเป็นไม่ครบ กรุณาตรวจสอบอินเทอร์เน็ตแล้วรีเฟรชหน้านี้ ข้อมูลที่ยังไม่ได้บันทึกอาจสูญหายหากปิดหน้า
     </div>
     <noscript>
-        <div role="alert" style="margin:0;padding:12px 16px;background:var(--danger);color:#fff;font:600 14px/1.5 system-ui,sans-serif;text-align:center;">
+        <div role="alert" style="margin:0;padding:12px 16px;background:#7f1d1d;color:#fff;font:600 14px/1.5 system-ui,sans-serif;text-align:center;">
             ระบบนี้ต้องเปิดใช้งาน JavaScript จึงจะบันทึกและเรียกดูข้อมูลได้
         </div>
     </noscript>
@@ -1029,44 +669,44 @@
                 <div class="hidden lg:flex gap-3 xl:gap-6">
                     <button
                         class="nav-btn nav-chip px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all active-nav"
-                        data-target="home" aria-current="page" type="button">
+                        data-target="home" aria-current="page" aria-pressed="true" type="button">
                         <i data-lucide="layout-dashboard" class="w-4 h-4 inline-block mr-1"></i> แดชบอร์ด
                     </button>
                     <button
                         class="nav-btn nav-chip px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
-                        data-target="eqa-form" type="button">
+                        data-target="eqa-form" aria-pressed="false" type="button">
                         <i data-lucide="file-text" class="w-4 h-4 inline-block mr-1"></i> ประเมินภายนอก (EQA)
                     </button>
                     <button
                         class="nav-btn nav-chip px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
-                        data-target="iqc-form" type="button">
+                        data-target="iqc-form" aria-pressed="false" type="button">
                         <i data-lucide="activity" class="w-4 h-4 inline-block mr-1"></i> ควบคุมภายใน (IQC)
                     </button>
                     <button
                         class="nav-btn nav-chip px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
-                        data-target="records-panel" type="button">
+                        data-target="records-panel" aria-pressed="false" type="button">
                         <i data-lucide="table-properties" class="w-4 h-4 inline-block mr-1"></i> จัดการข้อมูล
                     </button>
                 </div>
                 <div class="mobile-primary-nav lg:hidden flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" aria-label="เมนูหลักบนมือถือและแท็บเล็ต">
                     <button
                         class="nav-btn nav-chip shrink-0 px-3 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all active-nav"
-                        data-target="home" aria-current="page" type="button">
+                        data-target="home" aria-current="page" aria-pressed="true" type="button">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i> แดชบอร์ด
                     </button>
                     <button
                         class="nav-btn nav-chip shrink-0 px-3 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
-                        data-target="eqa-form" type="button">
+                        data-target="eqa-form" aria-pressed="false" type="button">
                         <i data-lucide="file-text" class="w-4 h-4"></i> EQA
                     </button>
                     <button
                         class="nav-btn nav-chip shrink-0 px-3 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
-                        data-target="iqc-form" type="button">
+                        data-target="iqc-form" aria-pressed="false" type="button">
                         <i data-lucide="activity" class="w-4 h-4"></i> IQC
                     </button>
                     <button
                         class="nav-btn nav-chip shrink-0 px-3 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
-                        data-target="records-panel" type="button">
+                        data-target="records-panel" aria-pressed="false" type="button">
                         <i data-lucide="table-properties" class="w-4 h-4"></i> จัดการข้อมูล
                     </button>
                 </div>
@@ -1077,7 +717,7 @@
         </div>
     </nav>
 
-    <main id="main-content" tabindex="-1" class="max-w-10xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <main id="main-content" tabindex="-1" class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         <!-- Dashboard / Welcome Area -->
         <div id="home" class="form-card active">
@@ -1182,7 +822,7 @@
         <!-- Form 1: EQA -->
         <div id="eqa-form" class="form-card">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 sm:p-6">
+                <div class="bg-slate-50 p-4 border-b border-slate-200 sm:p-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h1 class="text-xl font-semibold text-slate-900 sm:text-2xl">แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ
@@ -1193,7 +833,7 @@
                     </div>
                 </div>
 
-                <form class="px-4 py-4 space-y-5 sm:p-6 sm:space-y-8 lg:p-8" novalidate>
+                <form class="p-4 space-y-6 sm:p-6 sm:space-y-8 lg:p-8" novalidate>
                     <!-- General Info -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
@@ -1433,7 +1073,7 @@
         <!-- Form 2: IQC -->
         <div id="iqc-form" class="form-card">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 sm:p-6">
+                <div class="bg-slate-50 p-4 border-b border-slate-200 sm:p-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h1 class="text-xl font-semibold text-slate-900 sm:text-2xl">ตารางสรุปการควบคุมคุณภาพภายในของหน่วย</h1>
@@ -1443,33 +1083,20 @@
                     </div>
                 </div>
 
-                <form class="px-4 py-4 space-y-5 sm:p-6 sm:space-y-8 lg:p-8" novalidate>
+                <form class="p-4 space-y-6 sm:p-6 sm:space-y-8 lg:p-8" novalidate>
                     <!-- IQC Header -->
                     <div
                         class="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between gap-4">
-                        <div>
-                            <div class="text-xs font-bold text-slate-500 uppercase">เครื่องมือที่ใช้ตรวจวิเคราะห์</div>
-                            <div class="mt-1 text-base font-semibold text-slate-800">D-Dimer Cobas h 323</div>
+                        <div class="min-w-0 flex-1">
+                            <label for="iqc-analyzer" class="text-xs font-bold text-slate-500 uppercase">เครื่องมือที่ใช้ตรวจวิเคราะห์</label>
+                            <input id="iqc-analyzer" name="iqc-analyzer" type="text"
+                                class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-semibold text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                                value="D-Dimer Cobas h 323" required maxlength="150" autocomplete="off">
                         </div>
                         <i data-lucide="microscope" class="w-5 h-5 text-emerald-600"></i>
                     </div>
 
                     <div id="iqc-schedule-root" class="space-y-8"></div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                            <div class="flex items-center justify-between gap-3">
-                                <div>
-                                    <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ปฏิบัติ</h4>
-                                    <p class="text-xs text-slate-500 mt-1">กดเซ็นชื่อเมื่อกรอกข้อมูลประจำวันเสร็จ</p>
-                                </div>
-                                    <button type="button" id="iqc-sign-operator"
-                                    class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">เซ็นชื่อผู้ปฏิบัติ</button>
-                            </div>
-                            <div id="iqc-operator-signature-preview"
-                                class="rounded-2xl border border-dashed border-slate-300 bg-white p-3 min-h-28"></div>
-                        </div>
-                    </div>
 
                     <!-- Attachments IQC -->
                     <div class="space-y-4 mt-4">
@@ -1492,6 +1119,21 @@
                         <button id="iqc-remove-all-btn" type="button"
                             class="hidden mt-3 rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 sm:w-auto">ลบทั้งหมด</button>
                         <div id="iqc-file-list" class="mt-4 grid gap-3"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-500 uppercase">ผู้ปฏิบัติ</h4>
+                                    <p class="text-xs text-slate-500 mt-1">กดเซ็นชื่อเมื่อกรอกข้อมูลประจำวันเสร็จ</p>
+                                </div>
+                                    <button type="button" id="iqc-sign-operator"
+                                    class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">เซ็นชื่อผู้ปฏิบัติ</button>
+                            </div>
+                            <div id="iqc-operator-signature-preview"
+                                class="rounded-2xl border border-dashed border-slate-300 bg-white p-3 min-h-28"></div>
+                        </div>
                     </div>
 
                     <div class="flex flex-col-reverse gap-3 pt-4 sm:flex-row sm:justify-end sm:gap-4">
@@ -1555,14 +1197,16 @@
 
                         <div class="min-w-0">
                             <section id="records-page-eqa" class="records-page" role="tabpanel" aria-labelledby="records-tab-eqa" tabindex="0">
-                                <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                                    <div class="flex items-center justify-between gap-4 border-b border-slate-200 bg-slate-50 px-5 py-4">
+                                <div class="border-b border-slate-200 bg-white px-1 pb-4">
+                                    <div class="flex items-start justify-between gap-4">
                                         <div>
                                             <h3 class="text-lg font-bold text-slate-900">ข้อมูล EQA</h3>
                                             <p class="mt-1 text-sm text-slate-500">รายงาน EQA แยกเป็นรายวัน
                                                 เลือก “ส่งออก” ในแต่ละแถวเพื่อพิมพ์ PDF ของวันนั้น</p>
                                         </div>
-                                        <i data-lucide="file-text" class="w-5 h-5 text-slate-500"></i>
+                                        <div class="rounded-xl bg-blue-50 p-3 text-blue-700">
+                                            <i data-lucide="file-text" class="w-5 h-5 text-slate-500"></i>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -2067,30 +1711,6 @@
             return value || fallback;
         }
 
-        const signaturePreviewCache = new Map();
-        const signatureImageCache = new Map();
-        const SIGNATURE_CACHE_LIMIT = 200;
-        const EMPTY_SIGNATURE_MARKUP = '<div class="flex h-full min-h-[84px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 text-sm text-slate-400">ยังไม่มีลายเซ็น</div>';
-
-        function buildSignatureCacheKey(signatureData, options = {}) {
-            return JSON.stringify({
-                signatureData,
-                strokeMinWidth: Number.isFinite(options.strokeMinWidth) ? options.strokeMinWidth : null,
-                strokeMaxWidth: Number.isFinite(options.strokeMaxWidth) ? options.strokeMaxWidth : null,
-                penColor: String(options.penColor || '').trim()
-            });
-        }
-
-        function rememberSignatureCache(cache, key, value) {
-            if (!cache.has(key) && cache.size >= SIGNATURE_CACHE_LIMIT) {
-                const oldestKey = cache.keys().next().value;
-                if (typeof oldestKey !== 'undefined') {
-                    cache.delete(oldestKey);
-                }
-            }
-            cache.set(key, value);
-        }
-
         function renderSignatureSvgPreview(target, signatureData) {
             if (!target) {
                 return;
@@ -2108,24 +1728,17 @@
             root.style.justifyContent = 'center';
             root.style.overflow = 'visible';
 
-            const penColor = getDesignToken('--signature-ink', '#0f4c81');
-            const cacheKey = buildSignatureCacheKey(signatureData, { penColor });
-            if (signaturePreviewCache.has(cacheKey)) {
-                root.innerHTML = signaturePreviewCache.get(cacheKey);
-                return;
-            }
-
             if (!(signatureData && Array.isArray(signatureData) && signatureData.length > 0)) {
-                root.innerHTML = EMPTY_SIGNATURE_MARKUP;
-                rememberSignatureCache(signaturePreviewCache, cacheKey, EMPTY_SIGNATURE_MARKUP);
+                root.innerHTML = '<div class="flex h-full min-h-[84px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 text-sm text-slate-400">ยังไม่มีลายเซ็น</div>';
                 return;
             }
 
             const typedText = getTypedSignatureText(signatureData);
             if (typedText) {
-                const typedMarkup = `<span class="typed-signature-preview">${escapeHtml(typedText)}</span>`;
-                root.innerHTML = typedMarkup;
-                rememberSignatureCache(signaturePreviewCache, cacheKey, typedMarkup);
+                const typedSignature = document.createElement('span');
+                typedSignature.className = 'typed-signature-preview';
+                typedSignature.textContent = typedText;
+                root.appendChild(typedSignature);
                 return;
             }
 
@@ -2153,7 +1766,7 @@
             const height = Math.max(120, Math.ceil((bounds.maxY - bounds.minY) + (padding * 2)));
             const translatedData = signatureData.map((group) => ({
                 ...group,
-                penColor,
+                penColor: getDesignToken('--signature-ink', '#1e3a8a'),
                 points: Array.isArray(group.points)
                     ? group.points.map((point) => ({
                         ...point,
@@ -2166,24 +1779,21 @@
             previewCanvas.width = width;
             previewCanvas.height = height;
             const signaturePad = new SignaturePad(previewCanvas, {
-                penColor,
+                penColor: getDesignToken('--signature-ink', '#1e3a8a'),
                 backgroundColor: 'rgba(255,255,255,0)'
             });
             try {
                 signaturePad.fromData(translatedData);
                 const imageUrl = signaturePad.toDataURL('image/png');
-                const imageMarkup = `
+                root.innerHTML = `
                     <img
                         src="${imageUrl}"
                         alt="ตัวอย่างลายเซ็น"
                         style="width:100%;height:100%;object-fit:contain;display:block;"
                     >
                 `;
-                root.innerHTML = imageMarkup;
-                rememberSignatureCache(signaturePreviewCache, cacheKey, imageMarkup);
             } catch (err) {
-                root.innerHTML = EMPTY_SIGNATURE_MARKUP;
-                rememberSignatureCache(signaturePreviewCache, cacheKey, EMPTY_SIGNATURE_MARKUP);
+                root.innerHTML = '<div class="flex h-full min-h-[84px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 text-sm text-slate-400">ยังไม่มีลายเซ็น</div>';
             }
         }
 
@@ -2194,11 +1804,7 @@
 
             const strokeMinWidth = Number.isFinite(options.strokeMinWidth) ? options.strokeMinWidth : 1.5;
             const strokeMaxWidth = Number.isFinite(options.strokeMaxWidth) ? options.strokeMaxWidth : 3.5;
-            const penColor = options.penColor || getDesignToken('--signature-ink', '#0f4c81');
-            const cacheKey = buildSignatureCacheKey(signatureData, { strokeMinWidth, strokeMaxWidth, penColor });
-            if (signatureImageCache.has(cacheKey)) {
-                return signatureImageCache.get(cacheKey);
-            }
+            const penColor = options.penColor || getDesignToken('--signature-ink', '#1e3a8a');
 
             const typedText = getTypedSignatureText(signatureData);
             if (typedText) {
@@ -2213,9 +1819,7 @@
                 context.textBaseline = 'middle';
                 const displayText = typedText.length > 42 ? `${typedText.slice(0, 41)}…` : typedText;
                 context.fillText(displayText, previewCanvas.width / 2, previewCanvas.height / 2, previewCanvas.width - 40);
-                const typedImageUrl = previewCanvas.toDataURL('image/png');
-                rememberSignatureCache(signatureImageCache, cacheKey, typedImageUrl);
-                return typedImageUrl;
+                return previewCanvas.toDataURL('image/png');
             }
 
             const bounds = signatureData.reduce((acc, group) => {
@@ -2266,11 +1870,8 @@
             });
             try {
                 signaturePad.fromData(translatedData);
-                const imageUrl = signaturePad.toDataURL('image/png');
-                rememberSignatureCache(signatureImageCache, cacheKey, imageUrl);
-                return imageUrl;
+                return signaturePad.toDataURL('image/png');
             } catch (err) {
-                rememberSignatureCache(signatureImageCache, cacheKey, '');
                 return '';
             }
         }
@@ -2641,7 +2242,7 @@
                 controlName: data.controlName || defaults.controlName || '',
                 lot: data.lot || defaults.lot || '',
                 exp: data.exp || defaults.exp || '',
-                analyzer: IQC_ANALYZER_NAME,
+                analyzer: data.analyzer || IQC_ANALYZER_NAME,
                 dailyMaintenance: {
                     device: Boolean(data.dailyMaintenance?.device),
                     guide: Boolean(data.dailyMaintenance?.guide)
@@ -2968,11 +2569,11 @@
                 const imageUrl = signatureDataToImageUrl(signatureData, {
                     strokeMinWidth: 1.6,
                     strokeMaxWidth: 4,
-                    penColor: getDesignToken('--signature-ink', '#0f4c81')
+                    penColor: getDesignToken('--signature-ink', '#1e3a8a')
                 });
                 if (imageUrl) {
                     return `
-                        <button type="button" class="w-full min-h-11 text-left js-summary-signature-edit js-editable-signature rounded-md bg-transparent p-2" data-month="${escapeHtml(monthKey)}" data-role="${escapeHtml(role)}" aria-label="${role === 'supervisor' ? 'แก้ไขลายเซ็นผู้ตรวจสอบ' : 'แก้ไขลายเซ็นผู้สรุป'}">
+                        <button type="button" class="w-full min-h-11 text-left js-summary-signature-edit js-editable-signature rounded-md bg-transparent p-2" data-month="${escapeHtml(monthKey)}" data-role="${escapeHtml(role)}" aria-label="คลิกเพื่อแก้ไข">
                             <img src="${imageUrl}" alt="${role === 'supervisor' ? 'ลายเซ็นผู้ตรวจสอบ' : 'ลายเซ็นผู้ปฏิบัติ'}" class="h-7 w-full object-contain object-center" loading="lazy" decoding="async">
                             <span class="signature-tooltip" aria-hidden="true">คลิกเพื่อแก้ไข</span>
                         </button>
@@ -3159,7 +2760,7 @@
                 title: `ลงลายเซ็น${roleLabel}รายเดือน`,
                 instruction: `กรุณาเซ็นชื่อสำหรับรายงานสรุป ${monthText} ปี ${yearText}`,
                 confirmButtonText: 'ยืนยันลายเซ็น',
-                penColor: getDesignToken('--signature-ink', '#0f4c81'),
+                penColor: getDesignToken('--signature-ink', '#1e3a8a'),
                 enableSignerProfile: true,
                 storageKey,
                 defaultSignerPosition: role === 'supervisor' ? 'Supervisor' : 'หัวหน้าหน่วยภูมิคุ้มกันวิทยา',
@@ -3767,14 +3368,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4">
-                            <div>
-                                <div class="text-xs font-semibold text-slate-600">เครื่องมือที่ใช้ตรวจวิเคราะห์</div>
-                                <div class="mt-1 font-semibold text-slate-800">${escapeHtml(IQC_ANALYZER_NAME)}</div>
-                            </div>
-                            <i data-lucide="microscope" class="w-5 h-5 text-emerald-600"></i>
-                        </div>
-
                         <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
                             <div class="flex items-center justify-between gap-3 mb-3">
                             <div>
@@ -4298,10 +3891,6 @@
                 return Boolean(error && (error.code === 'UPLOAD_CANCELLED' || error.name === 'AbortError'));
             }
 
-            function isActiveUploadFile(file) {
-                return Boolean(file && (file.uploadStatus === 'PENDING' || file.uploadStatus === 'UPLOADING'));
-            }
-
             function createUploadHandle() {
                 return {
                     aborted: false,
@@ -4659,6 +4248,10 @@
             $(`#${targets.listId}`).attr('aria-busy', isBusy ? 'true' : 'false');
         }
 
+        function isActiveUploadFile(file) {
+            return Boolean(file && (file.uploadStatus === 'PENDING' || file.uploadStatus === 'UPLOADING'));
+        }
+
         function renderEqaFileList() {
             const $list = $('#eqa-file-list').empty();
             const files = state.newEqaFiles;
@@ -4966,14 +4559,18 @@
         function performSwitch(target) {
             $('.nav-btn')
                 .removeClass('active-nav')
-                .removeAttr('aria-current');
+                .attr({ 'aria-current': 'false', 'aria-pressed': 'false' });
             $(`.nav-btn[data-target="${target}"]`)
                 .addClass('active-nav')
-                .attr({ 'aria-current': 'page' });
+                .attr({ 'aria-current': 'page', 'aria-pressed': 'true' });
             const $cards = $('.form-card');
             $cards.removeClass('active motion-enter');
             const $nextCard = $(`#${target}`);
             $nextCard.addClass('active motion-enter');
+            runMotionAnimation($nextCard[0], {
+                opacity: [0.84, 1],
+                transform: ['translateY(6px)', 'translateY(0px)']
+            }, { duration: 0.2 });
             window.requestAnimationFrame(() => {
                 $nextCard.addClass('motion-enter');
             });
@@ -5782,13 +5379,58 @@
             }
         }
 
-        function createStableRecordId(type) {
-            const prefix = String(type || 'record').toUpperCase();
-            if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-                return `${prefix}-${window.crypto.randomUUID()}`;
+        function getSaveProgressMarkup(message, percent) {
+            const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+            return `
+                <div class="text-left" role="status" aria-live="polite">
+                    <div id="save-progress-label" class="mb-3 text-sm text-slate-600">${escapeHtml(message)}</div>
+                    <div class="progress-wrap" role="progressbar" aria-label="ความคืบหน้าการบันทึก" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${safePercent}">
+                        <div id="save-progress-bar" class="progress-bar" style="transform:scaleX(${safePercent / 100})"></div>
+                    </div>
+                    <div id="save-progress-percent" class="mt-2 text-right text-xs font-semibold text-slate-500">${safePercent}%</div>
+                </div>
+            `;
+        }
+
+        function showSaveProgress(message, percent) {
+            Swal.fire({
+                title: '<span class="inline-flex items-center gap-2"><i data-lucide="save" class="h-5 w-5 text-blue-600" aria-hidden="true"></i><span>กำลังบันทึกข้อมูล</span></span>',
+                html: getSaveProgressMarkup(message, percent),
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    if (window.lucide) {
+                        window.lucide.createIcons();
+                    }
+                    Swal.showLoading();
+                }
+            });
+        }
+
+        function updateSaveProgress(message, percent) {
+            const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+            const label = document.getElementById('save-progress-label');
+            const bar = document.getElementById('save-progress-bar');
+            const percentLabel = document.getElementById('save-progress-percent');
+            const progress = bar?.parentElement;
+            if (label) {
+                label.textContent = message;
             }
-            const randomPart = Math.random().toString(36).slice(2, 10);
-            return `${prefix}-${Date.now()}-${randomPart}`;
+            if (bar) {
+                bar.style.transform = `scaleX(${safePercent / 100})`;
+            }
+            if (percentLabel) {
+                percentLabel.textContent = `${safePercent}%`;
+            }
+            if (progress) {
+                progress.setAttribute('aria-valuenow', String(safePercent));
+            }
+            if (bar) {
+                runMotionAnimation(bar, {
+                    transform: [`scaleX(${Math.max(0, (safePercent - 12) / 100)})`, `scaleX(${safePercent / 100})`]
+                }, { duration: 0.28 });
+            }
         }
 
         async function handleSave(type) {
@@ -5834,10 +5476,16 @@
                 if (!signaturePayload) {
                     return;
                 }
+                showSaveProgress('กำลังเตรียมข้อมูลสำหรับบันทึก', 10);
                 const attachments = await getAttachmentsForCurrentForm(type);
+                updateSaveProgress('กำลังเตรียมไฟล์แนบและข้อมูลแบบประเมิน', 30);
                 record = type === 'EQA' ? collectEqaRecord() : collectIqcRecord();
-                record.id = state.editingId || createStableRecordId(type);
-                state.editingId = record.id;
+                if (state.editingId) {
+                    record.id = state.editingId;
+                } else {
+                    // Let the Apps Script backend generate the ID with generateNewId_().
+                    delete record.id;
+                }
                 record.type = type;
                 if (type === 'IQC') {
                     record.signatureData = signaturePayload;
@@ -5851,6 +5499,7 @@
                     state.lastEqaSignaturePayload = signaturePayload;
                 }
                 record.attachments = attachments;
+                updateSaveProgress('กำลังบันทึกข้อมูลลงระบบ', 60);
                 const result = await postApi('upsertRecord', { record });
                 const savedRecordId = result?.id;
                 if (!savedRecordId) {
@@ -5860,11 +5509,15 @@
                 }
                 record.id = savedRecordId;
                 state.editingId = savedRecordId;
+                updateSaveProgress('กำลังจัดเก็บไฟล์แนบเข้ากับรายการ', 85);
                 await postApi('movefilestorecordfolder', { recordId: savedRecordId, attachments, type: type });
+                updateSaveProgress('บันทึกข้อมูลเรียบร้อยแล้ว', 100);
                 resetAllForms();
                 await loadRecords();
+                Swal.close();
                 showAppStatus('บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
             } catch (err) {
+                Swal.close();
                 const result = await Swal.fire({
                     icon: 'error',
                     title: 'บันทึกข้อมูลไม่สำเร็จ',
@@ -5878,6 +5531,9 @@
                     window.setTimeout(() => handleSave(type), 0);
                 }
             } finally {
+                if (Swal.isVisible()) {
+                    Swal.close();
+                }
                 state.saveInProgress = false;
                 setSaveBusy(type, false);
             }
@@ -5906,7 +5562,7 @@
             const title = options.title || 'ลงลายเซ็นก่อนบันทึก';
             const instruction = options.instruction || 'กรุณาเซ็นชื่อเพื่อยืนยันการบันทึกข้อมูล';
             const confirmButtonText = options.confirmButtonText || 'ยืนยันบันทึก';
-            const penColor = options.penColor || getDesignToken('--signature-ink', '#0f4c81');
+            const penColor = options.penColor || getDesignToken('--signature-ink', '#1e3a8a');
             const enableSignerProfile = Boolean(options.enableSignerProfile);
             const storageKey = String(options.storageKey || '').trim();
             const defaultSignerPosition = String(options.defaultSignerPosition || '').trim();
@@ -6117,11 +5773,11 @@
                     const operatorTypedInput = document.getElementById('operator-typed-signature');
                     const supervisorTypedInput = document.getElementById('supervisor-typed-signature');
                     operatorPad = new SignaturePad(operatorCanvas, {
-                        penColor: getDesignToken('--signature-ink', '#0f4c81'),
+                        penColor: getDesignToken('--signature-ink', '#1e3a8a'),
                         backgroundColor: 'rgba(255,255,255,0)'
                     });
                     supervisorPad = new SignaturePad(supervisorCanvas, {
-                        penColor: getDesignToken('--signature-ink', '#0f4c81'),
+                        penColor: getDesignToken('--signature-ink', '#1e3a8a'),
                         backgroundColor: 'rgba(255,255,255,0)'
                     });
                     resizeSignatureCanvas(operatorCanvas, operatorPad);
@@ -6284,7 +5940,7 @@
                 controlName: $('#iqc-controlName').val() || '',
                 lot: $('#iqc-lot').val() || '',
                 exp: $('#iqc-exp').val() || '',
-                analyzer: IQC_ANALYZER_NAME,
+                analyzer: $('#iqc-analyzer').val() || IQC_ANALYZER_NAME,
                 dailyMaintenance,
                 iqcLow,
                 iqcHigh,
@@ -6444,6 +6100,7 @@
                 exp: data.exp || ''
             };
             $('#iqc-date').val(data.date || record.recordDate || '');
+            $('#iqc-analyzer').val(data.analyzer || IQC_ANALYZER_NAME);
             setIqcDepartmentValue(data.dept || '');
             $('#iqc-controlName').val(data.controlName || '');
             $('#iqc-lot').val(data.lot || '');
@@ -6544,6 +6201,12 @@
             region.setAttribute('aria-live', tone === 'error' ? 'assertive' : 'polite');
             region.textContent = String(message || '').trim();
             region.hidden = !region.textContent;
+            if (!region.hidden) {
+                runMotionAnimation(region, {
+                    opacity: [0, 1],
+                    transform: ['translateY(8px)', 'translateY(0px)']
+                }, { duration: 0.2 });
+            }
             if (!region.hidden && duration > 0) {
                 appStatusTimer = window.setTimeout(() => {
                     region.hidden = true;
@@ -6551,6 +6214,20 @@
                     appStatusTimer = null;
                 }, duration);
             }
+        }
+
+        function runMotionAnimation(element, keyframes, options = {}) {
+            if (!element || !window.Motion || typeof window.Motion.animate !== 'function') {
+                return null;
+            }
+            if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+                return null;
+            }
+            return window.Motion.animate(element, keyframes, {
+                duration: 0.22,
+                ease: 'easeOut',
+                ...options
+            });
         }
 
         function escapeHtml(text) {
@@ -6627,7 +6304,7 @@
             const imageUrl = signatureDataToImageUrl(signatureData, {
                 strokeMinWidth: 1.8,
                 strokeMaxWidth: 4.2,
-                penColor: getDesignToken('--signature-ink', '#0f4c81')
+                penColor: getDesignToken('--signature-ink', '#1e3a8a')
             });
             if (!imageUrl) {
                 return '';
@@ -6652,7 +6329,7 @@
             const imageUrl = signatureDataToImageUrl(signatureData, {
                 strokeMinWidth: 1.8,
                 strokeMaxWidth: 4.2,
-                penColor: getDesignToken('--signature-ink', '#0f4c81')
+                penColor: getDesignToken('--signature-ink', '#1e3a8a')
             });
             const buttonLabel = signatureData.length > 0 ? 'แก้ไขลายเซ็นผู้ตรวจสอบ' : 'เซ็นชื่อผู้ตรวจสอบ';
             const previewMarkup = imageUrl
@@ -6664,7 +6341,7 @@
                         ? `<button type="button"
                             class="js-iqc-supervisor-sign-btn js-editable-signature w-full rounded-md bg-transparent p-0 text-left"
                             data-id="${escapeHtml(record.id || '')}"
-                            aria-label="แก้ไขลายเซ็นผู้ตรวจสอบ">
+                            aria-label="คลิกเพื่อแก้ไข">
                             ${previewMarkup}
                             <span class="signature-tooltip" aria-hidden="true">คลิกเพื่อแก้ไข</span>
                         </button>`
@@ -6686,7 +6363,7 @@
             const imageUrl = signatureDataToImageUrl(signatureData, {
                 strokeMinWidth: 1.8,
                 strokeMaxWidth: 4.2,
-                penColor: getDesignToken('--signature-ink', '#0f4c81')
+                penColor: getDesignToken('--signature-ink', '#1e3a8a')
             });
             const buttonLabel = signatureData.length > 0 ? 'แก้ไขลายเซ็นผู้ตรวจสอบ' : 'เซ็นชื่อผู้ตรวจสอบ';
             const previewMarkup = imageUrl
@@ -6698,7 +6375,7 @@
                         ? `<button type="button"
                             class="js-eqa-verifier-sign-btn js-editable-signature w-full rounded-md bg-transparent p-0 text-left"
                             data-id="${escapeHtml(record.id || '')}"
-                            aria-label="แก้ไขลายเซ็นผู้ตรวจสอบ">
+                            aria-label="คลิกเพื่อแก้ไข">
                             ${previewMarkup}
                             <span class="signature-tooltip" aria-hidden="true">คลิกเพื่อแก้ไข</span>
                         </button>`
@@ -6723,7 +6400,7 @@
                 title: 'ลงลายเซ็นผู้ตรวจสอบ',
                 instruction: 'กรุณาเซ็นชื่อเพื่อยืนยันข้อมูล IQC รายวันนี้',
                 confirmButtonText: 'ยืนยันลายเซ็น',
-                penColor: getDesignToken('--signature-ink', '#0f4c81')
+                penColor: getDesignToken('--signature-ink', '#1e3a8a')
             });
             if (!signature) {
                 return;
@@ -6777,7 +6454,7 @@
                 title: 'ลงลายเซ็นผู้ตรวจสอบการประเมิน',
                 instruction: 'กรุณาเซ็นชื่อเพื่อยืนยันผลการประเมิน EQA',
                 confirmButtonText: 'ยืนยันลายเซ็น',
-                penColor: getDesignToken('--signature-ink', '#0f4c81'),
+                penColor: getDesignToken('--signature-ink', '#1e3a8a'),
                 enableSignerProfile: true,
                 storageKey: 'eqa-verifier-signature-profile',
                 defaultSignerPosition: 'ผู้ตรวจสอบการประเมิน',
@@ -6910,6 +6587,30 @@
             });
         }
 
+        function sanitizePdfFileNamePart(value, fallback = 'รายการ') {
+            const normalized = String(value ?? '')
+                .trim()
+                .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-')
+                .replace(/\s+/g, ' ')
+                .replace(/-+/g, '-')
+                .replace(/[. ]+$/g, '')
+                .slice(0, 80);
+            return normalized || fallback;
+        }
+
+        function getEqaPdfTitle(record) {
+            const data = getRecordDataSource(record || {});
+            const dateValue = data.evalDate || data.dateRec || record?.recordDate || '';
+            const date = moment(dateValue).isValid() ? moment(dateValue).format('YYYY-MM-DD') : '';
+            return [
+                'EQA',
+                sanitizePdfFileNamePart(data.dept),
+                sanitizePdfFileNamePart(data.project || data.testItem),
+                data.round ? `รอบ-${sanitizePdfFileNamePart(data.round)}` : '',
+                date
+            ].filter(Boolean).join('_');
+        }
+
         async function exportEQA(recordOrId) {
             await document.fonts.ready;
             const record = recordOrId && typeof recordOrId === 'object'
@@ -6918,6 +6619,8 @@
             if (!record) {
                 throw new Error('ไม่พบข้อมูล EQA ที่ต้องการพิมพ์');
             }
+            const originalDocumentTitle = document.title;
+            document.title = getEqaPdfTitle(record);
             const pages = [record];
             const exportStyles = `
                 <style>
@@ -6929,7 +6632,16 @@
                         border-style: solid;
                         border-color: #000;
                     }
-                    body { margin: 0; }
+                    html,
+                    body {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .eqa-print-root {
+                        margin: 0;
+                        padding: 0;
+                        font-size: 0;
+                    }
                     .eqa-report-page,
                     .eqa-export-page {
                         background: #fff;
@@ -6939,6 +6651,7 @@
                         overflow: hidden;
                         break-inside: avoid;
                         page-break-inside: avoid;
+                        margin: 0;
                         -webkit-print-color-adjust: exact;
                         print-color-adjust: exact;
                     }
@@ -6948,6 +6661,10 @@
                         padding: 11.5mm 14mm 10.6mm 14mm;
                         font-size: 9.9pt;
                         line-height: 1.3;
+                    }
+                    .eqa-export-page:last-child {
+                        break-after: auto !important;
+                        page-break-after: auto !important;
                     }
                     .eqa-form-meta {
                         position: absolute;
@@ -7041,7 +6758,7 @@
                         min-width: 10mm;
                         min-height: 4.6mm;
                         padding: 0 .8mm;
-                        border-bottom: .3mm dotted #000;
+                        border-bottom: 1px dotted #000;
                         font-weight: 400;
                         line-height: 1.08;
                         text-align: left;
@@ -7085,14 +6802,11 @@
                     .eqa-section-heading {
                         display: inline-block;
                         margin: 1.4mm 0 1.2mm;
-                        padding-bottom: 0;
-                        border-bottom: 0;
+                        padding-bottom: .45mm;
+                        border-bottom: 1px dotted #000;
                         font-size: 10.5pt;
                         font-weight: 700;
                         line-height: 1.2;
-                        text-decoration: underline;
-                        text-decoration-thickness: .23mm;
-                        text-underline-offset: .45mm;
                     }
                     .eqa-notes-section {
                         margin-top: .1mm;
@@ -7109,7 +6823,7 @@
                     .eqa-note-line {
                         min-height: 6.85mm;
                         padding: .7mm .8mm .25mm;
-                        border-bottom: .3mm dotted #000;
+                        border-bottom: 1px dotted #000;
                         display: flex;
                         align-items: flex-end;
                         white-space: pre-wrap;
@@ -7142,7 +6856,7 @@
                         width: 33.5mm;
                         height: 6mm;
                         margin: 0 1mm;
-                        border-bottom: .3mm dotted #000;
+                        border-bottom: 1px dotted #000;
                     }
                     .eqa-signature-ink {
                         position: absolute;
@@ -7243,6 +6957,7 @@
             )));
 
             const cleanup = () => {
+                document.title = originalDocumentTitle;
                 document.body.classList.remove('eqa-print-mode');
                 if (printHost && printHost.parentNode) {
                     printHost.parentNode.removeChild(printHost);
@@ -7307,6 +7022,13 @@
                 iqcNonConformance: Array.isArray(currentData.iqcNonConformance) ? currentData.iqcNonConformance : []
             };
             const monthParts = formatGregorianMonthYear(monthStart.toDate());
+            const originalDocumentTitle = document.title;
+            document.title = [
+                'IQC',
+                sanitizePdfFileNamePart(current.dept),
+                sanitizePdfFileNamePart(current.controlName),
+                `${monthParts.year}-${String(monthStart.month() + 1).padStart(2, '0')}`
+            ].filter(Boolean).join('_');
             const recordMap = getIqcMonthlyRecordMap(records);
             const controlSets = getIqcCoverControlSets(records, current);
             const logoSrc = 'nhealth-logo.png';
@@ -7605,7 +7327,7 @@
                     .iqc-check-mark-pass,
                     .iqc-check-mark-daily,
                     .iqc-check-mark-weekly {
-                        color: ${getDesignToken('--signature-ink', '#0f4c81')};
+                        color: ${getDesignToken('--signature-ink', '#1e3a8a')};
                     }
                     .iqc-check-mark-fail {
                         color: #000;
@@ -7900,6 +7622,7 @@
             )));
 
             const cleanup = () => {
+                document.title = originalDocumentTitle;
                 document.body.classList.remove('iqc-print-mode');
                 if (printHost && printHost.parentNode) {
                     printHost.parentNode.removeChild(printHost);
