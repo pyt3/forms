@@ -1605,6 +1605,12 @@
 
         function filterIqcRecordsBySelection(records = [], filterContext = getIqcRecordsFilterContext()) {
             return (Array.isArray(records) ? records : []).filter((record) => {
+                // The top-level type is the authoritative type returned by the records API.
+                // Do not infer IQC from nested payload data, otherwise legacy EQA payloads
+                // with an inconsistent data.type can leak into this table.
+                if (String(record?.type || '').trim().toUpperCase() !== 'IQC') {
+                    return false;
+                }
                 const recordMoment = parseRecordMomentValue(record);
                 if (!recordMoment.isValid()) {
                     return false;
@@ -2906,7 +2912,9 @@
 
         function renderIqcRecordsPage() {
             const filterContext = syncIqcFilterControls(state.allRecords);
-            const filteredIqcRecords = filterIqcRecordsBySelection(state.records, filterContext);
+            const iqcRecords = (Array.isArray(state.records) ? state.records : [])
+                .filter((record) => String(record?.type || '').trim().toUpperCase() === 'IQC');
+            const filteredIqcRecords = filterIqcRecordsBySelection(iqcRecords, filterContext);
             renderRecordsTable(filteredIqcRecords, '#iqc-records-table-body');
             renderIqcMonthlySummaryTable(state.allRecords, filterContext);
             if (window.lucide) {
@@ -5116,9 +5124,12 @@
 
         function renderRecordsTable(records, bodySelector = '#records-table-body') {
             const body = $(bodySelector);
+            const recordsToRender = bodySelector === '#iqc-records-table-body'
+                ? (Array.isArray(records) ? records : []).filter((record) => String(record?.type || '').trim().toUpperCase() === 'IQC')
+                : (Array.isArray(records) ? records : []);
             body.empty();
 
-            if (!records.length) {
+            if (!recordsToRender.length) {
                 body.append(`
                                     <tr>
                                         <td colspan="8" class="p-4 text-center">
@@ -5136,7 +5147,7 @@
                 return;
             }
 
-            records.forEach((r) => {
+            recordsToRender.forEach((r) => {
                 const data = getRecordDataSource(r);
                 const signatures = getRecordSignaturePack(r);
                 const recordType = getRecordSummaryType(r);
@@ -6753,12 +6764,13 @@
                         font-weight: 700;
                     }
                     .eqa-field {
+                        position: relative;
                         display: inline-flex;
                         flex: 1 1 auto;
                         min-width: 10mm;
                         min-height: 4.6mm;
                         padding: 0 .8mm;
-                        border-bottom: 1px dotted #000;
+                        border-bottom: 0;
                         font-weight: 400;
                         line-height: 1.08;
                         text-align: left;
@@ -6766,7 +6778,28 @@
                         overflow: hidden;
                         align-items: center;
                     }
+                    .eqa-field::after,
+                    .eqa-note-line::after,
+                    .eqa-signature-rule::after {
+                        content: '........................................................................................................................................................................................................................................................';
+                        position: absolute;
+                        left: .8mm;
+                        right: 0;
+                        bottom: -.3mm;
+                        overflow: hidden;
+                        color: #000;
+                        font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+                        font-size: 9pt;
+                        font-weight: 400;
+                        line-height: 1;
+                        letter-spacing: 0;
+                        white-space: nowrap;
+                        pointer-events: none;
+                    }
                     .eqa-field-text {
+                        position: relative;
+                        z-index: 1;
+                        background: #fff;
                         display: inline-block;
                         white-space: nowrap;
                         line-height: 1.1;
@@ -6803,7 +6836,7 @@
                         display: inline-block;
                         margin: 1.4mm 0 1.2mm;
                         padding-bottom: .45mm;
-                        border-bottom: 1px dotted #000;
+                        border-bottom: 0;
                         font-size: 10.5pt;
                         font-weight: 700;
                         line-height: 1.2;
@@ -6821,16 +6854,25 @@
                         margin-top: 1.9mm;
                     }
                     .eqa-note-line {
+                        position: relative;
+                        width: 100%;
                         min-height: 6.85mm;
                         padding: .7mm .8mm .25mm;
-                        border-bottom: 1px dotted #000;
+                        border-bottom: 0;
                         display: flex;
                         align-items: flex-end;
                         white-space: pre-wrap;
                         overflow: hidden;
                         text-overflow: clip;
                     }
+                    .eqa-note-line::after {
+                        left: 0;
+                        right: 0;
+                    }
                     .eqa-note-text {
+                        position: relative;
+                        z-index: 1;
+                        background: #fff;
                         flex: 0 0 auto;
                     }
                     .eqa-signatures {
@@ -6856,7 +6898,7 @@
                         width: 33.5mm;
                         height: 6mm;
                         margin: 0 1mm;
-                        border-bottom: 1px dotted #000;
+                        border-bottom: 0;
                     }
                     .eqa-signature-ink {
                         position: absolute;
