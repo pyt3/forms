@@ -667,7 +667,7 @@
     <!-- Navbar -->
     <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col gap-3 py-3 sm:flex-row sm:justify-between sm:items-center sm:py-0 sm:h-16">
+            <div class="flex flex-row items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
                 <div class="flex items-center gap-2">
                     <i data-lucide="microscope" class="w-8 h-8 text-blue-600"></i>
                     <span class="text-xl font-bold text-slate-900 tracking-tight">QualityLabHub</span>
@@ -715,13 +715,8 @@
                         data-target="records-panel" aria-pressed="false" type="button">
                         <i data-lucide="table-properties" class="w-4 h-4"></i> จัดการข้อมูล
                     </button>
-                    <button id="pwa-install-btn-mobile" type="button"
-                        class="nav-btn nav-chip shrink-0 hidden rounded-full bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition-all"
-                        aria-label="ติดตั้ง QualityLabHub เป็นแอป">
-                        <i data-lucide="download" class="w-4 h-4"></i> ติดตั้งแอป
-                    </button>
                 </div>
-                <div class="hidden items-center gap-4 sm:flex">
+                <div class="flex shrink-0 items-center gap-2 sm:gap-4">
                     <button id="pwa-install-btn" type="button"
                         class="nav-btn hidden items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition-all"
                         aria-label="ติดตั้ง QualityLabHub เป็นแอป">
@@ -7699,7 +7694,7 @@
     <script>
         (() => {
             let deferredInstallPrompt = null;
-            const installButtons = () => Array.from(document.querySelectorAll('#pwa-install-btn, #pwa-install-btn-mobile'));
+            const installButtons = () => Array.from(document.querySelectorAll('#pwa-install-btn'));
             const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches
                 || window.navigator.standalone === true;
             const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
@@ -7726,7 +7721,7 @@
             });
 
             document.addEventListener('click', async (event) => {
-                const button = event.target.closest('#pwa-install-btn, #pwa-install-btn-mobile');
+                const button = event.target.closest('#pwa-install-btn');
                 if (!button || isStandalone()) {
                     return;
                 }
