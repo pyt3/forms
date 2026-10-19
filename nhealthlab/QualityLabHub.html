@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>QualityLabHub — ระบบจัดการคุณภาพห้องปฏิบัติการ</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="quality-hub-mark.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://code.jquery.com">
@@ -709,8 +715,18 @@
                         data-target="records-panel" aria-pressed="false" type="button">
                         <i data-lucide="table-properties" class="w-4 h-4"></i> จัดการข้อมูล
                     </button>
+                    <button id="pwa-install-btn-mobile" type="button"
+                        class="nav-btn nav-chip shrink-0 hidden rounded-full bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition-all"
+                        aria-label="ติดตั้ง QualityLabHub เป็นแอป">
+                        <i data-lucide="download" class="w-4 h-4"></i> ติดตั้งแอป
+                    </button>
                 </div>
                 <div class="hidden items-center gap-4 sm:flex">
+                    <button id="pwa-install-btn" type="button"
+                        class="nav-btn hidden items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition-all"
+                        aria-label="ติดตั้ง QualityLabHub เป็นแอป">
+                        <i data-lucide="download" class="w-4 h-4"></i> ติดตั้งแอป
+                    </button>
                     <div id="current-date" class="text-sm text-slate-500 font-medium hidden sm:block"></div>
                 </div>
             </div>
@@ -2948,7 +2964,7 @@
             `;
         }
 
-        function buildIqcCoverPage(current, monthName, yearText, signatureData, logoSrc = 'nhealth-logo.png', controlSets = [], records = []) {
+        function buildIqcCoverPage(current, monthName, yearText, signatureData, logoSrc = 'quality-hub-logo.png', controlSets = [], records = []) {
             const department = dottedPlaceholder(current.dept, '');
             const controlName = escapeHtml(current.controlName || '');
             const lot = escapeHtml(current.lot || '');
@@ -3046,7 +3062,7 @@
 
             return renderIqcExportPageShell(`
                 <div class="iqc-report-header">
-                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="N Health">
+                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="Quality Hub">
                 </div>
                 <div class="iqc-cover-title">
                     ตารางสรุปการควบคุมคุณภาพภายในของหน่วย.........${department}.........ประจำเดือน.........${dottedPlaceholder(monthName)}.........ปี.........${dottedPlaceholder(yearText)}.........
@@ -3101,7 +3117,7 @@
             `, 'FM-ALP-PY3-00-004/93 แก้ไขครั้งที่ 02', 'วันที่บังคับใช้ 13/08/2568', 'iqc-cover-page', 'iqc-cover-shell');
         }
 
-        function buildIqcChecklistPage(current, monthName, yearText, records, recordMap, signatureData, logoSrc = 'nhealth-logo.png') {
+        function buildIqcChecklistPage(current, monthName, yearText, records, recordMap, signatureData, logoSrc = 'quality-hub-logo.png') {
             const days = Array.from({ length: 31 }, (_, index) => index + 1);
             const dayHeaderCells = days.map((day) => {
                 const shaded = [7, 14, 21, 28].includes(day);
@@ -3270,7 +3286,7 @@
 
             return renderIqcExportPageShell(`
                 <div class="iqc-report-header iqc-report-header-page2">
-                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="N Health">
+                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="Quality Hub">
                 </div>
                 <div class="iqc-checklist-title">ตารางการบำรุงรักษาเครื่อง D-Dimer Cobas h 232</div>
                 <div class="iqc-checklist-month">ประจำเดือน .....${monthName}..... ปี .....${yearText}.....</div>
@@ -4826,7 +4842,7 @@
             return `
                 <div class="eqa-export-page" style="${pageBreakStyle}">
                     <div class="eqa-form-meta">FI-ALP-PY3-00-011/1 แก้ไขครั้งที่ 02 วันที่บังคับใช้ 08/10/2568</div>
-                    <img src="nhealth-logo.png" class="eqa-form-logo" alt="N Health">
+                    <img src="quality-hub-logo.png" class="eqa-form-logo" alt="Quality Hub">
 
                     <header class="eqa-form-title">
                         <h1>แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ โดยองค์กรภายนอก</h1>
@@ -7073,7 +7089,7 @@
             ].filter(Boolean).join('_');
             const recordMap = getIqcMonthlyRecordMap(records);
             const controlSets = getIqcCoverControlSets(records, current);
-            const logoSrc = 'nhealth-logo.png';
+            const logoSrc = 'quality-hub-logo.png';
             const coverSignatureData = getIqcMonthlySummarySignaturePack(summaryRecord || currentRecord || {});
             const fallbackSignatureData = normalizeSignaturePack(currentRecord?.signatureData || {
                 operator: Array.isArray(currentRecord?.operatorSignatureData) ? currentRecord.operatorSignatureData : [],
@@ -7679,6 +7695,65 @@
                 window.setTimeout(cleanup, 0);
             }, 50);
         }
+    </script>
+    <script>
+        (() => {
+            let deferredInstallPrompt = null;
+            const installButtons = () => Array.from(document.querySelectorAll('#pwa-install-btn, #pwa-install-btn-mobile'));
+            const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches
+                || window.navigator.standalone === true;
+            const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+            const setInstallButtonVisibility = (visible) => {
+                installButtons().forEach((button) => {
+                    button.classList.toggle('hidden', !visible);
+                    button.classList.toggle('inline-flex', visible);
+                });
+                if (visible && window.lucide) {
+                    window.lucide.createIcons();
+                }
+            };
+
+            window.addEventListener('beforeinstallprompt', (event) => {
+                event.preventDefault();
+                deferredInstallPrompt = event;
+                setInstallButtonVisibility(!isStandalone());
+            });
+
+            window.addEventListener('appinstalled', () => {
+                deferredInstallPrompt = null;
+                setInstallButtonVisibility(false);
+            });
+
+            document.addEventListener('click', async (event) => {
+                const button = event.target.closest('#pwa-install-btn, #pwa-install-btn-mobile');
+                if (!button || isStandalone()) {
+                    return;
+                }
+                if (!deferredInstallPrompt) {
+                    if (isIos) {
+                        window.alert('เปิดเมนู Share แล้วเลือก “Add to Home Screen” เพื่อเพิ่มแอปนี้ในหน้าจอหลัก');
+                    }
+                    return;
+                }
+                deferredInstallPrompt.prompt();
+                await deferredInstallPrompt.userChoice;
+                deferredInstallPrompt = null;
+                setInstallButtonVisibility(false);
+            });
+
+            if (isIos && !isStandalone()) {
+                setInstallButtonVisibility(true);
+            }
+
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./service-worker.js').catch((error) => {
+                        console.warn('PWA service worker registration failed', error);
+                    });
+                }, { once: true });
+            }
+        })();
     </script>
     <script>
         (() => {
