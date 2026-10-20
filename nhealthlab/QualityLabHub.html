@@ -10,7 +10,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="quality-hub-mark.png">
+    <link rel="icon" href="microscope.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="microscope.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://code.jquery.com">
@@ -1370,6 +1371,7 @@
         const state = {
             isDirty: false,
             saveInProgress: false,
+            deleteInProgress: false,
             editingId: null,
             records: [],
             allRecords: [],
@@ -2843,8 +2845,8 @@
             };
 
             showAppStatus('กำลังบันทึกลายเซ็นรายเดือน…', 'info', 0);
-            await postApi('upsertRecord', { record });
-            await loadRecords();
+            const savedRecord = await postApi('upsertRecord', { record });
+            upsertLocalRecord(savedRecord);
             showAppStatus('บันทึกลายเซ็นรายเดือนแล้ว', 'success');
         }
 
@@ -4972,15 +4974,7 @@
                     return;
                 }
                 state.allRecords = Array.isArray(allRecords) ? allRecords : [];
-                state.records = state.allRecords.filter((record) => getRecordSummaryType(record) !== 'IQC_SUMMARY');
-                renderDashboardStats(state.records);
-                const eqaRecords = state.records.filter((record) => getRecordSummaryType(record) === 'EQA');
-                state.lastIqcControlData = getLatestIqcControlData(state.allRecords);
-                renderRecordsTable(eqaRecords, '#eqa-records-table-body');
-                setRecordsView(state.recordsView || 'eqa');
-                if (!state.editingId) {
-                    renderIqcScheduleForm();
-                }
+                renderLocalRecords();
             } catch (err) {
                 if (requestId !== state.recordsRequestId) {
                     return;
@@ -4988,6 +4982,38 @@
                 renderDashboardStats([]);
                 showAppStatus(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error', 8000);
             }
+        }
+
+        function renderLocalRecords() {
+            state.records = state.allRecords.filter((record) => getRecordSummaryType(record) !== 'IQC_SUMMARY');
+            state.lastIqcControlData = getLatestIqcControlData(state.allRecords);
+            renderDashboardStats(state.records);
+            renderRecordsTable(state.records.filter((record) => getRecordSummaryType(record) === 'EQA'), '#eqa-records-table-body');
+            renderIqcRecordsPage();
+            if (!state.editingId) {
+                renderIqcScheduleForm();
+            }
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        function upsertLocalRecord(record) {
+            if (!record?.id) {
+                throw new Error('เซิร์ฟเวอร์ไม่ส่งรหัสรายการกลับมา');
+            }
+            // Ignore any older list request still in flight when this change completes.
+            state.recordsRequestId++;
+            const records = state.allRecords.filter((item) => String(item.id) !== String(record.id));
+            records.push(record);
+            state.allRecords = records.sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+            renderLocalRecords();
+        }
+
+        function removeLocalRecord(id) {
+            state.recordsRequestId++;
+            state.allRecords = state.allRecords.filter((record) => String(record.id) !== String(id));
+            renderLocalRecords();
         }
 
         function renderDashboardStatsSkeleton() {
@@ -5401,23 +5427,31 @@
             }
         }
 
-        function getSaveProgressMarkup(message, percent) {
+        function getRecordProgressMarkup(message, percent, progressLabel = 'ความคืบหน้าการบันทึก') {
             const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
             return `
                 <div class="text-left" role="status" aria-live="polite">
-                    <div id="save-progress-label" class="mb-3 text-sm text-slate-600">${escapeHtml(message)}</div>
-                    <div class="progress-wrap" role="progressbar" aria-label="ความคืบหน้าการบันทึก" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${safePercent}">
-                        <div id="save-progress-bar" class="progress-bar" style="transform:scaleX(${safePercent / 100})"></div>
+                    <div id="record-progress-label" class="mb-3 text-sm text-slate-600">${escapeHtml(message)}</div>
+                    <div class="progress-wrap" role="progressbar" aria-label="${escapeHtml(progressLabel)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${safePercent}">
+                        <div id="record-progress-bar" class="progress-bar" style="transform:scaleX(${safePercent / 100})"></div>
                     </div>
-                    <div id="save-progress-percent" class="mt-2 text-right text-xs font-semibold text-slate-500">${safePercent}%</div>
+                    <div id="record-progress-percent" class="mt-2 text-right text-xs font-semibold text-slate-500">${safePercent}%</div>
                 </div>
             `;
         }
 
         function showSaveProgress(message, percent) {
+            showRecordProgress(message, percent);
+        }
+
+        function showRecordProgress(message, percent, operation = 'save') {
+            const isDelete = operation === 'delete';
+            const title = isDelete ? 'กำลังลบข้อมูล' : 'กำลังบันทึกข้อมูล';
+            const icon = isDelete ? 'trash-2' : 'save';
+            const progressLabel = isDelete ? 'ความคืบหน้าการลบ' : 'ความคืบหน้าการบันทึก';
             Swal.fire({
-                title: '<span class="inline-flex items-center gap-2"><i data-lucide="save" class="h-5 w-5 text-blue-600" aria-hidden="true"></i><span>กำลังบันทึกข้อมูล</span></span>',
-                html: getSaveProgressMarkup(message, percent),
+                title: `<span class="inline-flex items-center gap-2"><i data-lucide="${icon}" class="h-5 w-5 text-blue-600" aria-hidden="true"></i><span>${title}</span></span>`,
+                html: getRecordProgressMarkup(message, percent, progressLabel),
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 showConfirmButton: false,
@@ -5430,11 +5464,11 @@
             });
         }
 
-        function updateSaveProgress(message, percent) {
+        function updateRecordProgress(message, percent) {
             const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
-            const label = document.getElementById('save-progress-label');
-            const bar = document.getElementById('save-progress-bar');
-            const percentLabel = document.getElementById('save-progress-percent');
+            const label = document.getElementById('record-progress-label');
+            const bar = document.getElementById('record-progress-bar');
+            const percentLabel = document.getElementById('record-progress-percent');
             const progress = bar?.parentElement;
             if (label) {
                 label.textContent = message;
@@ -5500,7 +5534,7 @@
                 }
                 showSaveProgress('กำลังเตรียมข้อมูลสำหรับบันทึก', 10);
                 const attachments = await getAttachmentsForCurrentForm(type);
-                updateSaveProgress('กำลังเตรียมไฟล์แนบและข้อมูลแบบประเมิน', 30);
+                updateRecordProgress('กำลังเตรียมไฟล์แนบและข้อมูลแบบประเมิน', 30);
                 record = type === 'EQA' ? collectEqaRecord() : collectIqcRecord();
                 if (state.editingId) {
                     record.id = state.editingId;
@@ -5521,7 +5555,7 @@
                     state.lastEqaSignaturePayload = signaturePayload;
                 }
                 record.attachments = attachments;
-                updateSaveProgress('กำลังบันทึกข้อมูลลงระบบ', 60);
+                updateRecordProgress('กำลังบันทึกข้อมูลลงระบบ', 60);
                 const result = await postApi('upsertRecord', { record });
                 const savedRecordId = result?.id;
                 if (!savedRecordId) {
@@ -5531,11 +5565,23 @@
                 }
                 record.id = savedRecordId;
                 state.editingId = savedRecordId;
-                updateSaveProgress('กำลังจัดเก็บไฟล์แนบเข้ากับรายการ', 85);
-                await postApi('movefilestorecordfolder', { recordId: savedRecordId, attachments, type: type });
-                updateSaveProgress('บันทึกข้อมูลเรียบร้อยแล้ว', 100);
+                updateRecordProgress('กำลังจัดเก็บไฟล์แนบเข้ากับรายการ', 85);
+                const folder = await postApi('movefilestorecordfolder', { recordId: savedRecordId, attachments, type: type });
+                const savedRecord = {
+                    ...result,
+                    attachmentsFolderId: folder.folderId,
+                    attachmentsFolderUrl: folder.folderUrl,
+                    data: {
+                        ...result.data,
+                        attachmentsFolderId: folder.folderId,
+                        attachmentsFolderUrl: folder.folderUrl,
+                        folderId: folder.folderId,
+                        folderUrl: folder.folderUrl
+                    }
+                };
+                upsertLocalRecord(savedRecord);
+                updateRecordProgress('บันทึกข้อมูลเรียบร้อยแล้ว', 100);
                 resetAllForms();
-                await loadRecords();
                 Swal.close();
                 showAppStatus('บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
             } catch (err) {
@@ -6185,6 +6231,9 @@
         }
 
         async function deleteRecord(id) {
+            if (state.deleteInProgress) {
+                return;
+            }
             const confirm = await Swal.fire({
                 title: 'ยืนยันการลบข้อมูล',
                 html: 'ข้อมูลและไฟล์ที่เกี่ยวข้องจะถูกลบออกจากระบบอย่างถาวร<br>คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?',
@@ -6198,12 +6247,22 @@
                 return;
             }
 
+            if (state.deleteInProgress) {
+                return;
+            }
+            state.deleteInProgress = true;
             try {
+                showRecordProgress('กำลังลบข้อมูลและไฟล์ที่เกี่ยวข้องออกจากระบบ', 20, 'delete');
                 await postApi('deleteRecord', { id });
-                await loadRecords();
+                updateRecordProgress('กำลังนำรายการที่ลบออกจากตาราง', 80);
+                removeLocalRecord(id);
+                updateRecordProgress('ลบข้อมูลและไฟล์ที่เกี่ยวข้องแล้ว', 100);
                 showAppStatus('ลบข้อมูลและไฟล์ที่เกี่ยวข้องแล้ว', 'success');
             } catch (err) {
                 showAppStatus(err.message || 'ลบข้อมูลไม่สำเร็จ', 'error', 8000);
+            } finally {
+                Swal.close();
+                state.deleteInProgress = false;
             }
         }
 
@@ -6455,12 +6514,12 @@
             });
 
             try {
-                await postApi('upsertRecord', { record: updatedRecord });
+                const savedRecord = await postApi('upsertRecord', { record: updatedRecord });
+                upsertLocalRecord(savedRecord);
             } finally {
                 Swal.close();
             }
 
-            await loadRecords();
         }
 
         async function saveEqaVerifierSignature(recordId) {
@@ -6526,12 +6585,12 @@
             });
 
             try {
-                await postApi('upsertRecord', { record: updatedRecord });
+                const savedRecord = await postApi('upsertRecord', { record: updatedRecord });
+                upsertLocalRecord(savedRecord);
             } finally {
                 Swal.close();
             }
 
-            await loadRecords();
         }
 
         function getRecordSummaryType(record = {}) {

@@ -1,11 +1,9 @@
-const CACHE_NAME = 'qualitylabhub-pwa-v1';
+const CACHE_NAME = 'qualitylabhub-pwa-v3';
 const APP_SHELL = [
   './QualityLabHub.html',
   './manifest.webmanifest',
   './quality-hub-logo.svg',
-  './quality-hub-mark.png',
-  './quality-hub-192.png',
-  './quality-hub-512.png'
+  './microscope.svg'
 ];
 
 self.addEventListener('install', (event) => {
