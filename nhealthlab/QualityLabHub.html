@@ -2959,7 +2959,7 @@
             `;
         }
 
-        function buildIqcCoverPage(current, monthName, yearText, signatureData, logoSrc = 'quality-hub-logo.png', controlSets = [], records = []) {
+        function buildIqcCoverPage(current, monthName, yearText, signatureData, logoSrc = 'quality-hub-logo.svg', controlSets = [], records = []) {
             const department = dottedPlaceholder(current.dept, '');
             const controlName = escapeHtml(current.controlName || '');
             const lot = escapeHtml(current.lot || '');
@@ -3112,7 +3112,7 @@
             `, 'FM-ALP-PY3-00-004/93 แก้ไขครั้งที่ 02', 'วันที่บังคับใช้ 13/08/2568', 'iqc-cover-page', 'iqc-cover-shell');
         }
 
-        function buildIqcChecklistPage(current, monthName, yearText, records, recordMap, signatureData, logoSrc = 'quality-hub-logo.png') {
+        function buildIqcChecklistPage(current, monthName, yearText, records, recordMap, signatureData, logoSrc = 'quality-hub-logo.svg') {
             const days = Array.from({ length: 31 }, (_, index) => index + 1);
             const dayHeaderCells = days.map((day) => {
                 const shaded = [7, 14, 21, 28].includes(day);
@@ -4837,7 +4837,7 @@
             return `
                 <div class="eqa-export-page" style="${pageBreakStyle}">
                     <div class="eqa-form-meta">FI-ALP-PY3-00-011/1 แก้ไขครั้งที่ 02 วันที่บังคับใช้ 08/10/2568</div>
-                    <img src="quality-hub-logo.png" class="eqa-form-logo" alt="Quality Hub">
+                    <img src="quality-hub-logo.svg" class="eqa-form-logo" alt="Quality Hub">
 
                     <header class="eqa-form-title">
                         <h1>แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ โดยองค์กรภายนอก</h1>
@@ -7084,7 +7084,7 @@
             ].filter(Boolean).join('_');
             const recordMap = getIqcMonthlyRecordMap(records);
             const controlSets = getIqcCoverControlSets(records, current);
-            const logoSrc = 'quality-hub-logo.png';
+            const logoSrc = 'quality-hub-logo.svg';
             const coverSignatureData = getIqcMonthlySummarySignaturePack(summaryRecord || currentRecord || {});
             const fallbackSignatureData = normalizeSignaturePack(currentRecord?.signatureData || {
                 operator: Array.isArray(currentRecord?.operatorSignatureData) ? currentRecord.operatorSignatureData : [],

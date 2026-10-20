@@ -2,7 +2,7 @@ const CACHE_NAME = 'qualitylabhub-pwa-v1';
 const APP_SHELL = [
   './QualityLabHub.html',
   './manifest.webmanifest',
-  './quality-hub-logo.png',
+  './quality-hub-logo.svg',
   './quality-hub-mark.png',
   './quality-hub-192.png',
   './quality-hub-512.png'
