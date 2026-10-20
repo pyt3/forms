@@ -417,6 +417,18 @@
             animation: skeleton-pulse 1.4s ease-in-out infinite;
         }
 
+        .iqc-summary-skeleton-signature {
+            height: 2.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .iqc-summary-skeleton-export {
+            width: 4rem;
+            height: 2.25rem;
+            margin-inline: auto;
+            border-radius: 9999px;
+        }
+
         .app-status {
             position: fixed;
             inset-inline-end: max(1rem, env(safe-area-inset-right));
@@ -1299,27 +1311,37 @@
                                                     <th scope="col" class="px-4 py-3 text-center" style="width: 16%;">ส่งออก</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="iqc-monthly-summary-body">
+                                            <tbody id="iqc-monthly-summary-body" aria-busy="true">
                                                 <tr>
-                                                    <td colspan="5" class="px-4 py-6">
+                                                    <td class="px-4 py-3">
                                                         <span class="sr-only" role="status">กำลังโหลดรายงานสรุป IQC</span>
-                                                        <div class="grid grid-cols-5 gap-4" aria-hidden="true">
-                                                            <span class="skeleton-bar"></span><span class="skeleton-bar"></span>
-                                                            <span class="skeleton-bar"></span><span class="skeleton-bar"></span>
-                                                            <span class="skeleton-bar"></span>
-                                                        </div>
+                                                        <span class="skeleton-bar w-2/3" aria-hidden="true"></span>
                                                     </td>
+                                                    <td class="px-4 py-3"><span class="skeleton-bar w-2/3" aria-hidden="true"></span></td>
+                                                    <td class="px-4 py-3"><span class="skeleton-bar iqc-summary-skeleton-signature" aria-hidden="true"></span></td>
+                                                    <td class="px-4 py-3"><span class="skeleton-bar iqc-summary-skeleton-signature" aria-hidden="true"></span></td>
+                                                    <td class="px-4 py-3"><span class="skeleton-bar iqc-summary-skeleton-export" aria-hidden="true"></span></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div id="iqc-monthly-summary-mobile" class="grid gap-3 p-3 md:hidden">
-                                        <div class="rounded-xl border border-slate-200 bg-white px-4 py-5">
+                                    <div id="iqc-monthly-summary-mobile" class="grid gap-3 p-3 md:hidden" aria-busy="true">
+                                        <div class="rounded-2xl border border-slate-200 bg-white p-4">
                                             <span class="sr-only" role="status">กำลังโหลดรายงานสรุป IQC</span>
-                                            <div class="space-y-3" aria-hidden="true">
-                                                <span class="skeleton-bar w-1/3"></span>
-                                                <span class="skeleton-bar w-2/3"></span>
-                                                <span class="skeleton-bar w-full"></span>
+                                            <div aria-hidden="true">
+                                                <div class="flex items-center justify-between gap-3">
+                                                    <div class="flex-1 space-y-3">
+                                                        <span class="skeleton-bar w-1/3"></span>
+                                                        <span class="skeleton-bar w-2/3"></span>
+                                                    </div>
+                                                    <span class="skeleton-bar iqc-summary-skeleton-export"></span>
+                                                </div>
+                                                <div class="mt-4 space-y-3">
+                                                    <span class="skeleton-bar w-1/3"></span>
+                                                    <span class="skeleton-bar iqc-summary-skeleton-signature"></span>
+                                                    <span class="skeleton-bar w-1/3"></span>
+                                                    <span class="skeleton-bar iqc-summary-skeleton-signature"></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1342,7 +1364,7 @@
                                                 <th scope="col" class="px-4 py-3 text-center">จัดการ</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="iqc-records-table-body">
+                                        <tbody id="iqc-records-table-body" aria-busy="true">
                                             <tr>
                                                 <td colspan="9" class="p-4">
                                                     <span class="sr-only" role="status">กำลังโหลดข้อมูล IQC</span>
@@ -1376,6 +1398,7 @@
             records: [],
             allRecords: [],
             recordsRequestId: 0,
+            recordsLoading: true,
             recordsView: 'eqa',
             iqcRecordsFilter: {
                 year: '',
@@ -2688,6 +2711,9 @@
         }
 
         function getIqcMonthlySummarySignaturePack(record = {}) {
+            if (getRecordSummaryType(record) !== 'IQC_SUMMARY') {
+                return { operator: [], supervisor: [] };
+            }
             const data = getRecordDataSource(record);
             const summarySource = data?.summarySignatureData && typeof data.summarySignatureData === 'object' && !Array.isArray(data.summarySignatureData)
                 ? data.summarySignatureData
@@ -2844,15 +2870,31 @@
                 supervisorSignatureData: mergedPack.supervisor
             };
 
-            showAppStatus('กำลังบันทึกลายเซ็นรายเดือน…', 'info', 0);
-            const savedRecord = await postApi('upsertRecord', { record });
-            upsertLocalRecord(savedRecord);
-            showAppStatus('บันทึกลายเซ็นรายเดือนแล้ว', 'success');
+            Swal.fire({
+                icon: 'info',
+                title: 'กำลังบันทึกข้อมูล',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            try {
+                const savedRecord = await postApi('upsertRecord', { record });
+                upsertLocalRecord(savedRecord);
+            } finally {
+                Swal.close();
+            }
         }
 
         function renderIqcMonthlySummaryTable(records = [], filterContext = getIqcRecordsFilterContext()) {
+            if (state.recordsLoading) {
+                renderIqcMonthlySummaryLoading();
+                return;
+            }
             const body = $('#iqc-monthly-summary-body');
             const mobileList = $('#iqc-monthly-summary-mobile');
+            body.attr('aria-busy', 'false');
+            mobileList.attr('aria-busy', 'false');
             if (!body.length) {
                 return;
             }
@@ -2961,7 +3003,7 @@
             `;
         }
 
-        function buildIqcCoverPage(current, monthName, yearText, signatureData, logoSrc = 'quality-hub-logo.svg', controlSets = [], records = []) {
+        function buildIqcCoverPage(current, monthName, yearText, signatureData, logoSrc = 'nhealth-logo.png', controlSets = [], records = []) {
             const department = dottedPlaceholder(current.dept, '');
             const controlName = escapeHtml(current.controlName || '');
             const lot = escapeHtml(current.lot || '');
@@ -2973,10 +3015,9 @@
                 }
             }
             const analyzer = escapeHtml(current.analyzer || '');
-            const operatorName = current.summaryOperatorName || current.operatorName || '';
-            const supervisorProfile = loadSignatureProfile(getIqcSummarySignatureProfileStorageKey('supervisor'), 'Supervisor');
-            const supervisorName = current.summarySupervisorName || current.supervisorName || supervisorProfile.name || '';
-            const supervisorPosition = current.summarySupervisorPosition || current.supervisorPosition || supervisorProfile.position || 'Supervisor';
+            const operatorName = signatureData.operator.length ? current.summaryOperatorName || '' : '';
+            const supervisorName = signatureData.supervisor.length ? current.summarySupervisorName || '' : '';
+            const supervisorPosition = signatureData.supervisor.length ? current.summarySupervisorPosition || '' : '';
             const displayControlSets = (Array.isArray(controlSets) && controlSets.length > 0
                 ? controlSets.slice(0, 3)
                 : [{ controlName: current.controlName || '', lot: current.lot || '', exp: current.exp || '' }]);
@@ -3059,7 +3100,7 @@
 
             return renderIqcExportPageShell(`
                 <div class="iqc-report-header">
-                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="Quality Hub">
+                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="Nhealth">
                 </div>
                 <div class="iqc-cover-title">
                     ตารางสรุปการควบคุมคุณภาพภายในของหน่วย.........${department}.........ประจำเดือน.........${dottedPlaceholder(monthName)}.........ปี.........${dottedPlaceholder(yearText)}.........
@@ -3114,7 +3155,7 @@
             `, 'FM-ALP-PY3-00-004/93 แก้ไขครั้งที่ 02', 'วันที่บังคับใช้ 13/08/2568', 'iqc-cover-page', 'iqc-cover-shell');
         }
 
-        function buildIqcChecklistPage(current, monthName, yearText, records, recordMap, signatureData, logoSrc = 'quality-hub-logo.svg') {
+        function buildIqcChecklistPage(current, monthName, yearText, records, recordMap, signatureData, logoSrc = 'nhealth-logo.png') {
             const days = Array.from({ length: 31 }, (_, index) => index + 1);
             const dayHeaderCells = days.map((day) => {
                 const shaded = [7, 14, 21, 28].includes(day);
@@ -3256,11 +3297,11 @@
 
             const lowRangeText = String(current.iqcLow?.range || '').trim();
             const highRangeText = String(current.iqcHigh?.range || '').trim();
-            const operatorName = current.operatorName
-                ? `(${escapeHtml(current.operatorName)})`
+            const operatorName = signatureData.operator.length && current.summaryOperatorName
+                ? `(${escapeHtml(current.summaryOperatorName)})`
                 : '(................................................)';
-            const supervisorName = current.supervisorName
-                ? `(${escapeHtml(current.supervisorName)})`
+            const supervisorName = signatureData.supervisor.length && current.summarySupervisorName
+                ? `(${escapeHtml(current.summarySupervisorName)})`
                 : '(................................................)';
             const operatorSignature = `
                 <div class="iqc-signature-block">
@@ -3283,7 +3324,7 @@
 
             return renderIqcExportPageShell(`
                 <div class="iqc-report-header iqc-report-header-page2">
-                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="Quality Hub">
+                    <img src="${logoSrc}" class="iqc-logo iqc-logo-cover" alt="Nhealth">
                 </div>
                 <div class="iqc-checklist-title">ตารางการบำรุงรักษาเครื่อง D-Dimer Cobas h 232</div>
                 <div class="iqc-checklist-month">ประจำเดือน .....${monthName}..... ปี .....${yearText}.....</div>
@@ -4839,7 +4880,7 @@
             return `
                 <div class="eqa-export-page" style="${pageBreakStyle}">
                     <div class="eqa-form-meta">FI-ALP-PY3-00-011/1 แก้ไขครั้งที่ 02 วันที่บังคับใช้ 08/10/2568</div>
-                    <img src="quality-hub-logo.svg" class="eqa-form-logo" alt="Quality Hub">
+                    <img src="nhealth-logo.png" class="eqa-form-logo" alt="Nhealth">
 
                     <header class="eqa-form-title">
                         <h1>แบบบันทึกผลการประเมินคุณภาพห้องปฏิบัติการ โดยองค์กรภายนอก</h1>
@@ -4928,6 +4969,54 @@
             `;
         }
 
+        function renderIqcRecordsLoading() {
+            $('#iqc-records-table-body').attr('aria-busy', 'true').html(
+                Array.from({ length: 3 }, (_, rowIndex) => `
+                    <tr class="border-b border-slate-100">
+                        ${Array.from({ length: 9 }, (_, columnIndex) => `
+                            <td class="px-4 py-3">
+                                ${rowIndex === 0 && columnIndex === 0 ? '<span class="sr-only" role="status">กำลังโหลดข้อมูล IQC</span>' : ''}
+                                <span class="skeleton-bar ${columnIndex === 5 || columnIndex === 6 || columnIndex === 8 ? 'iqc-summary-skeleton-signature' : ''}" aria-hidden="true"></span>
+                            </td>
+                        `).join('')}
+                    </tr>
+                `).join('')
+            );
+        }
+
+        function renderIqcMonthlySummaryLoading() {
+            const status = '<span class="sr-only" role="status">กำลังโหลดรายงานสรุป IQC</span>';
+            $('#iqc-monthly-summary-body').attr('aria-busy', 'true').html(`
+                <tr>
+                    <td class="px-4 py-3">${status}<span class="skeleton-bar w-2/3" aria-hidden="true"></span></td>
+                    <td class="px-4 py-3"><span class="skeleton-bar w-2/3" aria-hidden="true"></span></td>
+                    <td class="px-4 py-3"><span class="skeleton-bar iqc-summary-skeleton-signature" aria-hidden="true"></span></td>
+                    <td class="px-4 py-3"><span class="skeleton-bar iqc-summary-skeleton-signature" aria-hidden="true"></span></td>
+                    <td class="px-4 py-3"><span class="skeleton-bar iqc-summary-skeleton-export" aria-hidden="true"></span></td>
+                </tr>
+            `);
+            $('#iqc-monthly-summary-mobile').attr('aria-busy', 'true').html(`
+                <div class="rounded-2xl border border-slate-200 bg-white p-4">
+                    ${status}
+                    <div aria-hidden="true">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex-1 space-y-3">
+                                <span class="skeleton-bar w-1/3"></span>
+                                <span class="skeleton-bar w-2/3"></span>
+                            </div>
+                            <span class="skeleton-bar iqc-summary-skeleton-export"></span>
+                        </div>
+                        <div class="mt-4 space-y-3">
+                            <span class="skeleton-bar w-1/3"></span>
+                            <span class="skeleton-bar iqc-summary-skeleton-signature"></span>
+                            <span class="skeleton-bar w-1/3"></span>
+                            <span class="skeleton-bar iqc-summary-skeleton-signature"></span>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+
         async function loadRecords(options = {}) {
             const requestId = ++state.recordsRequestId;
             try {
@@ -4936,6 +5025,8 @@
                     return;
                 }
                 renderDashboardStatsSkeleton();
+                state.recordsLoading = true;
+                renderIqcMonthlySummaryLoading();
                 const buildTableSkeletonRow = (columnCount, statusText) => `
                     <tr>
                         <td colspan="${columnCount}" class="p-4">
@@ -4946,8 +5037,7 @@
                         </td>
                     </tr>`;
                 $('#eqa-records-table-body').html(buildTableSkeletonRow(9, 'กำลังโหลดข้อมูล EQA'));
-                $('#iqc-records-table-body').html(buildTableSkeletonRow(9, 'กำลังโหลดข้อมูล IQC'));
-                $('#iqc-monthly-summary-body').html(buildTableSkeletonRow(5, 'กำลังโหลดรายงานสรุป IQC'));
+                renderIqcRecordsLoading();
                 const useIqcMonthRange = Boolean(options.useIqcMonthRange || state.recordsView === 'iqc');
                 const payload = useIqcMonthRange
                     ? (() => {
@@ -4980,11 +5070,17 @@
                     return;
                 }
                 renderDashboardStats([]);
+                state.recordsLoading = false;
+                $('#iqc-records-table-body').attr('aria-busy', 'false').html('<tr data-records-error><td colspan="9" class="px-4 py-6 text-center"><p role="status" class="text-sm text-slate-500">โหลดข้อมูล IQC ไม่สำเร็จ กรุณากดโหลดข้อมูลอีกครั้ง</p></td></tr>');
+                const summaryError = '<p role="status" class="text-sm text-slate-500">โหลดรายงานสรุป IQC ไม่สำเร็จ กรุณากดโหลดข้อมูลอีกครั้ง</p>';
+                $('#iqc-monthly-summary-body').attr('aria-busy', 'false').html(`<tr><td colspan="5" class="px-4 py-6 text-center">${summaryError}</td></tr>`);
+                $('#iqc-monthly-summary-mobile').attr('aria-busy', 'false').html(`<div class="px-4 py-6 text-center">${summaryError}</div>`);
                 showAppStatus(err.message || 'โหลดข้อมูลไม่สำเร็จ', 'error', 8000);
             }
         }
 
         function renderLocalRecords() {
+            state.recordsLoading = false;
             state.records = state.allRecords.filter((record) => getRecordSummaryType(record) !== 'IQC_SUMMARY');
             state.lastIqcControlData = getLatestIqcControlData(state.allRecords);
             renderDashboardStats(state.records);
@@ -5160,7 +5256,14 @@
         }
 
         function renderRecordsTable(records, bodySelector = '#records-table-body') {
+            if (bodySelector === '#iqc-records-table-body' && state.recordsLoading) {
+                renderIqcRecordsLoading();
+                return;
+            }
             const body = $(bodySelector);
+            if (bodySelector === '#iqc-records-table-body') {
+                body.attr('aria-busy', 'false');
+            }
             const recordsToRender = bodySelector === '#iqc-records-table-body'
                 ? (Array.isArray(records) ? records : []).filter((record) => String(record?.type || '').trim().toUpperCase() === 'IQC')
                 : (Array.isArray(records) ? records : []);
@@ -5169,7 +5272,7 @@
             if (!recordsToRender.length) {
                 body.append(`
                                     <tr>
-                                        <td colspan="8" class="p-4 text-center">
+                                        <td colspan="9" class="p-4 text-center">
                                             <span class="inline-flex items-center gap-2 text-slate-400 text-sm">
                                                 <svg class="h-5 w-5 text-slate-300 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v8A2.5 2.5 0 0 1 17.5 18H6.5A2.5 2.5 0 0 1 4 15.5v-8Z"></path>
@@ -7112,7 +7215,7 @@
                 })
             ]);
             const currentRecord = [...records].reverse().find((record) => record && record.type === 'IQC' && record.data) || null;
-            const summaryRecord = [...summaryRecords].reverse().find((record) => record && getRecordSummaryType(record) === 'IQC_SUMMARY') || null;
+            const summaryRecord = getMonthlySummarySourceRecord(summaryRecords, safeMonthMoment.format('YYYY-MM'));
             const currentData = currentRecord?.data || {};
             const current = {
                 date: currentData.date || currentRecord?.recordDate || '',
@@ -7143,16 +7246,8 @@
             ].filter(Boolean).join('_');
             const recordMap = getIqcMonthlyRecordMap(records);
             const controlSets = getIqcCoverControlSets(records, current);
-            const logoSrc = 'quality-hub-logo.svg';
-            const coverSignatureData = getIqcMonthlySummarySignaturePack(summaryRecord || currentRecord || {});
-            const fallbackSignatureData = normalizeSignaturePack(currentRecord?.signatureData || {
-                operator: Array.isArray(currentRecord?.operatorSignatureData) ? currentRecord.operatorSignatureData : [],
-                supervisor: Array.isArray(currentRecord?.supervisorSignatureData) ? currentRecord.supervisorSignatureData : []
-            });
-            const signatureData = {
-                operator: coverSignatureData.operator.length ? coverSignatureData.operator : fallbackSignatureData.operator,
-                supervisor: coverSignatureData.supervisor.length ? coverSignatureData.supervisor : fallbackSignatureData.supervisor
-            };
+            const logoSrc = 'nhealth-logo.png';
+            const signatureData = getIqcMonthlySummarySignaturePack(summaryRecord || {});
 
             const exportStyles = `
                 <style>
@@ -7717,10 +7812,14 @@
             const exportSupervisorSignature = printHost.querySelector('#iqc-export-supervisor-signature');
             const checklistOperatorSignature = printHost.querySelector('#iqc-checklist-operator-signature');
             const checklistSupervisorSignature = printHost.querySelector('#iqc-checklist-supervisor-signature');
-            renderSignatureSvgPreview(exportOperatorSignature, signatureData.operator);
-            renderSignatureSvgPreview(exportSupervisorSignature, signatureData.supervisor);
-            renderSignatureSvgPreview(checklistOperatorSignature, signatureData.operator);
-            renderSignatureSvgPreview(checklistSupervisorSignature, signatureData.supervisor);
+            if (signatureData.operator.length) {
+                renderSignatureSvgPreview(exportOperatorSignature, signatureData.operator);
+                renderSignatureSvgPreview(checklistOperatorSignature, signatureData.operator);
+            }
+            if (signatureData.supervisor.length) {
+                renderSignatureSvgPreview(exportSupervisorSignature, signatureData.supervisor);
+                renderSignatureSvgPreview(checklistSupervisorSignature, signatureData.supervisor);
+            }
 
             await new Promise((resolve) => window.requestAnimationFrame(() => window.requestAnimationFrame(resolve)));
             const exportImages = Array.from(printHost.querySelectorAll('img'));
@@ -7903,6 +8002,35 @@
 
                 const $list = ensureMobileList($body, target.listId);
                 if (!$list.length) {
+                    return;
+                }
+
+                if (target.listId === 'iqc-records-mobile-list' && $body.attr('aria-busy') === 'true') {
+                    $list.attr('aria-busy', 'true').html(`
+                        <span class="sr-only" role="status">กำลังโหลดข้อมูล IQC</span>
+                        ${Array.from({ length: 3 }, () => `
+                            <article class="rounded-xl border border-slate-200 bg-white p-4" aria-hidden="true">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="skeleton-bar w-1/3"></span>
+                                    <span class="skeleton-bar w-1/3"></span>
+                                </div>
+                                <div class="mt-4 space-y-3">
+                                    <span class="skeleton-bar w-2/3"></span>
+                                    <span class="skeleton-bar w-1/3"></span>
+                                    <span class="skeleton-bar w-2/3"></span>
+                                    <span class="skeleton-bar iqc-summary-skeleton-signature"></span>
+                                    <span class="skeleton-bar iqc-summary-skeleton-signature"></span>
+                                    <span class="skeleton-bar iqc-summary-skeleton-signature"></span>
+                                </div>
+                            </article>
+                        `).join('')}
+                    `);
+                    return;
+                }
+                $list.attr('aria-busy', 'false');
+                const $errorRow = $body.find('[data-records-error]');
+                if ($errorRow.length) {
+                    $list.html(`<div role="status" class="px-4 py-6 text-center text-sm text-slate-500">${escapeText($errorRow.text().trim())}</div>`);
                     return;
                 }
 

@@ -157,7 +157,8 @@ function normalizeSignaturePayload_(record) {
   const direct = record || {};
   const operatorSource = Array.isArray(direct.operatorSignatureData)
     ? direct.operatorSignatureData
-    : (Array.isArray(direct.signatureData) ? direct.signatureData : []);
+    : (Array.isArray(direct.signatureData) ? direct.signatureData
+      : (Array.isArray(direct.signatureData?.operator) ? direct.signatureData.operator : []));
   const supervisorSource = Array.isArray(direct.supervisorSignatureData)
     ? direct.supervisorSignatureData
     : (direct.signatureData && !Array.isArray(direct.signatureData) && Array.isArray(direct.signatureData.supervisor)
@@ -175,7 +176,7 @@ function validateRecordPayload_(record) {
     throw new Error('ไม่พบข้อมูลรายการที่ต้องการบันทึก');
   }
   const type = String(record.type || '').trim().toUpperCase();
-  if (type !== 'EQA' && type !== 'IQC') {
+  if (type !== 'EQA' && type !== 'IQC' && type !== 'IQC_SUMMARY') {
     throw new Error('ประเภทรายการไม่ถูกต้อง');
   }
   const data = record.data && typeof record.data === 'object' ? record.data : {};
@@ -197,7 +198,15 @@ function validateRecordPayload_(record) {
     return text;
   };
   const signature = normalizeSignaturePayload_(record);
-  if (!Array.isArray(signature.operator) || !signature.operator.length) {
+  if (type === 'IQC_SUMMARY') {
+    const month = requiredText(data.summaryMonth, 'เดือนของรายงานสรุป', 7);
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month) || record.recordDate !== month + '-01') {
+      throw new Error('เดือนของรายงานสรุปไม่ตรงกับวันที่รายการ');
+    }
+    if (!signature.operator.length && !signature.supervisor.length) {
+      throw new Error('กรุณาเซ็นชื่อผู้สรุปหรือผู้ตรวจสอบก่อนบันทึก');
+    }
+  } else if (!Array.isArray(signature.operator) || !signature.operator.length) {
     throw new Error(type === 'EQA' ? 'กรุณาเซ็นชื่อผู้ทบทวนก่อนบันทึก' : 'กรุณาเซ็นชื่อผู้ปฏิบัติก่อนบันทึก');
   }
 
@@ -220,7 +229,7 @@ function validateRecordPayload_(record) {
       requiredText(data.correctiveAction, 'วิธีการแก้ไขและผลการแก้ไข', 2000);
       requiredText(data.preventiveAction, 'แนวทางป้องกันการเกิดซ้ำ', 2000);
     }
-  } else {
+  } else if (type === 'IQC') {
     requiredDate(data.date, 'วันที่ตรวจสอบ');
     requiredText(data.dept, 'หน่วยงานหรือแผนก', 100);
     requiredText(data.controlName, 'ชื่อ Control', 150);
