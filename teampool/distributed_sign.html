@@ -553,7 +553,7 @@
 
     function prepareSignaturePad() {
       if (!signaturePad) {
-        signaturePad = new SignaturePad($('#signatureCanvas'), { penColor: '#123a63', minWidth: 0.8, maxWidth: 2.3 });
+        signaturePad = new SignaturePad($('#signatureCanvas'), { penColor: '#0057B8', minWidth: 0.8, maxWidth: 2.3 });
         signaturePadInteractive = true;
       }
       resizeCanvas();
@@ -621,8 +621,7 @@
           setSignatureLocked(false);
           renderSelectedOrder(order);
           setSignatureStatus('ยังไม่มีลายเซ็น', 'info');
-          const pad = await waitForSignaturePad(token);
-          if (pad && token === signatureCheckToken && selected === order) $('#receiverName').focus();
+          await waitForSignaturePad(token);
           return;
         }
 
@@ -698,7 +697,7 @@
           receiverName,
           dept: unique(selected.rows.map(row => row.dept)).join(', '),
           borrowDate: unique(selected.rows.map(row => row.borrow_date)).join(', '),
-          signature: { vectorPath, canvas: { width: $('#signatureCanvas').clientWidth, height: $('#signatureCanvas').clientHeight, penColor: '#123a63' } },
+          signature: { vectorPath, canvas: { width: $('#signatureCanvas').clientWidth, height: $('#signatureCanvas').clientHeight, penColor: '#0057B8' } },
           items: selected.rows.map(row => {
             return { type: row.type ?? '', code: row.item_code ?? row.code ?? '' }
           }),
