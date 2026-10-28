@@ -1500,6 +1500,12 @@ async function initialData() {
         }
     })
 
+    flatpickr.localize(flatpickr.l10ns.th);
+    flatpickr('#follow-up-date', { altInput: true, altFormat: 'l d F Y', dateFormat: 'Y-m-d', minDate: new Date().fp_incr(1) });
+    $('input[name="job-status"]').on('change', function () {
+        $('#follow-up-date-wrap').toggleClass('hidden', this.value !== 'ต้องตามงานต่อ');
+    });
+
     $("#submit").click(() => {
         let update = $("#update").val().split(/[\n]/).map(x => x.trim()).filter(x => x.length > 0).map(x => {
             if (x[0] === '-') return "- " + x.slice(1).trim();
@@ -1514,11 +1520,17 @@ async function initialData() {
             jobid: jobid,
             update: update,
             name: name,
+            job_status: $('input[name="job-status"]:checked').val(),
+            follow_up_date: $('#follow-up-date').val(),
             image: $('#image').attr('src'),
             date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }),
             // thread_id: tg_thread_id
         }
-        if (update == "") {
+        if (!update_data.job_status) {
+            Swal.fire({ icon: 'error', title: 'กรุณาเลือกสถานะงาน', customClass: sweetalert_custom_class });
+        } else if (update_data.job_status === 'ต้องตามงานต่อ' && !update_data.follow_up_date) {
+            Swal.fire({ icon: 'error', title: 'กรุณาเลือกวันที่ต้องติดตาม', customClass: sweetalert_custom_class });
+        } else if (update == "") {
             Swal.fire({
                 icon: 'error',
                 title: 'กรุณากรอกข้อมูลอัพเดท',
@@ -1788,6 +1800,9 @@ async function updateData(update_data) {
         name: update_data.name,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         code: update_data.code,
+        job_status: update_data.job_status,
+        follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
+        updated_by_uid: await getUID(),
     }).then(async (docRef) => {
         doc_ref = docRef
         console.log('update success');
@@ -2109,6 +2124,13 @@ async function updateData(update_data) {
             "backgroundColor": "#cfe2ff"
         })
     }
+    flex.footer.contents.unshift({
+        type: 'text',
+        text: 'สถานะงาน: ' + update_data.job_status + (update_data.follow_up_date ? '\nวันที่ติดตาม: ' + moment(update_data.follow_up_date).format('DD/MM/YYYY') : ''),
+        wrap: true,
+        size: 'xs',
+        color: '#6b7280'
+    });
     // if (update_data.update.length <= 995) {
     //     flex.footer.contents[0].contents[1].actions = [{
     //         "type": "clipboard",

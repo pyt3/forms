@@ -83,9 +83,9 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&family=Noto+Serif+Thai:wght@100..900&display=swap"
         rel="stylesheet">
     <!-- Bootstrap Icons for compatibility -->
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <style>
         /* Loading animation styles */
@@ -656,6 +656,26 @@
                         </button>
                     </div>
 
+                    <!-- Work status -->
+                    <fieldset class="space-y-3 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+                        <legend class="px-1 text-sm font-semibold text-gray-700">สถานะงาน</legend>
+                        <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="สถานะงาน">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="job-status" value="ต้องตามงานต่อ" class="peer sr-only">
+                                <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-medium text-blue-700 transition peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:text-white"><i class="bi bi-arrow-repeat"></i>ต้องตามงานต่อ</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="job-status" value="งานจบแล้ว" class="peer sr-only">
+                                <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-medium text-emerald-700 transition peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 peer-checked:text-white"><i class="bi bi-check-circle-fill"></i>งานจบแล้ว</span>
+                            </label>
+                        </div>
+                        <div id="follow-up-date-wrap" class="hidden space-y-1">
+                            <label for="follow-up-date" class="block text-sm font-medium text-gray-700">วันที่ต้องติดตาม</label>
+                            <input id="follow-up-date" type="text" placeholder="เลือกวันที่"
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 input-focus">
+                        </div>
+                    </fieldset>
+
                     <!-- Vendor Contact List -->
                     <div class="space-y-2 mobile">
                         <div class="flex justify-between items-center">
@@ -1052,9 +1072,11 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/moment@2.29.4/locale/th.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
     <script>
         let script = document.createElement('script');
         script.src = './updatejob.js' + '?v=' + Date.now();
