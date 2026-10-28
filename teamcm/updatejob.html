@@ -432,6 +432,73 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
+        body.follow-up-overdue {
+            background-image: linear-gradient(135deg, #fff1f2, #fef2f2, #ffe4e6) !important;
+        }
+
+        body.follow-up-overdue .bg-gradient-to-r {
+            background-image: linear-gradient(to right, #ef4444, #b91c1c) !important;
+        }
+
+        body.follow-up-overdue [class*="bg-blue-"],
+        body.follow-up-overdue [class*="bg-emerald-"],
+        body.follow-up-overdue [class*="bg-green-"],
+        body.follow-up-overdue [class*="bg-amber-"] {
+            background-color: #fff1f2 !important;
+        }
+
+        body.follow-up-overdue [class*="border-blue-"],
+        body.follow-up-overdue [class*="border-emerald-"],
+        body.follow-up-overdue [class*="border-green-"],
+        body.follow-up-overdue [class*="border-amber-"] {
+            border-color: #fecaca !important;
+        }
+
+        body.follow-up-overdue [class*="text-blue-"],
+        body.follow-up-overdue [class*="text-emerald-"],
+        body.follow-up-overdue [class*="text-green-"],
+        body.follow-up-overdue [class*="text-amber-"] {
+            color: #b91c1c !important;
+        }
+
+        body.follow-up-overdue button[class*="bg-blue-"],
+        body.follow-up-overdue button[class*="bg-emerald-"],
+        body.follow-up-overdue button[class*="bg-green-"] {
+            background-color: #dc2626 !important;
+            border-color: #b91c1c !important;
+            color: #fff !important;
+        }
+
+        body.follow-up-overdue button[class*="bg-blue-"]:hover,
+        body.follow-up-overdue button[class*="bg-emerald-"]:hover,
+        body.follow-up-overdue button[class*="bg-green-"]:hover {
+            background-color: #b91c1c !important;
+        }
+
+        body.follow-up-overdue #submit,
+        body.follow-up-overdue #summary-btn,
+        body.follow-up-overdue .share-line-btn,
+        body.follow-up-overdue #add-vendor-contact-btn,
+        body.follow-up-overdue #edit-request,
+        body.follow-up-overdue #history-btn {
+            background: #dc2626 !important;
+            border-color: #b91c1c !important;
+            color: #fff !important;
+            opacity: 1 !important;
+        }
+
+        body.follow-up-overdue input[name="job-status"]:not(:checked) + span {
+            background-color: #e5e7eb !important;
+            border-color: #9ca3af !important;
+            color: #4b5563 !important;
+        }
+
+        body.follow-up-overdue input[name="job-status"]:checked + span {
+            background-color: #dc2626 !important;
+            border-color: #b91c1c !important;
+            color: #fff !important;
+        }
+
         @media (max-width: 767px) {
             #related-repair-history-table-wrap {
                 overflow: visible;
@@ -500,6 +567,9 @@
     <main class="min-h-screen py-4 px-4 mb-4">
         <!-- Container -->
         <div class="max-w-4xl mx-auto space-y-6">
+            <div id="follow-up-overdue-banner" class="hidden rounded-xl border border-red-300 bg-red-100 p-4 text-sm font-semibold text-red-900" role="alert">
+                <i class="bi bi-exclamation-triangle-fill mr-2" aria-hidden="true"></i>เลยกำหนดติดตามงานแล้ว: <span id="follow-up-overdue-date"></span>
+            </div>
             <!-- Developer Section -->
             <div class="hidden" id="developer">
                 <div class="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 p-4">
@@ -635,6 +705,11 @@
                         </button>
                     </div>
 
+                    <div id="follow-up-latest" class="hidden rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                        <span class="font-semibold">กำหนดวันติดตามล่าสุด:</span>
+                        <span id="follow-up-latest-date"></span>
+                    </div>
+
                     <!-- Update Text Area -->
                     <div class="space-y-2 mobile relative">
                         <label for="update" class="block text-sm font-semibold text-gray-700">
@@ -657,16 +732,20 @@
                     </div>
 
                     <!-- Work status -->
-                    <fieldset class="space-y-3 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+                    <div id="job-status-complete" class="hidden flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-semibold text-emerald-700">
+                        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                        <span>งานจบแล้ว</span>
+                    </div>
+                    <fieldset id="job-status-picker" class="space-y-3 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
                         <legend class="px-1 text-sm font-semibold text-gray-700">สถานะงาน</legend>
                         <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="สถานะงาน">
                             <label class="cursor-pointer">
-                                <input type="radio" name="job-status" value="ต้องตามงานต่อ" class="peer sr-only">
-                                <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-medium text-blue-700 transition peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:text-white"><i class="bi bi-arrow-repeat"></i>ต้องตามงานต่อ</span>
+                                <input type="radio" name="job-status" value="ต้องตามงานต่อ" required class="peer sr-only">
+                                <span class="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:text-white"><i class="bi bi-arrow-repeat"></i>ต้องตามงานต่อ</span>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="job-status" value="งานจบแล้ว" class="peer sr-only">
-                                <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-medium text-emerald-700 transition peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 peer-checked:text-white"><i class="bi bi-check-circle-fill"></i>งานจบแล้ว</span>
+                                <span class="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 peer-checked:text-white"><i class="bi bi-check-circle-fill"></i>งานจบแล้ว</span>
                             </label>
                         </div>
                         <div id="follow-up-date-wrap" class="hidden space-y-1">

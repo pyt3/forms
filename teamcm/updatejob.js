@@ -6,13 +6,14 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
     NProgress.done();
 });
-// const liff_id = '1655873446-3xe866Ql' // for test
 const liff_id = '1661543046-a1pJexbX' // use
+// const liff_id = '1655873446-3xe866Ql' // for test
+// const liff_id = '1661543046-86kpRl4E' // for test
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxG4JJ2Y2tHvmA-sBOF0voSGzQq4Fx1Q1j10HqGq1duL4eX53s248A4llUDY8GE7bO1/exec'
 
 const ngrok_url = 'https://bursting-fox-mostly.ngrok-free.app/'
 var job_detail
-let update_data, tg_thread_id
+let update_data, tg_thread_id, followUpAlertShown = false
 let chat_id = '-1002300341036'
 const RELATED_REPAIR_ENDPOINT = 'https://bursting-fox-mostly.ngrok-free.app/?mode=searchRepair'
 let relatedRepairAssetCatalogPromise = null
@@ -101,14 +102,9 @@ function showToast(message, type = 'info') {
     const toastClass = type === 'success' ? 'bg-green-500' :
         type === 'error' ? 'bg-red-500' : 'bg-blue-500';
 
-    const toast = $(`
-                <div class="fixed top-4 right-4 z-50 ${toastClass} text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
-                    <div class="flex items-center space-x-2">
-                        <i class="bi ${type === 'success' ? 'bi-check-circle' : type === 'error' ? 'bi-x-circle' : 'bi-info-circle'}"></i>
-                        <span>${message}</span>
-                    </div>
-                </div>
-            `);
+    const iconClass = type === 'success' ? 'bi-check-circle' : type === 'error' ? 'bi-x-circle' : 'bi-info-circle';
+    const toast = $('<div class="fixed top-4 right-4 z-50 ' + toastClass + ' text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">' +
+        '<div class="flex items-center space-x-2"><i class="bi ' + iconClass + '"></i><span>' + message + '</span></div></div>');
 
     $('body').append(toast);
 
@@ -211,6 +207,11 @@ $(document).ready(async () => {
             return liff.login({ redirectUri: window.location.href })
         }
 
+        const { friendFlag } = await liff.getFriendship()
+        if (!friendFlag) {
+            window.location.replace('https://lin.ee/80Gvt3q')
+            return
+        }
         if (await getUID() == 'U798fc2c46a2efd7013b12eac4dac408a') {
             $('#developer').removeClass('hidden')
         } else {
@@ -266,6 +267,54 @@ function renderWorkOrderDetail(detail) {
     $('#workorder-detail-text').text(value)
 }
 
+function renderFollowUpStatus(data, jobComplete = false) {
+    if (!data?.follow_up_date) {
+        if (jobComplete) document.body.classList.remove('follow-up-overdue')
+        return
+    }
+    const date = moment(typeof data.follow_up_date.toDate === 'function' ? data.follow_up_date.toDate() : data.follow_up_date)
+    if (!date.isValid()) return
+
+    $('#follow-up-latest-date').text(date.format('dddd D MMMM YYYY'))
+    $('#follow-up-latest').removeClass('hidden')
+    if (date.isSameOrBefore(moment(), 'day') && !jobComplete) {
+        $('#follow-up-overdue-date').text(date.format('DD/MM/YYYY'))
+        $('#follow-up-overdue-banner').removeClass('hidden')
+        document.body.classList.add('follow-up-overdue')
+        if (!followUpAlertShown) {
+            followUpAlertShown = true
+            Swal.fire({
+                icon: 'warning',
+                title: 'ถึงกำหนดติดตามงานแล้ว',
+                text: 'กำหนดวันติดตาม: ' + date.format('DD/MM/YYYY'),
+                confirmButtonText: 'รับทราบ',
+                customClass: sweetalert_custom_class
+            })
+        }
+    } else if (jobComplete) {
+        $('#follow-up-overdue-banner').addClass('hidden')
+        document.body.classList.remove('follow-up-overdue')
+    }
+}
+
+async function renderLatestJobStatus(jobId) {
+    try {
+        const updates = await firestore.collection('jobdata/').doc(jobId).collection('update').get()
+        const latest = updates.docs
+            .map(doc => doc.data())
+            .filter(update => update.job_status)
+            .sort((a, b) => (b.timestamp?.toMillis?.() || 0) - (a.timestamp?.toMillis?.() || 0))[0]
+        if (latest?.job_status === 'งานจบแล้ว') {
+            $('#job-status-picker').addClass('hidden')
+            $('#job-status-complete').removeClass('hidden')
+        }
+        return latest?.job_status === 'งานจบแล้ว'
+    } catch (error) {
+        console.error('Load latest job status failed:', error)
+        return false
+    }
+}
+
 function escapeRelatedRepairHtml(value) {
     return String(value == null ? '' : value)
         .replace(/&/g, '&amp;')
@@ -313,7 +362,7 @@ function renderRelatedRepairHistory(response) {
     const $equipment = $('#related-repair-history-equipment')
 
     $section.removeClass('hidden')
-    $('#related-repair-history-count').text(`${rows.length} รายการ`)
+    $('#related-repair-history-count').text(rows.length + ' รายการ')
     if (!rows.length) {
         $equipment.addClass('hidden').empty()
         $('#related-repair-history-table-wrap').addClass('hidden')
@@ -324,26 +373,21 @@ function renderRelatedRepairHistory(response) {
     const equipment = rows
         .map(row => [row.raw_name || row.clean_name, row.raw_brand || row.clean_brand, row.raw_model || row.clean_model].map(value => repairText(value)))
         .find(values => values.some(value => value !== '-'))
-    $equipment.toggleClass('hidden', !equipment).html(equipment ? `
-        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
-            <div class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <i class="bi bi-cpu text-blue-500" aria-hidden="true"></i>
-                <span>อุปกรณ์</span>
-            </div>
-            <dl class="space-y-1 text-sm">
-                <div class="flex gap-2"><dt class="shrink-0 text-slate-500">ชื่อ:</dt><dd class="min-w-0 break-words text-slate-700">${escapeRelatedRepairHtml(equipment[0])}</dd></div>
-                <div class="flex gap-2"><dt class="shrink-0 text-slate-500">ยี่ห้อ:</dt><dd class="min-w-0 break-words text-slate-700">${escapeRelatedRepairHtml(equipment[1])}</dd></div>
-                <div class="flex gap-2"><dt class="shrink-0 text-slate-500">รุ่น:</dt><dd class="min-w-0 break-words text-slate-700">${escapeRelatedRepairHtml(equipment[2])}</dd></div>
-            </dl>
-        </div>
-    ` : '')
+    const equipmentHtml = equipment ? '<div class="rounded-xl border border-slate-200 bg-slate-50 p-3">' +
+        '<div class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><i class="bi bi-cpu text-blue-500" aria-hidden="true"></i><span>อุปกรณ์</span></div>' +
+        '<dl class="space-y-1 text-sm">' +
+        '<div class="flex gap-2"><dt class="shrink-0 text-slate-500">ชื่อ:</dt><dd class="min-w-0 break-words text-slate-700">' + escapeRelatedRepairHtml(equipment[0]) + '</dd></div>' +
+        '<div class="flex gap-2"><dt class="shrink-0 text-slate-500">ยี่ห้อ:</dt><dd class="min-w-0 break-words text-slate-700">' + escapeRelatedRepairHtml(equipment[1]) + '</dd></div>' +
+        '<div class="flex gap-2"><dt class="shrink-0 text-slate-500">รุ่น:</dt><dd class="min-w-0 break-words text-slate-700">' + escapeRelatedRepairHtml(equipment[2]) + '</dd></div></dl></div>' : ''
+    $equipment.toggleClass('hidden', !equipment).html(equipmentHtml)
 
     $status.empty()
     $('#related-repair-history-table-wrap').removeClass('hidden')
     $body.html(rows.slice(0, 20).map(row => {
         const values = [row.work_order, row.symptom, row.repair_detail]
         const labels = ['ใบงาน', 'อาการ', 'รายละเอียดการซ่อม']
-        return `<tr class="align-top hover:bg-slate-50 transition-colors">${values.map((value, index) => `<td data-label="${labels[index]}" class="px-4 py-3 text-slate-700 ${index > 0 ? 'whitespace-pre-wrap leading-relaxed' : 'whitespace-nowrap'}">${escapeRelatedRepairHtml(repairText(value))}</td>`).join('')}</tr>`
+        const cells = values.map((value, index) => '<td data-label="' + labels[index] + '" class="px-4 py-3 text-slate-700 ' + (index > 0 ? 'whitespace-pre-wrap leading-relaxed' : 'whitespace-nowrap') + '">' + escapeRelatedRepairHtml(repairText(value)) + '</td>').join('')
+        return '<tr class="align-top hover:bg-slate-50 transition-colors">' + cells + '</tr>'
     }).join(''))
 }
 
@@ -368,13 +412,13 @@ async function loadRelatedRepairHistory(workDetail) {
             top_k: '20',
             'ngrok-skip-browser-warning': 'true'
         })
-        const response = await fetch(`${RELATED_REPAIR_ENDPOINT}&${params.toString()}`, {
+        const response = await fetch(RELATED_REPAIR_ENDPOINT + '&' + params.toString(), {
             cache: 'no-store',
             headers: {
                 'ngrok-skip-browser-warning': 'true'
             }
         })
-        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        if (!response.ok) throw new Error('HTTP ' + response.status)
         const responseText = await response.text()
         if (responseText.trim().startsWith('<')) {
             console.warn('Related repair history returned HTML:', responseText.slice(0, 300))
@@ -518,16 +562,13 @@ async function initialData() {
             data = data.docs.map(doc => doc.data()).sort((a, b) => a.timestamp - b.timestamp)
             let msg
             if (data.length == 0) {
-                msg = `<div class="text-center py-8">
-                                   <i class="bi bi-inbox text-4xl text-gray-300 mb-3"></i>
-                                   <p class="text-gray-500">ยังไม่มีการอัพเดทงาน</p>
-                               </div>`
+                msg = '<div class="text-center py-8"><i class="bi bi-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">ยังไม่มีการอัพเดทงาน</p></div>'
             } else {
                 msg = data.map(r => {
                     r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
                     return r
                 }).map(d => {
-                    return `${d.timestamp}<br>${d.update.replace(/\n/g, '<br>')}<br><span class="text-sm text-gray-500"># ${d.name}</span><br>`
+                    return d.timestamp + '<br>' + d.update.replace(/\n/g, '<br>') + '<br><span class="text-sm text-gray-500"># ' + d.name + '</span><br>'
                 }).join('<hr class="my-3">')
             }
 
@@ -548,9 +589,10 @@ async function initialData() {
                 $('.load-bar').fadeOut(500);
             }, 800);
         })
-        firestore.collection('jobdata/').doc(jobid).get().then(data => {
+        firestore.collection('jobdata/').doc(jobid).get().then(async data => {
             data = data.data()
             console.log("🚀 ~ firestore.collection ~ data:", data)
+            renderFollowUpStatus(data, await renderLatestJobStatus(jobid))
             renderWorkOrderDetail(data.detail)
             renderFeedbackDisplay(data.feedback, data.feedback_label)
             if (data.signature) {
@@ -1072,6 +1114,7 @@ async function initialData() {
                 })
             }
             data = data.data()
+            renderFollowUpStatus(data, await renderLatestJobStatus(jobid))
             current_code = data.code.split('_')
             renderWorkOrderDetail(data.detail)
             renderFeedbackDisplay(data.feedback, data.feedback_label)
@@ -1132,23 +1175,11 @@ async function initialData() {
                     Swal.fire({
                         icon: 'warning',
                         title: "กรุณารับงานก่อน",
-                        html: (!current_user.isAuthen || current_user.isOnCall) ? (`
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="alert alert-warning">
-                                        ${current_user.isOnCall ? "เนื่องจากเป็น On Call กรุณาระบุชื่อ" : "กรุณาระบุชื่อ และกดปุ่มยืนยันตัวตน"}
-                                        <small class="text-danger fw-bold">สามารถยืนยันตัวตนได้เพียง 1 คน/บัญชีไลน์</small>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <select name="receive-name" id="receive-name" class="form-select">
-                                        ${$('#name').html()}
-                                    </select>
-                                </div>
-                            </div>    
-                        </div>
-                        `) : "",
+                        html: (!current_user.isAuthen || current_user.isOnCall) ?
+                            '<div class="container-fluid"><div class="row"><div class="col-12"><div class="alert alert-warning">' +
+                            (current_user.isOnCall ? 'เนื่องจากเป็น On Call กรุณาระบุชื่อ' : 'กรุณาระบุชื่อ และกดปุ่มยืนยันตัวตน') +
+                            '<small class="text-danger fw-bold">สามารถยืนยันตัวตนได้เพียง 1 คน/บัญชีไลน์</small></div></div><div class="col-12"><select name="receive-name" id="receive-name" class="form-select">' +
+                            $('#name').html() + '</select></div></div></div>' : "",
                         allowOutsideClick: false,
                         allowEscapeKey: false,
                         confirmButtonText: 'ยืนยันตัวตน',
@@ -1545,15 +1576,9 @@ async function initialData() {
                 customClass: sweetalert_custom_class
             })
         } else {
-            let text = `UPDATE<br>${wo ? ('WO.' + wo) : ''}<br>รหัส ${code}<br>วันที่ ${update_data.date} น.<br><br>${update}<br><br>#${name}`
+            let text = 'UPDATE<br>' + (wo ? 'WO.' + wo : '') + '<br>รหัส ' + code + '<br>วันที่ ' + update_data.date + ' น.<br><br>' + update + '<br><br>#' + name
             update_data.text = text.replace(/<br>/g, '\n')
-            update_data.tg_html = `<b>UPDATE</b>
-<b>วันที่</b> ${update_data.date} น.
-
-<b>รายละเอียด</b>
-${update}
-
-#${name}`
+            update_data.tg_html = '<b>UPDATE</b>\n<b>วันที่</b> ' + update_data.date + ' น.\n\n<b>รายละเอียด</b>\n' + update + '\n\n#' + name
             Swal.fire({
                 title: 'ตรวจสอบข้อมูล',
                 html: text,
@@ -1594,16 +1619,13 @@ ${update}
             data = data.docs.map(doc => doc.data()).sort((a, b) => a.timestamp - b.timestamp)
             let msg
             if (data.length == 0) {
-                msg = `<div class="text-center py-8">
-                                   <i class="bi bi-inbox text-4xl text-gray-300 mb-3"></i>
-                                   <p class="text-gray-500">ยังไม่มีการอัพเดทงาน</p>
-                               </div>`
+                msg = '<div class="text-center py-8"><i class="bi bi-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">ยังไม่มีการอัพเดทงาน</p></div>'
             } else {
                 msg = data.map(r => {
                     r.timestamp = moment(r.timestamp.toDate()).format('DD/MM/YYYY HH:mm (dddd)')
                     return r
                 }).map(d => {
-                    return `${d.timestamp}<br>${d.update.replace(/\n/g, '<br>')}<br><span class="text-sm text-gray-500"># ${d.name}</span><br>`
+                    return d.timestamp + '<br>' + d.update.replace(/\n/g, '<br>') + '<br><span class="text-sm text-gray-500"># ' + d.name + '</span><br>'
                 }).join('<hr class="my-3">')
             }
 
@@ -1795,6 +1817,7 @@ async function updateData(update_data) {
         }
     })
     let doc_ref
+    const uid = await getUID()
     await firestore.collection('jobdata/').doc(update_data.jobid).collection('update').add({
         update: update_data.update,
         name: update_data.name,
@@ -1802,13 +1825,28 @@ async function updateData(update_data) {
         code: update_data.code,
         job_status: update_data.job_status,
         follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
-        updated_by_uid: await getUID(),
+        updated_by_uid: uid,
     }).then(async (docRef) => {
         doc_ref = docRef
         console.log('update success');
     }).catch(err => {
         console.log(err);
     })
+    try {
+        await firestore.collection('jobdata/').doc(update_data.jobid).set({
+            follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
+        }, { merge: true })
+    } catch (error) {
+        console.error('Save follow-up status failed:', error)
+        Swal.fire({ icon: 'error', title: 'บันทึกสถานะติดตามไม่สำเร็จ', text: 'กรุณาลองใหม่อีกครั้ง', customClass: sweetalert_custom_class })
+        return
+    }
+    if (update_data.job_status === 'งานจบแล้ว') {
+        $('#job-status-picker').addClass('hidden')
+        $('#job-status-complete').removeClass('hidden')
+        $('#follow-up-latest, #follow-up-overdue-banner').addClass('hidden')
+        document.body.classList.remove('follow-up-overdue')
+    }
     // if (current_user.site == 'PYT3') {
     //     let tg_api = '7681265177:AAFVGgh5lAzXRRfiole5ywOlY-CoEIOjEz4'
 
@@ -2126,7 +2164,7 @@ async function updateData(update_data) {
     }
     flex.footer.contents.unshift({
         type: 'text',
-        text: 'สถานะงาน: ' + update_data.job_status + (update_data.follow_up_date ? '\nวันที่ติดตาม: ' + moment(update_data.follow_up_date).format('DD/MM/YYYY') : ''),
+        text: 'สถานะงาน: ' + update_data.job_status + (update_data.follow_up_date ? '\nกำหนดวันติดตาม: ' + moment(update_data.follow_up_date).format('DD/MM/YYYY') : ''),
         wrap: true,
         size: 'xs',
         color: '#6b7280'
@@ -2572,7 +2610,7 @@ async function updateData(update_data) {
             // let { value: confirm } = await Swal.fire({
             //     iconHtml: '<i class="bi bi-line text-success"></i>',
             //     title: 'กรุณาเลือกกลุ่มไลน์เพื่อแชร์อัพเดท',
-            //     confirmButtonText: `ตกลง`,
+            //     confirmButtonText: 'ตกลง',
             //     allowOutsideClick: false,
             //     customClass: {
             //         popup: 'rounded-4',
@@ -2839,29 +2877,13 @@ function renderContact() {
         const safePhone = escapeRelatedRepairHtml(phone)
         const safePhoneHref = encodeURIComponent(phone)
         const safeRole = escapeRelatedRepairHtml(role)
-        let contactCard = $(`
-            <li class="flex justify-between items-center py-3 px-4 border-b border-gray-200 hover:bg-gray-50 transition-colors gap-2">
-            <div class="min-w-0 flex-grow">
-                <div class="flex items-center gap-2 mb-1">
-                <div class="font-semibold text-gray-900 truncate w-0 flex-1">${safeName}</div>
-                <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">${safeRole}</span>
-                </div>
-                <div class="text-sm text-gray-600">
-                <a href="tel:${safePhoneHref}" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline decoration-1 transition-colors cursor-pointer">
-                    <i class="bi bi-telephone-fill" aria-hidden="true"></i>${safePhone}
-                </a>
-                </div>
-            </div>
-            <div class="flex shrink-0 gap-1 bg-gray-100 rounded-lg p-1">
-                <button type="button" class="edit-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-amber-500 hover:text-white text-amber-600 rounded-md transition-all shadow-sm" data-index="${index}" aria-label="แก้ไข ${safeName}" title="แก้ไข">
-                <i class="bi bi-pencil" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="delete-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-red-500 hover:text-white text-red-600 rounded-md transition-all shadow-sm" data-index="${index}" aria-label="ลบ ${safeName}" title="ลบ">
-                <i class="bi bi-trash" aria-hidden="true"></i>
-                </button>
-            </div>
-            </li>
-        `)
+        let contactCard = $('<li class="flex justify-between items-center py-3 px-4 border-b border-gray-200 hover:bg-gray-50 transition-colors gap-2">' +
+            '<div class="min-w-0 flex-grow"><div class="flex items-center gap-2 mb-1"><div class="font-semibold text-gray-900 truncate w-0 flex-1">' + safeName + '</div>' +
+            '<span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">' + safeRole + '</span></div><div class="text-sm text-gray-600">' +
+            '<a href="tel:' + safePhoneHref + '" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline decoration-1 transition-colors cursor-pointer"><i class="bi bi-telephone-fill" aria-hidden="true"></i>' + safePhone + '</a></div></div>' +
+            '<div class="flex shrink-0 gap-1 bg-gray-100 rounded-lg p-1"><button type="button" class="edit-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-amber-500 hover:text-white text-amber-600 rounded-md transition-all shadow-sm" data-index="' + index + '" aria-label="แก้ไข ' + safeName + '" title="แก้ไข">' +
+            '<i class="bi bi-pencil" aria-hidden="true"></i></button><button type="button" class="delete-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-red-500 hover:text-white text-red-600 rounded-md transition-all shadow-sm" data-index="' + index + '" aria-label="ลบ ' + safeName + '" title="ลบ">' +
+            '<i class="bi bi-trash" aria-hidden="true"></i></button></div></li>')
         ul.append(contactCard)
     })
 
@@ -2901,15 +2923,15 @@ function renderContact() {
         Swal.fire({
             title: 'แก้ไขรายชื่อผู้ติดต่อ',
             html:
-                `<label for="edit-contact-name" class="d-block text-start mb-1">ชื่อ</label><input id="edit-contact-name" maxlength="120" class="form-control mb-3 form-control-lg" placeholder="ชื่อ" value="${escapeRelatedRepairHtml(currentName)}">` +
-                `<label for="edit-contact-phone" class="d-block text-start mb-1">เบอร์โทรศัพท์</label><input id="edit-contact-phone" maxlength="40" inputmode="tel" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์" value="${escapeRelatedRepairHtml(currentPhone)}">` +
+                '<label for="edit-contact-name" class="d-block text-start mb-1">ชื่อ</label><input id="edit-contact-name" maxlength="120" class="form-control mb-3 form-control-lg" placeholder="ชื่อ" value="' + escapeRelatedRepairHtml(currentName) + '">' +
+                '<label for="edit-contact-phone" class="d-block text-start mb-1">เบอร์โทรศัพท์</label><input id="edit-contact-phone" maxlength="40" inputmode="tel" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์" value="' + escapeRelatedRepairHtml(currentPhone) + '">' +
                 '<label for="edit-contact-role" class="d-block text-start mb-1">ประเภท</label><select id="edit-contact-role" class="form-select mb-3 form-control-lg">' +
                 '<option value="" disabled>เลือกประเภท</option>' +
-                `<option value="เซลล์" ${currentRole === 'เซลล์' ? 'selected' : ''}>เซลล์</option>` +
-                `<option value="ช่างซ่อม" ${currentRole === 'ช่างซ่อม' ? 'selected' : ''}>ช่างซ่อม</option>` +
-                `<option value="ช่าง PM" ${currentRole === 'ช่าง PM' ? 'selected' : ''}>ช่าง PM</option>` +
-                `<option value="ช่างซ่อม+PM" ${currentRole === 'ช่างซ่อม+PM' ? 'selected' : ''}>ช่างซ่อม+PM</option>` +
-                `<option value="specialist" ${currentRole === 'specialist' ? 'selected' : ''}>specialist</option>` +
+                '<option value="เซลล์" ' + (currentRole === 'เซลล์' ? 'selected' : '') + '>เซลล์</option>' +
+                '<option value="ช่างซ่อม" ' + (currentRole === 'ช่างซ่อม' ? 'selected' : '') + '>ช่างซ่อม</option>' +
+                '<option value="ช่าง PM" ' + (currentRole === 'ช่าง PM' ? 'selected' : '') + '>ช่าง PM</option>' +
+                '<option value="ช่างซ่อม+PM" ' + (currentRole === 'ช่างซ่อม+PM' ? 'selected' : '') + '>ช่างซ่อม+PM</option>' +
+                '<option value="specialist" ' + (currentRole === 'specialist' ? 'selected' : '') + '>specialist</option>' +
                 '</select>',
             focusConfirm: false,
             showCancelButton: true,
@@ -2929,7 +2951,7 @@ function renderContact() {
         }).then((result) => {
             if (result.isConfirmed) {
                 const { name, phone, role } = result.value;
-                const contactEntry = `${name} | ${phone} | ${role}`;
+                const contactEntry = name + ' | ' + phone + ' | ' + role;
                 contactList[index] = contactEntry;
                 firestore.collection('contactData/').doc(current_code).set({
                     vendor_contact_list: contactList
@@ -2974,7 +2996,7 @@ function addContact() {
     }).then((result) => {
         if (result.isConfirmed) {
             const { name, phone, role } = result.value;
-            const contactEntry = `${name} | ${phone} | ${role}`;
+                const contactEntry = name + ' | ' + phone + ' | ' + role;
             contactList.push(contactEntry);
             firestore.collection('contactData/').doc(current_code).set({
                 vendor_contact_list: contactList
@@ -3311,7 +3333,7 @@ jQuery(document).ready(function ($) {
              * Allows listener code to unsubscribe from a channel 
              * @public
              * @function
-             * @param token {Object} A token object that was returned by `subscribe` method 
+             * @param token {Object} A token object that was returned by subscribe method
              */
             this.unsubscribe = function (token) {
                 if (this.topics[token.topic]) {
@@ -3868,7 +3890,7 @@ jQuery(document).ready(function ($) {
                             if (w !== originalParentWidth) {
 
                                 // UNsubscribing this particular instance of signature pad only.
-                                // there is a separate `eventTokens` per each instance of signature pad 
+                                // there is a separate eventTokens per each instance of signature pad
                                 for (var key in eventTokens) {
                                     if (eventTokens.hasOwnProperty(key)) {
                                         globalEvents.unsubscribe(eventTokens[key])
@@ -5640,7 +5662,7 @@ function submitFeedback(feedbackType) {
         btn.classList.remove('active');
     });
 
-    const selectedBtn = document.querySelector(`#survey-content button[onclick="submitFeedback('${feedbackType}')"]`);
+    const selectedBtn = document.querySelector('#survey-content button[onclick="submitFeedback(\'' + feedbackType + '\')"]');
     if (selectedBtn) {
         selectedBtn.classList.add('active');
     }
