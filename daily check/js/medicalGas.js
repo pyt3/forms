@@ -432,6 +432,8 @@ async function formSubmit() {
     obj.opt = 'submit'
     localStorage.setItem('user', obj.name)
     console.log(obj)
+    const uuid = crypto.randomUUID()
+    obj.uuid = uuid
     let saveData = new Promise((resolve, reject) => {
         $.ajax({
             url: script_url,
@@ -447,7 +449,7 @@ async function formSubmit() {
             }
         })
     })
-    Promise.all([saveData, uploadFiles()])
+    Promise.all([saveData, uploadFiles(uuid)])
         .then((res) => {
             console.log(res)
             Swal.close()
@@ -885,7 +887,7 @@ var token, folder_id
     folder_id = data.folder_id
 }
 )()
-async function uploadFiles() {
+async function uploadFiles(uuid) {
     return new Promise(async main_resolve => {
         Swal.fire({
             iconHtml: '<i class="bi bi-cloud-arrow-up-fill text-danger"></i>',
@@ -915,7 +917,7 @@ async function uploadFiles() {
             let progress_tag = new Array(length).fill(0);
             [...f.files].forEach((file, i) => {
                 let fr = new FileReader();
-                fr.fileName = file.name;
+                fr.fileName = uuid;
                 fr.fileSize = file.size;
                 fr.fileType = file.type;
                 fr.readAsArrayBuffer(file);
@@ -927,7 +929,7 @@ async function uploadFiles() {
                     $('#' + id).text('Initialising (' + fr.fileName + ')')
                     const f = e.target;
                     const resource = {
-                        fileName: f.fileName,
+                        fileName: uuid,
                         fileSize: f.fileSize,
                         fileType: f.fileType,
                         fileBuffer: f.result,
