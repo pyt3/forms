@@ -453,12 +453,12 @@ async function formSubmit() {
         .then((res) => {
             console.log(res)
             Swal.close()
-            sendMessage(obj, res[1][0].id)
+            sendMessage(obj, res[1][0].id, uuid)
         })
 
 }
 
-function sendMessage(obj, img_id) {
+function sendMessage(obj, img_id, uuid) {
     console.log("🚀 ~ sendMessage ~ img_id:", img_id)
     $.getJSON(script_url + '?opt=set_trashed&id=' + img_id, function (res) {
         console.log(res)
@@ -774,7 +774,7 @@ function sendMessage(obj, img_id) {
                     action: {
                         type: "uri",
                         label: "Dashboard",
-                        uri: "https://lookerstudio.google.com/embed/reporting/81637f83-130e-4b83-84c4-db7497b631c0/page/V9LZD"
+                        uri: script_url + "?view=dashboard&id=" + uuid
                     }
                 },
                 {
@@ -787,7 +787,12 @@ function sendMessage(obj, img_id) {
                     color: "#aaaaaa",
                     margin: "md",
                     align: "center",
-                    scaling: true
+                    scaling: true,
+                    action: {
+                        type: "uri",
+                        label: "action",
+                        uri: script_url + "?view=dashboard&id=" + uuid
+                    }
                 }
             ]
         }
@@ -830,11 +835,11 @@ function sendMessage(obj, img_id) {
                 Swal.fire({
                     icon: 'error',
                     title: 'คุณจำเป็นต้องส่งข้อมูลเข้ากลุ่ม Medical Gas',
-                    cyustomClass: {
+                    customClass: {
                         popup: 'rounded-4'
                     }
                 }).then(() => {
-                    sendMessage(obj)
+                    sendMessage(obj, res[1][0].id, uuid)
                 })
             }
         })
