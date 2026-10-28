@@ -207,16 +207,15 @@ $(document).ready(async () => {
             return liff.login({ redirectUri: window.location.href })
         }
 
-        const { friendFlag } = await liff.getFriendship();
-
-        // Whether the user has added the account as a friend
-        if (!friendFlag) {
-            // If not, send a friendship request
-            try {
+        let { friendFlag } = await liff.getFriendship();
+        while (!friendFlag) {
+             try {
                 await liff.requestFriendship();
+                
             } catch (error) {
                 console.log(error);
             }
+            friendFlag = (await liff.getFriendship()).friendFlag;
         }
         if (await getUID() == 'U798fc2c46a2efd7013b12eac4dac408a') {
             $('#developer').removeClass('hidden')
