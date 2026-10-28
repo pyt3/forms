@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Akshar&family=Prompt:ital@0;1&display=swap" rel="stylesheet">
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"> -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="../../teampm/main const.js"></script>
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="icon" href="../icon.png" type="image/png">
@@ -202,27 +203,10 @@
                                 <label for="name" class="fs-3">ชื่อผู้ตรวจสอบ</label>
                                 <select name="name" id="name" class="form-select text-center">
                                     <option value="" selected disabled>เลือกชื่อผู้ตรวจสอบ</option>
-                                    <option value="CHAIWAT SALAIWONG">CHAIWAT SALAIWONG</option>
-                                    <option value="PASSAWAN TOANUN">PASSAWAN TOANUN</option>
-                                    <option value="PANALEE UEASUNTHONNOP">PANALEE UEASUNTHONNOP</option>
-                                    <option value="SERMKEAT HADJANG">SERMKEAT HADJANG</option>
-                                    <option value="CHANCHAI SAE-LEE">CHANCHAI SAE-LEE</option>
-                                    <option value="SARAN THAMMATHORN">SARAN THAMMATHORN</option>
-                                    <option value="PUKARIN TONGKLIANG">PUKARIN TONGKLIANG</option>
-                                    <option value="ANUPHAB CHANTO">ANUPHAB CHANTO</option>
-                                    <option value="NARUECHA CHAIYAPHAN">NARUECHA CHAIYAPHAN</option>
-                                    <option value="ITTIPAT IEMDEE">ITTIPAT IEMDEE</option>
-                                    <option value="SASIMAPORN KHANTHAHOME">SASIMAPORN KHANTHAHOME</option>
-                                    <option value="DARANPHOP YIMYAM">DARANPHOP YIMYAM</option>
-                                    <option value="CHATVIPA KAEWPRESERT">CHATVIPA KAEWPRESERT</option>
-                                    <option value="PHIMRAPEEPORN PHRASOPOL">PHIMRAPEEPORN PHRASOPOL</option>
-                                    <option value="RAPIPHAN KHAMSUWAN">RAPIPHAN KHAMSUWAN</option>
-                                    <option value="SOM KONKAEW">SOM KONKAEW</option>
-                                    <option value="RATCHATA PIRIYAKITTSAKUL">RATCHATA PIRIYAKITTSAKUL</option>
-                                    <option value="ILADA BUAPRALAT">ILADA BUAPRALAT</option>
-                                    <option value="JIRASSHAYA CHUENYOO">JIRASSAYA CHUENYOO</option>
-                                    <option value="CHALERMPORN SABUA">CHALERMPORN SABUA</option>
                                 </select>
+                                <script>
+                                    staff_name_array.forEach(name => $('#name').append($('<option>', { value: name, text: name })))
+                                </script>
                             </div>
                         </div>
                     </section>
