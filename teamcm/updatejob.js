@@ -207,10 +207,15 @@ $(document).ready(async () => {
             return liff.login({ redirectUri: window.location.href })
         }
 
-        const { friendFlag } = await liff.getFriendship()
-        if (!friendFlag) {
-            window.location.replace('https://lin.ee/80Gvt3q')
-            return
+        let { friendFlag } = await liff.getFriendship();
+        while (!friendFlag) {
+             try {
+                await liff.requestFriendship();
+                
+            } catch (error) {
+                console.log(error);
+            }
+            friendFlag = (await liff.getFriendship()).friendFlag;
         }
         if (await getUID() == 'U798fc2c46a2efd7013b12eac4dac408a') {
             $('#developer').removeClass('hidden')
@@ -245,9 +250,9 @@ $(document).ready(async () => {
         openSignBtn.addEventListener('click', function (event) {
             event.preventDefault();
             event.stopImmediatePropagation();
-            if(current_user?.site.toLowerCase() == 'pyt3') {
+            if (current_user?.site.toLowerCase() == 'pyt3') {
                 openSurveyModal();
-            }else{
+            } else {
                 openSignatureModal();
             }
         });
@@ -2996,7 +3001,7 @@ function addContact() {
     }).then((result) => {
         if (result.isConfirmed) {
             const { name, phone, role } = result.value;
-                const contactEntry = name + ' | ' + phone + ' | ' + role;
+            const contactEntry = name + ' | ' + phone + ' | ' + role;
             contactList.push(contactEntry);
             firestore.collection('contactData/').doc(current_code).set({
                 vendor_contact_list: contactList
