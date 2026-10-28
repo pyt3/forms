@@ -1,5 +1,17 @@
 const APP_TITLE = 'QualityLabHub';
 const SHEET_NAME = 'QualityLabHubRecords';
+const IQC_MASTER_SHEET_NAME = 'IQCMasterData';
+const IQC_MASTER_HEADER = [
+  'analyzer',
+  'controlName',
+  'lowLowerLimit',
+  'lowUpperLimit',
+  'lowUnit',
+  'highLowerLimit',
+  'highUpperLimit',
+  'highUnit',
+  'active'
+];
 const HEADER = [
   'id',
   'type',
@@ -28,12 +40,12 @@ const RECORD_ROOT_FOLDER_ID = '1--lgBw5_XGuLw8_v7dqAS7n2d-N1hXdg';
 
 Logger = BetterLog.useSpreadsheet()
 
-function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu(APP_TITLE)
-    .addItem('SetUp database', 'SetUp')
-    .addToUi();
-}
+// function onOpen() {
+//   SpreadsheetApp.getUi()
+//     .createMenu(APP_TITLE)
+//     .addItem('SetUp database', 'SetUp')
+//     .addToUi();
+// }
 
 function SetUp() {
   return setupDatabase_();
@@ -75,9 +87,61 @@ function setupDatabase_() {
   sh.setColumnWidth(17, 180);
   sh.setColumnWidth(18, 320);
 
+  let masterSh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  if (!masterSh) {
+    masterSh = ss.insertSheet(IQC_MASTER_SHEET_NAME);
+  }
+  if (masterSh.getMaxColumns() < IQC_MASTER_HEADER.length) {
+    masterSh.insertColumnsAfter(masterSh.getMaxColumns(), IQC_MASTER_HEADER.length - masterSh.getMaxColumns());
+  }
+  const previousLastRow = masterSh.getLastRow();
+  const previousLastColumn = Math.max(masterSh.getLastColumn(), IQC_MASTER_HEADER.length);
+  const previousValues = previousLastRow
+    ? masterSh.getRange(1, 1, previousLastRow, previousLastColumn).getDisplayValues()
+    : [];
+  const previousHeader = previousValues[0] || [];
+  const previousIndex = {};
+  previousHeader.forEach((value, index) => {
+    previousIndex[String(value || '').trim().toLowerCase()] = index;
+  });
+  const previousRead = (row, key) => {
+    const index = previousIndex[key];
+    return index == null ? '' : String(row[index] || '').trim();
+  };
+  const migratedMasterRows = previousValues.slice(1)
+    .map((row) => {
+      const splitRange = (value) => {
+        const parts = String(value || '').split(/\s*-\s*/);
+        return { lower: parts[0] || '', upper: parts.length > 1 ? parts.slice(1).join('-') : '' };
+      };
+      const lowRange = splitRange(previousRead(row, 'lowacceptrange'));
+      const highRange = splitRange(previousRead(row, 'highacceptrange'));
+      return [
+        previousRead(row, 'analyzer'),
+        previousRead(row, 'controlname'),
+        previousRead(row, 'lowlowerlimit') || lowRange.lower,
+        previousRead(row, 'lowupperlimit') || lowRange.upper,
+        previousRead(row, 'lowunit'),
+        previousRead(row, 'highlowerlimit') || highRange.lower,
+        previousRead(row, 'highupperlimit') || highRange.upper,
+        previousRead(row, 'highunit'),
+        previousRead(row, 'active') || true
+      ];
+    })
+    .filter((row) => row[0] || row[1]);
+  masterSh.getRange(1, 1, 1, IQC_MASTER_HEADER.length).setValues([IQC_MASTER_HEADER]);
+  if (migratedMasterRows.length) {
+    masterSh.getRange(2, 1, migratedMasterRows.length, IQC_MASTER_HEADER.length).setValues(migratedMasterRows);
+  }
+  masterSh.getRange(1, 1, 1, IQC_MASTER_HEADER.length).setFontWeight('bold');
+  masterSh.setFrozenRows(1);
+  masterSh.setColumnWidths(1, IQC_MASTER_HEADER.length, 220);
+
   return {
     sheetName: SHEET_NAME,
-    headers: HEADER.slice()
+    headers: HEADER.slice(),
+    iqcMasterSheetName: IQC_MASTER_SHEET_NAME,
+    iqcMasterHeaders: IQC_MASTER_HEADER.slice()
   };
 }
 
@@ -93,6 +157,14 @@ function doPost(e) {
 
     if (action === 'setupdatabase' || action === 'setup') {
       return jsonOut({ ok: true, data: setupDatabase_() });
+    }
+
+    if (action === 'getiqcmaster') {
+      return jsonOut({ ok: true, data: getIqcMasterData_() });
+    }
+
+    if (action === 'upsertiqcmaster' || action === 'saveiqcmaster') {
+      return jsonOut({ ok: true, data: upsertIqcMaster_(body.data || body.master || {}) });
     }
 
     if (action === 'deleterecord') {
@@ -149,6 +221,132 @@ function doPost(e) {
   }
 }
 
+function getIqcMasterData_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    throw new Error('This script must be bound to a Google Spreadsheet');
+  }
+  let sh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  if (!sh) {
+    setupDatabase_();
+    sh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  }
+  if (sh && sh.getMaxColumns() < IQC_MASTER_HEADER.length) {
+    sh.insertColumnsAfter(sh.getMaxColumns(), IQC_MASTER_HEADER.length - sh.getMaxColumns());
+  }
+  const header = sh.getRange(1, 1, 1, IQC_MASTER_HEADER.length).getDisplayValues()[0];
+  if (!IQC_MASTER_HEADER.every((value, index) => String(header[index] || '').trim() === value)) {
+    setupDatabase_();
+    sh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  }
+  if (!sh || sh.getLastRow() < 2) {
+    return [];
+  }
+
+  const columnCount = Math.max(sh.getLastColumn(), IQC_MASTER_HEADER.length);
+  const values = sh.getRange(1, 1, sh.getLastRow(), columnCount).getDisplayValues();
+  const headerIndex = {};
+  values[0].forEach((header, index) => {
+    headerIndex[String(header || '').trim().toLowerCase()] = index;
+  });
+  const read = (row, key) => row[headerIndex[key] ?? -1] || '';
+  const isActive = (value) => {
+    const normalized = String(value || '').trim().toLowerCase();
+    return !['false', '0', 'no', 'n', 'inactive', 'ปิดใช้งาน'].includes(normalized);
+  };
+
+  return values.slice(1)
+    .map((row) => {
+      const lowLowerLimit = String(read(row, 'lowlowerlimit')).trim();
+      const lowUpperLimit = String(read(row, 'lowupperlimit')).trim();
+      const highLowerLimit = String(read(row, 'highlowerlimit')).trim();
+      const highUpperLimit = String(read(row, 'highupperlimit')).trim();
+      return {
+      analyzer: String(read(row, 'analyzer')).trim(),
+      controlName: String(read(row, 'controlname')).trim(),
+      lowLowerLimit,
+      lowUpperLimit,
+      lowUnit: String(read(row, 'lowunit')).trim(),
+      highLowerLimit,
+      highUpperLimit,
+      highUnit: String(read(row, 'highunit')).trim(),
+      lowAcceptRange: String(read(row, 'lowacceptrange')).trim() || [lowLowerLimit, lowUpperLimit].filter(Boolean).join('-'),
+      highAcceptRange: String(read(row, 'highacceptrange')).trim() || [highLowerLimit, highUpperLimit].filter(Boolean).join('-'),
+      active: isActive(read(row, 'active'))
+      };
+    })
+    .filter((item) => item.active && item.analyzer && item.controlName);
+}
+
+function upsertIqcMaster_(data) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    throw new Error('This script must be bound to a Google Spreadsheet');
+  }
+
+  const analyzer = String(data.analyzer || '').trim();
+  const controlName = String(data.controlName || '').trim();
+  if (!analyzer) {
+    throw new Error('กรุณาระบุเครื่องมือที่ใช้ตรวจวิเคราะห์');
+  }
+  if (!controlName) {
+    throw new Error('กรุณาระบุชื่อ Control');
+  }
+
+  let sh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  if (!sh) {
+    setupDatabase_();
+    sh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  }
+  if (!sh || sh.getLastColumn() < IQC_MASTER_HEADER.length) {
+    setupDatabase_();
+    sh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  }
+
+  const header = sh.getRange(1, 1, 1, IQC_MASTER_HEADER.length).getDisplayValues()[0];
+  if (!IQC_MASTER_HEADER.every((value, index) => String(header[index] || '').trim() === value)) {
+    setupDatabase_();
+    sh = ss.getSheetByName(IQC_MASTER_SHEET_NAME);
+  }
+
+  const lastRow = sh.getLastRow();
+  let rowIndex = 0;
+  if (lastRow >= 2) {
+    const analyzers = sh.getRange(2, 1, lastRow - 1, 1).getDisplayValues();
+    const matchIndex = analyzers.findIndex((row) => String(row[0] || '').trim() === analyzer);
+    if (matchIndex >= 0) {
+      rowIndex = matchIndex + 2;
+    }
+  }
+  if (!rowIndex) {
+    rowIndex = Math.max(2, sh.getLastRow() + 1);
+  }
+
+  const values = [[
+    analyzer,
+    controlName,
+    String(data.lowLowerLimit || '').trim(),
+    String(data.lowUpperLimit || '').trim(),
+    String(data.lowUnit || '').trim(),
+    String(data.highLowerLimit || '').trim(),
+    String(data.highUpperLimit || '').trim(),
+    String(data.highUnit || '').trim(),
+    data.active === false ? false : true
+  ]];
+  sh.getRange(rowIndex, 1, 1, IQC_MASTER_HEADER.length).setValues(values);
+  return {
+    analyzer,
+    controlName,
+    lowLowerLimit: values[0][2],
+    lowUpperLimit: values[0][3],
+    lowUnit: values[0][4],
+    highLowerLimit: values[0][5],
+    highUpperLimit: values[0][6],
+    highUnit: values[0][7],
+    active: values[0][8]
+  };
+}
+
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
@@ -157,7 +355,8 @@ function normalizeSignaturePayload_(record) {
   const direct = record || {};
   const operatorSource = Array.isArray(direct.operatorSignatureData)
     ? direct.operatorSignatureData
-    : (Array.isArray(direct.signatureData) ? direct.signatureData
+    : (Array.isArray(direct.signatureData)
+      ? direct.signatureData
       : (Array.isArray(direct.signatureData?.operator) ? direct.signatureData.operator : []));
   const supervisorSource = Array.isArray(direct.supervisorSignatureData)
     ? direct.supervisorSignatureData
@@ -198,19 +397,23 @@ function validateRecordPayload_(record) {
     return text;
   };
   const signature = normalizeSignaturePayload_(record);
+  if (type !== 'IQC_SUMMARY' && !signature.operator.length) {
+    throw new Error(type === 'EQA' ? 'กรุณาเซ็นชื่อผู้ทบทวนก่อนบันทึก' : 'กรุณาเซ็นชื่อผู้ปฏิบัติก่อนบันทึก');
+  }
+
   if (type === 'IQC_SUMMARY') {
-    const month = requiredText(data.summaryMonth, 'เดือนของรายงานสรุป', 7);
-    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month) || record.recordDate !== month + '-01') {
-      throw new Error('เดือนของรายงานสรุปไม่ตรงกับวันที่รายการ');
+    const month = requiredText(data.summaryMonth, 'เดือนที่สรุป', 7);
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+      throw new Error('เดือนที่สรุปไม่อยู่ในรูปแบบ YYYY-MM');
+    }
+    const recordDate = requiredDate(record.recordDate, 'วันที่สรุป');
+    if (recordDate !== month + '-01') {
+      throw new Error('วันที่สรุปไม่ตรงกับเดือนที่สรุป');
     }
     if (!signature.operator.length && !signature.supervisor.length) {
       throw new Error('กรุณาเซ็นชื่อผู้สรุปหรือผู้ตรวจสอบก่อนบันทึก');
     }
-  } else if (!Array.isArray(signature.operator) || !signature.operator.length) {
-    throw new Error(type === 'EQA' ? 'กรุณาเซ็นชื่อผู้ทบทวนก่อนบันทึก' : 'กรุณาเซ็นชื่อผู้ปฏิบัติก่อนบันทึก');
-  }
-
-  if (type === 'EQA') {
+  } else if (type === 'EQA') {
     requiredText(data.dept, 'หน่วยงาน', 100);
     requiredText(data.project, 'ชื่อโครงการ', 200);
     requiredText(data.round, 'รอบการประเมิน', 50);
@@ -229,13 +432,23 @@ function validateRecordPayload_(record) {
       requiredText(data.correctiveAction, 'วิธีการแก้ไขและผลการแก้ไข', 2000);
       requiredText(data.preventiveAction, 'แนวทางป้องกันการเกิดซ้ำ', 2000);
     }
-  } else if (type === 'IQC') {
+  } else {
     requiredDate(data.date, 'วันที่ตรวจสอบ');
+    requiredText(data.analyzer, 'เครื่องมือที่ใช้ตรวจวิเคราะห์', 150);
     requiredText(data.dept, 'หน่วยงานหรือแผนก', 100);
     requiredText(data.controlName, 'ชื่อ Control', 150);
     requiredText(data.lot, 'Lot Number', 100);
     requiredDate(data.exp, 'วันหมดอายุ');
+    requiredText(data.operatorName, 'ชื่อผู้ปฏิบัติ', 150);
+    requiredText(data.iqcLow && data.iqcLow.lowerLimit, 'Lower Limit ของ IQC Low', 30);
+    requiredText(data.iqcLow && data.iqcLow.upperLimit, 'Upper Limit ของ IQC Low', 30);
+    requiredText(data.iqcLow && data.iqcLow.unit, 'หน่วยของ IQC Low', 30);
+    requiredText(data.iqcLow && data.iqcLow.range, 'Accept Range ของ IQC Low', 100);
     const lowValue = requiredText(data.iqcLow && data.iqcLow.value, 'ผล IQC ระดับ Low', 30);
+    requiredText(data.iqcHigh && data.iqcHigh.lowerLimit, 'Lower Limit ของ IQC High', 30);
+    requiredText(data.iqcHigh && data.iqcHigh.upperLimit, 'Upper Limit ของ IQC High', 30);
+    requiredText(data.iqcHigh && data.iqcHigh.unit, 'หน่วยของ IQC High', 30);
+    requiredText(data.iqcHigh && data.iqcHigh.range, 'Accept Range ของ IQC High', 100);
     const highValue = requiredText(data.iqcHigh && data.iqcHigh.value, 'ผล IQC ระดับ High', 30);
     if (!isFinite(Number(lowValue)) || !isFinite(Number(highValue))) {
       throw new Error('ผล IQC ระดับ Low และ High ต้องเป็นตัวเลข');
