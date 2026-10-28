@@ -132,7 +132,7 @@ $(document).ready(async () => {
     moment.locale('th')
     liff.init({
         liffId: liff_id,
-        withLoginOnExternalBrowser: true
+        // withLoginOnExternalBrowser: true
     })
     liff.ready.then(async () => {
         // Initialize UX enhancements
