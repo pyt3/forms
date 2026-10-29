@@ -273,8 +273,9 @@ function renderWorkOrderDetail(detail) {
 }
 
 function renderFollowUpStatus(data, jobComplete = false) {
+    document.body.classList.remove('follow-up-warning', 'follow-up-overdue')
     if (!data?.follow_up_date) {
-        if (jobComplete) document.body.classList.remove('follow-up-overdue')
+        $('#follow-up-overdue-banner').addClass('hidden')
         return
     }
     const date = moment(typeof data.follow_up_date.toDate === 'function' ? data.follow_up_date.toDate() : data.follow_up_date)
@@ -282,10 +283,14 @@ function renderFollowUpStatus(data, jobComplete = false) {
 
     $('#follow-up-latest-date').text(date.format('dddd D MMMM YYYY'))
     $('#follow-up-latest').removeClass('hidden')
-    if (date.isSameOrBefore(moment(), 'day') && !jobComplete) {
+    const dueAt = date.clone().startOf('day').hour(8)
+    const now = moment()
+    const isWarning = now.isSameOrAfter(dueAt)
+    const isOverdue = now.isSameOrAfter(dueAt.clone().add(1, 'day'))
+    if (isWarning && !jobComplete) {
         $('#follow-up-overdue-date').text(date.format('DD/MM/YYYY'))
         $('#follow-up-overdue-banner').removeClass('hidden')
-        document.body.classList.add('follow-up-overdue')
+        document.body.classList.add(isOverdue ? 'follow-up-overdue' : 'follow-up-warning')
         if (!followUpAlertShown) {
             followUpAlertShown = true
             Swal.fire({
@@ -296,9 +301,8 @@ function renderFollowUpStatus(data, jobComplete = false) {
                 customClass: sweetalert_custom_class
             })
         }
-    } else if (jobComplete) {
+    } else {
         $('#follow-up-overdue-banner').addClass('hidden')
-        document.body.classList.remove('follow-up-overdue')
     }
 }
 
