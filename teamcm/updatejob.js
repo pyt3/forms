@@ -1561,7 +1561,7 @@ async function initialData() {
             jobid: jobid,
             update: update,
             name: name,
-            job_status: $('input[name="job-status"]:checked').val(),
+            job_status: $('input[name="job-status"]:checked').val() || ($('#job-status-complete').hasClass('hidden') ? undefined : 'งานจบแล้ว'),
             follow_up_date: $('#follow-up-date').val(),
             image: $('#image').attr('src'),
             date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }),
