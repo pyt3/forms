@@ -291,6 +291,7 @@ function renderFollowUpStatus(data, jobComplete = false) {
         $('#follow-up-overdue-date').text(date.format('DD/MM/YYYY'))
         $('#follow-up-overdue-banner').removeClass('hidden')
         document.body.classList.add(isOverdue ? 'follow-up-overdue' : 'follow-up-warning')
+        $('#follow-up-overdue-banner .follow-up-label').text(isOverdue ? 'เลยกำหนดติดตามงานแล้ว:' : 'ถึงกำหนดติดตามงาน:')
         if (!followUpAlertShown) {
             followUpAlertShown = true
             Swal.fire({
