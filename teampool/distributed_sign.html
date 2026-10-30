@@ -25,6 +25,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment-with-locales.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -186,6 +189,16 @@
           <p class="text-sm font-semibold tracking-wide text-orange-700">TEAM POOL</p>
           <p class="text-xs text-slate-500">ระบบส่งมอบเครื่องมือแพทย์</p>
         </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="historyButton" type="button"
+          class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-orange-200 px-4 py-2 text-sm font-semibold text-orange-700 transition hover:bg-orange-50">
+          <i data-lucide="history" class="h-4 w-4"></i><span>ประวัติ</span>
+        </button>
+        <button id="exportButton" type="button"
+          class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-700">
+          <i data-lucide="download" class="h-4 w-4"></i><span>Export</span>
+        </button>
       </div>
     </div>
   </header>
@@ -365,6 +378,16 @@
       return { exact: parsed.format('DD/MM/YYYY HH:mm'), relative: parsed.fromNow() };
     }
 
+    function signaturePreview(signature, width = 160, height = 56) {
+      if (!Array.isArray(signature?.vectorPath) || !signature.vectorPath.length) return '-';
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, signature.canvas?.width || 320);
+      canvas.height = Math.max(1, signature.canvas?.height || 100);
+      const pad = new SignaturePad(canvas, { penColor: signature.canvas?.penColor || '#0057B8' });
+      pad.fromData(signature.vectorPath);
+      return `<img style="width:${width}px;height:${height}px;object-fit:contain" src="${canvas.toDataURL('image/png')}" alt="ลายเซ็นผู้รับ">`;
+    }
+
     function orderDetails(orderNo, rows) {
       const departments = unique(rows.map(row => row.dept));
       const types = unique(rows.map(row => row.type));
@@ -492,6 +515,160 @@
         throw error;
       });
       return firebaseReady;
+    }
+
+    async function showSignatureHistory() {
+      const button = $('#historyButton');
+      button.disabled = true;
+      try {
+        const result = await Swal.fire({
+          title: 'ประวัติการเซ็นรับ', width: 900, heightAuto: false, confirmButtonText: 'ปิด', confirmButtonColor: '#ea580c',
+          html: `<div class="mb-4 grid gap-3 text-left sm:grid-cols-2">
+            <label class="text-xs text-slate-600">เดือน<input id="historyMonth" type="month" value="${moment().format('YYYY-MM')}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"></label>
+            <label class="text-xs text-slate-600">ผู้รับ (ตรงกัน)<input id="historyReceiver" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="ชื่อผู้รับ"></label>
+          </div><div id="historyResults" class="min-h-32 max-h-[55vh] overflow-auto text-left" aria-live="polite" aria-busy="true"></div>
+          <div class="mt-4 flex items-center justify-between"><button id="historyPrev" class="rounded-lg border px-4 py-2 text-sm disabled:opacity-40" disabled>ก่อนหน้า</button><span id="historyPage" class="text-sm text-slate-500">หน้า 1</span><button id="historyNext" class="rounded-lg border px-4 py-2 text-sm disabled:opacity-40" disabled>ถัดไป</button></div>`,
+          didOpen: () => {
+            let cursors = [null], page = 0, hasNext = false, loading = false;
+            const loadPage = async (reset = false) => {
+              if (loading) return;
+              if (reset) { cursors = [null]; page = 0; }
+              loading = true;
+              const results = $('#historyResults');
+              results.setAttribute('aria-busy', 'true');
+              results.innerHTML = `<div class="animate-pulse"><div class="grid grid-cols-5 gap-3 border-b bg-slate-50 p-3"><div class="h-4 rounded bg-slate-200"></div><div class="h-4 rounded bg-slate-200"></div><div class="h-4 rounded bg-slate-200"></div><div class="h-4 rounded bg-slate-200"></div><div class="h-4 rounded bg-slate-200"></div></div>${Array.from({ length: 6 }, () => '<div class="grid grid-cols-5 items-center gap-3 border-b p-3"><div class="h-4 rounded bg-slate-100"></div><div class="h-4 rounded bg-slate-100"></div><div class="h-4 rounded bg-slate-100"></div><div class="h-12 rounded bg-slate-100"></div><div class="h-4 rounded bg-slate-100"></div></div>').join('')}</div>`;
+              $('#historyPrev').disabled = $('#historyNext').disabled = true;
+              try {
+                await initFirebase();
+                const receiver = $('#historyReceiver').value.trim();
+                let query = firestore.collection(SIGNATURE_COLLECTION).where('site', '==', 'PYT3');
+                if (receiver) query = query.where('receiverName', '==', receiver);
+                const month = $('#historyMonth').value;
+                if (month) {
+                  const [year, monthNumber] = month.split('-').map(Number);
+                  query = query.where('signedAt', '>=', firebase.firestore.Timestamp.fromDate(new Date(year, monthNumber - 1, 1)));
+                  query = query.where('signedAt', '<', firebase.firestore.Timestamp.fromDate(new Date(year, monthNumber, 1)));
+                }
+                query = query.orderBy('signedAt', 'desc').limit(20);
+                if (cursors[page]) query = query.startAfter(cursors[page]);
+                const snapshot = await withTimeout(query.get(), 'โหลดประวัตินานเกินไป กรุณาลองใหม่');
+                hasNext = snapshot.docs.length === 20;
+                if (hasNext) cursors[page + 1] = snapshot.docs[snapshot.docs.length - 1];
+                results.innerHTML = snapshot.empty ? '<p class="py-10 text-center text-sm text-slate-500">ไม่พบประวัติ</p>' : `<table class="w-full min-w-[800px] border-collapse text-sm"><thead><tr class="border-b bg-slate-50 text-left text-slate-600"><th class="whitespace-nowrap p-3">เลขใบยืม</th><th class="whitespace-nowrap p-3">ผู้รับ</th><th class="whitespace-nowrap p-3">หน่วยงาน</th><th class="whitespace-nowrap p-3">ลายเซ็น</th><th class="whitespace-nowrap p-3">วันที่เซ็น</th></tr></thead><tbody>${snapshot.docs.map(doc => { const record = doc.data(); return `<tr class="border-b"><td class="whitespace-nowrap p-3 font-mono">${escapeHtml(record.borrowOrderNo || doc.id)}</td><td class="whitespace-nowrap p-3">${escapeHtml(record.receiverName || '-')}</td><td class="whitespace-nowrap p-3">${escapeHtml(record.dept || '-')}</td><td class="whitespace-nowrap p-3">${signaturePreview(record.signature)}</td><td class="whitespace-nowrap p-3">${escapeHtml(record.signedAt?.toDate?.().toLocaleString('th-TH') || '-')}</td></tr>`; }).join('')}</tbody></table>`;
+                results.setAttribute('aria-busy', 'false');
+                $('#historyPrev').disabled = page === 0;
+                $('#historyNext').disabled = !hasNext;
+                $('#historyPage').textContent = `หน้า ${page + 1}`;
+              } catch (error) {
+                console.error('load signature history page:', error);
+                results.setAttribute('aria-busy', 'false');
+                results.innerHTML = `<p class="py-10 text-center text-sm text-rose-600">${escapeHtml(error.message || 'โหลดประวัติไม่สำเร็จ')}</p>`;
+              } finally { loading = false; }
+            };
+            $('#historyReceiver').addEventListener('change', () => loadPage(true));
+            $('#historyMonth').addEventListener('change', () => loadPage(true));
+            $('#historyPrev').addEventListener('click', () => { if (page > 0) { page -= 1; loadPage(); } });
+            $('#historyNext').addEventListener('click', () => { if (hasNext) { page += 1; loadPage(); } });
+            loadPage();
+          }
+        });
+      } catch (error) {
+        console.error('load signature history:', error);
+        showToast(error.message || 'โหลดประวัติไม่สำเร็จ');
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function exportSignatureHistory(month, type) {
+      await initFirebase();
+      const [year, monthNumber] = month.split('-').map(Number);
+      const start = firebase.firestore.Timestamp.fromDate(new Date(year, monthNumber - 1, 1));
+      const end = firebase.firestore.Timestamp.fromDate(new Date(year, monthNumber, 1));
+      const records = [];
+      let cursor = null;
+      while (true) {
+        let query = firestore.collection(SIGNATURE_COLLECTION)
+          .where('site', '==', 'PYT3').where('signedAt', '>=', start).where('signedAt', '<', end)
+          .orderBy('signedAt', 'desc').limit(500);
+        if (cursor) query = query.startAfter(cursor);
+        const snapshot = await withTimeout(query.get(), 'โหลดข้อมูลส่งออกนานเกินไป กรุณาลองใหม่');
+        records.push(...snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        if (snapshot.docs.length < 500) break;
+        cursor = snapshot.docs[snapshot.docs.length - 1];
+      }
+      if (!records.length) throw new Error('ไม่พบข้อมูลในเดือนที่เลือก');
+      const filename = `ประวัติการเซ็นรับ_${month}`;
+      if (type === 'excel') {
+        const rows = [['เลขใบยืม', 'ผู้รับ', 'หน่วยงาน', 'วันที่เซ็น'], ...records.map(record => [record.borrowOrderNo || record.id, record.receiverName || '', record.dept || '', record.signedAt?.toDate?.().toLocaleString('th-TH') || ''])];
+        const sheet = XLSX.utils.aoa_to_sheet(rows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, sheet, 'ประวัติ');
+        XLSX.writeFile(workbook, `${filename}.xlsx`);
+        return;
+      }
+      const report = document.createElement('div');
+      report.style.cssText = 'position:absolute;left:0;top:0;z-index:1040';
+      document.body.appendChild(report);
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        const pageWidth = pdf.internal.pageSize.getWidth() - 16, pageHeight = pdf.internal.pageSize.getHeight() - 16;
+        const pageHeader = `<div style="margin-bottom:6px"><img src="../nhealthlab/nhealth-logo.png" alt="Nhealth" style="width:180px;height:72px;object-fit:contain;object-position:left center"></div><div style="margin-bottom:12px"><h1 style="margin:0;font-size:32px">ประวัติการเซ็นรับเครื่องมือแพทย์</h1><p style="margin:2px 0">เดือน ${escapeHtml(month)} · ${records.length} รายการ</p></div><table style="width:100%;table-layout:fixed;border-collapse:collapse;font-size:20px"><colgroup><col style="width:7%"><col style="width:16%"><col style="width:15%"><col style="width:19%"><col style="width:17%"><col style="width:26%"></colgroup><thead><tr style="background:#fff7ed"><th style="border:1px solid #cbd5e1;padding:6px">ลำดับ</th><th style="border:1px solid #cbd5e1;padding:6px">เลขใบยืม</th><th style="border:1px solid #cbd5e1;padding:6px">ผู้รับ</th><th style="border:1px solid #cbd5e1;padding:6px">หน่วยงาน</th><th style="border:1px solid #cbd5e1;padding:6px">ลายเซ็น</th><th style="border:1px solid #cbd5e1;padding:6px">วันที่เซ็น</th></tr></thead><tbody></tbody></table>`;
+        const makePage = () => {
+          const section = document.createElement('section');
+          section.className = 'signature-export-page';
+          section.style.cssText = "box-sizing:border-box;width:760px;padding:28px;background:white;color:#0f172a;font-family:'Browallia New',Browallia,Tahoma,sans-serif;font-size:20px";
+          section.innerHTML = pageHeader;
+          report.appendChild(section);
+          return section;
+        };
+        let page = makePage();
+        for (const [index, record] of records.entries()) {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td style="border:1px solid #cbd5e1;padding:6px;text-align:center">${index + 1}</td><td style="border:1px solid #cbd5e1;padding:6px;overflow-wrap:anywhere">${escapeHtml(record.borrowOrderNo || record.id)}</td><td style="border:1px solid #cbd5e1;padding:6px;overflow-wrap:anywhere">${escapeHtml(record.receiverName || '-')}</td><td style="border:1px solid #cbd5e1;padding:6px;overflow-wrap:anywhere">${escapeHtml(record.dept || '-')}</td><td style="border:1px solid #cbd5e1;padding:4px;text-align:center">${signaturePreview(record.signature, 70, 25)}</td><td style="border:1px solid #cbd5e1;padding:6px">${escapeHtml(record.signedAt?.toDate?.().toLocaleString('th-TH') || '-')}</td>`;
+          page.querySelector('tbody').appendChild(row);
+          if (page.querySelectorAll('tbody tr').length > 1 && page.getBoundingClientRect().height > 760 * pageHeight / pageWidth) {
+            row.remove();
+            page = makePage();
+            page.querySelector('tbody').appendChild(row);
+          }
+        }
+        await document.fonts.ready;
+        await Promise.all([...report.querySelectorAll('img')].map(img => img.decode().catch(() => {})));
+        for (const [index, page] of [...report.querySelectorAll('.signature-export-page')].entries()) {
+          const canvas = await html2canvas(page, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+          const scale = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+          if (index) pdf.addPage();
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.96), 'JPEG', 8, 8, canvas.width * scale, canvas.height * scale);
+        }
+        pdf.save(`${filename}.pdf`);
+      } finally { report.remove(); }
+    }
+
+    async function showSignatureExport() {
+      const button = $('#exportButton');
+      button.disabled = true;
+      try {
+        const { isConfirmed, value } = await Swal.fire({
+          title: 'Export ประวัติการเซ็น', confirmButtonText: 'ส่งออก', confirmButtonColor: '#ea580c', showCancelButton: true, cancelButtonText: 'ยกเลิก',
+          html: `<div class="space-y-3 text-left"><label class="block text-xs text-slate-600">เดือน<input id="exportMonth" type="month" value="${moment().format('YYYY-MM')}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"></label><label class="block text-xs text-slate-600">ชนิดไฟล์<select id="exportType" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"><option value="pdf">PDF (ตารางพร้อมลายเซ็น)</option><option value="excel">Excel</option></select></label></div>`,
+          preConfirm: () => {
+            const month = $('#exportMonth').value;
+            if (!month) { Swal.showValidationMessage('กรุณาเลือกเดือน'); return false; }
+            return { month, type: $('#exportType').value };
+          }
+        });
+        if (isConfirmed && value) {
+          showLoadingDialog('กำลังโหลดข้อมูลสำหรับส่งออก...');
+          await exportSignatureHistory(value.month, value.type);
+          Swal.close();
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('export signature history:', error);
+        showToast(error.message || 'ส่งออกไม่สำเร็จ');
+      } finally { button.disabled = false; }
     }
 
     function resizeCanvas() {
@@ -679,6 +856,7 @@
     }
     function showError(message) { $('#formError').textContent = message; $('#formError').classList.remove('hidden'); }
     function showToast(message) { const toast = $('#toast'); toast.textContent = message; toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), 3600); }
+    function showLoadingDialog(title) { Swal.fire({ title, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, didOpen: () => Swal.showLoading() }); }
 
     async function saveSignature(event) {
       event.preventDefault();
@@ -716,6 +894,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       initializeLocale();
       lucide.createIcons(); loadOrders();
+      $('#historyButton').addEventListener('click', showSignatureHistory);
+      $('#exportButton').addEventListener('click', showSignatureExport);
       $('#searchInput').addEventListener('input', event => renderOrders(event.target.value));
       $('#loadMoreButton').addEventListener('click', () => loadOrders(currentPage + 1, true));
       $('#signForm').addEventListener('submit', saveSignature); $('#clearSignature').addEventListener('click', () => signaturePad?.clear());
