@@ -308,6 +308,7 @@ function renderFollowUpStatus(data, jobComplete = false) {
 }
 
 async function renderLatestJobStatus(jobId) {
+    if (current_user?.site?.toUpperCase() !== 'PYT3') return false
     try {
         const updates = await firestore.collection('jobdata/').doc(jobId).collection('update').get()
         const latest = updates.docs
@@ -531,6 +532,9 @@ async function initialData() {
     $('.load-bar').fadeOut(500)
     $.LoadingOverlay("hide");
     $('#name optgroup').not('[label="' + user_site + '"]').remove()
+    if (user_site.toUpperCase() !== 'PYT3') {
+        $('#job-status-picker, #job-status-complete').addClass('hidden')
+    }
 
     let code = url.searchParams.get("code");
     let action = url.searchParams.get("action");
@@ -1561,13 +1565,15 @@ async function initialData() {
             jobid: jobid,
             update: update,
             name: name,
-            job_status: $('input[name="job-status"]:checked').val() || ($('#job-status-complete').hasClass('hidden') ? undefined : 'งานจบแล้ว'),
+            job_status: current_user.site.toUpperCase() === 'PYT3'
+                ? ($('input[name="job-status"]:checked').val() || ($('#job-status-complete').hasClass('hidden') ? undefined : 'งานจบแล้ว'))
+                : null,
             follow_up_date: $('#follow-up-date').val(),
             image: $('#image').attr('src'),
             date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }),
             // thread_id: tg_thread_id
         }
-        if (!update_data.job_status) {
+        if (current_user.site.toUpperCase() === 'PYT3' && !update_data.job_status) {
             Swal.fire({ icon: 'error', title: 'กรุณาเลือกสถานะงาน', customClass: sweetalert_custom_class });
         } else if (update_data.job_status === 'ต้องตามงานต่อ' && !update_data.follow_up_date) {
             Swal.fire({ icon: 'error', title: 'กรุณาเลือกวันที่ต้องติดตาม', customClass: sweetalert_custom_class });
@@ -1842,14 +1848,16 @@ async function updateData(update_data) {
     }).catch(err => {
         console.log(err);
     })
-    try {
-        await firestore.collection('jobdata/').doc(update_data.jobid).set({
-            follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
-        }, { merge: true })
-    } catch (error) {
-        console.error('Save follow-up status failed:', error)
-        Swal.fire({ icon: 'error', title: 'บันทึกสถานะติดตามไม่สำเร็จ', text: 'กรุณาลองใหม่อีกครั้ง', customClass: sweetalert_custom_class })
-        return
+    if (current_user.site.toUpperCase() === 'PYT3') {
+        try {
+            await firestore.collection('jobdata/').doc(update_data.jobid).set({
+                follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
+            }, { merge: true })
+        } catch (error) {
+            console.error('Save follow-up status failed:', error)
+            Swal.fire({ icon: 'error', title: 'บันทึกสถานะติดตามไม่สำเร็จ', text: 'กรุณาลองใหม่อีกครั้ง', customClass: sweetalert_custom_class })
+            return
+        }
     }
     if (update_data.job_status === 'งานจบแล้ว') {
         $('#job-status-picker').addClass('hidden')
