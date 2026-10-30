@@ -614,12 +614,13 @@
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
         const pageWidth = pdf.internal.pageSize.getWidth() - 16, pageHeight = pdf.internal.pageSize.getHeight() - 16;
-        const pageHeader = `<div style="margin-bottom:6px"><img src="../nhealthlab/nhealth-logo.png" alt="Nhealth" style="width:180px;height:72px;object-fit:contain;object-position:left center"></div><div style="margin-bottom:12px"><h1 style="margin:0;font-size:32px">ประวัติการเซ็นรับเครื่องมือแพทย์</h1><p style="margin:2px 0">เดือน ${escapeHtml(month)} · ${records.length} รายการ</p></div><table style="width:100%;table-layout:fixed;border-collapse:collapse;font-size:20px"><colgroup><col style="width:7%"><col style="width:16%"><col style="width:15%"><col style="width:19%"><col style="width:17%"><col style="width:26%"></colgroup><thead><tr style="background:#fff7ed"><th style="border:1px solid #cbd5e1;padding:6px">ลำดับ</th><th style="border:1px solid #cbd5e1;padding:6px">เลขใบยืม</th><th style="border:1px solid #cbd5e1;padding:6px">ผู้รับ</th><th style="border:1px solid #cbd5e1;padding:6px">หน่วยงาน</th><th style="border:1px solid #cbd5e1;padding:6px">ลายเซ็น</th><th style="border:1px solid #cbd5e1;padding:6px">วันที่เซ็น</th></tr></thead><tbody></tbody></table>`;
+        const pageHeader = `<div style="width:180px;height:76px;overflow:hidden;margin-bottom:2px"><img src="../nhealthlab/nhealth-logo.png" alt="Nhealth" style="display:block;width:180px;height:auto;margin-top:-52px"></div><div style="margin-bottom:8px"><h1 style="margin:0;font-size:32px">ประวัติการเซ็นรับเครื่องมือแพทย์</h1><p style="margin:2px 0">เดือน ${escapeHtml(month)} · ${records.length} รายการ</p></div><table style="width:100%;table-layout:fixed;border-collapse:collapse;font-size:20px"><colgroup><col style="width:7%"><col style="width:16%"><col style="width:15%"><col style="width:19%"><col style="width:17%"><col style="width:26%"></colgroup><thead><tr style="background:#fff7ed"><th style="border:1px solid #cbd5e1;padding:6px">ลำดับ</th><th style="border:1px solid #cbd5e1;padding:6px">เลขใบยืม</th><th style="border:1px solid #cbd5e1;padding:6px">ผู้รับ</th><th style="border:1px solid #cbd5e1;padding:6px">หน่วยงาน</th><th style="border:1px solid #cbd5e1;padding:6px">ลายเซ็น</th><th style="border:1px solid #cbd5e1;padding:6px">วันที่เซ็น</th></tr></thead><tbody></tbody></table>`;
         const makePage = () => {
           const section = document.createElement('section');
           section.className = 'signature-export-page';
-          section.style.cssText = "box-sizing:border-box;width:760px;padding:28px;background:white;color:#0f172a;font-family:'Browallia New',Browallia,Tahoma,sans-serif;font-size:20px";
+          section.style.cssText = "box-sizing:border-box;width:760px;padding:0 0 16px;background:white;color:#0f172a;font-family:'Browallia New',Browallia,Tahoma,sans-serif;font-size:20px";
           section.innerHTML = pageHeader;
+          section.querySelectorAll('th').forEach(cell => { cell.style.verticalAlign = 'middle'; });
           report.appendChild(section);
           return section;
         };
@@ -627,6 +628,7 @@
         for (const [index, record] of records.entries()) {
           const row = document.createElement('tr');
           row.innerHTML = `<td style="border:1px solid #cbd5e1;padding:6px;text-align:center">${index + 1}</td><td style="border:1px solid #cbd5e1;padding:6px;overflow-wrap:anywhere">${escapeHtml(record.borrowOrderNo || record.id)}</td><td style="border:1px solid #cbd5e1;padding:6px;overflow-wrap:anywhere">${escapeHtml(record.receiverName || '-')}</td><td style="border:1px solid #cbd5e1;padding:6px;overflow-wrap:anywhere">${escapeHtml(record.dept || '-')}</td><td style="border:1px solid #cbd5e1;padding:4px;text-align:center">${signaturePreview(record.signature, 70, 25)}</td><td style="border:1px solid #cbd5e1;padding:6px">${escapeHtml(record.signedAt?.toDate?.().toLocaleString('th-TH') || '-')}</td>`;
+          row.querySelectorAll('td').forEach(cell => { cell.style.verticalAlign = 'middle'; });
           page.querySelector('tbody').appendChild(row);
           if (page.querySelectorAll('tbody tr').length > 1 && page.getBoundingClientRect().height > 760 * pageHeight / pageWidth) {
             row.remove();
