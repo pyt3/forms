@@ -1,4 +1,3 @@
-AOS.init();
 document.addEventListener("DOMContentLoaded", function () {
     NProgress.start();
     NProgress.inc()
@@ -272,22 +271,44 @@ function renderWorkOrderDetail(detail) {
     $('#workorder-detail-text').text(value)
 }
 
-function renderFollowUpStatus(data, jobComplete = false) {
+function formatDowntime(seconds) {
+    const totalMinutes = Math.floor(Math.max(0, seconds) / 60)
+    const days = Math.floor(totalMinutes / 1440)
+    const hours = Math.floor((totalMinutes % 1440) / 60)
+    const minutes = totalMinutes % 60
+    return `${days} วัน ${hours} ชั่วโมง ${minutes} นาที`
+}
+
+function renderFollowUpStatus(data, jobStatus = null) {
     document.body.classList.remove('follow-up-warning', 'follow-up-overdue')
-    if (!data?.follow_up_date) {
+    const date = data?.follow_up_date
+        ? moment(typeof data.follow_up_date.toDate === 'function' ? data.follow_up_date.toDate() : data.follow_up_date)
+        : null
+    const hasFollowUpDate = !!date?.isValid()
+    $('#follow-up-latest-date-row').toggleClass('hidden', !hasFollowUpDate)
+    if (hasFollowUpDate) $('#follow-up-latest-date').text(date.format('dddd D MMMM YYYY'))
+
+    let downtimeSummary = ''
+    if (jobStatus === 'งานจบแล้ว' && Number.isFinite(data?.downtime)) {
+        downtimeSummary = 'ระยะเวลางดใช้งานรวม: ' + formatDowntime(data.downtime)
+    } else if (jobStatus === 'ต้องตามงานต่อ' && data?.downtime_start) {
+        const start = moment(typeof data.downtime_start.toDate === 'function' ? data.downtime_start.toDate() : data.downtime_start)
+        if (start.isValid()) {
+            downtimeSummary = 'เริ่มงดใช้งาน: ' + start.format('D MMM YYYY HH:mm') + ' · ผ่านมา ' + formatDowntime(moment().diff(start, 'seconds'))
+        }
+    }
+    $('#follow-up-latest-downtime').text(downtimeSummary).toggleClass('hidden', !downtimeSummary)
+    $('#follow-up-latest').toggleClass('hidden', !hasFollowUpDate && !downtimeSummary)
+    if (!hasFollowUpDate) {
         $('#follow-up-overdue-banner').addClass('hidden')
         return
     }
-    const date = moment(typeof data.follow_up_date.toDate === 'function' ? data.follow_up_date.toDate() : data.follow_up_date)
-    if (!date.isValid()) return
 
-    $('#follow-up-latest-date').text(date.format('dddd D MMMM YYYY'))
-    $('#follow-up-latest').removeClass('hidden')
     const dueAt = date.clone().startOf('day').hour(8)
     const now = moment()
     const isWarning = now.isSameOrAfter(dueAt)
     const isOverdue = now.isSameOrAfter(dueAt.clone().add(1, 'day'))
-    if (isWarning && !jobComplete) {
+    if (isWarning && jobStatus !== 'งานจบแล้ว') {
         $('#follow-up-overdue-date').text(date.format('DD/MM/YYYY'))
         $('#follow-up-overdue-banner').removeClass('hidden')
         document.body.classList.add(isOverdue ? 'follow-up-overdue' : 'follow-up-warning')
@@ -319,7 +340,7 @@ async function renderLatestJobStatus(jobId) {
             $('#job-status-picker').addClass('hidden')
             $('#job-status-complete').removeClass('hidden')
         }
-        return latest?.job_status === 'งานจบแล้ว'
+        return latest?.job_status || null
     } catch (error) {
         console.error('Load latest job status failed:', error)
         return false
@@ -1548,7 +1569,12 @@ async function initialData() {
     flatpickr.localize(flatpickr.l10ns.th);
     flatpickr('#follow-up-date', { altInput: true, altFormat: 'l d F Y', dateFormat: 'Y-m-d', minDate: new Date().fp_incr(1) });
     $('input[name="job-status"]').on('change', function () {
-        $('#follow-up-date-wrap').toggleClass('hidden', this.value !== 'ต้องตามงานต่อ');
+        const followUp = this.value === 'ต้องตามงานต่อ';
+        $('#follow-up-date-wrap').toggleClass('hidden', !followUp);
+        if (!followUp) $('#equipment-down').prop('checked', false).trigger('change');
+    });
+    $('#equipment-down').on('change', function () {
+        $(this).closest('.equipment-down-option').toggleClass('is-checked', this.checked);
     });
 
     $("#submit").click(() => {
@@ -1559,15 +1585,19 @@ async function initialData() {
         console.log("🚀 !! update001:", update)
         let name = $("#name").val();
         let code = $("#code").val();
+        const jobStatus = current_user.site.toUpperCase() === 'PYT3'
+            ? ($('input[name="job-status"]:checked').val() || ($('#job-status-complete').hasClass('hidden') ? undefined : 'งานจบแล้ว'))
+            : null;
+        const down = jobStatus === 'ต้องตามงานต่อ' && $('#equipment-down').is(':checked');
+        if (down) update += (update ? '\n' : '') + '[Equipment down]';
         update_data = {
             wo: wo ? ('WO.' + wo) : '------',
             code: code,
             jobid: jobid,
             update: update,
             name: name,
-            job_status: current_user.site.toUpperCase() === 'PYT3'
-                ? ($('input[name="job-status"]:checked').val() || ($('#job-status-complete').hasClass('hidden') ? undefined : 'งานจบแล้ว'))
-                : null,
+            job_status: jobStatus,
+            down: down ? true : null,
             follow_up_date: $('#follow-up-date').val(),
             image: $('#image').attr('src'),
             date: new Date().toLocaleString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }),
@@ -1840,6 +1870,7 @@ async function updateData(update_data) {
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         code: update_data.code,
         job_status: update_data.job_status,
+        down: update_data.down,
         follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
         updated_by_uid: uid,
     }).then(async (docRef) => {
@@ -1850,9 +1881,31 @@ async function updateData(update_data) {
     })
     if (current_user.site.toUpperCase() === 'PYT3') {
         try {
-            await firestore.collection('jobdata/').doc(update_data.jobid).set({
-                follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
-            }, { merge: true })
+            const jobRef = firestore.collection('jobdata/').doc(update_data.jobid)
+            const trackingData = await firestore.runTransaction(async transaction => {
+                const jobSnapshot = await transaction.get(jobRef)
+                const jobData = jobSnapshot.data() || {}
+                const now = new Date()
+                const patch = {
+                    follow_up_date: update_data.job_status === 'ต้องตามงานต่อ' ? update_data.follow_up_date : null,
+                    down: update_data.job_status === 'งานจบแล้ว' ? null : update_data.down,
+                }
+                if (update_data.job_status === 'ต้องตามงานต่อ' && update_data.down && !jobData.downtime_start) {
+                    patch.downtime_start = firebase.firestore.Timestamp.fromDate(now)
+                }
+                if (update_data.job_status === 'งานจบแล้ว' && jobData.downtime_start) {
+                    const start = typeof jobData.downtime_start.toDate === 'function'
+                        ? jobData.downtime_start.toDate()
+                        : new Date(jobData.downtime_start)
+                    if (!Number.isNaN(start.getTime())) {
+                        patch.downtime_end = firebase.firestore.Timestamp.fromDate(now)
+                        patch.downtime = Math.max(0, Math.floor((now.getTime() - start.getTime()) / 1000))
+                    }
+                }
+                transaction.set(jobRef, patch, { merge: true })
+                return { ...jobData, ...patch }
+            })
+            renderFollowUpStatus(trackingData, update_data.job_status)
         } catch (error) {
             console.error('Save follow-up status failed:', error)
             Swal.fire({ icon: 'error', title: 'บันทึกสถานะติดตามไม่สำเร็จ', text: 'กรุณาลองใหม่อีกครั้ง', customClass: sweetalert_custom_class })
@@ -1862,7 +1915,7 @@ async function updateData(update_data) {
     if (update_data.job_status === 'งานจบแล้ว') {
         $('#job-status-picker').addClass('hidden')
         $('#job-status-complete').removeClass('hidden')
-        $('#follow-up-latest, #follow-up-overdue-banner').addClass('hidden')
+        $('#follow-up-overdue-banner').addClass('hidden')
         document.body.classList.remove('follow-up-overdue')
     }
     // if (current_user.site == 'PYT3') {
@@ -2882,11 +2935,14 @@ async function receivejob() {
     }
 }
 function renderContact() {
-    let ul = $('<ul></ul>').addClass('list-group list-group-flush')
+    let ul = $('<ul class="divide-y divide-gray-200"></ul>')
     if (contactList.length == 0) {
-        $('#vendor-contact-list').html('<div class="text-black-50 text-center py-3">ไม่มีรายชื่อผู้ติดต่อ</div>')
+        $('#vendor-contact-list').addClass('hidden').empty()
+        $('#vendor-contact-empty').removeClass('hidden')
         return
     }
+    $('#vendor-contact-empty').addClass('hidden')
+    $('#vendor-contact-list').removeClass('hidden')
     contactList.forEach((contact, index) => {
         console.log("🚀 !! contact:", contact)
         let [name, phone, role] = contact.split('|').map(x => x.trim())
@@ -2895,13 +2951,13 @@ function renderContact() {
         const safePhone = escapeRelatedRepairHtml(phone)
         const safePhoneHref = encodeURIComponent(phone)
         const safeRole = escapeRelatedRepairHtml(role)
-        let contactCard = $('<li class="flex justify-between items-center py-3 px-4 border-b border-gray-200 hover:bg-gray-50 transition-colors gap-2">' +
-            '<div class="min-w-0 flex-grow"><div class="flex items-center gap-2 mb-1"><div class="font-semibold text-gray-900 truncate w-0 flex-1">' + safeName + '</div>' +
-            '<span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">' + safeRole + '</span></div><div class="text-sm text-gray-600">' +
-            '<a href="tel:' + safePhoneHref + '" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 underline decoration-1 transition-colors cursor-pointer"><i class="bi bi-telephone-fill" aria-hidden="true"></i>' + safePhone + '</a></div></div>' +
-            '<div class="flex shrink-0 gap-1 bg-gray-100 rounded-lg p-1"><button type="button" class="edit-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-amber-500 hover:text-white text-amber-600 rounded-md transition-all shadow-sm" data-index="' + index + '" aria-label="แก้ไข ' + safeName + '" title="แก้ไข">' +
-            '<i class="bi bi-pencil" aria-hidden="true"></i></button><button type="button" class="delete-contact inline-flex min-h-11 min-w-11 items-center justify-center bg-white hover:bg-red-500 hover:text-white text-red-600 rounded-md transition-all shadow-sm" data-index="' + index + '" aria-label="ลบ ' + safeName + '" title="ลบ">' +
-            '<i class="bi bi-trash" aria-hidden="true"></i></button></div></li>')
+        let contactCard = $('<li class="flex flex-row items-start gap-3 p-4 transition-colors hover:bg-gray-50">' +
+            '<div class="min-w-0 flex-1"><div class="mb-2 flex flex-wrap items-center gap-2"><div class="max-w-full break-words font-semibold text-gray-900">' + safeName + '</div>' +
+            '<span class="inline-flex max-w-full break-words rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">' + safeRole + '</span></div><div class="text-sm text-gray-600">' +
+            '<a href="tel:' + safePhoneHref + '" class="inline-flex min-h-8 max-w-full items-center gap-2 break-all text-blue-600 underline decoration-1 transition-colors hover:text-blue-800"><i class="bi bi-telephone-fill shrink-0" aria-hidden="true"></i>' + safePhone + '</a></div></div>' +
+            '<details class="relative shrink-0"><summary class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-lg text-gray-600 hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600" aria-label="ตัวเลือกสำหรับ ' + safeName + '" title="ตัวเลือก"><i class="bi bi-three-dots-vertical" aria-hidden="true"></i></summary>' +
+            '<div class="absolute right-0 z-20 mt-1 w-36 overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg"><button type="button" class="edit-contact flex min-h-11 w-full items-center gap-3 px-3 text-left text-sm text-gray-700 hover:bg-gray-100" data-index="' + index + '"><i class="bi bi-pencil text-amber-600" aria-hidden="true"></i>แก้ไข</button>' +
+            '<button type="button" class="delete-contact flex min-h-11 w-full items-center gap-3 px-3 text-left text-sm text-red-700 hover:bg-red-50" data-index="' + index + '"><i class="bi bi-trash" aria-hidden="true"></i>ลบ</button></div></details></li>')
         ul.append(contactCard)
     })
 
@@ -2909,6 +2965,7 @@ function renderContact() {
     $('#vendor-contact-list').append(ul)
     // Add delete functionality
     $(document).off('click.contactDelete', '.delete-contact').on('click.contactDelete', '.delete-contact', function () {
+        $(this).closest('details').prop('open', false)
         Swal.fire({
             title: 'ลบรายชื่อผู้ติดต่อ',
             text: 'คุณแน่ใจหรือไม่ว่าต้องการลบรายชื่อนี้?',
@@ -2934,6 +2991,7 @@ function renderContact() {
 
     // Add edit functionality
     $(document).off('click.contactEdit', '.edit-contact').on('click.contactEdit', '.edit-contact', function () {
+        $(this).closest('details').prop('open', false)
         let index = $(this).data('index')
         let contact = contactList[index]
         let [currentName, currentPhone, currentRole] = contact.split('|').map(x => x.trim())
@@ -2941,16 +2999,17 @@ function renderContact() {
         Swal.fire({
             title: 'แก้ไขรายชื่อผู้ติดต่อ',
             html:
-                '<label for="edit-contact-name" class="d-block text-start mb-1">ชื่อ</label><input id="edit-contact-name" maxlength="120" class="form-control mb-3 form-control-lg" placeholder="ชื่อ" value="' + escapeRelatedRepairHtml(currentName) + '">' +
-                '<label for="edit-contact-phone" class="d-block text-start mb-1">เบอร์โทรศัพท์</label><input id="edit-contact-phone" maxlength="40" inputmode="tel" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์" value="' + escapeRelatedRepairHtml(currentPhone) + '">' +
-                '<label for="edit-contact-role" class="d-block text-start mb-1">ประเภท</label><select id="edit-contact-role" class="form-select mb-3 form-control-lg">' +
+                '<div class="space-y-4 text-left">' +
+                '<div><label for="edit-contact-name" class="mb-1 block text-sm font-semibold text-gray-700">ชื่อ</label><input id="edit-contact-name" maxlength="120" class="block w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="กรอกชื่อ" value="' + escapeRelatedRepairHtml(currentName) + '"></div>' +
+                '<div><label for="edit-contact-phone" class="mb-1 block text-sm font-semibold text-gray-700">เบอร์โทรศัพท์</label><input id="edit-contact-phone" maxlength="40" inputmode="tel" class="block w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="กรอกเบอร์โทรศัพท์" value="' + escapeRelatedRepairHtml(currentPhone) + '"></div>' +
+                '<div><label for="edit-contact-role" class="mb-1 block text-sm font-semibold text-gray-700">ประเภท</label><select id="edit-contact-role" class="block w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200">' +
                 '<option value="" disabled>เลือกประเภท</option>' +
                 '<option value="เซลล์" ' + (currentRole === 'เซลล์' ? 'selected' : '') + '>เซลล์</option>' +
                 '<option value="ช่างซ่อม" ' + (currentRole === 'ช่างซ่อม' ? 'selected' : '') + '>ช่างซ่อม</option>' +
                 '<option value="ช่าง PM" ' + (currentRole === 'ช่าง PM' ? 'selected' : '') + '>ช่าง PM</option>' +
                 '<option value="ช่างซ่อม+PM" ' + (currentRole === 'ช่างซ่อม+PM' ? 'selected' : '') + '>ช่างซ่อม+PM</option>' +
                 '<option value="specialist" ' + (currentRole === 'specialist' ? 'selected' : '') + '>specialist</option>' +
-                '</select>',
+                '</select></div></div>',
             focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'บันทึก',
@@ -2986,16 +3045,17 @@ function addContact() {
     Swal.fire({
         title: 'เพิ่มรายชื่อผู้ติดต่อ',
         html:
-            '<label for="contact-name" class="d-block text-start mb-1">ชื่อ</label><input id="contact-name" maxlength="120" class="form-control mb-3 form-control-lg" placeholder="ชื่อ">' +
-            '<label for="contact-phone" class="d-block text-start mb-1">เบอร์โทรศัพท์</label><input id="contact-phone" maxlength="40" inputmode="tel" class="form-control mb-3 form-control-lg" placeholder="เบอร์โทรศัพท์">' +
-            '<label for="contact-role" class="d-block text-start mb-1">ประเภท</label><select id="contact-role" class="form-select mb-3 form-control-lg">' +
+            '<div class="space-y-4 text-left">' +
+            '<div><label for="contact-name" class="mb-1 block text-sm font-semibold text-gray-700">ชื่อ</label><input id="contact-name" maxlength="120" class="block w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="กรอกชื่อ"></div>' +
+            '<div><label for="contact-phone" class="mb-1 block text-sm font-semibold text-gray-700">เบอร์โทรศัพท์</label><input id="contact-phone" maxlength="40" inputmode="tel" class="block w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="กรอกเบอร์โทรศัพท์"></div>' +
+            '<div><label for="contact-role" class="mb-1 block text-sm font-semibold text-gray-700">ประเภท</label><select id="contact-role" class="block w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200">' +
             '<option selected value="" disabled>เลือกประเภท</option>' +
             '<option value="เซลล์">เซลล์</option>' +
             '<option value="ช่างซ่อม">ช่างซ่อม</option>' +
             '<option value="ช่าง PM">ช่าง PM</option>' +
             '<option value="ช่างซ่อม+PM">ช่างซ่อม+PM</option>' +
             '<option value="specialist">specialist</option>' +
-            '</select>',
+            '</select></div></div>',
         focusConfirm: false,
         showCancelButton: true,
         confirmButtonText: 'เพิ่ม',

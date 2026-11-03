@@ -84,7 +84,6 @@
         rel="stylesheet">
     <!-- Bootstrap Icons for compatibility -->
     <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <style>
@@ -573,6 +572,20 @@
         }
 
         @media (max-width: 767px) {
+            #update-actions .update-action-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: .5rem;
+            }
+
+            #update-actions #submit {
+                grid-column: 1 / -1;
+            }
+
+            #update-actions button {
+                min-height: 2.75rem;
+            }
+
             #related-repair-history-table-wrap {
                 overflow: visible;
                 border: 0;
@@ -622,6 +635,16 @@
                 font-weight: 600;
             }
         }
+
+        .equipment-down-option.is-checked {
+            border-color: #dc2626;
+            background-color: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .equipment-down-option.is-checked:hover {
+            background-color: #fecaca;
+        }
     </style>
     <title>อัพเดทงาน</title>
 </head>
@@ -654,8 +677,7 @@
             </div>
 
             <!-- Work Order Header Card -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
-                data-aos="fade-down">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover">
                 <!-- Header -->
                 <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4">
                     <div class="flex items-center space-x-2">
@@ -750,7 +772,7 @@
             </div>
             <!-- Work Update Section -->
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
-                data-aos="fade-up" id="update-section">
+                id="update-section">
                 <!-- Header -->
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
                     <div class="flex items-center space-x-2">
@@ -779,8 +801,11 @@
                     </div>
 
                     <div id="follow-up-latest" class="hidden rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                        <span class="font-semibold">กำหนดวันติดตามล่าสุด:</span>
-                        <span id="follow-up-latest-date"></span>
+                        <div id="follow-up-latest-date-row">
+                            <span class="font-semibold">กำหนดวันติดตามล่าสุด:</span>
+                            <span id="follow-up-latest-date"></span>
+                        </div>
+                        <div id="follow-up-latest-downtime" class="hidden mt-1"></div>
                     </div>
 
                     <!-- Update Text Area -->
@@ -825,6 +850,13 @@
                             <label for="follow-up-date" class="block text-sm font-medium text-gray-700">วันที่ต้องติดตาม</label>
                             <input id="follow-up-date" type="text" placeholder="เลือกวันที่"
                                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 input-focus">
+                            <label for="equipment-down" class="equipment-down-option flex cursor-pointer items-start gap-3 rounded-xl border-2 border-amber-500 bg-amber-100 px-4 py-3 text-amber-950 transition-colors hover:bg-amber-200 focus-within:ring-2 focus-within:ring-amber-600 focus-within:ring-offset-2">
+                                <input id="equipment-down" type="checkbox" class="mt-0.5 h-6 w-6 shrink-0 accent-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700">
+                                <span>
+                                    <span class="block text-base font-bold"><i class="bi bi-exclamation-triangle-fill mr-2 text-red-700" aria-hidden="true"></i>งดใช้งานเครื่อง</span>
+                                    <span class="mt-1 block text-sm font-medium">เลือกเมื่อเครื่องต้องหยุดใช้งาน</span>
+                                </span>
+                            </label>
                         </div>
                     </fieldset>
 
@@ -839,8 +871,9 @@
                                 <i class="bi bi-plus-lg mr-1"></i>เพิ่มรายชื่อ
                             </button>
                         </div>
+                        <p id="vendor-contact-empty" class="text-sm text-gray-500">ยังไม่มีรายชื่อผู้ติดต่อ</p>
                         <div id="vendor-contact-list"
-                            class="bg-gray-50 border border-gray-200 rounded-xl min-h-[80px] transition-all">
+                            class="hidden bg-gray-50 border border-gray-200 rounded-xl transition-all">
                             <!-- Contact list will be rendered here -->
                         </div>
                     </div>
@@ -998,8 +1031,8 @@
                         </div>
                     </div>
                     <!-- Action Buttons -->
-                    <div class="space-y-3">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div id="update-actions" class="mobile space-y-3">
+                        <div class="update-action-grid grid grid-cols-1 md:grid-cols-3 gap-3">
                             <button
                                 class="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all btn-ripple"
                                 id="submit">
@@ -1023,8 +1056,7 @@
         <!-- Summary Section -->
         <div class="max-w-4xl mx-auto mt-6 space-y-6 hidden" id="summary-container">
             <!-- Summary Content Card -->
-            <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover"
-                data-aos="fade-up">
+            <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden card-hover">
                 <!-- Header -->
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
                     <div class="flex items-center space-x-2">
@@ -1214,7 +1246,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
-    <script>new VConsole();</script>
+    <!-- <script>new VConsole();</script> -->
     <script src="//fastly.jsdelivr.net/npm/sweetalert2@11"></script>
     <script
         src="https://fastly.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
@@ -1229,7 +1261,6 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         let script = document.createElement('script');
         script.src = './updatejob.js' + '?v=' + Date.now();
