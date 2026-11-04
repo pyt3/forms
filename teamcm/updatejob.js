@@ -208,9 +208,9 @@ $(document).ready(async () => {
 
         let { friendFlag } = await liff.getFriendship();
         while (!friendFlag) {
-             try {
+            try {
                 await liff.requestFriendship();
-                
+
             } catch (error) {
                 console.log(error);
             }
@@ -1881,6 +1881,9 @@ async function updateData(update_data) {
     })
     if (current_user.site.toUpperCase() === 'PYT3') {
         try {
+            await firestore.collection('jobdata/').doc(update_data.jobid).set({
+                followup_name: update_data.name
+            }, { merge: true })
             const jobRef = firestore.collection('jobdata/').doc(update_data.jobid)
             const trackingData = await firestore.runTransaction(async transaction => {
                 const jobSnapshot = await transaction.get(jobRef)
