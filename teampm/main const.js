@@ -138,7 +138,8 @@ const staff_name_array = [
   "ILADA BUAPRALAT",
   // "JIRASSAYA CHUENYOO",
   "CHALERMPORN SABUA",
-  "CHUTIKAN DEENUSON"
+  "CHUTIKAN DEENUSON",
+  "JIDAPA HORACHIT"
 ]
 
 const supervisor_name = 'ดรัณภพ ยิ้มแย้ม'
