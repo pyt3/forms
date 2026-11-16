@@ -2236,9 +2236,18 @@ async function updateData(update_data) {
             "backgroundColor": "#cfe2ff"
         })
     }
+    const downtime = work_detail.downtime
+    let downtimeText = ''
+    if (update_data.job_status === 'งานจบแล้ว' && Number.isFinite(downtime) && downtime > 0) {
+        const totalMinutes = Math.floor(downtime / 60)
+        const days = Math.floor(totalMinutes / 1440)
+        const hours = Math.floor(totalMinutes % 1440 / 60)
+        const minutes = totalMinutes % 60
+        downtimeText = `\nระยะเวลางดใช้งาน: ${[days && `${days} วัน`, hours && `${hours} ชั่วโมง`, minutes && `${minutes} นาที`].filter(Boolean).join(' ') || '0 นาที'}`
+    }
     flex.footer.contents.unshift({
         type: 'text',
-        text: 'สถานะงาน: ' + update_data.job_status + (update_data.follow_up_date ? '\nกำหนดวันติดตาม: ' + moment(update_data.follow_up_date).format('DD/MM/YYYY') : ''),
+        text: 'สถานะงาน: ' + update_data.job_status + (update_data.follow_up_date ? '\nกำหนดวันติดตาม: ' + moment(update_data.follow_up_date).format('DD/MM/YYYY') : '') + downtimeText,
         wrap: true,
         size: 'xs',
         color: '#6b7280'
