@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="th" data-type="software" data-radius="soft" data-buttons="solid" data-motion="quiet">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3f9fc">
+  <meta name="description" content="ค้นหาชื่อรายการทดสอบของห้องปฏิบัติการ N Health พร้อมข้อมูลสำหรับการส่งตรวจ">
+  <meta property="og:title" content="ค้นหารายการ Lab Tests | N Health">
+  <meta property="og:description" content="ค้นหารายการทดสอบและดูข้อมูลสำหรับการส่งตรวจ">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <title>ค้นหารายการ Lab Tests | N Health</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231b5795'/%3E%3Cpath d='M15 34V14h5l9 12V14h5v20h-5l-9-12v12z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="index.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">ข้ามไปยังรายการตรวจ</a>
+  <header class="topbar">
+    <a class="brand" href="#main" aria-label="N Health หน้ารายการทดสอบห้องปฏิบัติการ">
+      <img class="brand__logo" src="nhealth-logo.jpg" alt="N Health">
+    </a>
+  </header>
+
+  <main id="main" class="page">
+    <section class="intro" aria-labelledby="page-title">
+      <div class="intro__copy">
+        <h1 id="page-title">ค้นหารายการ Lab Tests</h1>
+        <p class="intro__description">พิมพ์ชื่อรายการทดสอบเพื่อดูข้อมูลสำหรับการส่งตรวจ</p>
+      </div>
+    </section>
+
+    <section class="search-panel" aria-label="ค้นหาชื่อรายการทดสอบ">
+      <label class="search-label" for="search-input">ค้นหาชื่อรายการทดสอบ</label>
+      <div class="search-box">
+        <svg class="search-box__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="search-input" type="search" autocomplete="off" enterkeyhint="search" placeholder="พิมพ์ชื่อรายการทดสอบ เช่น CBC">
+        <button class="clear-button" id="clear-search" type="button" aria-label="ล้างชื่อที่ค้นหา" hidden>
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="results" aria-labelledby="results-title" aria-busy="true">
+      <div class="results__head">
+        <h2 id="results-title">รายการทดสอบ</h2>
+      <p id="result-summary" class="result-summary" aria-live="polite">กำลังโหลดข้อมูล…</p>
+      </div>
+      <div class="results-grid skeleton-grid" id="loading-skeleton" aria-hidden="true">
+        <article class="skeleton-card">
+          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
+          <div class="skeleton-fields">
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+          </div>
+        </article>
+        <article class="skeleton-card">
+          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
+          <div class="skeleton-fields">
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+          </div>
+        </article>
+        <article class="skeleton-card">
+          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
+          <div class="skeleton-fields">
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+          </div>
+        </article>
+        <article class="skeleton-card">
+          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
+          <div class="skeleton-fields">
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
+            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+          </div>
+        </article>
+      </div>
+      <div class="results-grid" id="results-list"></div>
+      <div class="empty-state" id="empty-state" hidden>
+        <span class="empty-state__icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="21" cy="21" r="12" stroke="currentColor" stroke-width="2"/><path d="m30 30 9 9M17 21h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <h3 id="empty-title">พิมพ์ชื่อรายการเพื่อเริ่มต้น</h3>
+        <p id="empty-copy">ค้นหาจากชื่อรายการทดสอบ</p>
+        <button class="retry-button" id="retry-load" type="button" hidden>ลองโหลดอีกครั้ง</button>
+      </div>
+      <nav class="pagination" id="pagination" aria-label="แบ่งหน้ารายการ" hidden>
+        <button class="pagination__step" id="previous-page" type="button">ก่อนหน้า</button>
+        <div class="pagination__pages" id="page-numbers"></div>
+        <button class="pagination__step" id="next-page" type="button">ถัดไป</button>
+      </nav>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer__brand">N Health</span>
+    <span>รายการทดสอบห้องปฏิบัติการ</span>
+  </footer>
+</body>
+</html>
