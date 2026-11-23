@@ -19,6 +19,7 @@ const clearButton = document.querySelector("#clear-search");
 const list = document.querySelector("#results-list");
 const summary = document.querySelector("#result-summary");
 const loadingSkeleton = document.querySelector("#loading-skeleton");
+const skeletonTemplate = document.querySelector("#skeleton-card-template");
 const emptyState = document.querySelector("#empty-state");
 const emptyTitle = document.querySelector("#empty-title");
 const emptyCopy = document.querySelector("#empty-copy");
@@ -31,6 +32,8 @@ const pageNumbers = document.querySelector("#page-numbers");
 const results = document.querySelector(".results");
 const searchPanel = document.querySelector(".search-panel");
 
+for (let i = 0; i < 4; i++) loadingSkeleton.append(skeletonTemplate.content.cloneNode(true));
+
 let records = [];
 let matches = [];
 let currentPage = 1;
@@ -39,6 +42,15 @@ let scrollFrame = 0;
 
 function normalize(value) {
   return String(value ?? "").normalize("NFKC").toLocaleLowerCase("th").trim();
+}
+
+function isNew(record) {
+  const value = normalize(record.isNew);
+  return record.isNew === true || record.isNew === 1 || value === "true" || value === "1";
+}
+
+function sortNewFirst(items) {
+  return items.sort((a, b) => Number(isNew(b)) - Number(isNew(a)));
 }
 
 function formatValue(key, value) {
@@ -88,11 +100,11 @@ function highlightMatches(element, text, query) {
 function makeCard(record, query) {
   const card = document.createElement("article");
   const inactive = record.ssb_status && normalize(record.ssb_status) !== "active";
-  card.className = `result-card${inactive ? " result-card--inactive" : ""}`;
+  card.className = `result-card${inactive ? " result-card--inactive" : ""}${isNew(record) ? " result-card--new" : ""}`;
 
   const head = document.createElement("div");
   head.className = "result-card__head";
-  const name = document.createElement("h3");
+  const name = document.createElement("h4");
   name.className = "result-card__name";
   highlightMatches(name, formatValue("name", record.name), query);
   const badges = document.createElement("div");
@@ -111,10 +123,19 @@ function makeCard(record, query) {
   const grid = document.createElement("div");
   grid.className = "field-grid";
   for (const [key, value] of Object.entries(record)) {
-    if (!["id", "name", "isBroadcast", "outsite", "ssb_status", "group"].includes(key)) addField(grid, key, value);
+    if (!["id", "name", "isNew", "isBroadcast", "outsite", "ssb_status", "group"].includes(key)) addField(grid, key, value);
   }
   card.append(head, grid);
   return card;
+}
+
+function makeGrid(items, query) {
+  const grid = document.createElement("div");
+  grid.className = "results-grid";
+  const fragment = document.createDocumentFragment();
+  for (const record of items) fragment.append(makeCard(record, query));
+  grid.append(fragment);
+  return grid;
 }
 
 function renderPage(page = 1) {
@@ -122,10 +143,28 @@ function renderPage(page = 1) {
   currentPage = Math.min(Math.max(page, 1), pageCount);
   const start = (currentPage - 1) * PAGE_SIZE;
   const end = Math.min(start + PAGE_SIZE, matches.length);
-  const fragment = document.createDocumentFragment();
-  for (let i = start; i < end; i += 1) fragment.append(makeCard(matches[i], input.value));
+  const pageRecords = matches.slice(start, end);
+  const newRecords = pageRecords.filter(isNew);
+  const otherRecords = pageRecords.filter(record => !isNew(record));
   list.replaceChildren();
-  list.append(fragment);
+  if (newRecords.length) {
+    const group = document.createElement("section");
+    group.className = "result-group";
+    const heading = document.createElement("h3");
+    heading.className = "result-group__title";
+    heading.textContent = "รายการทดสอบใหม่";
+    group.append(heading, makeGrid(newRecords, input.value));
+    list.append(group);
+  }
+  if (otherRecords.length) {
+    const group = document.createElement("section");
+    group.className = "result-group";
+    const heading = document.createElement("h3");
+    heading.className = "result-group__title";
+    heading.textContent = "รายการทดสอบอื่น";
+    group.append(heading, makeGrid(otherRecords, input.value));
+    list.append(group);
+  }
   summary.textContent = `แสดง ${start + 1}–${end} จาก ${matches.length.toLocaleString("th-TH")} รายการ`;
   pagination.hidden = matches.length === 0;
   previousButton.disabled = currentPage === 1;
@@ -169,7 +208,7 @@ function runSearch() {
   currentPage = 1;
 
   if (!query) {
-    matches = records;
+    matches = sortNewFirst([...records]);
     emptyState.hidden = matches.length > 0;
     if (!matches.length) showEmpty("ยังไม่มีรายการทดสอบ", "ไม่พบข้อมูลในรายการขณะนี้");
     else renderPage();
@@ -177,10 +216,10 @@ function runSearch() {
   }
 
   const terms = query.split(/\s+/).filter(Boolean);
-  matches = records.filter(record => {
+  matches = sortNewFirst(records.filter(record => {
     const text = normalize(record.name);
     return terms.every(term => text.includes(term));
-  });
+  }));
 
   emptyState.hidden = matches.length > 0;
   if (!matches.length) showEmpty("ไม่พบรายการทดสอบ", "ลองตรวจคำสะกดหรือพิมพ์ชื่อรายการอื่น");

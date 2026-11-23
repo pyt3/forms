@@ -53,52 +53,22 @@
       <p id="result-summary" class="result-summary" aria-live="polite">กำลังโหลดข้อมูล…</p>
       </div>
       <div class="results-grid skeleton-grid" id="loading-skeleton" aria-hidden="true">
-        <article class="skeleton-card">
-          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
-          <div class="skeleton-fields">
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field skeleton-field--wide"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-          </div>
-        </article>
-        <article class="skeleton-card">
-          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
-          <div class="skeleton-fields">
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field skeleton-field--wide"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-          </div>
-        </article>
-        <article class="skeleton-card">
-          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
-          <div class="skeleton-fields">
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field skeleton-field--wide"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-          </div>
-        </article>
-        <article class="skeleton-card">
-          <div class="skeleton-card__head"><span class="skeleton-bar skeleton-bar--title"></span><span class="skeleton-bar skeleton-bar--pill"></span></div>
-          <div class="skeleton-fields">
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
-            <div class="skeleton-field skeleton-field--wide"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
-            <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
-          </div>
-        </article>
+        <template id="skeleton-card-template">
+          <article class="skeleton-card">
+            <div class="skeleton-card__head">
+              <span class="skeleton-bar skeleton-bar--title"></span>
+              <span class="skeleton-badges"><span class="skeleton-bar skeleton-bar--pill"></span><span class="skeleton-bar skeleton-bar--pill skeleton-bar--pill-status"></span></span>
+            </div>
+            <div class="skeleton-fields">
+              <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value"></span></div>
+              <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+              <div class="skeleton-field skeleton-field--wide"><span class="skeleton-bar skeleton-bar--label skeleton-bar--sample-label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--long"></span></div>
+              <div class="skeleton-field"><span class="skeleton-bar skeleton-bar--label skeleton-bar--turnaround-label"></span><span class="skeleton-bar skeleton-bar--value skeleton-bar--short"></span></div>
+            </div>
+          </article>
+        </template>
       </div>
-      <div class="results-grid" id="results-list"></div>
+      <div class="results-groups" id="results-list"></div>
       <div class="empty-state" id="empty-state" hidden>
         <span class="empty-state__icon" aria-hidden="true">
           <svg viewBox="0 0 48 48" fill="none"><circle cx="21" cy="21" r="12" stroke="currentColor" stroke-width="2"/><path d="m30 30 9 9M17 21h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
