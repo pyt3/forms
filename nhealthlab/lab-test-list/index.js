@@ -286,11 +286,12 @@ function collapseExpandedSearch() {
 }
 
 function updateStickySearch() {
+  const wasStuck = searchPanel.classList.contains("is-stuck");
   const stickyTop = parseFloat(getComputedStyle(searchPanel).top) || 0;
   const stuck = window.scrollY > 0 && searchPanel.getBoundingClientRect().top <= stickyTop + 1;
   if (!stuck) {
     searchPanel.classList.remove("is-stuck");
-    collapseExpandedSearch();
+    if (wasStuck) collapseExpandedSearch();
     return;
   }
 
